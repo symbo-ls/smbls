@@ -1,9 +1,9 @@
 'use strict'
 
-import emotion from '@emotion/css/create-instance'
+import createInstance from '@emotion/css/create-instance'
 
-export const createEmotion = (key = 'smbls') => {
-  return emotion({ key: key })
+export const createEmotion = (key = 'smbls', container) => {
+  return createInstance({ key: key })
 }
 
-export default createEmotion()
+export const emotion = createEmotion()
