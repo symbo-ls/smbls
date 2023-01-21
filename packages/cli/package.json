@@ -16,7 +16,7 @@
     "vpatch": "npm version patch && npm publish"
   },
   "dependencies": {
-    "@symbo.ls/init": "latest",
+    "@symbo.ls/init": "^2.7.5",
     "@symbo.ls/socket": "latest",
     "chalk": "^5.0.0",
     "commander": "^9.4.1",
