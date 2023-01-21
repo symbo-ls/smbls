@@ -13,8 +13,8 @@
     }
   },
   "files": [
-    "dist",
-    "src",
+    "dynamic.json",
+    "index.js",
     ".symbolsrc.json",
     "README.md"
   ],
