@@ -48,6 +48,6 @@
     "@symbo.ls/user": "latest"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "54fa6500c697604b3f48ba33a573545d7bff35fa",
+  "gitHead": "ce1ceb5545eb5189a49484ba1c57261f3429b577",
   "source": "src/index.js"
 }
