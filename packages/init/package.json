@@ -2,7 +2,7 @@
   "name": "@symbo.ls/init",
   "version": "2.8.0",
   "license": "MIT",
-  "gitHead": "484281b2e1c320c5db2bfa27b19161191ea4246f",
+  "gitHead": "8c30d75c787deaaaf0cf1a3715116177023a1f65",
   "source": "index.js",
   "main": "index.js",
   "targets": {
