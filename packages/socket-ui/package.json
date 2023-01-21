@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/socket-ui",
-  "version": "2.8.1",
+  "version": "2.9.0",
   "main": "index.js",
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc"
 }
