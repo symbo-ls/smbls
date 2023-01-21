@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/socket",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Connect your app to Symbols editor",
   "main": "server.js",
   "author": "symbo.ls",
