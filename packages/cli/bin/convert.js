@@ -3,7 +3,7 @@
 import * as esbuild from 'esbuild'
 import { loadModule } from './require.js'
 import { program } from './program.js'
-//import { convert } from 'domql-to-mitosis'
+import { convert } from 'domql-to-mitosis/asd/convert.js'
 import fs from 'fs'
 import path from 'path'
 
@@ -19,29 +19,40 @@ program
     .option('--vue2', 'Convert all DomQL components to Vue2')
     .option('--vue3', 'Convert all DomQL components to Vue3')
     .action(async (src, dest, options) => {
-      const srcParent = path.dirname()
-      const destParent = path.dirname()
-      const tmpDirPath = path.join(destParent, TMP_DIR_NAME)
+      const srcPath = path.resolve(src)
+      const destPath = path.resolve(dest || 'asd')
+      const tmpDirPath = path.resolve(path.dirname(destPath), TMP_DIR_NAME)
 
       await fs.mkdir(tmpDirPath, async () => {
-        const origFiles = await fs.promises.readdir(src)
+        const origFiles = await fs.promises.readdir(srcPath)
         console.log(origFiles)
         
         await esbuild.build({
-          entryPoints: origFiles.map(file => path.join(srcParent, file)),
+          entryPoints: origFiles.map(file => path.join(srcPath, file, '/index.js')),
           bundle: true,
+          target: 'node12',
+          format: 'cjs',
           outdir: tmpDirPath
         })
   
-      //   const files = await fs.promises.readdir(tmpDirPath)
-      //   for (const file of files) {
-      //     let filePath = path.join(tmpDirPath, file)
+        const files = await fs.promises.readdir(tmpDirPath)
+        for (const file of files) {
+          if (file === 'atoms') continue
+
+          let filePath = path.join(tmpDirPath, file)
   
-      //     if ((await fs.promises.stat(filePath)).isDirectory()) {
-      //       console.log(`importing ${filePath}`)
-      //       const domqlObj = await import(`${filePath}/index.js`)
-      //       console.log(domqlObj)
-      //     }
-      //   }
+          if ((await fs.promises.stat(filePath)).isDirectory()) {
+            console.log(`importing ${filePath}`)
+            const domqlModule = (await import(`${filePath}/index.js`)).default
+            console.log(domqlModule)
+            for (const key in domqlModule) {
+              const component = domqlModule[key]
+              console.group(key)
+              console.log('========================', key)
+              convert(component, 'react')
+              console.groupEnd(key)
+            }
+          }
+        }
       })
     })
