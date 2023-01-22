@@ -36,11 +36,5 @@ node_modules
 .cache
 .parcel-cache
 dist
-*.DS_Store
 
 .DS_Store
-
-yarn.lock
-.DS_Store
-
-# packages/react
