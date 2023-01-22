@@ -3308,9 +3308,9 @@
   resolved "https://registry.yarnpkg.com/@symbo.ls/config-default/-/config-default-2.9.0.tgz#6407439a5898bcc6a0aef4d540ef17ddc9843789"
   integrity sha512-8JwaKWaRtb6OBMtlJ/q/Y8TUeONA7egeWguoB/QFulEWpXEsAeScgUo73YG+FjvknZsITHsd3zc2kZv3tfLIPw==
 
-"@symbo.ls/create-emotion@latest":
+"@symbo.ls/emotion@latest":
   version "2.9.3"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create-emotion/-/create-emotion-2.9.3.tgz#0587b16674dcc2d760085b3b32b18c801675a1c1"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/emotion/-/create-emotion-2.9.3.tgz#0587b16674dcc2d760085b3b32b18c801675a1c1"
   integrity sha512-NOkrA2g7cAuDHsxcPbCC/s1onCPTDAE9SdHLFocXIX5srO5KzuPHJK0nIcty3Fut71b6y2gHdOSCkRQB/YLEjw==
   dependencies:
     "@emotion/css" "^11.10.0"
@@ -3387,7 +3387,7 @@
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/config-default" latest
-    "@symbo.ls/create-emotion" latest
+    "@symbo.ls/emotion" latest
     "@symbo.ls/scratch" latest
 
 "@symbo.ls/input@latest":

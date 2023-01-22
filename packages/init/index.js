@@ -9,7 +9,7 @@ import {
 import { isObject, deepMerge } from '@domql/utils'
 import { initDOMQLEmotion } from 'domql/packages/emotion'
 
-import { emotion as defaultEmotion } from '@symbo.ls/create-emotion'
+import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 // import { setClassname } from 'css-in-props'
 
 import DYNAMIC_JSON from './dynamic.json'
