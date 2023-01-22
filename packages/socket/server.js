@@ -50,10 +50,10 @@ export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
     })
 
     socket.on('change', (changes, options) => {
-      const file = require('@symbo.ls/init/src/dynamic.json')
+      const file = require('@symbo.ls/init/dynamic.json')
       const newMerge = mergeDeep(file, changes)
       const mergeStr = JSON.stringify(newMerge, null, 2)
-      const initPath = process.cwd() + '/node_modules/@symbo.ls/init/src/dynamic.json'
+      const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 
       if (live) {
         io.to(key).emit('liveChange', mergeStr)
