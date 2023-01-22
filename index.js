@@ -3,7 +3,7 @@
 import createInstance from '@emotion/css/create-instance'
 
 export const createEmotion = (key = 'smbls', container) => {
-  return createInstance({ key: key })
+  return createInstance({ key, container })
 }
 
 export const emotion = createEmotion()
