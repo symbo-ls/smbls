@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/create-emotion",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "license": "MIT",
   "source": "index.js",
   "main": "index.js",
