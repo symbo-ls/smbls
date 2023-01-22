@@ -1,0 +1,63 @@
+Arguments: 
+  /Users/nikoloza/.nvm/versions/node/v18.12.1/bin/node /Users/nikoloza/www/smbls/.yarn/releases/yarn-1.18.0.cjs add esbuild --dev
+
+PATH: 
+  /Users/nikoloza/.yarn/bin:/Users/nikoloza/.config/yarn/global/node_modules/.bin:/Users/nikoloza/.npm-global/bin:/Users/nikoloza/.nvm/versions/node/v18.12.1/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Little Snitch.app/Contents/Components:/Library/Apple/usr/bin:/Users/nikoloza/.yarn/bin:/Users/nikoloza/.config/yarn/global/node_modules/.bin:/Users/nikoloza/.npm-global/bin:/Users/nikoloza/.nvm/versions/node/v18.12.1/bin
+
+Yarn version: 
+  1.18.0
+
+Node version: 
+  18.12.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: ENOENT: no such file or directory, copyfile '/Users/nikoloza/Library/Caches/Yarn/v4/npm-@symbo-ls-socket-2.9.0-8816021ce5c63854fd0ba76f6494c663ee8b23ff/node_modules/@symbo.ls/socket/README.md' -> '/Users/nikoloza/www/smbls/packages/react/node_modules/@symbo.ls/socket/README.md'
+
+npm manifest: 
+  {
+    "name": "@symbo.ls/cli",
+    "version": "2.9.0",
+    "description": "Fetch your Symbols configuration",
+    "main": "bin/fetch.js",
+    "author": "Symbols",
+    "license": "MIT",
+    "private": false,
+    "type": "module",
+    "bin": {
+      "smbls": "bin/index.js"
+    },
+    "scripts": {
+      "start": "node bin/index.js",
+      "vpush": "git add . && git commit -am 'version update' && git push",
+      "vpatch": "npm version patch && npm publish"
+    },
+    "dependencies": {
+      "@symbo.ls/init": "latest",
+      "@symbo.ls/socket": "latest",
+      "chalk": "^5.0.0",
+      "commander": "^9.4.1",
+      "node-fetch": "^3.1.0",
+      "v8-compile-cache": "^2.3.0"
+    },
+    "devDependencies": {
+      "@babel/core": "^7.10.4",
+      "@babel/preset-env": "^7.10.4",
+      "babel-eslint": "^10.0.3",
+      "eslint": "^7.12.1",
+      "np": "^7.6.0",
+      "standard": "^16.0.1"
+    },
+    "standard": {
+      "parser": "babel-eslint"
+    },
+    "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
