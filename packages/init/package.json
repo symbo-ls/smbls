@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/init",
-  "version": "2.9.4",
+  "version": "2.9.5",
   "license": "MIT",
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc",
   "source": "index.js",
@@ -13,9 +13,7 @@
     }
   },
   "files": [
-    "dist",
-    "src",
-    ".symbolsrc.json",
+    "dynamic.json",
     "README.md"
   ],
   "scripts": {
