@@ -10,8 +10,8 @@ import { program } from './program.js'
 const PACKAGE_PATH = process.cwd() + '/package.json'
 const RC_PATH = process.cwd() + '/.symbolsrc.json'
 const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/src/dynamic.json'
-const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/config-default/'
-const DEFAULT_REMOTE_CONFIG_PATH = 'https://raw.githubusercontent.com/symbo-ls/config-default/main/src/config.json'
+const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
+const DEFAULT_REMOTE_CONFIG_PATH = 'https://raw.githubusercontent.com/symbo-ls/default-config/main/src/config.json'
 
 const API_URL = 'https://api.symbols.app/' // eslint-disable-line
 

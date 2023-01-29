@@ -2615,9 +2615,9 @@
   dependencies:
     "@parcel/plugin" "2.8.3"
 
-"@parcel/config-default@2.8.3":
+"@parcel/default-config@2.8.3":
   version "2.8.3"
-  resolved "https://registry.yarnpkg.com/@parcel/config-default/-/config-default-2.8.3.tgz#9a43486e7c702e96c68052c37b79098d7240e35b"
+  resolved "https://registry.yarnpkg.com/@parcel/default-config/-/default-config-2.8.3.tgz#9a43486e7c702e96c68052c37b79098d7240e35b"
   integrity sha512-o/A/mbrO6X/BfGS65Sib8d6SSG45NYrNooNBkH/o7zbOBSRQxwyTlysleK1/3Wa35YpvFyLOwgfakqCtbGy4fw==
   dependencies:
     "@parcel/bundler-default" "2.8.3"
@@ -3303,9 +3303,9 @@
     node-fetch "^3.1.0"
     v8-compile-cache "^2.3.0"
 
-"@symbo.ls/config-default@latest":
+"@symbo.ls/default-config@latest":
   version "2.9.0"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/config-default/-/config-default-2.9.0.tgz#6407439a5898bcc6a0aef4d540ef17ddc9843789"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/default-config/-/default-config-2.9.0.tgz#6407439a5898bcc6a0aef4d540ef17ddc9843789"
   integrity sha512-8JwaKWaRtb6OBMtlJ/q/Y8TUeONA7egeWguoB/QFulEWpXEsAeScgUo73YG+FjvknZsITHsd3zc2kZv3tfLIPw==
 
 "@symbo.ls/emotion@latest":
@@ -3386,7 +3386,7 @@
   integrity sha512-BUjXhdPF70SmxV+2yXIAKiRh48/JbFv8h8pgWP92P4Pc1ykmDmL015rVK4mMTUGobQPXvow7+ZQyK2lHcVHHbg==
   dependencies:
     "@domql/utils" latest
-    "@symbo.ls/config-default" latest
+    "@symbo.ls/default-config" latest
     "@symbo.ls/emotion" latest
     "@symbo.ls/scratch" latest
 
@@ -3462,7 +3462,7 @@
   integrity sha512-y2cME+ZX6aSRhlYqeM4LvILXwp7NSdb0vtg+4nZj/3NmwDw48siVEfnhaxXLTpqoCXnYqjFKpUKaYePUclND+g==
   dependencies:
     "@emotion/css" latest
-    "@symbo.ls/config-default" latest
+    "@symbo.ls/default-config" latest
     "@symbo.ls/scratch" latest
 
 "@symbo.ls/scratch@^0.3.19":
@@ -3553,7 +3553,7 @@
     "@symbo.ls/box" latest
     "@symbo.ls/button" latest
     "@symbo.ls/buttonset" latest
-    "@symbo.ls/config-default" latest
+    "@symbo.ls/default-config" latest
     "@symbo.ls/datepicker" latest
     "@symbo.ls/direction" latest
     "@symbo.ls/dropdown" latest
@@ -12475,7 +12475,7 @@ parcel@^2.7.0:
   resolved "https://registry.yarnpkg.com/parcel/-/parcel-2.8.3.tgz#1ff71d7317274fd367379bc7310a52c6b75d30c2"
   integrity sha512-5rMBpbNE72g6jZvkdR5gS2nyhwIXaJy8i65osOqs/+5b7zgf3eMKgjSsDrv6bhz3gzifsba6MBJiZdBckl+vnA==
   dependencies:
-    "@parcel/config-default" "2.8.3"
+    "@parcel/default-config" "2.8.3"
     "@parcel/core" "2.8.3"
     "@parcel/diagnostic" "2.8.3"
     "@parcel/events" "2.8.3"
