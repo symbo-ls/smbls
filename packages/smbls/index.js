@@ -8,4 +8,4 @@ export * from '@symbo.ls/scratch'
 export * from '@symbo.ls/emotion'
 export * from '@symbo.ls/create'
 export * from '@symbo.ls/socket/client'
-export * from '@symbo.ls/socket-ui'
+// export * from '@symbo.ls/socket-ui' // TODO: add it soon

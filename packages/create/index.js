@@ -1,7 +1,7 @@
 'use strict'
 
 import DOM from 'domql'
-import { isSting, overwriteDeep } from '@domql/utils'
+import { isString, overwriteDeep } from '@domql/utils'
 
 import * as smbls from '@symbo.ls/uikit'
 import { init, DYNAMIC_JSON } from '@symbo.ls/init'
@@ -26,7 +26,7 @@ export const create = (App, options = defaultOptions) => {
   const { components, define } = options
   const designSystem = init(options.system)
 
-  const appIsKey = isSting(App)
+  const appIsKey = isString(App)
   const key = options.key || SYMBOLS_KEY || (appIsKey && App)
   
   if (appIsKey) App = {}

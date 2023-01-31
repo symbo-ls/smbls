@@ -9,18 +9,21 @@
   ],
   "repository": "https://github.com/symbo-ls/scratch",
   "source": "src/index.js",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "publishConfig": {},
-  "dependencies": {
-    "@domql/utils": "latest",
-    "@symbo.ls/utils": "latest",
-    "color-contrast-checker": "^1.5.0"
-  },
   "scripts": {
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch",
     "bump": "npx np"
+  },
+  "dependencies": {
+    "@domql/utils": "latest",
+    "@symbo.ls/utils": "latest",
+    "color-contrast-checker": "^1.5.0"
+  },
+  "peerDependencies": {
+    "@emotion/css": "^11.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.5",

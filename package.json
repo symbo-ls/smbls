@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "postinstall": "yarn clean:package-modules",
     "start": "parcel showcase/index.html",
     "prebuild": "rm -rf dist .parcel-cache",
     "build": "npx parcel build index.js",

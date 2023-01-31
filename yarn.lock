@@ -3531,9 +3531,9 @@
     color-contrast-checker "^1.5.0"
 
 "@symbo.ls/socket-ui@latest":
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/socket-ui/-/socket-ui-2.9.0.tgz#08d4bde274f1176bad04dd3476d5c8ef097d663b"
-  integrity sha512-k6iB3vNgO37F5D0af2rgt6PxBY/ruLYWN2isjm2QaLrAUMS4OWuWATqbuUGLV3JukwxVmwBegsA2YsvPtnlg5A==
+  version "2.9.9"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/socket-ui/-/socket-ui-2.9.9.tgz#dca8ce67d544dc135df891fd41731dbab0d7d1fd"
+  integrity sha512-t2dUM1JlYAwamYm8UcKWMK830FG4L0TAyivjxKqkvEX/o/wZqmuC4cjgTBE18WQoMbspy8XfkDm8hxf/IhFCyg==
 
 "@symbo.ls/socket@latest":
   version "2.9.4"
@@ -3548,14 +3548,12 @@
     socket.io-client "^4.5.2"
 
 "@symbo.ls/uikit@latest":
-  version "2.7.15"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.7.15.tgz#6fd7aa81c22ebd186753a732b0275aef0e080fec"
-  integrity sha512-LGLA4DDnYvjXeDq1c0XHJadSDNDNZvycoAdUBcvbLH7ENs7cq8wSwU4/Qes0uOTDa3IhhoK9W8i88Fze5tNuqA==
+  version "2.7.17"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.7.17.tgz#890ef6a0959f20ff114f8d0362eb64b4436ecb45"
+  integrity sha512-YB0F9BHcdpf9u8Dzc4g6PEuF9JBHLzj/TqgdlQrPfKKSCsN4OUKiOwvABYw3sXM/qrmPitHZjcZ1mXzcWRSs5g==
   dependencies:
     "@domql/utils" latest
-    "@symbo.ls/cli" latest
-    "@symbo.ls/init" latest
-    "@symbo.ls/socket" latest
+    "@symbo.ls/scratch" latest
     "@symbo.ls/utils" latest
 
 "@symbo.ls/utils@latest":

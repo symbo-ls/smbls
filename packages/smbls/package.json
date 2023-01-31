@@ -1,9 +1,20 @@
 {
   "name": "smbls",
   "version": "2.9.9",
-  "main": "index.js",
   "license": "MIT",
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc",
+  "source": "index.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "repository": "https://github.com/symbo-ls/scratch",
+  "main": "dist/index.js",
+  "module": "index.js",
+  "browser": "dist/index.js",
+  "scripts": {
+    "prepublish": "npx esbuild index.js --target=es2020 --format=cjs --outdir=dist --bundle --sourcemap=external"
+  },
   "dependencies": {
     "@symbo.ls/cli": "latest",
     "@symbo.ls/create": "latest",
@@ -17,6 +28,5 @@
   },
   "peerDependencies": {
     "@symbo.ls/convert": "latest"
-  },
-  "source": "src/index.js"
+  }
 }
