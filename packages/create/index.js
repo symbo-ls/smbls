@@ -16,32 +16,29 @@ const defaultOptions = {
   pages: {},
   system: {
     useReset: true,
-    useVariable: true,
+    useVariable: true
   },
   components: {},
   define
 }
 
-export const create = (App, options = defaultOptions) => {
-  const designSystem = init(options.system)
-
+export const create = async (App, options = defaultOptions) => {
   const appIsKey = isString(App)
   const key = options.key || SYMBOLS_KEY || (appIsKey && App)
 
-  console.log(App, options, key)
-  
   if (appIsKey) App = {}
   if (key) {
     if (options.remote) {
-      const data = fetch(key)
+      const data = await fetch(key)
+      console.log(data)
       overwriteDeep(data, options)
     }
   }
 
+  const designSystem = init(options.system)
+
   DOM.define(options.define || define)
-  
-  console.log(options.state)
-  
+
   return DOM.create({
     extend: [App, {
       routes: options.pages,
@@ -50,11 +47,12 @@ export const create = (App, options = defaultOptions) => {
   }, null, 'app', {
     extend: [smbls.Box],
     context: {
+      key,
       components: { ...smbls, ...options.components },
       state: options.state,
       pages: options.pages,
-      system: designSystem,
-    },
+      system: designSystem
+    }
     // TODO: move define here,
   })
 }
