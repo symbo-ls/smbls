@@ -30,7 +30,6 @@ export const create = async (App, options = defaultOptions) => {
   if (key) {
     if (options.remote) {
       const data = await fetchRemote(key, { BACKEND_URL: 'localhost:13335' })
-      console.log(data)
       overwriteDeep(data, options)
     }
   }
