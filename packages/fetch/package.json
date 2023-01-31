@@ -1,9 +1,8 @@
 {
   "name": "@symbo.ls/fetch",
-  "version": "2.9.6",
+  "version": "2.9.7",
   "license": "MIT",
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc",
   "source": "index.js",
-  "main": "index.js",
-  "dependencies": {}
+  "main": "index.js"
 }

@@ -1,12 +1,12 @@
 {
   "name": "smbls",
-  "version": "2.9.6",
+  "version": "2.9.7",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc",
   "dependencies": {
-    "@symbo.ls/create": "latest",
     "@symbo.ls/cli": "latest",
+    "@symbo.ls/create": "latest",
     "@symbo.ls/default-config": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest",
