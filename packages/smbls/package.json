@@ -15,5 +15,8 @@
     "css-in-props": "latest",
     "domql": "latest"
   },
+  "peerDependencies": {
+    "@symbo.ls/convert": "latest"
+  },
   "source": "src/index.js"
 }
