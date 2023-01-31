@@ -1,7 +1,7 @@
 'use strict'
 
 import DOM from 'domql'
-import { isString, overwriteDeep } from '@domql/utils'
+import { isString, overwriteDeep, deepDestringify } from '@domql/utils'
 
 import * as smbls from '@symbo.ls/uikit'
 import { init, DYNAMIC_JSON } from '@symbo.ls/init' // eslint-disable-line no-unused-vars
@@ -31,11 +31,10 @@ export const create = async (App, options = defaultOptions) => {
   if (key) {
     if (options.remote) {
       const data = await fetchRemote(key, { endpoint: options.endpoint })
-      overwriteDeep(data, options)
+      const evalData = deepDestringify(data)
+      overwriteDeep(evalData, options)
     }
   }
-
-  console.log(App, options)
 
   const components = { ...smbls, ...options.components }
   const designSystem = init(options.system)

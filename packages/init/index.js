@@ -51,12 +51,10 @@ export const init = (config, RC_FILE, options = SET_OPTIONS) => {
 
 export const updateReset = (config, RC_FILE, options = { emotion: defaultEmotion }) => {
   const resultConfig = prepareInit(config, RC_FILE)
-  // console.log(resultConfig)
   const conf = set({
     verbose: false,
     ...resultConfig
   })
-  console.log(conf.CSS_VARS)
   options.emotion.injectGlobal({ ':root': conf.CSS_VARS })
   options.emotion.injectGlobal(conf.RESET)
 }
