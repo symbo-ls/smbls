@@ -1,7 +1,7 @@
 'use strict'
 
 import { isNumber } from '@domql/utils'
-import { init, connect, Notification } from 'smbls'
+import { init, connect, Notification } from '@symbo.ls/socket/client'
 
 const connectedToSymbols = (clientsCount, element, state) => {
   if (isNumber(clientsCount) && clientsCount > 1) {
