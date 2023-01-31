@@ -76,7 +76,8 @@ const SET_OPTIONS = {}
 export const set = (recivedConfig, options = SET_OPTIONS) => {
   let CONFIG = getActiveConfig()
   const { version, verbose, useVariable, useReset, globalTheme, ...config } = recivedConfig
-
+  
+  console.log(CONFIG)
   if (options.newConfig) {
     FACTORY['active'] = options.newConfig
     CONFIG = getActiveConfig(options.newConfig)

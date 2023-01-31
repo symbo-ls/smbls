@@ -4,7 +4,7 @@ import DOM from 'domql'
 import { isString, overwriteDeep } from '@domql/utils'
 
 import * as smbls from '@symbo.ls/uikit'
-import { init, DYNAMIC_JSON } from '@symbo.ls/init'
+import { init, DYNAMIC_JSON } from '@symbo.ls/init' // eslint-disable-line no-unused-vars
 import { fetchRemote } from '@symbo.ls/fetch'
 
 import { define } from './define'
@@ -35,6 +35,8 @@ export const create = async (App, options = defaultOptions) => {
     }
   }
 
+  console.log(App, options)
+
   const components = { ...smbls, ...options.components }
   const designSystem = init(options.system)
 
@@ -58,8 +60,8 @@ export const create = async (App, options = defaultOptions) => {
       pages: options.pages,
       system: designSystem
     },
-    components,
-      // TODO: move define here,
+    components
+    // TODO: move define here,
   })
 }
 

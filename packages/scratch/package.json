@@ -9,7 +9,7 @@
   ],
   "repository": "https://github.com/symbo-ls/scratch",
   "source": "src/index.js",
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "publishConfig": {},
   "scripts": {
     "prepublish": "npx esbuild src/index.js --target=es2020 --format=cjs --outdir=dist --bundle --sourcemap=external",
