@@ -23,11 +23,12 @@ const defaultOptions = {
 }
 
 export const create = (App, options = defaultOptions) => {
-  const { components, define } = options
   const designSystem = init(options.system)
 
   const appIsKey = isString(App)
   const key = options.key || SYMBOLS_KEY || (appIsKey && App)
+
+  console.log(App, options, key)
   
   if (appIsKey) App = {}
   if (key) {
@@ -35,10 +36,12 @@ export const create = (App, options = defaultOptions) => {
       const data = fetch(key)
       overwriteDeep(data, options)
     }
-    else options = DYNAMIC_JSON
   }
 
+  const { define } = options
   if (define) DOM.define(options.define)
+  
+  console.log(options.state)
   
   return DOM.create({
     extend: [App, {
@@ -48,8 +51,10 @@ export const create = (App, options = defaultOptions) => {
   }, null, 'app', {
     extend: [smbls.Box],
     context: {
-      components: { ...smbls, ...components },
-      system: designSystem
+      components: { ...smbls, ...options.components },
+      state: options.state,
+      pages: options.pages,
+      system: designSystem,
     },
     // TODO: move define here,
   })

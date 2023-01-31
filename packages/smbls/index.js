@@ -1,6 +1,6 @@
 'use strict'
 
-export { transformProps } from 'css-in-props'
+// export { transformProps } from 'css-in-props'
 export * from '@symbo.ls/default-config'
 export * from '@symbo.ls/init'
 export * from '@symbo.ls/uikit'
