@@ -41,9 +41,10 @@ export const create = (App, options = defaultOptions) => {
   if (define) DOM.define(options.define)
   
   return DOM.create({
-    extend: App,
-    routes: options.pages,
-    state: options.state,
+    extend: [App, {
+      routes: options.pages,
+      state: options.state
+    }]
   }, null, 'app', {
     extend: [smbls.Box],
     context: {

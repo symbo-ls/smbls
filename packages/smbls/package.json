@@ -9,7 +9,7 @@
     "dist"
   ],
   "repository": "https://github.com/symbo-ls/scratch",
-  "main": "dist/index.js",
+  "main": "index.js",
   "module": "index.js",
   "browser": "dist/index.js",
   "scripts": {
