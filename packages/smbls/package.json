@@ -2,7 +2,7 @@
   "name": "smbls",
   "version": "2.10.15",
   "license": "MIT",
-  "gitHead": "cc4d2b38b197ae7540e1eb84b1eb3a7c244c3a46",
+  "gitHead": "1fa9a7fb8dc2c4ddae025df79a63bb3cc8d7417f",
   "source": "index.js",
   "files": [
     "index.js",
