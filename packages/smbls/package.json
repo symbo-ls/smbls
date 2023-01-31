@@ -5,6 +5,7 @@
   "license": "MIT",
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc",
   "dependencies": {
+    "@symbo.ls/create": "latest",
     "@symbo.ls/cli": "latest",
     "@symbo.ls/default-config": "latest",
     "@symbo.ls/init": "latest",

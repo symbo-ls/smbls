@@ -63,4 +63,4 @@ export const updateReset = (config, RC_FILE, options = { emotion: defaultEmotion
 
 export const setClass = (props, options = { emotion: defaultEmotion }) => {}// setClassname(props, options.emotion.css)
 
-export { CONFIG }
+export { CONFIG, DYNAMIC_JSON }
