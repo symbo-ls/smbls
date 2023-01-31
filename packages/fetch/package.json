@@ -4,5 +4,13 @@
   "license": "MIT",
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc",
   "source": "index.js",
-  "main": "index.js"
+  "main": "dist/index.js",
+  "browser": "dist/index.js",
+  "files": [
+    "index.js",
+    "dist"
+  ],
+  "scripts": {
+    "prepublish": "npx esbuild index.js --target=es2020 --format=cjs --outdir=dist --bundle --sourcemap=external"
+  }
 }
