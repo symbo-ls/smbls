@@ -38,8 +38,7 @@ export const create = (App, options = defaultOptions) => {
     }
   }
 
-  const { define } = options
-  if (define) DOM.define(options.define)
+  DOM.define(options.define || define)
   
   console.log(options.state)
   
