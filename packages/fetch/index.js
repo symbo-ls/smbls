@@ -11,7 +11,7 @@ const defaultOptions = {
   
 export const fetchRemote = async (key, options = defaultOptions) => {
   let data = {}
-  await window.fetch(`https://${options.endpoint}/${options.route || ''}`, {
+  await window.fetch(`https://${options.endpoint || SERVER_URL}/${options.route || ''}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
   }).then((response) => {

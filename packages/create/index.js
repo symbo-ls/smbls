@@ -40,6 +40,10 @@ export const create = async (App, options = defaultOptions) => {
 
   DOM.define(options.define || define)
 
+  console.group(key)
+  console.dir(options)
+  console.groupEnd(key)
+
   return DOM.create({
     extend: [App, {
       routes: options.pages,
@@ -54,7 +58,7 @@ export const create = async (App, options = defaultOptions) => {
       pages: options.pages,
       system: designSystem
     },
-    components
+    components,
       // TODO: move define here,
   })
 }
