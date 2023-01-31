@@ -5,9 +5,13 @@ const BACKEND_URL = window.location
   ? 'localhost:13335'
   : 'api.symbols.app'
 
-export const fetchRemote = async (key, route) => {
+const defaultOptions = {
+  BACKEND_URL
+}
+  
+export const fetchRemote = async (key, options = defaultOptions) => {
   let data = {}
-  await window.fetch(`https://${BACKEND_URL}/${route || ''}`, {
+  await window.fetch(`https://${options.BACKEND_URL}/${options.route || ''}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
   }).then((response) => {
