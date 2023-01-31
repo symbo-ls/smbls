@@ -12,6 +12,7 @@ import { define } from './define'
 const { SYMBOLS_KEY } = process.env // eslint-disable-line no-unused-vars
 
 const defaultOptions = {
+  endpoint: 'localhost:13335',
   state: {},
   pages: {},
   system: {
@@ -29,7 +30,7 @@ export const create = async (App, options = defaultOptions) => {
   if (appIsKey) App = {}
   if (key) {
     if (options.remote) {
-      const data = await fetchRemote(key, { BACKEND_URL: 'localhost:13335' })
+      const data = await fetchRemote(key, { endpoint: options.endpoint })
       overwriteDeep(data, options)
     }
   }
