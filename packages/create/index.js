@@ -5,7 +5,7 @@ import { isString, overwriteDeep } from '@domql/utils'
 
 import * as smbls from '@symbo.ls/uikit'
 import { init, DYNAMIC_JSON } from '@symbo.ls/init'
-import { fetch } from '@symbo.ls/fetch'
+import { fetchRemote } from '@symbo.ls/fetch'
 
 import { define } from './define'
 
@@ -29,7 +29,7 @@ export const create = async (App, options = defaultOptions) => {
   if (appIsKey) App = {}
   if (key) {
     if (options.remote) {
-      const data = await fetch(key)
+      const data = await fetchRemote(key)
       console.log(data)
       overwriteDeep(data, options)
     }
