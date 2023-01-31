@@ -10,9 +10,10 @@
   "repository": "https://github.com/symbo-ls/scratch",
   "source": "src/index.js",
   "main": "src/index.js",
+  "browser": "dist/index.cjs.js",
   "publishConfig": {},
   "scripts": {
-    "prepublish": "npx esbuild src/index.js --target=es2020 --format=cjs --outdir=dist --bundle --sourcemap=external",
+    "prepublish": "rm -rf dist && npx esbuild src/index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js",
     "standard": "npx standard \"src/**/*.js\"",
     "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
     "test-watch": "jest --watch",

@@ -11,6 +11,6 @@
     "dist"
   ],
   "scripts": {
-    "prepublish": "npx esbuild index.js --target=es2020 --format=cjs --outdir=dist --bundle --sourcemap=external"
+    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
   }
 }
