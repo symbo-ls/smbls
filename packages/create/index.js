@@ -35,6 +35,7 @@ export const create = async (App, options = defaultOptions) => {
     }
   }
 
+  const components = { ...smbls, ...options.components }
   const designSystem = init(options.system)
 
   DOM.define(options.define || define)
@@ -48,12 +49,13 @@ export const create = async (App, options = defaultOptions) => {
     extend: [smbls.Box],
     context: {
       key,
-      components: { ...smbls, ...options.components },
+      components,
       state: options.state,
       pages: options.pages,
       system: designSystem
-    }
-    // TODO: move define here,
+    },
+    components
+      // TODO: move define here,
   })
 }
 
