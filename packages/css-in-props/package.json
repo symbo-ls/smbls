@@ -3,16 +3,16 @@
   "description": "Utilize props as CSS methods",
   "private": false,
   "author": "symbo.ls",
-  "version": "2.9.4",
+  "version": "2.9.11",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "src/index.js",
   "files": [
     "src"
   ],
   "dependencies": {
-    "@symbo.ls/scratch": "latest",
+    "@domql/utils": "latest",
     "@emotion/css": "^11.10.0",
-    "@domql/utils": "latest"
+    "@symbo.ls/scratch": "latest"
   },
   "gitHead": "6378f05ba88065ef932810a1582f45e0384feafc"
 }
