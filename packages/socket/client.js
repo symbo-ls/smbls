@@ -1,13 +1,12 @@
 'use strict'
 
-import { window } from '@domql/globals'
 import { isFunction, isArray } from '@domql/utils'
-// import { } from 'socket.io-client/build/esm/index.js'
+import io from 'socket.io-client'
 
 const ENV = process.env.NODE_ENV
 
 const SOCKET_BACKEND_URL = window.location
-  ?.host.includes('local')
+  .host.includes('local')
   ? 'localhost:13335'
   : 'socket.symbols.app'
 
@@ -43,25 +42,22 @@ export const connect = (key, options = {}) => {
   let tryConnect = 0
   const tryConnectMax = 1
   socket.on('connect_error', (err) => {
-    console.log(err)
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
       if (isFunction(options.onError)) options.onError(err, socket)
       if (tryConnect === tryConnectMax) {
         socket.disconnect()
 
-        if (primaryUrl !== secondaryUrl) {
-          if (ENV === 'test' || ENV === 'development') {
-            console.log(
-              'Could not connect to %c' + primaryUrl + '%c, reconnecting to %c' + secondaryUrl,
-              'font-weight: bold; color: red;',
-              '',
-              'font-weight: bold; color: green;'
-            )
-          }
-
-          connect(key, { ...options, socketUrl: secondaryUrl })
+        if (ENV === 'test' || ENV === 'development') {
+          console.log(
+            'Could not connect to %c' + primaryUrl + '%c, reconnecting to %c' + secondaryUrl,
+            'font-weight: bold; color: red;',
+            '',
+            'font-weight: bold; color: green;'
+          )
         }
+
+        connect(key, { ...options, socketUrl: secondaryUrl })
       }
     } catch (e) {
       console.error(e)
