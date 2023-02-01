@@ -23,14 +23,14 @@ const defaultOptions = {
   define
 }
 
-export const create = async (App, options = defaultOptions) => {
+export const create = (App, options = defaultOptions) => {
   const appIsKey = isString(App)
   const key = options.key || SYMBOLS_KEY || (appIsKey && App)
 
   if (appIsKey) App = {}
   if (key) {
     if (options.remote) {
-      const data = await fetchRemote(key, { endpoint: options.endpoint })
+      const data = fetchRemote(key, { endpoint: options.endpoint })
       const evalData = deepDestringify(data)
       overwriteDeep(evalData, options)
     }
@@ -40,10 +40,6 @@ export const create = async (App, options = defaultOptions) => {
   const designSystem = init(options.system)
 
   DOM.define(options.define || define)
-
-  console.group(key)
-  console.dir(options)
-  console.groupEnd(key)
 
   return DOM.create({
     extend: [App, {

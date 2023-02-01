@@ -5,7 +5,6 @@
   "main": "server.js",
   "author": "symbo.ls",
   "license": "MIT",
-  "private": false,
   "type": "module",
   "scripts": {
     "start": "nodemon server.js"

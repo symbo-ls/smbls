@@ -1,10 +1,8 @@
 #!/usr/bin/env node
 
-import * as asd from '@symbo.ls/socket/client.js'
+import { sync } from '@symbo.ls/socket'
 import { program } from './program.js'
 import { loadModule } from './require.js'
-
-console.log(asd)
 
 const RC_PATH = process.cwd() + '/.symbolsrc.json'
 let rc = {}
@@ -13,20 +11,12 @@ try {
 } catch (e) { console.error('Please include .symbolsrc.json to your root of respository') }
 
 program
-  .command('sync')
+  .command('socket-server')
   .description('Sync with Symbols')
   .option('-l, --live', 'Bypass the local build')
-  .option('--key', 'Bypass the local build')
   .action(async (options) => {
     rc.then(data => {
       const opts = { ...data, ...options }
-      const key = rc.key || options.key
-      console.log(opts)
-      asd.connect(key, {
-        socketUrl: 'socket.symbols.app',
-        onConnect: (id, socket) => {
-          console.log(id)
-        }
-      })
+      sync(null, opts)
     })
   })
