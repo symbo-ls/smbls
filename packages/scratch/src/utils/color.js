@@ -6,6 +6,8 @@ export const colorStringToRgbaArray = color => {
   if (color === '') return
   if (color.toLowerCase() === 'transparent') return [0, 0, 0, 0]
 
+  console.warn(color)
+
   // convert #RGB and #RGBA to #RRGGBB and #RRGGBBAA
   if (color[0] === '#') {
     if (color.length < 7) {

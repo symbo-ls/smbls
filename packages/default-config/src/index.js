@@ -6,7 +6,7 @@ import { TYPOGRAPHY } from './typography'
 import { SPACING } from './spacing'
 import { FONT, FONT_FAMILY } from './font'
 
-export default {
+export const DEFAULT_CONFIG = {
   version: '0.0.1',
   COLOR,
   GRADIENT,
@@ -21,3 +21,5 @@ export default {
   DEVICES: {},
   CASES: {}
 }
+
+export default DEFAULT_CONFIG

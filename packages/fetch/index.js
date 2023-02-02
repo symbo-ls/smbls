@@ -1,5 +1,7 @@
 'use strict'
 
+import { overwriteDeep, deepDestringify } from '@domql/utils'
+
 const SERVER_URL = window.location
   .host.includes('local')
   ? 'localhost:13335'
@@ -8,16 +10,30 @@ const SERVER_URL = window.location
 const defaultOptions = {
   endpoint: SERVER_URL
 }
-  
+
 export const fetchRemote = async (key, options = defaultOptions) => {
-  let data = {}
-  await window.fetch(`https://${options.endpoint || SERVER_URL}/${options.route || ''}`, {
+  const baseUrl = `https://${options.endpoint || SERVER_URL}/`
+  const route = options.serviceRoute || ''
+
+  const response = await window.fetch(baseUrl + route, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
-  }).then((response) => {
-    return response.json().then(d => data = d)
   })
-  return data
+
+  return await response.json()
 }
 
 export const fetch = fetchRemote
+
+export const fetchProject = async (key, options) => {
+  const { editor } = options
+
+  if (editor && editor.remote) {
+    const data = await fetchRemote(key, editor)
+    const evalData = deepDestringify(data)
+
+    overwriteDeep(evalData, options)
+  }
+
+  return options
+}

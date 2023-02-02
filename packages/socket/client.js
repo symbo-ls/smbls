@@ -8,13 +8,14 @@ const ENV = process.env.NODE_ENV
 const SOCKET_BACKEND_URL = window.location
   .host.includes('local')
   ? 'localhost:13335'
-  : 'socket.symbols.app'
+  : 'https://socket.symbols.app'
 
 let socket
 const defautlOpts = {}
 
 export const connect = (key, options = {}) => {
-  const socketUrls = isArray(options.socketUrl) ? options.socketUrl : [options.socketUrl || SOCKET_BACKEND_URL]
+  const socketUrls = isArray(options.socketUrl) 
+    ? options.socketUrl : [options.socketUrl || SOCKET_BACKEND_URL]
   const primaryUrl = socketUrls[0]
   const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
 

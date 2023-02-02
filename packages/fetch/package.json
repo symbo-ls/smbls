@@ -10,6 +10,9 @@
     "index.js",
     "dist"
   ],
+  "dependencies": {
+    "@domql/utils": "latest"
+  },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
   }
