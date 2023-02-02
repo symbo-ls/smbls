@@ -2,7 +2,8 @@
 
 import DOM from 'domql'
 
-import * as utils from '@domql/utils'
+import * as utils from '@symbo.ls/utils'
+import * as domqlUtils from '@domql/utils'
 
 import * as uikit from '@symbo.ls/uikit'
 import { init, DYNAMIC_JSON } from '@symbo.ls/init' // eslint-disable-line no-unused-vars
@@ -50,7 +51,7 @@ export const create = async (App, options = defaultOptions) => {
       state: options.state || {},
       pages: options.pages || {},
       system: designSystem || {},
-      utils
+      utils: { ...utils, ...domqlUtils }
     }
     // TODO: move define here,
   })
