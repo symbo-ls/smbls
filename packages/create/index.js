@@ -2,9 +2,9 @@
 
 import DOM from 'domql'
 
-import { isString } from '@domql/utils'
+import * as utils from '@domql/utils'
 
-import * as smbls from '@symbo.ls/uikit'
+import * as uikit from '@symbo.ls/uikit'
 import { init, DYNAMIC_JSON } from '@symbo.ls/init' // eslint-disable-line no-unused-vars
 import { fetchProject } from '@symbo.ls/fetch'
 
@@ -27,13 +27,11 @@ const defaultOptions = {
 }
 
 export const create = async (App, options = defaultOptions) => {
-  const appIsKey = isString(App)
+  const appIsKey = utils.isString(App)
   const key = options.key || SYMBOLS_KEY || (appIsKey && App)
 
   if (appIsKey) App = {}
   if (key) await fetchProject(key, options)
-
-  console.log(options)
 
   const designSystem = init(options.system || {})
 
@@ -45,13 +43,14 @@ export const create = async (App, options = defaultOptions) => {
       state: options.state
     }]
   }, null, 'app', {
-    extend: [smbls.Box],
+    extend: [uikit.Box],
     context: {
       key,
-      components: { ...smbls, ...options.components },
+      components: { ...uikit, ...options.components },
       state: options.state || {},
       pages: options.pages || {},
-      system: designSystem || {}
+      system: designSystem || {},
+      utils
     }
     // TODO: move define here,
   })
