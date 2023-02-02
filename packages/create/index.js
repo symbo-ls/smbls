@@ -28,7 +28,7 @@ const defaultOptions = {
 }
 
 export const create = async (App, options = defaultOptions) => {
-  const appIsKey = utils.isString(App)
+  const appIsKey = domqlUtils.isString(App)
   const key = options.key || SYMBOLS_KEY || (appIsKey && App)
 
   if (appIsKey) App = {}
