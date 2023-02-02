@@ -1082,9 +1082,9 @@
   integrity sha512-aYQ7+4lsgz+zRYITGeOoJZErzPwr42hq5Xnjj659Wcnts7ByCU7Etk1oubW0OUhKpUO0yIzvgnRc6KFGWpne9g==
 
 "@domql/utils@^2.3.14", "@domql/utils@latest":
-  version "2.3.24"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.24.tgz#dea8a188b7a7cf90cea8871cda10b4699d5c3718"
-  integrity sha512-ElQdve/rPeOg94xapPgakmCiN2I3AaLLcwmAdwTMPfWTgG3r0nBbeNqDGI2PkMZLSy0a/6OjCSUp7ZsqTrN4MQ==
+  version "2.3.25"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.25.tgz#aa7046e95523b926ee9db5a84fc250dd4c21c775"
+  integrity sha512-FrRtPwdOieQBReVv/4TeJIAm0tQBBHTJWq3m6dNIDCbZ5H4/0iP/vJkmWRsgK58ECR4zo/lk2qGoS1EsW1igMg==
   dependencies:
     "@domql/globals" latest
     "@domql/tags" latest
@@ -3473,9 +3473,9 @@
     tslib "^2.4.0"
 
 "@symbo.ls/atoms@latest":
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-1.2.7.tgz#3ab3356bcd254861a427e450da1552dfbe7a913d"
-  integrity sha512-LP5PZhA2ofHdSiRyAxzV55JVbZl3ZzA53omXtVvwET/G4l69LKrcEwQCPb1UaBwvi9IqZbTyImNQdf8pWB+vwA==
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-1.2.9.tgz#d85b09f2f9593a4944ab9c1664a1c7e2169990d4"
+  integrity sha512-TAs6+f29O1jU/VXU8i2tXKGbJEDFRzXL6E3Q8OfojSHhitZ0TtempQQzlOyb0uhN2TXvXQ2Adu2yoV7WzJPUUw==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/create-emotion" latest
@@ -3757,9 +3757,9 @@
     "@symbo.ls/scratch" latest
 
 "@symbo.ls/textarea@latest":
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/textarea/-/textarea-1.2.7.tgz#0821314e7a12e575fd8c8830ae625317a82cae4b"
-  integrity sha512-MI7YRO/zVh8qkszF8YxwqE9stE/YGWvOqRUc8okCnsEkLhoQ81caF8LyTrhBIDQKf/ZmeCorQ12S3Wdvp3UKGg==
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/textarea/-/textarea-1.2.9.tgz#1301c868f55ddf11cc25592912ac65af24bccd3f"
+  integrity sha512-SQFKs5aTyBiImwY7v+DcFB7u+ihdfGdHGGNhLktVNlZ6X8zMZQBg0B8gRo6A3HsNvlyXHoZU5WAkhZHLH29Vow==
   dependencies:
     "@symbo.ls/atoms" latest
 
