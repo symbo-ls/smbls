@@ -2,7 +2,7 @@
 
 import { Collection } from '@symbo.ls/uikit'
 
-export const define = {
+export const defaultDefine = {
   routes: param => param,
 
   $router: (param, el) => {

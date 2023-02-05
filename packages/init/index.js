@@ -7,7 +7,6 @@ import {
 } from '@symbo.ls/scratch'
 
 import { isObject, deepMerge } from '@domql/utils'
-import { initDOMQLEmotion } from 'domql/packages/emotion'
 
 import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 // import { setClassname } from 'css-in-props'
@@ -24,15 +23,17 @@ const prepareInit = (config = CONFIG, RC_FILE) => {
 const SET_OPTIONS = {
   emotion: defaultEmotion,
   useVariable: true,
-  useReset: true,
-  initDOMQLDefine: true
+  useReset: true
 }
 
 export const init = (config, RC_FILE, options = SET_OPTIONS) => {
-  if (options.initDOMQLDefine) initDOMQLEmotion(options.emotion, options)
-
   const resultConfig = prepareInit(config, RC_FILE)
   const emotion = options.emotion || defaultEmotion
+
+  console.group('in INIT')
+  console.log(options)
+  console.log('emotionKey', emotion.cache.key)
+  console.groupEnd('in INIT')
 
   const conf = set({
     verbose: false,
