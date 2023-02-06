@@ -31,16 +31,20 @@ export const init = (config, RC_FILE, options = SET_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
 
   const conf = set({
-    verbose: false,
+    verbose: options.verbose,
     useReset: options.useReset,
+    useVariable: options.useVariable,
     ...resultConfig
   }, { newConfig: options.newConfig })
 
   const FontFace = getFontFaceString(conf.FONT)
 
+  const useReset = conf.useReset
+  const useVariable = conf.useVariable
+
   emotion.injectGlobal(FontFace)
-  if (options.useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })
-  if (options.useReset) emotion.injectGlobal(conf.RESET)
+  if (useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })
+  if (useReset) emotion.injectGlobal(conf.RESET)
 
   return conf
 }
@@ -51,7 +55,7 @@ export const updateReset = (config, RC_FILE, options = { emotion: defaultEmotion
     verbose: false,
     ...resultConfig
   })
-  options.emotion.injectGlobal({ ':root': conf.CSS_VARS })
+  options.emotion.injectGlobal({':root': conf.CSS_VARS })
   options.emotion.injectGlobal(conf.RESET)
 }
 

@@ -1,0 +1,11 @@
+{
+  "name": "@symbo.ls/utils",
+  "version": "2.10.6",
+  "main": "src/index.js",
+  "author": "symbo.ls",
+  "license": "ISC",
+  "dependencies": {
+    "@domql/utils": "latest"
+  },
+  "gitHead": "1ea031284ba485de7f688cfc83219597200b8844"
+}
