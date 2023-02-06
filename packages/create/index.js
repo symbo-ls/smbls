@@ -1,6 +1,7 @@
 'use strict'
 
 import DOM from 'domql'
+import { initDOMQLEmotion } from 'domql/packages/emotion'
 
 import * as utils from '@symbo.ls/utils'
 import * as domqlUtils from '@domql/utils'
@@ -45,8 +46,6 @@ export const create = async (App, options = defaultOptions) => {
   const emotion = createEmotion(key, options.document.head)
   const emotionDefine = initDOMQLEmotion(emotion, options)
 
-  const define = { ...defaultDefine, ...emotionDefine }
-
   const domElem = DOM.create({
     routes: options.pages,
     state: options.state
@@ -58,9 +57,9 @@ export const create = async (App, options = defaultOptions) => {
       state: options.state || {},
       pages: options.pages || {},
       system: designSystem || {},
-      utils: { ...utils, ...domqlUtils }
+      utils: { ...utils, ...domqlUtils },
+      define: { ...defaultDefine, ...emotionDefine }
     },
-    define,
     ...options.domqlOptions,
   })
 

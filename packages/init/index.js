@@ -30,11 +30,6 @@ export const init = (config, RC_FILE, options = SET_OPTIONS) => {
   const resultConfig = prepareInit(config, RC_FILE)
   const emotion = options.emotion || defaultEmotion
 
-  console.group('in INIT')
-  console.log(options)
-  console.log('emotionKey', emotion.cache.key)
-  console.groupEnd('in INIT')
-
   const conf = set({
     verbose: false,
     useReset: options.useReset,
