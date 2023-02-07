@@ -1,7 +1,7 @@
 'use strict'
 
 import DOM from 'domql'
-import { initDOMQLEmotion } from 'domql/packages/emotion'
+import { transformDOMQLEmotion } from 'domql/packages/emotion'
 
 import * as utils from '@symbo.ls/utils'
 import * as domqlUtils from '@domql/utils'
@@ -41,7 +41,7 @@ export const create = async (App, options = defaultOptions) => {
 
   const emotion = defaultEmotion || createEmotion()
   const initOptions = options.initOptions || { emotion }
-  const emotionDefine = initDOMQLEmotion(initOptions.emotion, options)
+  const emotionDefine = options.registry || transformDOMQLEmotion(initOptions.emotion, options)
 
   const designSystem = init(options.system || {}, null, {
     key,
@@ -51,12 +51,10 @@ export const create = async (App, options = defaultOptions) => {
     ...initOptions
   })
 
-  return DOM.create({
+  const domqlElement = DOM.create({
     extend: [App],
     routes: options.pages,
-    state: options.state
-  }, (options.parent || document).body, key, {
-    extend: [uikit.Box],
+    state: options.state,
     context: {
       key,
       components: { ...uikit, ...options.components },
@@ -66,10 +64,14 @@ export const create = async (App, options = defaultOptions) => {
       utils: { ...utils, ...domqlUtils },
       define: defaultDefine,
       registry: emotionDefine
-    },
+    }
+  }, (options.parent || document).body, key, {
+    extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
   })
+  
+  return domqlElement
 }
 
 export default create

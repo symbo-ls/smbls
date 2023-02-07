@@ -53,7 +53,7 @@ export const applyReset = (reset = {}) => {
 
         fontSize: TYPOGRAPHY.base / TYPOGRAPHY.browserDefault + CONFIG.UNIT.default,
 
-        ...getMediaTheme('document', `@${CONFIG.globalTheme}`),
+        ...(CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {}),
 
         ...styles,
         ...body
