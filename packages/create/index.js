@@ -40,22 +40,22 @@ export const create = async (App, options = defaultOptions) => {
   if (key) await fetchProject(key, options)
 
   const emotion = defaultEmotion || createEmotion()
-  const emotionDefine = initDOMQLEmotion(emotion, options)
-
   const initOptions = options.initOptions || { emotion }
+  const emotionDefine = initDOMQLEmotion(initOptions.emotion, options)
+
   const designSystem = init(options.system || {}, null, {
     key,
     verbose: options.verbose,
     useReset: true,
     useVariable: true,
-    ...(initOptions || { emotion })
+    ...initOptions
   })
 
   return DOM.create({
     extend: [App],
     routes: options.pages,
     state: options.state
-  }, (options.document || document).body, key, {
+  }, (options.parent || document).body, key, {
     extend: [uikit.Box],
     context: {
       key,
@@ -67,6 +67,7 @@ export const create = async (App, options = defaultOptions) => {
       define: defaultDefine,
       registry: emotionDefine
     },
+    verbose: options.verbose,
     ...options.domqlOptions
   })
 }
