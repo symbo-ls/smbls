@@ -1,7 +1,7 @@
 'use strict'
 
-import { send } from '@symbo.ls/socket/client'
 import { getColor } from '@symbo.ls/scratch'
+import { send } from '@symbo.ls/socket/client'
 
 export const DevFocus = {
   focus: {

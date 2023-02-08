@@ -26,12 +26,15 @@ const ANIMATION = {
     }
   }
 }
+
 const COLOR = {
   black: '#000000',
   blue: '#3686F7'
 }
 
 init({
+  useReset: false,
+  useVariable: false,
   COLOR,
   ANIMATION
 })
@@ -156,3 +159,5 @@ export const Sync = {
     }
   }
 }
+
+export * from './devFocus'
