@@ -33,8 +33,6 @@ const COLOR = {
 }
 
 init({
-  useReset: false,
-  useVariable: false,
   COLOR,
   ANIMATION
 })
