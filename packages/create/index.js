@@ -37,7 +37,7 @@ export const create = async (App, options = defaultOptions) => {
   const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
 
   if (appIsKey) App = {}
-  if (key) await fetchProject(key, options)
+  if (key && options.editor) await fetchProject(key, options)
 
   const emotion = defaultEmotion || createEmotion()
   const initOptions = options.initOptions || { emotion }
