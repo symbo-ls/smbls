@@ -92,3 +92,24 @@ function findComponent (el) {
   if (el.__componentKey) return el
   return findComponent(el.parent)
 }
+
+export const inspectOnKey = (app) => {
+  window.onkeydown = (ev) => {
+    if (ev.altKey && ev.shiftKey) {
+      app.state.update({ debugging: true, preventSelect: true }, {
+        preventContentUpdate: true,
+        preventRecursive: true
+      })
+    }
+  }
+  window.onkeyup = (ev) => {
+    if ((!ev.altKey || !ev.shiftKey) && app.state.debugging) {
+      app.focus.state.update({ area: false })
+      app.state.update({ debugging: false, preventSelect: false }, { // TODO: does not update false
+        preventContentUpdate: true,
+        preventRecursive: true,
+        preventPropsUpdate: true
+      })
+    }
+  }
+}
