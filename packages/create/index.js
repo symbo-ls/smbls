@@ -2,6 +2,7 @@
 
 import DOM from 'domql'
 import { transformDOMQLEmotion } from 'domql/packages/emotion'
+import { router } from 'domql/packages/router'
 
 import * as utils from '@symbo.ls/utils'
 import * as domqlUtils from '@domql/utils'
@@ -63,7 +64,8 @@ export const create = async (App, options = defaultOptions) => {
       system: designSystem || {},
       utils: { ...utils, ...domqlUtils },
       define: defaultDefine,
-      registry: emotionDefine
+      registry: emotionDefine,
+      router: options.router || router
     }
   }, (options.parent || document).body, key, {
     extend: [uikit.Box],
