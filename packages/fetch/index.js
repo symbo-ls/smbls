@@ -32,7 +32,9 @@ export const fetchProject = async (key, options) => {
     const data = await fetchRemote(key, editor)
     const evalData = deepDestringify(data)
 
-    overwriteDeep(evalData, options)
+    if (editor.serviceRoute) {
+      overwriteDeep(options[editor.serviceRoute], evalData)
+    } else overwriteDeep(options, evalData)
   }
 
   return options
