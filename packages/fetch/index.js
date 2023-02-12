@@ -5,7 +5,7 @@ import { overwriteDeep, deepDestringify } from '@domql/utils'
 const SERVER_URL = window.location
   .host.includes('local')
   ? 'localhost:13335'
-  : 'api.symbols.app'
+  : 'api.symbols.dev'
 
 const defaultOptions = {
   endpoint: SERVER_URL
