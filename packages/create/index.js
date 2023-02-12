@@ -38,7 +38,13 @@ export const create = async (App, options = defaultOptions) => {
   const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
 
   if (appIsKey) App = {}
-  if (key && options.editor) await fetchProject(key, options)
+  if (key && options.editor) {
+    try {
+      await fetchProject(key, options)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   const emotion = defaultEmotion || createEmotion()
   const initOptions = options.initOptions || { emotion }
@@ -72,7 +78,7 @@ export const create = async (App, options = defaultOptions) => {
     verbose: options.verbose,
     ...options.domqlOptions
   })
-  
+
   return domqlElement
 }
 

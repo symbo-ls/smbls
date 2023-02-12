@@ -15,12 +15,17 @@ export const fetchRemote = async (key, options = defaultOptions) => {
   const baseUrl = `https://${options.endpoint || SERVER_URL}/`
   const route = options.serviceRoute || ''
 
-  const response = await window.fetch(baseUrl + route, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
-  })
+  let response
+  try {
+    response = await window.fetch(baseUrl + route, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
+    })
+  } catch (e) {
+    console.error(e)
+  }
 
-  return await response.json()
+  return await response ? response.json() : {}
 }
 
 export const fetch = fetchRemote
