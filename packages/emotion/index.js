@@ -3,7 +3,8 @@
 import createInstance from '@emotion/css/create-instance'
 
 export const createEmotion = (key = 'smbls', container) => {
-  return createInstance({ key, container })
+  const cleanKey = key.replaceAll(/\./g, '-')
+  return createInstance({ key: cleanKey, container })
 }
 
 export const emotion = createEmotion()

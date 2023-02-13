@@ -13,7 +13,6 @@ import { fetchProject } from '@symbo.ls/fetch'
 
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
-import { appendIconsSVGSprite } from '@symbo.ls/scratch'
 
 const { SYMBOLS_KEY } = process.env
 
@@ -52,6 +51,7 @@ export const create = async (App, options = defaultOptions) => {
 
   const initOptions = options.initOptions || {}
   const emotion = initOptions.emotion || defaultEmotion || createEmotion()
+  if (!initOptions.emotion) initOptions.emotion = emotion
   const emotionDefine = options.registry || transformDOMQLEmotion(initOptions.emotion, options)
 
   const doc = options.parent || document
@@ -79,7 +79,7 @@ export const create = async (App, options = defaultOptions) => {
       define: defaultDefine,
       registry: emotionDefine,
       router: options.router || router,
-      emotion: emotion,
+      emotion,
       document: doc
     }
   }, doc.body, key, {

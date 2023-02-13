@@ -17,7 +17,7 @@ export const generateSprite = (icons) => {
 
 const parseRootAttributes = (htmlString) => {
   let match = htmlString.match(/<svg\s+(.*?)>/);
-  if (!match && !match[1]) {
+  if (!match || !match[1]) {
     return {};
   }
 
