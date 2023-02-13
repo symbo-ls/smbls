@@ -2,7 +2,7 @@
 
 import { isNumber } from '@domql/utils'
 import { router } from '@domql/router'
-import { set, connect, Notification } from 'smbls'
+import { set, init, connect, Notification } from 'smbls'
 
 const ANIMATION = {
   fadeInUp: {
@@ -49,7 +49,6 @@ const connectedToSymbols = (clientsCount, element, state) => {
 
       const t = setTimeout(() => {
         delete state.notifications.connected
-        console.log(element.notifications.content.connected)
         element.notifications.content.connected
           .setProps({ animation: 'fadeOutDown' })
         state.update({ connected: true })
