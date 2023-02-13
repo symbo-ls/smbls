@@ -15,5 +15,6 @@ export * from './document'
 export * from './responsive'
 export * from './cases'
 export * from './animation'
+export * from './svg'
 
 export const RESET = {}

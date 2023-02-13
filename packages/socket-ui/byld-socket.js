@@ -2,7 +2,7 @@
 
 import { isNumber } from '@domql/utils'
 import { router } from '@domql/router'
-import { init, connect, Notification } from 'smbls'
+import { set, connect, Notification } from 'smbls'
 
 const ANIMATION = {
   fadeInUp: {
@@ -32,7 +32,7 @@ const COLOR = {
   blue: '#3686F7'
 }
 
-init({
+set({
   COLOR,
   ANIMATION
 })

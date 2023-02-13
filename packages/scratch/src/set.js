@@ -7,6 +7,8 @@ import {
   setFont,
   setFontFamily,
   setTheme,
+  setIcon,
+  setSVG,
   applyTypographySequence,
   applySpacingSequence,
   applyReset,
@@ -25,18 +27,19 @@ const setCases = (val, key) => {
 
 const setSameValue = (val, key) => val
 
-export const SETTERS = {
+export const VALUE_TRANSFORMERS = {
   color: setColor,
   gradient: setGradient,
   font: setFont,
   font_family: setFontFamily,
   theme: setTheme,
+  icons: setIcon,
+  svg: setSVG,
   typography: setSameValue,
   cases: setCases,
   spacing: setSameValue,
   media: setSameValue,
   timing: setSameValue,
-  icons: setSameValue,
   reset: setSameValue,
   unit: setSameValue,
   animation: setSameValue
@@ -54,11 +57,12 @@ export const setValue = (FACTORY_NAME, value, key) => {
   const factoryName = FACTORY_NAME.toLowerCase()
   const FACTORY = CONFIG[FACTORY_NAME]
 
-  if (SETTERS[factoryName]) {
-    const result = SETTERS[factoryName](value, key)
+  if (VALUE_TRANSFORMERS[factoryName]) {
+    const result = VALUE_TRANSFORMERS[factoryName](value, key)
     FACTORY[key] = result
     return FACTORY
   }
+
   if (CONFIG.verbose) console.warn('Can not find', factoryName, 'method in scratch')
 }
 
@@ -80,6 +84,9 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     verbose,
     useVariable,
     useReset,
+    useSvgSprite,
+    useFontImport,
+    useIconSprite,
     globalTheme,
     useDocumentTheme,
     ...config } = recivedConfig
@@ -92,6 +99,9 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (verbose !== undefined) CONFIG.verbose = verbose
   if (useVariable !== undefined) CONFIG.useVariable = useVariable
   if (useReset !== undefined) CONFIG.useReset = useReset
+  if (useFontImport !== undefined) CONFIG.useFontImport = useFontImport
+  if (useSvgSprite !== undefined) CONFIG.useSvgSprite = useSvgSprite
+  if (useIconSprite !== undefined) CONFIG.useIconSprite = useIconSprite
   if (useDocumentTheme !== undefined) CONFIG.useDocumentTheme = useDocumentTheme
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
   if (CONFIG.verbose) console.log(CONFIG)

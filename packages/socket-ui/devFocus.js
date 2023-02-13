@@ -8,7 +8,7 @@ export const DevFocus = {
     state: {},
     props: (el, s) => ({
       position: 'fixed',
-      hide: !s.area || !s.parent.debugging
+      hide: !s.area || !s.parent.debugging,
     }),
     class: {
       inset: (el, state) => {
@@ -24,9 +24,9 @@ export const DevFocus = {
       }
     },
     style: {
+      boxShadow: `0 0 10px #3686F733, 0 0 0 3px #3686F766, 0 0 100vmax 100vmax #000A`,
       zIndex: '9999999',
       borderRadius: '10px',
-      boxShadow: `0 0 10px ${getColor('blue 0.1')}, 0 0 0 3px ${getColor('blue 0.3')}, 0 0 100vmax 100vmax ${getColor('black 0.75')}`,
       pointerEvents: 'none'
     },
     span: {
@@ -81,7 +81,7 @@ export const DevFocus = {
       const el = ev.target.ref
       const component = findComponent(el)
       if (!component || !component.__componentKey || !state.debugging) return
-      send('route', `/component/${component.__componentKey}`)
+      send('route', `/export/${component.__componentKey}`)
       return false
     }
   }

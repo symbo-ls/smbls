@@ -13,6 +13,7 @@ import { fetchProject } from '@symbo.ls/fetch'
 
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
+import { appendIconsSVGSprite } from '@symbo.ls/scratch'
 
 const { SYMBOLS_KEY } = process.env
 
@@ -24,7 +25,10 @@ const defaultOptions = {
   pages: {},
   system: {
     useReset: true,
-    useVariable: true
+    useVariable: true,
+    useIconSprite: true,
+    useSvgSprite: true,
+    useFontImport: true
   },
   components: {},
   initOptions: {
@@ -46,15 +50,18 @@ export const create = async (App, options = defaultOptions) => {
     }
   }
 
-  const emotion = defaultEmotion || createEmotion()
-  const initOptions = options.initOptions || { emotion }
+  const initOptions = options.initOptions || {}
+  const emotion = initOptions.emotion || defaultEmotion || createEmotion()
   const emotionDefine = options.registry || transformDOMQLEmotion(initOptions.emotion, options)
+
+  const doc = options.parent || document
 
   const designSystem = init(options.system || {}, null, {
     key,
+    emotion,
     verbose: options.verbose,
-    useReset: true,
-    useVariable: true,
+    document: doc,
+    ...defaultOptions.system,
     ...initOptions
   })
 
@@ -71,9 +78,11 @@ export const create = async (App, options = defaultOptions) => {
       utils: { ...utils, ...domqlUtils },
       define: defaultDefine,
       registry: emotionDefine,
-      router: options.router || router
+      router: options.router || router,
+      emotion: emotion,
+      document: doc
     }
-  }, (options.parent || document).body, key, {
+  }, doc.body, key, {
     extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
