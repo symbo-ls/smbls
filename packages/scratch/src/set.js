@@ -35,6 +35,7 @@ export const VALUE_TRANSFORMERS = {
   theme: setTheme,
   icons: setIcon,
   svg: setSVG,
+  svg_data: setSameValue,
   typography: setSameValue,
   cases: setCases,
   spacing: setSameValue,

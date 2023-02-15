@@ -179,7 +179,7 @@ export const setMediaTheme = (val, key, suffix, prefers) => {
   if (isString(val) && val.slice(0, 2) === '--') {
     const { THEME } = CONFIG
     const value = THEME[val.slice(2)]
-    const getReferenced = getMediaTheme(value)
+    const getReferenced = getMediaTheme(value, prefers)
     return getReferenced
   }
 
