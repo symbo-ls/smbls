@@ -1,9 +1,17 @@
 'use strict'
 
-import { getColor } from '@symbo.ls/scratch'
+import * as smblsUI from '@symbo.ls/uikit'
+import { isObject } from '@domql/utils'
+// import { getColor } from '@symbo.ls/scratch' // TODO: add in pkg.json
 import { send } from '@symbo.ls/socket/client'
 
 export const DevFocus = {
+  props: {
+    '.preventSelect': {
+      userSelect: 'none'
+    }
+  },
+
   focus: {
     state: {},
     props: (el, s) => ({
@@ -46,6 +54,23 @@ export const DevFocus = {
         textShadow: '0 0 10px black'
       },
       text: (el, s) => s.focusKey
+    },
+    
+    on: {
+      init: ({ context }) => {
+        const { components } = context
+
+        if (isObject(components)) {
+          const { Content, ...rest } = components
+          for (const key in rest) {
+            if (smblsUI[key]) continue
+            if (!rest[key].__ref) rest[key].__ref = {}
+            if (!rest[key].__ref.__componentKey) {
+              rest[key].__ref.__componentKey = key
+            }
+          }
+        }
+      }
     }
   },
 
@@ -53,11 +78,11 @@ export const DevFocus = {
     mousemove: (ev, e, state) => {
       const el = ev.target.ref
       const component = findComponent(el)
-      if (!component || !state.debugging) return
+      if (!component || !state.debugging || !component.__ref) return
 
       const focusState = e.focus.state
       const updateValue = (area) => {
-        focusState.update({ area, focusKey: component.__componentKey })
+        focusState.update({ area, focusKey: component.__ref.__componentKey })
       }
 
       const update = () => {
@@ -80,8 +105,8 @@ export const DevFocus = {
     click: (ev, elem, state) => {
       const el = ev.target.ref
       const component = findComponent(el)
-      if (!component || !component.__componentKey || !state.debugging) return
-      send('route', `/export/${component.__componentKey}`)
+      if (!component || !component.__ref.__componentKey || !state.debugging) return
+      send('route', `/export/${component.__ref.__componentKey}`)
       return false
     }
   }
@@ -89,7 +114,7 @@ export const DevFocus = {
 
 function findComponent (el) {
   if (!el) return
-  if (el.__componentKey) return el
+  if (el.__ref.__componentKey) return el
   return findComponent(el.parent)
 }
 

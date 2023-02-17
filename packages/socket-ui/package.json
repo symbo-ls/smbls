@@ -4,6 +4,7 @@
   "main": "byld-socket.js",
   "gitHead": "d70332c39d1f0a209c22ad9cc838b026f8110f01",
   "dependencies": {
+    "@domql/utils": "latest",
     "@symbo.ls/socket": "latest"
   },
   "peerDependencies": {
