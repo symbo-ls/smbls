@@ -15,7 +15,6 @@ const connectedToSymbols = (clientsCount, element, state) => {
 
       const t = setTimeout(() => {
         delete state.notifications.connected
-        console.log(element.notifications.content)
         element.notifications.content[0]
           .setProps({ animation: 'fadeOutDown' })
         state.update({ connected: true })

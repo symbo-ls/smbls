@@ -1,6 +1,6 @@
 'use strict'
 
-import { overwriteDeep, deepDestringify } from '@domql/utils'
+import { overwriteDeep, deepDestringify, isObject } from '@domql/utils'
 
 const SERVER_URL = window.location
   .host.includes('local')
@@ -43,4 +43,16 @@ export const fetchProject = async (key, options) => {
   }
 
   return options
+}
+
+export const fetchStateAsync = async (key, options, app) => {
+  const { editor, state } = options
+
+  if (editor && editor.remote) {
+    const data = await fetchRemote(key, editor)
+
+    if (isObject(state) && isObject(data.state)) {
+      app.state.update(data.state)
+    }
+  }
 }

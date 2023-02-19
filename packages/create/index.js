@@ -9,7 +9,7 @@ import * as domqlUtils from '@domql/utils'
 
 import * as uikit from '@symbo.ls/uikit'
 import { init } from '@symbo.ls/init'
-import { fetchProject } from '@symbo.ls/fetch'
+import { fetchStateAsync, fetchProject } from '@symbo.ls/fetch'
 
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
@@ -43,7 +43,7 @@ export const create = async (App, options = defaultOptions) => {
   if (appIsKey) App = {}
   if (key && options.editor) {
     try {
-      await fetchProject(key, options)
+      if (!options.async) await fetchProject(key, options)
     } catch (e) {
       console.error(e)
     }
@@ -65,7 +65,7 @@ export const create = async (App, options = defaultOptions) => {
     ...initOptions
   })
 
-  const domqlElement = DOM.create({
+  const domqlApp = DOM.create({
     extend: [App],
     routes: options.pages,
     state: options.state,
@@ -88,7 +88,15 @@ export const create = async (App, options = defaultOptions) => {
     ...options.domqlOptions
   })
 
-  return domqlElement
+  if (key && options.editor) {
+    try {
+      if (options.editor.async) fetchStateAsync(key, options, domqlApp)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  return domqlApp
 }
 
 export default create
