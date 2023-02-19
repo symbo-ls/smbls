@@ -27,7 +27,7 @@ const runThroughMedia = sequenceProps => {
         unit,
         sequence: {},
         scales: {},
-        styles: {},
+        templates: {},
         vars: {}
       })
 
@@ -117,7 +117,7 @@ export const getSpacingBasedOnRatio = (props, propertyName, val) => {
         unit,
         sequence: {},
         scales: {},
-        styles: {},
+        templates: {},
         vars: {}
       }, {
         base,

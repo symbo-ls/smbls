@@ -11,7 +11,7 @@ const defaultProps = {
   h1Matches: +6,
   lineHeight: 1.5,
   unit: 'em',
-  styles: {},
+  templates: {},
   sequence: {},
   scales: {},
   vars: {}

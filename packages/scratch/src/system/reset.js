@@ -10,21 +10,21 @@ export const applyReset = (reset = {}) => {
   if (RESET) {
     if (RESET[':root']) {
       const configReset = RESET
-      const configStyles = TYPOGRAPHY.styles
+      const configTemplates = TYPOGRAPHY.templates
 
       configReset.body = {
         ...getMediaTheme('document', `@${CONFIG.globalTheme}`),
-        ...configStyles.body
+        ...configTemplates.body
       }
-      configReset.h1 = configStyles.h1
-      configReset.h2 = configStyles.h2
-      configReset.h3 = configStyles.h3
-      configReset.h4 = configStyles.h4
-      configReset.h5 = configStyles.h5
-      configReset.h6 = configStyles.h6
+      configReset.h1 = configTemplates.h1
+      configReset.h2 = configTemplates.h2
+      configReset.h3 = configTemplates.h3
+      configReset.h4 = configTemplates.h4
+      configReset.h5 = configTemplates.h5
+      configReset.h6 = configTemplates.h6
     }
 
-    const { body, ...styles } = TYPOGRAPHY.styles
+    const { body, ...templates } = TYPOGRAPHY.templates
 
     return deepMerge(merge(RESET, reset), {
       html: {
@@ -55,7 +55,7 @@ export const applyReset = (reset = {}) => {
 
         ...(CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {}),
 
-        ...styles,
+        ...templates,
         ...body
       },
 

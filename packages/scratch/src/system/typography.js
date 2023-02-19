@@ -29,7 +29,7 @@ export const runThroughMedia = props => {
         unit,
         sequence: {},
         scales: {},
-        styles: {},
+        templates: {},
         vars: {}
       })
 
@@ -39,7 +39,7 @@ export const runThroughMedia = props => {
       applySequenceVars(mediaProps, mediaName)
 
       const query = MEDIA[mediaName]
-      TYPOGRAPHY.styles[`@media screen and ${query}`] = {
+      TYPOGRAPHY.templates[`@media screen and ${query}`] = {
         fontSize: mediaProps.base / TYPOGRAPHY.browserDefault + unit
       }
     }
@@ -51,11 +51,11 @@ export const applyHeadings = (props) => {
   if (props.h1Matches) {
     const unit = props.unit
     const HEADINGS = findHeadings(props)
-    const { styles } = props
+    const { templates } = props
     for (const k in HEADINGS) {
       const headerName = `h${parseInt(k) + 1}`
-      const headerStyle = styles[headerName]
-      styles[headerName] = {
+      const headerStyle = templates[headerName]
+      templates[headerName] = {
         fontSize: CONFIG.useVariable ? `var(${HEADINGS[k].variable})` : `${HEADINGS[k].scaling}${unit}`,
         margin: headerStyle ? headerStyle.margin : 0,
         lineHeight: headerStyle ? headerStyle.lineHeight : props.lineHeight,
