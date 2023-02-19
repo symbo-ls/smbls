@@ -6,11 +6,14 @@
   "gitHead": "9bf056378fae3b3bad3f059f28c48998172cf5eb",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/convert": "latest",
-    "@symbo.ls/react-box": "latest"
+    "@symbo.ls/react-box": "latest",
+    "@symbo.ls/react-provider": "latest"
   },
   "peerDependencies": {
     "domql": "latest"
+  },
+  "devDependencies": {
+    "@symbo.ls/convert": "latest"
   },
   "source": "src/index.js"
 }
