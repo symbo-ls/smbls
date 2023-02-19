@@ -1,8 +1,10 @@
 {
-  "packages": [
-    "packages/*"
-  ],
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "2.10.48"
+  "version": "2.10.48",
+  "packages": [
+    "uikit/*",
+    "uikit-react/*",
+    "packages/*"
+  ]
 }
