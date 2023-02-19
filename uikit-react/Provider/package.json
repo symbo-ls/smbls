@@ -1,0 +1,21 @@
+{
+  "name": "@symbo.ls/react-provider",
+  "version": "2.10.49",
+  "homepage": "https://docs.symbols.app/box",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "css-in-props": "latest"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
+}
