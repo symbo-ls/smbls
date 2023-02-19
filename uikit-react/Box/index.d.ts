@@ -2,4 +2,4 @@
 
 import { Box } from '.'
 
-export { Box };
+export { Box }
