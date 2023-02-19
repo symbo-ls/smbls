@@ -1,10 +1,7 @@
 # react-box
-
 React Box
 
-
 ## Table of Contents
-
 * [Installation](#installation)
 * [API documentation](#api-documentation)
 * [Examples](#examples)
@@ -18,7 +15,6 @@ React Box
 
 
 ## Install
-
 To install, you can use [npm](https://npmjs.org/) or [yarn](https://yarnpkg.com):
 
     $ npm install --save @symbo.ls/react-box
@@ -26,7 +22,6 @@ To install, you can use [npm](https://npmjs.org/) or [yarn](https://yarnpkg.com)
 
 
 ## Usage
-
 Box element which can be used with
 
 
@@ -55,60 +50,3 @@ const buttonConf = {
 
 const Button3 = () => <Box ...buttonConf />
 ```
-
-## API
-The primary documentation for react-box is the reference book, which describes the API and gives examples of its usage.
-
-### Props
-
-Properties:
- className
- ref 
- href - link destination of the element
- target - link target
- src - Source path (eg Link) of the image
- alt - Alternative text in case image does not load
- title - Title when hovering the image
- ariaLabel
-
-
-style properties:
-`width` - Width of the element
-`height` - Height of the element
-`boxSize` - [`width`, `heigh`]
-
-`maxWidth` - Max width of the box
-`minWidth` - Min width of the box
-`widthRange` - Min and Max width range of the box
-
-`maxHeight` - Max height of the box
-`minHeight` - Min height of the box
-`heightRange` - Min and Max height range of the box
-
-`aspectRatio` - Aspect ratio of the box (1/3, 3/7…)
-`padding` - Inner space of the element
-`margin` - Outer space of the element
-`gap` - Space between children inside the element
-
-`flexFlow` - 
-`flexAlign` - `display: flex`, `alignItems` and `justifyContent`
-
-`flow`
-`flexDirection`
-`alignItems`
-`justifyContent`
-`gap`
-
-`text` - Text value in the element
-`size` - Text size of the element
-
-`direction` - Language direction of the component
-
-    values: `ltr`, `rtl`
-## Important Note
-
-
-
-## License
-
-`@symbo.ls/react-box` is released under the MIT license.
