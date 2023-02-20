@@ -1,7 +1,7 @@
 {
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "2.10.61",
+  "version": "2.10.62",
   "packages": [
     "uikit/*",
     "uikit-react/*",
