@@ -1,5 +1,7 @@
 'use strict'
 
+import { isString } from "@domql/utils"
+
 const parser = new DOMParser()
 
 export const generateSprite = (icons) => {
@@ -16,6 +18,10 @@ export const generateSprite = (icons) => {
 }
 
 const parseRootAttributes = (htmlString) => {
+  if (!isString(htmlString)) {
+    return console.log(`parseRootAttributes: ${htmlString} is not a string`)
+  }
+  
   let match = htmlString.match(/<svg\s+(.*?)>/);
   if (!match || !match[1]) {
     return {};
