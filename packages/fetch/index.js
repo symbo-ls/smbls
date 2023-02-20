@@ -46,13 +46,13 @@ export const fetchProject = async (key, options) => {
 }
 
 export const fetchStateAsync = async (key, options, app) => {
-  const { editor, state } = options
+  const { editor } = options
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-
-    if (isObject(state) && isObject(data.state)) {
-      app.state.update(data.state)
+    const state = editor.serviceRoute === 'state' ? data : data.state
+    if (isObject(state)) {
+      app.state.update(state)
     }
   }
 }
