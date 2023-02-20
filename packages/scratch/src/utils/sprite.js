@@ -19,7 +19,7 @@ export const generateSprite = (icons) => {
 
 const parseRootAttributes = (htmlString) => {
   if (!isString(htmlString)) {
-    return console.log(`parseRootAttributes: ${htmlString} is not a string`)
+    return console.warn(`parseRootAttributes: ${htmlString} is not a string`)
   }
   
   let match = htmlString.match(/<svg\s+(.*?)>/);
