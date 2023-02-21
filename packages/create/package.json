@@ -5,9 +5,6 @@
   "gitHead": "d70332c39d1f0a209c22ad9cc838b026f8110f01",
   "source": "index.js",
   "main": "index.js",
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "@domql/utils": "latest",
     "@symbo.ls/fetch": "latest",
