@@ -14,7 +14,7 @@ import { fetchStateAsync, fetchProject } from '@symbo.ls/fetch'
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
 
-const { SYMBOLS_KEY } = process.env
+const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
 const defaultOptions = {
   editor: {
@@ -71,7 +71,7 @@ export const create = async (App, options = defaultOptions) => {
     state: options.state,
     context: {
       key,
-      components: { ...uikit, ...options.components },
+      components: options.components ? { ...uikit, ...options.components } : uikit,
       state: options.state || {},
       pages: options.pages || {},
       system: designSystem || {},

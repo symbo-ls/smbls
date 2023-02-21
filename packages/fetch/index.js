@@ -25,6 +25,8 @@ export const fetchRemote = async (key, options = defaultOptions) => {
     console.error(e)
   }
 
+  console.log(response.json())
+
   return await response ? response.json() : {}
 }
 
