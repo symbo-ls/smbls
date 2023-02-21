@@ -113,7 +113,7 @@ export const DevFocus = {
 }
 
 function findComponent (el) {
-  if (!el) return
+  if (!el || !el.__ref) return
   if (el.__ref.__componentKey) return el
   return findComponent(el.parent)
 }
