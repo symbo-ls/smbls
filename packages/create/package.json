@@ -5,13 +5,9 @@
   "gitHead": "d70332c39d1f0a209c22ad9cc838b026f8110f01",
   "source": "index.js",
   "main": "index.js",
-  "browser": "dist/index.cjs.js",
   "files": [
     "dist"
   ],
-  "scripts": {
-    "prepublish": "npx esbuild index.js --target=es2020 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
-  },
   "dependencies": {
     "@domql/utils": "latest",
     "@symbo.ls/fetch": "latest",
