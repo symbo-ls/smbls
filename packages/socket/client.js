@@ -46,7 +46,7 @@ export const connect = (key, options = {}) => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
       if (isFunction(options.onError)) options.onError(err, socket)
-      if (tryConnect === tryConnectMax) {
+      if (tryConnect < tryConnectMax) {
         socket.disconnect()
 
         if (ENV === 'test' || ENV === 'development') {
