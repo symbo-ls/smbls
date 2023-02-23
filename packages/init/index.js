@@ -69,7 +69,7 @@ export const init = (config, RC_FILE, options = SET_OPTIONS) => {
 }
 
 export const updateReset = (config, RC_FILE, options = { emotion: defaultEmotion }) => {
-  const resultConfig = mergeWithLocalFile(config, RC_FILE)
+  const resultConfig = mergeWithLocalFile(config || {}, RC_FILE)
   const conf = set({
     verbose: false,
     ...resultConfig
