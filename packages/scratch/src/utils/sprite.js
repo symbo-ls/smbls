@@ -2,8 +2,6 @@
 
 import { isString } from "@domql/utils"
 
-const parser = new DOMParser()
-
 export const generateSprite = (icons) => {
   let sprite =
     '<svg aria-hidden="true" width="0" height="0" style="position:absolute">'
