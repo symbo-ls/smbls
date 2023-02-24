@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-provider",
-  "version": "2.10.71",
+  "version": "2.10.72",
   "homepage": "https://docs.symbols.app/box",
   "license": "MIT",
   "main": "index.js",
@@ -18,5 +18,6 @@
     ">0.2%",
     "not dead",
     "not op_mini all"
-  ]
+  ],
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54"
 }

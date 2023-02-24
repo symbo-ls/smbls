@@ -1,9 +1,9 @@
 {
   "name": "smbls",
-  "version": "2.10.71",
+  "version": "2.10.72",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/scratch",
-  "gitHead": "ec5a64967d8354305eeac87d0d6d39f68c06709c",
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54",
   "source": "index.js",
   "main": "index.js",
   "module": "index.js",

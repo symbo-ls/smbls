@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/cli",
-  "version": "2.10.71",
+  "version": "2.10.72",
   "description": "Fetch your Symbols configuration",
   "main": "bin/fetch.js",
   "author": "Symbols",
@@ -26,5 +26,5 @@
   "standard": {
     "parser": "babel-eslint"
   },
-  "gitHead": "8b5b78b8aa349c4ea8eb648bf815e9f7eb4a0f24"
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54"
 }

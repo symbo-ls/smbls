@@ -1,9 +1,9 @@
 {
   "name": "@symbo.ls/select",
-  "version": "2.10.71",
+  "version": "2.10.72",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "9bf056378fae3b3bad3f059f28c48998172cf5eb",
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54",
   "dependencies": {
     "@symbo.ls/shape": "latest"
   },

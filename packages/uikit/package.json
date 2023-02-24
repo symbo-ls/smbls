@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "2.10.71",
+  "version": "2.10.72",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -42,6 +42,6 @@
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "9bf056378fae3b3bad3f059f28c48998172cf5eb",
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54",
   "source": "src/index.js"
 }

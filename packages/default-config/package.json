@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/default-config",
-  "version": "2.10.71",
+  "version": "2.10.72",
   "source": "src/index.js",
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
     "jsonify": "npx parcel build src/index.js && node bin/json.js"
   },
-  "gitHead": "ec5a64967d8354305eeac87d0d6d39f68c06709c"
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54"
 }
