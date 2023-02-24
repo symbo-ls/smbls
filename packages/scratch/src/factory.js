@@ -31,3 +31,7 @@ export const getActiveConfig = (def) => {
   }
   return FACTORY[def || FACTORY.active]
 }
+
+export const setActiveConfig = (def) => {
+  return FACTORY.active = FACTORY[def]
+}
