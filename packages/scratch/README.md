@@ -37,4 +37,4 @@ Read more at [docs](https://www.docs.symbols.app/design-system)
 
 ### TODO:
 - [ ] Accessibility (WCAG) automated  tests
-- [ ] Scratch on `node`
+- [x] Scratch on `node`
