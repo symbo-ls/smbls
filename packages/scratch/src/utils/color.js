@@ -1,5 +1,6 @@
 'use strict'
 
+import { document, window } from '@domql/globals'
 const ENV = process.env.NODE_ENV
 
 export const colorStringToRgbaArray = color => {
@@ -18,17 +19,19 @@ export const colorStringToRgbaArray = color => {
 
   // convert named colors
   if (color.indexOf('rgb') === -1) {
-    // intentionally use unknown tag to lower chances of css rule override with !important
-    const elem = document.body.appendChild(document.createElement('fictum'))
-    // this flag tested on chrome 59, ff 53, ie9, ie10, ie11, edge 14
-    const flag = 'rgb(1, 2, 3)'
-    elem.style.color = flag
-    // color set failed - some monstrous css rule is probably taking over the color of our object
-    if (elem.style.color !== flag) return
-    elem.style.color = color
-    if (elem.style.color === flag || elem.style.color === '') return // color parse failed
-    color = window.getComputedStyle(elem).color
-    document.body.removeChild(elem)
+    if (document && window) {
+      // intentionally use unknown tag to lower chances of css rule override with !important
+      const elem = document.body.appendChild(document.createElement('fictum'))
+      // this flag tested on chrome 59, ff 53, ie9, ie10, ie11, edge 14
+      const flag = 'rgb(1, 2, 3)'
+      elem.style.color = flag
+      // color set failed - some monstrous css rule is probably taking over the color of our object
+      if (elem.style.color !== flag) return
+      elem.style.color = color
+      if (elem.style.color === flag || elem.style.color === '') return // color parse failed
+      color = window.getComputedStyle(elem).color
+      document.body.removeChild(elem)
+    } else console.warn('Color conversion failed, no document or window object found')
   }
 
   // convert 'rgb(R,G,B)' to 'rgb(R,G,B,A)' which looks awful but will pass the regxep below
