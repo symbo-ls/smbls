@@ -2,4 +2,4 @@
 
 export * from './transform'
 export * from './set'
-export * as registry from './registry'
+export * from './registry'

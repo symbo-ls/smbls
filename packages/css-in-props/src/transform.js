@@ -1,9 +1,9 @@
 'use strict'
 
 import { merge, isFunction, isObject, isArray } from '@domql/utils'
-import { keySetters } from './subProps'
+import { keySetters } from '@symbo.ls/atoms'
 
-import { registry as reg } from '../registry'
+import { registry as reg } from './registry'
 
 export const transformClassname = (props, registry = reg) => {
   const CLASS_NAMES = {}

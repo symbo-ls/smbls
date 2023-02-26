@@ -17,7 +17,6 @@ import {
   Animation
 } from '@symbo.ls/atoms'
 
-
 export const registry = mergeArray([
   Shape,
   Position,
