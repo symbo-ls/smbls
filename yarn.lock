@@ -1071,9 +1071,9 @@
     kuler "^2.0.0"
 
 "@domql/globals@latest":
-  version "2.3.38"
-  resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.38.tgz#d59c43f84f887bcc435c1ea07632cedd76ec52cd"
-  integrity sha512-JKK2HJJxCWxIC/ZB+Tzvjgr8LqtmjizkpR0X+gbl8h/jues+M/GJSEoVxVttXRxuvrErXsv73jSx6bM+vk1lcg==
+  version "2.3.41"
+  resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.41.tgz#b9f275f25e68d58d1567e1eaeefef9a3591feff4"
+  integrity sha512-nIqCrfjnkfamf2FK+T0Nvs/gPucF2yM/fviwEQyUWKkoKM2e/V+nla4Cs9TZPZKZP+fO93TBbLjCzUVFlsPT6g==
 
 "@domql/registry@latest":
   version "2.3.23"
@@ -1095,14 +1095,14 @@
     "@domql/utils" latest
 
 "@domql/tags@latest":
-  version "2.3.38"
-  resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.38.tgz#b369b883f033f084f61679dd39cba1fca36aa006"
-  integrity sha512-nfTmQiZnYT/Tl7+gP8LrFN6nL89f8A8KN02uZAiYur+wegkygpIPStuIYBij2M+xuEeNa1mNXjZrQveQq9aI5w==
+  version "2.3.41"
+  resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.41.tgz#a027acdb52de31e2e6b2dc123ce524f0e125254d"
+  integrity sha512-UoD+9xIOkBrm1GNibMab+s9KPfTIBbV4dtI+YTzb3NlvCamwrMvjGYdatkGxDKhxLI3s0fIFt9PrJDSAfYfRQg==
 
 "@domql/utils@^2.3.14", "@domql/utils@latest":
-  version "2.3.38"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.38.tgz#9d9d8b236e1edc5095516cf3e391e8fa057c89da"
-  integrity sha512-g3zK1lGxj/3EWfkYllGPB5kyQoMBjhrzup7UVIHUyWx8DdmuqrCQcdaMt8oU/SSPvcOMKCElEtDsngV99CCxxA==
+  version "2.3.40"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.40.tgz#cb049ca0fe9981e064fde354d973914bdf36043c"
+  integrity sha512-+YG79lyuhTLaHFzA6gqwSLw4v/8y9nIzRjIINwzJiVwlAB7/coa1lbpJt0UdiHe//YD81rKDsndFJOf9BMsSwg==
   dependencies:
     "@domql/globals" latest
     "@domql/tags" latest
@@ -3021,10 +3021,10 @@
     "@symbo.ls/icon" latest
     "@symbo.ls/shape" latest
 
-"@symbo.ls/default-config@^2.10.75", "@symbo.ls/default-config@latest":
-  version "2.10.75"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/default-config/-/default-config-2.10.75.tgz#e28db11ebc603fe3f526a405e7041086b0e49b02"
-  integrity sha512-wjvNXDqFxg9Wp86Ob+0iYPbgX0JbVr7CtZ8eIkPtHqxJlKtHEdn3DG77WwFU3PA3fWsCOo5lw+cOyqIKd2+VkA==
+"@symbo.ls/default-config@latest":
+  version "2.10.76"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/default-config/-/default-config-2.10.76.tgz#bcc0338cf6a0a69de75adae10e43b6d0be75734b"
+  integrity sha512-U0WRNXynjgeoF1wSW6sN141VCv0Pd/MgHrf0lk9yJ9/X+cSO1Cfju9aXF+WrS69ypHDAIV3otHu2i5H1h3S8jA==
 
 "@symbo.ls/direction@latest":
   version "1.1.5"
@@ -3149,6 +3149,14 @@
     "@symbo.ls/button" latest
     "@symbo.ls/scratch" latest
 
+"@symbo.ls/react-atoms@latest":
+  version "2.10.79"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/react-atoms/-/react-atoms-2.10.79.tgz#82cc7138008ec1bb622e377b61e5492c48258c4e"
+  integrity sha512-2HlyqCXFqL+uxfzRK4qPiDbr1+X9ywW5dCcLkyzmE/xo9CS0YQVfWsnr1DP5nAO5AjySMGj6X6yP3s7Go899tA==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    css-in-props latest
+
 "@symbo.ls/react-box@latest":
   version "2.10.74"
   resolved "https://registry.yarnpkg.com/@symbo.ls/react-box/-/react-box-2.10.74.tgz#36670809f24bf913b06a7a3b847602ada24a41c2"
@@ -3156,6 +3164,14 @@
   dependencies:
     "@babel/runtime" "^7.11.2"
     css-in-props latest
+
+"@symbo.ls/react-icon-text@latest":
+  version "2.10.79"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/react-icon-text/-/react-icon-text-2.10.79.tgz#df8465dd64fdcd23c1fab3f1f448da853c4f3fc9"
+  integrity sha512-5wdULRsEbxaPtBTq37WfbtZk2MHmdI5KQQGssU6H7VolfD+YkFBxCyyVWkwP86OnkRh7I4TS8nv08DPAZrVv3g==
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    "@symbo.ls/react-atoms" latest
 
 "@symbo.ls/react-provider@latest":
   version "2.10.74"
@@ -3422,9 +3438,9 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@*", "@types/node@>=10.0.0":
-  version "18.14.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.1.tgz#90dad8476f1e42797c49d6f8b69aaf9f876fc69f"
-  integrity sha512-QH+37Qds3E0eDlReeboBxfHbX9omAcBCXEzswCu6jySP642jiM3cYSIkU/REqwhCUqXdonHFuBfJDiAJxMNhaQ==
+  version "18.14.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.2.tgz#c076ed1d7b6095078ad3cf21dfeea951842778b1"
+  integrity sha512-1uEQxww3DaghA0RxqHx0O0ppVlo43pJhepY51OxuQIKHpjbnYLA7vcdwioNPzIqmC2u3I/dmylcqjlh0e7AyUA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -5867,9 +5883,9 @@ copy-descriptor@^0.1.0:
   integrity sha512-XgZ0pFcakEUlbwQEVNg3+QAis1FyTL3Qel9FYy8pSkQqoG3PNoT0bOCQtOXcOkur21r2Eq2kI+IE+gsmAEVlYw==
 
 core-js-compat@^3.25.1:
-  version "3.28.0"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.28.0.tgz#c08456d854608a7264530a2afa281fadf20ecee6"
-  integrity sha512-myzPgE7QodMg4nnd3K1TDoES/nADRStM8Gpz0D6nhkwbmwEnE0ZGJgoWsvQ722FR8D7xS0n0LV556RcEicjTyg==
+  version "3.29.0"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.29.0.tgz#1b8d9eb4191ab112022e7f6364b99b65ea52f528"
+  integrity sha512-ScMn3uZNAFhK2DGoEfErguoiAHhV2Ju+oJo/jK08p7B3f3UhocUrCCkTvnZaiS+edl5nlIoiBXKcwMc6elv4KQ==
   dependencies:
     browserslist "^4.21.5"
 
@@ -6062,11 +6078,12 @@ css-in-props@^0.10.2:
     "@emotion/css" "^11.10.5"
 
 css-in-props@latest:
-  version "2.10.74"
-  resolved "https://registry.yarnpkg.com/css-in-props/-/css-in-props-2.10.74.tgz#88bdfc46ecb79dbaccefe9c3e12ad68424eb3c5a"
-  integrity sha512-ThGCz+YKz1F8IizmFDLYx+yfcuylCc7gNe1T1RhK0YDW6DVpjRZ3FlQ38qUv5KyMXZWmbhpYCNFPSHZcefdcew==
+  version "2.10.79"
+  resolved "https://registry.yarnpkg.com/css-in-props/-/css-in-props-2.10.79.tgz#4ef82a0d85fb83caf1e85a1e2705131fa8b2bf2e"
+  integrity sha512-157xrA6rn5WmCVyjjSkyYgHz36FeZWfnsPUpqtSWAX66e4K7uS2GAbscFpgl69I64WX3vej2WMyW+mEcpaKN1A==
   dependencies:
     "@domql/utils" latest
+    "@symbo.ls/atoms" latest
     "@symbo.ls/emotion" latest
     "@symbo.ls/scratch" latest
 
@@ -15176,6 +15193,21 @@ smart-buffer@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.2.0.tgz#6e1d71fa4f18c05f7d0ff216dd16a481d0e8d9ae"
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
+
+smbls@latest:
+  version "2.10.74"
+  resolved "https://registry.yarnpkg.com/smbls/-/smbls-2.10.74.tgz#910bb34ea461d78108b3591e54ea34847d202966"
+  integrity sha512-/rPHelqXaR6gGvqZRylUZyhz7CiiflMVTziYtR2ThPIlMzlk0yQQk49uVggoHRBPR4N/b8hC9lYLujbnwJT8rA==
+  dependencies:
+    "@symbo.ls/cli" latest
+    "@symbo.ls/create" latest
+    "@symbo.ls/default-config" latest
+    "@symbo.ls/init" latest
+    "@symbo.ls/scratch" latest
+    "@symbo.ls/socket-ui" latest
+    "@symbo.ls/uikit" latest
+    css-in-props latest
+    domql latest
 
 snapdragon-node@^2.0.1:
   version "2.1.1"
