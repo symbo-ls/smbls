@@ -11,6 +11,7 @@
   "dependencies": {
     "@domql/utils": "latest",
     "@symbo.ls/emotion": "latest",
+    "@symbo.ls/atoms": "latest",
     "@symbo.ls/scratch": "latest"
   },
   "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54"
