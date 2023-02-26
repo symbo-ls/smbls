@@ -6,6 +6,10 @@
   "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54",
   "dependencies": {
     "@symbo.ls/react-box": "latest",
+    "@symbo.ls/react-atoms": "latest",
+    "@symbo.ls/react-icon": "latest",
+    "@symbo.ls/react-icon-text": "latest",
+    "@symbo.ls/react-button": "latest",
     "@symbo.ls/react-provider": "latest",
     "domql": "latest",
     "smbls": "latest"
