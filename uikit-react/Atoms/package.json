@@ -30,5 +30,8 @@
     "not dead",
     "not op_mini all"
   ],
-  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54"
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54",
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
+  }
 }

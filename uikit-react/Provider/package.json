@@ -7,7 +7,8 @@
   "module": "index.js",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@symbo.ls/init": "latest"
+    "@symbo.ls/init": "latest",
+    "@symbo.ls/config-default": "latest"
   },
   "peerDependencies": {
     "react": "^18.2.0",

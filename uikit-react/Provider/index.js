@@ -9,10 +9,8 @@ const context = React.createContext({ config: {} })
 const Provider = context.Provider
 
 export const SymbolsProvider = ({ config, children }) => {
-  const defaultConfig = config || CONFIG_DEFAULT
-
   React.useEffect(() => {
-    init(defaultConfig)
+    init(config)
   }, []) 
 
   return React.createElement(
