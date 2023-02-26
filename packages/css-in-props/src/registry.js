@@ -31,4 +31,4 @@ export const registry = mergeArray([
   Interaction,
   XYZ,
   Animation
-])
+]).class

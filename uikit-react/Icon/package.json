@@ -1,0 +1,16 @@
+{
+  "name": "@symbo.ls/react-icon",
+  "version": "2.10.74",
+  "homepage": "https://docs.symbols.app/icon",
+  "main": "index.jsx",
+  "module": "index.jsx",
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@symbo.ls/react-atoms": "latest"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54"
+}
