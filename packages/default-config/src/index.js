@@ -19,7 +19,8 @@ export const DEFAULT_CONFIG = {
   ICONS: {},
   MEDIA: {},
   DEVICES: {},
-  CASES: {}
+  CASES: {},
+  SVG: {} // TODO: Check with @nikoloza on this
 }
 
 export default DEFAULT_CONFIG
