@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-icon",
-  "version": "2.10.74",
+  "version": "2.10.79",
   "homepage": "https://docs.symbols.app/icon",
   "main": "index.jsx",
   "module": "index.jsx",
