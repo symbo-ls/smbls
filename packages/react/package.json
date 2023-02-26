@@ -5,15 +5,17 @@
   "license": "MIT",
   "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
     "@symbo.ls/react-box": "latest",
-    "@symbo.ls/react-provider": "latest"
-  },
-  "peerDependencies": {
+    "@symbo.ls/react-provider": "latest",
+    "smbls": "latest",
     "domql": "latest"
   },
   "devDependencies": {
     "@symbo.ls/convert": "latest"
+  },
+  "peerDependencies": {
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
   },
   "source": "src/index.js"
 }
