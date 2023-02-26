@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/default-config",
-  "version": "2.10.76",
+  "version": "2.10.86",
   "source": "src/index.js",
   "main": "src/index.js",
   "license": "MIT",

@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-checkbox",
-  "version": "2.10.79",
+  "version": "2.10.86",
   "homepage": "https://docs.symbols.app/checkbox",
   "main": "index.jsx",
   "module": "index.jsx",
