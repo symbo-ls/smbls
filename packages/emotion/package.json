@@ -21,5 +21,5 @@
     "parser": "babel-eslint"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "95d80dfe4570094c1f17f73ef1e2729397c4ad54"
+  "gitHead": "ce9e1f536e8de4d2a78c4528678e1c8c486383f4"
 }
