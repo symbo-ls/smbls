@@ -8,8 +8,8 @@
     "@symbo.ls/react-atoms": "latest"
   },
   "peerDependencies": {
-    "react": ">=16.9.0",
-    "react-dom": ">=16.9.0"
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
   },
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6",
   "devDependencies": {
