@@ -3,7 +3,7 @@
   "version": "2.10.95",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "8b056d3d4060ae0d7e19d8a37da2c2f6afd1004e",
+  "gitHead": "e0f557ca2ea64fc63d5205758cb9bbf28a390c9d",
   "dependencies": {
     "@domql/utils": "latest",
     "@symbo.ls/create-emotion": "latest",
