@@ -1,20 +1,6 @@
 {
   "name": "@symbo.ls/react-atoms",
   "version": "2.10.90",
-  "description": "React Box",
-  "keywords": [
-    "@symbo.ls/react-box"
-  ],
-  "homepage": "https://docs.symbols.app/atoms",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "license": "MIT",
-  "files": [
-    "dist",
-    "lib"
-  ],
   "main": "index.js",
   "module": "index.js",
   "dependencies": {
@@ -24,14 +10,5 @@
   "peerDependencies": {
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
-  ],
-  "gitHead": "ed08769321226d86a9ccb66a103c7812cd9335d0",
-  "devDependencies": {
-    "@babel/core": "^7.12.0"
   }
 }

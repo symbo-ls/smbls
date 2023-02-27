@@ -1,7 +1,6 @@
 {
   "name": "@symbo.ls/react-button",
   "version": "2.10.90",
-  "homepage": "https://docs.symbols.app/button",
   "main": "index.jsx",
   "module": "index.jsx",
   "dependencies": {
@@ -13,6 +12,9 @@
   "peerDependencies": {
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
   },
   "gitHead": "ed08769321226d86a9ccb66a103c7812cd9335d0"
 }

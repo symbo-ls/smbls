@@ -1,8 +1,6 @@
 {
   "name": "@symbo.ls/react-provider",
   "version": "2.10.90",
-  "homepage": "https://docs.symbols.app/box",
-  "license": "MIT",
   "main": "index.js",
   "module": "index.js",
   "dependencies": {
@@ -15,10 +13,5 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
-  ],
   "gitHead": "ed08769321226d86a9ccb66a103c7812cd9335d0"
 }
