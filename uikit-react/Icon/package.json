@@ -12,7 +12,7 @@
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
-  "gitHead": "9adee05a03e1462bd99ea4f29a1c7f61726109a1",
+  "gitHead": "ed08769321226d86a9ccb66a103c7812cd9335d0",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }

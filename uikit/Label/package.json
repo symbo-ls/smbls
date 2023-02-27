@@ -3,7 +3,7 @@
   "version": "2.10.90",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "9adee05a03e1462bd99ea4f29a1c7f61726109a1",
+  "gitHead": "ed08769321226d86a9ccb66a103c7812cd9335d0",
   "dependencies": {
     "@symbo.ls/block": "latest",
     "@symbo.ls/shape": "latest",
