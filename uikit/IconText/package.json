@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/icon-text",
-  "version": "2.10.94",
+  "version": "2.10.95",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {

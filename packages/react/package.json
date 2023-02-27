@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.10.96",
+  "version": "2.10.95",
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
@@ -10,9 +10,9 @@
     "@symbo.ls/react-provider": "latest"
   },
   "peerDependencies": {
+    "domql": "latest",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "domql": "latest",
     "smbls": "latest"
   }
 }
