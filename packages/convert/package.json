@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/convert",
-  "version": "2.10.97",
+  "version": "2.10.101",
   "license": "MIT",
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6",
   "source": "index.js",
   "main": "index.js",
   "dependencies": {
-    "domql-to-mitosis": "latest",
-    "@symbo.ls/create": "latest"
+    "@symbo.ls/create": "latest",
+    "domql-to-mitosis": "latest"
   }
 }
