@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-atoms",
-  "version": "2.10.91",
+  "version": "2.10.92",
   "main": "index.js",
   "module": "index.js",
   "dependencies": {
