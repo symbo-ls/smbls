@@ -12,9 +12,6 @@
     "index.js",
     "dist"
   ],
-  "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
-  },
   "dependencies": {
     "@symbo.ls/cli": "latest",
     "@symbo.ls/create": "latest",
