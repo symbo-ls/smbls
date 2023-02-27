@@ -11,7 +11,7 @@
     "@symbo.ls/react-box": "latest",
     "@symbo.ls/react-button": "latest",
     "@symbo.ls/react-icon": "latest",
-    "@symbo.ls/react-icon-set": "latest",
+    "@symbo.ls/react-icon-text": "latest",
     "@symbo.ls/react-provider": "latest",
     "smbls": "latest"
   },
