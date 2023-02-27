@@ -1,21 +1,19 @@
 "use strict"
 
 import React from "react"
-import CONFIG_DEFAULT from '@symbo.ls/config-default'
+import DEFAULT_CONFIG from '@symbo.ls/default-config'
 import { init } from "@symbo.ls/init"
 
 const context = React.createContext({ config: {} })
 
 const Provider = context.Provider
 
-export const SymbolsProvider = ({ config, children }) => {
-  React.useEffect(() => {
-    init(config || CONFIG_DEFAULT)
-  }, []) 
+export const SymbolsProvider = ({ system, children }) => {
+  system = init(system || DEFAULT_CONFIG)
 
   return React.createElement(
     Provider,
-    { value: { config: config } },
+    { value: { system } },
     children
   )
 }

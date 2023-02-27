@@ -5,7 +5,7 @@
   "module": "index.js",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@symbo.ls/config-default": "latest",
+    "@symbo.ls/default-config": "latest",
     "@symbo.ls/init": "latest"
   },
   "peerDependencies": {

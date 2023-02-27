@@ -16,7 +16,7 @@ export const transformClassname = (props, registry = reg) => {
 
     if (setter) setter(key, props[key], CLASS_NAMES)
     else if (isFunction(hasCSS)) {
-      const stack = hasCSS(props)
+      const stack = hasCSS({ props, context: {} })
       const exec = isArray(stack) ? stack.reduce((a, c) => {
         return merge(a, c)
       }, {}) : stack

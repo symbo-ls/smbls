@@ -1,11 +1,13 @@
 {
   "name": "@symbo.ls/react-atoms",
   "version": "2.10.111",
-  "main": "index.js",
+  "main": "dist/index.cjs.js",
   "module": "index.js",
+  "type": "module",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "css-in-props": "latest"
+    "css-in-props": "latest",
+    "@symbo.ls/react-box": "latest"
   },
   "peerDependencies": {
     "react": "^17.0.0",

@@ -4,10 +4,9 @@ import React from "react"
 import { Button as D } from "@symbo.ls/button"
 import { IconText } from "@symbo.ls/react-icon-text"
 
-const Button = (props) => (<IconText tag="button" {...props}>
+export const Button = (props) => (<IconText tag="button" {...props}>
   {props.children}
 </IconText>)
 
 Button.defaultProps = D.props
  
-export default Button
