@@ -1,22 +1,18 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.10.94",
+  "version": "2.10.96",
   "main": "index.js",
+  "source": "index.js",
   "license": "MIT",
-  "gitHead": "c03360706a6a6a953fdf2f24abf26e77d69bf3ef",
+  "gitHead": "8b056d3d4060ae0d7e19d8a37da2c2f6afd1004e",
   "dependencies": {
-    "@symbo.ls/react-atoms": "latest",
     "@symbo.ls/react-box": "latest",
-    "@symbo.ls/react-button": "latest",
-    "@symbo.ls/react-icon": "latest",
-    "@symbo.ls/react-icon-text": "latest",
-    "@symbo.ls/react-provider": "latest",
-    "domql": "latest",
-    "smbls": "latest"
+    "@symbo.ls/react-provider": "latest"
   },
   "peerDependencies": {
-    "react": ">=16.9.0",
-    "react-dom": ">=16.9.0"
-  },
-  "source": "src/index.js"
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "domql": "latest",
+    "smbls": "latest"
+  }
 }

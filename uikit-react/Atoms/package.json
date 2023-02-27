@@ -1,7 +1,6 @@
 {
-  "name": "@symbo.ls/react-box",
-  "version": "2.10.94",
-  "license": "MIT",
+  "name": "@symbo.ls/react-atoms",
+  "version": "2.10.93",
   "main": "index.js",
   "module": "index.js",
   "dependencies": {
@@ -12,8 +11,5 @@
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
-  "devDependencies": {
-    "@babel/core": "^7.12.0"
-  },
-  "gitHead": "8b056d3d4060ae0d7e19d8a37da2c2f6afd1004e"
+  "gitHead": "c03360706a6a6a953fdf2f24abf26e77d69bf3ef"
 }
