@@ -12,8 +12,5 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
   },
-  "devDependencies": {
-    "@babel/core": "^7.12.0"
-  },
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6"
 }
