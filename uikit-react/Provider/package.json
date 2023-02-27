@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-provider",
-  "version": "2.10.93",
+  "version": "2.10.94",
   "main": "index.js",
   "module": "index.js",
   "dependencies": {
