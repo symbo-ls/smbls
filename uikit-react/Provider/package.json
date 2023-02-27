@@ -1,0 +1,17 @@
+{
+  "name": "@symbo.ls/react-provider",
+  "version": "2.10.97",
+  "main": "index.js",
+  "module": "index.js",
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "@symbo.ls/config-default": "latest",
+    "@symbo.ls/init": "latest"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
+  },
+  "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6"
+}
