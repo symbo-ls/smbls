@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.10.102",
+  "version": "2.10.103",
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
@@ -9,9 +9,9 @@
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/react-atoms": "latest",
     "@symbo.ls/react-box": "latest",
+    "@symbo.ls/react-button": "latest",
     "@symbo.ls/react-icon": "latest",
     "@symbo.ls/react-icon-set": "latest",
-    "@symbo.ls/react-button": "latest",
     "@symbo.ls/react-provider": "latest",
     "smbls": "latest"
   },
