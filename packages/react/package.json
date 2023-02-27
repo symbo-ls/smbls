@@ -6,7 +6,12 @@
   "license": "MIT",
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6",
   "dependencies": {
+    "@symbo.ls/atoms": "latest",
+    "@symbo.ls/react-atoms": "latest",
     "@symbo.ls/react-box": "latest",
+    "@symbo.ls/react-icon": "latest",
+    "@symbo.ls/react-icon-set": "latest",
+    "@symbo.ls/react-button": "latest",
     "@symbo.ls/react-provider": "latest",
     "smbls": "latest"
   },
