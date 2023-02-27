@@ -6,6 +6,7 @@
   "source": "index.js",
   "main": "index.js",
   "dependencies": {
+    "domql-to-mitosis": "latest",
     "@symbo.ls/create": "latest"
   }
 }
