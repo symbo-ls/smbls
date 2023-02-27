@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-box",
-  "version": "2.10.89",
+  "version": "2.10.90",
   "description": "React Box",
   "keywords": [
     "@symbo.ls/react-box"
@@ -30,5 +30,5 @@
     "not dead",
     "not op_mini all"
   ],
-  "gitHead": "a9ece39cfab7f0dfc350833a407ff0a9682758ff"
+  "gitHead": "9adee05a03e1462bd99ea4f29a1c7f61726109a1"
 }
