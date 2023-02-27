@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-icon",
-  "version": "2.10.90",
+  "version": "2.10.91",
   "main": "index.jsx",
   "module": "index.jsx",
   "dependencies": {
