@@ -12,14 +12,6 @@
   "dependencies": {
     "@emotion/css": "^11.10.0"
   },
-  "devDependencies": {
-    "@babel/core": "^7.18.10",
-    "babel-eslint": "^10.1.0",
-    "standard": "^13.1.0"
-  },
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6"
 }

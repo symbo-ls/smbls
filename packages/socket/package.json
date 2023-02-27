@@ -17,17 +17,5 @@
     "socket.io": "^4.5.2",
     "socket.io-client": "^4.5.2"
   },
-  "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^7.12.1",
-    "nodemon": "^2.0.20",
-    "np": "^7.6.0",
-    "standard": "^16.0.1"
-  },
-  "standard": {
-    "parser": "babel-eslint"
-  },
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6"
 }
