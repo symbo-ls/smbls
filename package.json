@@ -2,10 +2,6 @@
   "private": true,
   "scripts": {
     "postinstall": "yarn clean:package-modules",
-    "start": "parcel showcase/index.html",
-    "prebuild": "rm -rf dist .parcel-cache",
-    "build": "npx parcel build index.js",
-    "build:all": "lerna exec -- npx parcel build index.js",
     "test:lint": "npx standard \"packages/**/*.js\"",
     "test": "echo running all tests is not supported, maybe run: \"yarn test:lint\"",
     "publish:all": "yarn build:all && lerna publish",
@@ -23,8 +19,6 @@
     "babel-eslint": "^10.1.0",
     "esbuild": "^0.17.3",
     "lerna": "^6.0.1",
-    "parcel": "^2.7.0",
-    "parcel-plugin-svg-sprite": "^1.4.1",
     "standard": "^17.0.0"
   },
   "standard": {

@@ -5,27 +5,6 @@
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6",
   "source": "index.js",
   "main": "index.js",
-  "targets": {
-    "main": {
-      "context": "browser",
-      "outputFormat": "commonjs",
-      "includeNodeModules": true
-    }
-  },
-  "files": [
-    "dynamic.json",
-    "README.md"
-  ],
-  "scripts": {
-    "prebuild": "rm -rf dist .parcel-cache",
-    "build": "parcel build index.js",
-    "build:watch": "nodemon --exec \"yarn build\" --ignore 'dist/*' --watch ..",
-    "test:lint": "npx standard \"packages/**/*.js\"",
-    "test": "echo running all tests is not supported, maybe run: \"yarn test:lint\"",
-    "push": "echo push is not yet supported",
-    "push:version": "npm version patch && npm publish && git push origin --tags && git push",
-    "clean": "rm -rf dist node_modules yarn.lock .parcel-cache yarn-error.log"
-  },
   "dependencies": {
     "@domql/utils": "latest",
     "@symbo.ls/default-config": "latest",
