@@ -4,8 +4,5 @@
   "source": "src/index.js",
   "main": "src/index.js",
   "license": "MIT",
-  "scripts": {
-    "jsonify": "npx parcel build src/index.js && node bin/json.js"
-  },
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6"
 }

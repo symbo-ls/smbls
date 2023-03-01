@@ -8,7 +8,7 @@ import { exec } from 'child_process'
 import { program } from './program.js'
 
 const PACKAGE_PATH = process.cwd() + '/package.json'
-const RC_PATH = process.cwd() + '/.symbolsrc.json'
+const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
 const DEFAULT_REMOTE_CONFIG_PATH = 'https://raw.githubusercontent.com/symbo-ls/default-config/main/src/config.json'
@@ -73,7 +73,7 @@ program
     console.log('')
     console.log(chalk.bold('Symbols'), 'config fetched:', chalk.green(version))
 
-    console.log(chalk.dim('- .symbolsrc.json created:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
+    console.log(chalk.dim('- symbols.json created:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
     console.log('')
 
     const bodyString = JSON.stringify(body)

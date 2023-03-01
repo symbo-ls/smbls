@@ -6,11 +6,11 @@ import { loadModule } from './require.js'
 
 console.log(asd)
 
-const RC_PATH = process.cwd() + '/.symbolsrc.json'
+const RC_PATH = process.cwd() + '/symbols.json'
 let rc = {}
 try {
   rc = loadModule(RC_PATH) // eslint-disable-line
-} catch (e) { console.error('Please include .symbolsrc.json to your root of respository') }
+} catch (e) { console.error('Please include symbols.json to your root of respository') }
 
 program
   .command('sync')
