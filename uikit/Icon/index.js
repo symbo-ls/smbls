@@ -16,7 +16,8 @@ export const Icon = {
     if (props.active) {
       activeIconName = props['.active'].name || props['.active'].icon
     }
-    if (parent.props.active && parent.props['.active'] && parent.props['.active'].icon) {
+    if (parent && parent.props &&
+        parent.props.active && parent.props['.active'] && parent.props['.active'].icon) {
       activeIconName = parent.props['.active'].icon.name || parent.props['.active'].icon.icon || parent.props['.active'].icon
     }
 
