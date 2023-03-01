@@ -11,8 +11,8 @@
     "@symbo.ls/react-icon": "latest"
   },
   "peerDependencies": {
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "gitHead": "fc271035279a35a205161a3fd609a0f294007c18"
 }

@@ -9,8 +9,8 @@
     "@symbo.ls/init": "latest"
   },
   "peerDependencies": {
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-scripts": "5.0.1"
   },
   "gitHead": "45621d188b1b0c02eeb0b1b833356867a345d073"

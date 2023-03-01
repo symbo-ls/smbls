@@ -1,19 +1,55 @@
 "use strict"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import DEFAULT_CONFIG from '@symbo.ls/default-config'
 import { init } from "@symbo.ls/init"
+import { fetchStateAsync } from "@symbo.ls/fetch"
 
-const context = React.createContext({ config: {} })
+const DEFAULT_PROPS = {
+  editor: {
+    remote: true,
+    async: true,
+    serviceRoute: 'state',
+    endpoint: 'api.symbols.app'
+  },
+  state: {},
+  pages: {},
+  designSystem: {
+    useReset: true,
+    useVariable: true,
+    useIconSprite: true,
+    useSvgSprite: true,
+    useFontImport: true
+  },
+  components: {},
+  snippets: {}
+}
 
-const Provider = context.Provider
+export const SymbolsContext = React.createContext(DEFAULT_PROPS)
 
-export const SymbolsProvider = ({ system, children }) => {
-  system = init(system || DEFAULT_CONFIG)
+export const SymbolsProvider = (options = DEFAULT_PROPS) => {
+  const { appKey, children } = options
+  console.log(useState)
+
+  const designSystem = init(options.designSystem || DEFAULT_CONFIG)
+  // const [state, setStaste] = useState(options.state || {})
+
+
+  const { Provider } = SymbolsContext
+
+  if (appKey && options.editor) {
+    try {
+      if (options.editor.async) fetchStateAsync(appKey, options, (data) => {
+        setStaste(data)
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   return React.createElement(
     Provider,
-    { value: { system } },
+    { value: { designSystem } },
     children
   )
 }

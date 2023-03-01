@@ -90,7 +90,9 @@ export const create = async (App, options = defaultOptions) => {
 
   if (key && options.editor) {
     try {
-      if (options.editor.async) fetchStateAsync(key, options, domqlApp)
+      if (options.editor.async) fetchStateAsync(key, options, (data) => {
+        domqlApp.state.update(data)
+      })
     } catch (e) {
       console.error(e)
     }
