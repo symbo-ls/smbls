@@ -1,19 +1,19 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.10.112",
+  "version": "2.10.113",
   "main": "dist/index.cjs.js",
   "source": "index.js",
   "license": "MIT",
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6",
   "dependencies": {
-    "smbls": "latest",
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/react-provider": "latest",
     "@symbo.ls/react-atoms": "latest",
     "@symbo.ls/react-box": "latest",
     "@symbo.ls/react-button": "latest",
     "@symbo.ls/react-icon": "latest",
-    "@symbo.ls/react-icon-text": "latest"
+    "@symbo.ls/react-icon-text": "latest",
+    "@symbo.ls/react-provider": "latest",
+    "smbls": "latest"
   },
   "scripts": {
     "prepublish": "npx esbuild index.js --target=es2020 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js --bundle --loader:.js=jsx"
