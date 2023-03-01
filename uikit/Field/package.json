@@ -5,7 +5,7 @@
   "license": "MIT",
   "gitHead": "3b05c0bf32f23dbe57637f41ae23a19248ea52f6",
   "dependencies": {
-    "@symbo.ls/icon-text": "latest",
+    "@symbo.ls/icon": "latest",
     "@symbo.ls/input": "latest",
     "@symbo.ls/scratch": "latest"
   },
