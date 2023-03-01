@@ -54,8 +54,7 @@ export const IconText = {
 
   icon: {
     extend: Icon,
-    if: ({ parent }) => parent.props.icon,
-    props: 'match'
+    if: ({ props }, s) => props.icon
   },
 
   text: ({ props }) => props.text
