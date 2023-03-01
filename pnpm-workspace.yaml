@@ -1,4 +1,0 @@
-packages:
-  - 'packages/*'
-  - 'uikit/*'
-  - 'uikit-reactpnpm-workspace.yaml/*'
