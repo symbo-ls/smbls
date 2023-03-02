@@ -13,7 +13,7 @@ const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
 const DEFAULT_REMOTE_CONFIG_PATH = 'https://raw.githubusercontent.com/symbo-ls/default-config/main/src/config.json'
 
-const API_URL = 'https://api.symbols.app/' // eslint-disable-line
+const API_URL = 'https://api.symbols.dev/' // eslint-disable-line
 
 const pkg = loadModule(PACKAGE_PATH)
 const rc_file = loadModule(RC_PATH) // eslint-disable-line
@@ -58,9 +58,10 @@ program
       console.log('\n')
       console.log(chalk.green.bold(packageName), 'successfuly added!')
       console.log('')
-      console.log(chalk.dim('Now you can import components like:'), `import { Button } from "${chalk.green.bold(packageName)}"`)
+      console.log(chalk.dim('Now you can import components like:'), `import { Button } from 'smbls`)
     })
   })
+
 program
   .command('fetch [destination]')
   .description('Fetch symbols')
