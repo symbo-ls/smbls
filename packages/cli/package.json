@@ -24,11 +24,7 @@
     "node-fetch": "^3.1.0",
     "v8-compile-cache": "^2.3.0"
   },
-<<<<<<< HEAD
-  "gitHead": "e63f6ed1f627503b49ca79e9cbfe7f0c9d179d89"
-=======
   "standard": {
     "parser": "babel-eslint"
-  },
->>>>>>> 0ed3efb8 (cli convert now Just Works)
+  }
 }
