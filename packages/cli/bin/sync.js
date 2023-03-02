@@ -4,8 +4,6 @@ import * as asd from '@symbo.ls/socket/client.js'
 import { program } from './program.js'
 import { loadModule } from './require.js'
 
-console.log(asd)
-
 const RC_PATH = process.cwd() + '/symbols.json'
 let rc = {}
 try {
@@ -21,7 +19,6 @@ program
     rc.then(data => {
       const opts = { ...data, ...options }
       const key = rc.key || options.key
-      console.log(opts)
       asd.connect(key, {
         socketUrl: 'socket.symbols.app',
         onConnect: (id, socket) => {
