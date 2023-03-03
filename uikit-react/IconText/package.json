@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-icon-text",
-  "version": "2.10.119",
+  "version": "2.10.120",
   "main": "dist/index.cjs.js",
   "module": "index.jsx",
   "type": "module",

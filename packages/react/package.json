@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.10.119",
+  "version": "2.10.120",
   "main": "dist/index.cjs.js",
   "source": "index.js",
   "license": "MIT",
