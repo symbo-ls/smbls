@@ -1,6 +1,6 @@
 'use strict'
 
-import { FACTORY, getActiveConfig } from './factory' // eslint-disable-line no-unused-vars
+import { FACTORY, getActiveConfig } from './factory.js' // eslint-disable-line no-unused-vars
 import {
   setColor,
   setGradient,

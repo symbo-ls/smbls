@@ -37,3 +37,5 @@ node_modules
 dist
 
 .DS_Store
+
+.smbls_convert_tmp

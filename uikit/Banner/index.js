@@ -6,8 +6,10 @@ import { AvatarBundle } from '@symbo.ls/avatar'
 import { styleParentMode } from './style'
 
 export const ParentMode = {
-  round: 10,
-  theme: 'purple',
+  props: {
+    round: 10,
+    theme: 'purple',
+  },
   style: styleParentMode,
   icon: {
     extend: Icon,

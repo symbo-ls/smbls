@@ -1,6 +1,6 @@
 'use strict'
 
-export * from './factory'
+export * from './factory.js'
 export * from './utils'
-export * from './set'
+export * from './set.js'
 export * from './defaultConfig'

@@ -1,6 +1,6 @@
 'use strict'
 
-import { getActiveConfig } from '../factory'
+import { getActiveConfig } from '../factory.js'
 import { getMediaTheme } from '.'
 import { deepMerge, merge } from '@domql/utils' // eslint-disable-line no-unused-vars
 

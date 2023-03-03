@@ -1,6 +1,6 @@
 'use strict'
 
-import { getActiveConfig } from '../factory'
+import { getActiveConfig } from '../factory.js'
 import { isObjectLike } from '@domql/utils'
 
 const ENV = process.env.NODE_ENV // eslint-disable-line

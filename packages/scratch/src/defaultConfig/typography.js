@@ -1,6 +1,6 @@
 'use strict'
 
-import { SEQUENCE } from './sequence'
+import { SEQUENCE } from './sequence.js'
 
 const defaultProps = {
   browserDefault: 16,

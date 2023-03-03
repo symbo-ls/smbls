@@ -2,7 +2,7 @@
 
 import { document } from '@domql/globals'
 import { generateSprite, convertSvgToSymbol } from "../utils"
-import { getActiveConfig } from '../factory'
+import { getActiveConfig } from '../factory.js'
 
 const DEF_OPTIONS = {
   document: document
