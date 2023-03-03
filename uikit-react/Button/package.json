@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-button",
-  "version": "2.10.120",
+  "version": "2.10.121",
   "main": "dist/index.cjs.js",
   "module": "index.jsx",
   "dependencies": {
