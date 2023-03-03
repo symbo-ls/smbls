@@ -14,6 +14,17 @@ global.document = window.document
 
 const TMP_DIR_NAME = ".smbls_convert_tmp"
 
+async function mkdirp(dir) {
+  try {
+    return await fs.promises.mkdir(dir)
+  } catch (err) {
+    if (err.code !== 'EEXIST') {
+      throw err
+    }
+  }
+  return null
+}
+
 program
   .command('convert')
   .description('Recursively convert and copy all DomQL components under a directory')
@@ -36,18 +47,12 @@ program
 
     // Resolve source & destination directories
     const srcPath = path.resolve(src || './src')
-    const destPath = path.resolve(dest || './dist')
+    const destPath = path.resolve(dest || desiredFormat)
     const tmpDirPath = path.resolve(path.dirname(destPath), TMP_DIR_NAME)
 
-    // Make tmp directory
-    try {
-      await fs.promises.mkdir(tmpDirPath)
-    } catch (err) {
-      if (err.code !== 'EEXIST') {
-        console.log(err)
-        return 1;
-      }
-    }
+    // Make tmp and dist directories
+    await mkdirp(tmpDirPath)
+    await mkdirp(destPath)
 
     const origFiles = await fs.promises.readdir(srcPath)
 
@@ -62,24 +67,48 @@ program
     })
 
     // Convert components
-    const files = await fs.promises.readdir(tmpDirPath)
-    for (const file of files) {
-      if (file === 'Atoms') continue
-
-      let filePath = path.join(tmpDirPath, file)
-
-      if ((await fs.promises.stat(filePath)).isDirectory()) {
-        const importPath = `${filePath}/index.js`
+    const componentDirs = await fs.promises.readdir(tmpDirPath)
+    for (const componentDir of componentDirs) {
+      if (componentDir === 'Atoms') continue
+      let importDir = path.join(tmpDirPath, componentDir)
+      if ((await fs.promises.stat(importDir)).isDirectory()) {
+        // Import the module
+        const importPath = `${importDir}/index.js`
         console.log(`importing ${importPath}`)
         const domqlModule = (await import(importPath)).default
         console.log(domqlModule)
+
+        // Create directory for component in dest dir
+        const destComponentDirPath = `${destPath}/${componentDir}`
+        await mkdirp(destComponentDirPath)
+
+        // Convert & append each exported domql object
+        const uniqueImports = []
+        let fileContents = ""
+        let first = true
         for (const key in domqlModule) {
           const component = domqlModule[key]
-          const gen = convert(component, desiredFormat, {
+          component.__name = key
+          const out = convert(component, desiredFormat, {
             verbose: false,
-            exportDefault: domqlModule.length === 1
+            exportDefault: false,
+            returnMitosisIR: true,
+            importsToRemove: uniqueImports,
+            removeReactImport: !first
           })
-          //console.log(gen)
+
+          fileContents = fileContents + out.str + '\n'
+          uniqueImports.push(...out.mitosisIR.imports)
+          first = false
+        }
+        console.log(uniqueImports)
+
+        // Write file
+        if (fileContents.length > 0) {
+          const fh = await fs.promises
+                .open(`${destComponentDirPath}/index.js`, 'w')
+          await fh.writeFile(fileContents, 'utf8')
+          await fh.close()
         }
       }
     }
