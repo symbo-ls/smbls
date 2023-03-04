@@ -1,7 +1,7 @@
 'use strict'
 
 import { getColor } from './color'
-import { getActiveConfig } from '../factory'
+import { getActiveConfig } from '../factory.js'
 
 import {
   isObject,

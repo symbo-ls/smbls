@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString } from "@domql/utils"
+import { isString } from '@domql/utils'
 
 export const generateSprite = (icons) => {
   let sprite =

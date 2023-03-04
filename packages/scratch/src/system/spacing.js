@@ -1,6 +1,6 @@
 'use strict'
 
-import { getActiveConfig } from '../factory'
+import { getActiveConfig } from '../factory.js'
 
 import { isString } from '@domql/utils'
 import {

@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject } from '@domql/utils'
-import { getActiveConfig } from '../factory'
+import { getActiveConfig } from '../factory.js'
 
 import {
   arrayze,
