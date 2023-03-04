@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { updateDynamycFile } from '@symbo.ls/socket'
 import * as asd from '@symbo.ls/socket/client.js'
 import { program } from './program.js'
 import { loadModule } from './require.js'
@@ -18,12 +19,32 @@ program
   .action(async (options) => {
     rc.then(data => {
       const opts = { ...data, ...options }
-      const key = rc.key || options.key
+      const key = data.key || options.key
       asd.connect(key, {
-        socketUrl: 'socket.symbols.app',
         onConnect: (id, socket) => {
           console.log(id)
-        }
+        },
+        onChange: (event, data) => {
+          data = JSON.parse(data)
+          let d = {}
+          const { 
+            PROJECT_SYSTEM,
+            PROJECT_STATE,
+            PROJECT_COMPONENTS,
+            PROJECT_SNIPPETS,
+            PROJECT_PAGES
+          } = data
+          if (PROJECT_SYSTEM) d.system = PROJECT_SYSTEM
+          if (PROJECT_STATE) d.system = PROJECT_STATE
+          if (PROJECT_COMPONENTS) d.system = PROJECT_COMPONENTS
+          if (PROJECT_SNIPPETS) d.system = PROJECT_SNIPPETS
+          if (PROJECT_PAGES) d.system = PROJECT_PAGES
+          if (Object.keys(d).length) updateDynamycFile(d)
+        },
+        onError: (err, socket) => {
+          console.log(err)
+        },
+        ...opts
       })
     })
   })

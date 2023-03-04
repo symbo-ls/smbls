@@ -1,11 +1,16 @@
 'use strict'
 
-import { overwriteDeep, deepDestringify, isObject } from '@domql/utils'
+import * as utils from '@domql/utils'
+import * as globals from '@domql/globals'
 
-const SERVER_URL = window.location
-  .host.includes('local')
+const { overwriteDeep, deepDestringify, isObject } = utils
+const { window } = globals
+
+const SERVER_URL = window.location &&
+  window.location.host.includes('local')
   ? 'localhost:13335'
-  : 'api.symbols.dev'
+  : 'https://api.symbols.dev' ||
+  'https://api.symbols.dev'
 
 const defaultOptions = {
   endpoint: SERVER_URL
@@ -24,8 +29,6 @@ export const fetchRemote = async (key, options = defaultOptions) => {
   } catch (e) {
     console.error(e)
   }
-
-  console.log(response.json())
 
   return await response ? response.json() : {}
 }

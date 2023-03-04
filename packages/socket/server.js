@@ -4,15 +4,30 @@ import fs from 'fs'
 import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
-import { dirname } from 'path' // eslint-disable-line
-import mergeDeep from 'merge-deep' // use the require method
-
 import { createRequire } from 'module'
+import { deepMerge, overwriteDeep } from '@domql/utils'
 
 const require = createRequire(import.meta.url) // construct the require method
 const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
 
 const app = express()
+
+export const updateDynamycFile = (changes, options = {}) => {
+  const { key, live } = options
+  const file = require('@symbo.ls/init/dynamic.json')
+  
+  const newMerge = overwriteDeep(changes, file)
+  const mergeStr = JSON.stringify(newMerge, null, 2)
+  const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
+
+  if (live) {
+    io.to(key).emit('liveChange', mergeStr)
+  } else {
+    fs.writeFile(initPath, mergeStr, function (err) {
+      if (err) { return console.log(err) }
+    })
+  }
+}
 
 export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
   const server = http.createServer(app)
@@ -49,20 +64,7 @@ export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
       io.to(key).emit('route', data, options)
     })
 
-    socket.on('change', (changes, options) => {
-      const file = require('@symbo.ls/init/dynamic.json')
-      const newMerge = mergeDeep(file, changes)
-      const mergeStr = JSON.stringify(newMerge, null, 2)
-      const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
-
-      if (live) {
-        io.to(key).emit('liveChange', mergeStr)
-      } else {
-        fs.writeFile(initPath, mergeStr, function (err) {
-          if (err) { return console.log(err) }
-        })
-      }
-    })
+    socket.on('change', updateDynamycFile)
 
     socket.on('disconnect', (changes, options) => {
       const { clientsCount } = io.engine

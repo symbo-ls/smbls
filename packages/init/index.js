@@ -19,7 +19,8 @@ const CONFIG = getActiveConfig()
 
 const mergeWithLocalFile = (config = CONFIG, RC_FILE) => {
   const rcfile = isObject(RC_FILE) ? RC_FILE : DYNAMIC_JSON || {}
-  return deepMerge(config, rcfile)
+  const fileData = deepMerge(config, rcfile)
+  return fileData && fileData.system
 }
 
 const SET_OPTIONS = {
@@ -28,11 +29,11 @@ const SET_OPTIONS = {
   useReset: true,
   useFontImport: true,
   useIconSprite: true,
+  useDocumentTheme: true,
   useSvgSprite: true
 }
 
-export const init = (config, RC_FILE, options = SET_OPTIONS) => {
-  const resultConfig = mergeWithLocalFile(config, RC_FILE)
+export const init = (config, options = SET_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
 
   const conf = set({
@@ -41,8 +42,9 @@ export const init = (config, RC_FILE, options = SET_OPTIONS) => {
     useFontImport: options.useFontImport,
     useVariable: options.useVariable,
     useSvgSprite: options.useSvgSprite,
+    useDocumentTheme: options.useDocumentTheme,
     useIconSprite: options.useIconSprite,
-    ...resultConfig
+    ...config
   }, { newConfig: options.newConfig })
 
   const FontFace = getFontFaceString(conf.FONT)

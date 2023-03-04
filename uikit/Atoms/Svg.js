@@ -32,7 +32,7 @@ export const Svg = {
     SVGKey = SVG[symbolId] = Math.random()
     init({
       svg: { [SVGKey]: props.src }
-    }, null, {
+    }, {
       document: context.document,
       emotion: context.emotion
     })

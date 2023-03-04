@@ -14,6 +14,9 @@ import { fetchStateAsync, fetchProject } from '@symbo.ls/fetch'
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
 
+import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
+import { deepMerge, isObject } from '@domql/utils'
+
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
 const defaultOptions = {
@@ -36,8 +39,14 @@ const defaultOptions = {
   define: defaultDefine
 }
 
-export const create = async (App, options = defaultOptions) => {
+const mergeWithLocalFile = (options, RC_FILE) => {
+  const rcfile = isObject(RC_FILE) ? RC_FILE : DYNAMIC_JSON || {}
+  return deepMerge(options, rcfile)
+}
+
+export const create = async (App, options = defaultOptions, RC_FILE) => {
   const appIsKey = domqlUtils.isString(App)
+  options = mergeWithLocalFile(options, RC_FILE)
   const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
 
   if (appIsKey) App = {}
@@ -56,7 +65,9 @@ export const create = async (App, options = defaultOptions) => {
 
   const doc = options.parent || document
 
-  const designSystem = init(options.system || {}, null, {
+  console.log(options)
+  
+  const designSystem = init(options.system || {}, {
     key,
     emotion,
     verbose: options.verbose,
@@ -64,6 +75,8 @@ export const create = async (App, options = defaultOptions) => {
     ...defaultOptions.system,
     ...initOptions
   })
+
+  console.log(designSystem)
 
   const domqlApp = DOM.create({
     extend: [App],

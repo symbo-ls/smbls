@@ -1,23 +1,30 @@
 #!/usr/bin/env node
 
 import fs from 'fs'
-import fetch from 'node-fetch'
 import chalk from 'chalk'
 import { loadModule } from './require.js'
 import { exec } from 'child_process'
 import { program } from './program.js'
 
+import * as fetch from '@symbo.ls/fetch'
+const { fetchRemote } = fetch
+
 const PACKAGE_PATH = process.cwd() + '/package.json'
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = 'https://raw.githubusercontent.com/symbo-ls/default-config/main/src/config.json'
+const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.dev/'
 
 const API_URL = 'https://api.symbols.dev/' // eslint-disable-line
 
 const pkg = loadModule(PACKAGE_PATH)
 const rc_file = loadModule(RC_PATH) // eslint-disable-line
 const local_config = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
+
+let rc = {}
+try {
+  rc = loadModule(RC_PATH) // eslint-disable-line
+} catch (e) { console.error('Please include symbols.json to your root of respository') }
 
 program
   .version(pkg.version)
@@ -65,31 +72,38 @@ program
 program
   .command('fetch [destination]')
   .description('Fetch symbols')
-  .action(async (source, destination) => {
-    const response = await fetch(DEFAULT_REMOTE_CONFIG_PATH)
-    const body = await response.json()
-    const { version, ...config } = body
+  .action(async (options) => {
+    rc.then(async data => {
+      const opts = { ...data, ...options }
+      const key = data.key || options.key
 
-    console.log(chalk.dim('- Default config from:'), chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY))
-    console.log('')
-    console.log(chalk.bold('Symbols'), 'config fetched:', chalk.green(version))
+      const body = await fetchRemote(key, { endpoint: 'api.symbols.dev' })
+      const { version, ...config } = body
 
-    console.log(chalk.dim('- symbols.json created:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
-    console.log('')
+      console.log(chalk.bold('Symbols'), 'config fetched:')
+      if (key) console.log(chalk.green(key))
+      else console.log(chalk.dim('- Default config from:'), chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY))
+      console.log('')
 
-    const bodyString = JSON.stringify(body)
-    fs.writeFile(LOCAL_CONFIG_PATH, bodyString, err => {
-      if (err) {
-        console.log('Error writing file', err)
-      } else {
-        console.log('Successfully wrote file')
+      console.log(chalk.dim('- symbols.json created:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
+      console.log('')
+
+      for (const t in config) {
+        const type = config[t]
+        console.log(chalk.bold(t))
+        const arr = []
+        for (const v in type) arr.push(v)
+        console.log('  ', chalk.dim(arr.join(', ')))
       }
-    })
 
-    for (const t in config) {
-      const type = config[t]
-      console.log(chalk.bold(t))
-      for (const v in type) console.log('  ', chalk.dim(v))
-      console.log(Object.keys(type))
-    }
+      const bodyString = JSON.stringify(body)
+      fs.writeFile(LOCAL_CONFIG_PATH, bodyString, err => {
+        console.log('')
+        if (err) {
+          console.log('Error writing file', err)
+        } else {
+          console.log('Successfully wrote file')
+        }
+      })
+    })
   })
