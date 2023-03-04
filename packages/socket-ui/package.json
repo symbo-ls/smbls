@@ -2,7 +2,7 @@
   "name": "@symbo.ls/socket-ui",
   "version": "2.10.126",
   "main": "byld-socket.js",
-  "gitHead": "57e1d4f1ba73357d2452a833b28ccdb51f219b2a",
+  "gitHead": "aca8ea4544bb6513acb43b8bd6883f7c868ec413",
   "dependencies": {
     "@domql/router": "latest",
     "@domql/utils": "latest",
