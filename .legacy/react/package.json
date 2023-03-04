@@ -4,7 +4,7 @@
   "main": "dist/index.cjs.js",
   "source": "index.js",
   "license": "MIT",
-  "gitHead": "6855dfed4db71595cba43e5ceb414765cf35b99f",
+  "gitHead": "7a9ec479f7449d8766538a3a908f6aacd65181f3",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/react-atoms": "latest",
