@@ -74,19 +74,22 @@ program
       if ((await fs.promises.stat(importDir)).isDirectory()) {
         // Import the module
         const importPath = `${importDir}/index.js`
-        console.log(`importing ${importPath}`)
+        console.log(`importing ${componentDir}/`)
         const domqlModule = (await import(importPath)).default
-        console.log(domqlModule)
 
         // Create directory for component in dest dir
         const destComponentDirPath = `${destPath}/${componentDir}`
         await mkdirp(destComponentDirPath)
 
         // Convert & append each exported domql object
+        console.log(`Converting modules in ${componentDir}:`)
+        console.group()
         const uniqueImports = []
         let fileContents = ""
         let first = true
         for (const key in domqlModule) {
+          console.log(key)
+          console.group()
           const component = domqlModule[key]
           component.__name = key
           const out = convert(component, desiredFormat, {
@@ -100,8 +103,10 @@ program
           fileContents = fileContents + out.str + '\n'
           uniqueImports.push(...out.mitosisIR.imports)
           first = false
+          console.groupEnd()
         }
-        console.log(uniqueImports)
+
+        console.groupEnd()
 
         // Write file
         if (fileContents.length > 0) {
