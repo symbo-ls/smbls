@@ -30,12 +30,14 @@ export const Svg = {
     if (SVGKey && SVG[SVGKey]) return useSVGSymbol(SVGKey)
 
     SVGKey = SVG[symbolId] = Math.random()
-    init({
-      svg: { [SVGKey]: props.src }
-    }, {
-      document: context.document,
-      emotion: context.emotion
-    })
+    if (props.src) {
+      init({
+        svg: { [SVGKey]: props.src }
+      }, {
+        document: context.document,
+        emotion: context.emotion
+      })
+    }
 
     return useSVGSymbol(SVGKey)
   }
