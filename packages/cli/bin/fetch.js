@@ -75,7 +75,7 @@ program
   .action(async (options) => {
     rc.then(async data => {
       const opts = { ...data, ...options }
-      const key = data.key || options.key
+      const key = data.key || options && options.key
 
       const body = await fetchRemote(key, { endpoint: 'api.symbols.dev' })
       const { version, ...config } = body
