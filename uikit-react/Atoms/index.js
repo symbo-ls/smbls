@@ -1,7 +1,7 @@
 'use strict'
 
-export * from './Flex.jsx'
-export * from './Grid.jsx'
-export * from './Img.jsx'
-export * from './Svg.jsx'
-export * from './Text.jsx'
+export * from './Flex.js'
+export * from './Grid.js'
+export * from './Img.js'
+export * from './Svg.js'
+export * from './Text.js'
