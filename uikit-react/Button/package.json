@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-button",
-  "version": "2.10.138",
+  "version": "2.10.139",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@symbo.ls/button": "latest",
