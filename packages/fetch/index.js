@@ -16,6 +16,8 @@ const defaultOptions = {
   endpoint: SERVER_URL
 }
 
+export const fetch = window ? window.fetch || fetch
+
 export const fetchRemote = async (key, options = defaultOptions) => {
   const baseUrl = `https://${options.endpoint || SERVER_URL}/`
   const route = options.serviceRoute || ''
@@ -32,8 +34,6 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 
   return await response ? response.json() : {}
 }
-
-export const fetch = fetchRemote
 
 export const fetchProject = async (key, options) => {
   const { editor } = options

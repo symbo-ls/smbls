@@ -3,18 +3,22 @@
   "version": "2.10.135",
   "license": "MIT",
   "gitHead": "75d8f8e2aedb0d9791e7c7fc84990bd42231bbc7",
-  "source": "index.js",
-  "main": "index.js",
-  "browser": "dist/index.js",
-  "type": "module",
-  "files": [
-    "index.js",
-    "dist"
-  ],
   "dependencies": {
     "@domql/utils": "latest"
   },
+  "type": "module",
+  "module": "dist/esm/index.js",
+  "main": "dist/esm/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
   "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
+    "copy:package:cjs": "cp ../../package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.js=jsx && yarn copy:package:cjs",
+    "prepublish": "rimraf -I dist && yarn build:esm && yarn build:cjs"
   }
 }
