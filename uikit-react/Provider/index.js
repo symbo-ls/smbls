@@ -10,7 +10,7 @@ const DEFAULT_PROPS = {
     remote: true,
     async: true,
     serviceRoute: 'state',
-    endpoint: 'api.symbols.app'
+    endpoint: 'api.symbols.dev'
   },
   state: {},
   pages: {},
@@ -31,13 +31,16 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
   const { appKey, children } = options
 
   const designSystem = init(options.designSystem || DEFAULT_CONFIG)
-  const [state, setStaste] = useState(options.state || {})
+  const [state, setStaste] = useState(options.state)
 
   const { Provider } = SymbolsContext
 
+  console.log('options')
+  console.log(options)
   if (appKey && options.editor) {
     try {
-      if (options.editor.async) fetchStateAsync(appKey, options, (data) => {
+      if (options.editor.async && !state) fetchStateAsync(appKey, options, (data) => {
+        console.log(data)
         setStaste(data)
       })
     } catch (e) {
@@ -47,7 +50,7 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   return React.createElement(
     Provider,
-    { value: { designSystem } },
+    { value: { designSystem, state } },
     children
   )
 }
