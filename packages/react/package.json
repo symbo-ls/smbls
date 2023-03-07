@@ -2,7 +2,7 @@
   "name": "@symbo.ls/react",
   "version": "2.10.142",
   "license": "MIT",
-  "gitHead": "7a9ec479f7449d8766538a3a908f6aacd65181f3",
+  "gitHead": "5382ad539538e5cd8f0683ffd2c7a92649e125bc",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/react-atoms": "latest",
