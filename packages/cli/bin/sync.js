@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { updateDynamycFile } from '@symbo.ls/socket'
-import * as asd from '@symbo.ls/socket/client.js'
+import * as socketClient from '@symbo.ls/socket/client.js'
 import { program } from './program.js'
 import { loadModule } from './require.js'
 
@@ -20,7 +20,7 @@ program
     rc.then(data => {
       const opts = { ...data, ...options }
       const key = data.key || options.key
-      asd.connect(key, {
+      socketClient.connect(key, {
         onConnect: (id, socket) => {
           console.log(id)
         },

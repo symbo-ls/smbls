@@ -6,7 +6,7 @@ import { loadModule } from './require.js'
 import { exec } from 'child_process'
 import { program } from './program.js'
 
-import * as fetch from '@symbo.ls/fetch'
+import fetch from '@symbo.ls/fetch'
 const { fetchRemote } = fetch
 
 const PACKAGE_PATH = process.cwd() + '/package.json'
