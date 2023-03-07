@@ -29,11 +29,9 @@ export const SymbolsContext = React.createContext(DEFAULT_PROPS)
 
 export const SymbolsProvider = (options = DEFAULT_PROPS) => {
   const { appKey, children } = options
-  console.log(useState)
 
   const designSystem = init(options.designSystem || DEFAULT_CONFIG)
-  // const [state, setStaste] = useState(options.state || {})
-
+  const [state, setStaste] = useState(options.state || {})
 
   const { Provider } = SymbolsContext
 
