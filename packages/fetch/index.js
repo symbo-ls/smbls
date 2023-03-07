@@ -16,7 +16,7 @@ const defaultOptions = {
   endpoint: SERVER_URL
 }
 
-export const fetch = window ? window.fetch || fetch
+export const fetch = window ? window.fetch : fetch
 
 export const fetchRemote = async (key, options = defaultOptions) => {
   const baseUrl = `https://${options.endpoint || SERVER_URL}/`
