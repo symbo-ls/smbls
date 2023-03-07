@@ -16,7 +16,7 @@ const app = express()
 export const updateDynamycFile = (changes, options = {}) => {
   const { key, live } = options
   const file = require('@symbo.ls/init/dynamic.json')
-  
+
   const newMerge = overwriteDeep(changes, file)
   const mergeStr = JSON.stringify(newMerge, null, 2)
   const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'

@@ -9,7 +9,10 @@ const DEF_OPTIONS = {
 }
 
 export const setSVG = (val, key) => {
-  if (!val) return console.log('setSVG: val is not defined')
+  if (!val) {
+    if (CONFIG.verbose) console.warn('setSVG: val is not defined', key)
+    return
+  }
   const CONFIG = getActiveConfig()
   if (CONFIG.useSvgSprite) {
     return convertSvgToSymbol(key, val)

@@ -380,6 +380,7 @@
     tslib "^1.10.0"
 
 "@domql/globals@latest":
+<<<<<<< HEAD
   version "2.3.58"
   resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.58.tgz#144680f14c371e520e059b196b0b10204949c2d8"
   integrity sha512-ckM845pVVksmo8/+34cRuxq5yBX6thfgidk9V5OKAK/gz40iQRx6rjcnYz7cdLjbzoiwE/+cOC7iYsbEdzPqCw==
@@ -388,10 +389,21 @@
   version "2.3.50"
   resolved "https://registry.yarnpkg.com/@domql/registry/-/registry-2.3.50.tgz#e782bb886caae4ade5a01949e16642b54262c3b4"
   integrity sha512-q7WeLV/jedUNHcvWo/bMmBrMbQxqcIg6bClXOWcTUXMTPjRqSLxNlO5Y9GAzus4KWTohKGsXYqcB6HYVspMktA==
+=======
+  version "2.3.46"
+  resolved "https://registry.npmjs.org/@domql/globals/-/globals-2.3.46.tgz#88c4d94b6c4d7ea6fdc7b33bb7240c4fe05954cd"
+  integrity sha512-i+Ga+BP/a8yntgK49l+ghqvVTIYC28mkDfZqs+0yiVb+iYEYAZlyN8Hc9OR2LrLohoJqVduIa8xkMhURz6BjNg==
+
+"@domql/registry@latest":
+  version "2.3.46"
+  resolved "https://registry.npmjs.org/@domql/registry/-/registry-2.3.46.tgz#95e6e0b5ed5d3ed9ee0089aa3812852fc48f598b"
+  integrity sha512-fUurMX5VCsQgLLyQ9kl5oaQluhcjzV0qm1ijNieUPGQbB3HBcSm+iAUqG3PFC1jFnzb7CGA7ja52ArfAnv27YA==
+>>>>>>> imports cleanup, add error verbose to svg
   dependencies:
     "@domql/utils" latest
 
 "@domql/report@latest":
+<<<<<<< HEAD
   version "2.3.50"
   resolved "https://registry.yarnpkg.com/@domql/report/-/report-2.3.50.tgz#cc15f2824a185d1a771afa7ab0a15fcc2e4bfaba"
   integrity sha512-l5/JUEuwRacBOMBPcsEZMm0pRRDMN8wnyDANr9/iv8ofQlyU6n2m2YwZ2cdiLt3HrymEmLbfOHBgxo6b0RZtOw==
@@ -400,10 +412,21 @@
   version "2.3.50"
   resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.50.tgz#1508c7278a64ac4d51487b77ee75e42019c0e804"
   integrity sha512-NzthbPIbjGyxpPTiQMMpXYRRfuvnlnwyhxE/4Eg2hHIqk/ugNEEBY3XYfXrpelUu0oJVcg+jb0ubuOIJMTojNQ==
+=======
+  version "2.3.46"
+  resolved "https://registry.npmjs.org/@domql/report/-/report-2.3.46.tgz#0592a6b97afcc658751633d90ae3cc96d77a8f01"
+  integrity sha512-QvbrTRwWmf54vS6FtEichkSQaiN48HJg48gq4D6BTHLafdm/oQf2iHgdElshYWGHMcRZbufH37USdA9FdtzBkA==
+
+"@domql/router@latest":
+  version "2.3.46"
+  resolved "https://registry.npmjs.org/@domql/router/-/router-2.3.46.tgz#812f7067c815182d0a73172ee75d9a364d84e102"
+  integrity sha512-kq/z++6jAhd2hBiY3WE4+pyLsX0+QNKP+tHF4SI03vWSn6scFtkalvQdMj7hfNyehU6KBP8fJFCF8RVLsMHRvw==
+>>>>>>> imports cleanup, add error verbose to svg
   dependencies:
     "@domql/utils" latest
 
 "@domql/tags@latest":
+<<<<<<< HEAD
   version "2.3.58"
   resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.58.tgz#06f587a1788fbc18ac47e7992d87515dc76916e6"
   integrity sha512-3TApuJnnJou38x88WaERGmi1RT+wkBXPQdsiQBCzaOvF3R9Q5mOpF5SewVxrEvuV+xGrkMq32v00vZr1covYww==
@@ -412,6 +435,16 @@
   version "2.3.58"
   resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.58.tgz#c54df9cdc9e184eb4f3216b73255fc315ee16a43"
   integrity sha512-eytR1whpuiWP9kuub7RBHebrDAj6xmG9lhOwcHJTpUBogcjev2m6Wh4PGvsmvfq+GNEC/QH4CVExQhgylDX9ug==
+=======
+  version "2.3.46"
+  resolved "https://registry.npmjs.org/@domql/tags/-/tags-2.3.46.tgz#52f7cecb6d85c4de9179ee9946a8aa08760325a7"
+  integrity sha512-ubZmv4SOKcUo83kvgWc+haUajrosjNKjKv+Nc1nN0sPArpStrAAOasV/vOZXhuHRXGXEdT3oWuLdCnOJ0wvxDQ==
+
+"@domql/utils@^2.3.14", "@domql/utils@latest":
+  version "2.3.46"
+  resolved "https://registry.npmjs.org/@domql/utils/-/utils-2.3.46.tgz#1f9cbec628d333389c7d48ee147bdc09956b0db4"
+  integrity sha512-Dkcmx0YobrLomV46Odkjx+DjeAkcPHK8nR/i1d9Q/tGxLihhRtvxEuH4F70TUTHFNvGO9HjMsPjlnOtFLipdhA==
+>>>>>>> imports cleanup, add error verbose to svg
   dependencies:
     "@domql/globals" latest
     "@domql/tags" latest
@@ -1908,7 +1941,11 @@
 
 "@symbo.ls/atoms@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.10.134.tgz#b680088036f775103ab6071f4b8f99158ce2dcc1"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/atoms/-/atoms-2.10.134.tgz#b680088036f775103ab6071f4b8f99158ce2dcc1"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-DVwPsbri4WvrkaSp7qux8CRdOR9iGsTQFdxiq3MwyfT5Lw/Q5ZAyztlN/1uOGnsZW+yHkMbpuw/PHKpWIjpsow==
   dependencies:
     "@domql/utils" latest
@@ -1918,14 +1955,22 @@
 
 "@symbo.ls/avatar@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/avatar/-/avatar-2.10.134.tgz#c3cf644a3a3b68e9a3782cba63a91c932108432c"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/avatar/-/avatar-2.10.134.tgz#c3cf644a3a3b68e9a3782cba63a91c932108432c"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-EvmESvvgn5GyAuvtMTSdMbEOXIYUS6uVt4bFzdideBp4EjXsQo4B5eeN6hppaKyLqDthlYKryvWZhtJT4qdbUg==
   dependencies:
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/banner@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/banner/-/banner-2.10.134.tgz#3eb5243ff07d32dc2435c8ae76d22facb77f5cfd"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/banner/-/banner-2.10.134.tgz#3eb5243ff07d32dc2435c8ae76d22facb77f5cfd"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-hX+X1ypwxWwKDHXUKo9Dtm1bZIdx7gOqeHwidl9Qj8QesYUuBQyZe85HlDSNDTaz0qOP7uqlOvFfE9DWHgq2QA==
   dependencies:
     "@symbo.ls/avatar" latest
@@ -1940,14 +1985,22 @@
 
 "@symbo.ls/box@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/box/-/box-2.10.134.tgz#5f8d082bd38d9bbcd62b44d552911c5dd9939d25"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/box/-/box-2.10.134.tgz#5f8d082bd38d9bbcd62b44d552911c5dd9939d25"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-cx9aFs7bm0asqHoW+BurC0/+J7nq1LatLJ9A4GJlpja0ycWvo4jK4qN5gXij3bm5qoQTET43DczpdD54h+QxVA==
   dependencies:
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/button@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/button/-/button-2.10.134.tgz#ce7c0e4fef69c9e8ef7eaf4137a6f949498246f9"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/button/-/button-2.10.134.tgz#ce7c0e4fef69c9e8ef7eaf4137a6f949498246f9"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-jB3x9mi0X42znLiWa9Rj4Azspdrzhlj3Sv+HXu+i8BycQVO0QWFsO8iKQvaEPbGGRbIF8zsINZWaOrmA0ChyAw==
   dependencies:
     "@symbo.ls/atoms" latest
@@ -1955,7 +2008,11 @@
 
 "@symbo.ls/buttonset@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/buttonset/-/buttonset-2.10.134.tgz#81df107250cad5ff5527870ce29300619bee80e4"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/buttonset/-/buttonset-2.10.134.tgz#81df107250cad5ff5527870ce29300619bee80e4"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-+9T7bJPPiZjrPbyCfbdQJRB2yCRRIgiwWsJA/u7w7stH/GAh6lVwhfQX48woDKqF3ReOba6cLyco1NoO0gFaQQ==
   dependencies:
     "@symbo.ls/atoms" latest
@@ -1963,7 +2020,11 @@
 
 "@symbo.ls/cli@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/cli/-/cli-2.10.134.tgz#775dd61846e43212cf40647484ab41266336da45"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/cli/-/cli-2.10.134.tgz#775dd61846e43212cf40647484ab41266336da45"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-7Q+wHKcHh/Yj1Pm1CeI6FQ1I3hOjlccwEcTYcb192fC4hQ7hQtBaj0qnm4S9CZjOqIIYFsrorODhzymZl8DxbQ==
   dependencies:
     "@symbo.ls/init" latest
@@ -1984,7 +2045,11 @@
 
 "@symbo.ls/create@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.134.tgz#fac68e85a724d0e6ff21349b9946ba5175ec7928"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/create/-/create-2.10.134.tgz#fac68e85a724d0e6ff21349b9946ba5175ec7928"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-s89PRSKswBLGr/XKE5nZ5J79zBJUR0KTxnAuHwG5T0hR+s9hXrmpwvFc+wMsS0NWjmtPx4pLUcdURi3Am1bu0A==
   dependencies:
     "@domql/utils" latest
@@ -1996,7 +2061,11 @@
 
 "@symbo.ls/datepicker@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/datepicker/-/datepicker-2.10.134.tgz#b9c28c292991d1697f1dd64e466312758e89983f"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/datepicker/-/datepicker-2.10.134.tgz#b9c28c292991d1697f1dd64e466312758e89983f"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-PCshxNaA+4HRUR3eF25eJzfanUmLF9C6inTe52sZKNX0eEyBg/Xl3oL/AI+ikEfXKjh785F84M6t31AKTuHEDA==
   dependencies:
     "@symbo.ls/block" latest
@@ -2005,7 +2074,11 @@
 
 "@symbo.ls/default-config@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/default-config/-/default-config-2.10.134.tgz#a4dd368b626b8f70d08bdf44f0f8582b27005215"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/default-config/-/default-config-2.10.134.tgz#a4dd368b626b8f70d08bdf44f0f8582b27005215"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-h/iP01nBcWlIppQdrO/kKyLQ+WK3U+7/WLUHfnf9ED4x9oFIWTenPhlmR4I75wyP25+X0dsuhzGAtmQ7spl45w==
 
 "@symbo.ls/direction@latest":
@@ -2015,7 +2088,11 @@
 
 "@symbo.ls/dropdown@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/dropdown/-/dropdown-2.10.134.tgz#1930e0a94261e67defaf523a76d61e4e86565423"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/dropdown/-/dropdown-2.10.134.tgz#1930e0a94261e67defaf523a76d61e4e86565423"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-TXp5KQUZwm4n0DDqvzjvPC4FVR0RqGlFxbFY97BwAvgS7scwMPltJRCwOMp7l2NED51vvtUJL2YhLFZplvyDiA==
   dependencies:
     "@symbo.ls/atoms" latest
@@ -2023,21 +2100,33 @@
 
 "@symbo.ls/emotion@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/emotion/-/emotion-2.10.134.tgz#477ac1ccc6c5ea3b9a320f1294e84735853793e5"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/emotion/-/emotion-2.10.134.tgz#477ac1ccc6c5ea3b9a320f1294e84735853793e5"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-Uvdx4+0XRz29E9yA/uzb3EstmzxPqQpxNSEPj5+0lCy+d7hvMSCsA0KBfG1kwJe9KDiKlb+NSv0W5RpcI0aEkA==
   dependencies:
     "@emotion/css" "^11.10.0"
 
 "@symbo.ls/fetch@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/fetch/-/fetch-2.10.134.tgz#7e144bae7dd7cda28b887e11366afb0eb6c5b66f"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/fetch/-/fetch-2.10.134.tgz#7e144bae7dd7cda28b887e11366afb0eb6c5b66f"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-FWKLI9E+q0HW1APVFK1FcPlwKhbCEkJSJN7ZVqLof5JGxrpoiLz1qZRpBAC7jpjTJCABoyIbPdxwxXdcBEYtBA==
   dependencies:
     "@domql/utils" latest
 
 "@symbo.ls/field@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/field/-/field-2.10.134.tgz#1cc3af26aac85dcc7040cf0f94cf35ca2b4e623f"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/field/-/field-2.10.134.tgz#1cc3af26aac85dcc7040cf0f94cf35ca2b4e623f"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-S74ZDqvqtOJkwvJvxLgvDN6gRoMubz0kuOsd2LnhxKlEerma1ldFPgGFh93GdKRwFxCHc9lFIInFGFum5LPpNA==
   dependencies:
     "@symbo.ls/icon" latest
@@ -2053,7 +2142,11 @@
 
 "@symbo.ls/icon@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/icon/-/icon-2.10.134.tgz#d3d761f08e446e478a81a9d6c7f949cf450acf18"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/icon/-/icon-2.10.134.tgz#d3d761f08e446e478a81a9d6c7f949cf450acf18"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-WHWhSGmWEuCXY6jrxt5XyE2cx9D9cCIwaPe33ablttoSqNxomB4HXP1cMBWA6gO32V6u9h6mqEXqX6ZD2DQV1g==
   dependencies:
     "@symbo.ls/svg" latest
@@ -2061,7 +2154,11 @@
 
 "@symbo.ls/init@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/init/-/init-2.10.134.tgz#4f9674ab6a450c7bc53f9abac334d24c14d34950"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/init/-/init-2.10.134.tgz#4f9674ab6a450c7bc53f9abac334d24c14d34950"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-l+kkfhZzabmhO1omKEvvKpOiPsPIXLd3dNIKp7YpnFfqDAw1Koy/J3nZLzolRDJHDnNqjV5q+0SuSjbGCSmgiA==
   dependencies:
     "@domql/utils" latest
@@ -2071,14 +2168,22 @@
 
 "@symbo.ls/input@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/input/-/input-2.10.134.tgz#4de4bade22233bc5d2357a20c7037fcc3b1992ff"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/input/-/input-2.10.134.tgz#4de4bade22233bc5d2357a20c7037fcc3b1992ff"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-fIs3q5YJHVhtVjghFYCq+pPBBSvbsOfsYIsR3w6QHOTztN8aizjKvI4cBQRhra9F3/7QWMrDegXXQGgBCrBDxQ==
   dependencies:
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/label@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/label/-/label-2.10.134.tgz#5ca8ee9319018ba8b455455ce8eea1f539fc1086"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/label/-/label-2.10.134.tgz#5ca8ee9319018ba8b455455ce8eea1f539fc1086"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-UZ5l+JRJ3J3OCBeQV3W/rvGiuhkDvXoexR+UB8AVKTuwJLcT0DWy+oF6g1D+W1SvT0SviMzIwTis3olPVDWEeg==
   dependencies:
     "@symbo.ls/block" latest
@@ -2087,7 +2192,11 @@
 
 "@symbo.ls/link@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/link/-/link-2.10.134.tgz#523635e594188890c6a124293771b4e0d0285c3e"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/link/-/link-2.10.134.tgz#523635e594188890c6a124293771b4e0d0285c3e"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-0rO6RUcFsyRS+8u0K791iHwgaUmsTLryXg1wdtXCO6+Pa6NH28zYrLeGCCaZGpOL8Ifo4IT976fy2QaXHJgvKQ==
   dependencies:
     "@domql/router" latest
@@ -2095,7 +2204,11 @@
 
 "@symbo.ls/notification@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/notification/-/notification-2.10.134.tgz#35b54bdedf7f8aa50fd0114c6efa630ef194a1b9"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/notification/-/notification-2.10.134.tgz#35b54bdedf7f8aa50fd0114c6efa630ef194a1b9"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-lwOjwMIxRz02/obSBrxa2sLkD49IJnv8173mgRLkzZlU1UtMiFf85sAWFmK3w+/V1kpdl87eKiG14/3/OOIuag==
   dependencies:
     "@symbo.ls/block" latest
@@ -2107,14 +2220,22 @@
 
 "@symbo.ls/pills@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/pills/-/pills-2.10.134.tgz#12691d19febe184d706a3534d64aa7fda0007e0f"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/pills/-/pills-2.10.134.tgz#12691d19febe184d706a3534d64aa7fda0007e0f"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-fljxM5FmQQ/PHjrknt05REeUJWMFLj75kqMvgYL6uCKUBDzGq08WoV0zJqNiMyiLjGL9mlL/M4pqZjx9bsIAGQ==
   dependencies:
     "@symbo.ls/shape" latest
 
 "@symbo.ls/range@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/range/-/range-2.10.134.tgz#f5bde859c02fd9ec30ae5852d088d2a739a2d45b"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/range/-/range-2.10.134.tgz#f5bde859c02fd9ec30ae5852d088d2a739a2d45b"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-+7sNUEAZn0UPca6Vuih391i5YJITkbHOoRDi5OooW2gww65/VdJX2QNosQhWAjfh7+HOiOHSDmmLZB4KKscMDg==
   dependencies:
     "@domql/utils" latest
@@ -2123,7 +2244,11 @@
 
 "@symbo.ls/scratch@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.134.tgz#5421365ef49b18e92f0b8dd45987c4353893ca7e"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/scratch/-/scratch-2.10.134.tgz#5421365ef49b18e92f0b8dd45987c4353893ca7e"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-eP2rRodpMhXB/J8lxr9wIXZf6glpcEbSzbz/uLDH2HOMiH4g+I8XkxNjv8nkHZ9bFssQcV1ZIjYBWFCcz8Pv9A==
   dependencies:
     "@domql/utils" latest
@@ -2132,7 +2257,11 @@
 
 "@symbo.ls/select@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/select/-/select-2.10.134.tgz#eb7f0d64b0126c2a79a01a1bc96a87844637d1b9"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/select/-/select-2.10.134.tgz#eb7f0d64b0126c2a79a01a1bc96a87844637d1b9"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-O7MMhRuLIRf58EE52pa6tytLvXQxkEvblSRIg364jeuCeAsqO/1/Iz5PDG3Wypjcjec1Lpyveo/lAch9yhfaOw==
   dependencies:
     "@symbo.ls/shape" latest
@@ -2147,7 +2276,11 @@
 
 "@symbo.ls/slider@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/slider/-/slider-2.10.134.tgz#cbe4bf7929697a66b7f594001f9bdc5036521dcb"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/slider/-/slider-2.10.134.tgz#cbe4bf7929697a66b7f594001f9bdc5036521dcb"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-1J4RjfodRJmNcHmS7w90fXwKfr6kHMsr5farw/2awJrzpbkWKGKWabtJED8mflZUMjA0m0xYfHwbF+4G0onhxw==
   dependencies:
     "@domql/utils" latest
@@ -2156,7 +2289,11 @@
 
 "@symbo.ls/socket-ui@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/socket-ui/-/socket-ui-2.10.134.tgz#4a5f2f8e3838be79a879059bf7a710a8f02187ba"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/socket-ui/-/socket-ui-2.10.134.tgz#4a5f2f8e3838be79a879059bf7a710a8f02187ba"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-9H5W7OCO+nG+OZN6aA7TsF/BK1HXfx/9ZAR544nmS2UWYn/70wy5QIVj7lovIfuqzSdu4qdzCQ5sU7eeGKfS4g==
   dependencies:
     "@domql/router" latest
@@ -2166,7 +2303,11 @@
 
 "@symbo.ls/socket@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/socket/-/socket-2.10.134.tgz#6edc2e6a0fe8d82c3d5cb2a5a03e441213223523"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/socket/-/socket-2.10.134.tgz#6edc2e6a0fe8d82c3d5cb2a5a03e441213223523"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-iFd98xqLafw/j5u18IIaGDOaOjl1TqHH6+BfAFnY+bGCOWvHN+53O6dfh9EdMHVgDdx+aEPog6FCrZFCHg+cAw==
   dependencies:
     "@domql/utils" latest
@@ -2191,21 +2332,33 @@
 
 "@symbo.ls/textarea@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/textarea/-/textarea-2.10.134.tgz#94cbb4055220f43040326ceb0261b084d08082cb"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/textarea/-/textarea-2.10.134.tgz#94cbb4055220f43040326ceb0261b084d08082cb"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-4sWuGIjO0iZuNhJWLdvgnhgRXhqUqXFQUm1wmh5xL6lPP/1khsEdgheF1VKi+n3HaUFbuF3XVo2DEWdHZP4b0Q==
   dependencies:
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/tooltip@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/tooltip/-/tooltip-2.10.134.tgz#978bc00c173946094459614a0e7c917e565974a4"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/tooltip/-/tooltip-2.10.134.tgz#978bc00c173946094459614a0e7c917e565974a4"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-bCUuVXWorvxtPGA5eu/vmSUm9tOYC2tzCKw8TRb5BbW2tEtU2rtjK+yLbODdSK+TUiyv0QS85FSZKM0qrh1gng==
   dependencies:
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/uikit@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.10.134.tgz#155f3716449646bbec71badb1a675c47f9b1c7ea"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/uikit/-/uikit-2.10.134.tgz#155f3716449646bbec71badb1a675c47f9b1c7ea"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-2QexAC6PO0vNBC2gnv38fX30Ow+Hqz3x5frtCdR95XG02qku41mqZtxQwqK9BU9OiveqjYjpxZHGUgxzApHPZQ==
   dependencies:
     "@domql/utils" latest
@@ -2231,7 +2384,11 @@
 
 "@symbo.ls/utils@latest":
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/@symbo.ls/utils/-/utils-2.10.134.tgz#a36250e548743af8d669b90d34ee387732ad3083"
+=======
+  resolved "https://registry.npmjs.org/@symbo.ls/utils/-/utils-2.10.134.tgz#a36250e548743af8d669b90d34ee387732ad3083"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-xeq/QBQHPPb/V1Hr3yyKL242w1ViVawqke95w0fmfTaQrFU29d3OZGzIg63yraYowebgUI2QiK/kczyOCK/pEg==
   dependencies:
     "@domql/utils" latest
@@ -3464,7 +3621,11 @@ css-in-props@^0.10.2:
 
 css-in-props@latest:
   version "2.10.134"
+<<<<<<< HEAD
   resolved "https://registry.yarnpkg.com/css-in-props/-/css-in-props-2.10.134.tgz#7db0e5fd2c6d314ad96da8016cf0bb735874518f"
+=======
+  resolved "https://registry.npmjs.org/css-in-props/-/css-in-props-2.10.134.tgz#7db0e5fd2c6d314ad96da8016cf0bb735874518f"
+>>>>>>> imports cleanup, add error verbose to svg
   integrity sha512-d7j67kBRLS9mCE6idNVGpB4ON16ShT5yqucuN/ieVQDNq3l82iXEtcl/4EcGYLriHM35BvDuh5IyR319g4HfJQ==
   dependencies:
     "@domql/utils" latest
@@ -3815,9 +3976,15 @@ domql-to-mitosis@latest:
     vue "~2.6"
 
 domql@^1.5.71, domql@latest:
+<<<<<<< HEAD
   version "1.5.109"
   resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.109.tgz#0f9603b523ffda2ccf20fd2765049df96865a0cd"
   integrity sha512-WfCb/aDfD6zokDmd6vnuc9rtsaK5Rrw7O6tzvF6t23aMKt9SHo0RBAf9nqEMHoJo0sMXSL+T5CyDlC2tg0onpw==
+=======
+  version "1.5.108"
+  resolved "https://registry.npmjs.org/domql/-/domql-1.5.108.tgz#65b29290c992553fec892b5b6bc22c358078fbec"
+  integrity sha512-tkg1DuYmPFQotAy1eY/q5qoQnQEZWTbDoseAPGnxLHzP6eKJjG1dxS8P/TP3zFmFAIh501SdmI9l/1pjKPknbA==
+>>>>>>> imports cleanup, add error verbose to svg
   dependencies:
     "@domql/globals" latest
     "@domql/registry" latest
