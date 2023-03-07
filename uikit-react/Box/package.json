@@ -1,0 +1,16 @@
+{
+  "name": "@symbo.ls/react-box",
+  "version": "2.10.124",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "dependencies": {
+    "@babel/runtime": "^7.11.2",
+    "css-in-props": "latest"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "gitHead": "7a9ec479f7449d8766538a3a908f6aacd65181f3"
+}
