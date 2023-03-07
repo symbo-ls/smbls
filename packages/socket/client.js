@@ -9,7 +9,7 @@ const { window } = globals
 
 const ENV = process.env.NODE_ENV
 
-const SOCKET_BACKEND_URL = window.location &&
+const SOCKET_BACKEND_URL = window && window.location &&
   window.location.host.includes('local')
   ? 'localhost:13335'
   : 'https://socket.symbols.app' ||

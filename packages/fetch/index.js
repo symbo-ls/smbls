@@ -6,7 +6,7 @@ import * as globals from '@domql/globals'
 const { overwriteDeep, deepDestringify, isObject } = utils
 const { window } = globals
 
-const SERVER_URL = window.location &&
+const SERVER_URL = window && window.location &&
   window.location.host.includes('local')
   ? 'localhost:13335'
   : 'https://api.symbols.dev' ||
