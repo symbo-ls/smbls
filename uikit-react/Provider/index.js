@@ -35,12 +35,9 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   const { Provider } = SymbolsContext
 
-  console.log('options')
-  console.log(options)
   if (appKey && options.editor) {
     try {
       if (options.editor.async && !state) fetchStateAsync(appKey, options, (data) => {
-        console.log(data)
         setStaste(data)
       })
     } catch (e) {

@@ -1,6 +1,6 @@
 'use strict'
 
-import * as utils from '@domql/utils'
+import utils from '@domql/utils'
 import * as globals from '@domql/globals'
 import io from 'socket.io-client'
 
