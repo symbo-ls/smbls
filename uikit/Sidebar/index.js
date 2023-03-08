@@ -6,10 +6,7 @@ import { Link } from '@symbo.ls/link'
 const MenuItem = {
   extend: Link,
   props: { icon: '' },
-  glyph: {
-    extend: Icon,
-    name: ({ props }) => props.icon
-  }
+  glyph: { extend: Icon }
 }
 
 export const Sidebar = {
@@ -18,7 +15,6 @@ export const Sidebar = {
     style: {
       a: { cursor: 'pointer' }
     },
-    childExtend: MenuItem,
-    ...[{}]
+    childExtend: MenuItem
   }
 }
