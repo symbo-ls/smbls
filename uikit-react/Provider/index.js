@@ -1,6 +1,6 @@
 "use strict"
 
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import DEFAULT_CONFIG from '@symbo.ls/default-config'
 import { init } from "@symbo.ls/init"
 import { fetchStateAsync } from "@symbo.ls/fetch"
@@ -27,6 +27,16 @@ const DEFAULT_PROPS = {
 
 export const SymbolsContext = React.createContext(DEFAULT_PROPS)
 
+export const useData = () => {
+  const { state } = useContext(SymbolsContext)
+  return state
+}
+
+export const useDesignSystem = () => {
+  const { designSystem } = useContext(SymbolsContext)
+  return designSystem
+}
+
 export const SymbolsProvider = (options = DEFAULT_PROPS) => {
   const { appKey, children } = options
 
@@ -35,15 +45,17 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   const { Provider } = SymbolsContext
 
-  if (appKey && options.editor) {
-    try {
-      if (options.editor.async && !state) fetchStateAsync(appKey, options, (data) => {
-        setStaste(data)
-      })
-    } catch (e) {
-      console.error(e)
+  useEffect(() => {
+    if (appKey && options.editor) {
+      try {
+        if (options.editor.async && !state) fetchStateAsync(appKey, options, (data) => {
+          setStaste(data)
+        })
+      } catch (e) {
+        console.error(e)
+      }
     }
-  }
+  })
 
   return React.createElement(
     Provider,
