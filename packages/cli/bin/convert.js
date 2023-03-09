@@ -87,6 +87,7 @@ program
         const uniqueImports = []
         let fileContents = ""
         let first = true
+        const exportCount = Object.keys(domqlModule).length
         for (const key in domqlModule) {
           console.log(key)
           console.group()
@@ -94,7 +95,7 @@ program
           component.__name = key
           const out = convert(component, desiredFormat, {
             verbose: false,
-            exportDefault: false,
+            exportDefault: exportCount === 1,
             returnMitosisIR: true,
             importsToRemove: uniqueImports,
             removeReactImport: !first
