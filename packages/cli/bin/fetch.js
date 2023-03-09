@@ -85,7 +85,7 @@ program
       else console.log(chalk.dim('- Default config from:'), chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY))
       console.log('')
 
-      console.log(chalk.dim('- symbols.json created:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
+      console.log(chalk.dim('- dynamic.json updated:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
       console.log('')
 
       for (const t in config) {
