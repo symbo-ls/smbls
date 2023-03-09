@@ -8,16 +8,22 @@
     "dist"
   ],
   "repository": "https://github.com/symbo-ls/scratch",
-  "source": "src/index.js",
-  "main": "src/index.js",
-  "browser": "dist/index.cjs.js",
+  "type": "module",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "main": "dist/esm/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
   "publishConfig": {},
   "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild src/index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js",
-    "standard": "npx standard \"src/**/*.js\"",
-    "test": "yarn standard && jest --coverage --coverageReporters=text-lcov | coveralls",
-    "test-watch": "jest --watch",
-    "bump": "npx np"
+    "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "build": "yarn build:esm && yarn build:cjs && yarn build:iife",
+    "postinstall": "yarn build",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
     "@domql/utils": "latest",
@@ -31,10 +37,5 @@
     "> 1%",
     "ie >= 9"
   ],
-  "targets": {
-    "context": "browser",
-    "outputFormat": "commonjs",
-    "includeNodeModules": true
-  },
   "gitHead": "75d8f8e2aedb0d9791e7c7fc84990bd42231bbc7"
 }
