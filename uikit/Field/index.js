@@ -7,8 +7,8 @@ import { Input } from '@symbo.ls/input'
 export const Field = {
   extend: [IconText],
 
-  props: (el, s) => ({
-    value: s[el.key],
+  props: ({ state, key }) => ({
+    value: state[key],
 
     depth: 16,
     placeholder: '',
