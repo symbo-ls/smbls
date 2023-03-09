@@ -1,0 +1,13 @@
+{
+  "name": "react-temp",
+  "type": "commonjs",
+  "main": "index.js",
+  "dependencies": {
+    "smbls": "latest"
+  },
+  "peerDependencies": {
+    "domql": "latest",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

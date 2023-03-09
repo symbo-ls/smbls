@@ -10,7 +10,7 @@ const MenuItem = {
 }
 
 export const Sidebar = {
-  caption: '',
+  aside: 'aside',
   nav: {
     style: {
       a: { cursor: 'pointer' }
