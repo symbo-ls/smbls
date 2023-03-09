@@ -17,9 +17,9 @@ export const DropdownList = {
 
   childExtend: {
     extend: Button,
-
-    props: (el, s) => ({
-      active: s.active === el.key,
+    state: {},
+    props: ({ key, state }) => ({
+      active: state.active === key,
       position: 'relative',
       round: '0',
       align: 'center flex-end',
@@ -36,7 +36,7 @@ export const DropdownList = {
       },
 
       icon: {
-        active: s.active === el.key,
+        active: state.active === key,
         name: 'checkmark',
         opacity: '0.1',
         '.active': { opacity: '1' }
