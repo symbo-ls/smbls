@@ -1,11 +1,11 @@
 'use strict'
 
-import utils from '@domql/utils'
+import * as utils from '@domql/utils'
 import * as globals from '@domql/globals'
 import io from 'socket.io-client'
 
-const { isFunction, isArray } = utils
-const { window } = globals
+const { isFunction, isArray } = utils.default || utils
+const { window } = globals.default || globals
 
 const ENV = process.env.NODE_ENV
 
