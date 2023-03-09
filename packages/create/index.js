@@ -65,8 +65,6 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
 
   const doc = options.parent || document
 
-  console.log(options)
-  
   const designSystem = init(options.system || {}, {
     key,
     emotion,
@@ -75,8 +73,6 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
     ...defaultOptions.system,
     ...initOptions
   })
-
-  console.log(designSystem)
 
   const domqlApp = DOM.create({
     extend: [App],
