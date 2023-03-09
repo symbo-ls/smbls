@@ -4,7 +4,22 @@
   "author": "symbo.ls",
   "version": "2.10.134",
   "repository": "https://github.com/symbo-ls/smbls",
-  "main": "src/index.js",
+  "type": "module",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "main": "dist/esm/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "publishConfig": {},
+  "scripts": {
+    "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild ./src/*.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild ./src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild ./src/index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
+    "build": "yarn build:esm && yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
   "files": [
     "src",
     "dist"

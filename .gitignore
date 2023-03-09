@@ -39,3 +39,4 @@ dist
 .DS_Store
 
 .smbls_convert_tmp
+test-react-components

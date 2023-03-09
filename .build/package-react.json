@@ -1,9 +1,13 @@
 {
-  "name": "react-temp",
+  "name": "@symbo.ls/react-temp",
   "type": "commonjs",
   "main": "index.js",
   "dependencies": {
     "smbls": "latest"
+  },
+  "scripts": {
+    "build:button": "npx esbuild **/*.js --target=es2020 --format=cjs --allow-overwrite --loader:.js=jsx --outdir=__dist/",
+    "build": "npx esbuild **/*.js --target=es2020 --format=esm --allow-overwrite --loader:.js=jsx --outdir=."
   },
   "peerDependencies": {
     "domql": "latest",
