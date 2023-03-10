@@ -1,6 +1,6 @@
 'use strict'
 
-import { init } from 'smbls'
+import { init } from '@symbo.ls/init'
 
 const ANIMATION = {
   fadeInUp: {

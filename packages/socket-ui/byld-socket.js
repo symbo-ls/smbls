@@ -2,7 +2,10 @@
 
 import { isNumber } from '@domql/utils'
 import { router } from '@domql/router'
-import { set, init, connect, Notification } from 'smbls'
+import { init } from '@symbo.ls/init'
+import { set } from '@symbo.ls/scratch'
+import { connect } from '@symbo.ls/socket/client'
+import { Notification } from '@symbo.ls/uikit'
 
 const ANIMATION = {
   fadeInUp: {
