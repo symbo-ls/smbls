@@ -62,8 +62,6 @@ export const Theme = {
     theme: (element) => {
       const { props } = element
       const globalTheme = getSystemTheme(element)
-      console.log('globalTheme')
-      console.log(globalTheme)
       if (!props.theme) return
       return getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
     },

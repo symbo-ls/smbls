@@ -3,20 +3,19 @@
 import { merge, isFunction, isObject, isArray } from '@domql/utils'
 import { keySetters } from '@symbo.ls/atoms'
 
-import { registry as reg } from './registry'
+import { CSS_PROPS_REGISTRY } from './registry'
 
-export const transformClassname = (props, registry = reg) => {
+export const transformClassname = (props, context = {}, registry = CSS_PROPS_REGISTRY) => {
   const CLASS_NAMES = {}
   if (!isObject(props)) return
 
   for (const key in props) {
     const setter = keySetters[key.slice(0, 1)]
-    const reg = registry
-    const hasCSS = reg[key]
+    const hasCSS = registry[key]
 
     if (setter) setter(key, props[key], CLASS_NAMES)
     else if (isFunction(hasCSS)) {
-      const stack = hasCSS({ props, context: {} })
+      const stack = hasCSS({ props, context })
       const exec = isArray(stack) ? stack.reduce((a, c) => {
         return merge(a, c)
       }, {}) : stack

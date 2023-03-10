@@ -22,8 +22,7 @@ const DEFAULT_PROPS = {
     useFontImport: true
   },
   components: {},
-  snippets: {},
-  setGlobalTheme: () => {}
+  snippets: {}
 }
 
 export const SymbolsContext = React.createContext(DEFAULT_PROPS)
@@ -34,8 +33,7 @@ export const useGlobalState = () => {
 }
 
 export const useGlobalTheme = (prop) => {
-  const { designSystem } = useContext(SymbolsContext)
-  const [ globalTheme, setGlobalTheme ] = useState(designSystem.globalTheme)
+  const { designSystem, globalTheme, setGlobalTheme } = useContext(SymbolsContext)
   designSystem.globalTheme = globalTheme
   return [globalTheme, setGlobalTheme]
 }
@@ -45,12 +43,14 @@ export const useDesignSystem = () => {
   return designSystem
 }
 
+export const useSymbols = () => useContext(SymbolsContext)
+
 export const SymbolsProvider = (options = DEFAULT_PROPS) => {
   const { appKey, children } = options
 
   const designSystem = init(options.designSystem || DEFAULT_CONFIG)
-  const [state, setStaste] = useState(options.state)
-
+  const [ state, setStaste ] = useState(options.state)
+  const [ globalTheme, setGlobalTheme ] = useState(designSystem.globalTheme)
   const { Provider } = SymbolsContext
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   return React.createElement(
     Provider,
-    { value: { designSystem, state } },
+    { value: { designSystem, state, globalTheme, setGlobalTheme } },
     children
   )
 }

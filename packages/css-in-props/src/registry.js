@@ -17,7 +17,7 @@ import {
   Animation
 } from '@symbo.ls/atoms'
 
-export const registry = mergeArray([
+export const CSS_PROPS_REGISTRY = mergeArray([
   Shape,
   Position,
   Theme,
