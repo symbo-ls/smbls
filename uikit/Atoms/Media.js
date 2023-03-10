@@ -53,9 +53,9 @@ const convertPropsToClass = (props, result, element) => {
 
 const applyMediaProps = (key, props, result, element) => {
   const { context } = element
-  if (!context.system || !context.system.MEDIA) return
+  if (!context.designSystem || !context.designSystem.MEDIA) return
   const globalTheme = getSystemTheme(element)
-  const { MEDIA } = context.system
+  const { MEDIA } = context.designSystem
   const mediaName = MEDIA[key.slice(1)]
   const generatedClass = convertPropsToClass(props, result, element)
 
@@ -80,7 +80,7 @@ const applySelectorProps = (key, props, result, element) => {
 }
 
 const applyCaseProps = (key, props, result, element) => {
-  const { CASES } = element.context && element.context.system
+  const { CASES } = element.context && element.context.designSystem
   const caseKey = key.slice(1)
   const isPropTrue = element.props[caseKey]
   if (!CASES[caseKey] && !isPropTrue) return
@@ -121,7 +121,7 @@ const beforeClassAssign = (element, s) => {
 
 export const initUpdate = element => {
   const { props, context, class: className } = element
-  const globalTheme = context.system.globalTheme
+  const globalTheme = context.designSystem.globalTheme
 
   const parentProps = element.parent.props
   if (parentProps && parentProps.spacingRatio && parentProps.inheritSpacingRatio) {

@@ -34,11 +34,11 @@ program
             PROJECT_SNIPPETS,
             PROJECT_PAGES
           } = data
-          if (PROJECT_SYSTEM) d.system = PROJECT_SYSTEM
-          if (PROJECT_STATE) d.system = PROJECT_STATE
-          if (PROJECT_COMPONENTS) d.system = PROJECT_COMPONENTS
-          if (PROJECT_SNIPPETS) d.system = PROJECT_SNIPPETS
-          if (PROJECT_PAGES) d.system = PROJECT_PAGES
+          if (PROJECT_SYSTEM) d.designSystem = PROJECT_SYSTEM
+          if (PROJECT_STATE) d.designSystem = PROJECT_STATE
+          if (PROJECT_COMPONENTS) d.designSystem = PROJECT_COMPONENTS
+          if (PROJECT_SNIPPETS) d.designSystem = PROJECT_SNIPPETS
+          if (PROJECT_PAGES) d.designSystem = PROJECT_PAGES
           if (Object.keys(d).length) updateDynamycFile(d)
         },
         onError: (err, socket) => {

@@ -7,7 +7,7 @@ const { keyframes } = emotion
 
 const applyAnimationProps = (animation, element) => {
   if (isObject(animation)) return { animationName: keyframes(animation) }
-  const { ANIMATION } = element.context && element.context.system
+  const { ANIMATION } = element.context && element.context.designSystem
   const record = ANIMATION[animation]
   return keyframes(record)
 }

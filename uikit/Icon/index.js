@@ -5,7 +5,7 @@ import { Flex, Svg } from '@symbo.ls/atoms'
 export const Icon = {
   extend: Svg,
   props: ({ key, props, parent, context }) => {
-    const { ICONS, useIconSprite, verbose } = context && context.system
+    const { ICONS, useIconSprite, verbose } = context && context.designSystem
     const { toCamelCase } = context && context.utils
     const iconName = props.inheritedString || props.name || props.icon || key
     const camelCase = toCamelCase(iconName)

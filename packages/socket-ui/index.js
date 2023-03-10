@@ -2,7 +2,7 @@
 
 import DOM from 'domql'
 
-import system from './init'
+import designSystem from './init'
 
 import { Box } from 'smbls'
 import { Extend } from './extend'
@@ -10,5 +10,5 @@ import { Extend } from './extend'
 export const SymbolsDebugger = DOM.create(Extend, undefined, 'app', {
   extend: [Box],
   components: {},
-  context: { system }
+  context: { designSystem }
 })

@@ -20,7 +20,7 @@ const CONFIG = getActiveConfig()
 const mergeWithLocalFile = (config = CONFIG, RC_FILE) => {
   const rcfile = isObject(RC_FILE) ? RC_FILE : DYNAMIC_JSON || {}
   const fileData = deepMerge(config, rcfile)
-  return fileData && fileData.system
+  return fileData && fileData.designSystem
 }
 
 const SET_OPTIONS = {

@@ -25,7 +25,7 @@ const defaultOptions = {
   },
   state: {},
   pages: {},
-  system: {
+  designSystem: {
     useReset: true,
     useVariable: true,
     useIconSprite: true,
@@ -65,12 +65,12 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
 
   const doc = options.parent || document
 
-  const designSystem = init(options.system || {}, {
+  const designSystem = init(options.designSystem || {}, {
     key,
     emotion,
     verbose: options.verbose,
     document: doc,
-    ...defaultOptions.system,
+    ...defaultOptions.designSystem,
     ...initOptions
   })
 
@@ -83,7 +83,7 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
       components: options.components ? { ...uikit, ...options.components } : uikit,
       state: options.state || {},
       pages: options.pages || {},
-      system: designSystem || {},
+      designSystem: designSystem || {},
       utils: { ...utils, ...domqlUtils },
       define: defaultDefine,
       registry: emotionDefine,
