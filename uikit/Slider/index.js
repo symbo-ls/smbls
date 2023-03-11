@@ -45,7 +45,6 @@ export const RangeSlider = {
 const listenProp = (el, prop, def) => {
   const val = el && el.props && el.props[prop]
   const r = (isFunction(val) ? val() : val) || (def !== undefined ? def : 50)
-  // if (prop === 'value') console.log(r)
   return r
 }
 

@@ -16,6 +16,7 @@ import { defaultDefine } from './define'
 
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
 import { deepMerge, isObject } from '@domql/utils'
+import { initRouter } from './router'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
@@ -35,6 +36,10 @@ const defaultOptions = {
   components: {},
   initOptions: {
     emotion: defaultEmotion
+  },
+  router: {
+    initRouter: true,
+    injectRouterInLinkComponent: true
   },
   define: defaultDefine
 }
@@ -73,6 +78,8 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
     ...defaultOptions.designSystem,
     ...initOptions
   })
+
+  if (options.router) initRouter(App, options.router)
 
   const domqlApp = DOM.create({
     extend: [App],

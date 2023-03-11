@@ -380,38 +380,38 @@
     tslib "^1.10.0"
 
 "@domql/globals@latest":
-  version "2.3.65"
-  resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.65.tgz#a5789f5a56f32d6c97a275d2d25e392311d89943"
-  integrity sha512-oG5gu5Stp5pH77EUY/pOo0SNSV74Ew7FEFfN0o0T4zfGmufFhM9jxzlxHHhZCkhJH2AdvzqW78Dk2m+NSKjd/w==
+  version "2.3.69"
+  resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.69.tgz#1aad6db20cc75b733c0ac93e27217312bbe87260"
+  integrity sha512-6TQkUQYiNHXG1pVqwrTbRjYS9HVsb5Ws3/4EZgUKC2Bd2Q5v8nDBsYGfS8fFlTTsvyWpNhtp4Bho3qSwA9tYJA==
 
 "@domql/registry@latest":
-  version "2.3.50"
-  resolved "https://registry.yarnpkg.com/@domql/registry/-/registry-2.3.50.tgz#e782bb886caae4ade5a01949e16642b54262c3b4"
-  integrity sha512-q7WeLV/jedUNHcvWo/bMmBrMbQxqcIg6bClXOWcTUXMTPjRqSLxNlO5Y9GAzus4KWTohKGsXYqcB6HYVspMktA==
+  version "2.3.70"
+  resolved "https://registry.yarnpkg.com/@domql/registry/-/registry-2.3.70.tgz#5b81058bd2483c6d7eae82ed145c7667ef923ba3"
+  integrity sha512-E1grt4OnFci0MEGtFEN+d+enWFY+3mlm3BizW9S2cp99nP5lPAR+9ynhC4DcxpcGmz5aQMHPokpnqzCwP4mYcQ==
   dependencies:
     "@domql/utils" latest
 
 "@domql/report@latest":
-  version "2.3.65"
-  resolved "https://registry.yarnpkg.com/@domql/report/-/report-2.3.65.tgz#a82d43a640d2fb01e2b0070a0267007c05feaf0a"
-  integrity sha512-dvzmD+coHDC2fWDJLNsoOjNNNogoY8sFyovhR/Nz3PvDTjXT48iRsAA87hW3XmxEWUFjD+fYIiIcSzTZWpWA0w==
+  version "2.3.69"
+  resolved "https://registry.yarnpkg.com/@domql/report/-/report-2.3.69.tgz#af37deb7e98c66f337a5a540503bbfd162d15c7d"
+  integrity sha512-YFga7D4SpYvfrN7n/Y9SOWbCAjDXEQt5MM7nXSWvkAPxPO+MstPeCuKTzLmtcyTcW4Hb3u0PVj6Dd7CwXe/y/A==
 
 "@domql/router@latest":
-  version "2.3.65"
-  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.65.tgz#7416566dc94f12ed2e222e168be4744c96a85861"
-  integrity sha512-rb+BG/AF31jHnvDjfWspLAAL0wwkHn7i+wImkyDRPqI0DY7UPQTfFOsXRM9KBUM4YQFF8NeMBGHPTjf+20xxag==
+  version "2.3.69"
+  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.69.tgz#b5e9c6d4f7095baef4bdfbd56a38b7f15b2780cf"
+  integrity sha512-UvhUQOYhnAmFdp4A86benN/SwiMMLjm4Yzq/iuE2rJrlrAbiMVu38QiceDgevQcs07HeesfSHhdPKkzOafXzZQ==
   dependencies:
     "@domql/utils" latest
 
 "@domql/tags@latest":
-  version "2.3.65"
-  resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.65.tgz#8c86969bab5e4002802bd982ce35390885148bbf"
-  integrity sha512-ybtJiB1ghLKO/86YY3Uxw6yxvom4zglt7mF1nCLIlf5V5LfjW3rJhY6yvz8qzlhy4SlJroCOVh5CsrUMrhQhkQ==
+  version "2.3.69"
+  resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.69.tgz#327174d80b32f63160518928da1219c7d87e17d8"
+  integrity sha512-ytoqiHNgHiSr3TUSw4NHgCTgkXkDHdjXoWc/XMnoMIzMkKe9BTX47UwNcDsSbQ4t9tmLnAJP4E28dTU1nATdNw==
 
 "@domql/utils@^2.3.14", "@domql/utils@latest":
-  version "2.3.65"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.65.tgz#be7671459dd83da1b3b271183db1c8d7b5aef4d8"
-  integrity sha512-VGEi3HNBh4Wi2+3ofFkZlMhcHOf7Jt2tdbNBiclbChJe0UGTF0FRp+Xtme+iTvBixertPka6RJCKFDah9xJwxw==
+  version "2.3.70"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.70.tgz#e52d019a3eb79d1204d1fa5590e66cda60453319"
+  integrity sha512-vZgceC/jEcaAcL6G3GUnDFVNlnAXUlSPHgeOVuJqw9+ZopsQnqDx6pFpgHL7N45x/kVcPVKThaOkd+gGhMe7Hw==
   dependencies:
     "@domql/globals" latest
     "@domql/tags" latest
@@ -6765,9 +6765,9 @@ minipass@^3.0.0, minipass@^3.1.1, minipass@^3.1.6:
     yallist "^4.0.0"
 
 minipass@^4.0.0:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.2.4.tgz#7d0d97434b6a19f59c5c3221698b48bbf3b2cd06"
-  integrity sha512-lwycX3cBMTvcejsHITUgYj6Gy6A7Nh4Q6h9NP4sTHY1ccJlC7yKzDmiShEHsJ16Jf1nKGDEaiHxiltsJEvk0nQ==
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-4.2.5.tgz#9e0e5256f1e3513f8c34691dd68549e85b2c8ceb"
+  integrity sha512-+yQl7SX3bIT83Lhb4BVorMAHVuqsskxRdlmO9kTpyukp8vsm2Sn/fUOV9xlnG8/a5JsypJzap21lz/y3FBMJ8Q==
 
 minizlib@^2.1.1, minizlib@^2.1.2:
   version "2.1.2"
@@ -6929,9 +6929,9 @@ node-fetch@^2.3.0, node-fetch@^2.6.7:
     whatwg-url "^5.0.0"
 
 node-fetch@^3.1.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.3.0.tgz#37e71db4ecc257057af828d523a7243d651d91e4"
-  integrity sha512-BKwRP/O0UvoMKp7GNdwPlObhYGB5DQqwhEDQlNKuoqwVYSxkSZCSbHjnFFmUEtwSKRPU4kNK8PbDYYitwaE3QA==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.3.1.tgz#b3eea7b54b3a48020e46f4f88b9c5a7430d20b2e"
+  integrity sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==
   dependencies:
     data-uri-to-buffer "^4.0.0"
     fetch-blob "^3.1.4"

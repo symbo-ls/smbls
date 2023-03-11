@@ -10,7 +10,8 @@ export const Link = {
     aria: {},
     fontWeight: 'bold',
     textDecoration: 'none',
-    color: 'currentColor'
+    color: 'currentColor',
+    draggable: true
   },
   attr: {
     href: element => {
@@ -18,15 +19,15 @@ export const Link = {
       return exec(element.props.href, element) || exec(element.props, element).href
     },
     target: ({ props }) => props.target,
-    'aria-label': ({ props }) => props.aria ? props.aria.label : props.text
+    'aria-label': ({ props }) => props.aria ? props.aria.label : props.text,
+    draggable:  ({ props }) => props.draggable
   }
 }
 
-export const RouteLink = {
-  extend: Link,
+export const RouterLink = {
   on: {
     click: (event, element, state) => {
-      const root = element.lookup('app')
+      const root = element.__ref.__root
       const { href } = element.props
       const firstThree = href[0] + href[1] + href[2]
       if (href && firstThree !== 'htt' && firstThree !== 'ske') {
@@ -35,4 +36,8 @@ export const RouteLink = {
       }
     }
   }
+}
+
+export const RouteLink = {
+  extend: [Link, RouterLink]
 }

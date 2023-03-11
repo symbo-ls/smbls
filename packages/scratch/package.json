@@ -14,7 +14,7 @@
   "jsdelivr": "dist/iife/index.js",
   "main": "dist/esm/index.js",
   "exports": "./dist/cjs/index.js",
-  "source": "index.js",
+  "source": "src/index.js",
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
