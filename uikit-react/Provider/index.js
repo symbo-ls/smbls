@@ -28,8 +28,8 @@ const DEFAULT_PROPS = {
 export const SymbolsContext = React.createContext(DEFAULT_PROPS)
 
 export const useGlobalState = () => {
-  const { state } = useContext(SymbolsContext)
-  return state
+  const { state, setState } = useContext(SymbolsContext)
+  return [state, setState]
 }
 
 export const useGlobalTheme = (prop) => {
@@ -48,7 +48,8 @@ export const useSymbols = () => useContext(SymbolsContext)
 export const SymbolsProvider = (options = DEFAULT_PROPS) => {
   const { appKey, children } = options
 
-  const designSystem = init(options.designSystem || DEFAULT_CONFIG)
+  const ds = init(options.designSystem || DEFAULT_CONFIG)
+  const [ designSystem, setDesignSystem ] = useState(ds)
   const [ state, setStaste ] = useState(options.state)
   const [ globalTheme, setGlobalTheme ] = useState(designSystem.globalTheme)
   const { Provider } = SymbolsContext
@@ -67,7 +68,11 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   return React.createElement(
     Provider,
-    { value: { designSystem, state, globalTheme, setGlobalTheme } },
+    { value: { 
+      designSystem, setDesignSystem,
+      state, setState,
+      globalTheme, setGlobalTheme
+    } },
     children
   )
 }
