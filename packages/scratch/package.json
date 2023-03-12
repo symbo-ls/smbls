@@ -9,10 +9,10 @@
   ],
   "repository": "https://github.com/symbo-ls/scratch",
   "type": "module",
-  "module": "dist/esm/index.js",
+  "module": "index.js",
   "unpkg": "dist/iife/index.js",
   "jsdelivr": "dist/iife/index.js",
-  "main": "dist/esm/index.js",
+  "main": "index.js",
   "exports": "./dist/cjs/index.js",
   "source": "src/index.js",
   "publishConfig": {},
@@ -21,7 +21,7 @@
     "build:esm": "npx esbuild ./src/*.js ./src/**/*.js --target=es2020 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build:iife": "npx esbuild ./src/index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "yarn build:esm && yarn build:cjs",
+    "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {

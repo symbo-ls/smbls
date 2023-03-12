@@ -11,10 +11,10 @@
     "react-dom": "^18.0.0"
   },
   "type": "module",
-  "module": "dist/esm/index.js",
+  "module": "index.js",
   "unpkg": "dist/iife/index.js",
   "jsdelivr": "dist/iife/index.js",
-  "main": "dist/esm/index.js",
+  "main": "index.js",
   "exports": "./dist/cjs/index.js",
   "source": "index.js",
   "files": [
@@ -26,7 +26,7 @@
     "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --loader:.js=jsx",
     "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.js=jsx",
     "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife --loader:.js=jsx",
-    "build": "yarn build:esm && yarn build:cjs",
+    "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "gitHead": "5382ad539538e5cd8f0683ffd2c7a92649e125bc"
