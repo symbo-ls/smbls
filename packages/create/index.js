@@ -4,24 +4,21 @@ import DOM from 'domql'
 import { transformDOMQLEmotion } from '@domql/emotion'
 import { router as defaultRouter } from '@domql/router'
 
-import * as utils from '@symbo.ls/utils'
-import * as domqlUtils from '@domql/utils'
+import * as utils from './utilImports'
 
 import * as uikit from '@symbo.ls/uikit'
-import { init, updateReset } from '@symbo.ls/init'
-import { set } from '@symbo.ls/scratch'
+import { init } from '@symbo.ls/init'
 
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
 
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
 
-import { deepMerge, isObject } from '@domql/utils'
+import { deepMerge, isObject, isString } from '@domql/utils'
 import { initRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
-const smblsUtils = { init, set, updateReset } 
 
 const defaultOptions = {
   editor: {
@@ -53,7 +50,7 @@ const mergeWithLocalFile = (options, RC_FILE) => {
 }
 
 export const create = async (App, options = defaultOptions, RC_FILE) => {
-  const appIsKey = domqlUtils.isString(App)
+  const appIsKey = isString(App)
   options = mergeWithLocalFile(options, RC_FILE)
   const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
 
@@ -82,7 +79,7 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
   const pages =  options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
-  const snippets = { ...utils, ...domqlUtils, ...smblsUtils, ...(options.snippets || {})}
+  const snippets = { ...utils, ...(options.snippets || {})}
   const router = options.router || defaultRouter
   const define = options.define || defaultDefine
 

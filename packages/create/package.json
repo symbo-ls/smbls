@@ -8,10 +8,13 @@
   "dependencies": {
     "@domql/emotion": "latest",
     "@domql/router": "latest",
+    "@domql/cookie": "latest",
     "@domql/utils": "latest",
+    "@domql/report": "latest",
     "@symbo.ls/fetch": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/uikit": "latest",
+    "@symbo.ls/scratch": "latest",
     "@symbo.ls/utils": "latest",
     "domql": "latest"
   },
