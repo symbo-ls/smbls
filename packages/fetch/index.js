@@ -49,8 +49,6 @@ export const fetchProject = async (key, options) => {
       delete obj.designsystem
       overwriteDeep(obj, options)
     }
-
-    console.log(options)
   }
 
   return options
