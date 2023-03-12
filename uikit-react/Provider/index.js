@@ -50,7 +50,7 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   const ds = init(options.designSystem || DEFAULT_CONFIG)
   const [ designSystem, setDesignSystem ] = useState(ds)
-  const [ state, setStaste ] = useState(options.state)
+  const [ state, setState ] = useState(options.state)
   const [ globalTheme, setGlobalTheme ] = useState(designSystem.globalTheme)
   const { Provider } = SymbolsContext
 
@@ -58,7 +58,7 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
     if (appKey && options.editor) {
       try {
         if (options.editor.async) fetchStateAsync(appKey, options, (data) => {
-          setStaste(data)
+          setState(data)
         })
       } catch (e) {
         console.error(e)
@@ -68,7 +68,7 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   return React.createElement(
     Provider,
-    { value: { 
+    { value: {
       designSystem, setDesignSystem,
       state, setState,
       globalTheme, setGlobalTheme
