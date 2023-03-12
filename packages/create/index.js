@@ -1,22 +1,23 @@
 'use strict'
 
 import DOM from 'domql'
-import { transformDOMQLEmotion } from 'domql/packages/emotion'
-import { router } from 'domql/packages/router'
+import { transformDOMQLEmotion } from '@domql/emotion'
+import { router as defaultRouter } from '@domql/router'
 
 import * as utils from '@symbo.ls/utils'
 import * as domqlUtils from '@domql/utils'
 
 import * as uikit from '@symbo.ls/uikit'
 import { init } from '@symbo.ls/init'
-import { fetchStateAsync, fetchProject } from '@symbo.ls/fetch'
 
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
 
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
+
 import { deepMerge, isObject } from '@domql/utils'
 import { initRouter } from './router'
+import { fetchAsync, fetchSync } from './ferchOnCreate'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
@@ -55,22 +56,16 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
   const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
 
   if (appIsKey) App = {}
-  if (key && options.editor) {
-    try {
-      if (!options.async) await fetchProject(key, options)
-    } catch (e) {
-      console.error(e)
-    }
-  }
+  await fetchSync(key, options)
 
   const initOptions = options.initOptions || {}
   const emotion = initOptions.emotion || defaultEmotion || createEmotion()
   if (!initOptions.emotion) initOptions.emotion = emotion
   const emotionDefine = options.registry || transformDOMQLEmotion(initOptions.emotion, options)
 
-  const doc = options.parent || document
+  const doc = options.parent || options.document || document
 
-  const designSystem = init(options.designSystem || {}, {
+  const scratchSystem = init(options.designSystem || {}, {
     key,
     emotion,
     verbose: options.verbose,
@@ -79,22 +74,31 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
     ...initOptions
   })
 
-  if (options.router) initRouter(App, options.router)
+  initRouter(App, options.routerOptions)
+
+  const state = options.state || {}
+  const pages =  options.pages || {}
+  const components = options.components ? { ...uikit, ...options.components } : uikit
+  const designSystem = scratchSystem || {}
+  const snippets = { ...utils, ...domqlUtils, ...(options.snippets || {})}
+  const router = options.router || defaultRouter
+  const define = options.define || defaultDefine
 
   const domqlApp = DOM.create({
     extend: [App],
     routes: options.pages,
-    state: options.state,
+    state,
     context: {
       key,
-      components: options.components ? { ...uikit, ...options.components } : uikit,
-      state: options.state || {},
-      pages: options.pages || {},
-      designSystem: designSystem || {},
-      utils: { ...utils, ...domqlUtils },
-      define: defaultDefine,
+      components,
+      state,
+      pages,
+      designSystem,
+      snippets,
+      utils: snippets,
+      define,
       registry: emotionDefine,
-      router: options.router || router,
+      router,
       emotion,
       document: doc
     }
@@ -104,15 +108,7 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
     ...options.domqlOptions
   })
 
-  if (key && options.editor) {
-    try {
-      if (options.editor.async) fetchStateAsync(key, options, (data) => {
-        domqlApp.state.update(data)
-      })
-    } catch (e) {
-      console.error(e)
-    }
-  }
+  fetchAsync(domqlApp)
 
   return domqlApp
 }

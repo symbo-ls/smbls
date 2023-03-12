@@ -7,6 +7,8 @@
   "main": "index.js",
   "dependencies": {
     "@domql/utils": "latest",
+    "@domql/router": "latest",
+    "@domql/emotion": "latest",
     "@symbo.ls/fetch": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/uikit": "latest",

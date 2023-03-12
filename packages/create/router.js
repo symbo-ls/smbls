@@ -18,10 +18,10 @@ export const initRouter = (root, options = DEFAULT_ROUTING_OPTIONS) => {
 
   if (options.initRouter) {
     if (root.on) {
-      root.on.render = onRender
+      root.on.renderRouter = onRender
     } else {
       root.on = {
-        render: onRender
+        renderRouter: onRender
       }
     }
   }
