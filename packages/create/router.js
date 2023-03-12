@@ -13,7 +13,7 @@ export const initRouter = (root, options = DEFAULT_ROUTING_OPTIONS) => {
   if (options === true) options = DEFAULT_ROUTING_OPTIONS
 
   const onRender = (el, s) => {
-    router(el, window.location.pathname, {}, { updateState: false })
+    router(el, window.location.pathname, {})
   }
 
   if (options.initRouter) {

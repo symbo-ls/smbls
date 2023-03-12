@@ -12,5 +12,8 @@
     "@symbo.ls/uikit": "latest",
     "@symbo.ls/utils": "latest",
     "domql": "latest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
   }
 }

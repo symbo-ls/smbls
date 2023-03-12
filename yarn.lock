@@ -50,7 +50,7 @@
     semver "^6.3.0"
     source-map "^0.5.0"
 
-"@babel/core@^7.16.0", "@babel/core@^7.18.10":
+"@babel/core@^7.12.0", "@babel/core@^7.16.0", "@babel/core@^7.18.10":
   version "7.21.0"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.21.0.tgz#1341aefdcc14ccc7553fcc688dd8986a2daffc13"
   integrity sha512-PuxUbxcW6ZYe656yL3EAhpy7qXKq0DmYsrJLpbB8XrsCP9Nm+XCg9XFMb5vIDliPD7+U/+M+QJlH17XOcB7eXA==
@@ -397,10 +397,11 @@
   integrity sha512-YFga7D4SpYvfrN7n/Y9SOWbCAjDXEQt5MM7nXSWvkAPxPO+MstPeCuKTzLmtcyTcW4Hb3u0PVj6Dd7CwXe/y/A==
 
 "@domql/router@latest":
-  version "2.3.69"
-  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.69.tgz#b5e9c6d4f7095baef4bdfbd56a38b7f15b2780cf"
-  integrity sha512-UvhUQOYhnAmFdp4A86benN/SwiMMLjm4Yzq/iuE2rJrlrAbiMVu38QiceDgevQcs07HeesfSHhdPKkzOafXzZQ==
+  version "2.3.71"
+  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.71.tgz#a88b44a9e3de7e5e39c41c4e0e977c28d33c7e24"
+  integrity sha512-XVBAIMY3664hT58KgOpA4czb6fmKK7F1i9Yuu315OpUb5L0BFKA599whPulm5LuFSZ6gyrPPGm7RICXS0JYQLw==
   dependencies:
+    "@domql/globals" latest
     "@domql/utils" latest
 
 "@domql/tags@latest":
@@ -1995,9 +1996,9 @@
     "@emotion/css" "^11.10.0"
 
 "@symbo.ls/create@latest":
-  version "2.10.158"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.158.tgz#5efaf114ddca531ee9753fb59c1c5ca0495dbd2d"
-  integrity sha512-lKXDetCRt5ofMcgLi7f0J0bGgac+eZcLurELV+WAiCQKe/aqRCJW/BxsiwPK+oUVuFaIOhZ8qgvcDcJtNAjVsA==
+  version "2.10.161"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.161.tgz#b037c5561b0b23d3b2b36139004a3f17c428de97"
+  integrity sha512-4RXVhS4H9mhktx3oqKCsFKlZsesHM0G7sXxOUYOXFGjHs+7MiTIPko21sG4hBnROwVfCjVPYhX8lGR3YtXNZfQ==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/fetch" latest
@@ -2108,9 +2109,9 @@
     "@symbo.ls/text" latest
 
 "@symbo.ls/link@latest":
-  version "2.10.134"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/link/-/link-2.10.134.tgz#523635e594188890c6a124293771b4e0d0285c3e"
-  integrity sha512-0rO6RUcFsyRS+8u0K791iHwgaUmsTLryXg1wdtXCO6+Pa6NH28zYrLeGCCaZGpOL8Ifo4IT976fy2QaXHJgvKQ==
+  version "2.10.161"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/link/-/link-2.10.161.tgz#5d29825a6faa579e7555437729d98bcf4053da81"
+  integrity sha512-vnKdEn7eA6gU85K2roSrJtUwBum4AbRVLRRJAyLJV7BtXlPwQks4ZritErukwCoDfm+M21LX78EJyhVy5/azuA==
   dependencies:
     "@domql/router" latest
     "@symbo.ls/atoms" latest
@@ -2190,18 +2191,18 @@
     "@symbo.ls/react-atoms" latest
 
 "@symbo.ls/react-provider@latest":
-  version "2.10.159"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/react-provider/-/react-provider-2.10.159.tgz#8d8f81a51530dcac25580a0d7dada5c476076aef"
-  integrity sha512-iNaIRPQ1Ex/mbj/1PNmXZJmnO1cTQSlvKjFx0SR/TA9f1ZxN7p28AUCsbsUULTvbzqELZ2zPgJKq+bDVeFfn/w==
+  version "2.10.161"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/react-provider/-/react-provider-2.10.161.tgz#73d28ae2cd16883e449f2a9458644a366f4144fb"
+  integrity sha512-EQvBDzBPUN24xdNvlafDNkOItWfLrJyacQnCQMcPIWXIj2wMmeg7p/jLWnAg+6j0CtksDosrynt+lKeAOaLTyQ==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/default-config" latest
     "@symbo.ls/init" latest
 
 "@symbo.ls/scratch@latest":
-  version "2.10.156"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.156.tgz#0bc4758fc2a4b3d3e6a061155b76d16e15a98367"
-  integrity sha512-3HVfBacdRfRa4F+PeN6Y4Ammv5I54KPsji6D73wr4B8k6435S/HM55KMTQ4GZFzacgp5z140wJ3ghdTYfjnxXg==
+  version "2.10.161"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.161.tgz#3e76131b510c02ea29d30f1d6fca10fe5c19545b"
+  integrity sha512-3uU9ED9aBjnHUXcdWpQyXQtZglWXbjayOn6cgeZ6C7cpR7gchdoPUuhSTI05Dl5lzkHKP3wMgZOTRxbR+IMI8w==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/utils" latest
@@ -2223,9 +2224,9 @@
     "@symbo.ls/scratch" latest
 
 "@symbo.ls/slider@latest":
-  version "2.10.134"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/slider/-/slider-2.10.134.tgz#cbe4bf7929697a66b7f594001f9bdc5036521dcb"
-  integrity sha512-1J4RjfodRJmNcHmS7w90fXwKfr6kHMsr5farw/2awJrzpbkWKGKWabtJED8mflZUMjA0m0xYfHwbF+4G0onhxw==
+  version "2.10.161"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/slider/-/slider-2.10.161.tgz#e1acfcdffcfa46ae4c631cc04d0e482a92d88f94"
+  integrity sha512-MgT2xV0al6H6RF1rESuhfAiF3rxnAwRvjgUqjrbzlve0lKvkpCoo+GNj+7LGSRzeQkMi2LFX9jdxJqhT74b96w==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/button" latest
@@ -3542,9 +3543,9 @@ css-in-props@^0.10.2:
     "@emotion/css" "^11.10.5"
 
 css-in-props@latest:
-  version "2.10.159"
-  resolved "https://registry.yarnpkg.com/css-in-props/-/css-in-props-2.10.159.tgz#5f808f04d6efeca474deb73ebe6dae80fb6d46f5"
-  integrity sha512-aY7FhctLt4vrAK/ap1hlT74ZOA9F7XmZ0s8HrgoZ23cE8F6+tjGq8oqOltyKXXcyIAB0Hv8QyFRFtcSzO41m/A==
+  version "2.10.161"
+  resolved "https://registry.yarnpkg.com/css-in-props/-/css-in-props-2.10.161.tgz#dc1a2ddcf5a6297daaaac6a20d992501428af5ea"
+  integrity sha512-lGkfx4b9VpjoRMouKK6KTsK0Co/4WNiAqkbVvPh7KlA+o3O7+Re/M6oegmzFVFSaAxi+Rv92CrcCcnOvibRbYw==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/atoms" latest
@@ -3894,9 +3895,9 @@ domql-to-mitosis@latest:
     vue "~2.6"
 
 domql@^1.5.71, domql@latest:
-  version "1.5.113"
-  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.113.tgz#73f18e2cf2997dbf70f2f20ce352f5b4d38b04e1"
-  integrity sha512-mHMlcN2NQbbOVL2ubZ+8R5+H4DWrsBxSzYnZbYcWGccxplt2ribjhR7fSJK06Uzi5Zht4q3w8oNyTgeIPl2sqw==
+  version "1.5.115"
+  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.115.tgz#942a1197398b112bde32eb1138d6fd115dd7b26b"
+  integrity sha512-RUaV3ihZxaVyldm4qkNqhQL0LCtGU0Xs8Ntb6vnU4f9QgmQrE86lqP3gIjuOErYCqfeWgBlsQFpd0qzD+IqNuQ==
   dependencies:
     "@domql/globals" latest
     "@domql/registry" latest
@@ -5271,9 +5272,9 @@ html-encoding-sniffer@^3.0.0:
     whatwg-encoding "^2.0.0"
 
 htmljs-parser@^5.1.5:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/htmljs-parser/-/htmljs-parser-5.4.0.tgz#e720428cb3966ccaae1a7cfc69f5f1f5b260e0db"
-  integrity sha512-H5SlVDXshqm5lAUZoqfe/W0zequmZaKyqUICPozBPRg4x8q8MRfsPJ3jbAwMcksQKuIjyiDfMwTuxNMv2BFPkg==
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/htmljs-parser/-/htmljs-parser-5.4.1.tgz#4d13611d7ef5c54383fe6fc33af0f771777a42f9"
+  integrity sha512-3DMW82bji883Tu9t55qqfjv9RqLKbpXWcQCQ2GpG13CxFgqg3CBfQIX5OlJ1846R5wCiVGMBzrTTluaZ+J8n0g==
 
 htmlnano@^2.0.0:
   version "2.0.3"

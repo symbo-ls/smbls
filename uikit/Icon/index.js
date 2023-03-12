@@ -1,5 +1,6 @@
 'use strict'
 
+import { isObject } from '@domql/utils'
 import { Flex, Svg } from '@symbo.ls/atoms'
 
 export const Icon = {
@@ -16,8 +17,13 @@ export const Icon = {
     if (props.active) {
       activeIconName = props['.active'].name || props['.active'].icon
     }
-    if (parent && parent.props &&
-        parent.props.active && parent.props['.active'] && parent.props['.active'].icon) {
+    if (
+      parent &&
+      parent.props &&
+      parent.props.active &&
+      parent.props['.active'] &&
+      parent.props['.active'].icon
+    ) {
       activeIconName = parent.props['.active'].icon.name || parent.props['.active'].icon.icon || parent.props['.active'].icon
     }
 
@@ -25,7 +31,7 @@ export const Icon = {
     if (ICONS[activeIconName]) validIconName = activeIconName
     if (ICONS[camelCase]) validIconName = camelCase
     else if (ICONS[isArray[0] + isArray[1]]) validIconName = isArray[0] + isArray[1]
-    else if (ICONS[isArray[0]]) validIconName = isArray[0]
+    else if (ICONS[isArray[0]]) validIconsName = isArray[0]
     else {
       if (verbose) console.warn(`can't find icon:`, iconName, validIconName)
       validIconName = 'noIcon'
