@@ -6,39 +6,15 @@ import { deepMerge, isObject, isString } from '@domql/utils'
 import * as utils from './utilImports'
 import * as uikit from '@symbo.ls/uikit'
 
-import { emotion as defaultEmotion } from '@symbo.ls/emotion'
-
 import { defaultDefine } from './define'
 import { initRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
 import { initEmotion } from './initEmotion'
 
+import { DEFAULT_CREATE_OPTIONS } from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
-const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
-export const DEFAULT_CREATE_OPTIONS = {
-  editor: {
-    endpoint: 'api.symbols.app'
-  },
-  state: {},
-  pages: {},
-  designSystem: {
-    useReset: true,
-    useVariable: true,
-    useIconSprite: true,
-    useSvgSprite: true,
-    useFontImport: true
-  },
-  components: {},
-  initOptions: {
-    emotion: defaultEmotion
-  },
-  router: {
-    initRouter: true,
-    injectRouterInLinkComponent: true
-  },
-  define: defaultDefine
-}
+const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
 const mergeWithLocalFile = (options, RC_FILE) => {
   const rcfile = isObject(RC_FILE) ? RC_FILE : DYNAMIC_JSON || {}
