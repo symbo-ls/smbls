@@ -1,14 +1,13 @@
 'use strict'
 
-import { getActiveConfig } from '../factory.js'
+import { arrayzeValue } from '@symbo.ls/utils'
+import { isString, merge } from '@domql/utils'
 
-import { isString } from '@domql/utils'
+import { getActiveConfig } from '../factory.js'
 import {
   applySequenceVars,
-  arrayze,
   generateSequence,
-  getSequenceValuePropertyPair,
-  merge
+  getSequenceValuePropertyPair
 } from '../utils'
 
 const runThroughMedia = sequenceProps => {
@@ -62,7 +61,7 @@ export const getSpacingByKey = (
 ) => {
   const sequence = getSequence(sequenceProps)
 
-  const stack = arrayze(value)
+  const stack = arrayzeValue(value)
   if (!stack) return
 
   if (isString(value) && value.includes('calc')) {

@@ -36,3 +36,9 @@ export const toDescriptionCase = str => {
   const result = str.replace(/([A-Z])/g, ' $1')
   return result.charAt(0).toUpperCase() + result.slice(1)
 }
+
+export const arrayzeValue = val => {
+  if (isString(val)) return val.split(' ')
+  if (isObject(val)) return Object.keys(val).map(v => val[v])
+  if (isArray(val)) return val
+}

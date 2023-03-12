@@ -1,7 +1,8 @@
 'use strict'
 
+import { merge } from '@domql/utils'
 import { getActiveConfig } from '../factory.js'
-import { getDefaultOrFirstKey, merge } from '../utils'
+import { getDefaultOrFirstKey } from '../utils'
 
 export const applyDocument = () => {
   const CONFIG = getActiveConfig()

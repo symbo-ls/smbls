@@ -1,10 +1,10 @@
 'use strict'
 
 import { isObject } from '@domql/utils'
+import { arrayzeValue } from '@symbo.ls/utils'
 import { getActiveConfig } from '../factory.js'
 
 import {
-  arrayze,
   getDefaultOrFirstKey,
   getFontFaceEach,
   setCustomFontMedia
@@ -32,7 +32,7 @@ export const setFontFamily = (val, key) => {
   let { value, type } = val
   if (val.isDefault) FONT_FAMILY.default = key
 
-  if (isObject(value)) value = arrayze(value)
+  if (isObject(value)) value = arrayzeValue(value)
 
   const CSSvar = `--font-family-${key}`
   const str = `${value.join(', ')}, ${FONT_FAMILY_TYPES[type]}`

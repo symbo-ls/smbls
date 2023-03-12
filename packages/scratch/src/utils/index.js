@@ -1,6 +1,5 @@
 'use strict'
 
-export * from './object.js'
 export * from './color.js'
 export * from './font.js'
 export * from './sequence.js'
