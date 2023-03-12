@@ -84,6 +84,6 @@ export const updateReset = (config, RC_FILE, options = UPDATE_OPTIONS) => {
   emotion.injectGlobal(conf.RESET)
 }
 
-export const setClass = (props, options = { emotion: defaultEmotion }) => {}// setClassname(props, options.emotion.css)
+export const setClass = (props, options = UPDATE_OPTIONS) => {}// setClassname(props, options.emotion.css)
 
 export { CONFIG, DYNAMIC_JSON }

@@ -8,7 +8,8 @@ import * as utils from '@symbo.ls/utils'
 import * as domqlUtils from '@domql/utils'
 
 import * as uikit from '@symbo.ls/uikit'
-import { init } from '@symbo.ls/init'
+import { init, updateReset } from '@symbo.ls/init'
+import { set } from '@symbo.ls/scratch'
 
 import { emotion as defaultEmotion, createEmotion } from '@symbo.ls/emotion'
 import { defaultDefine } from './define'
@@ -20,6 +21,7 @@ import { initRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
+const smblsUtils = { init, set, updateReset } 
 
 const defaultOptions = {
   editor: {
@@ -80,7 +82,7 @@ export const create = async (App, options = defaultOptions, RC_FILE) => {
   const pages =  options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
-  const snippets = { ...utils, ...domqlUtils, ...(options.snippets || {})}
+  const snippets = { ...utils, ...domqlUtils, ...smblsUtils, ...(options.snippets || {})}
   const router = options.router || defaultRouter
   const define = options.define || defaultDefine
 
