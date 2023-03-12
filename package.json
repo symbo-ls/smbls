@@ -31,5 +31,5 @@
     "packages/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
