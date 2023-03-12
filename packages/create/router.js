@@ -10,10 +10,13 @@ const DEFAULT_ROUTING_OPTIONS = {
 }
 
 export const initRouter = (root, options = DEFAULT_ROUTING_OPTIONS) => {
+  if (options === false) return
   if (options === true) options = DEFAULT_ROUTING_OPTIONS
 
+  console.log(options)
+
   const onRender = (el, s) => {
-    router(el, window.location.pathname, {})
+    if (el.routes) router(el, window.location.pathname, {})
   }
 
   if (options.initRouter) {

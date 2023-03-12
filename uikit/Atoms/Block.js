@@ -1,6 +1,7 @@
 'use strict'
 
-import { getSpacingBasedOnRatio, getSpacingByKey, isString } from '@symbo.ls/scratch'
+import { isString } from '@domql/utils'
+import { getSpacingBasedOnRatio, getSpacingByKey } from '@symbo.ls/scratch'
 
 const transfromGap = gap => isString(gap) && ({
   gap: gap.split(' ').map(v => getSpacingByKey(v, 'gap').gap).join(' ')

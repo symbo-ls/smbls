@@ -32,7 +32,7 @@ export const fetchRemote = async (key, options = defaultOptions) => {
     console.error(e)
   }
 
-  return await response ? response.json() : {}
+  return await response.json()
 }
 
 export const fetchProject = async (key, options) => {
@@ -43,8 +43,14 @@ export const fetchProject = async (key, options) => {
     const evalData = deepDestringify(data)
 
     if (editor.serviceRoute) {
-      overwriteDeep(options[editor.serviceRoute], evalData)
-    } else overwriteDeep(options, evalData)
+      overwriteDeep(evalData, options[editor.serviceRoute])
+    } else {
+      const obj = { ...evalData, designSystem: evalData.designsystem }
+      delete obj.designsystem
+      overwriteDeep(obj, options)
+    }
+
+    console.log(options)
   }
 
   return options
@@ -56,6 +62,8 @@ export const fetchStateAsync = async (key, options, callback) => {
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
     const state = editor.serviceRoute === 'state' ? data : data.state
+    console.log(editor)
+    console.log(state)
     if (isObject(state)) callback(state)
   }
 }

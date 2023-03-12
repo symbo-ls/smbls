@@ -4,6 +4,7 @@ export * from '@domql/utils'
 export * from '@symbo.ls/utils'
 export { set } from '@symbo.ls/scratch'
 export * from '@symbo.ls/scratch/src/utils'
+export * from '@symbo.ls/scratch/src/system'
 export { init, updateReset } from '@symbo.ls/init'
 
 export * from '@domql/cookie'

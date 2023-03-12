@@ -89,14 +89,15 @@ const onDisconnect = (element, state) => {
   return () => {}
 }
 
-const onChange = (element, state) => {
+const onChange = (element, state, context) => {
   return (event, data) => {
     if (event === 'liveChange') {
       const obj = JSON.parse(data)
       const { PROJECT_STATE, PROJECT_SYSTEM } = obj
+      const { utils } = context
 
       if (PROJECT_STATE) {
-        if (PROJECT_STATE.route) (element.context.router || router)(element, PROJECT_STATE.route.replace('/state', '') || '/', {}, true, false)
+        if (PROJECT_STATE.route) (utils.router || router)(element, PROJECT_STATE.route.replace('/state', '') || '/', {}, true, false)
         else state.update(PROJECT_STATE)
       }
 
@@ -147,14 +148,14 @@ export const Sync = {
   },
 
   on: {
-    render: (el, s) => {
-      connect(el.context.key, {
+    render: (el, s, ctx) => {
+      connect(ctx.key, {
         source: 'client',
         // socketUrl: 'wss://localhost:13335',
         location: window.location.host,
-        onConnect: onConnect(el, s),
-        onDisconnect: onDisconnect(el, s),
-        onChange: onChange(el, s)
+        onConnect: onConnect(el, s, ctx),
+        onDisconnect: onDisconnect(el, s, ctx),
+        onChange: onChange(el, s, ctx)
       })
     }
   }

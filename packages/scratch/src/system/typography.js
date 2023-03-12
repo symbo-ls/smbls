@@ -1,13 +1,13 @@
 'use strict'
 
+import { merge } from '@domql/utils'
 import { getActiveConfig } from '../factory.js'
 
 import {
   applySequenceVars,
   findHeadings,
   generateSequence,
-  getSequenceValuePropertyPair,
-  merge
+  getSequenceValuePropertyPair
 } from '../utils'
 
 export const runThroughMedia = props => {

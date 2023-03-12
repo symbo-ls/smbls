@@ -13,12 +13,12 @@ export const Svg = {
     'xmlns:xlink': 'http://www.w3.org/1999/xlink'
   },
   html: ({ key, props, context, ...el }) => {
-    const { designSystem, packages } = context
+    const { designSystem, utils } = context
     const SVG = designSystem && designSystem.SVG
     const useSvgSprite = props.spriteId || (context.designSystem && context.designSystem.useSvgSprite)
     const useSVGSymbol = icon => `<use xlink:href="#${icon}" />`
 
-    const init = (packages && packages.init) || require('@symbo.ls/init').init
+    const init = utils && utils.init
 
     if (!useSvgSprite && props.src) return props.src
 
