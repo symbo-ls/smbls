@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.10.162",
+  "version": "2.10.163",
   "license": "MIT",
   "gitHead": "75d8f8e2aedb0d9791e7c7fc84990bd42231bbc7",
   "source": "index.js",
   "main": "index.js",
   "dependencies": {
-    "@domql/utils": "latest",
-    "@domql/router": "latest",
     "@domql/emotion": "latest",
+    "@domql/router": "latest",
+    "@domql/utils": "latest",
     "@symbo.ls/fetch": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/uikit": "latest",
