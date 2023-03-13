@@ -401,9 +401,9 @@
     "@domql/utils" latest
 
 "@domql/env@latest":
-  version "2.3.68"
-  resolved "https://registry.yarnpkg.com/@domql/env/-/env-2.3.68.tgz#b4d71d8436701545ed9fb81ea48410d14d0ceae2"
-  integrity sha512-1lhXBdAYeKShDK/5vxSFvKaL3haVOJvZtQo5CaI46mbCeE18QEo44z+Xb6p8qUtXvTslJI9XCqsdnoq+DcZWzA==
+  version "2.3.78"
+  resolved "https://registry.yarnpkg.com/@domql/env/-/env-2.3.78.tgz#214a6bcc5844a3c90562b90b45df223af0ee113a"
+  integrity sha512-yZSaewraWZ7lvXlYIkZagJsMq46uIXKxQRszInQ+QL67Fu54crvII74nhR8KeC6Va/oIiLW5mrx214yqqM0HOg==
 
 "@domql/event@latest":
   version "2.3.76"
@@ -1954,9 +1954,9 @@
     tslib "^2.4.0"
 
 "@symbo.ls/atoms@latest":
-  version "2.10.168"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.10.168.tgz#376d6e51dd102934c6da3fa7bdd6bc0409a73c04"
-  integrity sha512-Ml+y6RvSHNY9+ZkZ/DkQWoI8lcQ5n937T43q4Jl8g39OSHNuuhJuAo0pqAaNiR5R5k5d3u3GY9B9nOVNPxSBQQ==
+  version "2.10.175"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.10.175.tgz#eff6f406bd12f37e4d11a1861cd74e01bca98099"
+  integrity sha512-cx3EauxldnRXOLDXtzVRF9BmDr2k78ScX7hENBKxhkcXL4tMGoC/KsDSmQEWhUhpwHuaQKHqspLu8VsLAIiavQ==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/create-emotion" latest
@@ -2030,12 +2030,13 @@
     "@emotion/css" "^11.10.0"
 
 "@symbo.ls/create@latest":
-  version "2.10.171"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.171.tgz#290dff26dbc2dfeeb9362ba6df2d4453fcb5020a"
-  integrity sha512-6LGzUOEl/oQLAd02rPZBX8EcwUtjhV5MBrXkXbQidcoULkaAT63TujHHVy6bcV7eIRdn0n/wtB7UxWuLGtho/Q==
+  version "2.10.178"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.178.tgz#912d07453ccf56e9ffa0e59a0769c9e57cf4bdcc"
+  integrity sha512-oXSNwdJXgZStJl6la16vvAvpVOa5vBa/JbjuXGGRU0nDiGTVQUkDZAsjs5nPSRDSXfgVt1RKBkQ40TNHg8uNBw==
   dependencies:
     "@domql/cookie" latest
     "@domql/emotion" latest
+    "@domql/env" latest
     "@domql/report" latest
     "@domql/router" latest
     "@domql/utils" latest
@@ -2081,9 +2082,9 @@
     "@emotion/css" "^11.10.0"
 
 "@symbo.ls/fetch@latest":
-  version "2.10.170"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/fetch/-/fetch-2.10.170.tgz#c335e1e5a5e16d11bb078abb7f32f356fe636383"
-  integrity sha512-P5hYlU29jx+T3hNolv3ClFJBZS93aZLcP0rKBN2bss8q4J/EVC7X7xCDcEWuHcU1MLfKrJprJLiyJz92aZez/w==
+  version "2.10.172"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/fetch/-/fetch-2.10.172.tgz#0a854f39607b2a17574e8f41c4cbc7c465c71538"
+  integrity sha512-NzJ+Jp4EMRq8nhVpr1Qx7TJazz3aY9a5DLnZvcmTHQbbi+nhU4wKgojYO1jkJjHc/N1pVGaV54N9R630aHRTqw==
   dependencies:
     "@domql/utils" latest
 
@@ -2148,9 +2149,9 @@
     "@symbo.ls/text" latest
 
 "@symbo.ls/link@latest":
-  version "2.10.163"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/link/-/link-2.10.163.tgz#321e6284010b5b99fdc91490d07ee60bf43b5f3e"
-  integrity sha512-kb1RSE5o63xJ+eyirbwuP8sjFFg63zsFDqOLYV+JTUtqHVewYP73IJX++AKhdeSNWvzhR1waXXny+9bviIDfiw==
+  version "2.10.172"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/link/-/link-2.10.172.tgz#b139d015597cb3ffe1b30d9823e332ef18eebecf"
+  integrity sha512-HOeK1w304cN7hF3vIPbuqBWEb9y+zCPtwpjC1yu0bV9poxiuryAs4su/Ky26HBpq9YPsz5r/opoaAjIaGPquIQ==
   dependencies:
     "@domql/router" latest
     "@symbo.ls/atoms" latest
@@ -2239,9 +2240,9 @@
     "@symbo.ls/init" latest
 
 "@symbo.ls/scratch@latest":
-  version "2.10.168"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.168.tgz#31a5e9352574078f91341d68a352b9340d3038fa"
-  integrity sha512-DZcz1E1Qlw2Ye3Qq6+6ZADYqdQ40N0GLpSRJ8p+nIY8QrCJNF5aLZ3v4f/bT/FcjXrxek88L/JsGZdr4c1bkMw==
+  version "2.10.174"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.174.tgz#6c637ac1010826e2e68925ccd3e2c25f975636a7"
+  integrity sha512-Tiz7sOIY6PpP5q9S5tufucdWP4RalY3ghgXbobKhH+mcVF4ioVk868zt4m5nHI+Fn6oEUcoqkh+QtJQO03p+Qg==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/utils" latest

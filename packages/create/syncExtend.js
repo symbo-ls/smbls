@@ -9,8 +9,8 @@ export const applySyncDebug = (extend, options) => {
   if (!editor) return extend
   const inspect = isUndefined(editor.inspect) ? isDevelopment() : editor.inspect
   const liveSync = isUndefined(editor.liveSync) ? isDevelopment() : editor.liveSync
-  if (inspect) extend.push[DevFocus]
-  if (liveSync) extend.push[Sync]
+  if (inspect) extend.push(DevFocus)
+  if (liveSync) extend.push(Sync)
   return extend
 }
 
