@@ -17,5 +17,3 @@ export const applyKeyDebugListener = (root, options) => {
   const { editor } = options
   if (editor && editor.inspect) inspectOnKey(root)
 }
-
-const extend = isProduction(NODE_ENV) || isTest(NODE_ENV)  [Sync, DevFocus]
