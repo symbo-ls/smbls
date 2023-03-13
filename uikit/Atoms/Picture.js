@@ -23,9 +23,9 @@ export const Picture = {
     }
   },
 
-  // Img: ({ props }) => ({
-  //   width: 'inherit',
-  //   height: 'inherit',
-  //   src: props.src
-  // })
+  Img: ({ props }) => ({
+    width: 'inherit',
+    height: 'inherit',
+    src: props.src
+  })
 }
