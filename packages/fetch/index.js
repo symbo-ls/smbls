@@ -60,8 +60,6 @@ export const fetchStateAsync = async (key, options, callback) => {
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
     const state = editor.serviceRoute === 'state' ? data : data.state
-    console.log(editor)
-    console.log(state)
     if (isObject(state)) callback(state)
   }
 }

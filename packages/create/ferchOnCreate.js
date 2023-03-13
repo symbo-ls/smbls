@@ -15,9 +15,8 @@ export const fetchSync = async (key, options) => {
 export const fetchAsync = (app, key, options, callback) => {
   if (key && options.editor) {
     try {
-      if (options.editor.async) fetchStateAsync(key, options, (data) => {
-        app.state.update(data)
-      })
+      const defaultCallback = (data) => app.state.update(data)
+      if (options.editor.async) fetchStateAsync(key, options, callback || defaultCallback)
     } catch (e) {
       console.error(e)
     }

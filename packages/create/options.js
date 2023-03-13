@@ -3,10 +3,8 @@
 import { defaultDefine } from './define'
 import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 
-export const DEFAULT_CREATE_OPTIONS = {
-  editor: {
-    endpoint: 'api.symbols.app'
-  },
+export default {
+  editor: {},
   state: {},
   pages: {},
   designSystem: {
@@ -18,7 +16,7 @@ export const DEFAULT_CREATE_OPTIONS = {
   },
   components: {},
   initOptions: {
-    emotion: defaultEmotion
+    emotion: defaultEmotion,
   },
   router: {
     initRouter: true,

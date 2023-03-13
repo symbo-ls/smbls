@@ -11,6 +11,7 @@
     "@domql/report": "latest",
     "@domql/router": "latest",
     "@domql/utils": "latest",
+    "@domql/env": "latest",
     "@symbo.ls/fetch": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest",

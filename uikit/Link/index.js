@@ -1,6 +1,6 @@
 'use strict'
 
-import { router } from '@domql/router'
+import { router as defaultRouter } from '@domql/router'
 import { Focusable } from '@symbo.ls/atoms'
 
 export const Link = {
@@ -14,9 +14,9 @@ export const Link = {
     draggable: true
   },
   attr: {
-    href: element => {
-      const { exec } = element.context.utils
-      return exec(element.props.href, element) || exec(element.props, element).href
+    href: (el, s, ctx) => {
+      const { exec } = ctx.utils
+      return exec(el.props.href, el) || exec(el.props, el).href
     },
     target: ({ props }) => props.target,
     'aria-label': ({ props }) => props.aria ? props.aria.label : props.text,
@@ -26,12 +26,13 @@ export const Link = {
 
 export const RouterLink = {
   on: {
-    click: (event, element, state) => {
-      const root = element.__ref.__root
-      const { href } = element.props
+    click: (event, el, s, ctx) => {
+      const { router } = ctx.utils
+      const root = el.__ref.__root
+      const { href } = el.props
       const firstThree = href[0] + href[1] + href[2]
       if (href && firstThree !== 'htt' && firstThree !== 'ske') {
-        router(root, href, {})
+        (router || defaultRouter)(root, href, {})
         event.preventDefault()
       }
     }

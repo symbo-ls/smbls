@@ -6,44 +6,48 @@ import { deepMerge, isObject, isString } from '@domql/utils'
 import * as utils from './utilImports'
 import * as uikit from '@symbo.ls/uikit'
 
+import { inspectOnKey } from '@symbo.ls/socket-ui'
 import { defaultDefine } from './define'
-import { initRouter } from './router'
+import { initRouter, popStateRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
 import { initEmotion } from './initEmotion'
+import { applySyncDebug } from './syncExtend'
 
-import { DEFAULT_CREATE_OPTIONS } from './options'
+import DEFAULT_CREATE_OPTIONS from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
-const mergeWithLocalFile = (options, RC_FILE) => {
-  const rcfile = isObject(RC_FILE) ? RC_FILE : DYNAMIC_JSON || {}
+const mergeWithLocalFile = (options, optionsExternalFile) => {
+  const rcfile = isObject(optionsExternalFile) ? optionsExternalFile : DYNAMIC_JSON || {}
   return deepMerge(options, rcfile)
 }
 
-export const create = async (App, options = DEFAULT_CREATE_OPTIONS, RC_FILE) => {
+export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
   const appIsKey = isString(App)
-  options = mergeWithLocalFile(options, RC_FILE)
+  options = mergeWithLocalFile(options, optionsExternalFile)
+
   const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
 
   if (appIsKey) App = {}
   await fetchSync(key, options)
 
   const doc = options.parent || options.document || document
-
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
-  initRouter(App, options.routerOptions)
+  const router = initRouter(App, options)
 
   const state = options.state || {}
-  const pages =  options.pages || {}
+  const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
-  const snippets = { ...utils, ...(options.snippets || {})}
+  const snippets = { ...utils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
+  const extend = applySyncDebug([App], options)
+
   const domqlApp = DOM.create({
-    extend: [App],
+    extend,
     routes: options.pages,
     state,
     context: {
@@ -65,7 +69,10 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, RC_FILE) => 
     ...options.domqlOptions
   })
 
-  fetchAsync(domqlApp)
+  applyKeyDebugListener(domqlApp, options)
+  popStateRouter(domqlApp, options)
+
+  fetchAsync(domqlApp, key, options)
 
   return domqlApp
 }
