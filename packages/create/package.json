@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.10.171",
+  "version": "2.10.172",
   "license": "MIT",
   "gitHead": "75d8f8e2aedb0d9791e7c7fc84990bd42231bbc7",
   "source": "index.js",
@@ -8,10 +8,10 @@
   "dependencies": {
     "@domql/cookie": "latest",
     "@domql/emotion": "latest",
+    "@domql/env": "latest",
     "@domql/report": "latest",
     "@domql/router": "latest",
     "@domql/utils": "latest",
-    "@domql/env": "latest",
     "@symbo.ls/fetch": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest",
