@@ -14,7 +14,9 @@ export const applySyncDebug = (extend, options) => {
   return extend
 }
 
-export const applyKeyDebugListener = (root, options) => {
+export const applyInspectListener = (root, options) => {
   const { editor } = options
-  if (editor && editor.inspect) inspectOnKey(root)
+  if (!editor) return
+  const inspect = isUndefined(editor.inspect) ? isDevelopment() : editor.inspect
+  if (inspect) inspectOnKey(root)
 }

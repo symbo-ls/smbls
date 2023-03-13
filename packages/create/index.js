@@ -10,7 +10,7 @@ import { defaultDefine } from './define'
 import { initRouter, popStateRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
 import { initEmotion } from './initEmotion'
-import { applyKeyDebugListener, applySyncDebug } from './syncExtend'
+import { applyInspectListener, applySyncDebug } from './syncExtend'
 
 import DEFAULT_CREATE_OPTIONS from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
@@ -68,7 +68,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
     ...options.domqlOptions
   })
 
-  applyKeyDebugListener(domqlApp, options)
+  applyInspectListener(domqlApp, options)
   popStateRouter(domqlApp, options)
 
   fetchAsync(domqlApp, key, options)
