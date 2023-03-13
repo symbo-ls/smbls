@@ -6,12 +6,11 @@ import { deepMerge, isObject, isString } from '@domql/utils'
 import * as utils from './utilImports'
 import * as uikit from '@symbo.ls/uikit'
 
-import { inspectOnKey } from '@symbo.ls/socket-ui'
 import { defaultDefine } from './define'
 import { initRouter, popStateRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
 import { initEmotion } from './initEmotion'
-import { applySyncDebug } from './syncExtend'
+import { applyKeyDebugListener, applySyncDebug } from './syncExtend'
 
 import DEFAULT_CREATE_OPTIONS from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
