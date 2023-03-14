@@ -13,13 +13,15 @@
     "compile:react": "smbls convert uikit/ test-react-components/ && cp .build/package-react.json test-react-components/package.json",
     "pkgify:react": "cp .build/package-react.json test-react-components/package.json",
     "build:react": "yarn pkgify:react && cd test-react-components && yarn build:button && yarn link && cd ..",
-    "try:react": "rimraf -I test-react-components .smbls_convert_tmp && yarn compile:react && yarn build:react"
+    "try:react": "rimraf -I test-react-components .smbls_convert_tmp && yarn compile:react && yarn build:react",
+    "kalduna": "rimraf -I react/ && smbls convert uikit/ react/ && cp .build/kalduna/* react/. && cd react/ && yarn build:button && echo 'Run `parcel index.html` in react/'"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
     "babel-eslint": "^10.1.0",
     "esbuild": "^0.17.3",
     "lerna": "^6.5.1",
+    "process": "^0.11.10",
     "standard": "^17.0.0"
   },
   "standard": {
