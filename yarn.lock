@@ -2233,7 +2233,7 @@
 
 "@symbo.ls/react-icon-text@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/uikit-react/IconText":
   "resolved" "file:uikit-react/IconText"
-  "version" "2.10.165"
+  "version" "2.10.180-alpha.0"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/icon-text" "latest"
@@ -2252,7 +2252,7 @@
 
 "@symbo.ls/react-icon@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/uikit-react/Icon":
   "resolved" "file:uikit-react/Icon"
-  "version" "2.10.163"
+  "version" "2.10.165"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/react-atoms" "latest"
@@ -8127,6 +8127,11 @@
   "integrity" "sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag=="
   "resolved" "https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz"
   "version" "2.0.1"
+
+"process@^0.11.10":
+  "integrity" "sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A=="
+  "resolved" "https://registry.npmjs.org/process/-/process-0.11.10.tgz"
+  "version" "0.11.10"
 
 "promise-all-reject-late@^1.0.0":
   "integrity" "sha512-vuf0Lf0lOxyQREH7GDIOUMLS7kz+gs8i6B+Yi8dC68a2sychGrHTJYghMBD6k7eUcH0H5P73EckCA48xijWqXw=="
