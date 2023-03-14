@@ -13,7 +13,9 @@ export const Svg = (props) => {
   }
   return (
     <Box tag='svg' {...defaultConf}>
-      <use xlinkHref={props.name} />
+      {
+        props.children
+      }
     </Box>
   )
 }
