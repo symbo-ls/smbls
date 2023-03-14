@@ -2180,7 +2180,7 @@
 
 "@symbo.ls/react-atoms@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/uikit-react/Atoms":
   "resolved" "file:uikit-react/Atoms"
-  "version" "2.10.163"
+  "version" "2.10.165"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/react-box" "latest"
@@ -2252,7 +2252,7 @@
 
 "@symbo.ls/react-icon@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/uikit-react/Icon":
   "resolved" "file:uikit-react/Icon"
-  "version" "2.10.165"
+  "version" "2.10.181-alpha.0"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/react-atoms" "latest"

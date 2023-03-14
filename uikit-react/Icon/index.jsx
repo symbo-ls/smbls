@@ -8,5 +8,4 @@ import { Svg } from "@symbo.ls/react-atoms";
 export const Icon = (props) => (<Svg {...props}>
   {props.name ? <use xlinkHref={props.name} href={props.name} /> : props.children}
 </Svg>)
-
 // Icon.defaultProps = D.props
