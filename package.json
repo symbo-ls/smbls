@@ -14,7 +14,7 @@
     "pkgify:react": "cp .build/package-react.json test-react-components/package.json",
     "build:react": "yarn pkgify:react && cd test-react-components && yarn build:button && yarn link && cd ..",
     "try:react": "rimraf -I test-react-components .smbls_convert_tmp && yarn compile:react && yarn build:react",
-    "kalduna": "rimraf -I react/ && smbls convert uikit/ react/ && cp .build/kalduna/* react/. && cd react/ && yarn build:button && echo 'Run `parcel index.html` in react/'"
+    "kalduna": "rimraf -I react/ && smbls convert uikit/ react/ && cp .build/kalduna/* react/. && cd react/ && yarn build:button && echo 'Run `yarn && yarn start` in react/'"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
