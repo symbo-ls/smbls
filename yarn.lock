@@ -2064,7 +2064,7 @@
 
 "@symbo.ls/cli@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/packages/cli":
   "resolved" "file:packages/cli"
-  "version" "2.10.188"
+  "version" "2.10.191"
   dependencies:
     "@symbo.ls/init" "latest"
     "@symbo.ls/socket" "latest"
@@ -2395,7 +2395,7 @@
 
 "@symbo.ls/react-box@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/uikit-react/Box":
   "resolved" "file:uikit-react/Box"
-  "version" "2.10.188"
+  "version" "2.10.189"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/react-provider" "latest"
@@ -2482,7 +2482,7 @@
 
 "@symbo.ls/react-tooltip@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/uikit-react/Tooltip":
   "resolved" "file:uikit-react/Tooltip"
-  "version" "2.10.189"
+  "version" "2.10.191"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/icon-text" "latest"
@@ -2499,7 +2499,7 @@
 
 "@symbo.ls/react@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/packages/react":
   "resolved" "file:packages/react"
-  "version" "2.10.189"
+  "version" "2.10.191"
   dependencies:
     "@symbo.ls/atoms" "latest"
     "@symbo.ls/react-atoms" "latest"
@@ -9158,7 +9158,7 @@
 
 "smbls@^2.7.10", "smbls@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/packages/smbls":
   "resolved" "file:packages/smbls"
-  "version" "2.10.188"
+  "version" "2.10.191"
   dependencies:
     "@symbo.ls/cli" "latest"
     "@symbo.ls/create" "latest"
