@@ -3,6 +3,7 @@
   "version": "2.10.195",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
+    "@symbo.ls/atoms": "latest",
     "@symbo.ls/react-box": "latest",
     "css-in-props": "latest"
   },

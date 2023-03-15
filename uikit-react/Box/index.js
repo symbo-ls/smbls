@@ -11,9 +11,6 @@ export const Box = (props) => {
   const { tag, className } = props
   const children = props.text ? props.text : props.children;
 
-  console.log('props ', props);
-  console.log('exlcuded props', excludedProps);
-
   return React.createElement(
     tag || "div",
     {
