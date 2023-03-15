@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Box } from "@symbo.ls/react-box";
-import { transformEmotion, transformClassname} from 'css-in-props' 
+import { transformEmotion, transformClassname} from 'css-in-props'
 
 export const Flex = (props) => {
   const flexProps = {
@@ -13,7 +13,7 @@ export const Flex = (props) => {
   }
 
   return (
-    <Box tag={props.tag} className={transformEmotion(transformClassname(flexProps))}>
+    <Box tag={props.tag} className={transformEmotion(transformClassname(flexProps))} {...props}>
       {props.children}
     </Box>
   );

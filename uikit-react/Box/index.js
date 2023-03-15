@@ -6,15 +6,19 @@ import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 export const Box = (props) => {
   const context = useSymbols()
   const [theme, setTheme] = useGlobalTheme()
-  const propsClass = transformEmotion(transformClassname(props, context))
+  const excludedProps = {};
+  const propsClass = transformEmotion(transformClassname(props, context, undefined, excludedProps))
   const { tag, className } = props
   const children = props.text ? props.text : props.children;
+
+  console.log('props ', props);
+  console.log('exlcuded props', excludedProps);
 
   return React.createElement(
     tag || "div",
     {
       className: `${className ?? ""} ${propsClass}` ,
-      ...props.events || {},
+      ...excludedProps,
     },
     children
   )

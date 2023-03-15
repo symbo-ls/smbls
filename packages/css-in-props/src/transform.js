@@ -5,7 +5,7 @@ import { keySetters } from '@symbo.ls/atoms'
 
 import { CSS_PROPS_REGISTRY } from './registry'
 
-export const transformClassname = (props, context = {}, registry = CSS_PROPS_REGISTRY) => {
+export const transformClassname = (props, context = {}, registry = CSS_PROPS_REGISTRY, excludedProps = {}) => {
   const CLASS_NAMES = {}
   if (!isObject(props)) return
 
@@ -23,9 +23,7 @@ export const transformClassname = (props, context = {}, registry = CSS_PROPS_REG
     }
     else if (key === 'style') {
       deepMerge(CLASS_NAMES, props[key])
-    }
+    } else excludedProps[key] = props[key]
   }
-  console.log(CLASS_NAMES)
-
   return CLASS_NAMES
 }
