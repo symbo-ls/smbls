@@ -14,7 +14,7 @@ export const Box = (props) => {
     tag || "div",
     {
       className: `${className ?? ""} ${propsClass}` ,
-      onClick: () => { console.log('mouse event') }
+      ...props.events || {},
     },
     children
   )
