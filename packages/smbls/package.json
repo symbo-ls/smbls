@@ -7,7 +7,6 @@
   "source": "index.js",
   "main": "index.js",
   "module": "index.js",
-  "browser": "index.cjs.js",
   "files": [
     "index.js",
     "dist"
