@@ -5,22 +5,17 @@ import { Box } from "@symbo.ls/react-box"
 import { transformEmotion, transformClassname} from 'css-in-props' 
 
 export const Grid = (props) => {
-  const gridProps = {
-    display: "grid",
-    columns: props.columns,
-    rows: props.rows,
-    area: props.area,
-    template: props.template,
-    templateAreas: props.templateAreas,
-    gap: props.gap,
-    columnGap: props.template,
-    rowGap: props.template,
-    ...props
-  }
-
+  const excludedProps = {};
+  const transformedProps = transformClassname(flexProps, void 0, Flex.class, excludedProps)
+  const propsClass = transformEmotion(transformedProps)
+ 
   return (
-    <Box className={transformEmotion(transformClassname(gridProps))}>
+    <Box tag={props.tag} className={propsClass} {...excludedProps}>
       {props.children}
     </Box>
   )
+}
+
+Grid.defaultProps = {
+  display: "grid",
 }
