@@ -37,6 +37,7 @@ export const getColor = (value, key) => {
     else if (CONFIG.verbose) console.warn(value, ' - does not have ', key)
   }
 
+
   // TODO: support variables
   // if (alpha) return `rgba(var(${val[shade || ''].var}), ${modifier})`
 
@@ -57,6 +58,7 @@ export const getColor = (value, key) => {
         val[tone] = { rgb, var: `${val.var}-${tone}` }
       } else rgb = val[tone].rgb
     }
+
     if (alpha) return `rgba(${rgb}, ${alpha})`
     return CONFIG.useVariable ? `var(${val.var})` : `rgb(${rgb})`
   } else return CONFIG.useVariable ? `var(${val.var})` : val.value

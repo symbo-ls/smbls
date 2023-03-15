@@ -50,3 +50,20 @@ export const DropdownList = {
     })
   }
 }
+
+export const DropdownParent = {
+  props: {
+    position: 'relative',
+    zIndex: 999,
+    style: {
+      '&:hover': {
+        zIndex: 1000,
+        '& [dropdown]': {
+          transform: 'translate3d(0,0,0)',
+          opacity: 1,
+          visibility: 'visible'
+        }
+      }
+    }
+  }
+}

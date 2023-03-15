@@ -35,3 +35,20 @@ export const Tooltip = {
   title: {},
   p: {}
 }
+
+export const TooltipParent = {
+  props: {
+    position: 'relative',
+    zIndex: 999,
+    style: {
+      '&:hover, &:focus-visible': {
+        zIndex: 1000,
+        '& [tooltip]': {
+          transform: 'translate3d(-50%,0,0)',
+          opacity: 1,
+          visibility: 'visible'
+        }
+      }
+    }
+  }
+}

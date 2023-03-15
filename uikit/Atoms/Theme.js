@@ -46,7 +46,8 @@ const transformBackgroundImage = (backgroundImage, ctx, globalTheme) => ({
     else if (ctx.designSystem.GRADIENT[backgroundImage]) {
       return getMediaColor(backgroundImage, 'backgroundImage', globalTheme)
     }
-    return `url(${v})`
+    else if (v.includes('/') || v.includes('http')) return `url(${v})`
+    return v
   }).join(' ')
 })
 
