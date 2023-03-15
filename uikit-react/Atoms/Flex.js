@@ -1,12 +1,13 @@
+'use strict'
 
 import React from "react";
-import { Flex } from "@symbo.ls/atoms";
+import { Flex as smbmsFlex } from "@symbo.ls/atoms";
 import { Box } from "@symbo.ls/react-box";
 import { transformEmotion, transformClassname} from 'css-in-props'
 
 export const Flex = (props) => {
   const excludedProps = {};
-  const transformedProps = transformClassname(flexProps, void 0, Flex.class, excludedProps)
+  const transformedProps = transformClassname(flexProps, void 0, smbmsFlex.class, excludedProps)
   const propsClass = transformEmotion(transformedProps)
 
   return (
@@ -16,4 +17,4 @@ export const Flex = (props) => {
   );
 };
 
-Flex.defaultProps = Flex.props
+Flex.defaultProps = smbmsFlex.props

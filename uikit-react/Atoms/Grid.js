@@ -1,13 +1,13 @@
 'use strict'
 
 import React from "react"
-import { Grid } from "@symbo.ls/atoms";
+import { Grid as smbmsGrid } from "@symbo.ls/atoms";
 import { Box } from "@symbo.ls/react-box"
 import { transformEmotion, transformClassname} from 'css-in-props' 
 
 export const Grid = (props) => {
   const excludedProps = {};
-  const transformedProps = transformClassname(flexProps, void 0, Grid.class, excludedProps)
+  const transformedProps = transformClassname(flexProps, void 0, smbmsGrid.class, excludedProps)
   const propsClass = transformEmotion(transformedProps)
  
   return (
@@ -17,4 +17,4 @@ export const Grid = (props) => {
   )
 }
 
-Grid.defaultProps = Grid.props
+Grid.defaultProps = smbmsGrid.props
