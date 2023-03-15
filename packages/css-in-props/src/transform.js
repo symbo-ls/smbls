@@ -1,6 +1,6 @@
 'use strict'
 
-import { merge, isFunction, isObject, isArray } from '@domql/utils'
+import { merge, deepMerge, isFunction, isObject, isArray } from '@domql/utils'
 import { keySetters } from '@symbo.ls/atoms'
 
 import { CSS_PROPS_REGISTRY } from './registry'
@@ -19,10 +19,13 @@ export const transformClassname = (props, context = {}, registry = CSS_PROPS_REG
       const exec = isArray(stack) ? stack.reduce((a, c) => {
         return merge(a, c)
       }, {}) : stack
-      merge(CLASS_NAMES, exec)
+      deepMerge(CLASS_NAMES, exec)
     }
-    else if (key === 'style') { CLASS_NAMES.style = props[key] }
+    else if (key === 'style') {
+      deepMerge(CLASS_NAMES, props[key])
+    }
   }
+  console.log(CLASS_NAMES)
 
   return CLASS_NAMES
 }

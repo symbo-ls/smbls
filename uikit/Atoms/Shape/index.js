@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isString } from '@domql/utils'
+import { exec, isString, isFunction } from '@domql/utils'
 import { SHAPES } from './style'
 import { getSpacingBasedOnRatio, getMediaColor } from '@symbo.ls/scratch'
 import { Pseudo } from '../Pseudo'
@@ -16,10 +16,9 @@ export const Shape = {
   extend: Pseudo,
 
   class: {
-    shape: (element) => {
-      const { props } = element
+    shape: ({ props }) => {
       const { shape } = props
-      return shape ? exec(SHAPES[shape], element) : null
+      return SHAPES[shape]({ props })
     },
     shapeDirection: ({ props }) => {
       const { shape, shapeDirection } = props
@@ -27,8 +26,7 @@ export const Shape = {
       const shapeDir = SHAPES[shape + 'Direction']
       return shape && shapeDir ? shapeDir[shapeDirection || 'left'] : null
     },
-    shapeDirectionColor: el => {
-      const { props } = el
+    shapeDirectionColor: ({ props }) => {
       const { background, backgroundColor } = props
       const borderColor = getMediaColor(background || backgroundColor, 'borderColor')
       return props.shapeDirection ? borderColor : null

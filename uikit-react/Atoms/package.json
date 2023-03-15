@@ -29,5 +29,5 @@
     "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
-  "gitHead": "0e9ba88e3ddc703611bf0bebb28b0b8e7d49375a"
+  "gitHead": "c895a88d602f958b12046cff0d3da821caf0141f"
 }

@@ -16,8 +16,8 @@ const getComputedBackgroundColor = ({ props }) => {
   return getColor(props.borderColor) || getColor(props.backgroundColor) || getColor(props.background)
 }
 
-const inheritTransition = (el) => {
-  const exec = Timing.class.transition(el)
+const inheritTransition = ({ props }) => {
+  const exec = Timing.class.transition({ props })
   return exec && exec['transition']
 }
 
@@ -29,16 +29,16 @@ export const SHAPES = {
     borderRadius: '1.15em/2.5em'
   },
 
-  tooltip: el => ({
-    position: el.props.position || 'relative',
+  tooltip: ({ props }) => ({
+    position: props.position || 'relative',
     '&:before': {
       content: '""',
       display: 'block',
       width: '0px',
       height: '0px',
       border: `.35em solid`,
-      borderColor: getComputedBackgroundColor(el),
-      transition: inheritTransition(el),
+      borderColor: getComputedBackgroundColor({ props }),
+      transition: inheritTransition({ props }),
       transitionProperty: 'border-color',
       position: 'absolute',
       borderRadius: '.15em'
@@ -76,13 +76,13 @@ export const SHAPES = {
     }
   },
 
-  tag: el => ({
+  tag: ({ props }) => ({
     position: 'relative',
     '&:before': {
       content: '""',
       display: 'block',
-      background: getComputedBackgroundColor(el),
-      transition: inheritTransition(el),
+      background: getComputedBackgroundColor({ props }),
+      transition: inheritTransition({ props }),
       transitionProperty: 'background',
       borderRadius: '.25em',
       position: 'absolute',
@@ -137,8 +137,8 @@ export const SHAPES = {
       top: '50%',
       transformOrigin: '50% 50%',
       height: '73%',
-      background: getComputedBackgroundColor(el),
-      transition: inheritTransition(el),
+      background: getComputedBackgroundColor({ props }),
+      transition: inheritTransition({ props }),
       transitionProperty: 'background'
     },
     '&:before': {
@@ -162,15 +162,15 @@ export const SHAPES = {
       aspectRatio: '1/1',
       top: '50%',
       transformOrigin: '50% 50%',
-      transition: inheritTransition(el),
+      transition: inheritTransition({ props }),
       transitionProperty: 'background'
 
     },
     '&:before': {
-      background: `linear-gradient(225deg, ${getComputedBackgroundColor(el)} 25%, transparent 25%), linear-gradient(315deg, ${getComputedBackgroundColor(el)} 25%, transparent 25%)`
+      background: `linear-gradient(225deg, ${getComputedBackgroundColor({ props })} 25%, transparent 25%), linear-gradient(315deg, ${getComputedBackgroundColor({ props })} 25%, transparent 25%)`
     },
     '&:after': {
-      background: getComputedBackgroundColor(el),
+      background: getComputedBackgroundColor({ props }),
       borderRadius: '.25em'
     }
   }),
