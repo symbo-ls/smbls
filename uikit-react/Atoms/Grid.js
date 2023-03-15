@@ -7,7 +7,7 @@ import { transformEmotion, transformClassname} from 'css-in-props'
 
 export const Grid = (props) => {
   const excludedProps = {};
-  const transformedProps = transformClassname(flexProps, void 0, smbmsGrid.class, excludedProps)
+  const transformedProps = transformClassname(props, void 0, smbmsGrid.class, excludedProps)
   const propsClass = transformEmotion(transformedProps)
  
   return (
