@@ -1955,9 +1955,9 @@
     tslib "^2.4.0"
 
 "@symbo.ls/atoms@latest":
-  version "2.10.188"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.10.188.tgz#a4bab54b354ed23bb2f4b56de9ad1c238ebf5356"
-  integrity sha512-rbCzWYBf7HB9HVIRtrRSx7iJl9Er1L7Q3IOxm81ee9jxEGMpRtoVdV4FFuJnPoTQnAPK1xUTExteV/9PfSGLxw==
+  version "2.10.190"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.10.190.tgz#94c1929f5f7e6e8ff33304b27a8d9f170d627a33"
+  integrity sha512-Q9hr6PLMAGOafM0b47YcRqfocUeXpVQPQc1m8a/yqT0MEQoaO1mq1pWX5vaMbRvIyWNOSDW6cud9x0T/osb+0A==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/create-emotion" latest
@@ -2241,9 +2241,9 @@
     "@symbo.ls/init" latest
 
 "@symbo.ls/scratch@latest":
-  version "2.10.188"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.188.tgz#3777073276b1241bd692cae4ce33b6695434f579"
-  integrity sha512-TDxWENO31g8kel+EqzjTX0YSmkm/NQO83/k5j7v/bRPKYes8cRPM9K/fI4W48r5bEMajg9T8qNuaFIkGdgQkQA==
+  version "2.10.189"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.189.tgz#2edebc1bf8049d99d95ae9ff5d5a4e7803d0c362"
+  integrity sha512-27dZjfwE4JvbRtRpwekiYyj27NhOYHVBQ8RwAc1azbO1kNWc+jOTpf71d1eH0Aw2cRRRHK/S+Kz7s2ChKCJp8A==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/utils" latest
