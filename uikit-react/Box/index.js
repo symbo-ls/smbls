@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import { transformEmotion, transformClassname} from 'css-in-props' 
+import { transformEmotion, transformClassname} from 'css-in-props'
 import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 
 export const Box = (props) => {
@@ -14,6 +14,7 @@ export const Box = (props) => {
     tag || "div",
     {
       className: `${className ?? ""} ${propsClass}` ,
+      onClick: () => { console.log('mouse event') }
     },
     children
   )
