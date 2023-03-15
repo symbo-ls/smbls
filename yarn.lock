@@ -2395,16 +2395,16 @@
 
 "@symbo.ls/react-box@file:/Users/gugakatsiashvili/Desktop/Symbols/smbls/uikit-react/Box":
   "resolved" "file:uikit-react/Box"
-  "version" "2.10.189"
+  "version" "2.10.193"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/react-provider" "latest"
     "css-in-props" "latest"
 
 "@symbo.ls/react-box@latest":
-  "integrity" "sha512-n+DecEubtGxtzEolwFudvKXBfvY7jNaASo4TY4+PFLHtrcUm8sDLECEEe9zfq+E6YTJ4pb2QCFyG95r5YrFdWw=="
-  "resolved" "https://registry.npmjs.org/@symbo.ls/react-box/-/react-box-2.10.188.tgz"
-  "version" "2.10.188"
+  "integrity" "sha512-TxNy7PrCF/ub9vPsVeJU8tB3qVExQFDiO35odVChey9heAcOx8allTQXmv4Ufh2NKK7goQFq8qU7GxDf3pF4LA=="
+  "resolved" "https://registry.npmjs.org/@symbo.ls/react-box/-/react-box-2.10.192.tgz"
+  "version" "2.10.192"
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/react-provider" "latest"
