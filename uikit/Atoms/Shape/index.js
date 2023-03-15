@@ -18,7 +18,7 @@ export const Shape = {
   class: {
     shape: ({ props }) => {
       const { shape } = props
-      return SHAPES[shape]({ props })
+      return exec(SHAPES[shape], ({ props }))
     },
     shapeDirection: ({ props }) => {
       const { shape, shapeDirection } = props
