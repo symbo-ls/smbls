@@ -21,6 +21,7 @@ export const transformClassname = (props, context = {}, registry = CSS_PROPS_REG
       }, {}) : stack
       merge(CLASS_NAMES, exec)
     }
+    else if (key === 'style') { CLASS_NAMES.style = props[key] }
   }
 
   return CLASS_NAMES
