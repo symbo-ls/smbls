@@ -2,7 +2,7 @@
 
 import { window } from '@domql/globals'
 import { isFunction, isArray } from '@domql/utils'
-// import { } from 'socket.io-client/build/esm/index.js'
+// import { } from 'socket.io-client/build/esm/index.jsx'
 
 const ENV = process.env.NODE_ENV
 

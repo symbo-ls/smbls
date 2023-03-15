@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.10.188",
+  "version": "2.10.189",
   "license": "MIT",
   "gitHead": "5382ad539538e5cd8f0683ffd2c7a92649e125bc",
   "dependencies": {
@@ -11,6 +11,7 @@
     "@symbo.ls/react-icon": "latest",
     "@symbo.ls/react-icon-text": "latest",
     "@symbo.ls/react-provider": "latest",
+    "@symbo.ls/react-tooltip": "latest",
     "smbls": "latest"
   },
   "type": "module",
