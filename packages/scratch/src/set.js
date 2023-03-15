@@ -16,7 +16,7 @@ import {
   applyDocument
 } from './system'
 
-import { isFunction } from './utils'
+import { isFunction } from '@domql/utils'
 
 const ENV = process.env.NODE_ENV // eslint-disable-line no-unused-vars
 

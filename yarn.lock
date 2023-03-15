@@ -402,9 +402,21 @@
     "@domql/utils" latest
 
 "@domql/env@latest":
+<<<<<<< HEAD
   version "2.3.79"
   resolved "https://registry.yarnpkg.com/@domql/env/-/env-2.3.79.tgz#2fe22e0625b25275adf649ce368e4f7ed37e2556"
   integrity sha512-56MJj19hP+5Bc9jZ9+15Q+q6NPmZst8+LzPyqIxBbFBoGrnDE0UrP1UEW0g0KLSNKlzi2J5IEmehgXBb+UQ/0g==
+=======
+<<<<<<< HEAD
+  "integrity" "sha512-56MJj19hP+5Bc9jZ9+15Q+q6NPmZst8+LzPyqIxBbFBoGrnDE0UrP1UEW0g0KLSNKlzi2J5IEmehgXBb+UQ/0g=="
+  "resolved" "https://registry.npmjs.org/@domql/env/-/env-2.3.79.tgz"
+  "version" "2.3.79"
+=======
+  version "2.3.79"
+  resolved "https://registry.yarnpkg.com/@domql/env/-/env-2.3.79.tgz#2fe22e0625b25275adf649ce368e4f7ed37e2556"
+  integrity sha512-56MJj19hP+5Bc9jZ9+15Q+q6NPmZst8+LzPyqIxBbFBoGrnDE0UrP1UEW0g0KLSNKlzi2J5IEmehgXBb+UQ/0g==
+>>>>>>> 09303784 (fix isFunction import)
+>>>>>>> c8696d87 (merged)
 
 "@domql/event@latest":
   version "2.3.76"
@@ -2031,9 +2043,21 @@
     "@emotion/css" "^11.10.0"
 
 "@symbo.ls/create@latest":
+<<<<<<< HEAD
   version "2.10.179"
   resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.179.tgz#1c5bb09ca34e7bf9813921ad31843db20e101fba"
   integrity sha512-4qAkuViGHEULYUsdUuHM8cBLYdY9+o0AlGVe3G+CWko5zz6TMHlcii+FL33ooq2VDDVV2+daLTnueAZ2rG4kVg==
+=======
+<<<<<<< HEAD
+  "integrity" "sha512-4qAkuViGHEULYUsdUuHM8cBLYdY9+o0AlGVe3G+CWko5zz6TMHlcii+FL33ooq2VDDVV2+daLTnueAZ2rG4kVg=="
+  "resolved" "https://registry.npmjs.org/@symbo.ls/create/-/create-2.10.179.tgz"
+  "version" "2.10.179"
+=======
+  version "2.10.179"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.179.tgz#1c5bb09ca34e7bf9813921ad31843db20e101fba"
+  integrity sha512-4qAkuViGHEULYUsdUuHM8cBLYdY9+o0AlGVe3G+CWko5zz6TMHlcii+FL33ooq2VDDVV2+daLTnueAZ2rG4kVg==
+>>>>>>> 09303784 (fix isFunction import)
+>>>>>>> c8696d87 (merged)
   dependencies:
     "@domql/cookie" latest
     "@domql/emotion" latest
@@ -2395,9 +2419,21 @@
   integrity sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
 
 "@types/node@*", "@types/node@>=10.0.0":
+<<<<<<< HEAD
   version "18.15.3"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.3.tgz#f0b991c32cfc6a4e7f3399d6cb4b8cf9a0315014"
   integrity sha512-p6ua9zBxz5otCmbpb5D3U4B5Nanw6Pk3PPyX05xnxbB/fRv71N7CPmORg7uAD5P70T0xmx1pzAx/FUfa5X+3cw==
+=======
+<<<<<<< HEAD
+  "integrity" "sha512-z6nr0TTEOBGkzLGmbypWOGnpSpSIBorEhC4L+4HeQ2iezKCi4f77kyslRwvHeNitymGQ+oFyIWGP96l/DPSV9w=="
+  "resolved" "https://registry.npmjs.org/@types/node/-/node-18.15.0.tgz"
+  "version" "18.15.0"
+=======
+  version "18.15.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.15.1.tgz#41dc2bf78e8085a250d4670d95edb7fba621dd29"
+  integrity sha512-U2TWca8AeHSmbpi314QBESRk7oPjSZjDsR+c+H4ECC1l+kFgpZf8Ydhv3SJpPy51VyZHHqxlb6mTTqYNNRVAIw==
+>>>>>>> 09303784 (fix isFunction import)
+>>>>>>> c8696d87 (merged)
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.1"
@@ -3073,10 +3109,24 @@ camelcase@^5.3.1:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
+<<<<<<< HEAD
 caniuse-lite@^1.0.30001449:
   version "1.0.30001466"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001466.tgz#c1e6197c540392e09709ecaa9e3e403428c53375"
   integrity sha512-ewtFBSfWjEmxUgNBSZItFSmVtvk9zkwkl1OfRZlKA8slltRN+/C/tuGVrF9styXkN36Yu3+SeJ1qkXxDEyNZ5w==
+=======
+<<<<<<< HEAD
+"caniuse-lite@^1.0.30001449":
+  "integrity" "sha512-oww27MtUmusatpRpCGSOneQk2/l5czXANDSFvsc7VuOQ86s3ANhZetpwXNf1zY/zdfP63Xvjz325DAdAoES13g=="
+  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001464.tgz"
+  "version" "1.0.30001464"
+=======
+caniuse-lite@^1.0.30001449:
+  version "1.0.30001465"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001465.tgz#c1b715bbb4ff6fdc20a4827e0afe9f4374fca217"
+  integrity sha512-HvjgL3MYAJjceTDCcjRnQGjwUz/5qec9n7JPOzUursUoOTIsYCSDOb1l7RsnZE8mjbxG78zVRCKfrBXyvChBag==
+>>>>>>> 09303784 (fix isFunction import)
+>>>>>>> c8696d87 (merged)
 
 chai@^3.5.0:
   version "3.5.0"
