@@ -17,6 +17,4 @@ export const Grid = (props) => {
   )
 }
 
-Grid.defaultProps = {
-  display: "grid",
-}
+Grid.defaultProps = Grid.props

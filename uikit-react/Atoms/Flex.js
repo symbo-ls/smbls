@@ -16,6 +16,4 @@ export const Flex = (props) => {
   );
 };
 
-Flex.defaultProps = {
-  display: 'flex'
-}
+Flex.defaultProps = Flex.props
