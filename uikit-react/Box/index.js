@@ -7,7 +7,9 @@ export const Box = (props) => {
   const context = useSymbols()
   const [theme, setTheme] = useGlobalTheme()
   const excludedProps = {};
-  const propsClass = transformEmotion(transformClassname(props, context, undefined, excludedProps))
+
+  const transformedProps = transformClassname(props, context, void 0, excludedProps)
+  const propsClass = transformEmotion(transformedProps)
   const { tag, className } = props
   const children = props.text ? props.text : props.children;
 
