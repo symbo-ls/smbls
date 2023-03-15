@@ -2,7 +2,7 @@
   "name": "css-in-props",
   "description": "Utilize props as CSS methods",
   "author": "symbo.ls",
-  "version": "2.10.194",
+  "version": "2.10.195",
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
   "module": "index.js",
