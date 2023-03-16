@@ -1074,9 +1074,9 @@
     "@emotion/css" "^11.10.0"
 
 "@symbo.ls/create@latest":
-  version "2.10.188"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.188.tgz#8b8d31da3ed120202777addba0043627cbd911f3"
-  integrity sha512-XLNCDWG1CHK6YgQQDoMNOKS9gXA+c8rbi2tNVxg2DQeAA5ihzeJbUW7JgwJwV4qN/akcWZZWimKN+iKSpAzUYA==
+  version "2.10.210"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.210.tgz#32d189e55679e29a0036e01bcdda0a9cbe891939"
+  integrity sha512-vg1EzRGnAPImNjhUWjICCFLWvy7w0an/CsYW8YVTDHDVyuMvfeDgXEMqQe0DXcZhQCZs243PxtpNgWMlH89FTw==
   dependencies:
     "@domql/cookie" latest
     "@domql/emotion" latest
@@ -1239,9 +1239,9 @@
     css-in-props latest
 
 "@symbo.ls/react-box@latest":
-  version "2.10.208"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/react-box/-/react-box-2.10.208.tgz#38b5562b5bbd6beabc66d10373f476fea1c87554"
-  integrity sha512-4RfOcH5jfBDb/I8h9s+QMq03Vfr4/zantgUQOKw+IngRW7iky9ljRpFISW7kmORJntMU3BoYNYDuLKfAYN6Piw==
+  version "2.10.209"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/react-box/-/react-box-2.10.209.tgz#94f30ed7ca32bb578553af2155d139422d1676c6"
+  integrity sha512-HN4rPblC8qbCWN/tQOcdx0STGgKjmeuhQnA1i6etYog+D4P9rvnTWE2NxH0TKio4Vrh8XytpHwXhME4oWZO55Q==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/react-provider" latest
@@ -1285,9 +1285,9 @@
     "@symbo.ls/init" latest
 
 "@symbo.ls/react-tooltip@latest":
-  version "2.10.208"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/react-tooltip/-/react-tooltip-2.10.208.tgz#4e5615d461fbc4a10b6701f6d7163368652980ab"
-  integrity sha512-3ILPizcVXln31JrF7XPNlaq8rSICt25BDCDYH1apXa4X7pbLmhuvlxsenx02UOX9O9AcF1qZn0LOpHGRQICaqw==
+  version "2.10.213"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/react-tooltip/-/react-tooltip-2.10.213.tgz#541c79ee8a5ab3b4e6304c4848a4bb08ddaf3636"
+  integrity sha512-epo281GYTRn0BLDM0FXY49kFBw66vJJBInzL1BaZpVRp8eAc3SkYVm/wsqckmsFYcdMjm8I9G+nwEixbk2Tgcw==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/icon-text" latest
@@ -1295,9 +1295,9 @@
     "@symbo.ls/react-icon" latest
 
 "@symbo.ls/scratch@latest":
-  version "2.10.198"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.198.tgz#130baa2180d3e5b088120f2ce49ff682a72c1017"
-  integrity sha512-j6OjEegmcbHTuF/yRoT2mL+rGQYhBo1Q6lebCdozOpwBETBPKIYrFS46n946H/ljWW9TocNJUOqx5cEnPE2kuw==
+  version "2.10.212"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.10.212.tgz#174de5092511017d3dea7a933d18f9395df63966"
+  integrity sha512-6sAwUHiicFHximUx9MqYkH1k4QIN+3QiDHddcAmXkVaR8XgJWoWMBi5LFzrzjIx5g+VYyQR7QlY65Gw+6RhDdA==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/utils" latest
@@ -2501,9 +2501,9 @@ domexception@^4.0.0:
     webidl-conversions "^7.0.0"
 
 domql@latest:
-  version "1.5.125"
-  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.125.tgz#ca29eef82f02aa0bdb5298640e5008432738df56"
-  integrity sha512-FSaFHkFJDNc65yi1hJ5GOnVixvk9c+OFadGkIyHez/B1fV6zORJ6IhMmT6H0iZcTnemb003EDo2hWxHDkHMcKQ==
+  version "1.5.126"
+  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.126.tgz#f15778ca5123ceea85f2e03ac659e70ad89b929d"
+  integrity sha512-eadB/kRya5T64lRsr0o2CNlCPdVMhISp9PmDCKNGc681nxrb8UtwMV8cJmlnTddYKxFrDkktnJgKu4LL6HCvTA==
   dependencies:
     "@domql/classlist" latest
     "@domql/emotion" latest
@@ -2550,9 +2550,9 @@ ejs@^3.1.7:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.284:
-  version "1.4.331"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.331.tgz#c8ea823968563ef2cbb3495233e9e16c48c54a4a"
-  integrity sha512-tdtr9y9oJl8VDiS+HeB6e/JDJqdDGjIk3yRfEMHm5rDnWQ/D5SbafybAayInxolbfbH6pouV5g7ZUAwE/WVtHw==
+  version "1.4.332"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.332.tgz#b981fcf61587abe03c24b301b2cfbdcc2b70e8a5"
+  integrity sha512-c1Vbv5tuUlBFp0mb3mCIjw+REEsgthRgNE8BlbEDKmvzb8rxjcVki6OkQP83vLN34s0XCxpSkq7AZNep1a6xhw==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -3548,10 +3548,15 @@ gopd@^1.0.1:
   dependencies:
     get-intrinsic "^1.1.3"
 
-graceful-fs@4.2.10, graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.6:
+graceful-fs@4.2.10:
   version "4.2.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
+
+graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.6:
+  version "4.2.11"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.11.tgz#4183e4e8bf08bb6e05bbb2f7d2e0c8f712ca40e3"
+  integrity sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==
 
 grapheme-splitter@^1.0.4:
   version "1.0.4"
