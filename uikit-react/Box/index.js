@@ -11,7 +11,7 @@ export const Box = (props) => {
   const transformedProps = transformClassname(props, context, void 0, excludedProps)
   const propsClass = transformEmotion(transformedProps)
   
-  let { children, tag, className, text, ...restProps } = props
+  let { children, tag, className, text, ...restProps } = excludedProps
   if (props.text) children = children.concat(text)
 
   return React.createElement(
