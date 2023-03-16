@@ -3,8 +3,6 @@ import React from "react";
 import { transformEmotion, transformClassname} from 'css-in-props'
 import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 
-import { Text } from '@symbo.ls/react-atoms'
-
 export const Box = (props) => {
   const context = useSymbols()
   const [theme, setTheme] = useGlobalTheme()
