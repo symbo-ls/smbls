@@ -3,7 +3,6 @@
   "version": "2.10.202",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@domql/utils": "latest",
     "@symbo.ls/icon-text": "latest",
     "@symbo.ls/react-atoms": "latest",
     "@symbo.ls/react-icon": "latest"
