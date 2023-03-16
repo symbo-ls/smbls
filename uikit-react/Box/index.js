@@ -14,13 +14,13 @@ export const Box = (props) => {
   const propsClass = transformEmotion(transformedProps)
   
   let { children, tag, className, text, ...restProps } = props
-  if (props.text) children = children.concat(<Text>{text}</Text>)
+  if (props.text) children = children.concat(text)
 
   return React.createElement(
     tag || "div",
     {
       ...restProps,
-      className: `${className ?? ""} ${propsClass}`,
+      className: `${className ?? ''} ${propsClass}`,
     },
     children
   )
