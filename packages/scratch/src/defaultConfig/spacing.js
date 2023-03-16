@@ -1,6 +1,7 @@
 'use strict'
 
-import { SEQUENCE, TYPOGRAPHY } from '.'
+import { SEQUENCE } from './sequence'
+import { TYPOGRAPHY } from './typography'
 
 const defaultProps = {
   base: TYPOGRAPHY.base,
