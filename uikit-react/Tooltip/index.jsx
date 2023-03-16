@@ -25,6 +25,7 @@ export const Tooltip = (props) => {
       position: 'block east',
       direction: 'north east',
     },
+    ...props.containerProps,
   };
 
   const titleProps = {
