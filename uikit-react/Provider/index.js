@@ -34,6 +34,7 @@ export const useGlobalState = () => {
 
 export const useGlobalTheme = (prop) => {
   const { designSystem, globalTheme, setGlobalTheme } = useContext(SymbolsContext)
+  console.log('DS', designSystem, 'Global theme', globalTheme, 'setGlobalTheme', setGlobalTheme);
   designSystem.globalTheme = globalTheme
   return [globalTheme, setGlobalTheme]
 }
