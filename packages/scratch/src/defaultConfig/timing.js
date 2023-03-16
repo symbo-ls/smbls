@@ -1,6 +1,6 @@
 'use strict'
 
-import { SEQUENCE } from '.'
+import { SEQUENCE } from './sequence'
 
 const defaultProps = {
   default: 150,
