@@ -1,8 +1,8 @@
 'use strict';
 
 import React from 'react';
-import { Flex } from '@symbo.ls/react-atoms';
 import { Box } from '@symbo.ls/react-box';
+import { Flex } from '@symbo.ls/react-atoms';
 
 export const Tooltip = (props) => {
   const containerProps = {
