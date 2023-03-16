@@ -11,7 +11,7 @@ const DEFAULT_ROUTING_OPTIONS = {
 }
 
 export const initRouter = (root, options) => {
-  const routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
+  let routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
 
   if (routerOptions === false) return
   if (routerOptions === true) routerOptions = DEFAULT_ROUTING_OPTIONS
