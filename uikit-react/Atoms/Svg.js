@@ -6,9 +6,7 @@ import { Box } from "@symbo.ls/react-box"
 export const Svg = (props) => {
   return (
     <Box tag='svg' {...props}>
-      {
-        props.children
-      }
+      { props.children }
     </Box>
   )
 }

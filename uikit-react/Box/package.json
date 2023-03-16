@@ -4,6 +4,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
+    "@symbo.ls/react-atoms": "latest",
     "@symbo.ls/react-provider": "latest",
     "css-in-props": "latest"
   },
