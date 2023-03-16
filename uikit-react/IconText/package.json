@@ -2,6 +2,7 @@
   "name": "@symbo.ls/react-icon-text",
   "version": "2.10.188",
   "dependencies": {
+    "@domql/utils": "latest",
     "@babel/runtime": "^7.11.2",
     "@symbo.ls/icon-text": "latest",
     "@symbo.ls/react-atoms": "latest",
