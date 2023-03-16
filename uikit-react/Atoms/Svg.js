@@ -1,15 +1,20 @@
 'use strict'
 
 import React from "react"
-import { Svg as smbmsSvg } from "@symbo.ls/atoms";
 import { Box } from "@symbo.ls/react-box"
 
 export const Svg = (props) => {
   return (
     <Box tag='svg' {...props}>
-      { props.children }
+      {
+        props.children
+      }
     </Box>
   )
 }
 
-Svg.defaultProps = { ...smbmsSvg.props, ...smbmsSvg.attr }
+Svg.defaultProps = {
+  xmlns: 'http://www.w3.org/2000/svg',
+  'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+  style: { '*': { fill: 'currentColor' } }
+}
