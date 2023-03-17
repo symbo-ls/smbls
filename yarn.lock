@@ -1276,9 +1276,9 @@
     "@symbo.ls/react-atoms" latest
 
 "@symbo.ls/react-provider@latest":
-  version "2.10.188"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/react-provider/-/react-provider-2.10.188.tgz#175711a13234505e7717def28cf065fa8bf25047"
-  integrity sha512-p9vPrdz1P4vPS5qvRwUK4h/lFfg9Rd3Wdi9jcn+ezRbeTyI5DDjcpOeR5NINlGS87EZ5IpkEopdqCaGCCrUjzQ==
+  version "2.10.215"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/react-provider/-/react-provider-2.10.215.tgz#cff268dc782ad7b47b16bddb596e6611befb6fd2"
+  integrity sha512-+z7F43+bJQYJCczgfekaXKObCoojfUUVgTofa1QnvLZ7cpnbSKs20mSp09DSOvcg/plVbRYHBQRh/DKYM4zR7w==
   dependencies:
     "@babel/runtime" "^7.11.2"
     "@symbo.ls/default-config" latest
