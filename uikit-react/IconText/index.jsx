@@ -9,9 +9,10 @@ import { Icon } from "@symbo.ls/react-icon"
 
 export const IconText = (props) => {
   let iconName = isString(props.icon) ? props.icon : props.name
+  let iconModifier = props.iconModifier || '';
 
   return <Flex tag={props.tag} alignItems="center" {...props}>
-    { iconName ? <Icon name={iconName} /> : null }
+    { iconName ? <Icon icon={iconName} iconModifier={iconModifier} /> : null }
     <Text text={props.text} />
     {props.children}
   </Flex>
