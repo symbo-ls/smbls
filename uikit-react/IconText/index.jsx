@@ -12,7 +12,7 @@ export const IconText = (props) => {
   let iconModifier = props.iconModifier || '';
 
   return <Flex tag={props.tag} alignItems="center" {...props}>
-    { iconName ? <Icon icon={iconName} iconModifier={iconModifier} /> : null }
+    { iconName ? <Icon name={iconName} iconModifier={iconModifier} /> : null }
     <Text text={props.text} />
     {props.children}
   </Flex>
