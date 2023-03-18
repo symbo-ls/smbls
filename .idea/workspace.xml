@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="895cc090-6495-4119-9e1d-4e8bee1796a0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/packages/css-in-props/src/transform.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/css-in-props/src/transform.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uikit-react/Atoms/Grid.js" beforeDir="false" afterPath="$PROJECT_DIR$/uikit-react/Atoms/Grid.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uikit-react/Box/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/uikit-react/Box/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uikit-react/Atoms/Flex.js" beforeDir="false" afterPath="$PROJECT_DIR$/uikit-react/Atoms/Flex.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,15 +21,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -40,7 +41,8 @@
       <option name="presentableId" value="Default" />
       <updated>1679010963189</updated>
       <workItem from="1679010964495" duration="9403000" />
-      <workItem from="1679145659606" duration="1244000" />
+      <workItem from="1679145659606" duration="1920000" />
+      <workItem from="1679147592835" duration="61000" />
     </task>
     <servers />
   </component>
