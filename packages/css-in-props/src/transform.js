@@ -5,7 +5,7 @@ import { keySetters } from '@symbo.ls/atoms'
 
 import { CSS_PROPS_REGISTRY } from './registry'
 
-export const transformClassname = (props, context = {}, registry = CSS_PROPS_REGISTRY, excludedProps = {}) => {
+export const transformClassname = (props, context = {}, registry = CSS_PROPS_REGISTRY, excludedProps = {}, fakeElement) => {
   const CLASS_NAMES = {}
   if (!isObject(props)) return
 
@@ -13,7 +13,7 @@ export const transformClassname = (props, context = {}, registry = CSS_PROPS_REG
     const setter = keySetters[key.slice(0, 1)]
     const hasCSS = registry[key]
 
-    if (setter) setter(key, props[key], CLASS_NAMES)
+    if (setter) setter(key, props[key], CLASS_NAMES, fakeElement)
     else if (isFunction(hasCSS)) {
       const stack = hasCSS({ props, context })
       const exec = isArray(stack) ? stack.reduce((a, c) => {

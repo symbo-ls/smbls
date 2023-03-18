@@ -6,11 +6,16 @@ import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 export const Box = (props) => {
   const context = useSymbols()
   const [theme, setTheme] = useGlobalTheme()
+
+  const fakeElement = {
+    context,
+    __root: {},
+  };
   const excludedProps = {};
 
-  const transformedProps = transformClassname(props, context, void 0, excludedProps)
+  const transformedProps = transformClassname(props, context, void 0, excludedProps, fakeElement)
   const propsClass = transformEmotion(transformedProps)
-  
+
   let { children, tag, className, text, ...restProps } = excludedProps
   if (props.text) children = children.concat(text)
 
