@@ -29,7 +29,7 @@ export const applyReset = (reset = {}) => {
     return deepMerge(merge(RESET, reset), {
       html: {
         position: 'absolute',
-        overflow: 'hidden',
+        // overflow: 'hidden',
         width: '100%',
         height: '100%',
         top: '0',
@@ -40,6 +40,8 @@ export const applyReset = (reset = {}) => {
         scrollBehavior: 'smooth',
 
         fontSize: TYPOGRAPHY.browserDefault + 'px',
+
+        ...(CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {}),
 
         fontFamily: DOCUMENT.fontFamily,
         lineHeight: DOCUMENT.lineHeight
@@ -52,8 +54,6 @@ export const applyReset = (reset = {}) => {
         fontFamily: DOCUMENT.fontFamily,
 
         fontSize: TYPOGRAPHY.base / TYPOGRAPHY.browserDefault + CONFIG.UNIT.default,
-
-        ...(CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {}),
 
         ...templates,
         ...body
