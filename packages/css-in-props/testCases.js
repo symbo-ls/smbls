@@ -62,10 +62,6 @@ set({
 
 const codePropsTrasnsformClassname = transformClassname(code_test)
 const codePropsTrasnsformEmotion = transformEmotion(codePropsTrasnsformClassname)
-console.log(codePropsTrasnsformClassname)
-console.log(codePropsTrasnsformEmotion)
 
 const navLinkPropsTrasnsformClassname = transformClassname(navLink_test)
 const navLinkPropsTrasnsformEmotion = transformEmotion(navLinkPropsTrasnsformClassname)
-console.log(navLinkPropsTrasnsformClassname)
-console.log(navLinkPropsTrasnsformEmotion)

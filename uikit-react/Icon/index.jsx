@@ -3,9 +3,12 @@
 import React from "react";
 import { Svg } from "@symbo.ls/react-atoms";
 
-export const Icon = (props) => (<Svg {...props}>
-  {props.name ? <use xlinkHref={`#${props.name}${props.iconModifier}`} /> : props.children}
-</Svg>)
+export const Icon = (props) => {
+  const { name, iconModifier, ...restProps } = props
+  return <Svg {...restProps}>
+    {name ? <use xlinkHref={`#${name}${iconModifier}`} /> : props.children}
+  </Svg>
+}
 
 Icon.defaultProps = {
   iconModifier: '',

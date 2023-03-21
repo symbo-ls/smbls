@@ -9,13 +9,13 @@ import { useSymbols } from '@symbo.ls/react-provider'
 export const Flex = (props) => {
   const context = useSymbols();
 
-  const fakeElement = {
+  const element = {
     context,
-    __root: {}
+    class: {}
   };
   const excludedProps = {}
 
-  const transformedProps = transformClassname(props, void 0, smbmsFlex.class, excludedProps, fakeElement)
+  const transformedProps = transformClassname(props, void 0, smbmsFlex.class, excludedProps, element)
   const propsClass = transformEmotion(transformedProps)
 
   return (

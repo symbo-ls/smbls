@@ -8,13 +8,13 @@ import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 
 export const Grid = (props) => {
   const context = useSymbols()
-  const fakeElement = {
+  const element = {
     context,
-    __root: {},
+    class: {}
   };
 
   const excludedProps = {}
-  const transformedProps = transformClassname(props, void 0, smbmsGrid.class, excludedProps, fakeElement)
+  const transformedProps = transformClassname(props, void 0, smbmsGrid.class, excludedProps, element)
   const propsClass = transformEmotion(transformedProps)
 
   return (

@@ -33,7 +33,7 @@ export const Icon = {
     else if (ICONS[isArray[0] + isArray[1]]) validIconName = isArray[0] + isArray[1]
     else if (ICONS[isArray[0]]) validIconsName = isArray[0]
     else {
-      if (verbose) console.warn(`can't find icon:`, iconName, validIconName)
+      if (verbose) console.warn(`Can't find icon:`, iconName, validIconName)
       validIconName = 'noIcon'
     }
 

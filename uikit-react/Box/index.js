@@ -7,13 +7,13 @@ export const Box = (props) => {
   const context = useSymbols()
   const [theme, setTheme] = useGlobalTheme()
 
-  const fakeElement = {
+  const element = {
     context,
-    __root: {},
+    class: {}
   };
   const excludedProps = {};
 
-  const transformedProps = transformClassname(props, context, void 0, excludedProps, fakeElement)
+  const transformedProps = transformClassname(props, context, void 0, excludedProps, element)
   const propsClass = transformEmotion(transformedProps)
 
   let { children, tag, className, text, ...restProps } = excludedProps
