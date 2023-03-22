@@ -21,8 +21,5 @@
     "@symbo.ls/uikit": "latest",
     "css-in-props": "latest",
     "domql": "latest"
-  },
-  "peerDependencies": {
-    "@symbo.ls/convert": "latest"
   }
 }
