@@ -117,8 +117,6 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   applyDocument()
   applyReset()
 
-  console.log(CONFIG.RESET)
-
   return CONFIG
 }
 
