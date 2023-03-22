@@ -1,16 +1,21 @@
 'use strict'
 
 import { isString } from '@domql/utils'
+import { getActiveConfig } from '../factory'
 
-export const generateSprite = (icons) => {
-  let sprite =
-    '<svg aria-hidden="true" width="0" height="0" style="position:absolute">'
+export const generateSprite = (icons, root = true) => {
+  const CONFIG = getActiveConfig()
+
+  let sprite = root ?
+    '<svg aria-hidden="true" width="0" height="0" style="position:absolute" id="svgSprite">' : ''
 
   for (let key in icons) {
+    if (CONFIG.__svg_cache[key]) continue
+    else CONFIG.__svg_cache[key] = true
     sprite += icons[key]
   }
 
-  sprite += "</svg>"
+  sprite += root ? "</svg>" : ''
 
   return sprite
 }

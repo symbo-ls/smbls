@@ -26,15 +26,12 @@ export const appendSVGSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const lib = Object.keys(LIBRARY).length ? {} : CONFIG.SVG
   for (let key in LIBRARY) lib[key] = CONFIG.SVG[key]
   
-  const SVGsprite = generateSprite(lib)
-  if (!doc) {
+  if (!doc && CONFIG.verbose) {
     console.warn('To append SVG sprites it should be run in browser environment')
-    return SVGsprite
+    return  generateSprite(lib)
   }
-  
-  const svgSpriteDOM = doc.createElement('template')
-  svgSpriteDOM.innerHTML = SVGsprite
-  doc.body.appendChild(svgSpriteDOM.content)
+
+  appendSVG(lib, options)
 }
 
 export const setIcon = (val, key) => {
@@ -51,13 +48,26 @@ export const appendIconsSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const lib = Object.keys(LIBRARY).length ? {} : CONFIG.ICONS
   for (let key in LIBRARY) lib[key] = CONFIG.ICONS[key]
   
-  const SVGsprite = generateSprite(lib)
-  if (!doc) {
+  if (!doc && CONFIG.verbose) {
     console.warn('To append SVG Icon sprites it should be run in browser environment')
-    return SVGsprite
+    return generateSprite(lib)
   }
 
-  const iconsSpriteDOM = doc.createElement('template')
-  iconsSpriteDOM.innerHTML = SVGsprite
-  doc.body.appendChild(iconsSpriteDOM.content)
+  appendSVG(lib, options)
+}
+
+const appendSVG = (lib, options = DEF_OPTIONS) => {
+  const doc = options.document || document
+  const exists = doc.querySelector('#svgSprite')
+  if (exists) {
+    const SVGsprite = generateSprite(lib, false)
+    const svgSpriteWithoutRoot = doc.createElement('template')
+    svgSpriteWithoutRoot.innerHTML = SVGsprite
+    exists.prepend(svgSpriteWithoutRoot.content)
+  } else {
+    const SVGsprite = generateSprite(lib, true)
+    const svgSpriteDOM = doc.createElement('template')
+    svgSpriteDOM.innerHTML = SVGsprite
+    doc.body.prepend(svgSpriteDOM.content)
+  }
 }
