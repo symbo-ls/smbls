@@ -8,6 +8,7 @@ import './fetch.js'
 import './sync.js'
 import './clean.js'
 import './convert.js'
+import './create.js'
 
 const args = process.argv
 program.parse(args)
