@@ -39,6 +39,9 @@ export const colorStringToRgbaArray = color => {
     if (color.indexOf('rgba') === -1) color = `${color}, 1`
     return color.match(/[\.\d]+/g).map(a => +a) // eslint-disable-line
   }
+
+  // TODO: fix this
+  return []
 }
 
 export const mixTwoColors = (colorA, colorB, range = 0.5) => {
