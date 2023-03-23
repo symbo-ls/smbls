@@ -58,7 +58,7 @@ program
 
     // Bundle components
     await esbuild.build({
-      entryPoints: origFiles.map(file => path.join(srcPath, file, '/index.jsx')),
+      entryPoints: origFiles.map(file => path.join(srcPath, file, './index.js')),
       bundle: true,
       sourcemap: true,
       target: 'node12',
