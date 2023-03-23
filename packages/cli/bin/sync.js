@@ -17,6 +17,10 @@ program
   .option('-l, --live', 'Bypass the local build')
   .option('--key', 'Bypass the local build')
   .action(async (options) => {
+    if (!rc) {
+      console.error('symbols.json not found in the root of the repository')
+      return;
+    }
     rc.then(data => {
       const opts = { ...data, ...options }
       const key = data.key || options.key

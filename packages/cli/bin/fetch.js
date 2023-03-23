@@ -27,13 +27,18 @@ try {
 } catch (e) { console.error('Please include symbols.json to your root of respository') }
 
 program
-  .version(pkg.version)
+  .version(pkg.version ?? 'unknown')
 
 program
   .command('install')
   .description('Install Symbols')
   .option('--framework', 'Which Symbols to install (domql, react)')
   .action(async (framework) => {
+    if (!rc_file || !local_config) {
+      console.error('symbols.json not found in the root of the repository')
+      return;
+    }
+
     // const packageName = `@symbo.ls/${mode || 'uikit'}`
     const packageName = 'smbls'
     console.log('Adding', chalk.green.bold(packageName))
