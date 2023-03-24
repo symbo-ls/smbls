@@ -28,7 +28,7 @@ async function mkdirp(dir) {
 program
   .command('convert')
   .description('Recursively convert and copy all DomQL components under a directory')
-  .argument('[src]', 'Source directory. By default, it is "."', '.')
+  .argument('[src]', 'Source directory. By default, it is "src/"')
   .argument('[dest]', 'Destination directory. By default, it becomes the name of the desired format')
   .option('--react', 'Convert all DomQL components to React')
   .option('--angular', 'Convert all DomQL components to Angular')

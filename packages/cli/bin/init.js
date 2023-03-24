@@ -1,29 +1,32 @@
 'use strict'
 
-import { exec } from 'child_process'
-import chalk from 'chalk'
 import { program } from './program.js'
+import { initRepo } from './init-helpers/init-repo.js'
 
 program
-  .command('init [name]')
-  .description('Initialize a repository')
-  .option('--framework', 'Which Symbols to install (domql, react)')
-  .action(async (framework) => {
-    const packageName = `@symbo.ls/${framework || 'uikit'}`
-    console.log('Creating', chalk.green.bold(packageName))
+  .command('init')
+  .description('Initialize a project')
+  .argument('[dest]', 'Project directory. By default, it is "."')
+  .option('--domql', 'Use Domql in the project')
+  .option('--react', 'Use React in the project (default)', true)
+  .option('--angular', 'Use Angular in the project')
+  .option('--vue2', 'Use Vue2 in the project')
+  .option('--vue3', 'Use Vue3 in the project')
+  .action(async (dest, options) => {
+    if (!dest) dest = '.'
 
-    // exec(`git clone git@github.com:symbo-ls/starter-kit.git`, (error, stdout, stderr) => {
-    //   if (error) {
-    //     console.log(`error: ${error.message}`)
-    //     return
-    //   }
-    //   if (stderr) {
-    //     console.warn(`stderr: ${stderr}`)
-    //     return
-    //   }
-    //   console.log(`stdout: ${stdout}`)
-    //   console.log(chalk.green.bold(packageName), 'successfuly added!')
-    //   console.log('')
-    //   console.log(chalk.dim.underline('Now you can import components like:'), `import { Button } from "${chalk.green.bold(packageName)}""`)
-    // })
+    // Determine framework
+    let framework = 'react'
+    if (options.domql) {
+      framework = 'domql'
+    } else if (options.angular) {
+      framework = 'angular'
+    } else if (options.vue2) {
+      framework = 'vue2'
+    } else if (options.vue3) {
+      framework = 'vue3'
+    }
+
+    // Leave the rest to init
+    return await initRepo(dest, framework)
   })
