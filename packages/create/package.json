@@ -15,6 +15,7 @@
     "@symbo.ls/fetch": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest",
+    "@symbo.ls/socket-ui": "latest",
     "@symbo.ls/uikit": "latest",
     "@symbo.ls/utils": "latest",
     "domql": "latest"
