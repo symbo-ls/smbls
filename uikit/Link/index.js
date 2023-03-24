@@ -31,8 +31,11 @@ export const RouterLink = {
       const root = el.__ref.__root
       const { href } = el.props
       const firstThree = href[0] + href[1] + href[2]
+      const routerOptions = props.routerOptions || {
+        scrollToOptions: { behaviour: 'instant' }
+      }
       if (href && firstThree !== 'htt' && firstThree !== 'ske') {
-        (router || defaultRouter)(root, href, {})
+        (router || defaultRouter)(root, href, {}, routerOptions)
         event.preventDefault()
       }
     }
