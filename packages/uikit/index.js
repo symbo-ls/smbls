@@ -6,7 +6,6 @@ export * from '@symbo.ls/atoms'
 export * from '@symbo.ls/box'
 
 export * from '@symbo.ls/avatar'
-export * from '@symbo.ls/banner'
 export * from '@symbo.ls/button'
 export * from '@symbo.ls/buttonset'
 export * from '@symbo.ls/datepicker'
