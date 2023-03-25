@@ -40,9 +40,10 @@ export const initRouter = (root, options) => {
 export const popStateRouter = (root, options) => {
   const routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
-  const router = options.snippets && options.snippets.router || defaultRouter
-  const pathname = window.location.pathname
-  window.onpopstate = e => router(root, pathname, { pushState: false, level: 0 })
+  const router = options.snippets && (options.snippets.router || defaultRouter)
+  const { pathname, hash } = window.location
+  const url = pathname + hash
+  window.onpopstate = e => router(root, url, { pushState: false, level: 0 })
 }
 
 export const injectRouterInLinkComponent = (routerOptions) => {
