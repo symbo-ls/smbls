@@ -2,7 +2,7 @@
   "name": "@symbo.ls/create",
   "version": "2.10.228",
   "license": "MIT",
-  "gitHead": "4da2b1c77bd894f10cc5d85d9fcd84696614675f",
+  "gitHead": "ec4f48cb0e3f1df2c416f0acd5d5c937e0241af7",
   "source": "index.js",
   "main": "index.js",
   "dependencies": {
