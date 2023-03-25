@@ -40,7 +40,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
-  const snippets = { ...utils, ...(options.snippets || {}) }
+  const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
   const extend = applySyncDebug([App], options)
