@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-icon",
-  "version": "2.10.232",
+  "version": "2.10.233",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@symbo.ls/react-atoms": "latest"
