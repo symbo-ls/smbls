@@ -34,7 +34,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   const doc = options.parent || options.document || document
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
-  const router = initRouter(App, options)
+  const router = initRouter(App, options) // eslint-disable-line
 
   const state = options.state || {}
   const pages = options.pages || {}
@@ -111,7 +111,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
       document: doc
     }
   }, doc.body, key, {
-    //extend: [uikit.Box],
+    // extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
   })
@@ -120,4 +120,3 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 }
 
 export default create
-

@@ -16,7 +16,7 @@ export const initRouter = (root, options) => {
   if (routerOptions === false) return
   if (routerOptions === true) routerOptions = DEFAULT_ROUTING_OPTIONS
 
-  const router = options.snippets && options.snippets.router || defaultRouter
+  const router = options.snippets && (options.snippets.router || defaultRouter)
 
   const onRender = (el, s) => {
     if (el.routes) router(el, window.location.pathname, {})
@@ -47,6 +47,7 @@ export const popStateRouter = (root, options) => {
 }
 
 export const injectRouterInLinkComponent = (routerOptions) => {
-  if (routerOptions.injectRouterInLinkComponent)
+  if (routerOptions.injectRouterInLinkComponent) {
     return deepMerge(Link, RouterLink)
+  }
 }
