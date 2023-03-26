@@ -34,8 +34,6 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   const doc = options.parent || options.document || document
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
-  const router = initRouter(App, options) // eslint-disable-line
-
   const state = options.state || {}
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
@@ -43,6 +41,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
+  const router = initRouter(App, options) // eslint-disable-line
   const extend = applySyncDebug([App], options)
 
   const domqlApp = DOM.create({

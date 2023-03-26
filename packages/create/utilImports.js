@@ -1,7 +1,8 @@
 'use strict'
 
-export { scratchUtils, scratchSystem, set } from '@symbo.ls/scratch'
+import { scratchUtils, scratchSystem, set } from '@symbo.ls/scratch'
 
+export { scratchUtils, scratchSystem, set }
 export * from '@domql/utils'
 export * from '@symbo.ls/utils'
 export { init, updateReset } from '@symbo.ls/init'

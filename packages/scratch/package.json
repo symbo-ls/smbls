@@ -32,9 +32,5 @@
   "peerDependencies": {
     "@emotion/css": "^11.5.0"
   },
-  "browserslist": [
-    "> 1%",
-    "ie >= 9"
-  ],
   "gitHead": "779c21d9c24e5accb881506303cd25ab7e1c944c"
 }
