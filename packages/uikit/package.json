@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "2.10.240",
+  "version": "2.10.241",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -28,12 +28,12 @@
     "@symbo.ls/link": "latest",
     "@symbo.ls/notification": "latest",
     "@symbo.ls/pills": "latest",
-    "@symbo.ls/video": "latest",
     "@symbo.ls/range": "latest",
     "@symbo.ls/select": "latest",
     "@symbo.ls/slider": "latest",
     "@symbo.ls/textarea": "latest",
-    "@symbo.ls/tooltip": "latest"
+    "@symbo.ls/tooltip": "latest",
+    "@symbo.ls/video": "latest"
   },
   "peerDependencies": {
     "@emotion/css": "^11.5.0",
