@@ -1,9 +1,8 @@
 {
   "name": "@symbo.ls/video",
-  "version": "2.10.233",
+  "version": "2.10.238",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "779c21d9c24e5accb881506303cd25ab7e1c944c",
-  "dependencies": {},
   "source": "index.js"
 }
