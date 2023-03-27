@@ -27,9 +27,10 @@ export const Link = {
 export const RouterLink = {
   on: {
     click: (event, el, s, ctx) => {
+      const { props } = el
       const { router } = ctx.utils
       const root = el.__ref.__root
-      const { href } = el.props
+      const { href } = props
       const firstThree = href[0] + href[1] + href[2]
       const routerOptions = props.routerOptions || {
         scrollToOptions: { behaviour: 'instant' }
