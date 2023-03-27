@@ -15,6 +15,7 @@ export * from '@symbo.ls/icon'
 export * from '@symbo.ls/link'
 export * from '@symbo.ls/input'
 export * from '@symbo.ls/field'
+export * from '@symbo.ls/video'
 
 export * from '@symbo.ls/range'
 export * from '@symbo.ls/slider'
