@@ -1,6 +1,7 @@
 'use strict'
 
 import { router as defaultRouter } from '@domql/router'
+import { window } from '@domql/globals'
 import { Link, RouterLink } from '@symbo.ls/uikit'
 import { deepMerge } from '@domql/utils'
 
@@ -19,7 +20,9 @@ export const initRouter = (root, options) => {
   const router = options.snippets && options.snippets.router || defaultRouter
 
   const onRender = (el, s) => {
-    if (el.routes) router(el, window.location.pathname, {})
+    const { pathname, hash } = window.location
+    const url = pathname + hash
+    if (el.routes) router(el, url, {})
   }
 
   if (routerOptions.initRouter) {
