@@ -16,6 +16,7 @@ export const Video = {
   },
 
   attr: {
+    autoplay: ({ props }) => props.autoplay,
     controls: ({ props }) => props.controls
   }
 }
