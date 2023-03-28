@@ -2497,9 +2497,9 @@
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/uikit@latest":
-  version "2.10.233"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.10.233.tgz#48240d05a8a8b76187e970522b75eccb141b4b3a"
-  integrity sha512-W9ba+uHvqBPTtlAQAQ3EfxD22aBeHs5gl0A7vrklWMl2ikSeEEHrn2oLP4lmdWWN1rJX0L0pYkyaoMpx7e6E4g==
+  version "2.10.241"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.10.241.tgz#9198f138f1f5df1bc04a347315a2faecbcd9da3b"
+  integrity sha512-/vLucX7rsfJL3iestD3qk0osPbDV6V90XcM4Ab37unJ5IsYZsMin/3bF4psdDRDqFbMC6wwbRDxgoEEURKSHow==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/atoms" latest
@@ -2521,6 +2521,7 @@
     "@symbo.ls/slider" latest
     "@symbo.ls/textarea" latest
     "@symbo.ls/tooltip" latest
+    "@symbo.ls/video" latest
 
 "@symbo.ls/utils@latest":
   version "2.10.233"
@@ -2528,6 +2529,11 @@
   integrity sha512-tHjSq0LARule2gsvpvos3g1HrL9l3uXf6H29Tz2aY2+0Xa+TiVnIIJcQrAGw5UL75d5nr8U9dCmO+LVZUtEaHw==
   dependencies:
     "@domql/utils" latest
+
+"@symbo.ls/video@latest":
+  version "2.10.243"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/video/-/video-2.10.243.tgz#5209096d7ebfa1e1cce45e8caef08b59410510df"
+  integrity sha512-/XY9GBqCntqwHdebWdqIxf3OM4jxsJzUn+4vbf0ncXjosDf0zPUiGIYA8bGAAXIiJwjEF/I6FgeTh/w/hSkguQ==
 
 "@tootallnate/once@2":
   version "2.0.0"
@@ -3291,9 +3297,9 @@ camelcase@^5.3.1:
   integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
 caniuse-lite@^1.0.30001449:
-  version "1.0.30001470"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001470.tgz#09c8e87c711f75ff5d39804db2613dd593feeb10"
-  integrity sha512-065uNwY6QtHCBOExzbV6m236DDhYCCtPmQUCoQtwkVqzud8v5QPidoMr6CoMkC2nfp6nksjttqWQRRh75LqUmA==
+  version "1.0.30001472"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001472.tgz#3f484885f2a2986c019dc416e65d9d62798cdd64"
+  integrity sha512-xWC/0+hHHQgj3/vrKYY0AAzeIUgr7L9wlELIcAvZdDUHlhL/kNxMdnQLOSOQfP8R51ZzPhmHdyMkI0MMpmxCfg==
 
 chai@^3.5.0:
   version "3.5.0"
@@ -4113,7 +4119,7 @@ domhandler@^4.2.0, domhandler@^4.2.2, domhandler@^4.3.1:
   dependencies:
     domelementtype "^2.2.0"
 
-domql-to-mitosis@^1.4.15:
+domql-to-mitosis@^1.4.15, domql-to-mitosis@latest:
   version "1.4.15"
   resolved "https://registry.yarnpkg.com/domql-to-mitosis/-/domql-to-mitosis-1.4.15.tgz#b50e774fb3cfcc879270d400d733ad102703e750"
   integrity sha512-Ptw86ZXNryJxjOWezbELrZT8CYhX7eV0ZqmjCSGUg0geKd7URNWBcnksWFM7x4ijWNQIkh0Cm5EtiHCe7NbHtw==
