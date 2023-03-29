@@ -5,7 +5,7 @@
   "version": "2.10.233",
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
-  "module": "index.js",
+  "module": "src/index.js",
   "unpkg": "dist/iife/index.js",
   "jsdelivr": "dist/iife/index.js",
   "main": "index.js",
