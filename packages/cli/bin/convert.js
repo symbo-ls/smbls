@@ -69,7 +69,6 @@ program
     // Convert components
     const componentDirs = await fs.promises.readdir(tmpDirPath)
     for (const componentDir of componentDirs) {
-      if (componentDir === 'Atoms') continue
       let importDir = path.join(tmpDirPath, componentDir)
       if ((await fs.promises.stat(importDir)).isDirectory()) {
         // Import the module

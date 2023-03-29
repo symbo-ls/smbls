@@ -12,7 +12,7 @@
     "reinstall": "yarn clean:all && yarn",
     "compile:react": "smbls convert uikit/ test-react-components/ && cp .build/package-react.json test-react-components/package.json",
     "pkgify:react": "cp .build/package-react.json test-react-components/package.json",
-    "kalduna": "rimraf -I react/ && smbls convert uikit/ react/ && cp .build/kalduna/* react/. && cd react/ && yarn build:button && echo 'Run `yarn && yarn start` in react/'",
+    "kalduna": "rimraf -I react/ && smbls convert uikit/ react/ && cp -r .build/kalduna/* react/. && cd react/ && yarn build:button && echo 'Run `yarn && yarn start` in react/'",
     "build:react": "yarn pkgify:react && cd test-react-components && yarn build:button && npm publish && yarn link && cd ..",
     "try:react": "rimraf -I test-react-components .smbls_convert_tmp && yarn compile:react && yarn build:react"
   },
