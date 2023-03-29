@@ -6,7 +6,7 @@ import { initRepo } from './init-helpers/init-repo.js'
 import path from 'path'
 
 const REPO_URLS = {
-  'domql': 'https://github.com/symbo-ls/create-domql-app.git',
+  'domql': 'https://github.com/symbo-ls/starter-kit',
   'react': 'https://github.com/symbo-ls/create-react-app.git',
   'angular': 'https://github.com/symbo-ls/create-angular-app.git',
   'vue2': 'https://github.com/symbo-ls/create-vue2-app.git',
