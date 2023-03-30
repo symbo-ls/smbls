@@ -31,7 +31,7 @@ export const colorStringToRgbaArray = color => {
       if (elem.style.color === flag || elem.style.color === '') return // color parse failed
       color = window.getComputedStyle(elem).color
       document.body.removeChild(elem)
-    } else console.warn('Color conversion failed, no document or window object found')
+    }
   }
 
   // convert 'rgb(R,G,B)' to 'rgb(R,G,B,A)' which looks awful but will pass the regxep below
