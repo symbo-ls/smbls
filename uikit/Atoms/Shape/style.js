@@ -13,7 +13,10 @@ export const depth = {
 }
 
 const getComputedBackgroundColor = ({ props }) => {
-  return getColor(props.borderColor) || getColor(props.backgroundColor) || getColor(props.background)
+  return getColor(props.shapeDirectionColor) || 
+    getColor(props.borderColor) || 
+    getColor(props.backgroundColor) || 
+    getColor(props.background)
 }
 
 const inheritTransition = ({ props }) => {
