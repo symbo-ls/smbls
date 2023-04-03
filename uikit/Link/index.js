@@ -11,7 +11,7 @@ export const Link = {
     fontWeight: 'bold',
     textDecoration: 'none',
     color: 'currentColor',
-    draggable: true
+    draggable: false
   },
   attr: {
     href: (el, s, ctx) => {

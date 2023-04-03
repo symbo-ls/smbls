@@ -149,4 +149,8 @@ export const Block = {
 }
 
 export const Span = { tag: 'span' }
+export const List = { 
+  tag: 'ul' ,
+  childExtend: { tag: 'li' }
+}
 // export const Article = { tag: 'article' }
