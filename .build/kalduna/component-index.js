@@ -1,5 +1,5 @@
-import Box from './__dist/Box'
+import { Img } from './Atoms'
 
 export {
-  Box
+  Img
 }

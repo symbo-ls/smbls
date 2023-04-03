@@ -2,13 +2,13 @@
 //    SymbolsProvider, useGlobalTheme, useGlobalState
 // } from '@symbo.ls/react'
 
-import { Box } from './component-index'
+import { Img } from './component-index'
 
 function App() {
   return (
-      <Box>
-      <h1> Hello </h1>
-      </Box>
+      <Img
+        src="http://http.cat/200.jpg"
+        />
   )
 }
 
