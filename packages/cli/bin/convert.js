@@ -12,6 +12,8 @@ const jsdom = new JSDOM(`<html><head></head><body></body></html>`)
 global.window = jsdom.window
 global.document = window.document
 
+
+const EXCLUDED_FROM_INTERNAL_UIKIT = ['Svg']
 const TMP_DIR_NAME = ".smbls_convert_tmp"
 
 async function mkdirp(dir) {
@@ -34,6 +36,7 @@ program
   .option('--angular', 'Convert all DomQL components to Angular')
   .option('--vue2', 'Convert all DomQL components to Vue2')
   .option('--vue3', 'Convert all DomQL components to Vue3')
+  .option('--internal-uikit', '(For internal use only). Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
     // Desired format
     let desiredFormat = 'react'
@@ -50,6 +53,15 @@ program
     const destPath = path.resolve(dest || desiredFormat)
     const tmpDirPath = path.resolve(path.dirname(destPath), TMP_DIR_NAME)
 
+    if (!fs.existsSync(srcPath)) {
+      console.erorr(`Source directory '${srcPath}' does not exist`)
+      return;
+    }
+
+    // TODO: convert single file
+    //if (!isDirectory(srcPath)) {
+    //}
+
     // Make tmp and dist directories
     await mkdirp(tmpDirPath)
     await mkdirp(destPath)
@@ -60,6 +72,13 @@ program
     await esbuild.build({
       entryPoints: origFiles.map(file => path.join(srcPath, file, './index.js')),
       bundle: true,
+
+      // None of this worked
+      minify: false,
+      mangleProps: /.*/,
+      reserveProps: /.*/,
+      keepNames: true,
+
       sourcemap: true,
       target: 'node12',
       format: 'cjs',
@@ -88,12 +107,21 @@ program
         let first = true
         const exportCount = Object.keys(domqlModule).length
         for (const key in domqlModule) {
+          if (key !== 'Img') continue
+          if (options.internalUikit &&
+              EXCLUDED_FROM_INTERNAL_UIKIT.includes(key)) {
+            console.log(`Skipping ${key} component due to exclusion`)
+            continue
+          }
+
           console.log(key)
           console.group()
           const component = domqlModule[key]
           component.__name = key
+          console.log('input domql obj:')
+          console.log(component)
           const out = convert(component, desiredFormat, {
-            verbose: false,
+            verbose: true,
             exportDefault: exportCount === 1,
             returnMitosisIR: true,
             importsToRemove: uniqueImports,
