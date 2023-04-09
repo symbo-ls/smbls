@@ -19,6 +19,7 @@ const DEFAULT_PROPS = {
     useVariable: true,
     useIconSprite: true,
     useSvgSprite: true,
+    useDocumentTheme: true,
     useFontImport: true
   },
   components: {},
