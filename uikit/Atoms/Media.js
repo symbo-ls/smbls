@@ -3,7 +3,7 @@
 import { merge, isArray } from '@domql/utils'
 import { getSystemTheme } from './Theme'
 
-const keySetters = {
+export const keySetters = {
   '@': (key, props, result, element, isSubtree) => applyMediaProps(key, props, isSubtree ? result : result.media, element),
   ':': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result.selector, element),
   '[': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result.selector, element),
