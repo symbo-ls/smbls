@@ -12,7 +12,7 @@ export const replaceKeysWithAttr = str => str
   .replaceAll(', ', '\n  ')
 
 export const codify = (key, props) => ({
-  react: `import { ${key} } from 'smbls/react'
+  react: `import { ${key} } from '@symbo.ls/react'
 
 const props = ${stringifyProps(props)}
 
