@@ -105,6 +105,7 @@ program
         const uniqueImports = []
         let fileContents = ""
         let first = true
+        let removeUseContextImport = false
         const exportCount = Object.keys(domqlModule).length
         for (const key in domqlModule) {
           if (key !== 'Img') continue
@@ -125,12 +126,15 @@ program
             exportDefault: exportCount === 1,
             returnMitosisIR: true,
             importsToRemove: uniqueImports,
-            removeReactImport: !first
+            removeReactImport: !first,
+            removeUseContextImport: removeUseContextImport,
           })
 
           fileContents = fileContents + out.str + '\n'
           uniqueImports.push(...out.mitosisIR.imports)
           first = false
+          if (out.mitosisIR._useContext)
+            removeUseContextImport = true
           console.groupEnd()
         }
 
