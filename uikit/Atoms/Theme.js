@@ -131,6 +131,10 @@ export const Theme = {
     }),
 
     opacity: ({ props }) => props.opacity && ({ opacity: props.opacity }),
-    visibility: ({ props }) => props.visibility && ({ visibility: props.visibility })
+    visibility: ({ props }) => props.visibility && ({ visibility: props.visibility }),
+
+    columnRule: ({ props }) => props.columnRule && ({
+      columnRule: transformBorder(props.columnRule)
+    })
   }
 }
