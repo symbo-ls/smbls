@@ -17,7 +17,7 @@ export const initRouter = (root, options) => {
   if (routerOptions === false) return
   if (routerOptions === true) routerOptions = DEFAULT_ROUTING_OPTIONS
 
-  const router = options.snippets && (options.snippets.router || defaultRouter)
+  const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
 
   const onRender = (el, s) => {
     const { pathname, hash } = window.location
@@ -43,7 +43,7 @@ export const initRouter = (root, options) => {
 export const popStateRouter = (root, options) => {
   const routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
-  const router = options.snippets && (options.snippets.router || defaultRouter)
+  const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
   const { pathname, hash } = window.location
   const url = pathname + hash
   window.onpopstate = e => router(root, url, { pushState: false, level: 0 })
