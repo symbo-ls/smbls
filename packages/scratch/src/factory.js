@@ -36,3 +36,5 @@ export const setActiveConfig = (def) => {
   FACTORY.active = FACTORY[def]
   return FACTORY.active
 }
+
+export default CONFIG
