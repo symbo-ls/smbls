@@ -1,5 +1,6 @@
 'use strict'
 
+import { isString } from '@domql/utils'
 import { getActiveConfig } from "../factory"
 import { getSpacingByKey, getColor, getMediaColor } from "../system"
 
@@ -63,3 +64,7 @@ export const transformBackgroundImage = (backgroundImage, globalTheme) => {
     return v
   }).join(' ')
 }
+
+export const transfromGap = gap => isString(gap) && (
+  gap.split(' ').map(v => getSpacingByKey(v, 'gap').gap).join(' ')
+)

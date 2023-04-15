@@ -1,11 +1,6 @@
 'use strict'
 
-import { isString } from '@domql/utils'
-import { getSpacingBasedOnRatio, getSpacingByKey } from '@symbo.ls/scratch'
-
-const transfromGap = gap => isString(gap) && ({
-  gap: gap.split(' ').map(v => getSpacingByKey(v, 'gap').gap).join(' ')
-})
+import { getSpacingBasedOnRatio, getSpacingByKey, transfromGap } from '@symbo.ls/scratch'
 
 export const Block = {
   class: {
@@ -100,7 +95,9 @@ export const Block = {
     marginBlockStart: ({ props }) => props.marginBlockStart ? getSpacingBasedOnRatio(props, 'marginBlockStart') : null,
     marginBlockEnd: ({ props }) => props.marginBlockEnd ? getSpacingBasedOnRatio(props, 'marginBlockEnd') : null,
 
-    gap: ({ props }) => props.gap ? transfromGap(props.gap) : null,
+    gap: ({ props }) => props.gap ? ({
+      gap: transfromGap(props.gap)
+    }) : null,
     gridArea: ({ props }) => props.gridArea && ({ gridArea: props.gridArea }),
 
     flex: ({ props }) => props.flex && ({ flex: props.flex }),
