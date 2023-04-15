@@ -2,7 +2,13 @@
 
 import { isString } from '@domql/utils'
 import { getActiveConfig } from "../factory"
-import { getSpacingByKey, getColor, getMediaColor } from "../system"
+import {
+  getSpacingByKey,
+  getColor,
+  getMediaColor,
+  getTimingByKey,
+  getTimingFunction
+} from "../system"
 
 const isBorderStyle = str => [
   'none',
@@ -68,3 +74,30 @@ export const transformBackgroundImage = (backgroundImage, globalTheme) => {
 export const transfromGap = gap => isString(gap) && (
   gap.split(' ').map(v => getSpacingByKey(v, 'gap').gap).join(' ')
 )
+
+export const transformTransition = transition => {
+  const arr = transition.split(' ')
+
+  if (!arr.length) return transition
+
+  return arr.map(v => {
+    if (v.slice(0, 2) === '--') return `var(${v})`
+    if (v.length < 3 || v.includes('ms')) {
+      const mapWithSequence = getTimingByKey(v)
+      return mapWithSequence.timing || v
+    }
+    if (getTimingFunction(v)) return getTimingFunction(v)
+    return v
+  }).join(' ')
+}
+
+export const transformDuration = (duration, props, propertyName) => {
+  if (!isString(duration)) return
+  return duration.split(',').map(v => getTimingByKey(v).timing || v).join(',')
+}
+
+export const splitTransition = transition => {
+  const arr = transition.split(',')
+  if (!arr.length) return
+  return arr.map(transformTransition).join(',')
+}

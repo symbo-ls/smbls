@@ -1,34 +1,10 @@
 'use strict'
 
-import { isString } from '@domql/utils'
-import { getTimingByKey, getTimingFunction } from '@symbo.ls/scratch'
-
-export const transformTransition = transition => {
-  const arr = transition.split(' ')
-
-  if (!arr.length) return transition
-
-  return arr.map(v => {
-    if (v.slice(0, 2) === '--') return `var(${v})`
-    if (v.length < 3 || v.includes('ms')) {
-      const mapWithSequence = getTimingByKey(v)
-      return mapWithSequence.timing || v
-    }
-    if (getTimingFunction(v)) return getTimingFunction(v)
-    return v
-  }).join(' ')
-}
-
-export const transformDuration = (duration, props, propertyName) => {
-  if (!isString(duration)) return
-  return duration.split(',').map(v => getTimingByKey(v).timing || v).join(',')
-}
-
-export const splitTransition = transition => {
-  const arr = transition.split(',')
-  if (!arr.length) return
-  return arr.map(transformTransition).join(',')
-}
+import {
+  getTimingFunction,
+  splitTransition,
+  transformDuration
+} from '@symbo.ls/scratch'
 
 export const Timing = {
   class: {
