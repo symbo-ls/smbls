@@ -3,7 +3,7 @@
 import { router as defaultRouter } from '@domql/router'
 import { window } from '@domql/globals'
 import { Link, RouterLink } from '@symbo.ls/uikit'
-import { deepMerge } from '@domql/utils'
+import { deepMerge, merge } from '@domql/utils'
 
 const DEFAULT_ROUTING_OPTIONS = {
   initRouter: true,
@@ -12,7 +12,7 @@ const DEFAULT_ROUTING_OPTIONS = {
 }
 
 export const initRouter = (root, options) => {
-  let routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
+  let routerOptions = merge(options.routerOptions || {}, DEFAULT_ROUTING_OPTIONS)
 
   if (routerOptions === false) return
   if (routerOptions === true) routerOptions = DEFAULT_ROUTING_OPTIONS
@@ -37,7 +37,7 @@ export const initRouter = (root, options) => {
 
   injectRouterInLinkComponent(routerOptions)
 
-  return router
+  return routerOptions
 }
 
 export const popStateRouter = (root, options) => {

@@ -28,15 +28,16 @@ export const RouterLink = {
   on: {
     click: (event, el, s, ctx) => {
       const { props } = el
-      const { router } = ctx.utils
+      const { utils, routerOptions } = ctx
+      const { router } = utils
       const root = el.__ref.__root
       const { href } = props
       const firstThree = href[0] + href[1] + href[2]
-      const routerOptions = props.routerOptions || {
+      const options = props.routerOptions || routerOptions || {
         scrollToOptions: { behaviour: 'instant' }
       }
       if (href && firstThree !== 'htt' && firstThree !== 'ske') {
-        (router || defaultRouter)(root, href, {}, routerOptions)
+        (router || defaultRouter)(root, href, {}, options)
         event.preventDefault()
       }
     }

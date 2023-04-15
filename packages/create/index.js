@@ -41,7 +41,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
-  const router = initRouter(App, options) // eslint-disable-line
+  const routerOptions = initRouter(App, options) // eslint-disable-line
   const extend = applySyncDebug([App], options)
 
   const domqlApp = DOM.create({
@@ -59,6 +59,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
       define,
       registry,
       emotion,
+      routerOptions,
       document: doc
     }
   }, doc.body, key, {
