@@ -33,5 +33,6 @@ export const getActiveConfig = (def) => {
 }
 
 export const setActiveConfig = (def) => {
-  return FACTORY.active = FACTORY[def]
+  FACTORY.active = FACTORY[def]
+  return FACTORY.active
 }

@@ -86,4 +86,4 @@ export const updateReset = (config, RC_FILE, options = UPDATE_OPTIONS) => {
 
 export const setClass = (props, options = UPDATE_OPTIONS) => {}// setClassname(props, options.emotion.css)
 
-export { CONFIG, DYNAMIC_JSON }
+export { DYNAMIC_JSON }

@@ -6,7 +6,7 @@ import { getMediaTheme } from '.'
 
 export const applyReset = (reset = {}) => {
   const CONFIG = getActiveConfig()
-  const { CSS_VARS, RESET, TYPOGRAPHY, DOCUMENT } = CONFIG
+  const { RESET, TYPOGRAPHY, DOCUMENT } = CONFIG
   if (RESET) {
     if (RESET[':root']) {
       const configReset = RESET

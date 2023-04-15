@@ -1,6 +1,5 @@
 'use strict'
 
-import { isObject } from '@domql/utils'
 import { Flex, Svg } from '@symbo.ls/atoms'
 
 export const Icon = {
@@ -31,7 +30,7 @@ export const Icon = {
     if (ICONS[activeIconName]) validIconName = activeIconName
     if (ICONS[camelCase]) validIconName = camelCase
     else if (ICONS[isArray[0] + isArray[1]]) validIconName = isArray[0] + isArray[1]
-    else if (ICONS[isArray[0]]) validIconsName = isArray[0]
+    else if (ICONS[isArray[0]]) validIconName = isArray[0]
     else {
       if (verbose) console.warn('Can\'t find icon:', iconName, validIconName)
       validIconName = 'noIcon'

@@ -16,7 +16,7 @@ const defaultOptions = {
   endpoint: SERVER_URL
 }
 
-export const fetch = window ? window.fetch : fetch
+export const fetch = globalThis.fetch
 
 export const fetchRemote = async (key, options = defaultOptions) => {
   const baseUrl = `https://${options.endpoint || SERVER_URL}/`
@@ -24,7 +24,7 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 
   let response
   try {
-    response = await window.fetch(baseUrl + route, {
+    response = await fetch(baseUrl + route, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
     })

@@ -6,12 +6,13 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { createRequire } from 'module'
 import * as utils from '@domql/utils'
-const { deepMerge, overwriteDeep } = utils
+const { overwriteDeep } = utils
 
 const require = createRequire(import.meta.url) // construct the require method
 const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
 
 const app = express()
+let io
 
 export const updateDynamycFile = (changes, options = {}) => {
   const { key, live } = options
@@ -32,9 +33,9 @@ export const updateDynamycFile = (changes, options = {}) => {
 
 export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
   const server = http.createServer(app)
-  const { key, live } = options
+  const { key } = options
 
-  const io = new Server(server, {
+  io = new Server(server, {
     transports: ['websocket', 'polling', 'flashsocket'],
     cors: {
       origin: '*'

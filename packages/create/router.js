@@ -17,7 +17,7 @@ export const initRouter = (root, options) => {
   if (routerOptions === false) return
   if (routerOptions === true) routerOptions = DEFAULT_ROUTING_OPTIONS
 
-  const router = options.snippets && options.snippets.router || defaultRouter
+  const router = options.snippets && (options.snippets.router || defaultRouter)
 
   const onRender = (el, s) => {
     const { pathname, hash } = window.location

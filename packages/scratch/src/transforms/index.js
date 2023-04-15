@@ -41,6 +41,7 @@ export const transformTextStroke = stroke => {
     if (v.slice(0, 2) === '--') return `var(${v})`
     if (v.includes('px')) return v
     else if (getColor(v)) return getColor(v)
+    return v
   }).join(' ')
 }
 

@@ -5,7 +5,7 @@ import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 
 export const Box = (props) => {
   const context = useSymbols()
-  const [theme, setTheme] = useGlobalTheme()
+  const [theme, setTheme] = useGlobalTheme() // eslint-disable-line no-unused-vars
 
   const element = {
     context,
@@ -13,7 +13,7 @@ export const Box = (props) => {
   }
   const excludedProps = {}
 
-  const transformedProps = transformClassname(props, context, void 0, excludedProps, element)
+  const transformedProps = transformClassname(props, context, undefined, excludedProps, element)
   const propsClass = transformEmotion(transformedProps)
 
   let { children, tag, className, text, ...restProps } = excludedProps

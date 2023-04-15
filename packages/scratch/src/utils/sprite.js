@@ -44,8 +44,8 @@ export const convertSvgToSymbol = (key, code) => {
   let symbol = code.replace('<svg',
     `<symbol id="${key}" xmlns="${xmlns}" viewBox="${viewBox}"`
   )
-  symbol = symbol.replace(/width="[^\"]*/, '')
-  symbol = symbol.replace(/height="[^\"]*/, '')
+  symbol = symbol.replace(/width="[^"]*/, '')
+  symbol = symbol.replace(/height="[^"]*/, '')
   symbol = symbol.replace('</svg', '</symbol')
   return symbol
 }

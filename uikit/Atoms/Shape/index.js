@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isString, isFunction } from '@domql/utils'
+import { exec, isString } from '@domql/utils'
 import { SHAPES } from './style'
 import { getSpacingBasedOnRatio, getMediaColor } from '@symbo.ls/scratch'
 import { Pseudo } from '../Pseudo'

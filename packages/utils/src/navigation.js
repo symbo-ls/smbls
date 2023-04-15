@@ -3,7 +3,9 @@
 export const filterHrefs = (sitemap) => {
   return Object.values(sitemap)
     .map(({ href, sub_links }) => // eslint-disable-line
-      [href, sub_links.map(({ href }) => href).filter(v => v.indexOf('#') === -1)].filter(v => v.length > 0)
+      [href, sub_links.map(({ href }) => href) // eslint-disable-line
+        .filter(v => v.indexOf('#') === -1)]
+        .filter(v => v.length > 0)
     )
 }
 
@@ -12,7 +14,7 @@ export const findCurrentIndex = (sitemap) => { // eslint-disable-line
   const hrefArray = filterHrefs(sitemap)
   let index
 
-  hrefArray.map((v, k) => {
+  hrefArray.forEach((v, k) => {
     if (v[0] === pathname) index = k
     if (v[1] && v[1].indexOf(pathname) > -1) {
       const i = v[1].indexOf(pathname)
@@ -29,7 +31,7 @@ export const setPaginationNames = (sitemap) => {
   const hrefArray = filterHrefs(sitemap)
   const state = {}
 
-  hrefArray.map((v, k) => {
+  hrefArray.forEach((v, k) => {
     const categoryRoute = v[0]
     const subcategoryRoutes = v[1]
     const previousCat = sitemap[k - 1]

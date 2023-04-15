@@ -120,5 +120,3 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
 
   return CONFIG
 }
-
-export * from './system'

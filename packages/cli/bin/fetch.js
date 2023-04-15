@@ -13,13 +13,13 @@ const PACKAGE_PATH = process.cwd() + '/package.json'
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.dev/'
+const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.dev/' // eslint-disable-line
 
 const API_URL = 'https://api.symbols.dev/' // eslint-disable-line
 
 const pkg = loadModule(PACKAGE_PATH)
-const rc_file = loadModule(RC_PATH) // eslint-disable-line
-const local_config = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
+const rcFile = loadModule(RC_PATH) // eslint-disable-line
+const localConfig = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
 
 let rc = {}
 try {
@@ -34,7 +34,7 @@ program
   .description('Install Symbols')
   .option('--framework', 'Which Symbols to install (domql, react)')
   .action(async (framework) => {
-    if (!rc_file || !local_config) {
+    if (!rcFile || !localConfig) {
       console.error('symbols.json not found in the root of the repository')
       return
     }
@@ -43,7 +43,7 @@ program
     const packageName = 'smbls'
     console.log('Adding', chalk.green.bold(packageName))
 
-    if (framework === 'domql' || rc_file.framework === 'domql') {
+    if (framework === 'domql' || rcFile.framework === 'domql') {
       exec('yarn add domql@^1.15.26 --force', (error, stdout, stderr) => {
         if (error) {
           console.log(`error: ${error.message}`)
@@ -79,8 +79,8 @@ program
   .description('Fetch symbols')
   .action(async (options) => {
     rc.then(async data => {
-      const opts = { ...data, ...options }
-      const key = data.key || options && options.key
+      const opts = { ...data, ...options } // eslint-disable-line
+      const key = data.key || (options && options.key)
 
       const body = await fetchRemote(key, { endpoint: 'api.symbols.dev' })
       const { version, ...config } = body

@@ -5,7 +5,8 @@ import {
   getMediaColor,
   transformTextStroke,
   transformShadow,
-  transformBorder
+  transformBorder,
+  transformBackgroundImage
 } from '@symbo.ls/scratch'
 
 import { depth } from './Shape/style'

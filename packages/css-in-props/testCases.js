@@ -61,7 +61,7 @@ set({
 })
 
 const codePropsTrasnsformClassname = transformClassname(code_test)
-const codePropsTrasnsformEmotion = transformEmotion(codePropsTrasnsformClassname)
+const codePropsTrasnsformEmotion = transformEmotion(codePropsTrasnsformClassname) // eslint-disable-line
 
 const navLinkPropsTrasnsformClassname = transformClassname(navLink_test)
-const navLinkPropsTrasnsformEmotion = transformEmotion(navLinkPropsTrasnsformClassname)
+const navLinkPropsTrasnsformEmotion = transformEmotion(navLinkPropsTrasnsformClassname) // eslint-disable-line

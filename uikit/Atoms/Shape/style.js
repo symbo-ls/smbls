@@ -128,7 +128,7 @@ export const SHAPES = {
     }
   },
 
-  hexagon: el => ({
+  hexagon: ({ props }) => ({
     position: 'relative',
     '&:before, &:after': {
       content: '""',
@@ -154,7 +154,7 @@ export const SHAPES = {
     }
   }),
 
-  chevron: el => ({
+  chevron: ({ props }) => ({
     position: 'relative',
     // overflow: 'hidden',
     '&:before, &:after': {

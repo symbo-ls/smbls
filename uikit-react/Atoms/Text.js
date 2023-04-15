@@ -2,6 +2,8 @@
 
 import React from 'react'
 
-export const Text = (props) => (<>
-  {props.text || props.children}
-</>)
+export const Text = (props) => (
+  <>
+    {props.text || props.children}
+  </>
+)

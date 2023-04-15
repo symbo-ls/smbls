@@ -15,7 +15,7 @@ export const Flex = (props) => {
   }
   const excludedProps = {}
 
-  const transformedProps = transformClassname(props, void 0, smbmsFlex.class, excludedProps, element)
+  const transformedProps = transformClassname(props, undefined, smbmsFlex.class, excludedProps, element)
   const propsClass = transformEmotion(transformedProps)
 
   return (
