@@ -63,15 +63,15 @@ export const init = (config, options = SET_OPTIONS) => {
 
   if (hasSvgs) appendSVGSprite(hasSvgs, { document: options.document })
   else if (useSvgSprite) appendSVGSprite(conf.SVG, { document: options.document })
-  
+
   if (hasIcons) appendIconsSprite(hasIcons, { document: options.document })
   else if (useIconSprite) appendIconsSprite(conf.ICONS, { document: options.document })
-  
+
   return conf
 }
 
-const UPDATE_OPTIONS = { 
-  emotion: defaultEmotion 
+const UPDATE_OPTIONS = {
+  emotion: defaultEmotion
 }
 export const updateReset = (config, RC_FILE, options = UPDATE_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
@@ -80,7 +80,7 @@ export const updateReset = (config, RC_FILE, options = UPDATE_OPTIONS) => {
     verbose: false,
     ...resultConfig
   })
-  emotion.injectGlobal({':root': conf.CSS_VARS })
+  emotion.injectGlobal({ ':root': conf.CSS_VARS })
   emotion.injectGlobal(conf.RESET)
 }
 

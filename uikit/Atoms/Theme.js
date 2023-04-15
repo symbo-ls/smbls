@@ -4,7 +4,8 @@ import {
   getMediaTheme,
   getMediaColor,
   transformTextStroke,
-  transformShadow
+  transformShadow,
+  transformBorder
 } from '@symbo.ls/scratch'
 
 import { depth } from './Shape/style'
@@ -60,16 +61,22 @@ export const Theme = {
         backgroundSize: transformBackgroundImage(props.backgroundImage, globalTheme)
       })
     },
-    backgroundSize: ({ props }) => props.backgroundSize ? ({
-      backgroundSize: props.backgroundSize
-    }) : null,
-    backgroundPosition: ({ props }) => props.backgroundPosition ? ({
-      backgroundPosition: props.backgroundPosition
-    }) : null,
+    backgroundSize: ({ props }) => props.backgroundSize
+      ? ({
+          backgroundSize: props.backgroundSize
+        })
+      : null,
+    backgroundPosition: ({ props }) => props.backgroundPosition
+      ? ({
+          backgroundPosition: props.backgroundPosition
+        })
+      : null,
 
-    textStroke: ({ props }) => props.textStroke ? ({
-      WebkitTextStroke: transformTextStroke(props.textStroke)
-     }) : null,
+    textStroke: ({ props }) => props.textStroke
+      ? ({
+          WebkitTextStroke: transformTextStroke(props.textStroke)
+        })
+      : null,
 
     outline: ({ props }) => props.outline && ({
       outline: transformBorder(props.outline)

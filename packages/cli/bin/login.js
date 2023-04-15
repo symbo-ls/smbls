@@ -1,5 +1,8 @@
 'use strict'
 
+const { program } = require('./program')
+const API_URL = 'https://api.symbols.dev/' // eslint-disable-line
+
 program
   .command('login [destination]')
   .description('Sign in to Symbols')

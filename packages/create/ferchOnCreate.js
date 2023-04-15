@@ -1,6 +1,6 @@
 'use strict'
 
-import { fetchProject, fetchStateAsync } from "@symbo.ls/fetch"
+import { fetchProject, fetchStateAsync } from '@symbo.ls/fetch'
 
 export const fetchSync = async (key, options) => {
   if (key && options.editor) {
@@ -22,4 +22,3 @@ export const fetchAsync = (app, key, options, callback) => {
     }
   }
 }
-

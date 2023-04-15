@@ -90,10 +90,11 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     useIconSprite,
     globalTheme,
     useDocumentTheme,
-    ...config } = recivedConfig
-  
+    ...config
+  } = recivedConfig
+
   if (options.newConfig) {
-    FACTORY['active'] = options.newConfig
+    FACTORY.active = options.newConfig
     CONFIG = getActiveConfig(options.newConfig)
   }
 

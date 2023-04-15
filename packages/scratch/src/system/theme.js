@@ -168,10 +168,10 @@ export const setMediaTheme = (val, key, suffix, prefers) => {
       }
     }
 
-    if (theme['background'] || theme['color'] || theme['backgroundColor']) {
+    if (theme.background || theme.color || theme.backgroundColor) {
       theme['.inversed'] = {
-        color: theme['background'] || theme['backgroundColor'],
-        background: theme['color']
+        color: theme.background || theme.backgroundColor,
+        background: theme.color
       }
     }
   }

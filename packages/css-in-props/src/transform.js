@@ -10,7 +10,7 @@ export const transformClassname = (props, context = {}, registry = CSS_PROPS_REG
   if (!isObject(props)) return
 
   merge(element.class, registry)
-  if (Object.keys(registry)[0] !== Object.keys(CSS_PROPS_REGISTRY)[0])  {
+  if (Object.keys(registry)[0] !== Object.keys(CSS_PROPS_REGISTRY)[0]) {
     merge(element.class, CSS_PROPS_REGISTRY)
   }
 
@@ -21,12 +21,13 @@ export const transformClassname = (props, context = {}, registry = CSS_PROPS_REG
     if (setter) setter(key, props[key], CLASS_NAMES, element, true)
     else if (isFunction(hasCSS)) {
       const stack = hasCSS({ props, context })
-      const exec = isArray(stack) ? stack.reduce((a, c) => {
-        return merge(a, c)
-      }, {}) : stack
+      const exec = isArray(stack)
+        ? stack.reduce((a, c) => {
+          return merge(a, c)
+        }, {})
+        : stack
       deepMerge(CLASS_NAMES, exec)
-    }
-    else if (key === 'style') {
+    } else if (key === 'style') {
       deepMerge(CLASS_NAMES, props[key])
     } else excludedProps[key] = props[key]
   }

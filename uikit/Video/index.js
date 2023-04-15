@@ -4,7 +4,7 @@ export const Video = {
   tag: 'video',
 
   childExtend: {
-    tag: 'source' ,
+    tag: 'source',
     attr: {
       src: ({ props }) => props.src,
       controls: ({ props }) => props.controls

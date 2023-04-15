@@ -1,11 +1,11 @@
 'use strict'
 
 import { document } from '@domql/globals'
-import { generateSprite, convertSvgToSymbol } from "../utils"
+import { generateSprite, convertSvgToSymbol } from '../utils'
 import { getActiveConfig } from '../factory.js'
 
 const DEF_OPTIONS = {
-  document: document
+  document
 }
 
 export const setSVG = (val, key) => {
@@ -24,14 +24,14 @@ export const appendSVGSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const doc = options.document || document
 
   const lib = Object.keys(LIBRARY).length ? {} : CONFIG.SVG
-  for (let key in LIBRARY) lib[key] = CONFIG.SVG[key]
-  
+  for (const key in LIBRARY) lib[key] = CONFIG.SVG[key]
+
   const SVGsprite = generateSprite(lib)
   if (!doc) {
     console.warn('To append SVG sprites it should be run in browser environment')
     return SVGsprite
   }
-  
+
   const svgSpriteDOM = doc.createElement('template')
   svgSpriteDOM.innerHTML = SVGsprite
   doc.body.appendChild(svgSpriteDOM.content)
@@ -47,10 +47,10 @@ export const setIcon = (val, key) => {
 export const appendIconsSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const CONFIG = getActiveConfig()
   const doc = options.document || document
-  
+
   const lib = Object.keys(LIBRARY).length ? {} : CONFIG.ICONS
-  for (let key in LIBRARY) lib[key] = CONFIG.ICONS[key]
-  
+  for (const key in LIBRARY) lib[key] = CONFIG.ICONS[key]
+
   const SVGsprite = generateSprite(lib)
   if (!doc) {
     console.warn('To append SVG Icon sprites it should be run in browser environment')

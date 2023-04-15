@@ -13,9 +13,11 @@ export const Collection = {
         for (const obj in param) { data.push(param[obj]) }
       }
 
-      data = data.map(item => !isObjectLike(item) ? {
-        props: { value: item }
-      } : item)
+      data = data.map(item => !isObjectLike(item)
+        ? {
+            props: { value: item }
+          }
+        : item)
 
       if (data.length) {
         const t = setTimeout(() => {

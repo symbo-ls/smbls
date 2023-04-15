@@ -37,7 +37,6 @@ export const getColor = (value, key) => {
     else if (CONFIG.verbose) console.warn(value, ' - does not have ', key)
   }
 
-
   // TODO: support variables
   // if (alpha) return `rgba(var(${val[shade || ''].var}), ${modifier})`
 

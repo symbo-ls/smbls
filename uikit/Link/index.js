@@ -20,7 +20,7 @@ export const Link = {
     },
     target: ({ props }) => props.target,
     'aria-label': ({ props }) => props.aria ? props.aria.label : props.text,
-    draggable:  ({ props }) => props.draggable
+    draggable: ({ props }) => props.draggable
   }
 }
 

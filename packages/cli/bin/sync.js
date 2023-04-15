@@ -19,7 +19,7 @@ program
   .action(async (options) => {
     if (!rc) {
       console.error('symbols.json not found in the root of the repository')
-      return;
+      return
     }
     rc.then(data => {
       const opts = { ...data, ...options }
@@ -30,8 +30,8 @@ program
         },
         onChange: (event, data) => {
           data = JSON.parse(data)
-          let d = {}
-          const { 
+          const d = {}
+          const {
             PROJECT_SYSTEM,
             PROJECT_STATE,
             PROJECT_COMPONENTS,

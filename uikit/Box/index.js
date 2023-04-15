@@ -41,4 +41,3 @@ export const Box = {
     id: ({ props }) => props.id
   }
 }
-

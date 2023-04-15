@@ -13,15 +13,15 @@ export const depth = {
 }
 
 const getComputedBackgroundColor = ({ props }) => {
-  return getColor(props.shapeDirectionColor) || 
-    getColor(props.borderColor) || 
-    getColor(props.backgroundColor) || 
+  return getColor(props.shapeDirectionColor) ||
+    getColor(props.borderColor) ||
+    getColor(props.backgroundColor) ||
     getColor(props.background)
 }
 
 const inheritTransition = ({ props }) => {
   const exec = Timing.class.transition({ props })
-  return exec && exec['transition']
+  return exec && exec.transition
 }
 
 export const SHAPES = {
@@ -39,7 +39,7 @@ export const SHAPES = {
       display: 'block',
       width: '0px',
       height: '0px',
-      border: `.35em solid`,
+      border: '.35em solid',
       borderColor: getComputedBackgroundColor({ props }),
       transition: inheritTransition({ props }),
       transitionProperty: 'border-color',

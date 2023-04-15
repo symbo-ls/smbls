@@ -1,10 +1,10 @@
 'use strict'
 
-import React from "react"
-import { Button as D, SquareButton as D2 } from "@symbo.ls/button"
-import { IconText } from "@symbo.ls/react-icon-text"
+import React from 'react'
+import { Button as D, SquareButton as D2 } from '@symbo.ls/button'
+import { IconText } from '@symbo.ls/react-icon-text'
 
-export const Button = (props) => (<IconText tag="button" {...props}>
+export const Button = (props) => (<IconText tag='button' {...props}>
   {props.children}
 </IconText>)
 
@@ -15,4 +15,3 @@ export const SquareButton = (props) => (<Button {...props}>
 </Button>)
 
 SquareButton.defaultProps = D2.props
- 

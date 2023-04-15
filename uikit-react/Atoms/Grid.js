@@ -1,8 +1,8 @@
 'use strict'
 
-import React from "react"
-import { Grid as smbmsGrid } from "@symbo.ls/atoms"
-import { Box } from "@symbo.ls/react-box"
+import React from 'react'
+import { Grid as smbmsGrid } from '@symbo.ls/atoms'
+import { Box } from '@symbo.ls/react-box'
 import { transformEmotion, transformClassname } from 'css-in-props'
 import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 
@@ -11,7 +11,7 @@ export const Grid = (props) => {
   const element = {
     context,
     class: {}
-  };
+  }
 
   const excludedProps = {}
   const transformedProps = transformClassname(props, void 0, smbmsGrid.class, excludedProps, element)

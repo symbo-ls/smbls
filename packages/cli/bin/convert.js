@@ -1,20 +1,19 @@
 'use strict'
 
 import * as esbuild from 'esbuild'
-import { loadModule } from './require.js'
 import { program } from './program.js'
 import { convert } from 'domql-to-mitosis'
 import fs from 'fs'
 import path from 'path'
 import { JSDOM } from 'jsdom'
 
-const jsdom = new JSDOM(`<html><head></head><body></body></html>`)
+const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
 
-const TMP_DIR_NAME = ".smbls_convert_tmp"
+const TMP_DIR_NAME = '.smbls_convert_tmp'
 
-async function mkdirp(dir) {
+async function mkdirp (dir) {
   try {
     return await fs.promises.mkdir(dir)
   } catch (err) {
@@ -69,7 +68,7 @@ program
     // Convert components
     const componentDirs = await fs.promises.readdir(tmpDirPath)
     for (const componentDir of componentDirs) {
-      let importDir = path.join(tmpDirPath, componentDir)
+      const importDir = path.join(tmpDirPath, componentDir)
       if ((await fs.promises.stat(importDir)).isDirectory()) {
         // Import the module
         const importPath = `${importDir}/index.js`
@@ -84,7 +83,7 @@ program
         console.log(`Converting modules in ${componentDir}:`)
         console.group()
         const uniqueImports = []
-        let fileContents = ""
+        let fileContents = ''
         let first = true
         const exportCount = Object.keys(domqlModule).length
         for (const key in domqlModule) {
@@ -111,7 +110,7 @@ program
         // Write file
         if (fileContents.length > 0) {
           const fh = await fs.promises
-                .open(`${destComponentDirPath}/index.js`, 'w')
+            .open(`${destComponentDirPath}/index.js`, 'w')
           await fh.writeFile(fileContents, 'utf8')
           await fh.close()
         }

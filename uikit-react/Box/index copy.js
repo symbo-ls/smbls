@@ -1,49 +1,48 @@
-import _extends from "@babel/runtime/helpers/esm/extends";
-import _typeof from "@babel/runtime/helpers/esm/typeof";
-import _objectSpread from "@babel/runtime/helpers/esm/objectSpread2";
-import _objectWithoutProperties from "@babel/runtime/helpers/esm/objectWithoutProperties";
-import * as React from "react";
-import { useRef, useImperativeHandle, forwardRef } from "react";
+import _extends from '@babel/runtime/helpers/esm/extends'
+import _typeof from '@babel/runtime/helpers/esm/typeof'
+import _objectSpread from '@babel/runtime/helpers/esm/objectSpread2'
+import _objectWithoutProperties from '@babel/runtime/helpers/esm/objectWithoutProperties'
+import * as React from 'react'
+import { useRef, useImperativeHandle, forwardRef } from 'react'
 import { transformClassname, transformEmotion } from 'css-in-props'
 
-
 function B (props, ref) {
-  var className = props.className,
-    tag = props.tag,
-    href = props.href,
-    target = props.target,
-    ariaLabel = props.ariaLabel,
-    src = props.src,
-    alt = props.alt,
-    title = props.title,
-    type = props.type,
-    name = props.name,
-    checked = props.checked,
-    id = props.id,
-    onClick = props.onClick,
-    restProps = _objectWithoutProperties(props, ["tag", "className"]);
+  const className = props.className
+  var tag = props.tag
+  const href = props.href
+  const target = props.target
+  const ariaLabel = props.ariaLabel
+  const src = props.src
+  const alt = props.alt
+  const title = props.title
+  const type = props.type
+  const name = props.name
+  const checked = props.checked
+  const id = props.id
+  const onClick = props.onClick
+  const restProps = _objectWithoutProperties(props, ['tag', 'className'])
 
-  var domRef = useRef(null);
+  const domRef = useRef(null)
   useImperativeHandle(ref, function () {
-    return domRef.current;
-  });
+    return domRef.current
+  })
 
-  var extraProps = _objectSpread({}, restProps, restProps.props);
+  const extraProps = _objectSpread({}, restProps, restProps.props)
 
-  var tag = props.tag || extraProps.tag || "div";
+  var tag = props.tag || extraProps.tag || 'div'
 
-  var children = props.text ? props.text : props.children;
+  const children = props.text ? props.text : props.children
 
-  const propsClass = transformEmotion(transformClassname(props)) 
+  const propsClass = transformEmotion(transformClassname(props))
 
-  const style = { ...props.style  };
+  const style = { ...props.style }
 
-  return /*#DOMQL GOES HERE*/ React.createElement(
+  return /* #DOMQL GOES HERE */ React.createElement(
     tag,
     _extends({
-      className: `${className ?? ""} ${propsClass}` ,
+      className: `${className ?? ''} ${propsClass}`,
       ref: domRef,
-      style: style,
+      style,
       href,
       target,
       src,
@@ -54,10 +53,10 @@ function B (props, ref) {
       id,
       onClick,
       title,
-      "aria-label": ariaLabel,
+      'aria-label': ariaLabel
     }),
     children
-  );
+  )
 };
 
-export const Box = forwardRef(B);
+export const Box = forwardRef(B)

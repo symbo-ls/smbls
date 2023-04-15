@@ -3,20 +3,20 @@
 import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const DESIGN_SYSTEM_FILE_PATH = path.join(
   __dirname, 'DesignSystem.js')
 
-export async function initRepo(dest, framework) {
+export async function initRepo (dest, framework) {
   const cwd = process.cwd()
 
   // Init NPM if necessary
   if (!fs.existsSync(path.join(dest, 'package.json'))) {
     process.chdir(dest)
     console.log('Running npm init')
-    execSync(`npm init -y`)
+    execSync('npm init -y')
     process.chdir(cwd)
   }
 
@@ -25,7 +25,7 @@ export async function initRepo(dest, framework) {
   // Install
   console.log('Installing NPM dependencies...')
   process.chdir(dest)
-  execSync(`npm install`, { stdio: ['inherit', 'inherit', 'ignore'] })
+  execSync('npm install', { stdio: ['inherit', 'inherit', 'ignore'] })
   process.chdir(cwd)
 
   // Copy design system file

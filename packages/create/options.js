@@ -16,7 +16,7 @@ export default {
   },
   components: {},
   initOptions: {
-    emotion: defaultEmotion,
+    emotion: defaultEmotion
   },
   router: {
     initRouter: true,

@@ -3,14 +3,13 @@
 import { execSync } from 'child_process'
 import { program } from './program.js'
 import { initRepo } from './init-helpers/init-repo.js'
-import path from 'path'
 
 const REPO_URLS = {
-  'domql': 'https://github.com/symbo-ls/starter-kit',
-  'react': 'https://github.com/symbo-ls/create-react-app.git',
-  'angular': 'https://github.com/symbo-ls/create-angular-app.git',
-  'vue2': 'https://github.com/symbo-ls/create-vue2-app.git',
-  'vue3': 'https://github.com/symbo-ls/create-vue3-app.git',
+  domql: 'https://github.com/symbo-ls/starter-kit',
+  react: 'https://github.com/symbo-ls/create-react-app.git',
+  angular: 'https://github.com/symbo-ls/create-angular-app.git',
+  vue2: 'https://github.com/symbo-ls/create-vue2-app.git',
+  vue3: 'https://github.com/symbo-ls/create-vue3-app.git'
 }
 
 program
@@ -34,7 +33,7 @@ program
     } else if (options.vue3) {
       framework = 'vue3'
     }
-    let cloneUrl = REPO_URLS[framework]
+    const cloneUrl = REPO_URLS[framework]
 
     // Clone
     console.log(`Cloning ${cloneUrl} into '${dest}'...`)

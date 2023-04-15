@@ -36,7 +36,7 @@ program
   .action(async (framework) => {
     if (!rc_file || !local_config) {
       console.error('symbols.json not found in the root of the repository')
-      return;
+      return
     }
 
     // const packageName = `@symbo.ls/${mode || 'uikit'}`
@@ -70,7 +70,7 @@ program
       console.log('\n')
       console.log(chalk.green.bold(packageName), 'successfuly added!')
       console.log('')
-      console.log(chalk.dim('Now you can import components like:'), `import { Button } from 'smbls`)
+      console.log(chalk.dim('Now you can import components like:'), 'import { Button } from \'smbls')
     })
   })
 

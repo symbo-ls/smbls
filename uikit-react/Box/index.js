@@ -1,6 +1,6 @@
 
-import React from "react";
-import { transformEmotion, transformClassname} from 'css-in-props'
+import React from 'react'
+import { transformEmotion, transformClassname } from 'css-in-props'
 import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 
 export const Box = (props) => {
@@ -10,8 +10,8 @@ export const Box = (props) => {
   const element = {
     context,
     class: {}
-  };
-  const excludedProps = {};
+  }
+  const excludedProps = {}
 
   const transformedProps = transformClassname(props, context, void 0, excludedProps, element)
   const propsClass = transformEmotion(transformedProps)
@@ -20,10 +20,10 @@ export const Box = (props) => {
   if (props.text) children = children.concat(text)
 
   return React.createElement(
-    tag || "div",
+    tag || 'div',
     {
       ...restProps,
-      className: `${className ?? ''} ${propsClass}`,
+      className: `${className ?? ''} ${propsClass}`
     },
     children
   )

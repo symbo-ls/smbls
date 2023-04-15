@@ -16,7 +16,7 @@ export const DevFocus = {
     state: {},
     props: (el, s) => ({
       position: 'fixed',
-      hide: !s.area || !s.parent.debugging,
+      hide: !s.area || !s.parent.debugging
     }),
     class: {
       inset: (el, state) => {
@@ -32,7 +32,7 @@ export const DevFocus = {
       }
     },
     style: {
-      boxShadow: `0 0 10px #3686F733, 0 0 0 3px #3686F766, 0 0 100vmax 100vmax #000A`,
+      boxShadow: '0 0 10px #3686F733, 0 0 0 3px #3686F766, 0 0 100vmax 100vmax #000A',
       zIndex: '9999999',
       borderRadius: '10px',
       pointerEvents: 'none'
@@ -55,7 +55,7 @@ export const DevFocus = {
       },
       text: (el, s) => s.focusKey
     },
-    
+
     on: {
       init: ({ context }) => {
         const { components } = context

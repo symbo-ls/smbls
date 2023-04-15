@@ -1,9 +1,9 @@
-"use strict"
+'use strict'
 
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from 'react'
 import DEFAULT_CONFIG from '@symbo.ls/default-config'
-import { init } from "@symbo.ls/init"
-import { fetchStateAsync } from "@symbo.ls/fetch"
+import { init } from '@symbo.ls/init'
+import { fetchStateAsync } from '@symbo.ls/fetch'
 
 const DEFAULT_PROPS = {
   editor: {
@@ -50,17 +50,19 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
   const { appKey, children } = options
 
   const ds = init(options.designSystem || DEFAULT_CONFIG)
-  const [ designSystem, setDesignSystem ] = useState(ds)
-  const [ state, setState ] = useState(options.state)
-  const [ globalTheme, setGlobalTheme ] = useState(designSystem.globalTheme)
+  const [designSystem, setDesignSystem] = useState(ds)
+  const [state, setState] = useState(options.state)
+  const [globalTheme, setGlobalTheme] = useState(designSystem.globalTheme)
   const { Provider } = SymbolsContext
 
   useEffect(() => {
     if (appKey && options.editor) {
       try {
-        if (options.editor.async) fetchStateAsync(appKey, options, (data) => {
-          setState(data)
-        })
+        if (options.editor.async) {
+          fetchStateAsync(appKey, options, (data) => {
+            setState(data)
+          })
+        }
       } catch (e) {
         console.error(e)
       }
@@ -69,11 +71,16 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
 
   return React.createElement(
     Provider,
-    { value: {
-      designSystem, setDesignSystem,
-      state, setState,
-      globalTheme, setGlobalTheme
-    } },
+    {
+      value: {
+        designSystem,
+        setDesignSystem,
+        state,
+        setState,
+        globalTheme,
+        setGlobalTheme
+      }
+    },
     children
   )
 }

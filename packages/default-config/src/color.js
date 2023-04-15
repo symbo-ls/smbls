@@ -40,5 +40,5 @@ export const GRADIENT = {
     #1E54F0 36%,
     #8B4CCA 69%,
     #C66894 100%
-  )`,
+  )`
 }

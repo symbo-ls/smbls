@@ -1,14 +1,14 @@
 'use strict'
 
 import { isString } from '@domql/utils'
-import { getActiveConfig } from "../factory"
+import { getActiveConfig } from '../factory'
 import {
   getSpacingByKey,
   getColor,
   getMediaColor,
   getTimingByKey,
   getTimingFunction
-} from "../system"
+} from '../system'
 
 const isBorderStyle = str => [
   'none',
@@ -65,8 +65,7 @@ export const transformBackgroundImage = (backgroundImage, globalTheme) => {
       return {
         backgroundImage: getMediaColor(backgroundImage, globalTheme || CONFIG.globalTheme)
       }
-    }
-    else if (v.includes('/') || v.includes('http')) return `url(${v})`
+    } else if (v.includes('/') || v.includes('http')) return `url(${v})`
     return v
   }).join(' ')
 }

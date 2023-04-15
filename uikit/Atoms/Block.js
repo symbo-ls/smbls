@@ -4,9 +4,11 @@ import { getSpacingBasedOnRatio, getSpacingByKey, transfromGap } from '@symbo.ls
 
 export const Block = {
   class: {
-    boxSizing: ({ props }) => props.boxSizing ? ({ boxSizing: props.boxSizing }) : {
-      boxSizing: 'border-box'
-    },
+    boxSizing: ({ props }) => props.boxSizing
+      ? ({ boxSizing: props.boxSizing })
+      : {
+          boxSizing: 'border-box'
+        },
 
     display: ({ props }) => props.display && ({ display: props.display }),
 
@@ -95,9 +97,11 @@ export const Block = {
     marginBlockStart: ({ props }) => props.marginBlockStart ? getSpacingBasedOnRatio(props, 'marginBlockStart') : null,
     marginBlockEnd: ({ props }) => props.marginBlockEnd ? getSpacingBasedOnRatio(props, 'marginBlockEnd') : null,
 
-    gap: ({ props }) => props.gap ? ({
-      gap: transfromGap(props.gap)
-    }) : null,
+    gap: ({ props }) => props.gap
+      ? ({
+          gap: transfromGap(props.gap)
+        })
+      : null,
     gridArea: ({ props }) => props.gridArea && ({ gridArea: props.gridArea }),
 
     flex: ({ props }) => props.flex && ({ flex: props.flex }),
@@ -122,15 +126,17 @@ export const Block = {
       const [alignItems, justifyContent] = props.flexAlign.split(' ')
       return {
         display: 'flex',
-        alignItems: alignItems,
-        justifyContent: justifyContent
+        alignItems,
+        justifyContent
       }
     },
 
     gridColumn: ({ props }) => props.gridColumn && ({ gridColumn: props.gridColumn }),
-    gridColumnStart: ({ props }) => props.columnStart ? ({
-      gridColumnStart: props.columnStart
-    }) : null,
+    gridColumnStart: ({ props }) => props.columnStart
+      ? ({
+          gridColumnStart: props.columnStart
+        })
+      : null,
     gridRow: ({ props }) => props.gridRow && ({ gridRow: props.gridRow }),
     gridRowStart: ({ props }) => props.rowStart ? ({ gridRowStart: props.rowStart }) : null,
 
@@ -152,8 +158,8 @@ export const Block = {
 }
 
 export const Span = { tag: 'span' }
-export const List = { 
-  tag: 'ul' ,
+export const List = {
+  tag: 'ul',
   childExtend: { tag: 'li' }
 }
 // export const Article = { tag: 'article' }

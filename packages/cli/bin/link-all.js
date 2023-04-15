@@ -6,5 +6,5 @@ program
   .command('link-all')
   .description('Symlink all smbls dependencies')
   .action(async (options) => {
-    // 
+    //
   })
