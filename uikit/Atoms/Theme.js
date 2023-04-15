@@ -1,55 +1,13 @@
 'use strict'
 
-import { getSpacingByKey, getMediaTheme, getColor, getMediaColor } from '@symbo.ls/scratch'
+import {
+  getMediaTheme,
+  getMediaColor,
+  transformTextStroke,
+  transformShadow
+} from '@symbo.ls/scratch'
 
 import { depth } from './Shape/style'
-
-const isBorderStyle = str =>
-  ['none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset', 'initial'].some(v => str.includes(v))
-
-const transformBorder = border => {
-  const arr = border.split(', ')
-  return arr.map(v => {
-    v = v.trim()
-    if (v.slice(0, 2) === '--') return `var(${v})`
-    else if (isBorderStyle(v)) return v || 'solid'
-    else if (v.slice(-2) === 'px' || v.slice(-2) === 'em') return v // TODO: add map spacing
-    else if (getColor(v).length > 2) return getColor(v)
-    return getSpacingByKey(v, 'border').border
-  }).join(' ')
-}
-
-const transformTextStroke = stroke => ({
-  WebkitTextStroke: stroke.split(', ').map(v => {
-    if (v.slice(0, 2) === '--') return `var(${v})`
-    if (v.includes('px')) return v
-    else if (getColor(v)) return getColor(v)
-  }).join(' ')
-})
-
-export const transformShadow = shadows => shadows.split('|').map(shadow => {
-  return shadow.split(', ').map(v => {
-    v = v.trim()
-    if (v.slice(0, 2) === '--') return `var(${v})`
-    if (getColor(v).length > 2) return getColor(v)
-    if (v.includes('px') || v.slice(-2) === 'em') return v
-    const arr = v.split(' ')
-    if (!arr.length) return v
-    return arr.map(v => getSpacingByKey(v, 'shadow').shadow).join(' ')
-  }).join(' ')
-}).join(',')
-
-const transformBackgroundImage = (backgroundImage, ctx, globalTheme) => ({
-  backgroundImage: backgroundImage.split(', ').map(v => {
-    if (v.slice(0, 2) === '--') return `var(${v})`
-    if (v.includes('url') || v.includes('gradient')) return v
-    else if (ctx.designSystem.GRADIENT[backgroundImage]) {
-      return getMediaColor(backgroundImage, 'backgroundImage', globalTheme)
-    }
-    else if (v.includes('/') || v.includes('http')) return `url(${v})`
-    return v
-  }).join(' ')
-})
 
 export const getSystemTheme = ({ context, state }) => {
   const rootState = state && state.__root
@@ -58,7 +16,7 @@ export const getSystemTheme = ({ context, state }) => {
 
 export const Theme = {
   class: {
-    depth: ({ props }) => depth[props.depth],
+    depth: ({ props }) => props.depth && depth[props.depth],
 
     theme: (element) => {
       const { props } = element
@@ -71,33 +29,47 @@ export const Theme = {
       const { props } = element
       const globalTheme = getSystemTheme(element)
       if (!props.color) return
-      return getMediaColor(props.color, 'color', globalTheme)
+      return {
+        color: getMediaColor(props.color, globalTheme)
+      }
     },
 
     background: (element) => {
       const { props } = element
       const globalTheme = getSystemTheme(element)
       if (!props.background) return
-      return getMediaColor(props.background, 'background', globalTheme)
+      return {
+        background: getMediaColor(props.background, globalTheme)
+      }
     },
 
     backgroundColor: (element) => {
       const { props } = element
       const globalTheme = getSystemTheme(element)
       if (!props.backgroundColor) return
-      return getMediaColor(props.backgroundColor, 'backgroundColor', globalTheme)
+      return {
+        backgroundColor: getMediaColor(props.backgroundColor, globalTheme)
+      }
     },
 
     backgroundImage: (element) => {
-      const { props, context } = element
+      const { props } = element
       const globalTheme = getSystemTheme(element)
       if (!props.backgroundImage) return
-      return transformBackgroundImage(props.backgroundImage, context, globalTheme)
+      return ({
+        backgroundSize: transformBackgroundImage(props.backgroundImage, globalTheme)
+      })
     },
-    backgroundSize: ({ props }) => props.backgroundSize ? ({ backgroundSize: props.backgroundSize }) : null,
-    backgroundPosition: ({ props }) => props.backgroundPosition ? ({ backgroundPosition: props.backgroundPosition }) : null,
+    backgroundSize: ({ props }) => props.backgroundSize ? ({
+      backgroundSize: props.backgroundSize
+    }) : null,
+    backgroundPosition: ({ props }) => props.backgroundPosition ? ({
+      backgroundPosition: props.backgroundPosition
+    }) : null,
 
-    textStroke: ({ props }) => props.textStroke ? transformTextStroke(props.textStroke) : null,
+    textStroke: ({ props }) => props.textStroke ? ({
+      WebkitTextStroke: transformTextStroke(props.textStroke)
+     }) : null,
 
     outline: ({ props }) => props.outline && ({
       outline: transformBorder(props.outline)
@@ -106,8 +78,12 @@ export const Theme = {
     border: ({ props }) => props.border && ({
       border: transformBorder(props.border)
     }),
-    borderColor: ({ props }) => (props.borderColor) && getMediaColor(props.borderColor, 'borderColor'),
-    borderStyle: ({ props }) => props.borderStyle && ({ borderStyle: props.borderStyle }),
+    borderColor: ({ props }) => props.borderColor && ({
+      borderColor: getMediaColor(props.borderColor)
+    }),
+    borderStyle: ({ props }) => props.borderStyle && ({
+      borderStyle: props.borderStyle
+    }),
 
     borderLeft: ({ props }) => props.borderLeft && ({
       borderLeft: transformBorder(props.borderLeft)
@@ -130,8 +106,12 @@ export const Theme = {
       textShadow: transformShadow(props.textShadow)
     }),
 
-    opacity: ({ props }) => props.opacity && ({ opacity: props.opacity }),
-    visibility: ({ props }) => props.visibility && ({ visibility: props.visibility }),
+    opacity: ({ props }) => props.opacity && ({
+      opacity: props.opacity
+    }),
+    visibility: ({ props }) => props.visibility && ({
+      visibility: props.visibility
+    }),
 
     columnRule: ({ props }) => props.columnRule && ({
       columnRule: transformBorder(props.columnRule)

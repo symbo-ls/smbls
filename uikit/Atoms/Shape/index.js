@@ -28,7 +28,9 @@ export const Shape = {
     },
     shapeDirectionColor: ({ props }) => {
       const { background, backgroundColor } = props
-      const borderColor = getMediaColor(background || backgroundColor, 'borderColor')
+      const borderColor = {
+        borderColor: getMediaColor(background || backgroundColor)
+      }
       return props.shapeDirection ? borderColor : null
     },
 

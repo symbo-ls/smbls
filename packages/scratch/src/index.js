@@ -7,6 +7,7 @@ export * from './factory.js'
 export * from './defaultConfig'
 export * from './system'
 export * from './utils'
+export * from './transforms'
 export * from './set.js'
 
 export { scratchUtils, scratchSystem }

@@ -10,5 +10,8 @@
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest"
   },
-  "source": "src/index.js"
+  "source": "src/index.js",
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
+  }
 }

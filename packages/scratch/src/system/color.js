@@ -46,8 +46,11 @@ export const getColor = (value, key) => {
     if (tone) {
       if (!val[tone]) {
         const toHex = rgbArrayToHex(rgb.split(', ').map(v => parseFloat(v)))
-        if (tone.slice(0, 1) === '-' || tone.slice(0, 1) === '+') {
-          rgb = hexToRgbArray(getColorShade(toHex, parseFloat(tone))).join(', ')
+        const abs = tone.slice(0, 1)
+        if (abs === '-' || abs === '+') {
+          rgb = hexToRgbArray(
+            getColorShade(toHex, parseFloat(tone))
+          ).join(', ')
         } else {
           const [r, g, b] = [...rgb.split(', ').map(v => parseInt(v))]
           const hsl = rgbToHSL(r, g, b)
@@ -64,7 +67,7 @@ export const getColor = (value, key) => {
   } else return CONFIG.useVariable ? `var(${val.var})` : val.value
 }
 
-export const getMediaColor = (value, property, globalTheme) => {
+export const getMediaColor = (value, globalTheme) => {
   const CONFIG = getActiveConfig()
   if (!globalTheme) globalTheme = CONFIG.globalTheme
   if (!isString(value)) {
@@ -72,7 +75,7 @@ export const getMediaColor = (value, property, globalTheme) => {
     return
   }
 
-  if (value.slice(0, 2) === '--') return { [property]: `var(${value})` }
+  if (value.slice(0, 2) === '--') return `var(${value})`
 
   const [name] = isArray(value) ? value : value.split(' ')
 
@@ -80,21 +83,21 @@ export const getMediaColor = (value, property, globalTheme) => {
   const val = COLOR[name] || GRADIENT[name]
   const isObj = isObject(val)
 
-  if (isObj && val.value) return { [property]: getColor(value, globalTheme) }
+  if (isObj && val.value) return getColor(value, `@${globalTheme}`)
   else if (isObj) {
-    if (globalTheme) return { [property]: getColor(value, `@${globalTheme}`) }
+    if (globalTheme) return getColor(value, `@${globalTheme}`)
     else {
       const obj = {}
       for (const mediaName in val) {
         const query = CONFIG.MEDIA[mediaName.slice(1)]
         const media = `@media screen and ${query}`
-        obj[media] = { [property]: getColor(value, mediaName) }
+        obj[media] = getColor(value, mediaName)
       }
       return obj
     }
   } else {
     if (CONFIG.verbose) console.warn('Can\'t find color', value)
-    return { [property]: value }
+    return value
   }
 }
 

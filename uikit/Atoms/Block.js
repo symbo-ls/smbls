@@ -131,7 +131,9 @@ export const Block = {
     },
 
     gridColumn: ({ props }) => props.gridColumn && ({ gridColumn: props.gridColumn }),
-    gridColumnStart: ({ props }) => props.columnStart ? ({ gridColumnStart: props.columnStart }) : null,
+    gridColumnStart: ({ props }) => props.columnStart ? ({
+      gridColumnStart: props.columnStart
+    }) : null,
     gridRow: ({ props }) => props.gridRow && ({ gridRow: props.gridRow }),
     gridRowStart: ({ props }) => props.rowStart ? ({ gridRowStart: props.rowStart }) : null,
 
@@ -145,7 +147,7 @@ export const Block = {
     },
 
     columns: ({ props }) => props.columns && ({ columns: props.columns }),
-    columnGap: ({ props }) => props.columnGap ? getSpacingBasedOnRatio(props.columnGap, 'columnGap') : null,
+    columnGap: ({ props }) => props.columnGap ? getSpacingBasedOnRatio(props, 'columnGap') : null,
     columnSpan: ({ props }) => props.columnSpan && ({ columns: props.columnSpan }),
     columnFill: ({ props }) => props.columnFill && ({ columns: props.columnFill }),
     columnCount: ({ props }) => props.columnCount && ({ columns: props.columnCount })
