@@ -59,7 +59,7 @@ export const Theme = {
       const globalTheme = getSystemTheme(element)
       if (!props.backgroundImage) return
       return ({
-        backgroundSize: transformBackgroundImage(props.backgroundImage, globalTheme)
+        backgroundImage: transformBackgroundImage(props.backgroundImage, globalTheme)
       })
     },
     backgroundSize: ({ props }) => props.backgroundSize
