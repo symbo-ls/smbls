@@ -14,7 +14,14 @@ const jsdom = new JSDOM(`<html><head></head><body></body></html>`)
 global.window = jsdom.window
 global.document = window.document
 
-const EXCLUDED_FROM_INTERNAL_UIKIT = ['Svg']
+const EXCLUDED_FROM_INTERNAL_UIKIT = [
+  'Svg',
+  'getSystemTheme',
+  'splitTransition',
+  'transformDuration',
+  'transformShadow',
+  'transformTransition'
+]
 const TMP_DIR_NAME = ".smbls_convert_tmp"
 
 function isDirectory(dir) {
@@ -52,7 +59,6 @@ function convertDomqlModule(domqlModule, desiredFormat, options) {
   let removeUseContextImport = false
   const exportCount = Object.keys(domqlModule).length
   for (const key in domqlModule) {
-    if (key !== 'Img') continue // TODO: remove this
     if (options.internalUikit &&
         EXCLUDED_FROM_INTERNAL_UIKIT.includes(key)) {
       console.log(`Skipping ${key} component due to exclusion`)
@@ -63,7 +69,7 @@ function convertDomqlModule(domqlModule, desiredFormat, options) {
     const component = domqlModule[key]
     component.__name = key
     const out = convert(component, desiredFormat, {
-      verbose: true,
+      verbose: false,
       exportDefault: exportCount === 1,
       returnMitosisIR: true,
       importsToRemove: uniqueImports,
