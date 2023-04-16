@@ -7,13 +7,33 @@ import fs from 'fs'
 import path from 'path'
 import { JSDOM } from 'jsdom'
 
-const jsdom = new JSDOM('<html><head></head><body></body></html>')
+const l = (n) => console.log(`mark${n}`)
+
+const jsdom = new JSDOM(`<html><head></head><body></body></html>`)
 global.window = jsdom.window
 global.document = window.document
 
-const TMP_DIR_NAME = '.smbls_convert_tmp'
+const EXCLUDED_FROM_INTERNAL_UIKIT = [
+  'Svg',
+  'getSystemTheme',
+  'splitTransition',
+  'transformDuration',
+  'transformShadow',
+  'transformTransition'
+]
+const TMP_DIR_NAME = ".smbls_convert_tmp"
 
-async function mkdirp (dir) {
+function isDirectory(dir) {
+  if (!fs.existsSync(dir)) return false
+
+  const stat = fs.statSync(dir)
+  if (!stat) return false
+
+  return stat.isDirectory()
+}
+
+// Essentially does 'mkdir -P'
+async function mkdirp(dir) {
   try {
     return await fs.promises.mkdir(dir)
   } catch (err) {
@@ -24,15 +44,61 @@ async function mkdirp (dir) {
   return null
 }
 
+async function importDomqlModule(modulePath) {
+  console.log(`importing ${modulePath}`)
+  return (await import(modulePath)).default
+}
+
+function convertDomqlModule(domqlModule, desiredFormat, options) {
+  let convertedStr = ""
+
+  console.group()
+  const uniqueImports = []
+  let first = true
+  let removeUseContextImport = false
+  const exportCount = Object.keys(domqlModule).length
+  for (const key in domqlModule) {
+    if (options.internalUikit &&
+        EXCLUDED_FROM_INTERNAL_UIKIT.includes(key)) {
+      console.log(`Skipping ${key} component due to exclusion`)
+      continue
+    }
+    console.log(key)
+    console.group()
+    const component = domqlModule[key]
+    component.__name = key
+    const out = convert(component, desiredFormat, {
+      verbose: false,
+      exportDefault: exportCount === 1,
+      returnMitosisIR: true,
+      importsToRemove: uniqueImports,
+      removeReactImport: !first,
+      removeUseContextImport: removeUseContextImport,
+    })
+
+    convertedStr = convertedStr + out.str + '\n'
+    uniqueImports.push(...out.mitosisIR.imports)
+    first = false
+    if (out.mitosisIR._useContext)
+      removeUseContextImport = true
+    console.groupEnd()
+  }
+  console.groupEnd()
+
+  return convertedStr
+}
+
 program
   .command('convert')
   .description('Recursively convert and copy all DomQL components under a directory')
-  .argument('[src]', 'Source directory. By default, it is "src/"')
-  .argument('[dest]', 'Destination directory. By default, it becomes the name of the desired format')
+  .argument('[src]', 'Source directory/file. By default, it is "src/"')
+  .argument('[dest]', 'Destination directory/file. Will be overwritten. By default, it becomes the name of the desired format')
   .option('--react', 'Convert all DomQL components to React')
   .option('--angular', 'Convert all DomQL components to Angular')
   .option('--vue2', 'Convert all DomQL components to Vue2')
   .option('--vue3', 'Convert all DomQL components to Vue3')
+  .option('--internal-uikit', '(For internal use only). Excludes particular components from the conversion')
+  .option('--tmp-dir', `Use this directory for storing intermediate & build files instead of the default (dest/${TMP_DIR_NAME})`)
   .action(async (src, dest, options) => {
     // Desired format
     let desiredFormat = 'react'
@@ -44,14 +110,92 @@ program
       desiredFormat = 'vue3'
     }
 
-    // Resolve source & destination directories
+    // Resolve source file/dir
     const srcPath = path.resolve(src || './src')
-    const destPath = path.resolve(dest || desiredFormat)
-    const tmpDirPath = path.resolve(path.dirname(destPath), TMP_DIR_NAME)
+    if (!fs.existsSync(srcPath)) {
+      console.erorr(`Source directory/file ('${srcPath}') does not exist`)
+      return 1;
+    }
+    const srcIsDir = fs.statSync(srcPath).isDirectory()
 
-    // Make tmp and dist directories
+    // Resolve & create tmp dir
+    const tmpDirPath = options.tmpDir ??
+          path.resolve(path.dirname(srcPath), TMP_DIR_NAME)
     await mkdirp(tmpDirPath)
-    await mkdirp(destPath)
+
+    // Convert single file. Output will also be a single file.
+    if (!srcIsDir) {
+      // Determine destFilePath and create it if needed
+      let destFilePath;
+      if (dest) {
+        // dest is given.
+        if (!fs.existsSync(dest)) {
+          // dest doesn't exist. That's the output file we'll create.
+          destFilePath = path.resolve(dest)
+        } else if (fs.statSync(dest).isDirectory()) {
+          // dest exists and is a directory. Create our output file inside it.
+          destFilePath = path.join(path.resolve(dest), path.basename(srcPath))
+        } else {
+          // dest exists and is not a directory. Overwrite the file.
+          destFilePath = path.resolve(dest)
+        }
+      } else {
+        // dest not given. Use default (desiredFormat as directory).
+        const destDir = path.resolve(desiredFormat)
+        await mkdirp(destDir)
+        destFilePath = path.join(destDir, path.basename(srcPath))
+      }
+
+      const bundledFilePath = path.join(tmpDirPath, path.basename(srcPath))
+      console.log(`ESbuild ${srcPath} -> ${bundledFilePath}`)
+
+      // Bundle the component
+      await esbuild.build({
+        entryPoints: [srcPath],
+        bundle: true,
+        sourcemap: true,
+        target: 'node12',
+        format: 'cjs',
+        outfile: bundledFilePath,
+      })
+
+      // Import the module
+      const domqlModule = await importDomqlModule(bundledFilePath, options)
+
+      // Convert & append each exported domql object
+      console.log(`Converting modules in ${bundledFilePath}:`)
+      const convertedModuleStr = convertDomqlModule(
+          domqlModule,
+          desiredFormat,
+          options
+      )
+
+      // Write file
+      if (convertedModuleStr.length > 0) {
+        const fh = await fs.promises.open(destFilePath, 'w')
+        await fh.writeFile(convertedModuleStr, 'utf8')
+        await fh.close()
+      }
+
+      return 0;
+    }
+
+    // We're converting multiple files (in a directory)
+    // Determine destDirPath & create it if needed
+    if (!dest) dest = path.resolve(desiredFormat)
+    let destDirPath;
+    if (!fs.existsSync(dest)) {
+      // dest doesn't exist. Create it.
+      destDirPath = path.resolve(dest)
+      await mkdirp(destDirPath)
+    } else if (fs.statSync(dest).isDirectory()) {
+      // dest exists and is a directory.
+      destDirPath = path.resolve(dest)
+    } else {
+      // dest exists and is not a directory.
+      console.error(`The destination ('${path.resolve(dest)}') must be a directory when the source ('${srcPath}') is a directory`)
+      return 1;
+    }
 
     const origFiles = await fs.promises.readdir(srcPath)
 
@@ -72,46 +216,24 @@ program
       if ((await fs.promises.stat(importDir)).isDirectory()) {
         // Import the module
         const importPath = `${importDir}/index.js`
-        console.log(`importing ${componentDir}/`)
-        const domqlModule = (await import(importPath)).default
+        const domqlModule = await importDomqlModule(importPath)
 
         // Create directory for component in dest dir
-        const destComponentDirPath = `${destPath}/${componentDir}`
+        const destComponentDirPath = `${destDirPath}/${componentDir}`
         await mkdirp(destComponentDirPath)
 
         // Convert & append each exported domql object
-        console.log(`Converting modules in ${componentDir}:`)
-        console.group()
-        const uniqueImports = []
-        let fileContents = ''
-        let first = true
-        const exportCount = Object.keys(domqlModule).length
-        for (const key in domqlModule) {
-          console.log(key)
-          console.group()
-          const component = domqlModule[key]
-          component.__name = key
-          const out = convert(component, desiredFormat, {
-            verbose: false,
-            exportDefault: exportCount === 1,
-            returnMitosisIR: true,
-            importsToRemove: uniqueImports,
-            removeReactImport: !first
-          })
-
-          fileContents = fileContents + out.str + '\n'
-          uniqueImports.push(...out.mitosisIR.imports)
-          first = false
-          console.groupEnd()
-        }
-
-        console.groupEnd()
+        const convertedStr = convertDomqlModule(
+            domqlModule,
+            desiredFormat,
+            options
+        )
 
         // Write file
-        if (fileContents.length > 0) {
+        if (convertedStr.length > 0) {
           const fh = await fs.promises
-            .open(`${destComponentDirPath}/index.js`, 'w')
-          await fh.writeFile(fileContents, 'utf8')
+                .open(`${destComponentDirPath}/index.js`, 'w')
+          await fh.writeFile(convertedStr, 'utf8')
           await fh.close()
         }
       }
