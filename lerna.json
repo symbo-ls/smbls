@@ -3,6 +3,7 @@
   "useWorkspaces": true,
   "version": "2.10.264",
   "packages": [
+    "icons/*",
     "uikit/*",
     "uikit/*/*",
     "packages/*"
