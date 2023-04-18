@@ -13,7 +13,7 @@ export const applyReset = (reset = {}) => {
       const configTemplates = TYPOGRAPHY.templates
 
       configReset.body = {
-        ...getMediaTheme('document', `@${CONFIG.globalTheme}`),
+        ...(CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {}),
         ...configTemplates.body
       }
       configReset.h1 = configTemplates.h1

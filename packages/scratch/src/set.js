@@ -1,6 +1,6 @@
 'use strict'
 
-import { FACTORY, getActiveConfig } from './factory.js' // eslint-disable-line no-unused-vars
+import { FACTORY, getActiveConfig, setActiveConfig } from './factory.js' // eslint-disable-line no-unused-vars
 import {
   setColor,
   setGradient,
@@ -94,8 +94,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   } = recivedConfig
 
   if (options.newConfig) {
-    FACTORY.active = options.newConfig
-    CONFIG = getActiveConfig(options.newConfig)
+    CONFIG = setActiveConfig(options.newConfig)
   }
 
   if (verbose !== undefined) CONFIG.verbose = verbose

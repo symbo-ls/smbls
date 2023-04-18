@@ -31,7 +31,7 @@
   },
   "workspaces": [
     "uikit/*",
-    "uikit-react/*",
+    "uikit/*/*",
     "packages/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
