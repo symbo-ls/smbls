@@ -2929,6 +2929,11 @@
   dependencies:
     "@symbo.ls/block" latest
 
+"@symbo.ls/fluent-icons@latest":
+  version "2.10.266"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/fluent-icons/-/fluent-icons-2.10.266.tgz#88448fa8bdc478c25884b6e800e6b87293791136"
+  integrity sha512-X2w4MO/s/VDaBxK0BIj+zT3ACJnGrOOZxtID+8Z5PBBnr/3tWrLkGwIoNt/ss+JObIe3kMr7/l1qNXf+zc6nQA==
+
 "@symbo.ls/icon-text@latest":
   version "2.10.74"
   resolved "https://registry.yarnpkg.com/@symbo.ls/icon-text/-/icon-text-2.10.74.tgz#39504ef2a13b62a8a03af3816214c5c8e5a7f7f3"
