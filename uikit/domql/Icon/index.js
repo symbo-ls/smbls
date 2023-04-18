@@ -37,13 +37,14 @@ export const Icon = {
     }
 
     const iconFromLibrary = ICONS[validIconName]
+    const directSrc = parent.props.src || props.src
 
     return {
       width: 'A',
       height: 'A',
       display: 'inline-block',
-      spriteId: useIconSprite && validIconName,
-      src: iconFromLibrary,
+      spriteId: (useIconSprite && !directSrc) && validIconName,
+      src: directSrc || iconFromLibrary,
       style: { fill: 'currentColor' }
     }
   },
