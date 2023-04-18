@@ -11,7 +11,7 @@
   "exports": "./dist/cjs/index.js",
   "source": "index.js",
   "scripts": {
-    "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
+    "copy:package:cjs": "cp ../../../.build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild ./index.js --target=es2020 --format=esm --outdir=dist/esm --bundle --minify",
     "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle --minify",
     "build:iife": "npx esbuild ./index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",

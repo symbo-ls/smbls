@@ -20,7 +20,7 @@
     "dist"
   ],
   "scripts": {
-    "copy:package:cjs": "cp ../../.build/package-cjs.json dist/cjs/package.json",
+    "copy:package:cjs": "cp ../../../.build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.jsx --target=es2020 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild *.jsx --target=node16 --format=cjs --outdir=dist/cjs --loader:.js=jsx",
     "build:iife": "npx esbuild *.jsx --target=node16 --format=iife --outdir=dist/iife",
@@ -31,5 +31,5 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },
-  "gitHead": "779c21d9c24e5accb881506303cd25ab7e1c944c"
+  "gitHead": "8684a21bb716d5f5e7811068ec4a017e8b516cf1"
 }
