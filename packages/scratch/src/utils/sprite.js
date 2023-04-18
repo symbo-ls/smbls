@@ -1,16 +1,18 @@
 'use strict'
 
 import { isString } from '@domql/utils'
+import { getActiveConfig } from '../factory'
 
 export const generateSprite = (icons) => {
-  let sprite =
-    '<svg aria-hidden="true" width="0" height="0" style="position:absolute">'
+  const CONFIG = getActiveConfig()
+
+  let sprite = ''
 
   for (const key in icons) {
+    if (CONFIG.__svg_cache[key]) continue
+    else CONFIG.__svg_cache[key] = true
     sprite += icons[key]
   }
-
-  sprite += '</svg>'
 
   return sprite
 }
@@ -44,8 +46,8 @@ export const convertSvgToSymbol = (key, code) => {
   let symbol = code.replace('<svg',
     `<symbol id="${key}" xmlns="${xmlns}" viewBox="${viewBox}"`
   )
-  symbol = symbol.replace(/width="[^"]*/, '')
-  symbol = symbol.replace(/height="[^"]*/, '')
+  symbol = symbol.replace(/width="[^"]*"/, '')
+  symbol = symbol.replace(/height="[^"]*"/, '')
   symbol = symbol.replace('</svg', '</symbol')
   return symbol
 }

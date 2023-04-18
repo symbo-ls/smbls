@@ -107,6 +107,8 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
   if (CONFIG.verbose) console.log(CONFIG)
 
+  if (!CONFIG.__svg_cache) CONFIG.__svg_cache = {}
+
   const keys = Object.keys(config)
   keys.map(key => setEach(key, config[key]))
 
