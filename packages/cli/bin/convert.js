@@ -15,6 +15,7 @@ global.document = window.document
 
 const EXCLUDED_FROM_INTERNAL_UIKIT = [
   'Svg',
+  'keySetters',
   'getSystemTheme',
   'splitTransition',
   'transformDuration',
