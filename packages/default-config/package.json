@@ -5,7 +5,5 @@
   "main": "src/index.js",
   "license": "MIT",
   "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9",
-  "dependencies": {
-    "@symbo.ls/fluent-icons": "latest"
-  }
+  "dependencies": {}
 }

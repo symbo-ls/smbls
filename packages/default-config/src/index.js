@@ -18,7 +18,7 @@ export const DEFAULT_CONFIG = {
   FONT,
   FONT_FAMILY,
   TIMING: {},
-  ICONS: FLUENT_ICONS,
+  ICONS: {},
   MEDIA: {},
   DEVICES: {},
   CASES: {},
