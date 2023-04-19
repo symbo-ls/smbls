@@ -6,8 +6,6 @@ import { TYPOGRAPHY } from './typography'
 import { SPACING } from './spacing'
 import { FONT, FONT_FAMILY } from './font'
 
-import FLUENT_ICONS from '@symbo.ls/fluent-icons'
-
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
   COLOR,

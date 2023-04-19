@@ -1,6 +1,6 @@
 'use strict'
 
-// export { transformProps } from 'css-in-props'
+export { transformClassname } from 'css-in-props'
 export * from '@symbo.ls/default-config'
 export * from '@symbo.ls/scratch'
 export * from '@symbo.ls/init'
