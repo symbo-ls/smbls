@@ -1,9 +1,8 @@
 {
   "name": "@symbo.ls/default-config",
-  "version": "2.10.274",
+  "version": "2.10.275",
   "source": "src/index.js",
   "main": "src/index.js",
   "license": "MIT",
-  "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9",
-  "dependencies": {}
+  "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9"
 }
