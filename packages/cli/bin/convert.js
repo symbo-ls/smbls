@@ -24,6 +24,8 @@ async function mkdirp (dir) {
   return null
 }
 
+const IGNORED_FILES = ['index.js', 'package.json', 'node_modules', 'dist']
+
 program
   .command('convert')
   .description('Recursively convert and copy all DomQL components under a directory')
@@ -53,7 +55,7 @@ program
     await mkdirp(tmpDirPath)
     await mkdirp(destPath)
 
-    const origFiles = await fs.promises.readdir(srcPath)
+    const origFiles = await (await fs.promises.readdir(srcPath)).filter(file => !IGNORED_FILES.includes(file))
 
     // Bundle components
     await esbuild.build({
@@ -68,6 +70,7 @@ program
     // Convert components
     const componentDirs = await fs.promises.readdir(tmpDirPath)
     for (const componentDir of componentDirs) {
+      console.log(componentDirs)
       const importDir = path.join(tmpDirPath, componentDir)
       if ((await fs.promises.stat(importDir)).isDirectory()) {
         // Import the module
