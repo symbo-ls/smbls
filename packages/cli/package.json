@@ -19,11 +19,13 @@
     "@symbo.ls/socket": "latest",
     "chalk": "^5.0.0",
     "commander": "latest",
-    "domql-to-mitosis": "latest",
     "esbuild": "latest",
     "jsdom": "^21.1.0",
     "node-fetch": "^3.1.0",
     "v8-compile-cache": "^2.3.0"
+  },
+  "peerDependencies": {
+    "domql-to-mitosis": "latest"
   },
   "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9"
 }
