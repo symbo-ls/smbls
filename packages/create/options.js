@@ -12,6 +12,7 @@ export default {
     useVariable: true,
     useIconSprite: true,
     useSvgSprite: true,
+    useDocumentTheme: true,
     useFontImport: true
   },
   components: {},
