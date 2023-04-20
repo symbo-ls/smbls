@@ -4,5 +4,8 @@
   "source": "src/index.js",
   "main": "src/index.js",
   "license": "MIT",
+  "dependencies": {
+    "@symbo-ls/feather-icons": "latest"
+  },
   "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9"
 }
