@@ -33,7 +33,6 @@ export const Icon = {
     else if (ICONS[isArray[0]]) validIconName = isArray[0]
     else {
       if (verbose) console.warn('Can\'t find icon:', iconName, validIconName)
-      validIconName = 'noIcon'
     }
 
     const iconFromLibrary = ICONS[validIconName]
@@ -43,8 +42,8 @@ export const Icon = {
       width: 'A',
       height: 'A',
       display: 'inline-block',
-      spriteId: (useIconSprite && !directSrc) && validIconName,
-      src: directSrc || iconFromLibrary,
+      spriteId: useIconSprite && validIconName,
+      src: iconFromLibrary || directSrc || ICONS.noIcon,
       style: { fill: 'currentColor' }
     }
   },
