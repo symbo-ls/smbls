@@ -6,7 +6,7 @@ import { TYPOGRAPHY } from './typography'
 import { SPACING } from './spacing'
 import { FONT, FONT_FAMILY } from './font'
 
-import FEATHER_ICONS from '@symbo-ls/feather-icons'
+import FEATHER_ICONS from '@symbo.ls/feather-icons'
 
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
