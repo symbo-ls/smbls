@@ -11,7 +11,7 @@ const DEFAULT_ROUTING_OPTIONS = {
   popState: true
 }
 
-export const initRouter = (root, options) => {
+export const initRouter = (rootElement, options) => {
   let routerOptions = merge(options.routerOptions || {}, DEFAULT_ROUTING_OPTIONS)
 
   if (routerOptions === false) return
@@ -22,14 +22,14 @@ export const initRouter = (root, options) => {
   const onRender = (el, s) => {
     const { pathname, hash } = window.location
     const url = pathname + hash
-    if (el.routes) router(el, url, {})
+    if (el.routes) router(url, el, {})
   }
 
   if (routerOptions.initRouter) {
-    if (root.on) {
-      root.on.renderRouter = onRender
+    if (rootElement.on) {
+      rootElement.on.renderRouter = onRender
     } else {
-      root.on = {
+      rootElement.on = {
         renderRouter: onRender
       }
     }
@@ -40,16 +40,15 @@ export const initRouter = (root, options) => {
   return routerOptions
 }
 
-
 let popStateFired
-export const popStateRouter = (root, options) => {
+export const popStateRouter = (rootElement, options) => {
   if (popStateFired) return
   const routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
   const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
   const { pathname, hash } = window.location
   const url = pathname + hash
-  window.onpopstate = e => router(root, url, { pushState: false, level: 0 })
+  window.onpopstate = e => router(url, rootElement, { pushState: false, level: 0 })
   popStateFired = true
 }
 

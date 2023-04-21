@@ -1896,12 +1896,12 @@
   integrity sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==
 
 "@symbo.ls/atoms@latest":
-  version "2.10.274"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.10.274.tgz#816a6949e20ad94fcfb7164e50a0fdec20649865"
-  integrity sha512-TyoP4Fvc8/nIoQbm4vzeB3rDFfSMDgKE9vzayAEEdcayvrLJSURAIjFc2wl67k5sFPBPgH9KA5rmhkxfNZLk/w==
+  version "2.10.285"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.10.285.tgz#05cc8e4edeeb583bff609fd89b293480761411a5"
+  integrity sha512-9nUi/6qtCGcklQaMqPRdwKHmSau9JAMVbRh+X4gdslIB5iOHt/R3od4EeZfzSxNBrR/WxYNu4TJDZHT21zXl0w==
   dependencies:
     "@domql/utils" latest
-    "@symbo.ls/create-emotion" latest
+    "@symbo.ls/emotion" latest
     "@symbo.ls/init" latest
     "@symbo.ls/scratch" latest
 
@@ -1963,13 +1963,6 @@
     jsdom "^21.1.0"
     node-fetch "^3.1.0"
     v8-compile-cache "^2.3.0"
-
-"@symbo.ls/create-emotion@latest":
-  version "2.9.3"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create-emotion/-/create-emotion-2.9.3.tgz#0587b16674dcc2d760085b3b32b18c801675a1c1"
-  integrity sha512-NOkrA2g7cAuDHsxcPbCC/s1onCPTDAE9SdHLFocXIX5srO5KzuPHJK0nIcty3Fut71b6y2gHdOSCkRQB/YLEjw==
-  dependencies:
-    "@emotion/css" "^11.10.0"
 
 "@symbo.ls/create@latest":
   version "2.10.280"
@@ -2281,9 +2274,9 @@
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/uikit@latest":
-  version "2.10.277"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.10.277.tgz#5cecb382c85f1fa07102575ef9138f589072120d"
-  integrity sha512-vpB27R8DpCIwyQwTQeT0II+Kq23/XRa4aU4YUfiVhq+vXWt4SXrDIBEGvd8LjvqUg5FG+0yMqnAqOwerh1jz4A==
+  version "2.10.285"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.10.285.tgz#88fec49ecbc1ab38f87d0f1a91e1daa8e3e958e7"
+  integrity sha512-YX7eVPcq/EDvx676H4OeNUYyriK6KLxJDkwOwHjj5Isi1NkVR0bgNoR78i3/oGsK5x8PoTmnFDkehVtLSsPgwg==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/atoms" latest
@@ -3514,9 +3507,9 @@ domexception@^4.0.0:
     webidl-conversions "^7.0.0"
 
 domql@latest:
-  version "1.5.133"
-  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.133.tgz#d7e25b01d9552a001906cab4bbd801209fe190a8"
-  integrity sha512-75W6I3wHk5a8nqMX7PL5nJJrl/j+qwwkiiXmGHVl89PPQEAWezOFhEaKCoAnNw513ioWdukPm2f1GlRn+RYrHQ==
+  version "1.5.134"
+  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.134.tgz#9a9cc81e8e226a7df8b465eba9824d5d83f5bc8e"
+  integrity sha512-AeEcERf20MdqHOVAWoA3z3tHwvOcncJvpMcMt0vQm8TzfMQtR571Um83cOBROhHVyTf16+FUa0BySV7jCJaWOQ==
   dependencies:
     "@domql/classlist" latest
     "@domql/emotion" latest
