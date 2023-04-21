@@ -1,15 +1,17 @@
 'use strict'
 
-import { UNIT, getColor, getTheme } from '@symbo.ls/scratch' // eslint-disable-line no-unused-vars
+import { getActiveConfig, getColor, getTheme } from '@symbo.ls/scratch' // eslint-disable-line no-unused-vars
 import { Timing } from '../Timing'
 
+const CONFIG = getActiveConfig()
+
 export const depth = {
-  4: { boxShadow: `rgba(0,0,0,.10) 0 2${UNIT.default} 4${UNIT.default}` },
-  6: { boxShadow: `rgba(0,0,0,.10) 0 3${UNIT.default} 6${UNIT.default}` },
-  10: { boxShadow: `rgba(0,0,0,.10) 0 4${UNIT.default} 10${UNIT.default}` },
-  16: { boxShadow: `rgba(0,0,0,.10) 0 8${UNIT.default} 16${UNIT.default}` },
-  26: { boxShadow: `rgba(0,0,0,.10) 0 14${UNIT.default} 26${UNIT.default}` },
-  42: { boxShadow: `rgba(0,0,0,.10) 0 20${UNIT.default} 42${UNIT.default}` }
+  4: { boxShadow: `rgba(0,0,0,.10) 0 2${CONFIG.UNIT.default} 4${CONFIG.UNIT.default}` },
+  6: { boxShadow: `rgba(0,0,0,.10) 0 3${CONFIG.UNIT.default} 6${CONFIG.UNIT.default}` },
+  10: { boxShadow: `rgba(0,0,0,.10) 0 4${CONFIG.UNIT.default} 10${CONFIG.UNIT.default}` },
+  16: { boxShadow: `rgba(0,0,0,.10) 0 8${CONFIG.UNIT.default} 16${CONFIG.UNIT.default}` },
+  26: { boxShadow: `rgba(0,0,0,.10) 0 14${CONFIG.UNIT.default} 26${CONFIG.UNIT.default}` },
+  42: { boxShadow: `rgba(0,0,0,.10) 0 20${CONFIG.UNIT.default} 42${CONFIG.UNIT.default}` }
 }
 
 const getComputedBackgroundColor = ({ props }) => {
