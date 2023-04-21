@@ -3,7 +3,7 @@
   "version": "2.10.289",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
-  "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9",
+  "gitHead": "9ec7219a83cd59742d9a9e5da71cacdc96e9cbdb",
   "source": "index.js",
   "main": "index.js",
   "module": "index.js",

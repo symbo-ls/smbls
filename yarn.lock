@@ -1025,9 +1025,9 @@
   integrity sha512-MJioHe01GO36JBlg3DyArJebOpS8oGok0g3+f1HcULh5UaZ6EdT+dzThehl8twiIFJ/lq1JjRlunv/TAFbqflQ==
 
 "@domql/router@latest":
-  version "2.3.87"
-  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.87.tgz#233b8cd443af05744c62d9b16dacd6cd5d670c4b"
-  integrity sha512-MzRD+ccNfqBC6P8xqzTa99nuOpeP5hmFKdnsUO4m/Px7iVF1Y6ybPEvwlYzbGf17mDaMBO13UIPtfEKXgO31xQ==
+  version "2.3.88"
+  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.88.tgz#cf36245ff2b91163403e26de919b4ba74286441c"
+  integrity sha512-4i4CJW5w5jfOBqkzGp+aV0l5AhyKzUXX5UJYIlYSmtLvfgDW0t4s3+VhrlLW+1MHzvdwilq8nWBj5PDDo/vXQQ==
   dependencies:
     "@domql/globals" latest
     "@domql/utils" latest
@@ -1965,9 +1965,9 @@
     v8-compile-cache "^2.3.0"
 
 "@symbo.ls/create@latest":
-  version "2.10.280"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.280.tgz#e3aeeabc23aa81265e1534c0f6d4aadde9753509"
-  integrity sha512-2+5YRy8eVJNl5f/nvZ8U/XF1k5brH3wvSUzUFZlbogTxRHrq1ac50wbtLJehLYN6u6HdOZi2cYz67n26v2ZcTg==
+  version "2.10.287"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.10.287.tgz#c01d3c02d6aa674320abf795d4b6630fcb501a9d"
+  integrity sha512-P2c/ugALolDqfvdqpkG7EGBHEh00G7ZcVL5DlvYGnmAn34hYrkbbom2opCXZ6+k2PHKLctdhKiXEqJnbQ1fnRA==
   dependencies:
     "@domql/cookie" latest
     "@domql/emotion" latest
@@ -3507,9 +3507,9 @@ domexception@^4.0.0:
     webidl-conversions "^7.0.0"
 
 domql@latest:
-  version "1.5.134"
-  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.134.tgz#9a9cc81e8e226a7df8b465eba9824d5d83f5bc8e"
-  integrity sha512-AeEcERf20MdqHOVAWoA3z3tHwvOcncJvpMcMt0vQm8TzfMQtR571Um83cOBROhHVyTf16+FUa0BySV7jCJaWOQ==
+  version "1.5.135"
+  resolved "https://registry.yarnpkg.com/domql/-/domql-1.5.135.tgz#509627e2d12029f6bbbb4314e6791e4f968c295c"
+  integrity sha512-r0/8i+aoJoFI13Tr/6jcUJhqU3h1pwrFU4k8Lv+LMgzdxD9Tyh3ymTpG1omSrynFcXDNBCA2nQuMmephz6WLDQ==
   dependencies:
     "@domql/classlist" latest
     "@domql/emotion" latest
@@ -3556,9 +3556,9 @@ ejs@^3.1.7:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.284:
-  version "1.4.368"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.368.tgz#75901f97d3e23da2e66feb1e61fbb8e70ac96430"
-  integrity sha512-e2aeCAixCj9M7nJxdB/wDjO6mbYX+lJJxSJCXDzlr5YPGYVofuJwGN9nKg2o6wWInjX6XmxRinn3AeJMK81ltw==
+  version "1.4.369"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.369.tgz#a98d838cdd79be4471cd04e9b4dffe891d037874"
+  integrity sha512-LfxbHXdA/S+qyoTEA4EbhxGjrxx7WK2h6yb5K2v0UCOufUKX+VZaHbl3svlzZfv9sGseym/g3Ne4DpsgRULmqg==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -7429,9 +7429,9 @@ smart-buffer@^4.2.0:
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
 
 smbls@latest:
-  version "2.10.276"
-  resolved "https://registry.yarnpkg.com/smbls/-/smbls-2.10.276.tgz#0c89eb70856ffe6242af8e79cacd5bfec35a4b2a"
-  integrity sha512-NZg17tyUeWJdSbBRd3TvMMiG9YqhkIHmCHmrGHXsFcgfKF9xUg1bHleTWcvlZgDeKx9yayl8Mza3uRhJmLIOtQ==
+  version "2.10.288"
+  resolved "https://registry.yarnpkg.com/smbls/-/smbls-2.10.288.tgz#ff15fc1f623cbffbacbfd8e650fe6158fe3b4a03"
+  integrity sha512-QI2uNBcBE+/F1a4CnuRrH0Q3Idx2sFC/gI6nSRziIuJANq731Jd0mHKMSv/IOkpY84l5T2k5ek4Yuk3iMFCRAg==
   dependencies:
     "@symbo.ls/cli" latest
     "@symbo.ls/create" latest
