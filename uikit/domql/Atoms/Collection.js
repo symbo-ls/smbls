@@ -71,7 +71,7 @@ export const Collection = {
       }
 
       const set = () => {
-        el.set(obj, { preventDefineUpdate: '$setStateCollection' })
+        el.set(obj, { preventDefineUpdate: '$setPropsCollection' })
       }
 
       if (el.props.lazyLoad) {

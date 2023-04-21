@@ -2,7 +2,7 @@
 
 import { getTimingByKey, getTimingFunction } from '@symbo.ls/scratch'
 import { isObject } from '@domql/utils'
-import { emotion } from '@symbo.ls/create-emotion'
+import { emotion } from '@symbo.ls/emotion'
 const { keyframes } = emotion
 
 const applyAnimationProps = (animation, element) => {

@@ -2782,7 +2782,7 @@
   integrity sha512-ECKLv658VnZJWOuMm9BH+zdcsRs6clZxpoYSuK/Mo520A24ES2WTh9/Q5e6WGOD6vtm+05nL6hqgmk1+Qq8zXA==
   dependencies:
     "@domql/utils" latest
-    "@symbo.ls/create-emotion" latest
+    "@symbo.ls/emotion" latest
     "@symbo.ls/init" latest
     "@symbo.ls/scratch" latest
 
@@ -2846,9 +2846,9 @@
     node-fetch "^3.1.0"
     v8-compile-cache "^2.3.0"
 
-"@symbo.ls/create-emotion@latest":
+"@symbo.ls/emotion@latest":
   version "2.9.3"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create-emotion/-/create-emotion-2.9.3.tgz#0587b16674dcc2d760085b3b32b18c801675a1c1"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/emotion/-/create-emotion-2.9.3.tgz#0587b16674dcc2d760085b3b32b18c801675a1c1"
   integrity sha512-NOkrA2g7cAuDHsxcPbCC/s1onCPTDAE9SdHLFocXIX5srO5KzuPHJK0nIcty3Fut71b6y2gHdOSCkRQB/YLEjw==
   dependencies:
     "@emotion/css" "^11.10.0"
@@ -2906,6 +2906,11 @@
   dependencies:
     "@emotion/css" "^11.10.0"
 
+"@symbo.ls/feather-icons@latest":
+  version "2.10.281"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/feather-icons/-/feather-icons-2.10.281.tgz#2f7cc766e03998e5edbee611f34db7b95e0b05c6"
+  integrity sha512-8f8omUdwGHpVujg8V1tfbuysMKd4zRxwzm30eWvdKtiTWjSxq7coKz0Wfgc/d57IqGcDYCoVdalkNcJEoS9BTg==
+
 "@symbo.ls/fetch@latest":
   version "2.10.259"
   resolved "https://registry.yarnpkg.com/@symbo.ls/fetch/-/fetch-2.10.259.tgz#eab41f991f47cd6d9a9f95c1f0d3b2345e9ae715"
@@ -2928,11 +2933,6 @@
   integrity sha512-H+VSh/hFxHkibr9N98RJTk2tOVCNxHldTflBPW32eYEfq7baTZkqgf24Fw/u+eUJDz10OHRCooFnqDSQ89lVbQ==
   dependencies:
     "@symbo.ls/block" latest
-
-"@symbo.ls/fluent-icons@latest":
-  version "2.10.266"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/fluent-icons/-/fluent-icons-2.10.266.tgz#88448fa8bdc478c25884b6e800e6b87293791136"
-  integrity sha512-X2w4MO/s/VDaBxK0BIj+zT3ACJnGrOOZxtID+8Z5PBBnr/3tWrLkGwIoNt/ss+JObIe3kMr7/l1qNXf+zc6nQA==
 
 "@symbo.ls/icon-text@latest":
   version "2.10.74"
