@@ -5,7 +5,7 @@ import { isNot, isArray, isObject, isObjectLike, diff, deepClone } from '@domql/
 export const Collection = {
   define: {
     $setCollection: (param, el, state) => {
-      if (!param) return
+      if (isNot(param)('array', 'object')) return
 
       let data = isArray(param) ? param : []
 
@@ -13,13 +13,10 @@ export const Collection = {
         for (const obj in param) { data.push(param[obj]) }
       }
 
-      data = data.map(item => !isObjectLike(item)
-        ? {
+      data = data.map(item => !isObjectLike(item) ? {
             props: { value: item }
-          }
-        : item)
-
-      if (data.length) {
+          } : item)
+      if (!el.content && data.length) {
         const t = setTimeout(() => {
           el.set({ tag: 'fragment', ...data }, { preventDefineUpdate: '$setCollection' })
           clearTimeout(t)
@@ -30,8 +27,7 @@ export const Collection = {
     },
 
     $setStateCollection: (param, el, state) => {
-      if (!param) return
-      if (param.parse) param = param.parse()
+      if (param && param.parse) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
       if (el.key === 'cnt') {
@@ -53,9 +49,14 @@ export const Collection = {
         el.set(obj, { preventDefineUpdate: '$setStateCollection' })
       }
 
-      if (el.props.lazyLoad) {
-        window.requestAnimationFrame(set)
-      } else set()
+      if (!el.content) {
+        if (el.props.lazyLoad) {
+          window.requestAnimationFrame(set)
+        } else set()
+      } //else {
+        // el.removeContent()
+      //   el.content = obj
+      // }
 
       return obj
     },
@@ -74,9 +75,11 @@ export const Collection = {
         el.set(obj, { preventDefineUpdate: '$setPropsCollection' })
       }
 
-      if (el.props.lazyLoad) {
-        window.requestAnimationFrame(set)
-      } else set()
+      if (!el.content) {
+        if (el.props.lazyLoad) {
+          window.requestAnimationFrame(set)
+        } else set()
+      }
 
       return obj
     }

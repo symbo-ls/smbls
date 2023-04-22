@@ -6,10 +6,12 @@ import {
   transformTextStroke,
   transformShadow,
   transformBorder,
-  transformBackgroundImage
+  transformBackgroundImage,
+  getTheme
 } from '@symbo.ls/scratch'
 
 import { depth } from './Shape/style'
+import { isObject } from '@domql/utils'
 
 export const getSystemTheme = ({ context, state }) => {
   const rootState = state && state.__root
@@ -24,6 +26,7 @@ export const Theme = {
       const { props } = element
       const globalTheme = getSystemTheme(element)
       if (!props.theme) return
+      if (isObject(props.theme)) return getTheme(props.theme)
       return getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
     },
 

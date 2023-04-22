@@ -32,7 +32,7 @@ const getThemeValue = theme => {
 
 export const getTheme = (value, modifier) => {
   const CONFIG = getActiveConfig()
-  if (CONFIG.useVariable) return getMediaTheme(value, modifier)
+  if (CONFIG.useVariable && !isObject(value)) return getMediaTheme(value, modifier)
   const { THEME } = CONFIG
 
   if (isString(value)) {
