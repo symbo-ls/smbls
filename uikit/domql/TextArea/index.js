@@ -8,7 +8,7 @@ const props = {
   style: { resize: 'none' }
 }
 
-export const TextArea = {
+export const Textarea = {
   extend: [Input],
   props,
   tag: 'textarea'
