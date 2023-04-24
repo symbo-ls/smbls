@@ -24,6 +24,9 @@ DOM.create({
     state: 'data',
     childExtend: { 
       state: true,
+      style: { 
+        background: (el, s) => el.props?.background
+      },
       div: {
         attr: { contentEditable: true },
         text: (el, s) => s.icon + ' ' + s.name,
@@ -46,6 +49,21 @@ DOM.create({
         on: {
           click: (ev, el, s) => {
             s.parent.remove(el.parent.key)
+          }
+        }
+      },
+      buttonSetBlue: {
+        tag: 'button',
+        text: 'setBlue',
+        on: {
+          click: (ev, el, s) => {
+            if (el.text === 'setBlue') {
+              el.update({ text: 'setWhite' })
+              el.parent.setProps({ background: 'blue' })
+            } else {
+              el.update({ text: 'setBlue' })
+              el.parent.setProps({ background: 'white' })
+            }
           }
         }
       },
