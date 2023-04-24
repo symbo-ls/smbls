@@ -119,7 +119,7 @@ const beforeClassAssign = (element, s) => {
   merge(className, CLASS_NAMES)
 }
 
-const initUpdate = element => {
+const initUpdate = (changes, element) => {
   const { props, context, class: className } = element
   const globalTheme = context.designSystem.globalTheme
 
@@ -130,7 +130,7 @@ const initUpdate = element => {
       inheritSpacingRatio: true
     }, {
       preventRecursive: true,
-      ignoreInitUpdate: true
+      preventInitUpdateListener: true
     })
   }
 
@@ -146,7 +146,7 @@ const initUpdate = element => {
       if (key === 'theme') {
         props.update({
           themeModifier: globalTheme
-        }, { preventRecursive: true, ignoreInitUpdate: true, preventDefineUpdate: '$setStateCollection' })
+        }, { preventRecursive: true, preventInitUpdateListener: true, preventDefineUpdate: true })
       } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
       if (setter) setter(key, props[key], CLASS_NAMES, element)
     }

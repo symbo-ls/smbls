@@ -37,7 +37,7 @@ export const RouterLink = {
         scrollToOptions: { behaviour: 'instant' }
       }
       if (href && firstThree !== 'htt' && firstThree !== 'ske') {
-        (router || defaultRouter)(root, href, {}, options)
+        (router || defaultRouter)(href, root, {}, options)
         event.preventDefault()
       }
     }

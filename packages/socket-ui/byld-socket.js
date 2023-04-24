@@ -95,9 +95,12 @@ const onChange = (element, state, context) => {
       const obj = JSON.parse(data)
       const { PROJECT_STATE, PROJECT_SYSTEM } = obj
       const { utils } = context
+      console.log(data)
+      console.log(obj)
 
       if (PROJECT_STATE) {
-        if (PROJECT_STATE.route) (utils.router || router)(element, PROJECT_STATE.route.replace('/state', '') || '/', {}, true, false)
+        const route = PROJECT_STATE.route
+        if (route) (utils.router || router)(route.replace('/state', '') || '/', element, {}, true, false)
         else state.update(PROJECT_STATE)
       }
 
