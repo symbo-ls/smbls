@@ -14,14 +14,13 @@ export const defaultDefine = {
       el.set(obj, { preventDefineUpdate: '$router' })
     }
 
-    if (el.props.lazyLoad) {
+    if (el.props && el.props.lazyLoad) {
       window.requestAnimationFrame(set)
     } else set()
 
     return obj
   },
 
-  __filepath: param => param,
   $setCollection: Collection.define.$setCollection,
   $setStateCollection: Collection.define.$setStateCollection,
   $setPropsCollection: Collection.define.$setPropsCollection
