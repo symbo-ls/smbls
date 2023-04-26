@@ -22,6 +22,7 @@ export const Input = {
     minlength: ({ props }) => props.minlength,
     maxlength: ({ props }) => props.maxlength,
     name: ({ props }) => props.name,
+    autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
     value: ({ props, state }) => props.value,
     disabled: ({ props }) => props.disabled || null,
