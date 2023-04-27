@@ -2,7 +2,7 @@
   "name": "attrs-in-props",
   "description": "Utilize props as attributes",
   "author": "symbo.ls",
-  "version": "2.10.274",
+  "version": "2.11.4",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
   "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9"
