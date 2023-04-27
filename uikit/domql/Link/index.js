@@ -32,11 +32,13 @@ export const RouterLink = {
       const { router } = utils
       const root = el.__ref.__root
       const { href } = props
-      const firstThree = href[0] + href[1] + href[2]
+      const linkIsExternal = href.includes('mailto') ||
+        href.includes('http') ||
+        href.includes('tel')
       const options = props.routerOptions || routerOptions || {
         scrollToOptions: { behaviour: 'instant' }
       }
-      if (href && firstThree !== 'htt' && firstThree !== 'ske') {
+      if (href && linkIsExternal) {
         (router || defaultRouter)(href, root, {}, options)
         event.preventDefault()
       }

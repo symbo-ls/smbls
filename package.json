@@ -31,7 +31,6 @@
     "parser": "@babel/eslint-parser"
   },
   "workspaces": [
-    "icons/*",
     "uikit/*",
     "uikit/*/*",
     "packages/*"
