@@ -2,7 +2,7 @@
   "name": "@symbo.ls/convert",
   "version": "2.11.4",
   "license": "MIT",
-  "gitHead": "3c31d52ceaa8952aae3306e6d553ed3ddd8202b9",
+  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
   "source": "index.js",
   "main": "index.js",
   "dependencies": {

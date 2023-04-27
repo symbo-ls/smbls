@@ -3,7 +3,7 @@
   "version": "2.11.4",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "3c518373ff7fcacad6e463e7ec72ca69d7771534",
+  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
   "dependencies": {
     "@domql/router": "latest",
     "@symbo.ls/atoms": "latest"
