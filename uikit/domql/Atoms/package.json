@@ -3,7 +3,7 @@
   "version": "2.11.0",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "9ec7219a83cd59742d9a9e5da71cacdc96e9cbdb",
+  "gitHead": "f8f81a8726c232bd6788d553f2e64da232f299d6",
   "dependencies": {
     "@domql/utils": "latest",
     "@symbo.ls/emotion": "latest",
