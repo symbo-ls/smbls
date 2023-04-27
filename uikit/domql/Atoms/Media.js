@@ -146,7 +146,11 @@ const initUpdate = (changes, element) => {
       if (key === 'theme') {
         props.update({
           themeModifier: globalTheme
-        }, { preventRecursive: true, preventInitUpdateListener: true, preventDefineUpdate: true })
+        }, {
+          preventRecursive: true,
+          preventInitUpdateListener: true,
+          preventDefineUpdate: true
+        })
       } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
       if (setter) setter(key, props[key], CLASS_NAMES, element)
     }
