@@ -972,9 +972,9 @@
     to-fast-properties "^2.0.0"
 
 "@domql/cache@latest":
-  version "2.3.82"
-  resolved "https://registry.yarnpkg.com/@domql/cache/-/cache-2.3.82.tgz#a1bc5fd8e479b889f80c1a238da31d8f57ec0a93"
-  integrity sha512-1Vp+nn6jdhLFfjdavBLR0AssYy9Vy6fAx61388UUuFp5R5+192mZOXTM6Z6YEpsNRK0qBXQuhoY/aOQhHcPlUQ==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/cache/-/cache-2.3.113.tgz#7293727445b448e9503bdcfa38533a6ea97d25fb"
+  integrity sha512-Z0eawKD2+yktG+RWBeK30Av8N9WlvsVyhFkRwF/Igan9ebNhyYAADryBHxSmhtS99EKb3eMfyGN8ztpMV9tBpA==
 
 "@domql/classlist@latest":
   version "2.3.82"
@@ -984,9 +984,9 @@
     "@domql/utils" latest
 
 "@domql/cookie@latest":
-  version "2.3.85"
-  resolved "https://registry.yarnpkg.com/@domql/cookie/-/cookie-2.3.85.tgz#2510d3011a7558dfb346f644c9c4303d96085a8c"
-  integrity sha512-5qh/NnaICjP8QMO2BvZEwZU4Z59vRtp5KaCMg+ZYPzscYyDMeQqgB2upqa3MWvZItv6TJXHjE++bpAgpIg1BSw==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/cookie/-/cookie-2.3.113.tgz#8a912fb8a3c595b3e9347ee01e56da587fb8949a"
+  integrity sha512-KdlRwaJdCD9GSoP26sXf0rYlspARXOfjbuFjZM+s4W6J6fvW3RDyVzG0+51VfS+V1eJo4DRKm7b0t+RgWBx6Dw==
   dependencies:
     "@domql/utils" latest
 
@@ -1021,14 +1021,14 @@
     "@domql/utils" latest
 
 "@domql/env@latest":
-  version "2.3.99"
-  resolved "https://registry.yarnpkg.com/@domql/env/-/env-2.3.99.tgz#b681d0f5185099fd8decda0d93fa1de7850ecc3c"
-  integrity sha512-afn03ztmlBwAiE++YhCvqaGw3qNsLUt5RgPxoL0tmqUTFly6YE6C1LM6w0ebOqw9s6YKlN2U6QZAfUOPX7CkYA==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/env/-/env-2.3.113.tgz#bb91df6b9dc5fcb9abecf38df426c44608090bc5"
+  integrity sha512-+9ftc5A/JRm8aQNOMD9LqHlE8RyhbPYR67M5mwp8bL0/vJQcHoWWGyr4jzDWaClUompsFlaPhYQaX3hqDlfxJQ==
 
 "@domql/event@latest":
-  version "2.3.108"
-  resolved "https://registry.yarnpkg.com/@domql/event/-/event-2.3.108.tgz#c5683c15ad0f8ec7be61ae99436b05913ec330a3"
-  integrity sha512-ZVFr7dhjzUhmG6LShHxO27TXP4J2HNZiljU208j61fn/Eu5xlnP6hbRXfaMamnwWZ1HAIjIPrFo0N8wqe5rH/A==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/event/-/event-2.3.113.tgz#98418544900cb3afda1653599f653f22fe7e9353"
+  integrity sha512-yxm3O8D0pnmzTa0PCCXE+j5ui/WbTQM1hrPpp7mdwv05mwAn6TFQTu7dK1cZwyhq4+9P/JTfo6Y2GI8f3C7iOQ==
   dependencies:
     "@domql/globals" latest
     "@domql/registry" latest
@@ -1044,9 +1044,9 @@
     "@domql/utils" latest
 
 "@domql/globals@latest":
-  version "2.3.110"
-  resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.110.tgz#586a3e375cf08e839b96a45d47dd5f32c19dc90e"
-  integrity sha512-HIO6UkVW/xmFrXjtdQ+XJO667+6AM2TXpi8dvEmwarA2ukCicIYta2wtApPbLC7SzILZyjGU0vyVxJVyTs5Y9w==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/globals/-/globals-2.3.113.tgz#b5655ae503ea63fb31d486077a1d7d08c5d05b45"
+  integrity sha512-Hbe/qkJaiMS3BEJb6IYjw9zLt2YpaJK9+Noi7f0REVkWnJuF95eq2rACVZ2fJ/XtGbUonu2A5U+QGKK5aeh54A==
 
 "@domql/iterate@latest":
   version "2.3.92"
@@ -1057,14 +1057,14 @@
     "@domql/utils" latest
 
 "@domql/key@latest":
-  version "2.3.110"
-  resolved "https://registry.yarnpkg.com/@domql/key/-/key-2.3.110.tgz#2d3746125ffa414c53d51bd5ca3dcb30eaa03d12"
-  integrity sha512-0YMoFi5rBfZr8KkacP9cGyRyaKDfnPkk5z9/SWO7RX7Bkzhq6LxnHxkTZbXAT5IrYmCIj/MsC7gkZgvLMJ1EKg==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/key/-/key-2.3.113.tgz#53eef797510f3d7feace1b08189de8fa25bdb85a"
+  integrity sha512-/PQfTiZ4JgxVKHjsEsZwwqDETZkGC87pYi07Bvpav4nKMjRhjXqbMLRDBcE7Yzu2OkMwekqTXaa2f+B67dJ9xA==
 
 "@domql/methods@latest":
-  version "2.3.99"
-  resolved "https://registry.yarnpkg.com/@domql/methods/-/methods-2.3.99.tgz#a0119d35ff54fb9deb07342d8ebab82741c92532"
-  integrity sha512-gdT7WmsthEMLHNQUuxs9jX74lNoMeKaFcXHcdUHxdeEfqXThoj4dMYGq+/GCWursBw1Qfd++jAt+WvjSAgMjUg==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/methods/-/methods-2.3.113.tgz#ebac249b5f4e87b3211c34508d760f3d5898efff"
+  integrity sha512-gUvWeskVaLJWbRnYXqp01zIiGiwYcrdQ9TS3tgU/FI+sfZ6uqBfrEbhA8Qd40PPclVQKA5gNSHuEHXobmOKHoA==
   dependencies:
     "@domql/env" latest
     "@domql/registry" latest
@@ -1072,9 +1072,9 @@
     "@domql/utils" latest
 
 "@domql/mixins@latest":
-  version "2.3.82"
-  resolved "https://registry.yarnpkg.com/@domql/mixins/-/mixins-2.3.82.tgz#a5c564056c398893b8e449924edff025adc2927b"
-  integrity sha512-rP8hI7cpovXPb1OSCLDg0QLpGgDCmdCJRQnvNr9Jqo3cCvXLInPUHewWFg/yPtAkF/or/SWWYbCZKxwlh9/dhw==
+  version "2.3.112"
+  resolved "https://registry.yarnpkg.com/@domql/mixins/-/mixins-2.3.112.tgz#c9d55d5ec187ed9f076bdfcbd346d4f21c5f0a34"
+  integrity sha512-w9RylHE194jtzQYQLS0QPZuEU3WQ3NYQMFIgDzAwIGGACobGeQFZn5tzYr0mXd9S7iVv4SFoZIPmrVbvN0fJxA==
   dependencies:
     "@domql/create" latest
     "@domql/report" latest
@@ -1083,9 +1083,9 @@
     regenerator-runtime "^0.13.9"
 
 "@domql/node@latest":
-  version "2.3.108"
-  resolved "https://registry.yarnpkg.com/@domql/node/-/node-2.3.108.tgz#b9d4c3d0108c58b68f28d474d8ab2d0ffee5b90c"
-  integrity sha512-VnJ7w071eZtDSh2WWUh7fqNi3LRdHkCWlY42rQfcHI0sIlLPprbEBfIB/HRHacVKswtAKLDGIlkTLWMC5AZJvg==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/node/-/node-2.3.113.tgz#c84691e9805b4b934179d5f58efdb297a8f6a80f"
+  integrity sha512-jKaWikLQoh8poITKaZpem9E7MljH+JUf+BbZahq2g2fT+QBj+0GA6MLG4wWDrmB4yMLMyaOEYLa5V5PmGXCA3w==
   dependencies:
     "@domql/cache" latest
     "@domql/create" latest
@@ -1098,34 +1098,34 @@
     "@domql/utils" latest
 
 "@domql/props@latest":
-  version "2.3.82"
-  resolved "https://registry.yarnpkg.com/@domql/props/-/props-2.3.82.tgz#9f5ac0ca990c77e5e029598add7a50e12d3d3957"
-  integrity sha512-SpiWmlSshZEOg6qZ6sxikzCUgXvXLuleuxH7U+w/zg/XJGFePOT3DMHwI2/4sv2pCz9oTPdppbhVp1Hzz9bQnQ==
+  version "2.3.112"
+  resolved "https://registry.yarnpkg.com/@domql/props/-/props-2.3.112.tgz#023a5825af6022eeec4ca1c43e25187b4340f1ad"
+  integrity sha512-Rkel08E6lPazSgHPrBcLx87UA8Y9E8JN1Bbl57ZbipNQeCnPbr8Txn4dgC7hCfQ0DcEoBUNBVzy2AxLw/jveZQ==
   dependencies:
     "@domql/event" latest
     "@domql/utils" latest
 
 "@domql/registry@latest":
-  version "2.3.93"
-  resolved "https://registry.yarnpkg.com/@domql/registry/-/registry-2.3.93.tgz#b8d4dfc517fbd9734d0bdf948b2181086215ba05"
-  integrity sha512-eJyPRf1A58PgH0e8Pwu2n/E9o14bfa5UEjwFTGNo7EwJFq/YKynbidIPwpqBg1qgpG3C6EqsfpQxrde9pQqFaw==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/registry/-/registry-2.3.113.tgz#493c449035c876349a42fe15d25281935750f672"
+  integrity sha512-SRk1mLl234QX70Xl7UAmDvlPOJKIM7aKweyPrIZ6p+RxLLVsafOj+THKeq2DC98SuoqoL00/Vre0qi8CLX6dsQ==
   dependencies:
     "@domql/utils" latest
 
 "@domql/render@latest":
-  version "2.3.100"
-  resolved "https://registry.yarnpkg.com/@domql/render/-/render-2.3.100.tgz#f796454baddd365e73f3244697e2bc09aadab099"
-  integrity sha512-d8HAWkt0NQHKm3Rce5hrNVOHUSB0RgiJA5kIs66rmNfgY2yxgJPT1zv2Sk7lOVr9zic4f1EIwibguT2zGRRGSQ==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/render/-/render-2.3.113.tgz#282d317e674b40717d652da795d5a6c9ef2e3720"
+  integrity sha512-ZXIvu4oKkISBhH4Uhj93UDDorD6E0dR7BmLz++6TTOHnyjqbgN7irZH4V1sGNOlFXb/al0ZDv17Z+QnpBRnVtQ==
 
 "@domql/report@latest":
-  version "2.3.82"
-  resolved "https://registry.yarnpkg.com/@domql/report/-/report-2.3.82.tgz#ff928eede118388b3a52c9071367aac5fdd95cb7"
-  integrity sha512-MJioHe01GO36JBlg3DyArJebOpS8oGok0g3+f1HcULh5UaZ6EdT+dzThehl8twiIFJ/lq1JjRlunv/TAFbqflQ==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/report/-/report-2.3.113.tgz#b95d2d0c6980cd9a8fc610b793a05d2d0c0fbc46"
+  integrity sha512-g739jIEnGuSr1YJyISXFaiNDNdKO/QGtmJpH291/Onoyk3zg7HkMFjX0o9qAbqyyaAN/AfowHSRNYtEoVm0drA==
 
 "@domql/router@latest":
-  version "2.3.110"
-  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.110.tgz#c00bdbd9c9b4bb7192dc27aba6d77478c262f0a6"
-  integrity sha512-N5fM/AXN2PYuIUjLqvT3IX9GqtkL6wTp0B5QnQudzBPnV4wMs1wWWo/Nkh+AKYWnmlbtAGcs0Jgk/kuXdbwErA==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.3.113.tgz#df1ebb391625e86f82cc9a1194ac604811226a2a"
+  integrity sha512-RA71NzT51CTGKR2Wj9Khqr4uMA2OB1qh5a9CEUToPUCzd+engPxI1J0sE+kr0Ormmk4I6/2wb4qkA/vyi2lFaw==
   dependencies:
     "@domql/globals" latest
     "@domql/utils" latest
@@ -1138,30 +1138,30 @@
     "@domql/create" latest
 
 "@domql/state@latest":
-  version "2.3.82"
-  resolved "https://registry.yarnpkg.com/@domql/state/-/state-2.3.82.tgz#d75d86aff55665c01e831a045920033b65f4ca74"
-  integrity sha512-aUv9hT9vejD3fMm69uM5ImmfHfrCq9RDhwA4c+3y17SU7Kx7FH+oHT8ah3BmGMKU6PPZ1U1ITvycwxEY1yCvbA==
+  version "2.3.112"
+  resolved "https://registry.yarnpkg.com/@domql/state/-/state-2.3.112.tgz#b7f9f78d7af66edf3a59c893e3c6329fd5c6e3aa"
+  integrity sha512-pamKM3hKkTThQLqSqbM8empgKBe3Yh1fNeQ9N5KQv2cbPN/znysmttXRKM+yXYx+QKDXK1N0DXTChTEfEmyEOg==
   dependencies:
     "@domql/event" latest
     "@domql/utils" latest
 
 "@domql/tags@latest":
-  version "2.3.111"
-  resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.111.tgz#b016972447e9c256c5959f3db13ad42a20009bc8"
-  integrity sha512-g5r0ahRBafZ/kdPeINCSWgsfDdQ0KM27O0yzQ5OMYJqezPzemcEbeAS9TpO+OE3OVVvpKw+LXIs9UpqwTvfTyA==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.113.tgz#6165925121fa082830e3d83092108caa30712a3b"
+  integrity sha512-c3p7eYmxUdLu3/pIaCw2/uKgOft7OYdtsVq9gAlvqzDU+NkyN9o/MA0fvfyKTLYZwYhn3iZCGIVu/vEscN5mKQ==
 
 "@domql/tree@latest":
-  version "2.3.98"
-  resolved "https://registry.yarnpkg.com/@domql/tree/-/tree-2.3.98.tgz#b947cde5eb4e08f1c4c981ed02f12e2c75591d75"
-  integrity sha512-uCrv5HiGDU+108+0hBlXSgPX+Pen24U3ukpiJhFWX84OoW+5d6LeUw5UxE4u83Kgaa+6uuTzpDwKHa63WURoFg==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/tree/-/tree-2.3.113.tgz#ef6322cfd970fef1f639ace690111e6577d7fcb3"
+  integrity sha512-fnx+fDc6V/QgxBgzP4j2p4+93Jw6PfMsnBhs9/uRIZu4v02a9L6GjBwdAsr80URcX6SBVOH21En3N2oXImjIdQ==
   dependencies:
     "@domql/globals" latest
     "@domql/report" latest
 
 "@domql/utils@latest":
-  version "2.3.110"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.110.tgz#7055234e244df8b6cd15012d6f82b34781764e63"
-  integrity sha512-UK4+lJjPjiXhf1lZzftF9dTHC9HOr0vRsk2TQA03rL54EBQTaRFZz3raL8zFSmZ/ycK+i8qNF5ncEwAGrzu+kA==
+  version "2.3.113"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.3.113.tgz#b2348d2d9ab6fef25c3e81540ef95071c0a8326c"
+  integrity sha512-1keGJtZwZjiyMRTimAwOZ1Ahm2sJzCLZrmS8wL4GRoDu3Wg8/b6H6NAff7ypoh4tQriUkGM6MZ8oEL0HT/g1/w==
   dependencies:
     "@domql/globals" latest
     "@domql/key" latest
@@ -3642,9 +3642,9 @@ domexception@^4.0.0:
     webidl-conversions "^7.0.0"
 
 domql@latest:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/domql/-/domql-1.6.2.tgz#5f2e88d0ca9f4e5a10ac0ac553a94f86cb3c9973"
-  integrity sha512-wz7a6vGha+VOxABP0mz8wh8KBheNh5xr0kqJLYMJHxtYUIAP/6W1ZpiDIgsUKIrk5oEP2+rfYgvuShZn+BVhwA==
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/domql/-/domql-1.6.3.tgz#96f5eae012289ed1387d0249f47c51a3e5cc614f"
+  integrity sha512-qtx2Hd85HhSPV+TyUZaM/MM/c1DvIqdH0UJgm178FyqdvB10/fQTRGzsuIkiHhBRyE2NWua1Y5uyC5YilpuYEA==
   dependencies:
     "@domql/classlist" latest
     "@domql/emotion" latest
