@@ -32,9 +32,10 @@ export const RouterLink = {
       const { router } = utils
       const root = el.__ref.__root
       const { href } = props
-      const linkIsExternal = href.includes('mailto') ||
-        href.includes('http') ||
-        href.includes('tel')
+      const linkIsExternal = href.includes('http://') ||
+        href.includes('https://') ||
+        href.includes('mailto:') ||
+        href.includes('tel:')
       const options = props.routerOptions || routerOptions || {
         scrollToOptions: { behaviour: 'instant' }
       }
