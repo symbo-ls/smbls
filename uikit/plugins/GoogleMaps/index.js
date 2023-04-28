@@ -2,19 +2,22 @@
 
 import { Loader } from '@googlemaps/js-api-loader'
 
-const loader = new Loader({
-  apiKey: process.env.GOOGLE_MAPS_API_KEY,
-  version: 'weekly'
-})
-
+let loader
 export const GoogleMaps = {
   props: {
     mapOptions: {
       disableDefaultUI: true
     }
   },
-
   on: {
+    init: (el, s, ctx) => {
+      const { version, apiKey } = el.props
+      if (loader) return
+      loader = new Loader({
+        apiKey: apiKey || process.env.GOOGLE_MAPS_API_KEY,
+        version: version || 'weekly'
+      })
+    },
     render: (el, s, ctx) => {
       const { props } = el
       const { mapOptions } = props
