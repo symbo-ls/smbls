@@ -38,7 +38,7 @@ export const RouterLink = {
       const options = props.routerOptions || routerOptions || {
         scrollToOptions: { behaviour: 'instant' }
       }
-      if (href && linkIsExternal) {
+      if (href && !linkIsExternal) {
         (router || defaultRouter)(href, root, {}, options)
         event.preventDefault()
       }
