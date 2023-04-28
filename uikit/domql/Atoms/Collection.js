@@ -1,6 +1,6 @@
 'use strict'
 
-import { isState } from 'domql/src/element/state'
+import { isState } from '@domql/state'
 import { isNot, isArray, isObject, isObjectLike, diff, deepClone } from '@domql/utils'
 
 export const Collection = {

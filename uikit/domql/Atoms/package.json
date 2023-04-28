@@ -6,6 +6,7 @@
   "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
   "dependencies": {
     "@domql/utils": "latest",
+    "@domql/state": "latest",
     "@symbo.ls/emotion": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest"
