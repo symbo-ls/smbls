@@ -30,7 +30,6 @@ export const GoogleMaps = {
               map,
               title
             }).addListener('click', function () {
-              console.log(marker)
               s.update({ activeMarker: marker.instance.key })
             })
           })
