@@ -63,5 +63,9 @@ export const IconText = {
     if: ({ parent }) => parent.props.icon
   },
 
+  Icon: {
+    if: ({ props }) => props.name || props.icon
+  },
+
   text: ({ props }) => props.text
 }
