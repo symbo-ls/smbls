@@ -13,7 +13,7 @@
   "dependencies": {
     "@domql/emotion": "latest",
     "@domql/router": "latest",
-    "@symbo.ls/atoms": "^2.10.290",
+    "@symbo.ls/atoms": "latest",
     "domql": "latest"
   },
   "devDependencies": {

@@ -58,11 +58,11 @@ DOM.create({
         on: {
           click: (ev, el, s) => {
             if (el.text === 'setBlue') {
-              el.update({ text: 'setWhite' })
               el.parent.setProps({ background: 'blue' })
+              el.update({ text: 'setWhite' })
             } else {
-              el.update({ text: 'setBlue' })
               el.parent.setProps({ background: 'white' })
+              el.update({ text: 'setBlue' })
             }
           }
         }

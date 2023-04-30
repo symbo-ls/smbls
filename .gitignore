@@ -37,4 +37,5 @@ node_modules
 dist
 
 # Yarn lock
+.cache
 yarn.lock
