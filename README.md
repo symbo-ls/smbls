@@ -115,7 +115,8 @@ You can directly use this configuration in [DOMQL](https://github.com/symbo-ls/s
 The color and fonts use would be like:
 
 ### DOMQL
-```javascipt
+
+```javascript
 const MyComponent = {
   H1: { text: 'Hello!' },
   Button: {
@@ -128,7 +129,8 @@ const MyComponent = {
 ```
 
 ### React
-```javascipt
+
+```javascript
 const MyComponent = () => {
   <H1 text="Hello"/>
   <Button
