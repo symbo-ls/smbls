@@ -104,7 +104,7 @@ const icons = {
 
 Although you can configure your bundler in a way that it inlines SVG imports [Parcel](https://github.com/ewanmellor/parcel-plugin-inline-svg), [Vite](https://www.npmjs.com/package/vite-svg-loader).
 
-You can read more at [Design System](https://symbols.app/docs/design-system) page.
+The example of the [default-config](https://github.com/symbo-ls/smbls/tree/main/packages/default-config) page. You can read more at [Design System](https://symbols.app/docs/design-system) page.
 
 ---
 
