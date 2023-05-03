@@ -23,6 +23,12 @@ const EXCLUDED_FROM_INTERNAL_UIKIT = [
   'transformTransition'
 ]
 const TMP_DIR_NAME = ".smbls_convert_tmp"
+const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
+  "name": "smbls_convert_tmp",
+  "version": "1.0.0",
+  //"main": "index.js",
+  "license": "ISC"
+});
 
 function isDirectory(dir) {
   if (!fs.existsSync(dir)) return false
@@ -123,6 +129,13 @@ program
     const tmpDirPath = options.tmpDir ??
           path.resolve(path.dirname(srcPath), TMP_DIR_NAME)
     await mkdirp(tmpDirPath)
+
+    // Put a package.json file so that when we import() the modules from the
+    // directory, node doesn't recognize them as ES modules (in case the parent
+    // directory of the tmp dir has "type": "module" in its package.json
+    const pj = await fs.promises.open(path.resolve(tmpDirPath, 'package.json'), 'w')
+    await pj.writeFile(TMP_DIR_PACKAGE_JSON_STR, 'utf8')
+    await pj.close()
 
     // Convert single file. Output will also be a single file.
     if (!srcIsDir) {
