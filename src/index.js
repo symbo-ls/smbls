@@ -1,7 +1,7 @@
 'use strict'
 
 import DOM from 'domql'
-import { Collection } from '@symbo.ls/atoms'
+import { Collection, P } from '@symbo.ls/atoms'
 var { performance } = window
 
 const state = {
@@ -11,10 +11,15 @@ const state = {
     { name: 'render', icon: '✅' },
     { name: 'render2', icon: '✅' },
     { name: 'render3', icon: '✅' },
-  ]
+  ],
+  lets: {
+    test: {
+      nesting: 1
+    }
+  }
 }
 
-DOM.create({
+const app = DOM.create({
   state,
 
   h1: { text: (el, s) => s.title },
@@ -30,6 +35,12 @@ DOM.create({
       div: {
         attr: { contentEditable: true },
         text: (el, s) => s.icon + ' ' + s.name,
+        on: {
+          input: (ev, el, s) => {
+            console.log(el.node.textContent)
+            s.update({ name: el.node.textContent })
+          }
+        }
       },
       div3: {
         state: '../../title',
@@ -74,8 +85,21 @@ DOM.create({
       }
     },
     $setPropsCollection: (el, state) => {
+      // console.warn(state.__element.__ref)
       return state
     }
+  },
+
+  Aricle: ({ state }) => ({
+    style: { margin: '16px' },
+    text: state.title
+  }),
+
+  Aricle_2: {
+    props: ({ state }) => ({
+      style: { margin: '16px' },
+      text: state.title
+    })
   },
 
   button: {
@@ -87,6 +111,8 @@ DOM.create({
       }
     }
   },
+
+  hr: {},
 
   input: {
     on: {
@@ -108,7 +134,50 @@ DOM.create({
       // console.warn(state.data)
       // return state.data
     }
+  },
+
+  hr_2: { tag: 'hr' },
+
+  content: {
+    lets: {
+      state: true,
+      test: {
+        state: true,
+        text: (el, s) => 'number nested ' + s.nesting,
+      },
+      tramsformState: {
+        state: (el, s) => {
+          return { value: 'transformed ' + el.parent.state.test.nesting }
+        },
+        text: (el, s) => s.value
+      },
+      button: {
+        text: 'change nested data',
+        on: {
+          click: (ev, el, s) => s.update({
+            test: { nesting: s.test.nesting + 1 }
+          }, { 
+            isHoisted: false
+          })
+        }
+      }
+    }
   }
-}, null, 'app')
+}, null, 'app', {
+  components: {
+    Article: {
+      tag: 'article'
+    }
+  }
+})
+
+setTimeout(() => {
+  app.state.update({
+    title: 'domql2',
+    lets: {
+      test: { nesting: 2 }
+    }
+  })
+}, 1500);
 
 // dom.update({ time: `${performance.now() - start}` })
