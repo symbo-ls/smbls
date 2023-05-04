@@ -3,7 +3,7 @@
 import { router as defaultRouter } from '@domql/router'
 import { window } from '@domql/globals'
 import { Link, RouterLink } from '@symbo.ls/uikit'
-import { deepMerge, merge } from '@domql/utils'
+import { deepMerge, merge, isUndefined } from '@domql/utils'
 
 const DEFAULT_ROUTING_OPTIONS = {
   initRouter: true,
@@ -11,7 +11,7 @@ const DEFAULT_ROUTING_OPTIONS = {
   popState: true
 }
 
-export const initRouter = (root, options) => {
+export const initRouter = (element, options) => {
   let routerOptions = merge(options.routerOptions || {}, DEFAULT_ROUTING_OPTIONS)
 
   if (routerOptions === false) return
@@ -19,18 +19,19 @@ export const initRouter = (root, options) => {
 
   const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
 
-  const onRender = (el, s) => {
+  const onRouterRenderDefault = (el, s) => {
     const { pathname, hash } = window.location
     const url = pathname + hash
-    if (el.routes) router(el, url, {})
+    if (el.routes) router(url, el, {}, { initialRender: true })
   }
 
-  if (routerOptions.initRouter) {
-    if (root.on) {
-      root.on.renderRouter = onRender
+  const hasRenderRouter = element.on && !isUndefined(element.on.renderRouter)
+  if (routerOptions.initRouter && !hasRenderRouter) {
+    if (element.on) {
+      element.on.renderRouter = onRouterRenderDefault
     } else {
-      root.on = {
-        renderRouter: onRender
+      element.on = {
+        renderRouter: onRouterRenderDefault
       }
     }
   }
@@ -40,13 +41,16 @@ export const initRouter = (root, options) => {
   return routerOptions
 }
 
-export const popStateRouter = (root, options) => {
+let popStateFired
+export const popStateRouter = (element, options) => {
+  if (popStateFired) return
   const routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
   const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
   const { pathname, hash } = window.location
   const url = pathname + hash
-  window.onpopstate = e => router(root, url, { pushState: false, level: 0 })
+  window.onpopstate = e => router(url, element, { pushState: false, level: 0 })
+  popStateFired = true
 }
 
 export const injectRouterInLinkComponent = (routerOptions) => {

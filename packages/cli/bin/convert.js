@@ -13,6 +13,7 @@ const jsdom = new JSDOM(`<html><head></head><body></body></html>`)
 global.window = jsdom.window
 global.document = window.document
 
+const IGNORED_FILES = ['index.js', 'package.json', 'node_modules', 'dist']
 const EXCLUDED_FROM_INTERNAL_UIKIT = [
   'Svg',
   'keySetters',
@@ -211,7 +212,8 @@ program
       return 1;
     }
 
-    const origFiles = await fs.promises.readdir(srcPath)
+    const origFiles = (await fs.promises.readdir(srcPath))
+          .filter(file => !IGNORED_FILES.includes(file))
 
     // Bundle components
     await esbuild.build({
@@ -226,6 +228,7 @@ program
     // Convert components
     const componentDirs = await fs.promises.readdir(tmpDirPath)
     for (const componentDir of componentDirs) {
+      console.log(componentDirs)
       const importDir = path.join(tmpDirPath, componentDir)
       if ((await fs.promises.stat(importDir)).isDirectory()) {
         // Import the module

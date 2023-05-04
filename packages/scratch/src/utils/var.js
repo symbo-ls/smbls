@@ -1,9 +1,7 @@
 'use strict'
 
-import { getActiveConfig } from '../factory.js'
 import { isObjectLike } from '@domql/utils'
-
-const ENV = process.env.NODE_ENV // eslint-disable-line
+import { getActiveConfig } from '../factory.js'
 
 export const setVariables = (result, key) => {
   const CONFIG = getActiveConfig()

@@ -4,7 +4,7 @@ const PRIORITIES = {
   primary: {
     '@dark': {
       color: 'white',
-      background: 'gradient-colorful'
+      background: 'white .1'
     },
     '@light': {
       color: 'white',

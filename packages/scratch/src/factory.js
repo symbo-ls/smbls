@@ -1,6 +1,11 @@
 'use strict'
 
-import { deepClone, isDefined } from '@domql/utils'
+import {
+  deepClone,
+  deepMerge,
+  isDefined,
+  isObject
+} from '@domql/utils'
 import * as CONF from './defaultConfig'
 
 export const CSS_VARS = {}
@@ -25,14 +30,12 @@ export const activateConfig = (def) => {
 }
 
 export const getActiveConfig = (def) => {
-  if (isDefined(def) && !FACTORY[def]) {
-    FACTORY[def] = deepClone(cachedConfig)
-    return FACTORY[def]
-  }
   return FACTORY[def || FACTORY.active]
 }
 
-export const setActiveConfig = (def) => {
-  FACTORY.active = FACTORY[def]
-  return FACTORY.active
+export const setActiveConfig = (newConfig) => {
+  if (!isObject(newConfig)) return
+  FACTORY.active = '1'
+  FACTORY['1'] = deepMerge(newConfig, deepClone(cachedConfig))
+  return newConfig
 }

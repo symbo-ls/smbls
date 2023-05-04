@@ -24,6 +24,6 @@ export const FONT_FAMILY = {
   StartWithKarla: {
     isDefault: true,
     value: ['"Karla"'],
-    type: 'serif'
+    type: 'sans-serif'
   }
 }

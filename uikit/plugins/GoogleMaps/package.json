@@ -1,0 +1,11 @@
+{
+  "name": "@symbo.ls/google-maps",
+  "version": "2.11.12",
+  "main": "index.js",
+  "author": "symbo.ls",
+  "license": "ISC",
+  "gitHead": "ec277500ab656a5c45b656040c458748a705e5f7",
+  "dependencies": {
+    "@googlemaps/js-api-loader": "^1.15.1"
+  }
+}

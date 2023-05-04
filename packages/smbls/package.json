@@ -1,9 +1,9 @@
 {
   "name": "smbls",
-  "version": "2.10.262",
+  "version": "2.11.15",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
-  "gitHead": "779c21d9c24e5accb881506303cd25ab7e1c944c",
+  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
   "source": "index.js",
   "main": "index.js",
   "module": "index.js",

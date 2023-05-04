@@ -6,6 +6,8 @@ import { TYPOGRAPHY } from './typography'
 import { SPACING } from './spacing'
 import { FONT, FONT_FAMILY } from './font'
 
+import FEATHER_ICONS from '@symbo.ls/feather-icons'
+
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
   COLOR,
@@ -16,8 +18,26 @@ export const DEFAULT_CONFIG = {
   FONT,
   FONT_FAMILY,
   TIMING: {},
-  ICONS: {},
-  MEDIA: {},
+  ICONS: FEATHER_ICONS,
+  MEDIA: {
+    tv: '(min-width: 2780px)',
+
+    screenL: '(max-width: 1920px)',
+    screenM: '(max-width: 1680px)',
+    screenS: '(max-width: 1440px)',
+    tabletL: '(max-width: 1366px)',
+    tabletM: '(max-width: 1280px)',
+    tabletS: '(max-width: 1024px)',
+    mobileL: '(max-width: 768px)',
+    mobileM: '(max-width: 560px)',
+    mobileS: '(max-width: 480px)',
+    mobileXS: '(max-width: 375px)',
+
+    light: '(prefers-color-scheme: light)',
+    dark: '(prefers-color-scheme: dark)',
+
+    print: 'print'
+  },
   DEVICES: {},
   CASES: {},
   SVG: {} // TODO: Check with @nikoloza on this

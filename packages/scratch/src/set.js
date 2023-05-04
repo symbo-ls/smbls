@@ -1,6 +1,6 @@
 'use strict'
 
-import { FACTORY, getActiveConfig } from './factory.js' // eslint-disable-line no-unused-vars
+import { FACTORY, getActiveConfig, setActiveConfig } from './factory.js' // eslint-disable-line no-unused-vars
 import {
   setColor,
   setGradient,
@@ -94,8 +94,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   } = recivedConfig
 
   if (options.newConfig) {
-    FACTORY.active = options.newConfig
-    CONFIG = getActiveConfig(options.newConfig)
+    CONFIG = setActiveConfig(options.newConfig)
   }
 
   if (verbose !== undefined) CONFIG.verbose = verbose
@@ -107,6 +106,8 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (useDocumentTheme !== undefined) CONFIG.useDocumentTheme = useDocumentTheme
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
   if (CONFIG.verbose) console.log(CONFIG)
+
+  if (!CONFIG.__svg_cache) CONFIG.__svg_cache = {}
 
   const keys = Object.keys(config)
   keys.map(key => setEach(key, config[key]))

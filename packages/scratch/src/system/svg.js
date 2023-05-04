@@ -21,20 +21,11 @@ export const setSVG = (val, key) => {
 
 export const appendSVGSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const CONFIG = getActiveConfig()
-  const doc = options.document || document
 
   const lib = Object.keys(LIBRARY).length ? {} : CONFIG.SVG
   for (const key in LIBRARY) lib[key] = CONFIG.SVG[key]
 
-  const SVGsprite = generateSprite(lib)
-  if (!doc) {
-    console.warn('To append SVG sprites it should be run in browser environment')
-    return SVGsprite
-  }
-
-  const svgSpriteDOM = doc.createElement('template')
-  svgSpriteDOM.innerHTML = SVGsprite
-  doc.body.appendChild(svgSpriteDOM.content)
+  appendSVG(lib, options)
 }
 
 export const setIcon = (val, key) => {
@@ -46,18 +37,47 @@ export const setIcon = (val, key) => {
 
 export const appendIconsSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const CONFIG = getActiveConfig()
-  const doc = options.document || document
 
   const lib = Object.keys(LIBRARY).length ? {} : CONFIG.ICONS
   for (const key in LIBRARY) lib[key] = CONFIG.ICONS[key]
 
-  const SVGsprite = generateSprite(lib)
+  appendSVG(lib, options)
+}
+
+const createSVGSpriteElement = (options = { isRoot: true }) => {
+  const svgElem = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  if (options.isRoot) {
+    svgElem.setAttribute('aria-hidden', 'true')
+    svgElem.setAttribute('width', '0')
+    svgElem.setAttribute('height', '0')
+    svgElem.setAttribute('style', 'position:absolute')
+    svgElem.setAttribute('id', 'svgSprite')
+  }
+  return svgElem
+}
+
+const appendSVG = (lib, options = DEF_OPTIONS) => {
+  const CONFIG = getActiveConfig()
+  const doc = options.document || document
+
   if (!doc) {
-    console.warn('To append SVG Icon sprites it should be run in browser environment')
-    return SVGsprite
+    if (CONFIG.verbose) {
+      console.warn('To append SVG sprites it should be run in browser environment')
+    }
+    return generateSprite(lib)
   }
 
-  const iconsSpriteDOM = doc.createElement('template')
-  iconsSpriteDOM.innerHTML = SVGsprite
-  doc.body.appendChild(iconsSpriteDOM.content)
+  const exists = doc.querySelector('#svgSprite')
+  const SVGsprite = generateSprite(lib)
+
+  if (exists) {
+    const tempSVG = createSVGSpriteElement({ isRoot: false })
+    // const svgSpriteWithoutRoot = doc.createElement('template')
+    tempSVG.innerHTML = SVGsprite
+    exists.append(...tempSVG.children)
+  } else {
+    const svgSpriteDOM = createSVGSpriteElement()
+    svgSpriteDOM.innerHTML = SVGsprite
+    doc.body.prepend(svgSpriteDOM)
+  }
 }

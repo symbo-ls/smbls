@@ -10,11 +10,11 @@
     "clean:packages": "lerna exec -- rm -rf dist node_modules yarn.lock yarn-error.log package-lock.json",
     "clean:all": "yarn clean && yarn clean:dist && yarn clean:modules && yarn clean:packages",
     "reinstall": "yarn clean:all && yarn",
-    "compile:react": "smbls convert uikit/ test-react-components/ && cp .build/package-react.json test-react-components/package.json",
-    "pkgify:react": "cp .build/package-react.json test-react-components/package.json",
-    "kalduna": "rimraf -I react/ && smbls convert uikit/ react/ --react --internal-uikit && cp -r .build/kalduna/* react/. && ln -s ../.tmp/node_modules ./react/. && echo 'Run `yarn && yarn start` in react/'",
-    "build:react": "yarn pkgify:react && cd test-react-components && yarn build:button && npm publish && yarn link && cd ..",
-    "try:react": "rimraf -I test-react-components .smbls_convert_tmp && yarn compile:react && yarn build:react"
+    "compile:react": "smbls convert uikit/domql uikit/test-react-components/ && cp build/package-react.json uikit/test-react-components/package.json",
+    "pkgify:react": "cp build/package-react.json uikit/test-react-components/package.json",
+    "kalduna": "rimraf -I uikit/react-generated/ && smbls convert uikit/domql/ uikit/react-genearted/ --react --internal-uikit && cp -r build/kalduna/* uikit/react-generated/. && echo 'Run `yarn && yarn start` in react/'",
+    "build:react": "yarn pkgify:react && cd uikit/test-react-components && yarn build:button && npm publish && yarn link && cd ../..",
+    "try:react": "rimraf -I uikit/test-react-components uikit/.smbls_convert_tmp && yarn compile:react && yarn build:react",
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
@@ -31,7 +31,7 @@
   },
   "workspaces": [
     "uikit/*",
-    "uikit-react/*",
+    "uikit/*/*",
     "packages/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
