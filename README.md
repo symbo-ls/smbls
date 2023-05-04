@@ -6,10 +6,10 @@ For more in-depth exmplanation check out the official [documentation page](https
 [![npm version](https://badge.fury.io/js/smbls.svg)](https://badge.fury.io/js/smbls)
 
 ## Index
-- [Installation](https://github.com/symbo-ls/smbls/edit/main/README.md#installation)
-- [Initialization](https://github.com/symbo-ls/smbls/edit/main/README.md#initialization)
-- [Design System](https://github.com/symbo-ls/smbls/edit/main/README.md#design-system)
-- [Components](https://github.com/symbo-ls/smbls/edit/main/README.md#components)
+- [Installation](https://github.com/symbo-ls/smbls#installation)
+- [Initialization](https://github.com/symbo-ls/smbls#initialization)
+- [Design System](https://github.com/symbo-ls/smbls#design-system)
+- [Components](https://github.com/symbo-ls/smbls#components)
 
 
 ## Installation
