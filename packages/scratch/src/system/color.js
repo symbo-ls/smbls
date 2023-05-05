@@ -12,8 +12,8 @@ import {
   getColorShade
 } from '../utils'
 
-export const getColor = (value, key) => {
-  const CONFIG = getActiveConfig()
+export const getColor = (value, key, config) => {
+  const CONFIG = config || getActiveConfig()
   if (!isString(value)) {
     if (CONFIG.verbose) console.warn(value, '- type for color is not valid')
     return
@@ -41,33 +41,31 @@ export const getColor = (value, key) => {
   // if (alpha) return `rgba(var(${val[shade || ''].var}), ${modifier})`
 
   let rgb = val.rgb
-  if (rgb) {
-    if (tone) {
-      if (!val[tone]) {
-        const toHex = rgbArrayToHex(rgb.split(', ').map(v => parseFloat(v)))
-        const abs = tone.slice(0, 1)
-        if (abs === '-' || abs === '+') {
-          rgb = hexToRgbArray(
-            getColorShade(toHex, parseFloat(tone))
-          ).join(', ')
-        } else {
-          const [r, g, b] = [...rgb.split(', ').map(v => parseInt(v))]
-          const hsl = rgbToHSL(r, g, b)
-          const [h, s, l] = hsl // eslint-disable-line
-          const newRgb = hslToRgb(h, s, parseFloat(tone) / 100 * 255)
-          rgb = newRgb
-        }
-        val[tone] = { rgb, var: `${val.var}-${tone}` }
-      } else rgb = val[tone].rgb
+  if (!rgb) return CONFIG.useVariable ? `var(${val.var})` : val.value
+  if (tone && !val[tone]) {
+    const toHex = rgbArrayToHex(rgb.split(', ').map(v => parseFloat(v)))
+    const abs = tone.slice(0, 1)
+    if (abs === '-' || abs === '+') {
+      rgb = hexToRgbArray(
+        getColorShade(toHex, parseFloat(tone))
+      ).join(', ')
+    } else {
+      const [r, g, b] = [...rgb.split(', ').map(v => parseInt(v))]
+      const hsl = rgbToHSL(r, g, b)
+        const [h, s, l] = hsl // eslint-disable-line
+      const newRgb = hslToRgb(h, s, parseFloat(tone) / 100 * 255)
+      rgb = newRgb
     }
+    val[tone] = { rgb, var: `${val.var}-${tone}` }
+  }
+  if (val[tone]) rgb = val[tone].rgb
 
-    if (alpha) return `rgba(${rgb}, ${alpha})`
-    return CONFIG.useVariable ? `var(${val.var})` : `rgb(${rgb})`
-  } else return CONFIG.useVariable ? `var(${val.var})` : val.value
+  if (alpha) return `rgba(${rgb}, ${alpha})`
+  return CONFIG.useVariable ? `var(${val.var})` : `rgb(${rgb})`
 }
 
-export const getMediaColor = (value, globalTheme) => {
-  const CONFIG = getActiveConfig()
+export const getMediaColor = (value, globalTheme, config) => {
+  const CONFIG = config || getActiveConfig()
   if (!globalTheme) globalTheme = CONFIG.globalTheme
   if (!isString(value)) {
     if (CONFIG.verbose) console.warn(value, '- type for color is not valid')
@@ -82,15 +80,15 @@ export const getMediaColor = (value, globalTheme) => {
   const val = COLOR[name] || GRADIENT[name]
   const isObj = isObject(val)
 
-  if (isObj && val.value) return getColor(value, `@${globalTheme}`)
+  if (isObj && val.value) return getColor(value, `@${globalTheme}`, config)
   else if (isObj) {
-    if (globalTheme) return getColor(value, `@${globalTheme}`)
+    if (globalTheme) return getColor(value, `@${globalTheme}`, config)
     else {
       const obj = {}
       for (const mediaName in val) {
         const query = CONFIG.MEDIA[mediaName.slice(1)]
         const media = `@media screen and ${query}`
-        obj[media] = getColor(value, mediaName)
+        obj[media] = getColor(value, mediaName, config)
       }
       return obj
     }

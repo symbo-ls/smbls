@@ -121,6 +121,7 @@ const beforeClassAssign = (element, s) => {
 
 const initUpdate = (changes, element) => {
   const { props, context, class: className } = element
+  if (!context) return
   const globalTheme = context.designSystem.globalTheme
 
   const parentProps = element.parent.props

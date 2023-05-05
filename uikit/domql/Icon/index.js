@@ -64,6 +64,7 @@ export const IconText = {
   },
 
   Icon: {
+    props: {},
     if: ({ props }) => props.name || props.icon
   },
 

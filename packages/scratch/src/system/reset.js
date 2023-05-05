@@ -35,7 +35,7 @@ export const applyReset = (reset = {}) => {
         top: '0',
         left: '0',
         margin: '0',
-        WebkitFontSmoothing: 'antialiased',
+        WebkitFontSmoothing: 'subpixel-antialiased',
         scrollBehavior: 'smooth',
 
         fontSize: TYPOGRAPHY.browserDefault + 'px',

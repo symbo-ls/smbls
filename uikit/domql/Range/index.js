@@ -11,6 +11,9 @@ const props = {
   outline: 'none',
   flex: 1,
 
+  onInput: (ev, el, s) => s.update({ value: el.node.value }),
+  onChange: (ev, el, s) => s.update({ value: el.node.value }),
+
   style: {
     appearance: 'none'
   },
