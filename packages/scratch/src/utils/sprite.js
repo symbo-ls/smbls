@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString } from '@domql/utils'
+import { isArray, isString } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 
 export const generateSprite = (icons) => {
@@ -36,16 +36,35 @@ const parseRootAttributes = (htmlString) => {
   }, {})
 }
 
+const replaceIdsAndUrls = (code, key) => {
+  const idRegex = /id="([^"]*)"/
+  const urlRegex = /url\(#([^)]*)\)/g
+  const matches = code.match(/id="([^"]*)"/g)
+  let replacedCode = code
+  if (isArray(matches)) {
+    matches.forEach(() => {
+      const randomKey = Math.floor(Math.random() * 100000)
+      replacedCode = code.replace(idRegex, `id="${key}-${randomKey}"`).replace(urlRegex, `url(#${key}-${randomKey})`)
+    })
+  }
+  return replacedCode
+}
+
 export const convertSvgToSymbol = (key, code) => {
   const extractAttrs = parseRootAttributes(code)
   const { width, height } = extractAttrs
 
+  console.log(extractAttrs)
+
   const viewBox = extractAttrs.viewBox || `0 0 ${width || 24} ${height || 24}`
   const xmlns = 'http://www.w3.org/2000/svg'
 
-  let symbol = code.replace('<svg',
+  const replacedCode = replaceIdsAndUrls(code, key)
+
+  let symbol = replacedCode.replace('<svg',
     `<symbol id="${key}" xmlns="${xmlns}" viewBox="${viewBox}"`
   )
+
   symbol = symbol.replace(/width="[^"]*"/, '')
   symbol = symbol.replace(/height="[^"]*"/, '')
   symbol = symbol.replace('</svg', '</symbol')
