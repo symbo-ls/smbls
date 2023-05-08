@@ -54,8 +54,6 @@ export const convertSvgToSymbol = (key, code) => {
   const extractAttrs = parseRootAttributes(code)
   const { width, height } = extractAttrs
 
-  console.log(extractAttrs)
-
   const viewBox = extractAttrs.viewBox || `0 0 ${width || 24} ${height || 24}`
   const xmlns = 'http://www.w3.org/2000/svg'
 
