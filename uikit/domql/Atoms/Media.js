@@ -4,13 +4,13 @@ import { merge, isArray, overwriteShallow } from '@domql/utils'
 import { getSystemTheme } from './Theme'
 
 export const keySetters = {
-  '@': (key, props, result, element, isSubtree) => applyMediaProps(key, props, isSubtree ? result : result.media, element),
-  ':': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result.selector, element),
-  '[': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result.selector, element),
-  '&': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result.selector, element),
-  $: (key, props, result, element, isSubtree) => applyCaseProps(key, props, isSubtree ? result : result.case, element),
-  '.': (key, props, result, element, isSubtree) => applyConditionalCaseProps(key, props, isSubtree ? result : result.case, element),
-  '!': (key, props, result, element, isSubtree) => applyConditionalFalsyProps(key, props, isSubtree ? result : result.case, element)
+  '@': (key, props, result, element, isSubtree) => applyMediaProps(key, props, isSubtree ? result : result?.media, element),
+  ':': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result?.selector, element),
+  '[': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result?.selector, element),
+  '&': (key, props, result, element, isSubtree) => applySelectorProps(key, props, isSubtree ? result : result?.selector, element),
+  $: (key, props, result, element, isSubtree) => applyCaseProps(key, props, isSubtree ? result : result?.case, element),
+  '.': (key, props, result, element, isSubtree) => applyConditionalCaseProps(key, props, isSubtree ? result : result?.case, element),
+  '!': (key, props, result, element, isSubtree) => applyConditionalFalsyProps(key, props, isSubtree ? result : result?.case, element)
 }
 
 const execClass = (key, props, result, element) => {

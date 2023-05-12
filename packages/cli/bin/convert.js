@@ -7,9 +7,9 @@ import fs from 'fs'
 import path from 'path'
 import { JSDOM } from 'jsdom'
 
-const l = (n) => console.log(`mark${n}`)
+const l = (n) => console.log(`mark${n}`) // eslint-disable-line no-unused-vars
 
-const jsdom = new JSDOM(`<html><head></head><body></body></html>`)
+const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
 
@@ -23,15 +23,15 @@ const EXCLUDED_FROM_INTERNAL_UIKIT = [
   'transformShadow',
   'transformTransition'
 ]
-const TMP_DIR_NAME = ".smbls_convert_tmp"
+const TMP_DIR_NAME = '.smbls_convert_tmp'
 const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
-  "name": "smbls_convert_tmp",
-  "version": "1.0.0",
-  //"main": "index.js",
-  "license": "ISC"
-});
+  name: 'smbls_convert_tmp',
+  version: '1.0.0',
+  // "main": "index.js",
+  license: 'ISC'
+})
 
-function isDirectory(dir) {
+function isDirectory (dir) { // eslint-disable-line no-unused-vars
   if (!fs.existsSync(dir)) return false
 
   const stat = fs.statSync(dir)
@@ -41,7 +41,7 @@ function isDirectory(dir) {
 }
 
 // Essentially does 'mkdir -P'
-async function mkdirp(dir) {
+async function mkdirp (dir) {
   try {
     return await fs.promises.mkdir(dir)
   } catch (err) {
@@ -52,13 +52,13 @@ async function mkdirp(dir) {
   return null
 }
 
-async function importDomqlModule(modulePath) {
+async function importDomqlModule (modulePath) {
   console.log(`importing ${modulePath}`)
   return (await import(modulePath)).default
 }
 
-function convertDomqlModule(domqlModule, desiredFormat, options) {
-  let convertedStr = ""
+function convertDomqlModule (domqlModule, desiredFormat, options) {
+  let convertedStr = ''
 
   console.group()
   const uniqueImports = []
@@ -72,24 +72,35 @@ function convertDomqlModule(domqlModule, desiredFormat, options) {
       continue
     }
     console.log(key)
-    console.group()
-    const component = domqlModule[key]
-    component.__name = key
-    const out = convert(component, desiredFormat, {
-      verbose: false,
-      exportDefault: exportCount === 1,
-      returnMitosisIR: true,
-      importsToRemove: uniqueImports,
-      removeReactImport: !first,
-      removeUseContextImport: removeUseContextImport,
-    })
+    // try {
+      // import('domql-to-mitosis').then(({ convert }) => {
+      //   console.log('convert', convert)
+      //   if (convert) {
+          console.group()
+          const component = domqlModule[key]
+          component.__name = key
 
-    convertedStr = convertedStr + out.str + '\n'
-    uniqueImports.push(...out.mitosisIR.imports)
-    first = false
-    if (out.mitosisIR._useContext)
-      removeUseContextImport = true
-    console.groupEnd()
+          const out = convert(component, desiredFormat, {
+            verbose: false,
+            exportDefault: exportCount === 1,
+            returnMitosisIR: true,
+            importsToRemove: uniqueImports,
+            removeReactImport: !first,
+            removeUseContextImport
+          })
+
+          convertedStr = convertedStr + out.str + '\n'
+          uniqueImports.push(...out.mitosisIR.imports)
+          first = false
+          if (out.mitosisIR._useContext) { removeUseContextImport = true }
+          console.groupEnd()
+      //   } else {
+      //     throw new Error('Convert from `domql-to-mitosis` is not defined. Try to install `domql-to-mitosis` and run this command again.')
+      //   }
+      // })
+    // } catch (err) {
+    //   throw new Error('`domql-to-mitosis` is not found.')
+    // }
   }
   console.groupEnd()
 
@@ -122,7 +133,7 @@ program
     const srcPath = path.resolve(src || './src')
     if (!fs.existsSync(srcPath)) {
       console.erorr(`Source directory/file ('${srcPath}') does not exist`)
-      return 1;
+      return 1
     }
     const srcIsDir = fs.statSync(srcPath).isDirectory()
 
@@ -141,7 +152,7 @@ program
     // Convert single file. Output will also be a single file.
     if (!srcIsDir) {
       // Determine destFilePath and create it if needed
-      let destFilePath;
+      let destFilePath
       if (dest) {
         // dest is given.
         if (!fs.existsSync(dest)) {
@@ -171,7 +182,7 @@ program
         sourcemap: true,
         target: 'node12',
         format: 'cjs',
-        outfile: bundledFilePath,
+        outfile: bundledFilePath
       })
 
       // Import the module
@@ -180,9 +191,9 @@ program
       // Convert & append each exported domql object
       console.log(`Converting modules in ${bundledFilePath}:`)
       const convertedModuleStr = convertDomqlModule(
-          domqlModule,
-          desiredFormat,
-          options
+        domqlModule,
+        desiredFormat,
+        options
       )
 
       // Write file
@@ -192,13 +203,13 @@ program
         await fh.close()
       }
 
-      return 0;
+      return 0
     }
 
     // We're converting multiple files (in a directory)
     // Determine destDirPath & create it if needed
     if (!dest) dest = path.resolve(desiredFormat)
-    let destDirPath;
+    let destDirPath
     if (!fs.existsSync(dest)) {
       // dest doesn't exist. Create it.
       destDirPath = path.resolve(dest)
@@ -209,11 +220,11 @@ program
     } else {
       // dest exists and is not a directory.
       console.error(`The destination ('${path.resolve(dest)}') must be a directory when the source ('${srcPath}') is a directory`)
-      return 1;
+      return 1
     }
 
     const origFiles = (await fs.promises.readdir(srcPath))
-          .filter(file => !IGNORED_FILES.includes(file))
+      .filter(file => !IGNORED_FILES.includes(file))
 
     // Bundle components
     await esbuild.build({
@@ -240,15 +251,15 @@ program
 
         // Convert & append each exported domql object
         const convertedStr = convertDomqlModule(
-            domqlModule,
-            desiredFormat,
-            options
+          domqlModule,
+          desiredFormat,
+          options
         )
 
         // Write file
         if (convertedStr.length > 0) {
           const fh = await fs.promises
-                .open(`${destComponentDirPath}/index.js`, 'w')
+            .open(`${destComponentDirPath}/index.js`, 'w')
           await fh.writeFile(convertedStr, 'utf8')
           await fh.close()
         }

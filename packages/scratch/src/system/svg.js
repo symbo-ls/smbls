@@ -45,6 +45,7 @@ export const appendIconsSprite = (LIBRARY, options = DEF_OPTIONS) => {
 }
 
 const createSVGSpriteElement = (options = { isRoot: true }) => {
+  if (!document || !document.createElementNS) return
   const svgElem = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
   if (options.isRoot) {
     svgElem.setAttribute('aria-hidden', 'true')
@@ -60,7 +61,7 @@ const appendSVG = (lib, options = DEF_OPTIONS) => {
   const CONFIG = getActiveConfig()
   const doc = options.document || document
 
-  if (!doc) {
+  if (!doc || !doc.documentElement) {
     if (CONFIG.verbose) {
       console.warn('To append SVG sprites it should be run in browser environment')
     }
@@ -77,7 +78,9 @@ const appendSVG = (lib, options = DEF_OPTIONS) => {
     exists.append(...tempSVG.children)
   } else {
     const svgSpriteDOM = createSVGSpriteElement()
-    svgSpriteDOM.innerHTML = SVGsprite
-    doc.body.prepend(svgSpriteDOM)
+    if (svgSpriteDOM && svgSpriteDOM.innerHTML) {
+      svgSpriteDOM.innerHTML = SVGsprite
+      doc.body.prepend(svgSpriteDOM)
+    }
   }
 }

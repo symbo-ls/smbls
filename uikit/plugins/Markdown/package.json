@@ -1,0 +1,11 @@
+{
+  "name": "@symbo.ls/markdown",
+  "version": "2.11.16",
+  "main": "index.js",
+  "author": "symbo.ls",
+  "license": "ISC",
+  "gitHead": "ec277500ab656a5c45b656040c458748a705e5f7",
+  "dependencies": {
+    "@domql/converter": "latest"
+  }
+}
