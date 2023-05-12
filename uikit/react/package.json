@@ -13,6 +13,9 @@
     "@symbo.ls/react-tooltip": "latest",
     "smbls": "latest"
   },
+  "devDependencies": {
+    "domql-to-mitosis": "latest"
+  },
   "type": "module",
   "module": "dist/esm/index.js",
   "unpkg": "dist/iife/index.js",
