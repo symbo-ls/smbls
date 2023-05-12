@@ -1,6 +1,6 @@
 'use strict'
 
-import { merge, isArray } from '@domql/utils'
+import { merge, isArray, overwriteShallow } from '@domql/utils'
 import { getSystemTheme } from './Theme'
 
 export const keySetters = {
@@ -89,7 +89,7 @@ const applyCaseProps = (key, props, result, element) => {
 
 const applyConditionalCaseProps = (key, props, result, element) => {
   const caseKey = key.slice(1)
-  const isPropTrue = element.props[caseKey] || element.state[caseKey] === true
+  const isPropTrue = element.props[caseKey] || element.state[caseKey]
   if (!isPropTrue) return // remove classname if not here
   return merge(result, convertPropsToClass(props, result, element))
 }
@@ -116,7 +116,7 @@ const beforeClassAssign = (element, s) => {
     if (setter) setter(key, props[key], CLASS_NAMES, element)
   }
 
-  merge(className, CLASS_NAMES)
+  overwriteShallow(className, CLASS_NAMES)
 }
 
 const initUpdate = (changes, element) => {
@@ -165,5 +165,12 @@ const initUpdate = (changes, element) => {
 }
 
 export const Media = {
+  class: {
+    case: (el, s) => {
+      return {
+        //
+      }
+    }
+  },
   on: { beforeClassAssign, initUpdate }
 }
