@@ -72,35 +72,34 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
       continue
     }
     console.log(key)
-    // try {
-      // import('domql-to-mitosis').then(({ convert }) => {
-      //   console.log('convert', convert)
-      //   if (convert) {
-          console.group()
-          const component = domqlModule[key]
-          component.__name = key
+    try {
+    // import('domql-to-mitosis').then(({ convert }) => {
+      if (convert) {
+        console.group()
+        const component = domqlModule[key]
+        component.__name = key
 
-          const out = convert(component, desiredFormat, {
-            verbose: false,
-            exportDefault: exportCount === 1,
-            returnMitosisIR: true,
-            importsToRemove: uniqueImports,
-            removeReactImport: !first,
-            removeUseContextImport
-          })
+        const out = convert(component, desiredFormat, {
+          verbose: false,
+          exportDefault: exportCount === 1,
+          returnMitosisIR: true,
+          importsToRemove: uniqueImports,
+          removeReactImport: !first,
+          removeUseContextImport
+        })
 
-          convertedStr = convertedStr + out.str + '\n'
-          uniqueImports.push(...out.mitosisIR.imports)
-          first = false
-          if (out.mitosisIR._useContext) { removeUseContextImport = true }
-          console.groupEnd()
-      //   } else {
-      //     throw new Error('Convert from `domql-to-mitosis` is not defined. Try to install `domql-to-mitosis` and run this command again.')
-      //   }
-      // })
-    // } catch (err) {
-    //   throw new Error('`domql-to-mitosis` is not found.')
-    // }
+        convertedStr = convertedStr + out.str + '\n'
+        uniqueImports.push(...out.mitosisIR.imports)
+        first = false
+        if (out.mitosisIR._useContext) { removeUseContextImport = true }
+        console.groupEnd()
+      } else {
+        throw new Error('Convert from `domql-to-mitosis` is not defined. Try to install `domql-to-mitosis` and run this command again.')
+      }
+    // })
+    } catch (err) {
+      throw new Error('`domql-to-mitosis` is not found.')
+    }
   }
   console.groupEnd()
 
