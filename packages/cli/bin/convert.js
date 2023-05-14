@@ -59,6 +59,7 @@ async function importDomqlModule (modulePath) {
 
 function convertDomqlModule (domqlModule, desiredFormat, options) {
   let convertedStr = ''
+  const whitelist = (options.only ? options.only.split(',') : null)
 
   console.group()
   const uniqueImports = []
@@ -66,11 +67,17 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
   let removeUseContextImport = false
   const exportCount = Object.keys(domqlModule).length
   for (const key in domqlModule) {
+    // Skip if not found in whitelist
+    if (whitelist && !whitelist.includes(key))
+      continue
+
+    // Skip some components if converting smbls uikit
     if (options.internalUikit &&
         EXCLUDED_FROM_INTERNAL_UIKIT.includes(key)) {
       console.log(`Skipping ${key} component due to exclusion`)
       continue
     }
+
     console.log(key)
     try {
     // import('domql-to-mitosis').then(({ convert }) => {
@@ -117,6 +124,7 @@ program
   .option('--vue3', 'Convert all DomQL components to Vue3')
   .option('--internal-uikit', '(For internal use only). Excludes particular components from the conversion')
   .option('--tmp-dir', `Use this directory for storing intermediate & build files instead of the default (dest/${TMP_DIR_NAME})`)
+  .option('--only', `Only convert these components, comma separated for multiple (for example: --only=Flex,Img)`)
   .action(async (src, dest, options) => {
     // Desired format
     let desiredFormat = 'react'
