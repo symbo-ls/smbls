@@ -122,9 +122,9 @@ program
   .option('--angular', 'Convert all DomQL components to Angular')
   .option('--vue2', 'Convert all DomQL components to Vue2')
   .option('--vue3', 'Convert all DomQL components to Vue3')
+  .option('-t, --tmp-dir <path>', `Use this directory for storing intermediate & build files instead of the default (dest/${TMP_DIR_NAME})`)
+  .option('-o, --only <components>', `Only convert these components; comma separated (for example: --only=Flex,Img)`)
   .option('--internal-uikit', '(For internal use only). Excludes particular components from the conversion')
-  .option('--tmp-dir', `Use this directory for storing intermediate & build files instead of the default (dest/${TMP_DIR_NAME})`)
-  .option('--only', `Only convert these components, comma separated for multiple (for example: --only=Flex,Img)`)
   .action(async (src, dest, options) => {
     // Desired format
     let desiredFormat = 'react'
