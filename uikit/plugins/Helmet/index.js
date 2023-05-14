@@ -1,5 +1,7 @@
 'use strict'
 
+import { isObject } from '@domql/utils'
+
 const META_TAGS = {
   title: document.querySelector('title'),
   description: document.querySelector('meta[name="description"]'),
@@ -14,13 +16,13 @@ const META_TAGS = {
 export const Helmet = {
   define: {
     $helmet: (param, el, state) => {
-      if (!state.$helmet) return
-      for (const key in state.$helmet) {
+      if (!isObject(param)) return
+      for (const key in param) {
         const metaElement = META_TAGS[key]
         if (key === 'title') {
-          metaElement.textContent = state.$helmet[key]
+          metaElement.textContent = param[key]
         } else {
-          metaElement.setAttribute('content', state.$helmet[key])
+          metaElement.setAttribute('content', param[key])
         }
       }
     }
