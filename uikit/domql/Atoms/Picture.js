@@ -8,7 +8,7 @@ export const Picture = {
   childExtend: {
     tag: 'source',
     attr: {
-      media: element => {
+      media: (element) => {
         const { props, key, context } = element
         const { MEDIA } = context.designSystem
         const globalTheme = getSystemTheme(element)
