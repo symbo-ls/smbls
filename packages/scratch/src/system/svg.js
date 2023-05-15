@@ -78,7 +78,7 @@ const appendSVG = (lib, options = DEF_OPTIONS) => {
     exists.append(...tempSVG.children)
   } else {
     const svgSpriteDOM = createSVGSpriteElement()
-    if (svgSpriteDOM && svgSpriteDOM.innerHTML) {
+    if (svgSpriteDOM && svgSpriteDOM.nodeType) {
       svgSpriteDOM.innerHTML = SVGsprite
       doc.body.prepend(svgSpriteDOM)
     }
