@@ -6,7 +6,8 @@ import { SquareButton, Button } from '@symbo.ls/button'
 import { Flex, Grid } from '@symbo.ls/atoms'
 
 const buttonProps = {
-  theme: 'transparent',
+  theme: 'quaternary',
+  background: 'transparent',
   color: '--theme-quinary-dark-color',
   ':hover': {
     theme: 'quinary .child'
@@ -141,7 +142,7 @@ export const DatePicker = {
 
   props: {
     position: 'relative',
-    theme: 'quinary',
+    theme: 'quaternary',
     transition: 'A all',
     round: 'Z',
     padding: 'Z Z2 Z X2',
