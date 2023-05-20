@@ -6,6 +6,7 @@ export const Label = {
   extend: Button,
 
   props: {
+    theme: 'tertiary',
     fontSize: 'Z2',
     emoji: '👍',
     text: '3',
@@ -13,10 +14,7 @@ export const Label = {
     round: 'C',
     lineHeight: 1,
     gap: 'X2',
-    depth: 16,
-    fontWeight: '500',
-    background: 'blue .3',
-    color: 'white'
+    fontWeight: '500'
   },
 
   emoji: {
