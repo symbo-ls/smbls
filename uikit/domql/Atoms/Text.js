@@ -38,3 +38,18 @@ export const Strong = {
 }
 export const Underline = { tag: 'u' }
 export const Italic = { tag: 'i' }
+
+export const Headline = {
+  tag: 'h6',
+  props: { fontSize: 'B', fontWeight: 500 }
+}
+
+export const Subhead = {
+  tag: 'span',
+  props: { fontSize: 'Z1' }
+}
+
+export const Footnote = {
+  tag: 'span',
+  props: { fontSize: 'Z' }
+}

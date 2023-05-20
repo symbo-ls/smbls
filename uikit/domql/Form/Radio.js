@@ -1,11 +1,41 @@
 'use strict'
 
-import { Focusable } from '@symbo.ls/atoms'
+import { Flex } from '@symbo.ls/atoms'
+
+import { Checkbox } from './Checkbox'
+import { FieldLabel } from './FieldLabel'
+
+const templateDefault = {
+  input: { ':checked + div > div': { opacity: '1' } },
+  checkbox: {
+    round: '100%',
+    circle: {
+      boxSize: 'Y2 Y2',
+      background: 'black',
+      round: '100%',
+      opacity: '0',
+      transition: 'opacity .15s ease'
+    }
+  }
+}
 
 export const Radio = {
-  extend: [Focusable],
-  tag: 'input',
-  attr: {
-    type: 'radio'
+  extend: Checkbox,
+  props: templateDefault,
+  input: { attr: { type: 'radio' } },
+  checkbox: {
+    Icon: null,
+    circle: {}
   }
+}
+
+export const RadioWithLabel = {
+  extend: Flex,
+  props: {
+    gap: 'A',
+    width: 'fit-content',
+    fieldLabel: { padding: 'Z - - -' }
+  },
+  radio: { extend: Radio },
+  fieldLabel: { extend: FieldLabel }
 }

@@ -10,6 +10,7 @@ const defaultProps = {
   range: [-3, +12],
   h1Matches: +6,
   lineHeight: 1.5,
+  subSequence: true,
   unit: 'em',
   templates: {},
   sequence: {},
