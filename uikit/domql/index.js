@@ -11,6 +11,7 @@ export * from '@symbo.ls/buttonset'
 export * from '@symbo.ls/datepicker'
 export * from '@symbo.ls/dropdown'
 
+export * from '@symbo.ls/form'
 export * from '@symbo.ls/icon'
 export * from '@symbo.ls/link'
 export * from '@symbo.ls/input'

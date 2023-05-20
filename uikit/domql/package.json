@@ -22,6 +22,7 @@
     "@symbo.ls/buttonset": "latest",
     "@symbo.ls/datepicker": "latest",
     "@symbo.ls/dropdown": "latest",
+    "@symbo.ls/form": "latest",
     "@symbo.ls/field": "latest",
     "@symbo.ls/input": "latest",
     "@symbo.ls/label": "latest",

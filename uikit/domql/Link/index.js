@@ -32,6 +32,7 @@ export const RouterLink = {
       const { router } = utils
       const root = el.__ref.__root
       const { href } = props
+      if (!href) return
       const linkIsExternal = href.includes('http://') ||
         href.includes('https://') ||
         href.includes('mailto:') ||
