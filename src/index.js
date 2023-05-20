@@ -22,14 +22,15 @@ const state = {
 const app = DOM.create({
   state,
 
+
   h1: { text: (el, s) => s.title },
-  
+
   el: {
     extend: Collection,
     state: 'data',
-    childExtend: { 
+    childExtend: {
       state: true,
-      style: { 
+      style: {
         background: (el, s) => el.props?.background
       },
       div: {
@@ -156,7 +157,7 @@ const app = DOM.create({
         on: {
           click: (ev, el, s) => s.update({
             test: { nesting: s.test.nesting + 1 }
-          }, { 
+          }, {
             isHoisted: false
           })
         }
