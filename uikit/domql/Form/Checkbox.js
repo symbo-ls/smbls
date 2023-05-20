@@ -37,7 +37,12 @@ const templateDefault = {
 export const Checkbox = {
   tag: 'label',
   props: templateDefault,
-  input: { attr: { type: 'checkbox' } },
+  input: {
+    attr: {
+      type: 'checkbox',
+      checked: ({ parent }) => parent.props.checked
+    }
+  },
   checkbox: {
     extend: 'Flex',
     Icon: {}
