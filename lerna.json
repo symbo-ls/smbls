@@ -4,8 +4,8 @@
   "version": "2.11.34",
   "packages": [
     "icons/*",
-    "uikit/*",
     "uikit/*/*",
+    "uikit/*",
     "packages/*"
   ]
 }
