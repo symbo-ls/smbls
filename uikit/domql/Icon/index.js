@@ -58,6 +58,7 @@ export const IconText = {
     lineHeight: 1
   },
 
+  // TODO: remove this variant
   icon: {
     extend: Icon,
     if: ({ parent }) => parent.props.icon
