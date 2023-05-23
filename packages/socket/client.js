@@ -12,8 +12,8 @@ const ENV = process.env.NODE_ENV
 const SOCKET_BACKEND_URL = window && window.location &&
   window.location.host.includes('local')
   ? 'localhost:13335'
-  : 'https://socket.symbols.app' ||
-  'https://socket.symbols.app'
+  : 'https://api.symbols.dev/socket' ||
+  'https://api.symbols.dev/socket'
 
 let socket
 const defautlOpts = {}
@@ -23,7 +23,7 @@ export const connect = (key, options = {}) => {
     ? options.socketUrl
     : [options.socketUrl || SOCKET_BACKEND_URL]
   const primaryUrl = socketUrls[0]
-  const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
+  const secondaryUrl = socketUrls[1] || 'api.symbols.dev/socket'
 
   socket = io(primaryUrl || SOCKET_BACKEND_URL)
 
