@@ -109,7 +109,7 @@ export const Sync = {
     render: (el, s) => {
       connect('byld.symbo.ls', {
         source: 'client',
-        // socketUrl: 'ws://api.symbols.dev/socket',
+        // socketUrl: 'ws://socket.symbols.app',
         location: window.location.host,
         onConnect: onConnect(el, s),
         onDisconnect: onDisconnect(el, s),

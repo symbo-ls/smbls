@@ -12,18 +12,20 @@ const ENV = process.env.NODE_ENV
 const SOCKET_BACKEND_URL = window && window.location &&
   window.location.host.includes('local')
   ? 'localhost:13335'
-  : 'https://api.symbols.dev/socket' ||
-  'https://api.symbols.dev/socket'
+  : 'socket.symbols.app' ||
+  'https://socket.symbols.app'
 
 let socket
+let tryConnect = 0
 const defautlOpts = {}
+const tryConnectMax = 1
 
 export const connect = (key, options = {}) => {
   const socketUrls = isArray(options.socketUrl)
     ? options.socketUrl
     : [options.socketUrl || SOCKET_BACKEND_URL]
   const primaryUrl = socketUrls[0]
-  const secondaryUrl = socketUrls[1] || 'api.symbols.dev/socket'
+  const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
 
   socket = io(primaryUrl || SOCKET_BACKEND_URL)
 
@@ -40,20 +42,24 @@ export const connect = (key, options = {}) => {
     socket.emit('initConnect', options)
 
     try {
-      if (isFunction(options.onConnect)) options.onConnect(socket.id, socket)
+      if (isFunction(options.onConnect)) {
+        options.onConnect(socket.id, socket)
+      }
     } catch (e) {
       console.error(e)
     }
   })
 
-  let tryConnect = 0
-  const tryConnectMax = 1
   socket.on('connect_error', (err) => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
       if (isFunction(options.onError)) options.onError(err, socket)
+
       if (tryConnect < tryConnectMax) {
         socket.disconnect()
+
+        tryConnect++
+        console.log(tryConnect)
 
         if (ENV === 'test' || ENV === 'development') {
           console.log(
@@ -69,7 +75,6 @@ export const connect = (key, options = {}) => {
     } catch (e) {
       console.error(e)
     }
-    tryConnect++
   })
 
   socket.on('disconnect', (reason) => {
