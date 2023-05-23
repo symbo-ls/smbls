@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/socket-ui",
-  "version": "2.11.16",
+  "version": "2.11.37",
   "main": "byld-socket.js",
   "module": "byld-socket.js",
   "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
