@@ -64,6 +64,7 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
   console.group()
   const uniqueImports = []
   let first = true
+  let currentExportIdx = 0
   let removeUseContextImport = false
   const exportCount = Object.keys(domqlModule).length
   for (const key in domqlModule) {
@@ -86,20 +87,28 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
         const component = domqlModule[key]
         component.__name = key
 
+        const isSingleComponent = exportCount === 1
+        const isFirst = currentExportIdx === 0
+        const isLast = currentExportIdx === exportCount - 1
+
         const out = convert(component, desiredFormat, {
           verbose: false,
-          exportDefault: exportCount === 1,
+          exportDefault: isSingleComponent,
           returnMitosisIR: true,
           importsToRemove: uniqueImports,
-          removeReactImport: !first,
+          removeReactImport: !isFirst,
           removeUseContextImport
         })
 
-        convertedStr = convertedStr + out.str + '\n'
+        convertedStr = convertedStr + out.str
+        if (options.trailingNewLine && !isLast) {
+          convertedStr += '\n'
+        }
+
         uniqueImports.push(...out.mitosisIR.imports)
-        first = false
         if (out.mitosisIR._useContext) { removeUseContextImport = true }
         console.groupEnd()
+        currentExportIdx++
       } else {
         throw new Error('Convert from `domql-to-mitosis` is not defined. Try to install `domql-to-mitosis` and run this command again.')
       }
@@ -260,7 +269,7 @@ program
         const convertedStr = convertDomqlModule(
           domqlModule,
           desiredFormat,
-          options
+          {...options, trailingNewLine: true }
         )
 
         // Write file
