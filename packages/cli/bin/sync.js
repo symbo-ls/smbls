@@ -32,13 +32,13 @@ program
           data = JSON.parse(data)
           const d = {}
           const {
-            PROJECT_SYSTEM,
+            PROJECT_DESIGN_SYSTEM,
             PROJECT_STATE,
             PROJECT_COMPONENTS,
             PROJECT_SNIPPETS,
             PROJECT_PAGES
           } = data
-          if (PROJECT_SYSTEM) d.designSystem = PROJECT_SYSTEM
+          if (PROJECT_DESIGN_SYSTEM) d.designSystem = PROJECT_DESIGN_SYSTEM
           if (PROJECT_STATE) d.designSystem = PROJECT_STATE
           if (PROJECT_COMPONENTS) d.designSystem = PROJECT_COMPONENTS
           if (PROJECT_SNIPPETS) d.designSystem = PROJECT_SNIPPETS

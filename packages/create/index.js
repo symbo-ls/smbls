@@ -71,7 +71,10 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   applyInspectListener(domqlApp, options)
   popStateRouter(domqlApp, options)
   if (options.on && options.on.create) options.on.create(domqlApp, options)
-  fetchAsync(domqlApp, key, options)
+  fetchAsync(domqlApp, key, {
+    utils,
+    ...options
+  })
 
   return domqlApp
 }

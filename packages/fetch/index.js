@@ -3,7 +3,7 @@
 import * as utils from '@domql/utils'
 import * as globals from '@domql/globals'
 
-const { overwriteDeep, deepDestringify, isObject } = utils
+const { overwriteDeep, deepDestringify } = utils
 const { window } = globals
 
 const IS_DEVELOPMENT = window && window.location
@@ -28,7 +28,7 @@ export const fetchRemote = async (key, options = defaultOptions) => {
     : SERVER_URL
   const route = options.serviceRoute
     ? utils.isArray(options.serviceRoute)
-      ? options.serviceRoute.join(',')
+      ? options.serviceRoute.map(v => v.toLowerCase()).join(',')
       : options.serviceRoute
     : ''
 
@@ -55,26 +55,37 @@ export const fetchProject = async (key, options) => {
       : deepDestringify(data.releases[0])
 
     if (editor.serviceRoute) {
-      overwriteDeep(evalData, options[editor.serviceRoute])
+      console.log(editor.serviceRoute)
+      console.log(evalData)
+      console.log(options)
+      if (utils.isArray(editor.serviceRoute)) {
+        editor.serviceRoute.forEach(route => {
+          overwriteDeep(options[route], evalData[route.toLowerCase()])
+        })
+      } else {
+        overwriteDeep(options[editor.serviceRoute], evalData)
+      }
     } else {
-      const obj = { ...evalData, designSystem: evalData.designsystem }
-      delete obj.designsystem
-      overwriteDeep(obj, options)
+      ['state', 'designSystem', 'components', 'snippets', 'pages'].forEach(key => {
+        overwriteDeep(options[key], evalData[key.toLowerCase()])
+      })
     }
   }
 
   return options
 }
 
-export const fetchStateAsync = async (key, options, callback) => {
+export const fetchProjectAsync = async (key, options, callback) => {
   const { editor } = options
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
+    console.log(IS_DEVELOPMENT, data)
+    console.log(options)
     const evalData = IS_DEVELOPMENT
       ? deepDestringify(data)
       : deepDestringify(data.releases[0])
-    const state = editor.serviceRoute === 'state' ? evalData.state : evalData
-    if (isObject(state)) callback(state)
+    console.log(evalData)
+    callback(evalData)
   }
 }

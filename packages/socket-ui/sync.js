@@ -56,10 +56,10 @@ const onChange = (element, state) => {
   return (event, data) => {
     if (event === 'liveChange') {
       const obj = JSON.parse(data)
-      const { PROJECT_STATE, PROJECT_SYSTEM } = obj
+      const { PROJECT_STATE, PROJECT_DESIGN_SYSTEM } = obj
 
       if (PROJECT_STATE) state.update(PROJECT_STATE)
-      if (PROJECT_SYSTEM) init(PROJECT_SYSTEM)
+      if (PROJECT_DESIGN_SYSTEM) init(PROJECT_DESIGN_SYSTEM)
     }
 
     if (event === 'clientsCount') {

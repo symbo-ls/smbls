@@ -3,7 +3,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import DEFAULT_CONFIG from '@symbo.ls/default-config'
 import { init } from '@symbo.ls/init'
-import { fetchStateAsync } from '@symbo.ls/fetch'
+import { fetchProjectAsync } from '@symbo.ls/fetch'
 
 const DEFAULT_PROPS = {
   editor: {
@@ -59,8 +59,8 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
     if (appKey && options.editor) {
       try {
         if (options.editor.async) {
-          fetchStateAsync(appKey, options, (data) => {
-            setState(data)
+          fetchProjectAsync(appKey, options, (data) => {
+            setState(data.state)
           })
         }
       } catch (e) {

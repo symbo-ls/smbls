@@ -1,6 +1,7 @@
 'use strict'
 
-import { fetchProject, fetchStateAsync } from '@symbo.ls/fetch'
+import { isObject } from '@domql/utils'
+import { fetchProject, fetchProjectAsync } from '@symbo.ls/fetch'
 
 export const fetchSync = async (key, options) => {
   if (key && options.editor) {
@@ -15,8 +16,15 @@ export const fetchSync = async (key, options) => {
 export const fetchAsync = (app, key, options, callback) => {
   if (key && options.editor) {
     try {
-      const defaultCallback = (data) => app.state.set(data)
-      if (options.editor.async) fetchStateAsync(key, options, callback || defaultCallback)
+      const defaultCallback = (data) => {
+        if (isObject(data.designsystem)) {
+          options.utils.init(data.designsystem)
+        }
+        if (isObject(data.state)) {
+          app.state.set(data.state)
+        }
+      }
+      if (options.editor.async) fetchProjectAsync(key, options, callback || defaultCallback)
     } catch (e) {
       console.error(e)
     }

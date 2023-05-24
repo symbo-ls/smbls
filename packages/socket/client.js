@@ -59,7 +59,6 @@ export const connect = (key, options = {}) => {
         socket.disconnect()
 
         tryConnect++
-        console.log(tryConnect)
 
         if (ENV === 'test' || ENV === 'development') {
           console.log(

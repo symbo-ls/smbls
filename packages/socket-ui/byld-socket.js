@@ -93,7 +93,7 @@ const onChange = (element, state, context) => {
   return (event, data) => {
     if (event === 'liveChange') {
       const obj = JSON.parse(data)
-      const { PROJECT_STATE, PROJECT_SYSTEM } = obj
+      const { PROJECT_STATE, PROJECT_DESIGN_SYSTEM } = obj
       const { utils } = context
 
       if (PROJECT_STATE) {
@@ -102,7 +102,7 @@ const onChange = (element, state, context) => {
         else state.update(PROJECT_STATE)
       }
 
-      if (PROJECT_SYSTEM) init(PROJECT_SYSTEM)
+      if (PROJECT_DESIGN_SYSTEM) init(PROJECT_DESIGN_SYSTEM)
     }
 
     if (event === 'clientsCount') {
