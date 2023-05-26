@@ -88,7 +88,7 @@ export const DomValueInterceptor = (data) => {
     if (value) {
       if (typeof value === 'string' && shouldParseHTML(value)) {
         obj[key] = {
-          type: 'nested-text',
+          type: 'nested-block',
           children: parseHtml(value),
         }
       }
