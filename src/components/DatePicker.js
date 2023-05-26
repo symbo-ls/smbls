@@ -338,6 +338,7 @@ export const DatePicker = {
   sideBar: { extend: years },
   calendar: {
     extend: Flex,
+
     months,
 
     weekDaysContainer: {
@@ -362,6 +363,18 @@ export const DatePicker = {
 export const DatePickerTwoColumns = {
   extend: DatePicker,
   props: {
+    calendar: {
+      months: {
+        maxWidth: `${544 / 16}em`
+      },
+      weekDaysContainer: {
+        maxWidth: `${544 / 16}em`
+      },
+      monthNumbersContainer: {
+        maxWidth: `${544 / 16}em`
+
+      }
+    }
 
   }
 }
