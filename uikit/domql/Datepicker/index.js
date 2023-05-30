@@ -15,7 +15,7 @@ export const DatePickerYears = {
       position: 'absolute',
       top: '0',
       left: '0',
-      background: 'linear-gradient(to bottom, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)',
+      background: 'linear-gradient(to bottom, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
       zIndex: '10'
     },
     ':after': {
@@ -24,7 +24,7 @@ export const DatePickerYears = {
       position: 'absolute',
       bottom: '0',
       left: '0',
-      background: 'linear-gradient(to top, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)'
+      background: 'linear-gradient(to top, var(--theme-tertiary-dark-background) 0%, transparent 100%)'
     }
   },
 
@@ -95,7 +95,7 @@ export const DatePickerYears = {
   }
 }
 
-const months = {
+export const DatePickerMonthsSlider = {
   extend: Flex,
   props: {
     position: 'relative',
@@ -108,7 +108,7 @@ const months = {
       content: '""',
       position: 'absolute',
       boxSize: '100% 100px',
-      background: 'linear-gradient(to right, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)',
+      background: 'linear-gradient(to right, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
       left: '0',
       top: '0',
       zIndex: '30',
@@ -118,7 +118,7 @@ const months = {
       content: '""',
       position: 'absolute',
       boxSize: '100% 100px',
-      background: 'linear-gradient(to left, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)',
+      background: 'linear-gradient(to left, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
       right: '0',
       top: '0',
       zIndex: '30',
@@ -195,11 +195,24 @@ const months = {
   rightButton: { extend: Button, props: { icon: 'arrowRight' } }
 }
 
-const weekDays = {
+export const DatePickerWeekDays = {
   extend: Grid,
+  props: {
+    overflow: 'hidden',
+    padding: '- Z Z',
+    width: '100%',
+    columns: 'repeat(7, 1fr)',
+    gap: 'W2'
+  },
   childExtend: {
     tag: 'span',
-    extend: Flex
+    extend: Flex,
+    props: {
+      fontSize: 'Y1',
+      textTransform: 'capitalize',
+      align: 'center center',
+      ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' },
+    }
   },
   ...[
     { text: 'Mo' },
@@ -212,28 +225,31 @@ const weekDays = {
   ]
 }
 
-const monthNumbers = {
+export const DatePickerGrid = {
   extend: Grid,
   props: {
-    columns: 'repeat(7, 32px)',
-    gap: '4px',
-    boxSizing: 'content-box',
-    padding: `- ${12 / 16}em`
+    columns: 'repeat(7, 1fr)',
+    minWidth: '100%',
+    gap: 'W2',
+    padding: `- Z`
   },
   childExtend: {
     extend: Button,
     props: ({ state, key }) => ({
-      color: 'white',
+      isActive: state.activeDay === parseInt(key) + 1,
       textAlign: 'center',
-      background: 'transparent',
       fontSize: 'Z1',
       round: '100%',
-      height: '32px',
-      ':hover': { theme: 'secondary' },
-      ':nth-child(7n-1)': { color: 'rgba(255, 255, 255, .5)' },
-      ':nth-child(7n)': { color: 'rgba(255, 255, 255, .5)' },
-      isActive: state.activeDay === parseInt(key) + 1,
-      '.isActive': { theme: 'secondary' }
+      height: 'B1',
+      aspectRatio: '1/1',
+      lineHeight: '.9',
+      background: 'transparent',
+      theme: 'secondary @dark .color',
+      '.isActive': { theme: 'primary' },
+      '!isActive': { 
+        ':hover': { theme: 'secondary' },
+        ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' },
+       },
     }),
     on: {
       click: (event, element, state) => {
@@ -242,29 +258,12 @@ const monthNumbers = {
       }
     }
   },
-  $setCollection: (el, s) => {
+  $setPropsCollection: (el, s) => {
     const daysInMonth = new Date(s.activeYear, s.activeMonth, 0).getDate()
     const days = (new Array(daysInMonth)).fill(undefined)
       .map((v, k) => ({ text: k + 1 }))
     return days
   }
-}
-
-const confirmButtons = {
-  extend: Flex,
-  childExtend: Button,
-  ...[
-    {
-      text: 'cancel',
-      on: {
-        click: (event, element, state) => {
-        }
-      }
-    },
-    {
-      text: 'ok'
-    }
-  ]
 }
 
 const monthNumbersContainer = {
@@ -275,7 +274,7 @@ const monthNumbersContainer = {
       content: '""',
       position: 'absolute',
       boxSize: '100% 12px',
-      background: 'linear-gradient(to right, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)',
+      background: 'linear-gradient(to right, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
       left: '0',
       top: '0',
       zIndex: '30'
@@ -284,75 +283,36 @@ const monthNumbersContainer = {
       content: '""',
       position: 'absolute',
       boxSize: '100% 12px',
-      background: 'linear-gradient(to left, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)',
+      background: 'linear-gradient(to left, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
       right: '0',
       top: '0',
       zIndex: '30'
     },
     content: {
-      style: { overflowX: 'auto' }
+      overflow: 'auto hidden'
     }
   },
+
   content: {
     extend: Flex,
-    childExtend: monthNumbers,
+    childExtend: DatePickerGrid,
     ...[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
   }
 }
 
 const props = {
   yearRange: [1993, 2023],
+  theme: 'tertiary',
   round: 'Z2',
   margin: 'E',
   overflow: 'hidden',
   maxHeight: '318px',
   boxSize: 'fit-content fit-content',
-  background: '#141416',
   padding: '- Z - -',
   style: {
     button: {
       padding: '0'
     }
-  },
-
-  calendar: {
-    flow: 'column',
-    padding: '20px - - -',
-    position: 'relative',
-
-    weekDaysContainer: {
-      overflow: 'hidden',
-      padding: '- - Z1 -',
-      boxSizing: 'content-box',
-      maxWidth: `${272 / 16}em`,
-      childProps: {
-        maxWidth: 'fit-content',
-        columns: 'repeat(7, 32px)',
-        gap: '4px',
-        boxSizing: 'content-box',
-        padding: `- ${12 / 16}em`,
-        childProps: {
-          fontSize: 'Y1',
-          textTransform: 'capitalize',
-          ':nth-child(7n-1)': { color: 'rgba(255, 255, 255, .5)' },
-          ':nth-child(7n)': { color: 'rgba(255, 255, 255, .5)' },
-          align: 'center center'
-        }
-      }
-    },
-
-    confirmButtons: {
-      align: 'center flex-end',
-      gap: 'A1',
-      padding: 'A A1 - -',
-      childProps: {
-        color: '#0079FD',
-        fontSize: 'Y',
-        textTransform: 'uppercase',
-        background: 'transparent'
-      }
-    }
-
   }
 }
 
@@ -368,20 +328,20 @@ export const DatePicker = {
 
   DatePickerYears: {},
 
-  calendar: {
-    extend: Flex,
-
-    months,
-
-    weekDaysContainer: {
-      extend: Flex,
-      childExtend: weekDays,
-      ...[{}, {}]
+  Flex: {
+    props: {
+      flow: 'column',
+      padding: '20px - - -',
+      position: 'relative',
     },
+    
+    DatePickerMonthsSlider: {},
+
+    DatePickerWeekDays: {},
 
     monthNumbersContainer,
 
-    confirmButtons
+    DialogFooter: {}
   }
 }
 

@@ -3,6 +3,7 @@
 export const COLOR = {
   transparent: 'rgba(0, 0, 0, 0)',
   black: 'black',
+  gray: '#141416',
   blue: '#0e80fd',
   indigo: '#50E1FF',
   green: '#59AC56',
