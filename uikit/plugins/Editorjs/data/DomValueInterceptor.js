@@ -39,7 +39,7 @@ const parseNode = (node) => {
     obj.textStyle = 'italic';
     obj.value = 'italic value';
   } if (node.nodeName === 'A') {
-    obj.type = 'link';
+    obj.type = 'hyperlink';
     obj.url = node.getAttribute('href');
   } else if (node.nodeName === 'MARK') {
     obj.type = 'marker';
