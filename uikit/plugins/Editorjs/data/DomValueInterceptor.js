@@ -32,11 +32,11 @@ const parseNode = (node) => {
     obj.value = decodeHTMLSpaces(node.nodeValue.trim());
   } else if (node.nodeName === 'B') {
     obj.type = 'text-cosmetic';
-    obj.textWeight = 'Bold';
+    obj.textWeight = 'bold';
     obj.value = 'bold value';
   } else if (node.nodeName === 'I') {
     obj.type = 'text-cosmetic';
-    obj.textWeight = 'Italic';
+    obj.textStyle = 'italic';
     obj.value = 'italic value';
   } if (node.nodeName === 'A') {
     obj.type = 'link';
