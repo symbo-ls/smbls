@@ -74,7 +74,7 @@ const mutateItemsAccordingToRules = (data, mutatedItems) => {
         const itemInTopData = data[item.arrayIndex];
         itemInTopData.type = 'list-nested-dom-values';
 
-        itemInTopData.data.items = itemInTopData.data.items.map((item, i) => {
+        itemInTopData.children = itemInTopData.data.items.map((item, i) => {
           if (typeof item === "string") {
             return { type: 'text', value: item }
           }
@@ -148,7 +148,7 @@ export const DomValueInterceptor = (data) => {
     if (typeof value === 'string' && shouldParseHTML(value)) {
       obj[key] = {
         type: 'nested-block',
-        children: parseHtml(value),
+        children: parseHtml(value), // temp hack bcs of markdown->domql func prblm
       };
       mutatedItems.push(parent);
     }
