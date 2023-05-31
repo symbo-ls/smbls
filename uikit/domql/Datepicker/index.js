@@ -1,7 +1,8 @@
 'use strict'
 
-import { Button } from '@symbo.ls/button'
 import { Flex, Grid } from '@symbo.ls/atoms'
+import { Button } from '@symbo.ls/button'
+import { Dialog } from '@symbo.ls/dialog'
 
 export const DatePickerYears = {
   tag: 'aside',
@@ -211,7 +212,7 @@ export const DatePickerWeekDays = {
       fontSize: 'Y1',
       textTransform: 'capitalize',
       align: 'center center',
-      ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' },
+      ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' }
     }
   },
   ...[
@@ -231,7 +232,7 @@ export const DatePickerGrid = {
     columns: 'repeat(7, 1fr)',
     minWidth: '100%',
     gap: 'W2',
-    padding: `- Z`
+    padding: '- Z'
   },
   childExtend: {
     extend: Button,
@@ -246,10 +247,10 @@ export const DatePickerGrid = {
       background: 'transparent',
       theme: 'secondary @dark .color',
       '.isActive': { theme: 'primary' },
-      '!isActive': { 
+      '!isActive': {
         ':hover': { theme: 'secondary' },
-        ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' },
-       },
+        ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' }
+      }
     }),
     on: {
       click: (event, element, state) => {
@@ -302,13 +303,8 @@ const monthNumbersContainer = {
 
 const props = {
   yearRange: [1993, 2023],
-  theme: 'tertiary',
-  round: 'Z2',
-  margin: 'E',
-  overflow: 'hidden',
   maxHeight: '318px',
   boxSize: 'fit-content fit-content',
-  padding: '- Z - -',
   style: {
     button: {
       padding: '0'
@@ -317,7 +313,7 @@ const props = {
 }
 
 export const DatePicker = {
-  extend: Flex,
+  extend: [Dialog, Flex],
   state: {
     activeYear: 1993,
     activeMonth: 8,
@@ -332,9 +328,9 @@ export const DatePicker = {
     props: {
       flow: 'column',
       padding: '20px - - -',
-      position: 'relative',
+      position: 'relative'
     },
-    
+
     DatePickerMonthsSlider: {},
 
     DatePickerWeekDays: {},

@@ -3,6 +3,16 @@
 import { Button } from '@symbo.ls/button'
 import { Flex } from '@symbo.ls/atoms'
 
+export const Dialog = {
+  props: {
+    theme: 'tertiary',
+    round: 'Z2',
+    margin: 'E',
+    overflow: 'hidden',
+    padding: '- Z - -'
+  }
+}
+
 export const DialogFooter = {
   extend: Flex,
   props: {
@@ -22,13 +32,13 @@ export const DialogFooter = {
       '&': {
         padding: 'Z A'
       },
-      ':hover': { 
-        background: 'white .065',
-       },
-      ':active': { 
-        background: 'white .1',
-       }
-    },
+      ':hover': {
+        background: 'white .065'
+      },
+      ':active': {
+        background: 'white .1'
+      }
+    }
   },
 
   cancel: {

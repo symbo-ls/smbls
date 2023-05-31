@@ -20,6 +20,8 @@
     "@symbo.ls/box": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/buttonset": "latest",
+    "@symbo.ls/timepicker": "latest",
+    "@symbo.ls/dialog": "latest",
     "@symbo.ls/datepicker": "latest",
     "@symbo.ls/dropdown": "latest",
     "@symbo.ls/field": "latest",
