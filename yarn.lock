@@ -3427,6 +3427,16 @@
   dependencies:
     "@symbo.ls/atoms" latest
 
+"@symbo.ls/timepicker@latest":
+  version "2.11.49"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/timepicker/-/timepicker-2.11.49.tgz#f891950d48194f4e71d898a7a1ecb6993c957f13"
+  integrity sha512-sxwJ8zrcy6eBLZYK5uQM5oWkP1F2vsA+T69C5/EP3AIa3mb2rQncunPEJ7eh/C6klTH9ilDK+KNjgEJPLkj3XA==
+  dependencies:
+    "@symbo.ls/atoms" latest
+    "@symbo.ls/button" latest
+    "@symbo.ls/dialog" latest
+    "@symbo.ls/input" latest
+
 "@symbo.ls/tooltip@latest":
   version "2.11.16"
   resolved "https://registry.yarnpkg.com/@symbo.ls/tooltip/-/tooltip-2.11.16.tgz#c779e3028caf32faf958f3aacfa34be9b10ac242"
