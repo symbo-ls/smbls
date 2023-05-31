@@ -115,6 +115,11 @@ const shouldParseHTML = (value) => (
   value.includes('&nbsp;')
 )
 
+const weSupportParsingItAsHtml = (parentItem) => (
+  parentItem.type === 'list' ||
+  parentItem.type === 'paragraph'
+)
+
 const deepIterate = (obj, callback) => {
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
@@ -145,7 +150,7 @@ export const DomValueInterceptor = (data) => {
   const mutatedItems = [];
 
   deepMetaIterate(data, (parent, obj, key, value) => {
-    if (typeof value === 'string' && shouldParseHTML(value)) {
+    if (typeof value === 'string' && shouldParseHTML(value) && weSupportParsingItAsHtml(parent)) {
       obj[key] = {
         type: 'nested-block',
         children: parseHtml(value), // temp hack bcs of markdown->domql func prblm
