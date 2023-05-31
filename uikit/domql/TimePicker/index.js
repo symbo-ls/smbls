@@ -1,6 +1,7 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
+import { Dialog } from '@symbo.ls/dialog'
 import { TimePickerItem } from './TimePickerItem'
 
 const props = {
@@ -38,7 +39,7 @@ const props = {
 }
 
 export const TimePicker = {
-  extend: Flex,
+  extend: [Dialog, Flex],
   props,
   title: { text: 'enter time' },
   content: {

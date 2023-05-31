@@ -3,6 +3,22 @@
 import { Flex, Grid } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
 import { Dialog } from '@symbo.ls/dialog'
+import { HeadlessDatepicker } from 'headless-datepicker'
+const calendar = new HeadlessDatepicker.Calendar({
+  calendarMode: 'exact'
+})
+
+const extractMonthDays = (data) => {
+  const result = []
+
+  data.weeks.forEach((week) => {
+    week.dates.forEach((date) => {
+      result.push(date)
+    })
+  })
+
+  return result
+}
 
 export const DatePickerYears = {
   tag: 'aside',
@@ -47,16 +63,16 @@ export const DatePickerYears = {
         opacity: '.4',
         background: 'transparent',
         transition: 'opacity .25s ease',
-        isActive: state.activeYear === text,
-        '.isActive': { opacity: '1' },
+        isSelected: state.activeYear === text,
+        '.isSelected': { opacity: '1' },
         ':hover': { opacity: '1' }
       }),
       on: {
         click: (event, element, state) => state.update({ activeYear: element.text }),
         render: (el, state) => {
           const { props } = el
-          const { isActive } = props
-          if (isActive) {
+          const { isSelected } = props
+          if (isSelected) {
             window.requestAnimationFrame(() => {
               el.parent.parent.node.scrollTop = el.node.offsetTop - 100
             })
@@ -160,14 +176,14 @@ export const DatePickerMonthsSlider = {
         boxSizing: 'content-box',
         minWidth: '272px',
 
-        isActive: state.activeMonth === parseInt(key),
-        '.isActive': { opacity: '1' }
+        isSelected: state.activeMonth === parseInt(key),
+        '.isSelected': { opacity: '1' }
       }),
 
       render: (el, state) => {
         const { props } = el
-        const { isActive } = props
-        if (isActive) {
+        const { isSelected } = props
+        if (isSelected) {
           window.requestAnimationFrame(() => {
             el.parent.parent.node.scrollLeft = el.node.offsetLeft
           })
@@ -226,18 +242,16 @@ export const DatePickerWeekDays = {
   ]
 }
 
-export const DatePickerGrid = {
-  extend: Grid,
-  props: {
-    columns: 'repeat(7, 1fr)',
-    minWidth: '100%',
-    gap: 'W2',
-    padding: '- Z'
-  },
-  childExtend: {
-    extend: Button,
-    props: ({ state, key }) => ({
-      isActive: state.activeDay === parseInt(key) + 1,
+export const DatePickerDay = {
+  extend: Button,
+  state: true,
+
+  props: ({ state, key }) => {
+    const isSelected = state.parent.activeDay === parseInt(key) + 1
+    const gridColumnStart = 7 - state.parent.weekItems.weeks[0].dates.length
+
+    return {
+      isSelected,
       textAlign: 'center',
       fontSize: 'Z1',
       round: '100%',
@@ -246,24 +260,42 @@ export const DatePickerGrid = {
       lineHeight: '.9',
       background: 'transparent',
       theme: 'secondary @dark .color',
-      '.isActive': { theme: 'primary' },
-      '!isActive': {
+      text: parseInt(key) + 1,
+      ':first-child': {
+        style: { gridColumnStart }
+      },
+      '.isSelected': { theme: 'primary' },
+      '!isSelected': {
         ':hover': { theme: 'secondary' },
         ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' }
       }
-    }),
-    on: {
-      click: (event, element, state) => {
-        state.update({ activeDay: element.text })
-        console.log(state.activeDay + '.' + state.activeMonth + '.' + state.activeYear)
-      }
     }
   },
-  $setPropsCollection: (el, s) => {
-    const daysInMonth = new Date(s.activeYear, s.activeMonth, 0).getDate()
-    const days = (new Array(daysInMonth)).fill(undefined)
-      .map((v, k) => ({ text: k + 1 }))
-    return days
+
+  on: {
+    click: (event, element, state) => {
+      state.parent.parent.update({
+        active: state.parse()
+      })
+      console.log(state)
+    }
+  }
+}
+
+export const DatePickerGrid = {
+  extend: Grid,
+
+  props: {
+    columns: 'repeat(7, 1fr)',
+    minWidth: '100%',
+    gap: 'W2',
+    padding: '- Z'
+  },
+
+  childExtend: DatePickerDay,
+
+  $setStateCollection: (el, s) => {
+    return s.days
   }
 }
 
@@ -294,10 +326,25 @@ const monthNumbersContainer = {
     }
   },
 
+  state: (el, s) => {
+    const state = el.parent.state
+    return (new Array(12)).fill(undefined).map((v, k) => {
+      const year = state.activeYear
+      const month = k + 1
+      const weekItems = calendar.getMonth({ year, month })
+      return {
+        year,
+        month,
+        weekItems,
+        days: extractMonthDays(weekItems)
+      }
+    })
+  },
+
   content: {
     extend: Flex,
     childExtend: DatePickerGrid,
-    ...[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
+    $setStateCollection: (el, s) => s.parse()
   }
 }
 
@@ -343,17 +390,15 @@ export const DatePicker = {
 
 export const DatePickerTwoColumns = {
   extend: DatePicker,
-  props: {
-    calendar: {
-      months: {
-        maxWidth: `${544 / 16}em`
-      },
-      weekDaysContainer: {
-        maxWidth: `${544 / 16}em`
-      },
-      monthNumbersContainer: {
-        maxWidth: `${544 / 16}em`
-      }
+  Flex: {
+    DatePickerMonthsSlider: {
+      maxWidth: `${544 / 16}em`
+    },
+    DatePickerWeekDays: {
+      maxWidth: `${544 / 16}em`
+    },
+    monthNumbersContainer: {
+      maxWidth: `${544 / 16}em`
     }
   }
 }
