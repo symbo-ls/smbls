@@ -76,8 +76,10 @@ const mutateItemsAccordingToRules = (data, mutatedItems) => {
 
         itemInTopData.children = itemInTopData.data.items.map((item, i) => {
           if (typeof item === "string") {
-            return { type: 'text', value: item }
+            return { type: 'listRow', children: [ { type: 'text', value: item } ] }
           }
+
+          item.type = 'listRow';
 
           return item;
         });
