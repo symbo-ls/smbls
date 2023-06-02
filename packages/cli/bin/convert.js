@@ -63,14 +63,13 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
 
   console.group()
   const uniqueImports = []
-  let first = true
+  const first = true
   let currentExportIdx = 0
   let removeUseContextImport = false
   const exportCount = Object.keys(domqlModule).length
   for (const key in domqlModule) {
     // Skip if not found in whitelist
-    if (whitelist && !whitelist.includes(key))
-      continue
+    if (whitelist && !whitelist.includes(key)) { continue }
 
     // Skip some components if converting smbls uikit
     if (options.internalUikit &&
@@ -79,42 +78,41 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
       continue
     }
 
-    console.log(key)
     try {
-    // import('domql-to-mitosis').then(({ convert }) => {
-      if (convert) {
-        console.group()
-        const component = domqlModule[key]
-        component.__name = key
-
-        const isSingleComponent = exportCount === 1
-        const isFirst = currentExportIdx === 0
-        const isLast = currentExportIdx === exportCount - 1
-
-        const out = convert(component, desiredFormat, {
-          verbose: false,
-          exportDefault: isSingleComponent,
-          returnMitosisIR: true,
-          importsToRemove: uniqueImports,
-          removeReactImport: !isFirst,
-          removeUseContextImport
-        })
-
-        convertedStr = convertedStr + out.str
-        if (options.trailingNewLine && !isLast) {
-          convertedStr += '\n'
-        }
-
-        uniqueImports.push(...out.mitosisIR.imports)
-        if (out.mitosisIR._useContext) { removeUseContextImport = true }
-        console.groupEnd()
-        currentExportIdx++
-      } else {
-        throw new Error('Convert from `domql-to-mitosis` is not defined. Try to install `domql-to-mitosis` and run this command again.')
-      }
-    // })
+      convert()
     } catch (err) {
       throw new Error('`domql-to-mitosis` is not found.')
+    }
+    // import('domql-to-mitosis').then(({ convert }) => {
+    if (convert) {
+      console.group()
+      const component = domqlModule[key]
+      component.__name = key
+
+      const isSingleComponent = exportCount === 1
+      const isFirst = currentExportIdx === 0
+      const isLast = currentExportIdx === exportCount - 1
+
+      const out = convert(component, desiredFormat, {
+        verbose: false,
+        exportDefault: isSingleComponent,
+        returnMitosisIR: true,
+        importsToRemove: uniqueImports,
+        removeReactImport: !isFirst,
+        removeUseContextImport
+      })
+
+      convertedStr = convertedStr + out.str
+      if (options.trailingNewLine && !isLast) {
+        convertedStr += '\n'
+      }
+
+      uniqueImports.push(...out.mitosisIR.imports)
+      if (out.mitosisIR._useContext) { removeUseContextImport = true }
+      console.groupEnd()
+      currentExportIdx++
+    } else {
+      throw new Error('Convert from `domql-to-mitosis` is not defined. Try to install `domql-to-mitosis` and run this command again.')
     }
   }
   console.groupEnd()
@@ -132,7 +130,7 @@ program
   .option('--vue2', 'Convert all DomQL components to Vue2')
   .option('--vue3', 'Convert all DomQL components to Vue3')
   .option('-t, --tmp-dir <path>', `Use this directory for storing intermediate & build files instead of the default (dest/${TMP_DIR_NAME})`)
-  .option('-o, --only <components>', `Only convert these components; comma separated (for example: --only=Flex,Img)`)
+  .option('-o, --only <components>', 'Only convert these components; comma separated (for example: --only=Flex,Img)')
   .option('--internal-uikit', '(For internal use only). Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
     // Desired format
@@ -269,7 +267,7 @@ program
         const convertedStr = convertDomqlModule(
           domqlModule,
           desiredFormat,
-          {...options, trailingNewLine: true }
+          { ...options, trailingNewLine: true }
         )
 
         // Write file
