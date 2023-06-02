@@ -1,12 +1,14 @@
 'use strict'
 
-import { deepMerge, merge } from '@domql/utils'
+import { deepMerge, merge, overwriteDeep } from '@domql/utils'
 import { getActiveConfig } from '../factory.js'
 import { getMediaTheme } from '.'
 
 export const applyReset = (reset = {}) => {
   const CONFIG = getActiveConfig()
+
   const { RESET, TYPOGRAPHY, DOCUMENT } = CONFIG
+
   if (RESET) {
     if (RESET[':root']) {
       const configReset = RESET
@@ -25,6 +27,8 @@ export const applyReset = (reset = {}) => {
     }
 
     const { body, ...templates } = TYPOGRAPHY.templates
+    const globalTheme = (CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {})
+    if (RESET.html) overwriteDeep(RESET.html, globalTheme)
 
     return deepMerge(merge(RESET, reset), {
       html: {
@@ -38,9 +42,9 @@ export const applyReset = (reset = {}) => {
         WebkitFontSmoothing: 'subpixel-antialiased',
         scrollBehavior: 'smooth',
 
-        fontSize: TYPOGRAPHY.browserDefault + 'px',
+        ...globalTheme,
 
-        ...(CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {}),
+        fontSize: TYPOGRAPHY.browserDefault + 'px',
 
         fontFamily: DOCUMENT.fontFamily,
         lineHeight: DOCUMENT.lineHeight
