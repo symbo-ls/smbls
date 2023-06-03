@@ -158,6 +158,8 @@ export const DomValueInterceptor = (data) => {
         children: parseHtml(value), // temp hack bcs of markdown->domql func prblm
       };
       mutatedItems.push(parent);
+    } else {
+      obj[key] = decodeHTMLSpaces(value);
     }
   });
 
