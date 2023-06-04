@@ -1,8 +1,18 @@
 'use strict'
 
+import chalk from 'chalk'
+import fs from 'fs'
 import { execSync } from 'child_process'
 import { program } from './program.js'
-import { initRepo } from './init-helpers/init-repo.js'
+
+function folderExists (path) {
+  try {
+    fs.accessSync(path, fs.constants.F_OK)
+    return true // The folder exists
+  } catch (err) {
+    return false // The folder does not exist
+  }
+}
 
 const REPO_URLS = {
   domql: 'https://github.com/symbo-ls/starter-kit',
@@ -16,8 +26,8 @@ program
   .command('create')
   .description('Create and initialize a new project')
   .argument('dest', 'Project directory')
-  .option('--domql', 'Use DOMQL in the project')
-  .option('--react', 'Use React in the project (default)', true)
+  .option('--domql', 'Use DOMQL in the project', true)
+  .option('--react', 'Use React in the project (default)')
   .option('--angular', 'Use Angular in the project')
   .option('--vue2', 'Use Vue2 in the project')
   .option('--vue3', 'Use Vue3 in the project')
@@ -35,10 +45,19 @@ program
     }
     const cloneUrl = REPO_URLS[framework]
 
-    // Clone
+    if (folderExists(dest)) {
+      console.error(`Folder ${dest} already exists!`)
+      return
+    }
+
     console.log(`Cloning ${cloneUrl} into '${dest}'...`)
     execSync(`git clone ${cloneUrl} ${dest}`)
 
-    // Leave the rest to init
-    return await initRepo(dest, framework)
+    process.chdir(dest)
+    console.log('Installing Dependencies...')
+    console.log()
+    execSync('npm i')
+    console.log()
+    console.log(chalk.green.bold(dest), 'successfuly created!')
+    console.log(`Done! run \`${chalk.bold('npm start')}\` to start the development server.`)
   })
