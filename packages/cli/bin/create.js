@@ -2,8 +2,10 @@
 
 import chalk from 'chalk'
 import fs from 'fs'
+import path from 'path'
 import { execSync } from 'child_process'
 import { program } from './program.js'
+import { addToJson } from './init-helpers/addToJson.js'
 
 function folderExists (path) {
   try {
@@ -31,7 +33,7 @@ program
   .option('--angular', 'Use Angular in the project')
   .option('--vue2', 'Use Vue2 in the project')
   .option('--vue3', 'Use Vue3 in the project')
-  .action(async (dest, options) => {
+  .action(async (dest = 'symbols-starter-kit', options) => {
     // Determine framework
     let framework = 'domql'
     if (options.react) {
@@ -54,6 +56,10 @@ program
     execSync(`git clone ${cloneUrl} ${dest}`)
 
     process.chdir(dest)
+
+    const SYMBOLS_FILE_PATH = path.join(process.cwd(), 'symbols.json')
+    addToJson(SYMBOLS_FILE_PATH, 'key', `${dest}.symbo.ls`)
+
     console.log('Installing Dependencies...')
     console.log()
     execSync('npm i')

@@ -1,14 +1,15 @@
 export const CustomDesignSystem = {
-  color: {
-    snowWhite: '#F3F6FB'
-  },
-  theme: {},
-  typography: {},
-  space: {},
-  media: {},
-  icons: {},
-  font: {},
-  font_family: {},
-  timing: {},
-  reset: {}
+  ANIMATION: {},
+  COLOR: {},
+  GRADIENT: {},
+  THEME: {},
+  TYPOGRAPHY: {},
+  SPACING: {},
+  SVG: {},
+  ICONS: {},
+  FONT: {},
+  FONT_FAMILY: {},
+  TIMING: {},
+  MEDIA: {},
+  RESET: {}
 }
