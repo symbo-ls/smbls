@@ -1,9 +1,8 @@
 'use strict'
 
-import {editorJsToDOMQL, initMutiny} from '@domql/converter'
-import domqlConverterLib from '@domql/converter';
+import domqlConverterLib, { editorJsToDOMQL, initMutiny } from '@domql/converter'
 
-import { DomValueInterceptor } from "./data/DomValueInterceptor";
+import { DomValueInterceptor } from './data/DomValueInterceptor'
 
 export const Editorjs = {
   define: {
@@ -11,9 +10,9 @@ export const Editorjs = {
       if (!param) return
 
       if (!domqlConverterLib.getSystem()) {
-        const { interceptorApi, virtualStorage } = domqlConverterLib.getSystem();
-        initMutiny();
-        interceptorApi.addInterceptor(DomValueInterceptor, 'before');
+        const { interceptorApi } = domqlConverterLib.getSystem()
+        initMutiny()
+        interceptorApi.addInterceptor(DomValueInterceptor, 'before')
       }
 
       const content = editorJsToDOMQL(param)
@@ -21,4 +20,3 @@ export const Editorjs = {
     }
   }
 }
-

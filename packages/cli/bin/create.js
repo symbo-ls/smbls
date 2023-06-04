@@ -16,16 +16,16 @@ program
   .command('create')
   .description('Create and initialize a new project')
   .argument('dest', 'Project directory')
-  .option('--domql', 'Use Domql in the project')
+  .option('--domql', 'Use DOMQL in the project')
   .option('--react', 'Use React in the project (default)', true)
   .option('--angular', 'Use Angular in the project')
   .option('--vue2', 'Use Vue2 in the project')
   .option('--vue3', 'Use Vue3 in the project')
   .action(async (dest, options) => {
     // Determine framework
-    let framework = 'react'
-    if (options.domql) {
-      framework = 'domql'
+    let framework = 'domql'
+    if (options.react) {
+      framework = 'react'
     } else if (options.angular) {
       framework = 'angular'
     } else if (options.vue2) {
