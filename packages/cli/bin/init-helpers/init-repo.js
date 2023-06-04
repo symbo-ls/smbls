@@ -20,12 +20,24 @@ export async function initRepo (dest, framework) {
     process.chdir(cwd)
   }
 
+  // Determine framework
+  let pkg = 'smbls'
+  if (framework === 'react') {
+    pkg = '@symbo.ls/react'
+  } else if (framework === 'angular') {
+    pkg = '@symbo.ls/react'
+  } else if (framework === 'vue2') {
+    pkg = '@symbo.ls/vue2'
+  } else if (framework === 'vue3') {
+    pkg = '@symbo.ls/vue3'
+  }
+
   // TODO: inject smbls dependencies into package.json
 
   // Install
-  console.log('Installing NPM dependencies...')
+  console.log(`Installing \`${pkg}\` from NPM...`)
   process.chdir(dest)
-  execSync('npm install', { stdio: ['inherit', 'inherit', 'ignore'] })
+  execSync(`npm i ${pkg} --save`)
   process.chdir(cwd)
 
   // Copy design system file
