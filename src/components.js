@@ -7,13 +7,19 @@ import {
 
 import { TimePicker } from "./components/TimePicker"
 import { DatePicker, DatePickerTwoColumns } from "./components/DatePicker"
+import { Search } from "./components/Search"
+import { FieldSet } from "./components/FieldSet"
 
 import designSystem from '@symbo.ls/default-config'
 console.log(designSystem)
 
 create({
   extend: Flex,
-  props: { flow: 'column'},
+  props: {
+    flow: 'column',
+    padding: 'E',
+    gap: 'D'
+  },
 
   checkBox: { extend: Checkbox },
   radioButton: { extend: Radio },
@@ -23,7 +29,9 @@ create({
   toggleSwitchWithLabel: { extend: ToggleSwithWithLabel },
   timePicker: { extend: TimePicker },
   datePicker: { extend: DatePicker },
-  datePicker2: { extend: DatePickerTwoColumns }
+  datePicker2: { extend: DatePickerTwoColumns },
+  search: { extend: Search },
+  fieldSet: { extend: FieldSet }
 }, {
   designSystem: {
     ...designSystem

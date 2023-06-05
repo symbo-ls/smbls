@@ -3,22 +3,6 @@
 import { Grid } from "@symbo.ls/atoms"
 import { Flex, Button } from "smbls"
 
-
-function sideScroll (element, direction, speed, distance, step) {
-  var scrollAmount = 0
-  var slideTimer = setInterval(function () {
-    if (direction === 'left') {
-      element.scrollLeft -= step
-    } else {
-      element.scrollLeft += step
-    }
-    scrollAmount += step
-    if (scrollAmount >= distance) {
-      window.clearInterval(slideTimer)
-    }
-  }, speed)
-}
-
 const years = {
   tag: 'aside',
   content: {
