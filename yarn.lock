@@ -3466,6 +3466,11 @@
     "@symbo.ls/tooltip" latest
     "@symbo.ls/video" latest
 
+"@symbo.ls/upload@latest":
+  version "2.11.62"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/upload/-/upload-2.11.62.tgz#2fe87a3d03fc0e59e80402af351159945e7ab267"
+  integrity sha512-NcHMiWHA+CELdOXPWzFPMFBB5yC7cK8f3q2lKRmMxUXmkt7WL6kZbJ9MIZOBFyf1Sf7oyW+IJSGziKce+TmVMQ==
+
 "@symbo.ls/utils@latest":
   version "2.11.16"
   resolved "https://registry.yarnpkg.com/@symbo.ls/utils/-/utils-2.11.16.tgz#a116c577ef98f86a093aa00e575477ba7ac8c3d7"
