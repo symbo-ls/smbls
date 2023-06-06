@@ -2,8 +2,6 @@
 
 import { Focusable, Flex } from '@symbo.ls/atoms'
 import { SquareButton } from '@symbo.ls/button'
-import { Icon } from '@symbo.ls/icon'
-import { Avatar } from '@symbo.ls/avatar'
 
 export const Upload = {
   extend: [Focusable, Flex],
@@ -16,25 +14,24 @@ export const Upload = {
     round: 'A',
     cursor: 'pointer',
     border: '1.6px, dashed, white 0.1',
-    padding: 'B B2',
-    input: {
-      position: 'absolute',
-      inset: '0 0 0 0',
-      opacity: '0',
-      visibility: 'hidden'
-    }
+    padding: 'B B2'
   },
-  input: { attr: { type: 'file' } },
 
-  icon: {
-    extend: Icon,
-    props: {
-      name: 'upload',
-      fontSize: `${26 / 16}em`,
-      opacity: '.2'
-    }
+  Input: {
+    type: 'file',
+    position: 'absolute',
+    inset: '0 0 0 0',
+    opacity: '0',
+    visibility: 'hidden'
   },
-  p: {
+
+  Icon: {
+    name: 'upload',
+    fontSize: `${26 / 16}em`,
+    opacity: '.2'
+  },
+
+  P: {
     props: {
       text: ' or click and upload from your computer',
       flexFlow: 'column',
@@ -42,9 +39,9 @@ export const Upload = {
       opacity: '.22',
       margin: '0'
     },
-    span: {
+    Span: {
       text: 'Drag and drop your font file',
-      style: { display: 'block' }
+      display: 'block'
     }
   }
 }
@@ -52,14 +49,22 @@ export const Upload = {
 export const DragNdropUser = {
   extend: Flex,
 
-  props: ({ state }) => ({
+  props: {
     flow: 'column',
     align: 'center center',
     gap: 'A',
-    round: 'A',
+    round: 'A'
+  },
 
-    img: { boxSize: 'C C', src: state.src },
-    buttons: {
+  Avatar: {
+    props: ({ state }) => ({
+      boxSize: 'C C',
+      src: state.src
+    })
+  },
+
+  Flex: {
+    props: {
       gap: 'Y',
       childProps: {
         padding: '0',
@@ -69,14 +74,10 @@ export const DragNdropUser = {
         color: 'gray6',
         style: { '> svg': { fontSize: `${14 / 16}em` } }
       }
-    }
-  }),
+    },
 
-  img: { extend: Avatar },
-
-  buttons: {
-    extend: Flex,
     childExtend: SquareButton,
+
     ...[
       { props: { icon: 'reload' } },
       { props: { icon: 'trash' } }
