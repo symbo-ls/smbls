@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/upload",
-  "version": "2.11.64",
+  "version": "2.11.65",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f67fc76bc3fe2b7e148b0de6acfa761866c3ec62",
   "source": "index.js",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
+    "@symbo.ls/avatar": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/icon": "latest",
-    "@symbo.ls/avatar": "latest"
+    "@symbo.ls/icon": "latest"
   }
 }
