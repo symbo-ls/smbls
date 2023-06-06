@@ -33,6 +33,7 @@
     "@symbo.ls/range": "latest",
     "@symbo.ls/select": "latest",
     "@symbo.ls/slider": "latest",
+    "@symbo.ls/upload": "latest",
     "@symbo.ls/textarea": "latest",
     "@symbo.ls/timepicker": "latest",
     "@symbo.ls/tooltip": "latest",
