@@ -1,6 +1,9 @@
 'use strict'
 
-import { Focusable, Flex, Icon, IconButton, Avatar } from '..'
+import { Focusable, Flex } from '@symbo.ls/atoms'
+import { SquareButton } from '@symbo.ls/button'
+import { Icon } from '@symbo.ls/icon'
+import { Avatar } from '@symbo.ls/avatar'
 
 export const Upload = {
   extend: [Focusable, Flex],
@@ -73,7 +76,7 @@ export const DragNdropUser = {
 
   buttons: {
     extend: Flex,
-    childExtend: IconButton,
+    childExtend: SquareButton,
     ...[
       { props: { icon: 'reload' } },
       { props: { icon: 'trash' } }
