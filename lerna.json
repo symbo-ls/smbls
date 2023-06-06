@@ -1,7 +1,7 @@
 {
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "2.11.61",
+  "version": "2.11.62",
   "packages": [
     "icons/*",
     "uikit/*/*",
