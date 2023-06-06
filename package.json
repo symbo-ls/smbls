@@ -14,7 +14,8 @@
     "pkgify:react": "cp build/package-react.json uikit/test-react-components/package.json",
     "kalduna": "bash ./build/kalduna.sh",
     "build:react": "yarn pkgify:react && cd uikit/test-react-components && yarn build:button && npm publish && yarn link && cd ../..",
-    "try:react": "rimraf -I uikit/test-react-components uikit/.smbls_convert_tmp && yarn compile:react && yarn build:react"
+    "try:react": "rimraf -I uikit/test-react-components uikit/.smbls_convert_tmp && yarn compile:react && yarn build:react",
+    "link:all": "npx lerna exec -- yarn link"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
