@@ -65,7 +65,6 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
   const uniqueImports = []
   const first = true
   let currentExportIdx = 0
-  let removeUseContextImport = false
   const exportCount = Object.keys(domqlModule).length
   for (const key in domqlModule) {
     // Skip if not found in whitelist
@@ -78,16 +77,11 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
       continue
     }
 
-    try {
-      convert()
-    } catch (err) {
-      throw new Error('`domql-to-mitosis` is not found.')
-    }
-    // import('domql-to-mitosis').then(({ convert }) => {
     if (convert) {
       console.group()
       const component = domqlModule[key]
       component.__name = key
+      console.log(key) // NOTE: @nikoloza don't remove this (again)
 
       const isSingleComponent = exportCount === 1
       const isFirst = currentExportIdx === 0
@@ -98,8 +92,7 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
         exportDefault: isSingleComponent,
         returnMitosisIR: true,
         importsToRemove: uniqueImports,
-        removeReactImport: !isFirst,
-        removeUseContextImport
+        removeReactImport: !isFirst
       })
 
       convertedStr = convertedStr + out.str
@@ -108,11 +101,12 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
       }
 
       uniqueImports.push(...out.mitosisIR.imports)
-      if (out.mitosisIR._useContext) { removeUseContextImport = true }
       console.groupEnd()
       currentExportIdx++
     } else {
-      throw new Error('Convert from `domql-to-mitosis` is not defined. Try to install `domql-to-mitosis` and run this command again.')
+      throw new Error(
+        'Convert from `domql-to-mitosis` is not defined. Try to install' +
+        '`domql-to-mitosis` and run this command again.')
     }
   }
   console.groupEnd()
@@ -122,16 +116,24 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
 
 program
   .command('convert')
-  .description('Recursively convert and copy all DomQL components under a directory')
+  .description('Convert and copy all DomQL components under a directory')
   .argument('[src]', 'Source directory/file. By default, it is "src/"')
-  .argument('[dest]', 'Destination directory/file. Will be overwritten. By default, it becomes the name of the desired format')
+  .argument('[dest]',
+            'Destination directory/file. Will be overwritten. By ' +
+            'default, it becomes the name of the desired format')
   .option('--react', 'Convert all DomQL components to React')
   .option('--angular', 'Convert all DomQL components to Angular')
   .option('--vue2', 'Convert all DomQL components to Vue2')
   .option('--vue3', 'Convert all DomQL components to Vue3')
-  .option('-t, --tmp-dir <path>', `Use this directory for storing intermediate & build files instead of the default (dest/${TMP_DIR_NAME})`)
-  .option('-o, --only <components>', 'Only convert these components; comma separated (for example: --only=Flex,Img)')
-  .option('--internal-uikit', '(For internal use only). Excludes particular components from the conversion')
+  .option('-t, --tmp-dir <path>',
+          'Use this directory for storing intermediate & build files instead of ' +
+          `the default (dest/${TMP_DIR_NAME})`)
+  .option('-o, --only <components>',
+          'Only convert these components; comma separated ' + 
+          '(for example: --only=Flex,Img)')
+  .option('--internal-uikit',
+          '(For internal use only). ' + 
+          'Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
     // Desired format
     let desiredFormat = 'react'
@@ -159,7 +161,8 @@ program
     // Put a package.json file so that when we import() the modules from the
     // directory, node doesn't recognize them as ES modules (in case the parent
     // directory of the tmp dir has "type": "module" in its package.json
-    const pj = await fs.promises.open(path.resolve(tmpDirPath, 'package.json'), 'w')
+    const pj = await fs.promises.open(
+      path.resolve(tmpDirPath, 'package.json'), 'w')
     await pj.writeFile(TMP_DIR_PACKAGE_JSON_STR, 'utf8')
     await pj.close()
 
@@ -233,7 +236,9 @@ program
       destDirPath = path.resolve(dest)
     } else {
       // dest exists and is not a directory.
-      console.error(`The destination ('${path.resolve(dest)}') must be a directory when the source ('${srcPath}') is a directory`)
+      console.error(
+        `The destination ('${path.resolve(dest)}') must be a directory when` +
+          `the source ('${srcPath}') is a directory`)
       return 1
     }
 
@@ -242,7 +247,8 @@ program
 
     // Bundle components
     await esbuild.build({
-      entryPoints: origFiles.map(file => path.join(srcPath, file, './index.js')),
+      entryPoints: origFiles.map(file =>
+        path.join(srcPath, file,'./index.js')),
       bundle: true,
       sourcemap: true,
       target: 'node12',
