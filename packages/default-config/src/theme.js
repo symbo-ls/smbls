@@ -35,7 +35,7 @@ const PRIORITIES = {
     },
     '@light': {
       background: 'gray .1'
-    },
+    }
   },
 
   quaternary: {
@@ -78,6 +78,20 @@ const PRIORITIES = {
         color: 'gray1',
         background: 'gradient-dark-active'
       }
+    }
+  },
+
+  alert: {
+    '@dark': {
+      color: 'white',
+      background: 'red'
+    }
+  },
+
+  warning: {
+    '@dark': {
+      color: 'black',
+      background: 'yellow'
     }
   }
 }

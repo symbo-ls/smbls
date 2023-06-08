@@ -156,10 +156,7 @@ export const DatePickerMonthsSlider = {
     }
   },
 
-  leftButton: {
-    extend: Button,
-    props: { icon: 'arrowLeft' }
-  },
+  Button_left: { icon: 'arrowLeft' },
 
   Flex: {
     props: {
@@ -209,7 +206,7 @@ export const DatePickerMonthsSlider = {
     }
   },
 
-  rightButton: { extend: Button, props: { icon: 'arrowRight' } }
+  Button_right: { icon: 'arrowRight' }
 }
 
 export const DatePickerWeekDays = {
@@ -390,15 +387,22 @@ export const DatePicker = {
 
 export const DatePickerTwoColumns = {
   extend: DatePicker,
+  DatePickerYears: {},
   Flex: {
     DatePickerMonthsSlider: {
-      maxWidth: `${544 / 16}em`
+      props: {
+        maxWidth: `${544 / 16}em`
+      }
     },
     DatePickerWeekDays: {
-      maxWidth: `${544 / 16}em`
+      props: {
+        maxWidth: `${544 / 16}em`
+      }
     },
     monthNumbersContainer: {
-      maxWidth: `${544 / 16}em`
+      props: {
+        maxWidth: `${544 / 16}em`
+      }
     }
   }
 }

@@ -31,3 +31,15 @@ export const Input = {
     type: ({ props }) => props.type
   }
 }
+
+export const NumberInput = {
+  extend: Input,
+  props: {
+    type: 'number'
+  },
+  attr: {
+    step: ({ props }) => props.step,
+    min: ({ props }) => props.min,
+    max: ({ props }) => props.max
+  }
+}

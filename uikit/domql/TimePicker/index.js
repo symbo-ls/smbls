@@ -2,34 +2,70 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { Dialog } from '@symbo.ls/dialog'
-import { TimePickerItem } from './TimePickerItem'
 
-const props = {
-  flow: 'column',
-  width: 'fit-content',
-  background: 'rgba(255, 255, 255, .15)',
-  padding: 'A A B A',
-  round: 'Z',
+export const TimePicker = {
+  extend: [Dialog, Flex],
 
-  title: {
+  state: {
+    activeShift: 'am'
+  },
+
+  props: {
+    flow: 'column',
+    width: 'fit-content',
+    padding: 'Z A'
+  },
+
+  Title: {
     fontSize: 'Z1',
     textTransform: 'capitalize',
-    padding: '- - B -'
+    padding: '- - A -',
+    text: 'enter time'
   },
 
-  content: {
-    align: 'center center',
-    gap: 'A',
-    timePickers: {
+  Flex: {
+    props: {
       align: 'center center',
-      gap: 'Y2'
-    }
+      gap: 'A'
+    },
+
+    Flex: {
+      tag: 'label',
+      props: {
+        align: 'center center',
+        gap: 'Y2'
+      },
+      TimePickerItem_hh: {
+        NumberInput: {
+          placeholder: 'HH',
+          min: '0',
+          max: '11'
+        }
+      },
+      Span: ':',
+      TimePickerItem_mm: {
+        NumberInput: {
+          placeholder: 'MM',
+          min: '0',
+          max: '59'
+        }
+      },
+      Span_2: ':',
+      TimePickerItem_ss: {
+        NumberInput: {
+          placeholder: 'SS',
+          min: '0',
+          max: '59'
+        }
+      }
+    },
+    TimeSwitcher: {}
   },
 
-  footButtons: {
+  DialogFooter: {
     align: 'center flex-end',
-    gap: 'A1',
-    padding: 'B1 - - -',
+    gap: 'X',
+    margin: 'Z2 -Z2 -Z',
     childProps: {
       background: 'transparent',
       padding: '0',
@@ -38,25 +74,5 @@ const props = {
   }
 }
 
-export const TimePicker = {
-  extend: [Dialog, Flex],
-  props,
-  title: { text: 'enter time' },
-  content: {
-    extend: Flex,
-    timePickers: {
-      tag: 'label',
-      extend: Flex,
-      ...[
-        { extend: TimePickerItem },
-        ':',
-        { extend: TimePickerItem },
-        ':',
-        { extend: TimePickerItem }
-      ]
-    },
-    TimeSwitcher: {}
-  },
-
-  DialogFooter: {}
-}
+export * from './TimePickerItem'
+export * from './TimeSwitcher'

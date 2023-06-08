@@ -33,7 +33,7 @@ export const SquareButton = {
     aspectRatio: '1 / 1',
     justifyContent: 'center',
     round: 'Z',
-    style: { boxSizing: 'content-box' }
+    boxSizing: 'content-box'
   }
 }
 
