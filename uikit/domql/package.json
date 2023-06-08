@@ -47,6 +47,6 @@
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "f67fc76bc3fe2b7e148b0de6acfa761866c3ec62",
+  "gitHead": "d1017374e107124ee093ec73e66a071fbc6dc0ec",
   "source": "src/index.js"
 }

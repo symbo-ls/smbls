@@ -4,7 +4,7 @@
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
-  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
+  "gitHead": "d1017374e107124ee093ec73e66a071fbc6dc0ec",
   "dependencies": {
     "@symbo.ls/atoms": "latest"
   }
