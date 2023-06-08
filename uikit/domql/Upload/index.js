@@ -1,7 +1,6 @@
 'use strict'
 
 import { Focusable, Flex } from '@symbo.ls/atoms'
-import { SquareButton } from '@symbo.ls/button'
 
 export const Upload = {
   extend: [Focusable, Flex],
@@ -43,44 +42,5 @@ export const Upload = {
       text: 'Drag and drop your font file',
       display: 'block'
     }
-  }
-}
-
-export const DragNdropUser = {
-  extend: Flex,
-
-  props: {
-    flow: 'column',
-    align: 'center center',
-    gap: 'A',
-    round: 'A'
-  },
-
-  Avatar: {
-    props: ({ state }) => ({
-      boxSize: 'C C',
-      src: state.src
-    })
-  },
-
-  Flex: {
-    props: {
-      gap: 'Y',
-      childProps: {
-        padding: '0',
-        boxSize: 'B B',
-        background: 'gray3',
-        round: 'Y1',
-        color: 'gray6',
-        style: { '> svg': { fontSize: `${14 / 16}em` } }
-      }
-    },
-
-    childExtend: SquareButton,
-
-    ...[
-      { props: { icon: 'reload' } },
-      { props: { icon: 'trash' } }
-    ]
   }
 }
