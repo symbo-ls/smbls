@@ -26,7 +26,7 @@ export const Upload = {
 
   Icon: {
     name: 'upload',
-    fontSize: `${26 / 16}em`,
+    fontSize: 'B',
     opacity: '.2'
   },
 
