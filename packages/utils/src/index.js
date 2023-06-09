@@ -4,7 +4,6 @@ import { isString, isObject, isArray } from '@domql/utils'
 
 export * from './navigation'
 export * from './scaling'
-export * from './codify'
 export * from './date'
 
 export const copyStringToClipboard = str => {
