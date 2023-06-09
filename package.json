@@ -16,6 +16,7 @@
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/form": "^2.11.16",
     "domql": "latest",
+    "headless-datepicker": "^1.0.1",
     "smbls": "^2.11.16"
   },
   "devDependencies": {
