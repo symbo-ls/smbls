@@ -26,7 +26,7 @@ export const DialogFooter = {
     extend: Button,
     props: {
       theme: 'primary @dark .color-only',
-      fontSize: 'Z1',
+      fontSize: 'Z',
       textTransform: 'uppercase',
       background: 'transparent',
       '&': {

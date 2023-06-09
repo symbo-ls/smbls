@@ -69,5 +69,13 @@ export const IconText = {
     if: ({ props }) => props.name || props.icon
   },
 
-  text: ({ props }) => props.text
+  text: ({ props }) => props.text,
+
+  '.reversed': {
+    props: { flow: 'row-reverse' }
+  },
+
+  '.vertical': {
+    props: { flow: 'column' }
+  }
 }
