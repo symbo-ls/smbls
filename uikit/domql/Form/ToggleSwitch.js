@@ -8,9 +8,15 @@ import { FieldLabel } from './FieldLabel'
 const templateDefault = {
   padding: 'Y',
   round: 'B',
-  input: { ':checked + div': { justifyContent: 'flex-end', background: '#47FF09' } },
+  input: {
+    ':checked + div': {
+      justifyContent: 'flex-end',
+      theme: 'primary'
+    }
+  },
   ':hover > div': { opacity: '1' },
-  checkbox: {
+
+  Flex: {
     boxSize: 'B C',
     padding: '- W',
     round: 'D',
@@ -23,9 +29,7 @@ const templateDefault = {
       boxSize: 'A1 A1',
       round: '100%',
       background: 'white',
-      style: {
-        boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.2)'
-      }
+      boxShadow: '1px, 1px, 8px, rgba(0, 0, 0, 0.2)'
     }
   }
 }
@@ -35,7 +39,7 @@ export const ToggleSwitch = {
   props: templateDefault,
 
   input: {},
-  checkbox: {
+  Flex: {
     Icon: null,
     circle: {}
   }

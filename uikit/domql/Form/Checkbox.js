@@ -11,26 +11,14 @@ const templateDefault = {
   ':hover': { background: '#252527' },
 
   input: {
+    display: 'none',
+
     ':checked + div': {
-      background: '#0474F2',
+      theme: 'primary',
       border: 'none'
     },
-    ':checked + div > svg': { opacity: '1' },
-    display: 'none'
-  },
 
-  checkbox: {
-    align: 'center center',
-    border: '1px solid #E9E9EA',
-    boxSize: 'B B',
-    round: 'Y',
-    Icon: {
-      height: 'Z Z2',
-      color: 'white',
-      name: 'check',
-      opacity: '0',
-      transition: 'opacity .15s ease'
-    }
+    ':checked + div > svg': { opacity: '1' }
   }
 }
 
@@ -41,11 +29,34 @@ export const Checkbox = {
     attr: {
       type: 'checkbox',
       checked: ({ parent }) => parent.props.checked
+    },
+    on: {
+      render: ({ parent, node }) => {
+        const { indeterminate } = parent.props
+        console.log(indeterminate)
+        node.indeterminate = indeterminate
+      },
+      update: ({ parent, node }) => {
+        const { indeterminate } = parent.props
+        console.log(indeterminate)
+        node.indeterminate = indeterminate
+      }
     }
   },
-  checkbox: {
-    extend: 'Flex',
-    Icon: {}
+  Flex: {
+    props: {
+      align: 'center center',
+      border: '1px solid #E9E9EA',
+      boxSize: 'B B',
+      round: 'Y'
+    },
+    Icon: {
+      height: 'Z Z2',
+      color: 'white',
+      name: 'check',
+      opacity: '0',
+      transition: 'opacity .15s ease'
+    }
   }
 }
 

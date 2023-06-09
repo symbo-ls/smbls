@@ -7,7 +7,7 @@ import { FieldLabel } from './FieldLabel'
 
 const templateDefault = {
   input: { ':checked + div > div': { opacity: '1' } },
-  checkbox: {
+  Flex: {
     round: '100%',
     circle: {
       boxSize: 'Y2 Y2',
@@ -23,7 +23,7 @@ export const Radio = {
   extend: Checkbox,
   props: templateDefault,
   input: { attr: { type: 'radio' } },
-  checkbox: {
+  Flex: {
     Icon: null,
     circle: {}
   }

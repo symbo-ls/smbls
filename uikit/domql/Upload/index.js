@@ -13,15 +13,18 @@ export const Upload = {
     round: 'A',
     cursor: 'pointer',
     border: '1.6px, dashed, white 0.1',
-    padding: 'B B2'
+    padding: 'B B2',
+
+    Input: {
+      position: 'absolute',
+      inset: '0 0 0 0',
+      opacity: '0',
+      visibility: 'hidden'
+    }
   },
 
   Input: {
-    type: 'file',
-    position: 'absolute',
-    inset: '0 0 0 0',
-    opacity: '0',
-    visibility: 'hidden'
+    type: 'file'
   },
 
   Icon: {
