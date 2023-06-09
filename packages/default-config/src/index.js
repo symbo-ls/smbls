@@ -18,7 +18,7 @@ export const DEFAULT_CONFIG = {
   FONT,
   FONT_FAMILY,
   TIMING: {},
-  ICONS: FEATHER_ICONS, // add mitosis node fallback
+  ICONS: FEATHER_ICONS,
   MEDIA: {
     tv: '(min-width: 2780px)',
 
