@@ -2,7 +2,6 @@
 
 import { isString, isObject, isArray } from '@domql/utils'
 
-export * from './navigation'
 export * from './scaling'
 export * from './date'
 
