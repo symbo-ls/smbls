@@ -33,7 +33,6 @@ export const Checkbox = {
     on: {
       render: ({ parent, node }) => {
         const { indeterminate } = parent.props
-        console.log(indeterminate)
         node.indeterminate = indeterminate
       },
       update: ({ parent, node }) => {

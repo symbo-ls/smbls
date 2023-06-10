@@ -1,12 +1,17 @@
 'use strict'
 
-import { isState } from '@domql/state'
-import { isNot, isArray, isObject, isObjectLike, diff, deepClone } from '@domql/utils'
+import { isState, getChildStateInKey } from '@domql/state'
+import { isString, isNot, isArray, isObject, isObjectLike, diff, deepClone } from '@domql/utils'
 
 export const Collection = {
   define: {
     $setCollection: (param, el, state) => {
       if (!param) return
+
+      if (isString(param)) {
+        if (param === 'state') param = state.parse()
+        else param = getChildStateInKey(param, state)
+      }
 
       let data = isArray(param) ? param : []
 
@@ -32,6 +37,11 @@ export const Collection = {
 
     $setStateCollection: (param, el, state) => {
       if (!param) return
+
+      if (isString(param)) {
+        if (param === 'state') param = state.parse()
+        else param = getChildStateInKey(param, state)
+      }
       if (isState(param)) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
@@ -58,6 +68,11 @@ export const Collection = {
 
     $setPropsCollection: (param, el, state) => {
       if (!param) return
+
+      if (isString(param)) {
+        if (param === 'state') param = state.parse()
+        else param = getChildStateInKey(param, state)
+      }
       if (isState(param)) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
