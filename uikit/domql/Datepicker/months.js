@@ -39,14 +39,21 @@ export const DatePickerMonthsSlider = {
         position: 'absolute',
         zIndex: '35',
         background: 'transparent',
-        color: '#0079FD',
         ':first-child': { left: '18px' },
         ':last-child': { right: '18px' }
       }
     }
   },
 
-  Button_left: { icon: 'arrowLeft' },
+  Button_left: {
+    icon: 'arrowLeft',
+    '@dark': {
+      theme: 'primary @dark .color-only'
+    },
+    '@light': {
+      theme: 'primary @light .color-only'
+    }
+  },
 
   Flex: {
     props: {
@@ -96,5 +103,13 @@ export const DatePickerMonthsSlider = {
     }
   },
 
-  Button_right: { icon: 'arrowRight' }
+  Button_right: {
+    icon: 'arrowRight',
+    '@dark': {
+      theme: 'primary @dark .color-only'
+    },
+    '@light': {
+      theme: 'primary @light .color-only'
+    }
+  }
 }

@@ -10,15 +10,25 @@ export const Pills = {
 
   childExtend: {
     props: (el, s) => ({
-      active: parseInt(el.key) === (el.parent.props.active || s.active),
+      active: parseInt(el.key) === parseInt(s.active || el.parent.props.active),
 
-      theme: 'tertiary',
       boxSize: 'Y2',
       round: 'A',
+
+      '!active': {
+        theme: 'tertiary'
+      },
 
       '.active': {
         theme: 'primary'
       }
-    })
-  }
+    }),
+    on: {
+      click: (e, el, s) => {
+        s.update({ active: parseInt(el.key) })
+      }
+    }
+  },
+
+  $setCollection: ({ props, state }) => new Array(props.qty).fill({})
 }

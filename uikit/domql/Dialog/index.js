@@ -25,10 +25,15 @@ export const DialogFooter = {
   childExtend: {
     extend: Button,
     props: {
-      theme: 'primary @dark .color-only',
       fontSize: 'Z',
       textTransform: 'uppercase',
       background: 'transparent',
+      '@dark': {
+        theme: 'primary @dark .color-only'
+      },
+      '@light': {
+        theme: 'primary @light .color-only'
+      },
       '&': {
         padding: 'Z A'
       },
