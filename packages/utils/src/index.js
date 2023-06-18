@@ -29,8 +29,12 @@ export const toTitleCase = str => str.replace(
 )
 
 export const toDashCase = val => val
-  .replace(/[A-Z]/g, (match, offset) => (offset > 0 ? '-' : '') + match.toLowerCase())
-  .replace('.', '-')
+  .replace(/[^a-zA-Z0-9]/g, ' ') // Replace non-alphanumeric characters with spaces
+  .trim() // Remove leading and trailing spaces
+  .toLowerCase() // Convert to lowercase
+  .replace(/\s+/g, '-') // Replace spaces with dashes
+  .replace(/-+/g, '-') // Replace consecutive dashes with a single dash
+  .replace(/^-|-$/g, '') // Remove leading and trailing dashes
 
 export const toDescriptionCase = str => {
   const result = str.replace(/([A-Z])/g, ' $1')
