@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/editorjs",
-  "version": "2.11.82",
+  "version": "2.11.83",
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
   "gitHead": "d8a3ddccaae3f471c9706534d58fb41745e5f2df",
   "dependencies": {
-    "@domql/utils": "latest",
-    "@domql/converter": "latest"
+    "@domql/converter": "latest",
+    "@domql/utils": "latest"
   }
 }
