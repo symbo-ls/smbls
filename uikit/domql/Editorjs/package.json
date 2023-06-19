@@ -6,6 +6,7 @@
   "license": "ISC",
   "gitHead": "d8a3ddccaae3f471c9706534d58fb41745e5f2df",
   "dependencies": {
+    "@domql/utils": "latest",
     "@domql/converter": "latest"
   }
 }
