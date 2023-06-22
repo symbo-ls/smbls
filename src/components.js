@@ -11,6 +11,7 @@ import { Search } from "./components/Search"
 import { FieldSet } from "./components/FieldSet"
 import { FileUpload } from "./components/FileUpload"
 import { Upload } from "./components/Upload"
+import { DropDownItem } from "./components/DropDownItem"
 
 import designSystem from '@symbo.ls/default-config'
 console.log(designSystem)
@@ -35,7 +36,8 @@ create({
   search: { extend: Search },
   fieldSet: { extend: FieldSet },
   fileUploud: { extend: FileUpload },
-  upload: { extend: Upload }
+  upload: { extend: Upload },
+  dropDownItem: { extend: DropDownItem }
 }, {
   designSystem: {
     ...designSystem
