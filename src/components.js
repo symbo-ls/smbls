@@ -13,6 +13,7 @@ import { FileUpload } from "./components/FileUpload"
 import { Upload } from "./components/Upload"
 import { DropDownItem } from "./components/DropDownItem"
 import { Tab } from "./components/Tab"
+import { Steps } from "./components/Steps"
 
 import designSystem from '@symbo.ls/default-config'
 console.log(designSystem)
@@ -39,7 +40,8 @@ create({
   fileUploud: { extend: FileUpload },
   upload: { extend: Upload },
   dropDownItem: { extend: DropDownItem },
-  tab: { extend: Tab }
+  tab: { extend: Tab },
+  steps: { extend: Steps }
 }, {
   designSystem: {
     ...designSystem

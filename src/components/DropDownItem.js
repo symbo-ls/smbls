@@ -1,6 +1,6 @@
 'use strict'
 
-import { Button, Icon, Img, Flex } from "smbls"
+import { Button, Img, Flex, Checkbox } from "smbls"
 
 const props = {
   boxSize: 'fit-content',
@@ -17,41 +17,27 @@ const props = {
   },
 
   arrowButton: { margin: '- A2 - -' },
-
-  label: {
-    input: {
-      display: 'none',
-      '&:checked + div': { background: '#0474F2' },
-      '&:checked + div > svg': { opacity: '1' }
-    },
+  checkbox: {
+    ':hover': 'none',
+    padding: '0',
     checkbox: {
       boxSize: 'A1 A1',
-      border: '1px solid #57575C',
       round: 'X',
-      align: 'center center',
-      cursor: 'pointer',
-      transition: 'background .15s ease',
-      icon: {
-        fontSize: 'Y',
-        opacity: '0',
-        transition: 'opacity .15s ease',
-      }
+      border: '1px solid #57575C',
+      cursor: 'pointer'
     }
   },
-
   image: {
     boxSize: 'B2 C',
     border: '.5px solid yellow',
     margin: '- A',
     round: 'X'
   },
-
   title: {
     fontSize: 'Z1',
     textTransform: 'capitalize',
     margin: '- D2 - -'
   },
-
   valueCaption: {
     fontSize: 'Z1',
     textTransform: 'uppercase',
@@ -68,24 +54,10 @@ export const DropDownItem = {
     extend: Button,
     props: { icon: 'chevronRight' }
   },
-
-  label: {
-    input: { attr: { type: 'checkbox' } },
-    checkbox: {
-      extend: Flex,
-      icon: {
-        extend: Icon,
-        props: { name: 'check' }
-      }
-    }
-  },
-
+  checkbox: { extend: Checkbox },
   image: { extend: Img },
-
   title: { props: { text: 'label'} },
-
   valueCaption: { props: { text: '5 mb'}},
-
   dotButton: {
     extend: Button,
     props: { icon: 'moreHorizontal' }
