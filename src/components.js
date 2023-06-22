@@ -12,6 +12,7 @@ import { FieldSet } from "./components/FieldSet"
 import { FileUpload } from "./components/FileUpload"
 import { Upload } from "./components/Upload"
 import { DropDownItem } from "./components/DropDownItem"
+import { Tab } from "./components/Tab"
 
 import designSystem from '@symbo.ls/default-config'
 console.log(designSystem)
@@ -37,7 +38,8 @@ create({
   fieldSet: { extend: FieldSet },
   fileUploud: { extend: FileUpload },
   upload: { extend: Upload },
-  dropDownItem: { extend: DropDownItem }
+  dropDownItem: { extend: DropDownItem },
+  tab: { extend: Tab }
 }, {
   designSystem: {
     ...designSystem
