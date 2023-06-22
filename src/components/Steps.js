@@ -20,7 +20,7 @@ const checkBoxWithCaptionLine = {
       },
     },
     checkbox: {
-      boxSize: `${32 / 16}em ${32 / 16}em`,
+      boxSize: `B1`,
       border: '2px solid #313141',
       round: '100%',
       align: 'center center',
