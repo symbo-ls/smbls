@@ -3,7 +3,7 @@
   "version": "2.11.87",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "b5026caaa298c5171c505578d44d107ddafd338f",
+  "gitHead": "35b1b2b0b50dacc3f7dfb261f60bc89bc2d8c7e1",
   "dependencies": {
     "@domql/state": "latest",
     "@domql/utils": "latest",
