@@ -13,7 +13,7 @@ export const keySetters = {
   '[': (key, props, result, element, isSubtree) => applySelectorProps(
     key, props, isSubtree ? result : (result && result.selector), element
   ),
-  '&': (key, props, result, element, isSubtree) => applySelectorProps(
+  '&': (key, props, result, element, isSubtree) => applyEndProps(
     key, props, isSubtree ? result : (result && result.selector), element
   ),
   $: (key, props, result, element, isSubtree) => applyCaseProps(
@@ -82,9 +82,14 @@ const applyMediaProps = (key, props, result, element) => {
     return
   }
 
-  const mediaKey = `@media screen and ${mediaName}`
+  const mediaKey = mediaName ? `@media screen and ${mediaName}` : key
   result[mediaKey] = generatedClass
   return result[mediaKey]
+}
+
+const applyEndProps = (key, props, result, element) => {
+  result[key] = convertPropsToClass(props, result, element)
+  return result[key]
 }
 
 const applySelectorProps = (key, props, result, element) => {
@@ -117,7 +122,7 @@ const applyConditionalFalsyProps = (key, props, result, element) => {
 const applyTrueProps = (props, result, element) => merge(result, convertPropsToClass(props, result, element))
 
 const beforeClassAssign = (element, s) => {
-  const { props, class: className } = element
+  const { props, class: className, context } = element
 
   const CLASS_NAMES = {
     media: {},
@@ -125,18 +130,25 @@ const beforeClassAssign = (element, s) => {
     case: {}
   }
 
+  if (!context) return
+  const globalTheme = context.designSystem.globalTheme
+
   for (const key in props) {
     const setter = keySetters[key.slice(0, 1)]
+    if (globalTheme) {
+      if (key === 'theme') {
+        props.update({
+          themeModifier: globalTheme
+        }, {
+          preventRecursive: true,
+          isForced: true,
+          preventDefineUpdate: true
+        })
+      } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
+    }
     if (setter) setter(key, props[key], CLASS_NAMES, element)
   }
 
-  overwriteShallow(className, CLASS_NAMES)
-}
-
-const initUpdate = (changes, element) => {
-  const { props, context, class: className } = element
-  if (!context) return
-  const globalTheme = context.designSystem.globalTheme
 
   const parentProps = element.parent.props
   if (parentProps && parentProps.spacingRatio && parentProps.inheritSpacingRatio) {
@@ -145,37 +157,12 @@ const initUpdate = (changes, element) => {
       inheritSpacingRatio: true
     }, {
       preventRecursive: true,
-      preventInitUpdateListener: true
+      isForced: true,
+      preventDefineUpdate: true
     })
   }
 
-  if (globalTheme) {
-    const CLASS_NAMES = {
-      media: {},
-      selector: {},
-      case: {}
-    }
-
-    for (const key in props) {
-      const setter = keySetters[key.slice(0, 1)]
-      if (key === 'theme') {
-        props.update({
-          themeModifier: globalTheme
-        }, {
-          preventRecursive: true,
-          preventInitUpdateListener: true,
-          preventDefineUpdate: true
-        })
-      } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
-      if (setter) setter(key, props[key], CLASS_NAMES, element)
-    }
-
-    if (Object.keys(CLASS_NAMES.media).length) {
-      className.media = CLASS_NAMES.media
-    }
-    className.selector = CLASS_NAMES.selector
-    className.case = CLASS_NAMES.case
-  }
+  overwriteShallow(className, CLASS_NAMES)
 }
 
 export const Media = {
@@ -186,5 +173,5 @@ export const Media = {
       }
     }
   },
-  on: { beforeClassAssign, initUpdate }
+  on: { beforeClassAssign }
 }
