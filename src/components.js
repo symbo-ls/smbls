@@ -17,6 +17,7 @@ import { Steps } from "./components/Steps"
 
 import designSystem from '@symbo.ls/default-config'
 console.log(designSystem)
+designSystem.globalTheme = 'dark'
 
 create({
   extend: Flex,
@@ -43,7 +44,8 @@ create({
   tab: { extend: Tab },
   steps: { extend: Steps }
 }, {
-  designSystem: {
-    ...designSystem
-  },
+  designSystem,
+  state: {
+    globalTheme: 'dark',
+  }
 })
