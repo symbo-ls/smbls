@@ -79,3 +79,14 @@ export const IconText = {
     props: { flow: 'column' }
   }
 }
+
+export const FileIcon = {
+  props: {
+    theme: 'tertiary',
+    padding: 'A2',
+    round: 'Z'
+  },
+  Icon: {
+    icon: 'file'
+  }
+}

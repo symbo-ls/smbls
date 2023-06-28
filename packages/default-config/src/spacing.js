@@ -2,5 +2,6 @@
 
 export const SPACING = {
   base: 16,
-  ratio: 1.618
+  ratio: 1.618,
+  subSequence: true
 }
