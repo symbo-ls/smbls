@@ -9,8 +9,6 @@ import { TimePicker } from "./components/TimePicker"
 import { DatePicker, DatePickerTwoColumns } from "./components/DatePicker"
 import { Search } from "./components/Search"
 import { FieldSet } from "./components/FieldSet"
-import { FileUpload } from "./components/FileUpload"
-import { Upload } from "./components/Upload"
 import { DropDownItem } from "./components/DropDownItem"
 import { Tab } from "./components/Tab"
 import { Steps } from "./components/Steps"
@@ -26,6 +24,9 @@ create({
     padding: 'E',
     gap: 'D'
   },
+  state: {
+    globalTheme: 'dark',
+  },
 
   checkBox: { extend: Checkbox },
   radioButton: { extend: Radio },
@@ -38,11 +39,12 @@ create({
   datePicker2: { extend: DatePickerTwoColumns },
   search: { extend: Search },
   fieldSet: { extend: FieldSet },
-  fileUploud: { extend: FileUpload },
-  upload: { extend: Upload },
+  UploadResult: {},
+  UploadLabel: {},
+  UploadModal: {},
   dropDownItem: { extend: DropDownItem },
   tab: { extend: Tab },
-  steps: { extend: Steps }
+  steps: { extend: Steps },
 }, {
   designSystem,
   state: {
