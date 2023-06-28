@@ -5,7 +5,7 @@ import { Flex } from '@symbo.ls/atoms'
 const props = {
   border: '.5px solid #57575C',
   boxSize: 'fit-content fit-content',
-  gap: 'Y2',
+  gap: 'Z2',
   padding: 'Y2 Z Y2 Y2',
   background: '#141416',
   round: 'Z',
@@ -60,6 +60,8 @@ export const UploadResult = {
     extend: Flex,
     caption: { text: 'Image.jpg' },
     loadingValues,
-    UploadProgress: {}
+    UploadProgress: {
+      margin: 'Z2 - X'
+    }
   }
 }

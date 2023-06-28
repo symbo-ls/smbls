@@ -81,12 +81,16 @@ export const IconText = {
 }
 
 export const FileIcon = {
+  extend: Flex,
   props: {
     theme: 'tertiary',
-    padding: 'A2',
+    boxSize: 'C1',
+    align: 'center center',
     round: 'Z'
   },
   Icon: {
+    fontSize: 'B',
+    margin: 'auto',
     icon: 'file'
   }
 }

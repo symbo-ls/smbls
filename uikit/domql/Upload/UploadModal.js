@@ -1,139 +1,133 @@
 'use strict'
 
-import { IconText } from '@symbo.ls/icon'
+import { Dialog } from '@symbo.ls/dialog'
 import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
-import { UploadLabel } from './UploadLabel'
 
-const props = {
-  flow: 'column',
-  width: 'fit-content',
-  padding: 'A',
-  gap: 'A',
-  round: 'Z1',
-  background: '#252527',
+export const UploadModal = {
+  extend: [Flex, Dialog],
 
-  header: {
-    align: 'center space-between',
-    title: {
+  props: {
+    flow: 'column',
+    padding: 'Z A',
+    width: '100%',
+    maxWidth: 'H+C',
+    gap: 'X2',
+    round: 'Z1'
+  },
+
+  Flex_header: {
+    props: {
+      padding: '0 X',
+      align: 'center space-between'
+    },
+    H6: {
+      text: 'file upload',
       fontSize: 'A1',
       textTransform: 'capitalize'
     },
-    closeButton: {
-      padding: '0',
-      background: 'transparent',
-      color: 'white',
-      boxSize: 'fit-content fit-content'
+    SquareButton: {
+      margin: '- -Y2 - -',
+      color: 'gray 1 75',
+      theme: 'tertiary',
+      icon: 'x',
+      ':hover': { theme: 'secondary' },
+      ':active': { theme: 'secondary @dark :active' }
     }
   },
 
-  content: {
-    background: '#141416',
-    cursor: 'initial',
-    padding: 'C1 D1',
-    round: 'Z1',
-    border: '1px dashed #57575C',
-    Icon: {
-      color: '#818186',
-      opacity: '1'
-    },
-    p: {
-      gap: `${5 / 16}em`,
-      maxWidth: `${350 / 16}em`,
-      flexWrap: 'wrap',
-      textAlign: 'center',
-      align: 'center center',
-      childProps: {
-        whiteSpace: 'nowrap',
-        '&:nth-child(1)': {
-          fontSize: 'A',
-          fontWeight: '400',
-          color: '#CFCFD1'
-        },
-        '&:nth-child(2)': {
-          fontSize: 'A',
-          fontWeight: '500',
-          color: '#0474F2',
-          cursor: 'pointer'
-        },
-        '&:nth-child(3)': {
-          fontSize: 'Z1',
-          fontWeight: '400',
-          color: '#818186'
-        }
+  UploadLabel: {
+    props: {
+      margin: '0 -X',
+      cursor: 'pointer',
+      padding: 'C1',
+      gap: 'X2',
+      round: 'Z1',
+      userSelect: 'none',
+      border: '1px, dashed, gray 1 25',
+      background: 'gray 1 6',
+      transition: 'A defaultBezier',
+      transitionProperty: 'background',
+      ':hover': {
+        background: 'gray 1 5'
       }
-    }
-  },
-
-  footer: {
-    align: 'center space-between',
-    iconText: {
-      gap: 'Z1',
-      textTransform: 'capitalize'
     },
-    confirmButtons: {
-      gap: 'Y2',
-      childProps: {
-        textTransform: 'capitalize',
-        padding: 'A B',
-        round: 'A',
-        color: 'white',
-        '&:first-child': { background: '#141416' },
-        '&:last-child': { background: '#0474F2' }
-      }
-    }
-  }
-
-}
-
-export const UploadModal = {
-  extend: Flex,
-  props,
-
-  header: {
-    extend: Flex,
-    title: {
-      tag: 'h6',
-      text: 'file upload'
-    },
-    closeButton: {
-      extend: Button,
-      props: { icon: 'x' }
-    }
-  },
-
-  content: {
-    extend: UploadLabel,
     Input: {},
-    Icon: {},
-    P: null,
-    p: {
+    Icon: {
+      fontSize: 'D',
+      color: 'gray 1 150'
+    },
+    P_2: {
       extend: Flex,
-      childExtend: { tag: 'span' },
+      props: {
+        margin: 'W -',
+        gap: 'X2',
+        flexWrap: 'wrap',
+        textAlign: 'center',
+        align: 'center center'
+      },
+      childExtend: {
+        tag: 'span',
+        props: {
+          whiteSpace: 'nowrap',
+          '&:nth-child(1)': {
+            fontSize: 'A',
+            fontWeight: '400',
+            color: '#CFCFD1'
+          },
+          '&:nth-child(2)': {
+            fontSize: 'A',
+            fontWeight: '500',
+            theme: 'primary @dark .color-only',
+            cursor: 'pointer'
+          }
+        }
+      },
       ...[
         { text: 'Drag & drop your files here or' },
-        { text: 'Choose file' },
-        { text: '50 MB max file size' }
+        { text: 'Choose file' }
       ]
+    },
+    P: {
+      text: '50 MB max file size',
+      Span: null
     }
   },
 
   footer: {
     extend: Flex,
-    iconText: {
-      extend: IconText,
+    props: {
+      margin: 'X2 -X2 X2 W',
+      align: 'center space-between'
+    },
+
+    IconText: {
       props: {
         icon: 'info',
+        color: 'gray 1 75',
+        gap: 'Y2',
+        textTransform: 'capitalize',
         text: 'support'
       }
     },
-    confirmButtons: {
-      extend: Flex,
-      childExtend: Button,
-      ...[
-        { text: 'cancel' },
-        { text: 'attach file' }
-      ]
+
+    DialogFooter: {
+      props: {
+        padding: '0',
+        gap: 'Y',
+        childProps: {
+          round: 'A'
+        }
+      },
+
+      cancel: {
+        text: 'cancel'
+      },
+      ok: {
+        props: {
+          theme: 'secondary'
+        },
+        text: 'Attach File'
+      }
     }
   }
 }

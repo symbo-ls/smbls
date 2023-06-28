@@ -1,25 +1,31 @@
 'use strict'
 
 export const UploadProgress = {
+  tag: 'progress',
+
   props: {
     position: 'relative',
-    height: 'Y2',
+    height: 'Y',
     minWidth: 'G1',
-    theme: 'tertiary',
-    round: 'W',
+    round: 'A',
     overflow: 'hidden',
-    margin: 'auto - - -'
+    margin: 'auto - - -',
+
+    value: 0.5,
+
+    '::-webkit-progress-bar': {
+      theme: 'tertiary'
+    },
+
+    '::-webkit-progress-value': {
+      theme: 'primary',
+      round: 'V'
+    }
   },
 
-  Box: {
-    props: ({ state }) => ({
-      position: 'absolute',
-      theme: 'primary',
-      left: '0',
-      top: '0',
-      round: 'V',
-      bottom: '0',
-      width: state.progress ? state.progress + '%' : '30%'
-    })
+  attr: {
+    max: ({ props }) => props.max,
+    progress: ({ props }) => props.progress,
+    value: ({ props }) => props.value
   }
 }

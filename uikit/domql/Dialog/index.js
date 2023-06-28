@@ -38,7 +38,7 @@ export const DialogFooter = {
         padding: 'Z A'
       },
       ':hover': {
-        background: 'white .065'
+        theme: 'tertiary'
       },
       ':active': {
         background: 'white .1'

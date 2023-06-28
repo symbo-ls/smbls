@@ -16,13 +16,13 @@ const PRIORITIES = {
   },
 
   secondary: {
-    '@light': {
-      color: 'white',
-      background: 'blue'
-    },
     '@dark': {
       color: 'white',
       background: 'white .1'
+    },
+    '@light': {
+      color: 'white',
+      background: 'blue'
     },
 
     '.child': '--primary'
@@ -31,7 +31,7 @@ const PRIORITIES = {
   tertiary: {
     '@dark': {
       color: 'white',
-      background: 'gray 1 +5'
+      background: 'gray .95 +8'
     },
     '@light': {
       background: 'gray .1'
