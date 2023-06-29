@@ -63,8 +63,8 @@ export const DatePickerYears = {
       }
     },
 
-    $setCollection: ({ state, parent }) => {
-      const { yearRange } = parent.parent.props
+    $setCollection: ({ state }) => {
+      const { yearRange } = state
 
       if (yearRange) {
         const [start, end] = yearRange

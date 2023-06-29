@@ -8,11 +8,14 @@ export const DatePickerDay = {
   state: true,
 
   props: ({ state, key }) => {
-    const isSelected = state.parent.activeDay === parseInt(key) + 1
+    const isSelected = state.parent.parent.activeDay === parseInt(key) + 1
     const gridColumnStart = 7 - state.parent.weekItems.weeks[0].dates.length
+    const isWeekend = state.moment.isoWeekday()
+    // const isWeekend = state.moment.isWeekend
 
     return {
       isSelected,
+      isWeekend,
       textAlign: 'center',
       fontSize: 'Z1',
       round: '100%',
@@ -27,8 +30,8 @@ export const DatePickerDay = {
       },
       '.isSelected': { theme: 'primary' },
       '!isSelected': {
-        ':hover': { theme: 'secondary' },
-        ':nth-child(7n-1), &:nth-child(7n)': { opacity: '.5' }
+        '.isWeekend': { opacity: '.5' },
+        ':hover': { theme: 'secondary' }
       }
     }
   },

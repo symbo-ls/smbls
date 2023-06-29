@@ -21,7 +21,7 @@ const extractMonthDays = (data) => {
   return result
 }
 
-const monthNumbersContainer = {
+export const DatePickerGridContainer = {
   props: {
     maxWidth: `${272 / 16}em`,
     position: 'relative',
@@ -70,28 +70,27 @@ const monthNumbersContainer = {
   }
 }
 
-const props = {
-  yearRange: [1993, 2023],
-  maxHeight: 'G+B',
-  boxSize: 'fit-content fit-content',
-  style: {
-    button: {
-      padding: '0'
-    }
-  }
-}
-
 export const DatePicker = {
   extend: [Dialog, Flex],
+
   state: {
+    yearRange: [1993, 2023],
     activeYear: 1993,
     activeMonth: 8,
     activeDay: 14
   },
 
-  props,
+  props: {
+    maxHeight: 'G+B2'
+  },
 
-  DatePickerYears: {},
+  DatePickerYears: {
+    style: {
+      button: {
+        padding: '0'
+      }
+    }
+  },
 
   Flex: {
     props: {
@@ -100,11 +99,29 @@ export const DatePicker = {
       position: 'relative'
     },
 
-    DatePickerMonthsSlider: {},
+    DatePickerMonthsSlider: {
+      style: {
+        button: {
+          padding: '0'
+        }
+      }
+    },
 
-    DatePickerWeekDays: {},
+    DatePickerWeekDays: {
+      style: {
+        button: {
+          padding: '0'
+        }
+      }
+    },
 
-    monthNumbersContainer,
+    DatePickerGridContainer: {
+      style: {
+        button: {
+          padding: '0'
+        }
+      }
+    },
 
     DialogFooter: {}
   }
