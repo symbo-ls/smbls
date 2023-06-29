@@ -1,21 +1,17 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
+import { Dialog } from '@symbo.ls/dialog'
 
 const props = {
-  border: '.5px solid #57575C',
+  border: '1px solid #313141',
   boxSize: 'fit-content fit-content',
   gap: 'Z2',
   padding: 'Y2 Z Y2 Y2',
-  background: '#141416',
   round: 'Z',
   content: {
     flow: 'column',
     align: 'flex-start flex-start',
-    caption: {
-      fontWeight: '700',
-      padding: 'V2 - V2 -'
-    },
     loadingValues: {
       gap: 'Y2',
       align: 'center flex-start',
@@ -51,14 +47,19 @@ const loadingValues = {
 }
 
 export const UploadResult = {
-  extend: Flex,
+  extend: [Flex, Dialog],
   props,
 
   FileIcon: {},
 
   content: {
     extend: Flex,
-    caption: { text: 'Image.jpg' },
+    H6: {
+      color: 'currentColor',
+      text: 'Image.jpg',
+      fontWeight: '700',
+      padding: 'V2 -'
+    },
     loadingValues,
     UploadProgress: {
       margin: 'Z2 - X'

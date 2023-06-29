@@ -9,7 +9,6 @@ export const UploadProgress = {
     minWidth: 'G1',
     round: 'A',
     overflow: 'hidden',
-    margin: 'auto - - -',
 
     value: 0.5,
 
