@@ -1,57 +1,62 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
+import { Focusable, Flex } from '@symbo.ls/atoms'
 import { Dialog } from '@symbo.ls/dialog'
 
-const props = {
-  border: '1px solid #313141',
-  boxSize: 'fit-content fit-content',
-  align: 'center space-between',
-  padding: 'B1 -',
-  gap: 'A2',
-  minWidth: 'H1',
-  round: 'A',
-  position: 'relative',
-  maxHeight: 'C2'
-}
 
 export const Search = {
-  extend: [Flex, Dialog],
-  props,
-
-  Button: {
-    icon: 'search',
-    padding: '0',
-    background: 'transparent',
-    color: 'white',
-    boxSize: 'fit-content',
-    position: 'absolute',
-    left: 'A2',
-    zIndex: '10'
+  extend: Flex,
+  props: {
+    align: 'center space-between',
+    theme: 'tertiary',
+    padding: 'A1 B1',
+    gap: 'A2',
+    width: '100%',
+    maxWidth: 'H1',
+    round: 'B1',
+    position: 'relative',
+    maxHeight: 'C2',
+    fontSize: 'A2',
+    transition: 'A, defaultBezier',
+    transitionProperty: 'background, color',
+    
+    ':focus-within': {
+      '@dark': {
+        background: 'gray 1 +8'
+      },
+      '@light': { 
+        background: 'gray .15'
+      }
+    }
   },
+
+  Icon: { icon: 'search' },
 
   Input: {
     placeholder: 'Type a command or search',
+    theme: null,
     background: 'transparent',
-    color: 'white',
+    color: 'currentColor',
     flex: '1',
     round: 'A',
     position: 'absolute',
     boxSize: '100% 100%',
     left: '0',
-    padding: '- - - C1',
+    padding: '- - - C3',
+    ':hover': { background: 'transparent' },
+    ':focus': { background: 'transparent' },
     ':focus + button': { opacity: '1' }
   },
 
   Button_x: {
     icon: 'x',
-    padding: '0',
+    padding: 'Z2',
     background: 'transparent',
     color: 'white',
     boxSize: 'fit-content fit-content',
     opacity: '0',
     position: 'absolute',
-    right: 'A2',
+    right: 'A1',
     Icon: {
       width: `${12 / 16}em`,
       height: `${12 / 16}em`

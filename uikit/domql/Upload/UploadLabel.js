@@ -1,6 +1,7 @@
 'use strict'
 
 import { Focusable, Flex } from '@symbo.ls/atoms'
+import { Dialog } from '@symbo.ls/dialog'
 
 export const UploadLabel = {
   extend: [Focusable, Flex],
@@ -8,14 +9,18 @@ export const UploadLabel = {
 
   props: {
     position: 'relative',
+    theme: 'tertiary',
     flow: 'column',
     align: 'center center',
     round: 'A',
     cursor: 'pointer',
     border: '1.6px, dashed, white 0.1',
     padding: 'B B2',
+  },
 
-    Input: {
+  Input: {
+    props: {
+      type: 'file',
       position: 'absolute',
       inset: '0 0 0 0',
       opacity: '0',
@@ -23,14 +28,12 @@ export const UploadLabel = {
     }
   },
 
-  Input: {
-    type: 'file'
-  },
-
   Icon: {
-    name: 'upload',
-    fontSize: 'B',
-    opacity: '.2'
+    props: {
+      name: 'upload',
+      fontSize: 'B',
+      opacity: '.2'
+    }
   },
 
   P: {

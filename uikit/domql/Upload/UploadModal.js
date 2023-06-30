@@ -17,10 +17,11 @@ export const UploadModalFooter = {
     extend: [IconText, Link],
     props: {
       icon: 'info',
-      color: 'gray 1 75',
+      color: 'gray .65 120',
       fontWeight: 'regular',
       target: '_blank',
       gap: 'Y1',
+      fontSize: 'Z2',
       textTransform: 'capitalize',
       text: 'support'
     }
@@ -50,7 +51,7 @@ export const UploadModalFooter = {
 export const UploadModalLabel = {
   extend: UploadLabel,
   props: {
-    margin: '0 -X',
+    margin: 'X -X',
     cursor: 'pointer',
     padding: 'C1',
     gap: 'X2',
@@ -130,7 +131,7 @@ export const UploadModal = {
     },
     SquareButton: {
       margin: '- -Y2 - -',
-      color: 'gray 1 75',
+      color: 'gray 1 105',
       theme: 'tertiary',
       icon: 'x',
       ':hover': { theme: 'secondary' },
@@ -138,8 +139,7 @@ export const UploadModal = {
     }
   },
 
-  UploadModalLabel: {
-  },
+  UploadModalLabel: {},
 
   UploadModalFooter: {}
 }

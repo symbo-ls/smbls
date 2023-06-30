@@ -9,7 +9,7 @@ export const Input = {
   props: {
     border: 'none',
     type: 'input',
-    theme: 'quaternary',
+    theme: 'tertiary',
     fontSize: 'A',
     round: 'C',
     lineHeight: 1,

@@ -31,7 +31,7 @@ const PRIORITIES = {
   tertiary: {
     '@dark': {
       color: 'white',
-      background: 'gray .95 +8'
+      background: 'gray .92 +8'
     },
     '@light': {
       background: 'gray .1'
@@ -51,16 +51,26 @@ const PRIORITIES = {
 
   quinary: {
     '@dark': {
-      color: 'gray9',
+      color: 'gray 1 90',
       background: 'gradient-light',
 
-      ':hover, &:active': {
-        color: 'gray12',
+      ':hover': {
+        color: 'gray 1 95',
+        background: 'gradient-light-active'
+      },
+
+      ':focus': {
+        color: 'gray 1 120',
+        background: 'gradient-light-active'
+      },
+
+      ':active': {
+        color: 'gray 1 120',
         background: 'gradient-light-active'
       },
 
       '.active': {
-        color: 'gray12',
+        color: 'gray 1 120',
         background: 'gradient-light-active'
       }
     },
@@ -69,7 +79,12 @@ const PRIORITIES = {
       color: 'gray3',
       background: 'gradient-dark',
 
-      ':hover, &:active': {
+      ':hover': {
+        color: 'gray1',
+        background: 'gradient-dark-active'
+      },
+
+      ':active': {
         color: 'gray1',
         background: 'gradient-dark-active'
       },

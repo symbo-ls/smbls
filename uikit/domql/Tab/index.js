@@ -1,18 +1,17 @@
 'use strict'
 
-import { Dialog } from '@symbo.ls/dialog'
 import { Button } from '@symbo.ls/button'
 
 const props = {
-  border: '1px solid #313141',
   gap: 'Z',
+  theme: 'tertiary',
   round: 'Z2',
-  padding: 'Y2 Z1',
+  padding: 'Y2 A',
   align: 'center center'
 }
 
 export const Tab = {
-  extend: [Dialog, Button],
+  extend: Button,
   props,
   Icon: {
     props: {
@@ -27,6 +26,7 @@ export const Tab = {
   Box: {
     text: '19',
     background: '#313141',
+    margin: '- -X - A',
     padding: 'Y Y',
     round: 'Y1',
     textAlign: 'center'
