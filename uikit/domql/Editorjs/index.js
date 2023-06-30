@@ -9,10 +9,11 @@ export const Editorjs = {
   on: {
     init: () => initMutiny()
   },
-  
-    content: (el, state) => {
-      let param = el.props.content
+  define: {
+    $editorjs: (param, el, state) => {
       if (!param) return
+      console.log('removed')
+      console.log(param)
 
       if (isObject(param) && param.blocks) param = param.blocks
       if (!isArray(param)) return
@@ -25,6 +26,9 @@ export const Editorjs = {
 
       const content = editorJsToDOMQL(param)
       const cloned = deepClone(content.asObjectArray)
-      return cloned
+      console.log(cloned)
+      el.removeContent()
+      return el.set(cloned)
     }
+  }
 }
