@@ -59,10 +59,12 @@ export const DatePickerMonthsSlider = {
       click: (ev, el, s) => {
         const { activeMonth, activeYear } = s
         if (activeMonth > 0) s.update({ activeMonth: activeMonth - 1 })
-        else s.update({
-          activeYear: activeYear - 1,
-          activeMonth: 11
-        })
+        else {
+          s.update({
+            activeYear: activeYear - 1,
+            activeMonth: 11
+          })
+        }
       }
     }
   },
@@ -131,10 +133,12 @@ export const DatePickerMonthsSlider = {
       click: (ev, el, s) => {
         const { activeMonth, activeYear } = s
         if (activeMonth < 11) s.update({ activeMonth: activeMonth + 1 })
-        else s.update({
-          activeYear: activeYear + 1,
-          activeMonth: 0
-        })
+        else {
+          s.update({
+            activeYear: activeYear + 1,
+            activeMonth: 0
+          })
+        }
       }
     }
   }

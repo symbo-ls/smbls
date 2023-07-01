@@ -62,8 +62,8 @@ export const hexToRgbArray = (hex, alpha = 1) => {
 }
 
 export const rgbToHex = (r, g, b) => {
-  return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
-};
+  return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)
+}
 
 export const rgbArrayToHex = ([r, g, b]) => {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)

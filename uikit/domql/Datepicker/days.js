@@ -2,7 +2,6 @@
 
 import { Grid } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
-import { calendar } from '.'
 
 export const DatePickerDay = {
   extend: Button,
@@ -72,7 +71,7 @@ export const DatePickerGrid = {
   on: {
     render: (el, state) => {
       const { key } = el
-      const isSelected =  state.parent.parent.activeMonth === parseInt(key)
+      const isSelected = state.parent.parent.activeMonth === parseInt(key)
       if (isSelected) {
         window.requestAnimationFrame(() => {
           el.node.scrollIntoView()
