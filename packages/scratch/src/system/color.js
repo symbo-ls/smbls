@@ -5,11 +5,7 @@ import { isObject, isArray, isString } from '@domql/utils'
 
 import {
   colorStringToRgbaArray,
-  rgbToHSL,
-  hexToRgbArray,
-  rgbArrayToHex,
-  hslToRgb,
-  getColorShade
+  getRgbTone
 } from '../utils'
 
 export const getColor = (value, key, config) => {
@@ -41,21 +37,11 @@ export const getColor = (value, key, config) => {
   // if (alpha) return `rgba(var(${val[shade || ''].var}), ${modifier})`
 
   let rgb = val.rgb
-  if (!rgb) return CONFIG.useVariable ? `var(${val.var})` : val.value
+  if (!rgb) {
+    return CONFIG.useVariable ? `var(${val.var})` : val.value
+  }
   if (tone && !val[tone]) {
-    const toHex = rgbArrayToHex(rgb.split(', ').map(v => parseFloat(v)))
-    const abs = tone.slice(0, 1)
-    if (abs === '-' || abs === '+') {
-      rgb = hexToRgbArray(
-        getColorShade(toHex, parseFloat(tone))
-      ).join(', ')
-    } else {
-      const [r, g, b] = [...rgb.split(', ').map(v => parseInt(v))]
-      const hsl = rgbToHSL(r, g, b)
-        const [h, s, l] = hsl // eslint-disable-line
-      const newRgb = hslToRgb(h, s, parseFloat(tone) / 100 * 255)
-      rgb = newRgb
-    }
+    rgb = getRgbTone(rgb, tone)
     val[tone] = { rgb, var: `${val.var}-${tone}` }
   }
   if (val[tone]) rgb = val[tone].rgb

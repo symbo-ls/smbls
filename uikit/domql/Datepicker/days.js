@@ -2,20 +2,27 @@
 
 import { Grid } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
+import { calendar } from '.'
 
 export const DatePickerDay = {
   extend: Button,
   state: true,
 
   props: ({ state, key }) => {
-    const isSelected = state.parent.parent.activeDay === parseInt(key) + 1
+    const rootState = state.parent.parent.parent
+    const date = new Date(state._d)
+    const isSelected = rootState.activeDay === date.toString()
     const gridColumnStart = 7 - state.parent.weekItems.weeks[0].dates.length
-    const isWeekend = state.moment.isoWeekday()
+    const { moment } = state
+    moment._d = date
+    const isWeekend = moment.day() === 0 || moment.day() === 6
+    // const isWeekend = state.moment.day() === 0 || state.moment.day() === 6
     // const isWeekend = state.moment.isWeekend
 
     return {
       isSelected,
       isWeekend,
+      date: date.toString(),
       textAlign: 'center',
       fontSize: 'Z1',
       round: '100%',
@@ -38,10 +45,9 @@ export const DatePickerDay = {
 
   on: {
     click: (event, element, state) => {
-      state.parent.parent.update({
-        active: state.parse()
+      state.parent.parent.parent.update({
+        activeDay: element.props.date
       })
-      console.log(state)
     }
   }
 }
@@ -59,6 +65,19 @@ export const DatePickerGrid = {
   childExtend: DatePickerDay,
 
   $setStateCollection: (el, s) => {
+    // console.warn(s.days)
     return s.days
+  },
+
+  on: {
+    render: (el, state) => {
+      const { key } = el
+      const isSelected =  state.parent.parent.activeMonth === parseInt(key)
+      if (isSelected) {
+        window.requestAnimationFrame(() => {
+          el.node.scrollIntoView()
+        })
+      }
+    }
   }
 }

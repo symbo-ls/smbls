@@ -46,12 +46,24 @@ export const DatePickerMonthsSlider = {
   },
 
   Button_left: {
-    icon: 'arrowLeft',
-    '@dark': {
-      theme: 'primary @dark .color-only'
+    props: {
+      icon: 'arrowLeft',
+      '@dark': {
+        theme: 'primary @dark .color-only'
+      },
+      '@light': {
+        theme: 'primary @light .color-only'
+      }
     },
-    '@light': {
-      theme: 'primary @light .color-only'
+    on: {
+      click: (ev, el, s) => {
+        const { activeMonth, activeYear } = s
+        if (activeMonth > 0) s.update({ activeMonth: activeMonth - 1 })
+        else s.update({
+          activeYear: activeYear - 1,
+          activeMonth: 11
+        })
+      }
     }
   },
 
@@ -74,13 +86,15 @@ export const DatePickerMonthsSlider = {
         '.isSelected': { opacity: '1' }
       }),
 
-      render: (el, state) => {
-        const { props } = el
-        const { isSelected } = props
-        if (isSelected) {
-          window.requestAnimationFrame(() => {
-            el.parent.parent.node.scrollLeft = el.node.offsetLeft
-          })
+      on: {
+        update: (el, state) => {
+          const { props } = el
+          const { isSelected } = props
+          if (isSelected) {
+            window.requestAnimationFrame(() => {
+              el.parent.parent.node.scrollLeft = el.node.offsetLeft
+            })
+          }
         }
       }
     },
@@ -104,12 +118,24 @@ export const DatePickerMonthsSlider = {
   },
 
   Button_right: {
-    icon: 'arrowRight',
-    '@dark': {
-      theme: 'primary @dark .color-only'
+    props: {
+      icon: 'arrowRight',
+      '@dark': {
+        theme: 'primary @dark .color-only'
+      },
+      '@light': {
+        theme: 'primary @light .color-only'
+      }
     },
-    '@light': {
-      theme: 'primary @light .color-only'
+    on: {
+      click: (ev, el, s) => {
+        const { activeMonth, activeYear } = s
+        if (activeMonth < 11) s.update({ activeMonth: activeMonth + 1 })
+        else s.update({
+          activeYear: activeYear + 1,
+          activeMonth: 0
+        })
+      }
     }
   }
 }

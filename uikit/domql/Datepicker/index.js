@@ -5,7 +5,7 @@ import { Dialog } from '@symbo.ls/dialog'
 import { HeadlessDatepicker } from 'headless-datepicker'
 import { DatePickerGrid } from './days'
 
-const calendar = new HeadlessDatepicker.Calendar({
+export const calendar = new HeadlessDatepicker.Calendar({
   calendarMode: 'exact'
 })
 
@@ -14,7 +14,7 @@ const extractMonthDays = (data) => {
 
   data.weeks.forEach((week) => {
     week.dates.forEach((date) => {
-      result.push(date)
+      result.push({ ...date, _d: date.moment._d.toString() })
     })
   })
 

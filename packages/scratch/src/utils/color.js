@@ -1,6 +1,7 @@
 'use strict'
 
 import { document, window } from '@domql/globals'
+import { isString, isNumber } from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const colorStringToRgbaArray = color => {
@@ -61,8 +62,8 @@ export const hexToRgbArray = (hex, alpha = 1) => {
 }
 
 export const rgbToHex = (r, g, b) => {
-  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
-}
+  return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+};
 
 export const rgbArrayToHex = ([r, g, b]) => {
   return ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
@@ -127,7 +128,7 @@ export const getColorShade = (col, amt) => {
   if (g > 255) g = 255
   else if (g < 0) g = 0
 
-  return (g | (b << 8) | (r << 16)).toString(16)
+  return ((g | (b << 8) | (r << 16)) + 0x1000000).toString(16).slice(1)
 }
 
 export const mixTwoRgba = (colorA, colorB, range = 0.5) => {
@@ -151,4 +152,22 @@ export const opacify = (color, opacity) => {
   }
   arr[3] = opacity
   return `rgba(${arr})`
+}
+
+export const getRgbTone = (rgb, tone) => {
+  if (isString(rgb)) rgb = rgb.split(', ').map(v => parseFloat(v))
+  if (isNumber(tone)) tone += ''
+  const toHex = rgbArrayToHex(rgb)
+  const abs = tone.slice(0, 1)
+
+  if (abs === '-' || abs === '+') {
+    const colorShade = getColorShade(toHex, parseFloat(tone))
+    return hexToRgbArray(colorShade).join(', ')
+  } else {
+    const [r, g, b] = rgb
+    const hsl = rgbToHSL(r, g, b)
+    const [h, s, l] = hsl // eslint-disable-line
+    const newRgb = hslToRgb(h, s, parseFloat(tone) / 100 * 255)
+    return newRgb
+  }
 }
