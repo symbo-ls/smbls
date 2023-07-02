@@ -1,7 +1,6 @@
 'use strict'
 
 import { Focusable, Flex } from '@symbo.ls/atoms'
-import { Dialog } from '@symbo.ls/dialog'
 
 export const UploadLabel = {
   extend: [Focusable, Flex],
@@ -15,7 +14,7 @@ export const UploadLabel = {
     round: 'A',
     cursor: 'pointer',
     border: '1.6px, dashed, white 0.1',
-    padding: 'B B2',
+    padding: 'B B2'
   },
 
   Input: {
