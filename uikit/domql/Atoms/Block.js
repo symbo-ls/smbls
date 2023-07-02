@@ -157,6 +157,11 @@ export const Block = {
   }
 }
 
+export const Hr = { 
+  tag: 'hr',
+  props: { margin: 'C1 0' }
+}
+export const Br = { tag: 'br' }
 export const Span = { tag: 'span' }
 export const List = {
   tag: 'ul',

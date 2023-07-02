@@ -74,7 +74,10 @@ export const DatePickerGrid = {
       const isSelected = state.parent.parent.activeMonth === parseInt(key)
       if (isSelected) {
         window.requestAnimationFrame(() => {
-          el.node.scrollIntoView()
+          el.parent.parent.node.scrollTo({
+            left: el.node.offsetLeft,
+            behavior: 'smooth'
+          })
         })
       }
     }

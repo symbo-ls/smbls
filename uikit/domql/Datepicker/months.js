@@ -94,7 +94,14 @@ export const DatePickerMonthsSlider = {
           const { isSelected } = props
           if (isSelected) {
             window.requestAnimationFrame(() => {
-              el.parent.parent.node.scrollLeft = el.node.offsetLeft
+              el.parent.parent.node.scrollTo({
+                left: el.node.offsetLeft,
+                behavior: 'smooth'
+              })
+              // el.parent.parent.node.scrollLeft = el.node.offsetLeft
+              // el.node.scrollIntoViewIfNeeded({
+              //   behavior: 'smooth'
+              // })
             })
           }
         }

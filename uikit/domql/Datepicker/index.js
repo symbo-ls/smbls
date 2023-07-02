@@ -81,6 +81,8 @@ export const DatePicker = {
   },
 
   props: {
+    width: 'fit-content',
+    margin: '0',
     maxHeight: 'G+B2'
   },
 
