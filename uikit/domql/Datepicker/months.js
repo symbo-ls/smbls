@@ -98,10 +98,6 @@ export const DatePickerMonthsSlider = {
                 left: el.node.offsetLeft,
                 behavior: 'smooth'
               })
-              // el.parent.parent.node.scrollLeft = el.node.offsetLeft
-              // el.node.scrollIntoViewIfNeeded({
-              //   behavior: 'smooth'
-              // })
             })
           }
         }
