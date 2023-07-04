@@ -21,7 +21,9 @@ const EXCLUDED_FROM_INTERNAL_UIKIT = [
   'splitTransition',
   'transformDuration',
   'transformShadow',
-  'transformTransition'
+  'transformTransition',
+  'DatePickerDay',
+  'DatePickerGrid',
 ]
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
