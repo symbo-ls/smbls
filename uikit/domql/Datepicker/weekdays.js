@@ -9,7 +9,12 @@ export const DatePickerWeekDays = {
     padding: '- Z A',
     width: '100%',
     columns: 'repeat(7, 1fr)',
-    gap: 'W2'
+    gap: 'W2',
+    style: {
+      button: {
+        padding: '0'
+      }
+    }
   },
   childExtend: {
     tag: 'span',

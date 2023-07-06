@@ -8,6 +8,12 @@ export const DatePickerYears = {
     overflow: 'hidden',
     position: 'relative',
 
+    style: {
+      button: {
+        padding: '0'
+      }
+    },
+
     ':before': {
       content: '""',
       boxSize: 'A1 100%',
@@ -27,11 +33,13 @@ export const DatePickerYears = {
     }
   },
 
+  if: ({ state }) => state.yearRange,
+
   Flex: {
     props: {
       flow: 'column',
       gap: 'B',
-      padding: 'A Z A1 B1',
+      padding: 'A Z A1 B',
       maxHeight: '100%',
       overflow: 'hidden auto',
       '::-webkit-scrollbar': { display: 'none' }
@@ -50,46 +58,29 @@ export const DatePickerYears = {
         ':hover': { opacity: '1' }
       }),
       on: {
-        click: (event, element, state) => state.update({ activeYear: element.text }),
+        click: (event, element, state) => state.update({
+          activeYear: element.text
+        }, { isHoisted: true }),
         render: (el, state) => {
           const { props } = el
           const { isSelected } = props
-          if (isSelected) {
-            window.requestAnimationFrame(() => {
-              el.parent.parent.node.scrollTop = el.node.offsetTop - 100
-            })
-          }
+          if (!isSelected) return
+          window.requestAnimationFrame(() => {
+            el.parent.parent.node.scrollTop = el.node.offsetTop - 100
+          })
         }
       }
     },
 
-    $setCollection: ({ state }) => {
-      const { yearRange } = state
+    $setPropsCollection: (element) => {
+      const { yearRange } = element.state
+      if (!yearRange) return
 
-      if (yearRange) {
-        const [start, end] = yearRange
-        const yearsArray = (new Array(end + 1 - start)).fill(undefined).map((v, k) => {
-          return { text: start + k }
-        }).reverse()
-        return yearsArray
-      }
-
-      return [
-        { text: '2023' },
-        { text: '2022' },
-        { text: '2021' },
-        { text: '2020' },
-        { text: '2019' },
-        { text: '2018' },
-        { text: '2017' },
-        { text: '2016' },
-        { text: '2015' },
-        { text: '2014' },
-        { text: '2013' },
-        { text: '2012' },
-        { text: '2012' },
-        { text: '2012' }
-      ]
+      const [start, end] = yearRange
+      const yearsArray = (new Array(end + 1 - start)).fill(undefined).map((v, k) => {
+        return { text: start + k }
+      }).reverse()
+      return yearsArray
     }
   }
 }

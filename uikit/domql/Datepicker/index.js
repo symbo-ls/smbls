@@ -12,11 +12,25 @@ export * from './grid'
 export const DatePicker = {
   extend: [Dialog, Flex],
 
-  state: {
-    yearRange: [1993, 2023],
-    activeYear: 1993,
-    activeMonth: 8,
-    activeDay: 14
+  state: ({ props }) => {
+    const date = new Date()
+    const activeYear = date.getFullYear()
+    const activeMonth = date.getMonth()
+    const activeDay = date.getDate()
+    console.log({
+      yearRange: props.yearRange || [activeYear - 30, activeYear],
+      activeYear: props.activeYear || activeYear,
+      activeMonth: props.activeMonth || activeMonth,
+      activeDay: props.activeDay || activeDay,
+      selectedDay: props.selectedDay || null
+    })
+    return {
+      yearRange: props.yearRange || [activeYear - 30, activeYear],
+      activeYear: props.activeYear || activeYear,
+      activeMonth: props.activeMonth || activeMonth,
+      activeDay: props.activeDay || activeDay,
+      selectedDay: props.selectedDay || null
+    }
   },
 
   props: {
@@ -26,44 +40,20 @@ export const DatePicker = {
     maxHeight: 'G+B2'
   },
 
-  DatePickerYears: {
-    style: {
-      button: {
-        padding: '0'
-      }
-    }
-  },
+  DatePickerYears: {},
 
   Flex: {
     props: {
       flow: 'column',
-      padding: '20px - - -',
+      padding: 'A1 - - -',
       position: 'relative'
     },
 
-    DatePickerMonthsSlider: {
-      style: {
-        button: {
-          padding: '0'
-        }
-      }
-    },
+    DatePickerMonthsSlider: {},
 
-    DatePickerWeekDays: {
-      style: {
-        button: {
-          padding: '0'
-        }
-      }
-    },
+    DatePickerWeekDays: {},
 
-    DatePickerGridContainer: {
-      style: {
-        button: {
-          padding: '0'
-        }
-      }
-    },
+    DatePickerGridContainer: {},
 
     DialogFooter: {}
   }

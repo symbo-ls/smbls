@@ -34,8 +34,9 @@ export const DatePickerMonthsSlider = {
 
     style: {
       '> button': {
-        width: '16px',
-        height: '16px',
+        padding: '0',
+        width: 'A',
+        height: 'A',
         position: 'absolute',
         zIndex: '35',
         background: 'transparent',
@@ -72,7 +73,7 @@ export const DatePickerMonthsSlider = {
   Flex: {
     props: {
       flex: '1',
-      overflow: 'auto hidden',
+      overflow: 'hidden',
       style: { scrollSnapType: 'x mandatory' },
       '::-webkit-scrollbar': { display: 'none' }
     },
@@ -84,7 +85,6 @@ export const DatePickerMonthsSlider = {
         textAlign: 'center',
         boxSizing: 'content-box',
         minWidth: '272px',
-
         style: { scrollSnapAlign: 'center' },
 
         isSelected: state.activeMonth === parseInt(key),
@@ -95,20 +95,21 @@ export const DatePickerMonthsSlider = {
         update: (el, state) => {
           const { props } = el
           const { isSelected } = props
+          console.log(isSelected)
           if (isSelected) {
             window.requestAnimationFrame(() => {
               el.parent.parent.node.scrollTo({
                 left: el.node.offsetLeft,
-                behavior: state.init ? 'smooth' : 'instant'
+                behavior: state.initialized ? 'smooth' : 'instant'
               })
             })
-            if (!state.init) state.update({ init: true }, { preventUpdate: true })
+            // if (!state.initialized) state.update({ initialized: true }, { preventUpdate: true, isHoisted: true })
           }
         }
       }
     },
 
-    $setCollection: ({ state, parent }) => {
+    $setPropsCollection: ({ state, parent }) => {
       return [
         { text: 'January' },
         { text: 'February' },

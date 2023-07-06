@@ -1,6 +1,6 @@
 'use strict'
 
-import { Flex, Grid } from '@symbo.ls/atoms'
+import { Grid } from '@symbo.ls/atoms'
 import { DatePickerDay } from './days'
 import { HeadlessDatepicker } from 'headless-datepicker'
 
@@ -32,34 +32,22 @@ export const DatePickerGrid = {
   },
 
   childExtend: DatePickerDay,
-
-  $setStateCollection: (el, s) => {
-    // console.warn(s.days)
-    return s.days
-  },
-
-  on: {
-    render: (el, state) => {
-      const { key } = el
-      const isSelected = state.parent.parent.activeMonth === parseInt(key)
-      if (isSelected) {
-        window.requestAnimationFrame(() => {
-          el.parent.parent.node.scrollTo({
-            left: el.node.offsetLeft,
-            behavior: state.init ? 'smooth' : 'instant'
-          })
-        })
-        if (!state.init) state.update({ init: true }, { preventUpdate: true })
-      }
-    }
-  }
+  $setStateCollection: (el, s) => s.days
 }
 
 export const DatePickerGridContainer = {
   props: {
-    maxWidth: `${272 / 16}em`,
+    maxWidth: 'F3+B',
     position: 'relative',
-    style: { scrollSnapType: 'x mandatory' },
+    content: {
+      overflow: 'hidden',
+      style: { scrollSnapType: 'x mandatory' }
+    },
+    style: {
+      button: {
+        padding: '0'
+      }
+    },
     ':before': {
       content: '""',
       position: 'absolute',
@@ -77,14 +65,13 @@ export const DatePickerGridContainer = {
       right: '0',
       top: '0',
       zIndex: '30'
-    },
-    content: {
-      overflow: 'auto hidden'
     }
   },
 
   state: (el, s) => {
     const state = el.parent.state
+    console.warn(state)
+    if (!state.activeYear) return
     return (new Array(12)).fill(undefined).map((v, k) => {
       const year = state.activeYear
       const month = k + 1
@@ -98,9 +85,26 @@ export const DatePickerGridContainer = {
     })
   },
 
-  content: {
-    extend: Flex,
-    childExtend: DatePickerGrid,
+  Flex: {
+    props: {},
+    childExtend: {
+      extend: DatePickerGrid,
+      on: {
+        render: (el, state) => {
+          const { key } = el
+          const isSelected = state.parent.parent.activeMonth === parseInt(key)
+          if (isSelected) {
+            window.requestAnimationFrame(() => {
+              el.parent.parent.node.scrollTo({
+                left: el.node.offsetLeft,
+                behavior: state.initialized ? 'smooth' : 'instant'
+              })
+            })
+            // if (!state.initialized) state.update({ initialized: true }, { preventUpdate: true, isHoisted: true })
+          }
+        }
+      }
+    },
     $setStateCollection: (el, s) => s.parse()
   }
 }
