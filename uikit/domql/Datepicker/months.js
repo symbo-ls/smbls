@@ -8,7 +8,7 @@ export const DatePickerMonthsSlider = {
     position: 'relative',
     overflow: 'hidden',
     alignItems: 'center',
-    padding: '- - B -',
+    padding: '- - A2 -',
     maxWidth: `${272 / 16}em`,
     boxSizing: 'border-box',
     ':before': {
@@ -73,6 +73,7 @@ export const DatePickerMonthsSlider = {
     props: {
       flex: '1',
       overflow: 'auto hidden',
+      style: { scrollSnapType: 'x mandatory' },
       '::-webkit-scrollbar': { display: 'none' }
     },
 
@@ -83,6 +84,8 @@ export const DatePickerMonthsSlider = {
         textAlign: 'center',
         boxSizing: 'content-box',
         minWidth: '272px',
+
+        style: { scrollSnapAlign: 'center' },
 
         isSelected: state.activeMonth === parseInt(key),
         '.isSelected': { opacity: '1' }
@@ -96,9 +99,10 @@ export const DatePickerMonthsSlider = {
             window.requestAnimationFrame(() => {
               el.parent.parent.node.scrollTo({
                 left: el.node.offsetLeft,
-                behavior: 'smooth'
+                behavior: state.init ? 'smooth' : 'instant'
               })
             })
+            if (!state.init) state.update({ init: true }, { preventUpdate: true })
           }
         }
       }

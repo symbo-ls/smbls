@@ -1,6 +1,5 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
 
 export const DatePickerDay = {
@@ -47,39 +46,6 @@ export const DatePickerDay = {
       state.parent.parent.parent.update({
         activeDay: element.props.date
       })
-    }
-  }
-}
-
-export const DatePickerGrid = {
-  extend: Grid,
-
-  props: {
-    columns: 'repeat(7, 1fr)',
-    minWidth: '100%',
-    gap: 'W2',
-    padding: '- Z'
-  },
-
-  childExtend: DatePickerDay,
-
-  $setStateCollection: (el, s) => {
-    // console.warn(s.days)
-    return s.days
-  },
-
-  on: {
-    render: (el, state) => {
-      const { key } = el
-      const isSelected = state.parent.parent.activeMonth === parseInt(key)
-      if (isSelected) {
-        window.requestAnimationFrame(() => {
-          el.parent.parent.node.scrollTo({
-            left: el.node.offsetLeft,
-            behavior: 'smooth'
-          })
-        })
-      }
     }
   }
 }

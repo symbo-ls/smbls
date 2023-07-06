@@ -6,7 +6,7 @@ export const DatePickerWeekDays = {
   extend: Grid,
   props: {
     overflow: 'hidden',
-    padding: '- Z Z',
+    padding: '- Z A',
     width: '100%',
     columns: 'repeat(7, 1fr)',
     gap: 'W2'
