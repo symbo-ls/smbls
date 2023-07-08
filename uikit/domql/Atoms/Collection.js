@@ -13,17 +13,10 @@ export const Collection = {
         else param = getChildStateInKey(param, state)
       }
 
-      let data = isArray(param) ? param : []
-
-      if (isObject(param)) {
-        for (const obj in param) { data.push(param[obj]) }
-      }
-
-      data = data.map(item => !isObjectLike(item)
-        ? {
-            props: { value: item }
-          }
-        : item)
+      const data = (isArray(param) ? param : isObject(param) ? Object.values(param) : [])
+        .map(item => !isObjectLike(item)
+          ? { props: { value: item } }
+          : item)
 
       if (data.length) {
         const t = setTimeout(() => {

@@ -70,7 +70,6 @@ export const DatePickerGridContainer = {
 
   state: (el, s) => {
     const state = el.parent.state
-    console.warn(state)
     if (!state.activeYear) return
     return (new Array(12)).fill(undefined).map((v, k) => {
       const year = state.activeYear

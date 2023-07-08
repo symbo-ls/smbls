@@ -16,7 +16,12 @@ export const Video = {
   },
 
   attr: {
+    src: ({ props }) => props.src,
     autoplay: ({ props }) => props.autoplay,
+    loop: ({ props }) => props.loop,
+    poster: ({ props }) => props.poster,
+    muted: ({ props }) => props.muted,
+    preload: ({ props }) => props.preload,
     controls: ({ props }) => props.controls
   }
 }

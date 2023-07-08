@@ -17,13 +17,6 @@ export const DatePicker = {
     const activeYear = date.getFullYear()
     const activeMonth = date.getMonth()
     const activeDay = date.getDate()
-    console.log({
-      yearRange: props.yearRange || [activeYear - 30, activeYear],
-      activeYear: props.activeYear || activeYear,
-      activeMonth: props.activeMonth || activeMonth,
-      activeDay: props.activeDay || activeDay,
-      selectedDay: props.selectedDay || null
-    })
     return {
       yearRange: props.yearRange || [activeYear - 30, activeYear],
       activeYear: props.activeYear || activeYear,

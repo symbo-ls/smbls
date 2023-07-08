@@ -21,6 +21,7 @@ export default {
   },
   router: {
     initRouter: true,
+    popState: true,
     injectRouterInLinkComponent: true
   },
   define: defaultDefine

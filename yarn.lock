@@ -56,9 +56,9 @@
     source-map "^0.5.0"
 
 "@babel/core@^7.12.0", "@babel/core@^7.16.0", "@babel/core@^7.18.10":
-  version "7.22.7"
-  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.22.7.tgz#b0a766ebdb776d83981a221d90b2db887b870659"
-  integrity sha512-exABdCVjEk8+IFJW0gOK6+cou8VKMXfbkLGeK5Xdsa5MsuQmem1SsnnZ+6avm2gRhZ4M7UgAnE6YoAzVg9P/pw==
+  version "7.22.8"
+  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.22.8.tgz#386470abe884302db9c82e8e5e87be9e46c86785"
+  integrity sha512-75+KxFB4CZqYRXjx4NlR4J7yGvKumBuZTmV4NV6v09dVXXkuYVYLT68N6HCzLvfJ+fWCxQsntNzKwwIXL4bHnw==
   dependencies:
     "@ampproject/remapping" "^2.2.0"
     "@babel/code-frame" "^7.22.5"
@@ -68,7 +68,7 @@
     "@babel/helpers" "^7.22.6"
     "@babel/parser" "^7.22.7"
     "@babel/template" "^7.22.5"
-    "@babel/traverse" "^7.22.7"
+    "@babel/traverse" "^7.22.8"
     "@babel/types" "^7.22.5"
     "@nicolo-ribaudo/semver-v6" "^6.3.3"
     convert-source-map "^1.7.0"
@@ -1093,10 +1093,10 @@
     "@babel/parser" "^7.22.5"
     "@babel/types" "^7.22.5"
 
-"@babel/traverse@^7.14.5", "@babel/traverse@^7.16.0", "@babel/traverse@^7.22.5", "@babel/traverse@^7.22.6", "@babel/traverse@^7.22.7":
-  version "7.22.7"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.22.7.tgz#68a5513f3c6b88c7b5f5825d0720fb43e8a31826"
-  integrity sha512-vQn61YQzktf1wFNzCka2dynnnbmBpUDeUCds3Y+FBHZpcVxpBq0XscQGDDVN7sV2Vf1pZDY1HmPR3U/5t7VfMQ==
+"@babel/traverse@^7.14.5", "@babel/traverse@^7.16.0", "@babel/traverse@^7.22.5", "@babel/traverse@^7.22.6", "@babel/traverse@^7.22.8":
+  version "7.22.8"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.22.8.tgz#4d4451d31bc34efeae01eac222b514a77aa4000e"
+  integrity sha512-y6LPR+wpM2I3qJrsheCTwhIinzkETbplIgPBbwvqPKc+uljeA5gP+3nP8irdYt1mjQaDnlIcG+dw8OjAco4GXw==
   dependencies:
     "@babel/code-frame" "^7.22.5"
     "@babel/generator" "^7.22.7"
@@ -1346,9 +1346,9 @@
     "@domql/utils" latest
 
 "@domql/state@latest":
-  version "2.3.141"
-  resolved "https://registry.yarnpkg.com/@domql/state/-/state-2.3.141.tgz#91f220722ae794445461c124fdea0f30cc6ad116"
-  integrity sha512-Lp7QWFgjpFlKFdH1K+Ul6T7ErVh3mRPjSR+EzPN9McCzac5kcwPKyReXhhzC6Ow4hjr/e+nmFGUpvxXwY/8LIw==
+  version "2.3.144"
+  resolved "https://registry.yarnpkg.com/@domql/state/-/state-2.3.144.tgz#94ace81273f9b1c265a1ad2de2e6c0d10087d73b"
+  integrity sha512-ablvW1zXIMCwmc1Q5QJ71IsTA95+z4UMtUUGL+6dZGVu1E1VUFTrC893pwrux8WPceowrTtsFgkGLsFm3uDugw==
   dependencies:
     "@domql/event" latest
     "@domql/report" latest
@@ -3320,9 +3320,9 @@
     "@symbo.ls/button" latest
 
 "@symbo.ls/cli@latest":
-  version "2.11.70"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/cli/-/cli-2.11.70.tgz#303cd5087819391330274077a50b3fd07aaef5cc"
-  integrity sha512-ZtRI5w+QIlYa7X5zBNy+nZ0oaWwZscJZbky3Kislstc80MlgIOpkK8O5jHjGOgzUmVV+PWmhCn48idcJsniblw==
+  version "2.11.97"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/cli/-/cli-2.11.97.tgz#36185fb6fd74935adc7d6da6e7ad4aec61a85f41"
+  integrity sha512-aLzOMoy3/yBCVK3t8CfvyT9v+oiqCyerCa3jxt86WswcjI/G8Y1ELnjWgmhkPSQaAT5SVs0urCAkJ0qLNUVnIA==
   dependencies:
     "@symbo.ls/init" latest
     "@symbo.ls/socket" latest
@@ -3333,7 +3333,7 @@
     node-fetch "^3.1.0"
     v8-compile-cache "^2.3.0"
 
-"@symbo.ls/create@latest":
+"@symbo.ls/create@2.11.39":
   version "2.11.39"
   resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.11.39.tgz#8d40c7deca8d211ddcd0027dd43a17b521fd613b"
   integrity sha512-NbUCoI4yQWtbqI9fzofJrEQ7mVzWtr0YG9etpE7+VWuzgJVw020VJ3mUCbzx/3kecfUJ1cYE0IOA2snGmbg+sg==
@@ -3352,10 +3352,29 @@
     "@symbo.ls/utils" latest
     domql latest
 
+"@symbo.ls/create@latest":
+  version "2.11.98"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.11.98.tgz#524d4dfebc4f66684bbe01a9079b3f3c8b009a1c"
+  integrity sha512-fxYBSvAWsnlBN/PMBpgWtgOnsQp/9VlkdhMJu8JcAcd0DQFllgCq/U2xWwLJ6+Jx199MEvfrgXlL7GRdDpz4sA==
+  dependencies:
+    "@domql/cookie" latest
+    "@domql/emotion" latest
+    "@domql/env" latest
+    "@domql/report" latest
+    "@domql/router" latest
+    "@domql/utils" latest
+    "@symbo.ls/fetch" latest
+    "@symbo.ls/init" latest
+    "@symbo.ls/scratch" latest
+    "@symbo.ls/socket-ui" latest
+    "@symbo.ls/uikit" latest
+    "@symbo.ls/utils" latest
+    domql latest
+
 "@symbo.ls/datepicker@latest":
-  version "2.11.94"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/datepicker/-/datepicker-2.11.94.tgz#343ca7bcde7af87bfda49aa123d5bb428f36c72a"
-  integrity sha512-KZUNuPvh6kejOdSjP7kmDqSE7noXbMGhamaTT08F00e4CfrxsC8ESrYbXeB/joapnjT8c5Z/SjGJXQxxKwmncw==
+  version "2.11.97"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/datepicker/-/datepicker-2.11.97.tgz#d73f99cf68450fa0343ddd7d25c407a19ab762f7"
+  integrity sha512-QzlJGJanPFZy+KWz1eT4hCWtna8jTZu/aSX208WtR5xt2n5WwHfcufDT7Ivt3cLdPi3Dy6am7ZrqvOlWxHoboA==
   dependencies:
     "@symbo.ls/atoms" latest
     "@symbo.ls/button" latest
@@ -3684,9 +3703,9 @@
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/uikit@latest":
-  version "2.11.96"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.11.96.tgz#bc08ebcc37f3dee6a83a139de2ae38a601be180d"
-  integrity sha512-5+PhRcelKIpOnKCMMSc+gWSwICJqu9iPlCYgEBOwc5pH7GdBeheDDSBa2DlwA7YZptxPp32Ohh+/RSWenREC7g==
+  version "2.11.97"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.11.97.tgz#02a34d278b2ffa8e056af6a590fb7cdbdf7f86cb"
+  integrity sha512-Ex8HKDXSVSH4FMSgOZRIRsuTq0heJzPcIAUV16Vgx0cdnrn3K2JjdUQo30djiAJdl5FcvBiOl2wHLhn3QgFDYQ==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/atoms" latest
@@ -5111,9 +5130,9 @@ crypto-random-string@^2.0.0:
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
 
 css-in-props@latest:
-  version "2.11.16"
-  resolved "https://registry.yarnpkg.com/css-in-props/-/css-in-props-2.11.16.tgz#0b5bc272dd7511827ed5931aa6562e732a903dd6"
-  integrity sha512-t+2mXwPV99/0ZaUiDuuuqsPy7DeaijpQyzRHmg3ZPlo3pEmtH6nnDYpEVSYKFNmn1IUdpDZKROy8g0NF6NoSzA==
+  version "2.11.97"
+  resolved "https://registry.yarnpkg.com/css-in-props/-/css-in-props-2.11.97.tgz#8610bbe42d20dbf1e678284d2f80285390de01cf"
+  integrity sha512-luuj6lTgdUK5Xfvt168Q66f5CIroJdrznHItL5cRHd2M4qp/OJLZK0+SBuEEmvpUUycG+7f213rPDriJxf46JA==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/atoms" latest
@@ -5506,9 +5525,9 @@ domql@1.6.35:
     "@domql/utils" latest
 
 domql@latest:
-  version "1.6.45"
-  resolved "https://registry.yarnpkg.com/domql/-/domql-1.6.45.tgz#b598a6084332038a3dc2bdfb5a40b852eed67979"
-  integrity sha512-m8ytCXObJZPRorOjEHdWM8bwAoAiIluQK5gpuf2gNuPyxN4CiSD9mps11ryxrdqnPLWIswB1NqId272Dwa0K6w==
+  version "1.6.47"
+  resolved "https://registry.yarnpkg.com/domql/-/domql-1.6.47.tgz#1ec4ef98f478634cb8ab9d557c73f1ed61a7ac1c"
+  integrity sha512-tOofZ8klp3Gqe4H0QAvpGGOcf0qPwcgseoPBlKQYwAOs5HxXQawolW8KNvlj7Ez+slhujSatJ/GNidm0DE1Asw==
   dependencies:
     "@domql/classlist" latest
     "@domql/emotion" "2.3.125"

@@ -12,7 +12,7 @@ const DEFAULT_ROUTING_OPTIONS = {
 }
 
 export const initRouter = (element, options) => {
-  let routerOptions = merge(options.routerOptions || {}, DEFAULT_ROUTING_OPTIONS)
+  let routerOptions = merge(options.router || {}, DEFAULT_ROUTING_OPTIONS)
 
   if (routerOptions === false) return
   if (routerOptions === true) routerOptions = DEFAULT_ROUTING_OPTIONS
@@ -44,13 +44,17 @@ export const initRouter = (element, options) => {
 let popStateFired
 export const popStateRouter = (element, options) => {
   if (popStateFired) return
-  const routerOptions = options.routerOptions || DEFAULT_ROUTING_OPTIONS
+  popStateFired = true
+  const routerOptions = options.router || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
   const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
-  const { pathname, hash } = window.location
-  const url = pathname + hash
-  window.onpopstate = e => router(url, element, { pushState: false, level: 0 })
-  popStateFired = true
+  window.onpopstate = e => {
+    const { pathname, hash } = window.location
+    const url = pathname + hash
+    console.log(url)
+    // console.log(element)
+    router(url, element, {}, { pushState: false, level: 0 })
+  }
 }
 
 export const injectRouterInLinkComponent = (routerOptions) => {
