@@ -51,8 +51,6 @@ export const popStateRouter = (element, options) => {
   window.onpopstate = e => {
     const { pathname, hash } = window.location
     const url = pathname + hash
-    console.log(url)
-    // console.log(element)
     router(url, element, {}, { pushState: false, level: 0 })
   }
 }
