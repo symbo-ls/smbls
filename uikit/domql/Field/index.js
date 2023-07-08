@@ -16,16 +16,14 @@ export const Field = {
     round: 'C',
     type: 'text',
     position: 'relative',
-    width: '16em',
+    width: 'G',
 
-    style: {
-      appearance: 'none',
-      outline: 0,
-      border: 'none',
-      cursor: 'pointer',
-      fontFamily: 'inherit',
-      boxSizing: 'border-box'
-    },
+    appearance: 'none',
+    outline: 0,
+    border: 'none',
+    cursor: 'pointer',
+    fontFamily: 'inherit',
+    boxSizing: 'border-box',
 
     input: {
       width: '100%',
@@ -35,7 +33,7 @@ export const Field = {
 
     svg: {
       position: 'absolute',
-      right: '1em'
+      right: 'A'
     }
   }),
 

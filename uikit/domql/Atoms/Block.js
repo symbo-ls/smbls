@@ -12,7 +12,7 @@ export const Block = {
 
     display: ({ props }) => props.display && ({ display: props.display }),
 
-    hide: ({ props }) => props.hide && ({ display: 'none' }),
+    hide: ({ props }) => props.hide && ({ display: 'none !important' }),
 
     width: ({ props }) => props.width && getSpacingBasedOnRatio(props, 'width'),
     height: ({ props }) => props.height && getSpacingBasedOnRatio(props, 'height'),
@@ -157,7 +157,7 @@ export const Block = {
   }
 }
 
-export const Hr = { 
+export const Hr = {
   tag: 'hr',
   props: { margin: 'C1 0' }
 }

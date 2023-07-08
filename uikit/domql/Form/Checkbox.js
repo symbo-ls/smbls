@@ -1,60 +1,81 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
+import { Flex, Focusable } from '@symbo.ls/atoms'
 
 import { FieldLabel } from './FieldLabel'
 
-const templateDefault = {
-  padding: 'Z',
-  round: '100%',
-  boxSize: 'fit-content fit-content',
-  ':hover': { background: '#252527' },
-
-  input: {
-    display: 'none',
-
-    ':checked + div': {
-      theme: 'primary',
-      border: 'none'
+const Input = {
+  props: {
+    type: 'checkbox',
+    hide: true
+  },
+  attr: {
+    name: ({ parent }) => parent.props.name,
+    checked: ({ state }) => state.checked,
+    type: 'checkbox'
+  },
+  on: {
+    render: ({ parent, node }) => {
+      const { indeterminate } = parent.props
+      node.indeterminate = indeterminate
     },
-
-    ':checked + div > svg': { opacity: '1' }
+    update: ({ parent, node }) => {
+      const { indeterminate } = parent.props
+      console.log(indeterminate)
+      node.indeterminate = indeterminate
+    }
   }
 }
 
 export const Checkbox = {
-  tag: 'label',
-  props: templateDefault,
-  input: {
-    attr: {
-      type: 'checkbox',
-      checked: ({ parent }) => parent.props.checked
-    },
-    on: {
-      render: ({ parent, node }) => {
-        const { indeterminate } = parent.props
-        node.indeterminate = indeterminate
-      },
-      update: ({ parent, node }) => {
-        const { indeterminate } = parent.props
-        console.log(indeterminate)
-        node.indeterminate = indeterminate
-      }
-    }
+  props: {
+    padding: 'Z',
+    round: '100%',
+    boxSize: 'fit-content',
+    ':hover': { background: 'gray .1' },
+    ':active': { background: 'gray .35' }
   },
+
+  state: ({ props }) => ({
+    checked: props.checked || true
+  }),
+
+  Input,
   Flex: {
+    extend: [Focusable, Flex],
+    tag: 'label',
     props: {
       align: 'center center',
-      border: '1px solid #E9E9EA',
-      boxSize: 'B B',
-      round: 'Y'
+      boxSize: 'B',
+      round: 'Y',
+      transition: 'Z defaultBezier',
+      transitionProperty: 'background, color, border',
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      '@dark': { color: 'white' },
+      '@light': { color: 'black' },
+      '.checked': {
+        theme: 'secondary',
+        borderColor: 'transparent'
+      },
+      '!checked': {
+        '@dark': { borderColor: 'white' },
+        '@light': { borderColor: 'black' }
+      }
     },
     Icon: {
       height: 'Z Z2',
-      color: 'white',
       name: 'check',
       opacity: '0',
-      transition: 'opacity .15s ease'
+      transition: 'opacity A defaultBezier',
+      '.checked': {
+        opacity: '1'
+      }
+    }
+  },
+  on: {
+    click: (event, { state }) => {
+      state.toggle('checked')
     }
   }
 }
@@ -66,6 +87,6 @@ export const CheckBoxWithLabel = {
     width: 'fit-content',
     fieldLabel: { padding: 'Z - - -' }
   },
-  checkbox: { extend: Checkbox },
-  fieldLabel: { extend: FieldLabel }
+  Checkbox,
+  FieldLabel
 }

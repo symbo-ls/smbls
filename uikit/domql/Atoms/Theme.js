@@ -123,6 +123,10 @@ export const Theme = {
 
     columnRule: ({ props }) => props.columnRule && ({
       columnRule: transformBorder(props.columnRule)
+    }),
+
+    appearance: ({ props }) => props.appearance && ({
+      appearance: props.appearance
     })
   }
 }

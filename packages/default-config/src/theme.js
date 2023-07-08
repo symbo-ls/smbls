@@ -11,7 +11,10 @@ const PRIORITIES = {
     },
     '@light': {
       color: 'white',
-      background: 'gradient-colorful'
+      background: 'gradient-colorful',
+      '.color-only': {
+        color: 'blue'
+      }
     }
   },
 
@@ -123,5 +126,15 @@ export const THEME = {
     }
   },
 
-  ...PRIORITIES
+  ...PRIORITIES,
+
+  none: {
+    color: 'none',
+    background: 'none'
+  },
+
+  transparent: {
+    color: 'transparent',
+    background: 'transparent'
+  }
 }
