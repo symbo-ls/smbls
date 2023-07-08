@@ -47,7 +47,9 @@ export const popStateRouter = (element, options) => {
   popStateFired = true
   const routerOptions = options.router || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
-  const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
+  const router = (options.snippets && options.snippets.router)
+    ? options.snippets.router
+    : defaultRouter
   window.onpopstate = e => {
     const { pathname, hash } = window.location
     const url = pathname + hash
