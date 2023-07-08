@@ -3,45 +3,38 @@
 import { Flex } from '@symbo.ls/atoms'
 
 import { Checkbox } from './Checkbox'
-import { FieldLabel } from './FieldLabel'
-
-const templateDefault = {
-  padding: 'Y',
-  round: 'B',
-  input: {
-    ':checked + div': {
-      justifyContent: 'flex-end',
-      theme: 'primary'
-    }
-  },
-  ':hover > div': { opacity: '1' },
-
-  Flex: {
-    boxSize: 'B C',
-    padding: '- W',
-    round: 'D',
-    opacity: '.5',
-    align: 'center flex-start',
-    background: '#CFCFD1',
-    border: 'none',
-    transition: 'opacity .15s ease',
-    circle: {
-      boxSize: 'A1 A1',
-      round: '100%',
-      background: 'white',
-      boxShadow: '1px, 1px, 8px, rgba(0, 0, 0, 0.2)'
-    }
-  }
-}
 
 export const ToggleSwitch = {
   extend: Checkbox,
-  props: templateDefault,
+  props: {
+    padding: 'Y',
+    round: 'B',
+    ':hover > div': { opacity: '1' }
+  },
 
-  input: {},
+  Input: {},
   Flex: {
+    props: {
+      boxSize: 'B C',
+      padding: '- W',
+      round: 'D',
+      opacity: '.5',
+      align: 'center flex-start',
+      background: '#CFCFD1',
+      border: 'none',
+      transition: 'opacity .15s ease',
+      '.checked': {
+        justifyContent: 'flex-end',
+        theme: 'primary'
+      }
+    },
     Icon: null,
-    circle: {}
+    Circle: {
+      boxSize: 'A1 A1',
+      round: '100%',
+      background: 'currentColor',
+      boxShadow: '1px, 1px, Z, gray .2'
+    }
   }
 }
 
@@ -49,9 +42,8 @@ export const ToggleSwithWithLabel = {
   extend: Flex,
   props: {
     gap: 'A',
-    width: 'fit-content',
-    fieldLabel: { padding: 'Z - - -' }
+    width: 'fit-content'
   },
-  toggleSwith: { extend: ToggleSwitch },
-  fieldLabel: { extend: FieldLabel }
+  ToggleSwitch: {},
+  FieldLabel: { padding: 'Z - - -' }
 }

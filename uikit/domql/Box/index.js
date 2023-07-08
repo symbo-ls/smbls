@@ -38,6 +38,21 @@ export const Box = {
     Animation
   ],
   attr: {
-    id: ({ props }) => props.id
+    id: ({ props }) => props.id,
+    contenteditable: ({ props }) => props.contenteditable,
+    dir: ({ props }) => props.dir,
+    draggable: ({ props }) => props.draggable,
+    hidden: ({ props }) => props.hidden,
+    lang: ({ props }) => props.lang,
+    spellcheck: ({ props }) => props.spellcheck,
+    tabindex: ({ props }) => props.tabindex,
+    title: ({ props }) => props.title,
+    translate: ({ props }) => props.translate
+  }
+}
+
+export const Circle = {
+  props: {
+    round: '100%'
   }
 }

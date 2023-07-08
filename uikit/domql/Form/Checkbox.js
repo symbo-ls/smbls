@@ -11,23 +11,30 @@ const Input = {
   },
   attr: {
     name: ({ parent }) => parent.props.name,
-    checked: ({ state }) => state.checked,
+    checked: ({ state, parent }) => state.checked || parent.props.checked,
     type: 'checkbox'
   },
   on: {
-    render: ({ parent, node }) => {
+    render: ({ state, parent, node }) => {
       const { indeterminate } = parent.props
       node.indeterminate = indeterminate
     },
     update: ({ parent, node }) => {
       const { indeterminate } = parent.props
-      console.log(indeterminate)
       node.indeterminate = indeterminate
+    },
+    change: (event, { state, node }) => {
+      state.update({
+        checked: node.checked
+      })
     }
   }
 }
 
 export const Checkbox = {
+  extend: Focusable,
+  tag: 'label',
+
   props: {
     padding: 'Z',
     round: '100%',
@@ -37,13 +44,11 @@ export const Checkbox = {
   },
 
   state: ({ props }) => ({
-    checked: props.checked || true
+    checked: props.checked
   }),
 
   Input,
   Flex: {
-    extend: [Focusable, Flex],
-    tag: 'label',
     props: {
       align: 'center center',
       boxSize: 'B',
@@ -55,7 +60,7 @@ export const Checkbox = {
       '@dark': { color: 'white' },
       '@light': { color: 'black' },
       '.checked': {
-        theme: 'secondary',
+        theme: 'primary',
         borderColor: 'transparent'
       },
       '!checked': {
@@ -71,11 +76,6 @@ export const Checkbox = {
       '.checked': {
         opacity: '1'
       }
-    }
-  },
-  on: {
-    click: (event, { state }) => {
-      state.toggle('checked')
     }
   }
 }
