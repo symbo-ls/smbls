@@ -67,11 +67,11 @@ export const AvatarChooser = {
 
     attr: { name: 'avatar-chooser', id: 'avatar-chooser' },
 
-    childExtend: { tag: 'option', text: ({ state }) => state.text },
-    $setCollection: ({ parent }) => parent.props.options,
+    childExtend: { tag: 'option' },
+    $setPropsCollection: ({ parent }) => parent.props.options,
     on: {
       change: (ev, { parent }) => {
-        parent.user.update({ key: ev.target.value })
+        parent.Avatar.update({ key: ev.target.value })
       }
     }
   }
