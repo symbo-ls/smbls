@@ -3679,9 +3679,9 @@
     "@symbo.ls/scratch" latest
 
 "@symbo.ls/textarea@latest":
-  version "2.11.99"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/textarea/-/textarea-2.11.99.tgz#17fca084a2e76b57c8f531fda49653f2451e96f5"
-  integrity sha512-g03eCuMwfPUTtU94BBoO6a6oiaxGCajTdTlAaoRXMFotFsUPMC5n1R+EdEeTgnRVwu8M4o07cvZ3Ymy3OPjrMw==
+  version "2.11.103"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/textarea/-/textarea-2.11.103.tgz#eb19265a110327c28d2e2ddd883e6a211e70cce5"
+  integrity sha512-W0hytgVrfEFH7uKhKuylYmfnJIKwTC1q2moS1qHksrcJ3mRUDw5T7AKBxP2xvAvxtHLNgZw3El0wmJ8GdGT6ng==
   dependencies:
     "@symbo.ls/atoms" latest
 
@@ -3703,9 +3703,9 @@
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/uikit@latest":
-  version "2.11.102"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.11.102.tgz#5bd2e90c181d0d72333dd29e56a62490c9de774a"
-  integrity sha512-0YlMFz4D2Ns8AuQa4ygQ33ElqMicDtZ7672Qcypna/G3Yipj6aFzvucA+h8MFGYdVOjkLzTBbr+Vl3+6kjzrOw==
+  version "2.11.103"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.11.103.tgz#dc66baff3af832f22bcc31e3fe55291d3c7acbab"
+  integrity sha512-OCtlrL6yIa0dtVQIrxqp3vXSYd2YhvIKN8VLuWf3jIsZP+kTZ1fc7+9dDY33r+5yDBy0OKnTPQJ0SwhqOFcVJQ==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/atoms" latest
