@@ -8,7 +8,8 @@ export const Textarea = {
   props: {
     theme: 'tertiary',
     round: 'Z2',
-    boxSize: 'E1 G1',
+    width: 'G1',
+    height: 'E1',
     lineHeight: 1.4
   }
 }
