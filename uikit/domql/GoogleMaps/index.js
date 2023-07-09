@@ -20,7 +20,7 @@ export const GoogleMaps = {
       })
     },
     render: (el, s, ctx) => {
-      const { props } = el
+      const { data, props } = el
       const { mapOptions } = props
       data.loader.load().then(async (google) => {
         const { Map } = await google.maps.importLibrary('maps')
