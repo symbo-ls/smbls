@@ -5,12 +5,8 @@
   "license": "MIT",
   "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
   "dependencies": {
-    "@symbo.ls/block": "latest",
-    "@symbo.ls/direction": "latest",
-    "@symbo.ls/flex": "latest",
-    "@symbo.ls/icon": "latest",
-    "@symbo.ls/shape": "latest",
-    "@symbo.ls/text": "latest"
+    "@symbo.ls/atoms": "latest",
+    "@symbo.ls/icon": "latest"
   },
   "source": "src/index.js"
 }
