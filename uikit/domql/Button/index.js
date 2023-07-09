@@ -1,6 +1,6 @@
 'use strict'
 
-import { FocusableComponent } from '@symbo.ls/atoms'
+import { Flex, FocusableComponent } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/icon'
 
 export const Button = {
@@ -35,6 +35,12 @@ export const SquareButton = {
     round: 'Z',
     boxSizing: 'content-box'
   }
+}
+
+export const ButtonSet = {
+  tag: 'nav',
+  extend: Flex,
+  childExtend: SquareButton
 }
 
 export const CircleButton = {

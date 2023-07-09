@@ -1,9 +1,9 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Input } from '@symbo.ls/atoms'
-import { Icon } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/atoms'
+import { Input } from '@symbo.ls/input'
+import { Icon } from '@symbo.ls/icon'
+import { Button } from '@symbo.ls/button'
 
 export const Search = {
   extend: Flex,
@@ -29,7 +29,7 @@ export const Search = {
 
   Icon: {
     extend: Icon,
-    props: { icon: 'search' },
+    props: { icon: 'search' }
   },
 
   Input: {

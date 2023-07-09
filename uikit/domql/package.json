@@ -19,7 +19,6 @@
     "@symbo.ls/banner": "latest",
     "@symbo.ls/box": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/buttonset": "latest",
     "@symbo.ls/datepicker": "latest",
     "@symbo.ls/dialog": "latest",
     "@symbo.ls/dropdown": "latest",
@@ -49,6 +48,6 @@
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "ce24ae69aa4be9b21beea8118953d112d7e62bc3",
+  "gitHead": "cdda48703e645b67dea7c99cf4000eec26e37b02",
   "source": "src/index.js"
 }
