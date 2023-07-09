@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/search",
-  "version": "2.11.91",
+  "version": "2.11.106",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "cad1a2675e0d9f1e052187d5ec388051edc5714e",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/input": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/icon": "latest"
+    "@symbo.ls/icon": "latest",
+    "@symbo.ls/input": "latest"
   },
   "source": "src/index.js"
 }
