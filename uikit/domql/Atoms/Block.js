@@ -132,13 +132,13 @@ export const Block = {
     },
 
     gridColumn: ({ props }) => props.gridColumn && ({ gridColumn: props.gridColumn }),
-    gridColumnStart: ({ props }) => props.columnStart
+    gridColumnStart: ({ props }) => props.gridColumnStart
       ? ({
-          gridColumnStart: props.columnStart
+          gridColumnStart: props.gridColumnStart
         })
       : null,
     gridRow: ({ props }) => props.gridRow && ({ gridRow: props.gridRow }),
-    gridRowStart: ({ props }) => props.rowStart ? ({ gridRowStart: props.rowStart }) : null,
+    gridRowStart: ({ props }) => props.gridRowStart ? ({ gridRowStart: props.gridRowStart }) : null,
 
     size: ({ props }) => {
       if (typeof props.heightRange !== 'string') return
