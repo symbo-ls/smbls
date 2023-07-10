@@ -8,11 +8,9 @@ export const Select = {
 
   props: {
     fontSize: 'A',
-    style: {
-      border: 'none',
-      boxSizing: 'border-box',
-      cursor: 'pointer'
-    }
+    border: 'none',
+    boxSizing: 'border-box',
+    cursor: 'pointer'
   },
 
   childExtend: {
