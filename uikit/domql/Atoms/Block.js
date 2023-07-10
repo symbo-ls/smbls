@@ -171,6 +171,16 @@ export const List = {
 
 export const Gutter = {
   props: {
-    boxSize: 'C1',
+    size: 'C1'
   },
+  class: {
+    size: ({ props }) => {
+      if (typeof props.size !== 'string') return
+      const [height, width] = props.size.split(' ')
+      return {
+        ...getSpacingByKey(height, 'height'),
+        ...getSpacingByKey(width || height, 'width')
+      }
+    }
+  }
 }
