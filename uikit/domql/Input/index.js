@@ -1,5 +1,6 @@
 'use strict'
 
+import { isString, replaceLiteralsWithObjectFields } from '@domql/utils'
 import { Focusable } from '@symbo.ls/atoms'
 
 export const Input = {
@@ -24,7 +25,10 @@ export const Input = {
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
-    value: ({ props, state }) => props.value,
+    value: ({ props, state }) => {
+      if (isString(props.value) && props.value.includes('{{')) return replaceLiteralsWithObjectFields(props.value, state)
+      return props.value
+    },
     disabled: ({ props }) => props.disabled || null,
     readonly: ({ props }) => props.readonly,
     required: ({ props }) => props.required,

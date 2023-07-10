@@ -42,7 +42,7 @@ export const Box = {
   attr: {
     id: ({ props }) => isString(props.id) && props.id,
     title: ({ props }) => isString(props.title) && props.title,
-    contenteditable: ({ props }) => props.contenteditable,
+    contentEditable: ({ props }) => props.contentEditable || props.contenteditable,
     dir: ({ props }) => props.dir,
     draggable: ({ props }) => props.draggable,
     hidden: ({ props }) => props.hidden,
