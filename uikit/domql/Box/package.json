@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/box",
-  "version": "2.11.116",
+  "version": "2.11.117",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
