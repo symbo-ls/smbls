@@ -15,6 +15,8 @@ import {
   Animation
 } from '@symbo.ls/atoms'
 
+import { isString } from '@domql/utils'
+
 const PropsCSS = {
   class: {
     style: ({ props }) => props && props.style
@@ -38,7 +40,8 @@ export const Box = {
     Animation
   ],
   attr: {
-    id: ({ props }) => props.id,
+    id: ({ props }) => isString(props.id) && props.id,
+    title: ({ props }) => isString(props.title) && props.title,
     contenteditable: ({ props }) => props.contenteditable,
     dir: ({ props }) => props.dir,
     draggable: ({ props }) => props.draggable,
@@ -46,7 +49,6 @@ export const Box = {
     lang: ({ props }) => props.lang,
     spellcheck: ({ props }) => props.spellcheck,
     tabindex: ({ props }) => props.tabindex,
-    title: ({ props }) => props.title,
     translate: ({ props }) => props.translate
   }
 }

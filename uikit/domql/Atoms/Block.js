@@ -168,3 +168,9 @@ export const List = {
   childExtend: { tag: 'li' }
 }
 // export const Article = { tag: 'article' }
+
+export const Gutter = {
+  props: {
+    boxSize: 'C1',
+  },
+}

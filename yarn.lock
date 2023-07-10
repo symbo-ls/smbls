@@ -3264,9 +3264,9 @@
     tslib "^2.4.0"
 
 "@symbo.ls/atoms@latest":
-  version "2.11.101"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.11.101.tgz#73bba861609d6519b6b224a4e7a4e633d6d78bea"
-  integrity sha512-1VR6VOC3dc4jyQruDs4Xzvf5tq3ndbPiDD+qtC3H9BxacOXo3TFVdkpDeiTNmoRxjej7LQIQBHyO6JK9asIBwQ==
+  version "2.11.110"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/atoms/-/atoms-2.11.110.tgz#adb8ba31e8e9d31607f42209ea790c23e7ae3ab5"
+  integrity sha512-gUCgRmHGYyadu6NBdILWblh1J8Q+RD7IZI/tmhU0z+X5s7Ovp3pwI1r3L4jKIjxHsrvPx2A23VVQuim+uuFm4g==
   dependencies:
     "@domql/state" latest
     "@domql/utils" latest
@@ -3677,9 +3677,9 @@
     "@symbo.ls/atoms" latest
 
 "@symbo.ls/uikit@latest":
-  version "2.11.107"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.11.107.tgz#0b01bb5d45acef399b8087abb597e217c21e0b21"
-  integrity sha512-gLhyPj5GxiXMXTm7zHtvpnLZ9cPoMyMtfJYvmkeEZHfj7dGYERXHbSXCAdw/L6ccH1RfjDwSzQ51ikulxVOv+w==
+  version "2.11.110"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uikit/-/uikit-2.11.110.tgz#1a1f6601f58b3de60dd8cec898daa0fddbbf5d8f"
+  integrity sha512-DAjGTHm7DkU7xRMc3ED5EaOsnjdKQk8OQ+so3NU3utp3L1eIVc4ZPRAqJtnCFpWG6L49AO0xQmHc9ldfduetJg==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/atoms" latest
