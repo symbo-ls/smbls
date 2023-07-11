@@ -7,8 +7,6 @@ export const Text = {
   text: ({ key, props, state }) => {
     if (props.text === true) return (state && state[key]) || (props && props[key])
     if (isString(props.text) && props.text.includes('{{')) {
-      console.log(props.text)
-      console.log(replaceLiteralsWithObjectFields(props.text, state))
       return replaceLiteralsWithObjectFields(props.text, state)
     }
     return props.text
