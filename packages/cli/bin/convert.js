@@ -2,7 +2,7 @@
 
 import * as esbuild from 'esbuild'
 import { program } from './program.js'
-import { convert } from 'domql-to-mitosis'
+import { convert } from 'kalduna'
 import fs from 'fs'
 import path from 'path'
 import { JSDOM } from 'jsdom'
