@@ -1,6 +1,6 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/flex'
+import { Flex } from '@symbo.ls/atoms'
 
 const Step = {
   tag: 'label',

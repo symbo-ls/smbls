@@ -3630,6 +3630,11 @@
     socket.io "^4.5.2"
     socket.io-client "^4.5.2"
 
+"@symbo.ls/steps@latest":
+  version "2.11.99"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/steps/-/steps-2.11.99.tgz#2782f50497ab0f76442e1df1e23be7965483d39f"
+  integrity sha512-3DLvp0I+eKcWtXIpVrEoaJ9ETWyx6uC/dAGmHMn+221XJfpmieItrNki3to8aUVWexKs8jjJFpymXjBSrxrNEA==
+
 "@symbo.ls/tab@latest":
   version "2.11.107"
   resolved "https://registry.yarnpkg.com/@symbo.ls/tab/-/tab-2.11.107.tgz#f042bb3eab55cb9b848dbecab619f4d3685eea05"
