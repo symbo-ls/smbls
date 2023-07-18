@@ -16,5 +16,6 @@ export * from './responsive.js'
 export * from './cases.js'
 export * from './animation.js'
 export * from './svg.js'
+export * from './templates.js'
 
 export const RESET = {}
