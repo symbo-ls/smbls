@@ -2,16 +2,13 @@
 
 import {
   create, Flex, Checkbox, Radio, ToggleSwitch, CheckBoxWithLabel,
-  RadioWithLabel, ToggleSwithWithLabel
+  RadioWithLabel, ToggleSwithWithLabel, Steps, Tab, TimePicker
 } from "smbls"
 
-import { TimePicker } from "./components/TimePicker"
 import { DatePicker, DatePickerTwoColumns } from "./components/DatePicker"
 import { Search } from "./components/Search"
 import { FieldSet } from "./components/FieldSet"
 import { DropDownItem } from "./components/DropDownItem"
-import { Tab } from "./components/Tab"
-import { Steps } from "./components/Steps"
 
 import designSystem from '@symbo.ls/default-config'
 console.log(designSystem)
