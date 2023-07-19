@@ -1,8 +1,7 @@
 'use strict'
 
 import { Sync, DevFocus, inspectOnKey } from '@symbo.ls/socket-ui'
-import { isDevelopment, isProduction, isTest } from '@domql/env' // eslint-disable-line no-unused-vars
-import { isUndefined } from '@domql/utils'
+import { isUndefined, isDevelopment, isProduction, isTest } from '@domql/utils' // eslint-disable-line no-unused-vars
 
 export const applySyncDebug = (extend, options) => {
   const { editor } = options

@@ -1,9 +1,8 @@
 'use strict'
 
 import { router as defaultRouter } from '@domql/router'
-import { window } from '@domql/globals'
+import { window, deepMerge, merge, isUndefined } from '@domql/utils'
 import { Link, RouterLink } from '@symbo.ls/uikit'
-import { deepMerge, merge, isUndefined } from '@domql/utils'
 
 const DEFAULT_ROUTING_OPTIONS = {
   initRouter: true,
