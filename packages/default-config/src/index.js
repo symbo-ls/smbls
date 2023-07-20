@@ -6,8 +6,6 @@ import { TYPOGRAPHY } from './typography'
 import { SPACING } from './spacing'
 import { FONT, FONT_FAMILY } from './font'
 
-import FEATHER_ICONS from '@symbo.ls/feather-icons'
-
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
   COLOR,
@@ -18,7 +16,7 @@ export const DEFAULT_CONFIG = {
   FONT,
   FONT_FAMILY,
   TIMING: {},
-  ICONS: FEATHER_ICONS,
+  ICONS: {},
   MEDIA: {
     tv: '(min-width: 2780px)',
 
