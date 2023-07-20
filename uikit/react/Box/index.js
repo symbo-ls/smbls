@@ -1,7 +1,9 @@
+'use strict '
 
 import React from 'react'
 import { transformEmotion, transformClassname } from 'css-in-props'
 import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
+import { isArray } from '@domql/utils'
 
 export const Box = (props) => {
   const context = useSymbols()
@@ -17,7 +19,10 @@ export const Box = (props) => {
   const propsClass = transformEmotion(transformedProps)
 
   let { children, tag, className, text, ...restProps } = excludedProps
-  if (props.text) children = children.concat(text)
+  if (props.text) {
+    if (isArray(children)) children = children.concat(text)
+    else children = [text]
+  }
 
   return React.createElement(
     tag || 'div',
