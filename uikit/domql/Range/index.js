@@ -104,22 +104,22 @@ export const RangeWithButtons = {
   value: {
     style: { width: '4ch' },
     tag: 'span',
-    text: (el, s) => {
-      const unit = listenProp(el.parent.input, 'unit', '')
-      return '' + (s.value || 50) + unit
+    text: ({ state, parent }) => {
+      const unit = listenProp(parent.input, 'unit', '')
+      return '' + (state.value || 50) + unit
     }
   },
   input: {
     extend: Range,
     attr: {
-      value: (el, s) => parseFloat(s.value),
+      value: (el, s) => parseFloat(el.state.value),
       min: (el, s) => listenProp(el, 'min', 0),
       max: (el, s) => listenProp(el, 'max', 100),
       step: (el, s) => listenProp(el, 'step', 1)
     },
     on: {
-      input: (ev, el, s) => el.props && isFunction(el.props.onInput) && el.props.onInput(ev, el, s),
-      change: (ev, el, s) => el.props && isFunction(el.props.onChange) && el.props.onChange(ev, el, s)
+      input: (ev, el, s) => el.props && isFunction(el.props.onInput) && el.props.onInput(ev, el, el.state),
+      change: (ev, el, s) => el.props && isFunction(el.props.onChange) && el.props.onChange(ev, el, el.state)
     }
   },
   plus: {
@@ -127,7 +127,7 @@ export const RangeWithButtons = {
     props: { theme: 'tertiary', icon: 'plus' },
     on: {
       click: (ev, el, s) => {
-        el.props && isFunction(el.props.onClick) && el.props.onClick(ev, el, s)
+        el.props && isFunction(el.props.onClick) && el.props.onClick(ev, el, el.state)
       }
     }
   }

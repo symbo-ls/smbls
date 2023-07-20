@@ -9,8 +9,8 @@ export const Pills = {
   },
 
   childExtend: {
-    props: (el, s) => ({
-      active: parseInt(el.key) === parseInt(s.active || el.parent.props.active),
+    props: ({ key, state, parent }) => ({
+      active: parseInt(key) === parseInt(state.active || parent.props.active),
 
       boxSize: 'Y2',
       round: 'A',

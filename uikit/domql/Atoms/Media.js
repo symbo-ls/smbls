@@ -149,7 +149,6 @@ const beforeClassAssign = (element, s) => {
     if (setter) setter(key, props[key], CLASS_NAMES, element)
   }
 
-
   const parentProps = element.parent && element.parent.props
   if (parentProps && parentProps.spacingRatio && parentProps.inheritSpacingRatio) {
     element.setProps({

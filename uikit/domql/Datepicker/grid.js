@@ -32,7 +32,7 @@ export const DatePickerGrid = {
   },
 
   childExtend: DatePickerDay,
-  $setStateCollection: (el, s) => s.days
+  $setStateCollection: ({ state }) => state.days
 }
 
 export const DatePickerGridContainer = {
@@ -68,8 +68,8 @@ export const DatePickerGridContainer = {
     }
   },
 
-  state: (el, s) => {
-    const state = el.parent.state
+  state: ({ parent }) => {
+    const state = parent.state
     if (!state.activeYear) return
     return (new Array(12)).fill(undefined).map((v, k) => {
       const year = state.activeYear
@@ -104,6 +104,6 @@ export const DatePickerGridContainer = {
         }
       }
     },
-    $setStateCollection: (el, s) => s.parse()
+    $setStateCollection: ({ state }) => state.parse()
   }
 }
