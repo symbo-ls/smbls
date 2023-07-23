@@ -31,9 +31,7 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/cookie": "latest",
     "@domql/emotion": "latest",
-    "@domql/env": "latest",
     "@domql/report": "latest",
     "@domql/router": "latest",
     "@domql/utils": "latest",

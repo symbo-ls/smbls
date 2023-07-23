@@ -33,6 +33,7 @@ export const RouterLink = {
       const { utils, routerOptions } = ctx
       const { router } = utils
       const root = el.__ref.__root
+      console.log(href)
       const linkIsExternal = href.includes('http://') ||
         href.includes('https://') ||
         href.includes('mailto:') ||
