@@ -14,7 +14,7 @@
     "smbls": "latest"
   },
   "devDependencies": {
-    "domql-to-mitosis": "latest"
+    "kalduna": "latest"
   },
   "type": "module",
   "module": "dist/esm/index.js",
