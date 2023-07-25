@@ -1057,20 +1057,20 @@
     "@domql/report" latest
 
 "@domql/element@latest":
-  version "2.4.6"
-  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.4.6.tgz#8c23676cbc3385575230c052667dfe80312d8128"
-  integrity sha512-ZuYEDTTRtuLAP7UKpEL6Cxrs1XIoAHwSK1n7ZZFlfOG6joUv2YG2vnJY98WPNRyjLK4e2MvDvCdhIcAoyGowJQ==
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.4.7.tgz#f8129514a3e47efbc8c25def974b1c8a830fe5ed"
+  integrity sha512-Rrmb4BZB1PVwJyOp3aetqQ4J7PU742QqEGPyV2mqeUsK1etSWdrhmjank6r9iIuIw07zTegtBYn5TeG5Y81ctg==
   dependencies:
     "@domql/event" latest
     "@domql/node" "^2.3.125"
-    "@domql/render" "^2.4.0"
+    "@domql/render" "^2.4.7"
     "@domql/state" latest
     "@domql/utils" latest
 
 "@domql/emotion@latest":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@domql/emotion/-/emotion-2.4.0.tgz#27660459de6672b6f8ee8683b97f6f24ece828d8"
-  integrity sha512-WQHE5n5Hsbk7Nmc6bllhIR/E6uuRO0fpUjXmop2+MQI3VWhJCJAdA9skl14kdx6DFS6C2aBX4u+G8WP8Qs79bA==
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/@domql/emotion/-/emotion-2.4.7.tgz#4c4a704af499f8c2b16ae682b37e151a158f620a"
+  integrity sha512-XWxpcks+CAi+z2c6E+bEowGQA8V3q3MuDcCeV/lqn2H9Mzk/8ss5JuYPgjzZEWxg/qv/XJrVoHk7pNh7iyP+TQ==
   dependencies:
     "@domql/classlist" latest
     "@domql/env" latest
@@ -1168,10 +1168,14 @@
   dependencies:
     "@domql/utils" latest
 
-"@domql/render@^2.4.0", "@domql/render@latest":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@domql/render/-/render-2.4.0.tgz#aed0342cb0f3271b00f070adff8fb2bee8be1353"
-  integrity sha512-4d71YFRSQ4cBP6f7XAL61Y7aYArwsbPhnuhvNeUSD7v8+uFP/jTPBPEy7z8hV75/oQUtWqHX+OwJ7BOzE9Q28g==
+"@domql/render@^2.4.7", "@domql/render@latest":
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/@domql/render/-/render-2.4.7.tgz#ba364c020644ed15911b91811fdd0a6f88f4ecd5"
+  integrity sha512-o9nFYEfQt6NRzHeU8CjLL48M1zKg+GAmwJOlWr3VUAN19wE28VYn2kFCdI1l6BWtc1lboTlhPw2euo2zbVgNxQ==
+  dependencies:
+    "@domql/event" latest
+    "@domql/report" latest
+    "@domql/utils" latest
 
 "@domql/report@latest":
   version "2.4.0"
@@ -1179,9 +1183,9 @@
   integrity sha512-HazaeyreUDP4V/Lx7TUVVwbOp86JlZ+AU+V26V+eLIgOcmdUKHAe5B7AggfrNUW85Om0RU3OoSt6WXWCLbPVZg==
 
 "@domql/router@latest":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.4.0.tgz#de39ffae4e24592eea2445e2bd35cb4dde97d931"
-  integrity sha512-hkrbwkLXL/gmEYHnP2RHQcWo248UXLx3mnmF79r2hGidduo8scfWSRX7EmHYFcrXS5MQCQTZ6kLhyJjg9TaZDA==
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/@domql/router/-/router-2.4.7.tgz#8345daef5554f86944133437b496e7f0991a9262"
+  integrity sha512-nNIz5IhnE46L65kgkEN9yVlNy4WL1YxQj5y7Ypa5griNO8w3EJTGccFwowzwzkDW33OEMO9t5jqgFPMYatWAOA==
   dependencies:
     "@domql/globals" latest
     "@domql/utils" latest
@@ -1202,11 +1206,6 @@
     "@domql/report" latest
     "@domql/utils" latest
 
-"@domql/tags@^2.3.117":
-  version "2.3.117"
-  resolved "https://registry.yarnpkg.com/@domql/tags/-/tags-2.3.117.tgz#9187c978cdc3677d696bc3381d64b6065491f0a3"
-  integrity sha512-qUtxQIu8z2f4Yij1jJx0Y5dePO33ukacxv/v6Q7JbXXOG4w1xmlObHbx7b8SpXiuToZU7Q4+XH5dDHFUIASYlA==
-
 "@domql/tree@latest":
   version "2.3.117"
   resolved "https://registry.yarnpkg.com/@domql/tree/-/tree-2.3.117.tgz#c5d3b5caae84077134c59bda8efd0136a29660c4"
@@ -1216,13 +1215,9 @@
     "@domql/report" latest
 
 "@domql/utils@latest":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.4.0.tgz#cd2d6be19f9cbc72ee923db53b61e48b58e6abac"
-  integrity sha512-Sb25dzZgillxmnhOXs1jGpbhxMo0lcGpWtpBnZM9ixoeRYFKfQ80ur/FBAm483TII7p99w/ylZBtG3tGakRWgw==
-  dependencies:
-    "@domql/globals" latest
-    "@domql/key" latest
-    "@domql/tags" "^2.3.117"
+  version "2.4.7"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.4.7.tgz#5ea889b1523a5ece21c00d4df91e2b07ea04d3a1"
+  integrity sha512-+kp3IAb+IQYjqI2J14wbnGbMk2JjgfvqP8l6QydlVMhvLpeYRPnsJPWMqCytbYuzrPd65AAcSk5tHGXrAfdN5Q==
 
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"
