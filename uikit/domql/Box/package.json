@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/box",
-  "version": "2.11.117",
+  "version": "2.11.127",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "@symbo.ls/atoms": "latest"
   },
   "source": "src/index.js",
   "gitHead": "c220caaef0f1e5c7a8f767f9c5f03587711c033d",
