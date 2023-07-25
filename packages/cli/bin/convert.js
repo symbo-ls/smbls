@@ -3,6 +3,7 @@
 import * as esbuild from 'esbuild'
 import { program } from './program.js'
 import { convert } from 'kalduna'
+import { parse } from 'globusa'
 import fs from 'fs'
 import path from 'path'
 import { JSDOM } from 'jsdom'
@@ -59,6 +60,11 @@ async function importDomqlModule (modulePath) {
   return (await import(modulePath)).default
 }
 
+// options is a list of the CLI arguments along with the following fields;
+// {
+//   imports: [],
+//   declarations: [],
+// }
 function convertDomqlModule (domqlModule, desiredFormat, options) {
   let convertedStr = ''
   const whitelist = (options.only ? options.only.split(',') : null)
@@ -82,7 +88,7 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
     if (convert) {
       console.group()
       const component = domqlModule[key]
-      component.__name = key
+      if (!component.__name) component.__name = key
       console.log(key) // NOTE: @nikoloza don't remove this (again)
 
       const isSingleComponent = exportCount === 1
@@ -94,7 +100,9 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
         exportDefault: isSingleComponent,
         returnMitosisIR: true,
         importsToRemove: uniqueImports,
-        removeReactImport: !isFirst
+        removeReactImport: !isFirst,
+        importsToInclude: options.importsToInclude ?? null,
+        declarationsToInclude: options.declarationsToInclude ?? null,
       })
 
       convertedStr = convertedStr + out.str
@@ -110,6 +118,76 @@ function convertDomqlModule (domqlModule, desiredFormat, options) {
         'Convert from `domql-to-mitosis` is not defined. Try to install' +
         '`domql-to-mitosis` and run this command again.')
     }
+  }
+  console.groupEnd()
+
+  return convertedStr
+}
+
+// Takes globusaStruct (direct output from globusa) and calls Kalduna as many
+// times as needed to return a single string of code for the 'desiredFormat' framework
+function convertDomqlComponents(globusaStruct, desiredFormat, options) {
+  if (!convert) {
+    throw new Error(
+      'Convert from `kalduna` is not defined. Try to install' +
+        '`kalduna` and run this command again.')
+  }
+
+  const { imports: globusaImports,
+          declarations: globusaDecls,
+          domqlComponents } = globusaStruct
+  let convertedStr = ''
+  const whitelist = (options.only ? options.only.split(',') : null)
+
+  console.group()
+  const uniqueImports = []
+  const first = true
+  for (let idx = 0; idx < domqlComponents.length; idx++) {
+    const compo = domqlComponents[idx]
+
+    // Skip if not found in whitelist
+    if (whitelist && !whitelist.includes(compo.name)) { continue }
+
+    // Skip some components if converting smbls uikit
+    if (options.internalUikit &&
+        EXCLUDED_FROM_INTERNAL_UIKIT.includes(compo.name)) {
+      console.log(`Skipping ${compo.name} component due to exclusion`)
+      continue
+    }
+
+    console.group()
+
+    // Get domql object from code string
+    const dobj = eval(`(${compo.code})`)
+
+    // Set component name (if not present)
+    if (compo.name && !dobj.__name) {
+      dobj.__name = compo.name
+    }
+
+    console.log(dobj.__name) // NOTE: @nikoloza don't remove this
+
+    const isSingleComponent = domqlComponents.length === 1
+    const isFirst = idx === 0
+    const isLast = idx === domqlComponents.length - 1
+
+    const out = convert(dobj, desiredFormat, {
+      verbose: false,
+      exportDefault: isSingleComponent,
+      returnMitosisIR: true,
+      importsToRemove: uniqueImports, 
+      removeReactImport: !isFirst,
+      importsToInclude: globusaImports,
+      declarationsToInclude: globusaDecls,
+    })
+
+    convertedStr = convertedStr + out.str
+    if (options.trailingNewLine && !isLast) {
+      convertedStr += '\n'
+    }
+
+    uniqueImports.push(...out.mitosisIR.imports)
+    console.groupEnd()
   }
   console.groupEnd()
 
@@ -191,32 +269,19 @@ program
         destFilePath = path.join(destDir, path.basename(srcPath))
       }
 
-      const bundledFilePath = path.join(tmpDirPath, path.basename(srcPath))
-      console.log(`ESbuild ${srcPath} -> ${bundledFilePath}`)
+      console.log(`Not using ESbuild`)
 
-      // Bundle the component
-      await esbuild.build({
-        entryPoints: [srcPath],
-        bundle: true,
-        sourcemap: true,
-        target: 'node12',
-        format: 'cjs',
-        outfile: bundledFilePath
-      })
+      // Parse with globusa
+      console.log(`Parsing components in ${srcPath}`)
+      const fileContent = await fs.promises.readFile(srcPath, 'utf8')
+      const globusaStruct = parse(fileContent)
 
-      // Import the module
-      const domqlModule = await importDomqlModule(bundledFilePath, options)
-
-      // Convert & append each exported domql object
-      console.log(`Converting modules in ${bundledFilePath}:`)
-      const convertedModuleStr = convertDomqlModule(
-        domqlModule,
-        desiredFormat,
-        options
-      )
+      console.log(`Converting components in ${srcPath}:`)
+      const convertedModuleStr = convertDomqlComponents(
+        globusaStruct, desiredFormat, options)
 
       // Write file
-      if (convertedModuleStr.length > 0) {
+      if (convertedModuleStr && convertedModuleStr.length > 0) {
         const fh = await fs.promises.open(destFilePath, 'w')
         await fh.writeFile(convertedModuleStr, 'utf8')
         await fh.close()
