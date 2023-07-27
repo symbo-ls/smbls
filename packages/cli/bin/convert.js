@@ -6,10 +6,14 @@ import { convert } from 'kalduna'
 import { parse } from 'globusa'
 import fs from 'fs'
 import path from 'path'
+
+// Set up webpack
+import syncWebpack from 'webpack'
+import { promisify } from 'util'
+const webpack = promisify(syncWebpack)
+
+// Set up jsdom
 import { JSDOM } from 'jsdom'
-
-const l = (n) => console.log(`mark${n}`) // eslint-disable-line no-unused-vars
-
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
@@ -55,143 +59,143 @@ async function mkdirp (dir) {
   return null
 }
 
-async function importDomqlModule (modulePath) {
-  console.log(`importing ${modulePath}`)
-  return (await import(modulePath)).default
-}
-
-// options is a list of the CLI arguments along with the following fields;
-// {
-//   imports: [],
-//   declarations: [],
-// }
-function convertDomqlModule (domqlModule, desiredFormat, options) {
+// Returns a string
+function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) {
   let convertedStr = ''
   const whitelist = (options.only ? options.only.split(',') : null)
 
   console.group()
+  const exports = Object.keys(domqlModule)
+        .filter(exportName => {
+          if (!whitelist) return true
+          if (whitelist.includes(exportName)) {
+            console.log(`Skipping ${exportName} component due to whitelist exclusion`)
+            return false
+          }
+          return true
+        })
+        .filter(exportName => {
+          if (!options.internalUikit) return true
+          if (EXCLUDED_FROM_INTERNAL_UIKIT.includes(exportName)) {
+            console.log(`Skipping ${exportName} component due to internal uikit exclusion`)
+            return false
+          }
+          return true
+        })
+
+  const isSingleComponent = (exports.length === 1)
   const uniqueImports = []
-  const first = true
-  let currentExportIdx = 0
-  const exportCount = Object.keys(domqlModule).length
-  for (const key in domqlModule) {
-    // Skip if not found in whitelist
-    if (whitelist && !whitelist.includes(key)) { continue }
+  for (const idx in exports) {
+    const exportName = exports[idx]
 
-    // Skip some components if converting smbls uikit
-    if (options.internalUikit &&
-        EXCLUDED_FROM_INTERNAL_UIKIT.includes(key)) {
-      console.log(`Skipping ${key} component due to exclusion`)
-      continue
-    }
+    const dobj = domqlModule[exportName]
 
-    if (convert) {
-      console.group()
-      const component = domqlModule[key]
-      if (!component.__name) component.__name = key
-      console.log(key) // NOTE: @nikoloza don't remove this (again)
-
-      const isSingleComponent = exportCount === 1
-      const isFirst = currentExportIdx === 0
-      const isLast = currentExportIdx === exportCount - 1
-
-      const out = convert(component, desiredFormat, {
-        verbose: false,
-        exportDefault: isSingleComponent,
-        returnMitosisIR: true,
-        importsToRemove: uniqueImports,
-        removeReactImport: !isFirst,
-        importsToInclude: options.importsToInclude ?? null,
-        declarationsToInclude: options.declarationsToInclude ?? null,
-      })
-
-      convertedStr = convertedStr + out.str
-      if (options.trailingNewLine && !isLast) {
-        convertedStr += '\n'
-      }
-
-      uniqueImports.push(...out.mitosisIR.imports)
-      console.groupEnd()
-      currentExportIdx++
-    } else {
-      throw new Error(
-        'Convert from `domql-to-mitosis` is not defined. Try to install' +
-        '`domql-to-mitosis` and run this command again.')
-    }
-  }
-  console.groupEnd()
-
-  return convertedStr
-}
-
-// Takes globusaStruct (direct output from globusa) and calls Kalduna as many
-// times as needed to return a single string of code for the 'desiredFormat' framework
-function convertDomqlComponents(globusaStruct, desiredFormat, options) {
-  if (!convert) {
-    throw new Error(
-      'Convert from `kalduna` is not defined. Try to install' +
-        '`kalduna` and run this command again.')
-  }
-
-  const { imports: globusaImports,
-          declarations: globusaDecls,
-          domqlComponents } = globusaStruct
-  let convertedStr = ''
-  const whitelist = (options.only ? options.only.split(',') : null)
-
-  console.group()
-  const uniqueImports = []
-  const first = true
-  for (let idx = 0; idx < domqlComponents.length; idx++) {
-    const compo = domqlComponents[idx]
-
-    // Skip if not found in whitelist
-    if (whitelist && !whitelist.includes(compo.name)) { continue }
-
-    // Skip some components if converting smbls uikit
-    if (options.internalUikit &&
-        EXCLUDED_FROM_INTERNAL_UIKIT.includes(compo.name)) {
-      console.log(`Skipping ${compo.name} component due to exclusion`)
-      continue
+    // Set component name (if not present)
+    if (!dobj.__name) {
+      dobj.__name = exportName
     }
 
     console.group()
+    console.log(dobj.__name) // NOTE(Nikaoto): @nikoloza, don't remove this
 
-    // Get domql object from code string
-    const dobj = eval(`(${compo.code})`)
+    const isFirst = (idx == 0)
+    const isLast = (idx == (exports.length - 1)) // NOTE: Don't use '===' here!
 
-    // Set component name (if not present)
-    if (compo.name && !dobj.__name) {
-      dobj.__name = compo.name
+    const kaldunaOpts = {
+      verbose: false,
+      returnMitosisIR: true,
+      exportDefault: isSingleComponent,
+      importsToRemove: uniqueImports,
+
+      /* NOTE: The option below prevents a name collision bug. For example:
+         export const A = { ... }
+         export const B = { extends: A }
+
+         Normally, converting component B will generate an import for A like:
+         'import { A } from @symbo.ls/react'
+         But, in this case, because A is in local scope as one of the exports,
+         the component import will be ignored, preventing the collision.
+      */
+      componentImportsToIgnore: exports,
     }
 
-    console.log(dobj.__name) // NOTE: @nikoloza don't remove this
-
-    const isSingleComponent = domqlComponents.length === 1
-    const isFirst = idx === 0
-    const isLast = idx === domqlComponents.length - 1
-
-    const out = convert(dobj, desiredFormat, {
-      verbose: false,
-      exportDefault: isSingleComponent,
-      returnMitosisIR: true,
-      importsToRemove: uniqueImports, 
-      removeReactImport: !isFirst,
-      importsToInclude: globusaImports,
-      declarationsToInclude: globusaDecls,
-    })
+    let out = null
+    if (isFirst) {
+      out = convert(dobj, desiredFormat, {
+        ...kaldunaOpts,
+        removeReactImport: false,
+        importsToInclude: globusaStruct.imports,
+        declarationsToInclude: globusaStruct.declarations,
+      })
+    } else {
+      out = convert(dobj, desiredFormat, {
+        ...kaldunaOpts,
+        removeReactImport: true,
+      })
+    }
 
     convertedStr = convertedStr + out.str
-    if (options.trailingNewLine && !isLast) {
+    if (!isLast) {
       convertedStr += '\n'
     }
-
     uniqueImports.push(...out.mitosisIR.imports)
     console.groupEnd()
   }
   console.groupEnd()
 
   return convertedStr
+}
+
+// Takes a source file, then bundles, parses and converts it and writes the
+// result to the destination. The tmpDirPath is used as a working directory for
+// temporary files.
+async function convertFile(srcPath, tmpDirPath, destPath,
+                           desiredFormat, options) {
+  // Parse with globusa
+  console.log(`Parsing components in ${srcPath}`)
+  const fileContent = await fs.promises.readFile(srcPath, 'utf8')
+  const globusaStruct = parse(fileContent)
+
+  // Bundle with webpack
+  const libraryName = 'banunu' // This can literally be anything
+  const fileName = path.basename(srcPath)
+  const bundledFilePath = path.resolve(tmpDirPath, fileName)
+  console.log(`Webpack ${srcPath} -> ${bundledFilePath}`)
+  await webpack({
+    entry: srcPath,
+    output: {
+      path: tmpDirPath,
+      filename: fileName,
+      chunkFormat: 'commonjs',
+      library: { name: libraryName,
+                 type: 'commonjs-static' },
+    },
+    target: 'node',
+    mode: 'development'
+  })
+
+  // Import the bundled module to obtain exported domql objects
+  console.log(`Importing ${bundledFilePath}`)
+  const domqlModule = (await import(bundledFilePath))[libraryName]
+
+  // Convert it/them with kalduna
+  console.log(`Converting components in ${bundledFilePath}:`)
+  const convertedModuleStr = convertDomqlModule(
+    domqlModule,
+    globusaStruct,
+    desiredFormat,
+    options
+  )
+
+  // Create dest dir
+  await mkdirp(path.dirname(destPath))
+
+  // Write file
+  if (convertedModuleStr && convertedModuleStr.length > 0) {
+    const fh = await fs.promises.open(destPath, 'w')
+    await fh.writeFile(convertedModuleStr, 'utf8')
+    await fh.close()
+  }
 }
 
 program
@@ -215,6 +219,18 @@ program
           '(For internal use only). ' + 
           'Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
+    if (!convert) {
+      throw new Error(
+        'convert() from `kalduna` is not defined. Try to install ' +
+          '`kalduna` and run this command again.')
+    }
+
+    if (!parse) {
+      throw new Error(
+        'parse() from `globusa` is not defined. Try to install ' +
+          '`globusa` and run this command again.')
+    }
+
     // Desired format
     let desiredFormat = 'react'
     if (options.angular) {
@@ -269,28 +285,18 @@ program
         destFilePath = path.join(destDir, path.basename(srcPath))
       }
 
-      console.log(`Not using ESbuild`)
-
-      // Parse with globusa
-      console.log(`Parsing components in ${srcPath}`)
-      const fileContent = await fs.promises.readFile(srcPath, 'utf8')
-      const globusaStruct = parse(fileContent)
-
-      console.log(`Converting components in ${srcPath}:`)
-      const convertedModuleStr = convertDomqlComponents(
-        globusaStruct, desiredFormat, options)
-
-      // Write file
-      if (convertedModuleStr && convertedModuleStr.length > 0) {
-        const fh = await fs.promises.open(destFilePath, 'w')
-        await fh.writeFile(convertedModuleStr, 'utf8')
-        await fh.close()
-      }
+      await convertFile(
+        srcPath,
+        tmpDirPath,
+        destFilePath,
+        desiredFormat,
+        options
+      )
 
       return 0
     }
 
-    // We're converting multiple files (in a directory)
+    // We're converting multiple files (in a directory).
     // Determine destDirPath & create it if needed
     if (!dest) dest = path.resolve(desiredFormat)
     let destDirPath
@@ -304,52 +310,23 @@ program
     } else {
       // dest exists and is not a directory.
       console.error(
-        `The destination ('${path.resolve(dest)}') must be a directory when` +
+        `The destination ('${path.resolve(dest)}') must be a directory when ` +
           `the source ('${srcPath}') is a directory`)
       return 1
     }
 
-    const origFiles = (await fs.promises.readdir(srcPath))
-      .filter(file => !IGNORED_FILES.includes(file))
+    const sourceFileNames = (await fs.promises.readdir(srcPath))
+          .filter(file => !IGNORED_FILES.includes(file))
 
-    // Bundle components
-    await esbuild.build({
-      entryPoints: origFiles.map(file =>
-        path.join(srcPath, file,'./index.js')),
-      bundle: true,
-      sourcemap: true,
-      target: 'node12',
-      format: 'cjs',
-      outdir: tmpDirPath
-    })
+    for (const file of sourceFileNames) {
+      const indexFilePath = path.join(srcPath, file, 'index.js')
 
-    // Convert components
-    const componentDirs = await fs.promises.readdir(tmpDirPath)
-    for (const componentDir of componentDirs) {
-      const importDir = path.join(tmpDirPath, componentDir)
-      if ((await fs.promises.stat(importDir)).isDirectory()) {
-        // Import the module
-        const importPath = `${importDir}/index.js`
-        const domqlModule = await importDomqlModule(importPath)
-
-        // Create directory for component in dest dir
-        const destComponentDirPath = `${destDirPath}/${componentDir}`
-        await mkdirp(destComponentDirPath)
-
-        // Convert & append each exported domql object
-        const convertedStr = convertDomqlModule(
-          domqlModule,
-          desiredFormat,
-          { ...options, trailingNewLine: true }
-        )
-
-        // Write file
-        if (convertedStr.length > 0) {
-          const fh = await fs.promises
-            .open(`${destComponentDirPath}/index.js`, 'w')
-          await fh.writeFile(convertedStr, 'utf8')
-          await fh.close()
-        }
-      }
+      await convertFile(
+        indexFilePath,
+        path.join(tmpDirPath, file),
+        path.join(destDirPath, file, 'index.js'),
+        desiredFormat,
+        options
+      )
     }
   })
