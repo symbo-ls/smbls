@@ -3,6 +3,8 @@
   "version": "2.11.16",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
+    "@domql/utils": "latest",
+    "@symbo.ls/icon": "latest",
     "@symbo.ls/react-atoms": "latest"
   },
   "peerDependencies": {

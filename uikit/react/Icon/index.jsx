@@ -1,7 +1,10 @@
 'use strict'
 
+import { isString } from '@domql/utils'
+import { IconText as D } from '@symbo.ls/icon'
+import { Svg, Text, Flex } from '@symbo.ls/react-atoms'
+
 import React from 'react'
-import { Svg } from '@symbo.ls/react-atoms'
 
 export const Icon = (props) => {
   const { name, iconModifier, ...restProps } = props
@@ -19,3 +22,18 @@ Icon.defaultProps = {
   display: 'inline-block',
   style: { fill: 'currentColor' }
 }
+
+export const IconText = (props) => {
+  const iconName = isString(props.icon) ? props.icon : props.name
+  const iconModifier = props.iconModifier || ''
+
+  return (
+    <Flex tag={props.tag} alignItems='center' {...props}>
+      {iconName ? <Icon name={iconName} iconModifier={iconModifier} /> : null}
+      <Text text={props.text} />
+      {props.children}
+    </Flex>
+  )
+}
+
+IconText.defaultProps = D.props
