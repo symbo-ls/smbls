@@ -7,7 +7,7 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@symbo.ls/react-atoms": "latest",
-    "@symbo.ls/react-icon-text": "latest"
+    "@symbo.ls/react-icon": "latest"
   },
   "peerDependencies": {
     "react": ">=16.9.0",

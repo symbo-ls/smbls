@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Button as D, SquareButton as D2 } from '@symbo.ls/button'
-import { IconText } from '@symbo.ls/react-icon-text'
+import { IconText } from '@symbo.ls/react-icon'
 
 export const Button = (props) => (
   <IconText tag='button' {...props}>
