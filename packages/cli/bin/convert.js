@@ -1,6 +1,5 @@
 'use strict'
 
-import * as esbuild from 'esbuild'
 import { program } from './program.js'
 import { convert } from 'kalduna'
 import { parse } from 'globusa'
@@ -170,6 +169,7 @@ async function convertFile(srcPath, tmpDirPath, destPath,
       library: { name: libraryName,
                  type: 'commonjs-static' },
     },
+    // experiments:  { outputModule: true },
     target: 'node',
     mode: 'development'
   })
@@ -200,7 +200,8 @@ async function convertFile(srcPath, tmpDirPath, destPath,
 
 program
   .command('convert')
-  .description('Convert and copy all DomQL components under a directory')
+  .description('(DEPRECATED) Convert and copy all DomQL components ' +
+               'under a directory')
   .argument('[src]', 'Source directory/file. By default, it is "src/"')
   .argument('[dest]',
             'Destination directory/file. Will be overwritten. By ' +
@@ -219,6 +220,10 @@ program
           '(For internal use only). ' + 
           'Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
+    console.log('smbls convert is deprecated. ' +
+                'Please use the Kalduna build script instead.')
+    return 1
+
     if (!convert) {
       throw new Error(
         'convert() from `kalduna` is not defined. Try to install ' +
