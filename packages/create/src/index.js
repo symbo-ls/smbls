@@ -97,12 +97,12 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
-  const routerOptions = initRouter(App, options) // eslint-disable-line
+  //const routerOptions = initRouter(App, options) // eslint-disable-line
   const extend = applySyncDebug([App], options)
 
   const domqlApp = DOM.create({
     extend,
-    routes: options.pages,
+    //routes: options.pages,
     state,
     context: {
       key,
@@ -115,7 +115,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
       define,
       registry,
       emotion,
-      routerOptions,
+      //routerOptions,
       document: doc
     }
   }, doc.body, key, {
