@@ -4,7 +4,7 @@ import { Collection } from '@symbo.ls/uikit'
 
 export const defaultDefine = {
   routes: param => param,
-  deps: param => param,
+  deps: (param, el) => param || el.parent.deps,
 
   $router: (param, el) => {
     if (!param) return
