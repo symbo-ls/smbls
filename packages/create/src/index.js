@@ -91,30 +91,35 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
   const state = options.state || {}
+  const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
-  const snippets = { ...utils, ...(options.snippets || {}) }
+  const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
+  const routerOptions = initRouter(App, options) // eslint-disable-line
   const extend = applySyncDebug([App], options)
 
   const domqlApp = DOM.create({
     extend,
+    routes: options.pages,
     state,
     context: {
       key,
       components,
       state,
+      pages,
       designSystem,
       snippets,
       utils: snippets,
       define,
       registry,
       emotion,
+      routerOptions,
       document: doc
     }
   }, doc.body, key, {
-    // extend: [uikit.Box],
+    //extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
   })
