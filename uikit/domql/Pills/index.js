@@ -24,8 +24,8 @@ export const Pills = {
       }
     }),
     on: {
-      click: (e, el, s) => {
-        s.update({ active: parseInt(el.key) })
+      click: (e, el) => {
+        el.state.update({ active: parseInt(el.key) })
       }
     }
   },
