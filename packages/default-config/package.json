@@ -3,6 +3,9 @@
   "version": "2.11.132",
   "source": "src/index.js",
   "main": "src/index.js",
+  "dependencies": {
+    "@symbo.ls/feather-icons": "latest"
+  },
   "license": "MIT",
   "gitHead": "8378c373c9854f76a8a1a5e9c2181402ec09d399"
 }

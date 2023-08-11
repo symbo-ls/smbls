@@ -1,5 +1,6 @@
 'use strict'
 
+import { ICONS } from '@symbo.ls/feather-icons'
 import { COLOR, GRADIENT } from './color'
 import { THEME } from './theme'
 import { TYPOGRAPHY } from './typography'
@@ -16,7 +17,7 @@ export const DEFAULT_CONFIG = {
   FONT,
   FONT_FAMILY,
   TIMING: {},
-  ICONS: {},
+  ICONS,
   MEDIA: {
     tv: '(min-width: 2780px)',
 
