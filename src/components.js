@@ -1,11 +1,11 @@
 'use strict'
 
 import {
-  create, Flex, Checkbox, Radio, ToggleSwitch, CheckBoxWithLabel,
-  RadioWithLabel, ToggleSwithWithLabel, Steps, Tab, TimePicker
+  create, Flex, CheckBoxWithLabel,
+  RadioWithLabel, ToggleSwithWithLabel, Steps, Tab, TimePicker,
+  DatePicker, DatePickerTwoColumns
 } from "smbls"
 
-import { DatePicker, DatePickerTwoColumns } from "./components/DatePicker"
 import { Search } from "./components/Search"
 import { FieldSet } from "./components/FieldSet"
 import { DropDownItem } from "./components/DropDownItem"
@@ -25,9 +25,10 @@ create({
     globalTheme: 'dark',
   },
 
-  checkBox: { extend: Checkbox },
-  radioButton: { extend: Radio },
-  toggleSwitch: { extend: ToggleSwitch },
+  Chat: {},
+  Checkbox: {},
+  Radio: {},
+  ToggleSwitch: {},
   checkBoxWithLabel: { extend: CheckBoxWithLabel },
   radioWithLabel: { extend: RadioWithLabel },
   toggleSwitchWithLabel: { extend: ToggleSwithWithLabel },
