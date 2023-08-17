@@ -17,6 +17,32 @@ export const Avatar = {
   }
 }
 
+export const AvatarWithIndicator = {
+  avatar: { extend: Avatar },
+  indicator: {},
+
+  props: {
+    boxSize: 'fit-content fit-content',
+    round: '100%',
+    border: 'solid, black 0',
+    borderWidth: '1px',
+    position: 'relative',
+    avatar: {
+      boxSize: 'B1 B1'
+    },
+    indicator: {
+      boxSize: 'Y Y',
+      background: '#04F214',
+      round: '100%',
+      position: 'absolute',
+      bottom: 'X',
+      right: '0',
+      border: 'solid, black 0',
+      borderWidth: '1px'
+    }
+  }
+}
+
 export const AvatarBundle = {
   extend: Flex,
   childExtend: {
