@@ -1,7 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Dialog } from '@symbo.ls/dialog'
 
 const Captions = {
   extend: Flex,
@@ -41,7 +40,7 @@ export const UploadResult = {
     theme: 'tertiary',
     gap: 'Z2',
     padding: 'Z Z2 Z Z',
-    round: 'Z',
+    round: 'Z'
   },
 
   FileIcon: {
@@ -66,7 +65,7 @@ export const UploadResult = {
       '::-webkit-progress-bar': {
         theme: null,
         background: 'white .05'
-      },
+      }
     }
   }
 }

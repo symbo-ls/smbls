@@ -10,14 +10,17 @@ export const User = {
   infos: {
     extend: InfoSet,
     ...[
-      { title: { props: { text: 'Erin Schleifer' } } },
-      { subTitle: { props: { text: 'email@symbols.com' } } }
+      {
+        title: { props: { text: 'Erin Schleifer' } },
+        subTitle: { props: { text: 'email@symbols.com' } }
+      }
     ]
   },
 
   props: {
     boxSize: 'fit-content',
     align: 'center flex-start',
-    gap: 'A'
+    gap: 'A',
+    infos: { childProps: { flow: 'column' } }
   }
 }
