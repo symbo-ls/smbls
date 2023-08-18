@@ -9,11 +9,11 @@ export const InfoSet = {
     flow: 'column',
     childProps: {
       title: {
-        fontSize: `${14 / 16}em`,
+        fontSize: 'Z',
         fontWeight: '500'
       },
       subTitle: {
-        fontSize: `${12 / 16}em`,
+        fontSize: 'Y',
         color: '#A3A3A8'
       }
     }
