@@ -24,18 +24,15 @@ export const AvatarWithIndicator = {
   props: {
     boxSize: 'fit-content fit-content',
     round: '100%',
-    border: 'solid, black 0',
-    borderWidth: '1px',
     position: 'relative',
-    avatar: {
-      boxSize: 'B1 B1'
-    },
+
+    avatar: { boxSize: `${32 / 16}em` },
     indicator: {
-      boxSize: 'Y Y',
+      boxSize: 'Y+V1',
       background: '#04F214',
       round: '100%',
       position: 'absolute',
-      bottom: 'X',
+      bottom: '0',
       right: '0',
       border: 'solid, black 0',
       borderWidth: '1px'
