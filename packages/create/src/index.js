@@ -88,8 +88,13 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 
   if (appIsKey) App = {}
 
-  if (typeof(document) === 'undefined') document = {}
-  const doc = options.parent || options.document || document
+  // Set parent
+  if (typeof(document) === 'undefined') document = { body: {} }
+  let parent
+  if (options.parent) parent = options.parent
+  else if (options.document) parent = options.document
+  else parent = document.body
+
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
   const state = options.state || {}
@@ -118,9 +123,9 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
       registry,
       emotion,
       //routerOptions,
-      document: doc
+      document
     }
-  }, doc.body, key, {
+  }, parent, key, {
     //extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
