@@ -4,6 +4,7 @@ import { User } from '@symbo.ls/user'
 import { UploadResult } from '@symbo.ls/upload'
 import { Flex } from '@symbo.ls/atoms'
 import { ButtonSet } from '@symbo.ls/button'
+import { DateIndicator, NotificationAlert } from '@symbo.ls/accessories'
 
 export const ChatUser = {
   extend: User,
@@ -12,22 +13,23 @@ export const ChatUser = {
     ...[
       {
         title: {},
-        subTitle: { props: { text: 'Monday 2:20 AM' } }
+        subTitle: {
+          extend: DateIndicator,
+          caption: null
+        }
       },
-      {
-        chatText: { props: { text: 'Can you please review the latest design?' } }
-      }
+      { chatText: { props: { text: 'Can you please review the latest design?' } } }
     ]
   },
 
   props: {
     align: 'flex-start flex-start',
+    image: { fontSize: 'C' },
     infos: {
       gap: 'Y',
       childProps: {
         flow: 'row',
-        align: 'center flex-start',
-        gap: 'E1',
+        align: 'center space-between',
         chatText: {
           fontSize: 'Z',
           background: '#252527',
@@ -44,10 +46,7 @@ export const ChatUserWithUploadedFile = {
   image: {},
   infos: {
     ...[
-      {
-        title: {},
-        subTitle: { props: { text: 'Monday 2:20 AM' } }
-      },
+      {},
       {
         chatText: null,
         uploadedFile: {
@@ -73,7 +72,7 @@ export const ChatUserWithUploadedFile = {
       childProps: {
         uploadedFile: {
           background: '#1C1C1F',
-          width: '100%',
+          minWidth: 'G',
           align: 'center flex-start',
           FileIcon: {
             background: '#3F3F43',
@@ -104,7 +103,7 @@ export const ChatUserWithButtonSet = {
     ...[
       {
         title: { props: { text: 'Justin Dorwart' } },
-        subTitle: { props: { text: 'Active now' } }
+        subTitle: { caption: { props: { text: 'Active now' } } }
       },
       {
         extend: ButtonSet,
@@ -121,6 +120,7 @@ export const ChatUserWithButtonSet = {
     background: '#1C1C1F',
     padding: 'A B',
     round: 'A',
+    image: { fontSize: `${24 / 16}em` },
     infos: {
       flow: 'row',
       gap: 'D',
@@ -140,8 +140,41 @@ export const ChatUserWithButtonSet = {
           }
         }
       }
-
     }
   }
+}
 
+export const ChatUserWithNotification = {
+  extend: ChatUser,
+  image: {},
+  infos: {
+    ...[
+      {
+        title: {},
+        subTitle: { days: null }
+      },
+      {
+        chatText: { props: { text: 'Hey team, Ive finished the re...' } },
+        notification: { extend: NotificationAlert }
+      }
+    ]
+  },
+
+  props: {
+    background: '#141416',
+    padding: 'A',
+    round: 'Z',
+    infos: {
+      childProps: {
+        ':last-child': { gap: 'D' },
+        chatText: {
+          padding: '0',
+          background: 'transparent',
+          color: '#A3A3A8',
+          minWidth: 'F+C',
+          maxWidth: 'F+C'
+        }
+      }
+    }
+  }
 }

@@ -12,7 +12,7 @@ export const User = {
     ...[
       {
         title: { props: { text: 'Erin Schleifer' } },
-        subTitle: { props: { text: 'email@symbols.com' } }
+        subTitle: { caption: { props: { text: 'email@symbols.com' } } }
       }
     ]
   },
@@ -21,6 +21,11 @@ export const User = {
     boxSize: 'fit-content',
     align: 'center flex-start',
     gap: 'A',
-    infos: { childProps: { flow: 'column' } }
+    infos: {
+      childProps: {
+        flow: 'column',
+        subTitle: { caption: { whiteSpace: 'nowrap' } }
+      }
+    }
   }
 }
