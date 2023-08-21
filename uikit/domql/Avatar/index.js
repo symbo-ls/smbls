@@ -2,6 +2,7 @@
 
 import { Img, Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
+import { IndicatorDot } from '@symbo.ls/accessories'
 
 export const Avatar = {
   extend: Img,
@@ -9,7 +10,7 @@ export const Avatar = {
     display: 'block',
     avatarType: 'initials',
     borderRadius: '100%',
-    boxSize: 'B',
+    boxSize: 'A+A',
     cursor: 'pointer'
   },
   attr: {
@@ -19,23 +20,16 @@ export const Avatar = {
 
 export const AvatarWithIndicator = {
   avatar: { extend: Avatar },
-  indicator: {},
+  indicator: { extend: IndicatorDot },
 
   props: {
     boxSize: 'fit-content fit-content',
     round: '100%',
     position: 'relative',
-
-    avatar: { boxSize: `${32 / 16}em` },
     indicator: {
-      boxSize: 'Y+V1',
-      background: '#04F214',
-      round: '100%',
       position: 'absolute',
       bottom: '0',
-      right: '0',
-      border: 'solid, black 0',
-      borderWidth: '1px'
+      right: '0'
     }
   }
 }
