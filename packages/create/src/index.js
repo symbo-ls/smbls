@@ -31,7 +31,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   if (appIsKey) App = {}
   await fetchSync(key, options)
 
-  if (typeof(document) === 'undefined') document = {}
+  if (typeof (document) === 'undefined') window.document = {}
   const doc = options.parent || options.document || document
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
@@ -89,7 +89,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   if (appIsKey) App = {}
 
   // Set parent
-  if (typeof(document) === 'undefined') document = { body: {} }
+  if (typeof (document) === 'undefined') document = { body: {} }
   let parent
   if (options.parent) parent = options.parent
   else if (options.document) parent = options.document
@@ -104,12 +104,12 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
-  //const routerOptions = initRouter(App, options) // eslint-disable-line
+  // const routerOptions = initRouter(App, options) // eslint-disable-line
   const extend = applySyncDebug([App], options)
 
   const domqlApp = DOM.create({
     extend,
-    //routes: options.pages,
+    // routes: options.pages,
     state,
     context: {
       key,
@@ -122,11 +122,11 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
       define,
       registry,
       emotion,
-      //routerOptions,
+      // routerOptions,
       document
     }
   }, parent, key, {
-    //extend: [uikit.Box],
+    // extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
   })
