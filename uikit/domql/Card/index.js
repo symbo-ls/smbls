@@ -1,8 +1,9 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { InfoSet } from '../InfoSet'
-import { Icon } from '../Icon'
+// import { InfoSet } from '../InfoSet'
+import { Icon } from '@symbo.ls/icon'
+import { InfoSet } from '@symbo.ls/infoset'
 
 export const CardLabel = {
   props: {
