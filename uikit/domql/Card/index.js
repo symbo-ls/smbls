@@ -1,3 +1,9 @@
 'use strict'
 
-export const Card = {}
+import { Flex } from '@symbo.ls/atoms'
+
+import { InfoSet } from '../InfoSet'
+
+export const Card = {
+  text: 'gergg'
+}
