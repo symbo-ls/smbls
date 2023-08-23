@@ -2,6 +2,8 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
+import { Icon } from '../Icon'
+import { Avatar } from '../Avatar'
 
 export const DropdownList = {
   extend: Flex,
@@ -64,6 +66,41 @@ export const DropdownParent = {
           visibility: 'visible'
         }
       }
+    }
+  }
+}
+
+export const DropDownWithAvatar = {
+  extend: Flex,
+  avatar: { extend: Avatar },
+  titles: {
+    childExtend: { tag: 'H6' },
+    ...[{ props: { text: 'eth' } }]
+  },
+  downArrow: {
+    extend: Button,
+    props: { icon: 'arrowDown' }
+  },
+
+  props: {
+    boxSize: 'fit-content fit-content',
+    align: 'center flex-start',
+    padding: 'Y Z',
+    gap: 'Z',
+    round: 'Z',
+    background: 'rgba(28, 28, 31, 1)',
+    avatar: { boxSize: 'A+Y' },
+    titles: {
+      childProps: {
+        fontSize: 'Z',
+        textTransform: 'uppercase'
+      }
+    },
+    downArrow: {
+      padding: '0',
+      background: 'transparent',
+      color: 'white',
+      fontSize: 'Y'
     }
   }
 }
