@@ -21,14 +21,3 @@ export const Label = {
     props: ({ parent }) => ({ text: parent.props.emoji })
   }
 }
-
-export const CardLabel = {
-  text: '-2.902x',
-  props: {
-    fontSize: 'Y',
-    background: '#F4454E',
-    boxSize: 'fit-content fit-content',
-    padding: 'W Y',
-    round: 'Y'
-  }
-}
