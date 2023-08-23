@@ -138,6 +138,11 @@ export const ChatUserWithButtonSet = {
               color: 'white'
             }
           }
+        },
+
+        title: {
+          fontSize: 'C',
+          fontWeight: '700'
         }
       }
     }
@@ -167,6 +172,7 @@ export const ChatUserWithNotification = {
     infos: {
       childProps: {
         ':last-child': { gap: 'D' },
+        title: { fontSize: 'A' },
         chatText: {
           padding: '0',
           background: 'transparent',
