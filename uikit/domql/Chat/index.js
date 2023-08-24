@@ -1,13 +1,12 @@
 'use strict'
-
-import { User } from '@symbo.ls/user'
 import { UploadResult } from '@symbo.ls/upload'
 import { Flex } from '@symbo.ls/atoms'
 import { ButtonSet } from '@symbo.ls/button'
 import { DateIndicator, NotificationAlert } from '@symbo.ls/accessories'
+import { AvatarWithInfoSet } from '@symbo.ls/avatar'
 
 export const ChatUser = {
-  extend: User,
+  extend: AvatarWithInfoSet,
   image: {},
   infos: {
     ...[
@@ -97,7 +96,7 @@ export const ChatUserWithUploadedFile = {
 }
 
 export const ChatUserWithButtonSet = {
-  extend: User,
+  extend: AvatarWithInfoSet,
   image: {},
   infos: {
     ...[

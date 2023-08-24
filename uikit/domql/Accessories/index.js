@@ -12,6 +12,20 @@ export const IndicatorDot = {
   }
 }
 
+export const BalancesIndicator = {
+  extend: Flex,
+  caption: { props: { text: 'Balance:' } },
+  value: { props: { text: '0' } },
+  title: { props: { text: 'bnb' } },
+
+  props: {
+    fontSize: 'Z',
+    color: 'rgba(163, 163, 168, 1)',
+    gap: 'X',
+    title: { textTransform: 'uppercase' }
+  }
+}
+
 export const NotificationAlert = {
   span: { props: { text: '2' } },
   props: {
@@ -55,3 +69,15 @@ export const DateIndicator = {
     }
   }
 }
+
+// export const BalanceIndicator = {
+//   extend: Flex,
+//   caption: { props: { text: 'Balance:' } },
+//   value: { props: { text: '0' } },
+//   title: { props: { text: 'bnb' } },
+//   props: {
+//     fontSize: 'Z',
+//     color: 'rgba(163, 163, 168, 1)',
+//     gap: 'X'
+//   }
+// }

@@ -3,6 +3,8 @@
 import { Img, Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
 import { IndicatorDot } from '@symbo.ls/accessories'
+import { InfoSet } from '@symbo.ls/infoset'
+import { CardLabel } from '@symbo.ls/card'
 
 export const Avatar = {
   extend: Img,
@@ -89,6 +91,60 @@ export const AvatarChooser = {
     on: {
       change: (ev, { parent }) => {
         parent.Avatar.update({ key: ev.target.value })
+      }
+    }
+  }
+}
+
+export const AvatarWithInfoSet = {
+  extend: Flex,
+  image: { extend: AvatarWithIndicator },
+  infos: {
+    extend: InfoSet,
+    ...[
+      {
+        title: { props: { text: 'Erin Schleifer' } },
+        subTitle: { caption: { props: { text: 'email@symbols.com' } } }
+      }
+    ]
+  },
+
+  props: {
+    boxSize: 'fit-content',
+    align: 'center flex-start',
+    gap: 'A',
+    infos: {
+      childProps: {
+        flow: 'column',
+        subTitle: { caption: { whiteSpace: 'nowrap' } }
+      }
+    }
+  }
+}
+
+export const AvatarInfoSetWithLabel = {
+  extend: AvatarWithInfoSet,
+  image: { extend: Avatar },
+  infos: {
+    ...[
+      {
+        title: { props: { text: 'ETHDOWN' } },
+        label: { extend: CardLabel },
+        subTitle: null,
+        props: { gap: 'Z' }
+      },
+      {
+        subTitle: { props: { text: 'Short ADA with up to 4x Leverage' } }
+      }
+    ]
+  },
+
+  props: {
+    image: { boxSize: 'B' },
+    infos: {
+      gap: 'X',
+      childProps: {
+        flow: 'row'
       }
     }
   }

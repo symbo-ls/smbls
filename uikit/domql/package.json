@@ -44,7 +44,6 @@
     "@symbo.ls/upload": "latest",
     "@symbo.ls/video": "latest",
     "@symbo.ls/infoset": "latest",
-    "@symbo.ls/user": "latest",
     "@symbo.ls/accessories": "latest"
   },
   "scripts": {
