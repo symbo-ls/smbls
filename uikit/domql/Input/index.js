@@ -7,6 +7,8 @@ export const Input = {
   extend: [Focusable],
   tag: 'input',
 
+  deps: { isString, replaceLiteralsWithObjectFields },
+
   props: {
     border: 'none',
     type: 'input',
@@ -25,7 +27,8 @@ export const Input = {
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
-    value: ({ props, state }) => {
+    value: ({ props, state, deps }) => {
+      const { isString, replaceLiteralsWithObjectFields } = deps
       if (isString(props.value) && props.value.includes('{{')) return replaceLiteralsWithObjectFields(props.value, state)
       return props.value
     },
