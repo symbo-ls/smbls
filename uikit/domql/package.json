@@ -44,7 +44,8 @@
     "@symbo.ls/upload": "latest",
     "@symbo.ls/video": "latest",
     "@symbo.ls/infoset": "latest",
-    "@symbo.ls/accessories": "latest"
+    "@symbo.ls/accessories": "latest",
+    "@symbo.ls/icontextwithnotification": "latest"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"

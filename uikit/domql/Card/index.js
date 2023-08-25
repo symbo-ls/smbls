@@ -53,6 +53,22 @@ export const DropDownWithAvatar = {
   }
 }
 
+export const AmountWithLabel = {
+  extend: Flex,
+  amount: { props: { text: '240.59' } },
+  label: {
+    extend: CardLabel,
+    props: { text: '-0.25%' }
+  },
+  props: {
+    align: 'center flex-start',
+    gap: 'Y+V',
+    amount: {
+      fontSize: `${20 / 16}em`,
+      fontWeight: '700'
+    }
+  }
+}
 export const Card = {
   extend: InfoSet,
 
@@ -61,12 +77,9 @@ export const Card = {
     icon: { extend: Icon, props: { name: 'arrowUpRight' } }
   },
   content: {
-    extend: Flex,
+    extend: AmountWithLabel,
     amount: { props: { text: '$ 12,759' } },
-    label: {
-      extend: CardLabel,
-      props: { text: '+ 8.8%' }
-    }
+    label: { props: { text: '+ 8.8%' } }
   },
   footer: {
     subTitle: {
@@ -88,7 +101,7 @@ export const Card = {
 
       title: { fontWeight: '700' },
       icon: { fontSize: 'C', color: '#A3A3A8' },
-      amount: { fontSize: `${24 / 16}em`, fontWeight: '700' },
+      amount: { fontSize: `${24 / 16}em` },
       label: { padding: 'Y Z', background: '#04040466' },
       subTitle: {
         gap: 'Y',

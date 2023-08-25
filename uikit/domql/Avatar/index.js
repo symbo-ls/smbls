@@ -47,7 +47,8 @@ export const AvatarBundle = {
         margin: '0 -Y2 0 0'
       }
     }
-  }
+  },
+  ...[{}, {}]
 }
 
 export const AvatarChooser = {
@@ -98,7 +99,7 @@ export const AvatarChooser = {
 
 export const AvatarWithInfoSet = {
   extend: Flex,
-  image: { extend: AvatarWithIndicator },
+  avatar: { extend: AvatarWithIndicator },
   infos: {
     extend: InfoSet,
     ...[
@@ -124,7 +125,7 @@ export const AvatarWithInfoSet = {
 
 export const AvatarInfoSetWithLabel = {
   extend: AvatarWithInfoSet,
-  image: { extend: Avatar },
+  avatar: { extend: Avatar },
   infos: {
     ...[
       {
@@ -140,11 +141,101 @@ export const AvatarInfoSetWithLabel = {
   },
 
   props: {
-    image: { boxSize: 'B' },
+    avatar: { boxSize: 'B' },
     infos: {
       gap: 'X',
       childProps: {
         flow: 'row'
+      }
+    }
+  }
+}
+
+export const AvatarInfoSetWithButton = {
+  extend: AvatarWithInfoSet,
+  avatar: { extend: Avatar },
+  infos: {
+    ...[
+      {
+        title: { props: { text: 'Wallet ID' } },
+        subTitle: { caption: { props: { text: '0xfb59...d862' } } }
+      },
+      {
+        extend: Button,
+        props: { icon: 'copyOutline' }
+      }
+    ]
+  },
+
+  props: {
+    padding: 'Y A Y Y',
+    border: '1px solid #57575C',
+    round: 'Z',
+    gap: 'Z',
+    avatar: {
+      boxSize: 'A+B',
+      round: 'Y'
+    },
+    infos: {
+      flow: 'row',
+      align: 'center flex-start',
+      gap: 'A+X',
+      childProps: {
+        title: { fontSize: 'Y' },
+        ':nth-child(2)': {
+          padding: '0',
+          color: 'white',
+          fontSize: 'C',
+          background: 'transparent'
+        }
+      }
+    }
+  }
+}
+
+export const AvatarBundleInfoSet = {
+  extend: AvatarWithInfoSet,
+  avatar: { extend: AvatarBundle },
+  infos: {
+    ...[
+      {
+        title: { props: { text: 'ETH/BNB' } },
+        label: {
+          extend: CardLabel,
+          props: { text: '1 ETH = 240.7 BNB' }
+        },
+        subTitle: null
+      }
+    ]
+  },
+
+  props: {
+    gap: 'Z',
+    background: '#1C1C1F',
+    padding: 'A A',
+    round: 'Z',
+    avatar: {
+      childProps: {
+        boxSize: 'A+A',
+        ':not(:first-child)': {
+          border: 'solid, black 0',
+          borderWidth: '1px'
+        }
+        // style: {
+        //   '&:not(:first-child)': { border: '1px solid rgba(0, 0, 0, 0)' }
+        // }
+      }
+    },
+    infos: {
+      childProps: {
+        flow: 'row',
+        gap: 'Z',
+        align: 'center flex-start',
+        title: { fontWeight: '700' },
+        label: {
+          background: 'black',
+          padding: 'Y Z'
+        }
       }
     }
   }

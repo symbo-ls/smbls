@@ -32,10 +32,10 @@ export const NotificationAlert = {
     background: '#0474F2',
     boxSize: 'fit-content',
     padding: '- X',
-    round: 'Y+V',
+    round: 'Z',
+    color: 'white',
     span: {
-      fontSize: 'Y',
-      color: 'white'
+      fontSize: 'Y'
     }
   }
 }
@@ -69,15 +69,3 @@ export const DateIndicator = {
     }
   }
 }
-
-// export const BalanceIndicator = {
-//   extend: Flex,
-//   caption: { props: { text: 'Balance:' } },
-//   value: { props: { text: '0' } },
-//   title: { props: { text: 'bnb' } },
-//   props: {
-//     fontSize: 'Z',
-//     color: 'rgba(163, 163, 168, 1)',
-//     gap: 'X'
-//   }
-// }
