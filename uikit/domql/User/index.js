@@ -1,7 +1,8 @@
 'use strict'
+
 import { Flex } from '@symbo.ls/atoms'
 import { AvatarWithIndicator } from '@symbo.ls/avatar'
-import { InfoSet } from '../InfoSet'
+import { InfoSet } from '@symbo.ls/infoset'
 
 export const User = {
   extend: Flex,

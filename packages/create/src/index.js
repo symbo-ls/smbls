@@ -89,7 +89,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   if (appIsKey) App = {}
 
   // Set parent
-  if (typeof (document) === 'undefined') document = { body: {} }
+  if (typeof (document) === 'undefined') window.document = { body: {} }
   let parent
   if (options.parent) parent = options.parent
   else if (options.document) parent = options.document

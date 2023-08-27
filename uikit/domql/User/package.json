@@ -6,7 +6,8 @@
   "gitHead": "5045b599466b123739117f17f1585deb008d7622",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/utils": "latest"
+    "@symbo.ls/infoset": "latest",
+    "@symbo.ls/avatar": "latest"
   },
   "source": "src/index.js"
 }
