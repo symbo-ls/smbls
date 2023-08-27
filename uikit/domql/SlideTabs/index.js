@@ -2,6 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
+import { TitleParagraph } from '@symbo.ls/textcomponents'
 
 export const SlideTabs = {
   extend: Flex,
@@ -18,6 +19,28 @@ export const SlideTabs = {
       round: '0',
       ':first-child': { round: 'E 0 0 E' },
       ':last-child': { round: '0 E E 0' }
+    }
+  }
+}
+
+export const SlideTabsWithTitleParagraph = {
+  extend: Flex,
+  heading: {
+    extend: TitleParagraph,
+    heading: { title: { props: { text: 'Symbols' } } },
+    paragraph: { props: { text: 'The easiest way to build your own website.' } }
+  },
+  slides: { extend: SlideTabs },
+
+  props: {
+    maxWidth: 'fit-contnet',
+    flow: 'column',
+    gap: 'B',
+    padding: 'B',
+    background: '#252527',
+    heading: {
+      heading: { title: { fontSize: 'C' } },
+      paragraph: { fontSize: 'A' }
     }
   }
 }
