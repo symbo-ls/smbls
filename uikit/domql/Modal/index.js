@@ -25,8 +25,8 @@ export const Modal = {
     flow: 'column',
     round: 'Z+V',
     header: {
-      position: 'relative',
-
+      alignItems: 'center',
+      title: { fontSize: 'B' },
       close: {
         margin: '- - - auto',
         background: 'transparent',
@@ -58,6 +58,7 @@ export const ResetCompleteModal = {
   },
 
   props: {
+    minWidth: 'G+E',
     maxWidth: 'G+E',
     gap: 'B',
     content: {
@@ -79,5 +80,32 @@ export const ResetCompleteModal = {
         round: 'A'
       }
     }
+  }
+}
+
+export const MessageModal = {
+  extend: Modal,
+
+  header: {
+    title: {
+      tag: 'h5',
+      props: { text: 'Message' }
+    },
+    close: {}
+  },
+  content: {
+    p: {
+      props: { text: 'Yes. If you change your mind and no longer wish to keep your iPhone, you have the option to return it to us. The returned iPhone must be in good condition and in the original packaging, which contains all accessories, manuals and instructions. Returns are subject to Apples Sales and Refunds Policy.' }
+    }
+  },
+  footer: null,
+
+  props: {
+    minWidth: 'G+E',
+    maxWidth: 'G+E',
+    content: {
+      p: { fontSize: 'Z' }
+    }
+
   }
 }
