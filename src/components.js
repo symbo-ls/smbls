@@ -60,6 +60,7 @@ create({
 
   Modal: {},
   ResetCompleteModal: {},
+  MessageModal: {},
 
   Checkbox: {},
   Radio: {},
