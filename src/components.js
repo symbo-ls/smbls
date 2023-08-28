@@ -53,7 +53,7 @@ create({
   ParagraphWithUnderlineButton: {},
   ParagrapUnderlineLinkWithCheckbox: {},
   TitleParagraph: {},
-  TitleParagraphWithButton: {},
+  // TitleParagraphWithButton: {},
   SlideTabs: {},
   SlideTabsWithTitleParagraph: {},
   CancenConfirmButtons: {},
