@@ -80,8 +80,8 @@ export const CheckMark = {
     border: '2px solid #04F214',
     boxSize: 'fit-content',
     color: '#04F214',
-    padding: 'Z',
+    padding: 'Y+V',
     round: '100%',
-    check: { fontSize: 'F' }
+    check: { fontSize: 'G' }
   }
 }

@@ -6,12 +6,10 @@ import { Checkbox } from '@symbo.ls/form'
 
 export const TitleParagraph = {
   extend: Flex,
-  heading: {
-    extend: Flex,
-    title: {
-      tag: 'h5',
-      props: { text: 'Log in to your account' }
-    }
+
+  title: {
+    tag: 'h5',
+    props: { text: 'Log in to your account' }
   },
   paragraph: {
     tag: 'p',
@@ -32,30 +30,30 @@ export const TitleParagraph = {
   }
 }
 
-export const TitleParagraphWithButton = {
-  extend: TitleParagraph,
-  heading: {
-    title: {},
-    button: {
-      extend: Button,
-      props: { icon: { name: 'x' } }
-    }
-  },
+// export const TitleParagraphWithButton = {
+//   extend: TitleParagraph,
+//   heading: {
+//     title: {},
+//     button: {
+//       extend: Button,
+//       props: { icon: { name: 'x' } }
+//     }
+//   },
 
-  props: {
-    heading: {
-      align: 'center space-between',
-      title: { fontSize: 'A+V' },
-      button: {
-        padding: 'Y',
-        background: 'transparent',
-        color: 'white',
-        cursor: 'pointer',
-        icon: { fontSize: 'C' }
-      }
-    }
-  }
-}
+//   props: {
+//     heading: {
+//       align: 'center space-between',
+//       title: { fontSize: 'A+V' },
+//       button: {
+//         padding: 'Y',
+//         background: 'transparent',
+//         color: 'white',
+//         cursor: 'pointer',
+//         icon: { fontSize: 'C' }
+//       }
+//     }
+//   }
+// }
 
 export const ParagraphWithUnderlineButton = {
   extend: Flex,
