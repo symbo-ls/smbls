@@ -27,6 +27,7 @@ create({
   Avatar: {},
   IndicatorDot: {},
   NotificationAlert: {},
+  CheckMark: {},
   DateIndicator: {},
   AvatarWithIndicator: {},
   InfoSet: {},
