@@ -89,6 +89,7 @@ export const FieldWithTitle = {
     tag: 'h6',
     props: { text: 'Old password' }
   },
+
   field: { extend: CustomizedField },
 
   props: {
