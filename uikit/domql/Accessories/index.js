@@ -1,6 +1,7 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
+import { Icon } from '@symbo.ls/icon'
 
 export const IndicatorDot = {
   props: {
@@ -67,5 +68,20 @@ export const DateIndicator = {
     timeFormat: {
       textTransform: 'uppercase'
     }
+  }
+}
+
+export const CheckMark = {
+  check: {
+    extend: Icon,
+    props: { name: 'check' }
+  },
+  props: {
+    border: '2px solid #04F214',
+    boxSize: 'fit-content',
+    color: '#04F214',
+    padding: 'Z',
+    round: '100%',
+    check: { fontSize: 'F' }
   }
 }
