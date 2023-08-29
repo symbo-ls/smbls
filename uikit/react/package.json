@@ -35,7 +35,7 @@
     "prepublish": "rimraf -I dist && yarn build"
   },
   "peerDependencies": {
-    "domql": "latest",
+    "domql": "*",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   }
