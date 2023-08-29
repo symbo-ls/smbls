@@ -35,7 +35,11 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   const doc = options.parent || options.document || document
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
-  const state = options.state || {}
+  let state
+  if (options.state) state = options.state
+  else if (App?.state) state = App.state
+  else state = {}
+
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
@@ -97,7 +101,11 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
-  const state = options.state || {}
+  let state
+  if (options.state) state = options.state
+  else if (App?.state) state = App.state
+  else state = {}
+
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
