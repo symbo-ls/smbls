@@ -44,8 +44,11 @@
     "@symbo.ls/timepicker": "latest",
     "@symbo.ls/tooltip": "latest",
     "@symbo.ls/upload": "latest",
-    "@symbo.ls/user": "latest",
-    "@symbo.ls/video": "latest"
+    "@symbo.ls/video": "latest",
+    "@symbo.ls/icontextwithnotification": "latest",
+    "@symbo.ls/modal": "latest",
+    "@symbo.ls/textcomponents": "latest",
+    "@symbo.ls/slidetabs": "latest"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"

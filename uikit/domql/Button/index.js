@@ -52,3 +52,29 @@ export const KangorooButton = {
   extend: Button,
   childExtend: IconText
 }
+
+export const CancenConfirmButtons = {
+  extend: Flex,
+  childExtend: Button,
+  ...[
+    { props: { text: 'Cancel' } },
+    { props: { text: 'Confirm' } }
+  ],
+
+  props: {
+    gap: 'Y',
+    childProps: {
+      fontWeight: '500',
+      color: 'white',
+      padding: 'A B+X',
+      ':first-child': {
+        background: 'transparent'
+      },
+      ':last-child': {
+        background: '#0474F2',
+        round: 'A'
+      }
+    }
+  }
+
+}

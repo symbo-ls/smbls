@@ -1,6 +1,7 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
+import { Icon } from '@symbo.ls/icon'
 
 export const IndicatorDot = {
   props: {
@@ -12,16 +13,30 @@ export const IndicatorDot = {
   }
 }
 
+export const BalancesIndicator = {
+  extend: Flex,
+  caption: { props: { text: 'Balance:' } },
+  value: { props: { text: '0' } },
+  title: { props: { text: 'bnb' } },
+
+  props: {
+    fontSize: 'Z',
+    color: 'rgba(163, 163, 168, 1)',
+    gap: 'X',
+    title: { textTransform: 'uppercase' }
+  }
+}
+
 export const NotificationAlert = {
   span: { props: { text: '2' } },
   props: {
     background: '#0474F2',
     boxSize: 'fit-content',
     padding: '- X',
-    round: 'Y+V',
+    round: 'Z',
+    color: 'white',
     span: {
-      fontSize: 'Y',
-      color: 'white'
+      fontSize: 'Y'
     }
   }
 }
@@ -53,5 +68,20 @@ export const DateIndicator = {
     timeFormat: {
       textTransform: 'uppercase'
     }
+  }
+}
+
+export const CheckMark = {
+  check: {
+    extend: Icon,
+    props: { name: 'check' }
+  },
+  props: {
+    border: '2px solid #04F214',
+    boxSize: 'fit-content',
+    color: '#04F214',
+    padding: 'Y+V',
+    round: '100%',
+    check: { fontSize: 'G' }
   }
 }

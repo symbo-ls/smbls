@@ -1,0 +1,11 @@
+{
+  "name": "@symbo.ls/textcomponents",
+  "author": "symbo.ls",
+  "version": "2.11.132",
+  "repository": "https://github.com/symbo-ls/smbls",
+  "main": "index.js",
+  "dependencies": {
+    "three": "^0.150.1"
+  },
+  "gitHead": "d60406ab61039129d6cb183444aee041d871077e"
+}

@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD:uikit/domql/User/package.json
   "name": "@symbo.ls/user",
   "version": "2.11.141",
+=======
+  "name": "@symbo.ls/slidetabs",
+  "version": "2.11.136",
+>>>>>>> origin/feature/new-components:uikit/domql/SlideTabs/package.json
   "main": "index.js",
   "license": "MIT",
   "gitHead": "5045b599466b123739117f17f1585deb008d7622",

@@ -1,14 +1,14 @@
 'use strict'
 
-import { User } from '@symbo.ls/user'
 import { UploadResult } from '@symbo.ls/upload'
 import { Flex } from '@symbo.ls/atoms'
 import { ButtonSet } from '@symbo.ls/button'
 import { DateIndicator, NotificationAlert } from '@symbo.ls/accessories'
+import { AvatarWithInfoSet } from '@symbo.ls/avatar'
 
 export const ChatUser = {
-  extend: User,
-  image: {},
+  extend: AvatarWithInfoSet,
+  avatar: {},
   infos: {
     ...[
       {
@@ -24,7 +24,7 @@ export const ChatUser = {
 
   props: {
     align: 'flex-start flex-start',
-    image: { fontSize: 'C' },
+    avatar: { fontSize: 'C' },
     infos: {
       gap: 'Y',
       childProps: {
@@ -43,7 +43,7 @@ export const ChatUser = {
 
 export const ChatUserWithUploadedFile = {
   extend: ChatUser,
-  image: {},
+  avatar: {},
   infos: {
     ...[
       {},
@@ -97,8 +97,8 @@ export const ChatUserWithUploadedFile = {
 }
 
 export const ChatUserWithButtonSet = {
-  extend: User,
-  image: {},
+  extend: AvatarWithInfoSet,
+  avatar: {},
   infos: {
     ...[
       {
@@ -120,7 +120,7 @@ export const ChatUserWithButtonSet = {
     background: '#1C1C1F',
     padding: 'A B',
     round: 'A',
-    image: { fontSize: `${24 / 16}em` },
+    avatar: { fontSize: `${24 / 16}em` },
     infos: {
       flow: 'row',
       gap: 'D',
@@ -151,7 +151,7 @@ export const ChatUserWithButtonSet = {
 
 export const ChatUserWithNotification = {
   extend: ChatUser,
-  image: {},
+  avatar: {},
   infos: {
     ...[
       {

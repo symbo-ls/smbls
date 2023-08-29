@@ -1,14 +1,12 @@
 {
-  "name": "@symbo.ls/accessories",
+  "name": "@symbo.ls/icontextwithnotification",
   "version": "2.11.132",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "cad1a2675e0d9f1e052187d5ec388051edc5714e",
+  "gitHead": "dfc71a41e1d64da4fef5ad0ecc0b8f6a3be79890",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/button": "latest"
+    "@symbo.ls/utils": "latest"
   },
   "source": "src/index.js"
 }
-
-
