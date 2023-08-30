@@ -37,7 +37,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
 
   let state
   if (options.state) state = options.state
-  else if (App?.state) state = App.state
+  else if (App && App.state) state = App.state
   else state = {}
 
   const pages = options.pages || {}
@@ -103,7 +103,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 
   let state
   if (options.state) state = options.state
-  else if (App?.state) state = App.state
+  else if (App && App.state) state = App.state
   else state = {}
 
   const pages = options.pages || {}
