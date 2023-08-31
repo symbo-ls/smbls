@@ -31,7 +31,11 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   if (appIsKey) App = {}
   await fetchSync(key, options)
 
-  if (typeof (document) === 'undefined') window.document = {}
+  if (typeof (document) === 'undefined') {
+    if (typeof (window) === 'undefined') window = {}
+    if (!window.document) window.document = { body: {} }
+    document = window.document
+  }
   const doc = options.parent || options.document || document
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
@@ -93,7 +97,11 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   if (appIsKey) App = {}
 
   // Set parent
-  if (typeof (document) === 'undefined') window.document = { body: {} }
+  if (typeof (document) === 'undefined') {
+    if (typeof (window) === 'undefined') window = {}
+    if (!window.document) window.document = { body: {} }
+    document = window.document
+  }
   let parent
   if (options.parent) parent = options.parent
   else if (options.document) parent = options.document
