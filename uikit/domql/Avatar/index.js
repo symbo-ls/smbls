@@ -4,7 +4,7 @@ import { Img, Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
 import { IndicatorDot } from '@symbo.ls/accessories'
 import { InfoSet } from '@symbo.ls/infoset'
-import { CardLabel } from '@symbo.ls/card'
+import { CardLabel } from '@symbo.ls/label'
 
 export const Avatar = {
   extend: Img,
@@ -17,6 +17,41 @@ export const Avatar = {
   },
   attr: {
     src: ({ key, props }) => props.src || `https://avatars.dicebear.com/api/${props.avatarType || 'adventurer-neutral'}/${props.key || key}.svg`
+  }
+}
+
+export const DropDownWithAvatar = {
+  extend: Flex,
+  avatar: { extend: Avatar },
+  list: {
+    childExtend: { tag: 'H6' },
+    ...[{ props: { text: 'eth' } }]
+  },
+  downArrow: {
+    extend: Button,
+    props: { icon: 'arrowDown' }
+  },
+
+  props: {
+    boxSize: 'fit-content fit-content',
+    align: 'center flex-start',
+    padding: 'Y Z',
+    gap: 'Z',
+    round: 'Z',
+    background: 'rgba(28, 28, 31, 1)',
+    avatar: { boxSize: 'A+Y' },
+    list: {
+      childProps: {
+        fontSize: 'Z',
+        textTransform: 'uppercase'
+      }
+    },
+    downArrow: {
+      padding: '0',
+      background: 'transparent',
+      color: 'white',
+      fontSize: 'Y'
+    }
   }
 }
 
