@@ -32,7 +32,7 @@ export const Card = {
     title: { props: { text: 'Total crypto assets' } },
     icon: { extend: Icon, props: { name: 'arrowUpRight' } }
   },
-  content: {
+  contentx: {
     extend: AmountWithLabel,
     amount: { props: { text: '$ 12,759' } },
     label: { props: { text: '+ 8.8%' } }
