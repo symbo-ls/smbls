@@ -106,6 +106,7 @@ export const AvatarChooser = {
 
   select: {
     props: {
+      id: 'avatar-chooser',
       outline: 'none',
       pointerEvents: 'all',
       appearance: 'none',
@@ -120,7 +121,7 @@ export const AvatarChooser = {
       padding: '0 A 0 B1+X'
     },
 
-    attr: { name: 'avatar-chooser', id: 'avatar-chooser' },
+    attr: { name: 'avatar-chooser' },
 
     childExtend: { tag: 'option' },
     $setPropsCollection: ({ parent }) => parent.props.options,

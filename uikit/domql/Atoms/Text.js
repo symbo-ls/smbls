@@ -1,12 +1,11 @@
 'use strict'
 
-import { isObject } from '@domql/utils'
 import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
 export const Text = {
-  deps: { isObject, getFontSizeByKey, getFontFamily },
+  deps: { getFontSizeByKey, getFontFamily },
   text: ({ key, props, state, deps }) => {
-    if (deps.isObject(props) && props.text === true) return (state && state[key]) || (props && props[key])
+    if (props.text === true) return (state && state[key]) || (props && props[key])
     return props.text
   },
   class: {
