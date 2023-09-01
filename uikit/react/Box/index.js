@@ -10,6 +10,7 @@ export const Box = (props) => {
   const [theme, setTheme] = useGlobalTheme() // eslint-disable-line no-unused-vars
 
   const element = {
+    ...props.domqlElementObject,
     context,
     class: {}
   }
