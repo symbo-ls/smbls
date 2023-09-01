@@ -29,7 +29,8 @@ export const Input = {
     placeholder: ({ props }) => props.placeholder,
     value: ({ props, state, deps }) => {
       const { isString, replaceLiteralsWithObjectFields } = deps
-      if (isString(props.value) && props.value.includes('{{')) return replaceLiteralsWithObjectFields(props.value, state)
+      if (isString(props.value) && props.value.includes('{{'))
+        return replaceLiteralsWithObjectFields(props.value, state)
       return props.value
     },
     disabled: ({ props }) => props.disabled || null,
