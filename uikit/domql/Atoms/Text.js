@@ -1,15 +1,17 @@
 'use strict'
 
+import { isObject } from '@domql/utils'
 import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
 export const Text = {
-  text: ({ key, props, state }) => {
-    if (props.text === true) return (state && state[key]) || (props && props[key])
+  deps: { isObject, getFontSizeByKey, getFontFamily },
+  text: ({ key, props, state, deps }) => {
+    if (deps.isObject(props) && props.text === true) return (state && state[key]) || (props && props[key])
     return props.text
   },
   class: {
-    fontSize: ({ props }) => props.fontSize ? getFontSizeByKey(props.fontSize) : null,
-    fontFamily: ({ props }) => props.fontFamily && ({ fontFamily: getFontFamily(props.fontFamily) || props.fontFamily }),
+    fontSize: ({ props, deps }) => props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null,
+    fontFamily: ({ props, deps }) => props.fontFamily && ({ fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily }),
     lineHeight: ({ props }) => props.lineHeight && ({ lineHeight: props.lineHeight }),
     // lineHeight: ({ props }) => props.lineHeight && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
     textDecoration: ({ props }) => props.textDecoration && ({ textDecoration: props.textDecoration }),

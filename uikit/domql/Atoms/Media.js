@@ -13,7 +13,10 @@ export const keySetters = {
   '[': (key, props, result, element, isSubtree) => applySelectorProps(
     key, props, isSubtree ? result : (result && result.selector), element
   ),
-  '&': (key, props, result, element, isSubtree) => applyEndProps(
+  '&': (key, props, result, element, isSubtree) => applyAndProps(
+    key, props, isSubtree ? result : (result && result.selector), element
+  ),
+  '>': (key, props, result, element, isSubtree) => applyAndProps(
     key, props, isSubtree ? result : (result && result.selector), element
   ),
   $: (key, props, result, element, isSubtree) => applyCaseProps(
@@ -87,7 +90,7 @@ const applyMediaProps = (key, props, result, element) => {
   return result[mediaKey]
 }
 
-const applyEndProps = (key, props, result, element) => {
+const applyAndProps = (key, props, result, element) => {
   result[key] = convertPropsToClass(props, result, element)
   return result[key]
 }
