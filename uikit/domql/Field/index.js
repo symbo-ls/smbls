@@ -49,11 +49,11 @@ export const CustomizedField = {
       background: 'transparent',
       border: '1px solid #3F3F43',
       round: 'Z',
-      placeholder: 'placeholder',
       minHeight: 'C+W',
       color: 'white'
     }
-  }
+  },
+  input: { props: { placeholder: 'placeholder' } }
 }
 
 export const CodeField = {
@@ -61,7 +61,7 @@ export const CodeField = {
   childExtend: {
     extend: CustomizedField,
     props: {
-      boxSize: 'D D',
+      boxSize: 'D+Z D+Z',
       input: {
         type: 'number',
         placeholder: '0',
@@ -75,7 +75,7 @@ export const CodeField = {
   ...[{}, {}, {}, {}],
 
   props: {
-    align: 'center flex-start',
+    align: 'center space-between',
     gap: 'A'
   }
 }
@@ -91,8 +91,8 @@ export const FieldWithTitle = {
     gap: 'Y',
     title: {
       fontSize: 'Z',
-      color: '#CFCFD1'
-      // padding: '- - - Y+X'
+      color: '#CFCFD1',
+      fontWeight: '400'
     },
     subTitle: {
       fontSize: 'Z',

@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { TitleParagraph, ParagraphWithUnderlineButton } from '@symbo.ls/textcomponents'
-import { Button, CancenConfirmButtons } from '@symbo.ls/button'
+import { Button } from '@symbo.ls/button'
 import { FieldWithTitle, CodeField } from '@symbo.ls/field'
 import { IconText } from '@symbo.ls/icon'
 import { CheckMark } from '@symbo.ls/accessories'
@@ -195,6 +195,7 @@ export const VerificationCodeModal = {
 
   props: {
     maxWidth: 'G+E',
+    minWidth: 'G+E',
     gap: 'B',
     content: { gap: 'B' },
     footer: {
