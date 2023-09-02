@@ -66,7 +66,8 @@ export const CodeField = {
         type: 'number',
         placeholder: '0',
         textAlign: 'center',
-        fontSize: 'E'
+        fontSize: 'E',
+        round: 'Y'
       },
       style: { 'input[type=number]::-webkit-inner-spin-button': { '-webkit-appearance': ' none' } }
     }

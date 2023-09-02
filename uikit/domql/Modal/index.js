@@ -1,9 +1,9 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraph } from '@symbo.ls/textcomponents'
+import { TitleParagraph, ParagraphWithUnderlineButton } from '@symbo.ls/textcomponents'
 import { Button, CancenConfirmButtons } from '@symbo.ls/button'
-import { FieldWithTitle } from '../Field'
+import { FieldWithTitle, CodeField } from '@symbo.ls/field'
 import { IconText } from '@symbo.ls/icon'
 import { CheckMark } from '@symbo.ls/accessories'
 
@@ -24,7 +24,6 @@ export const Modal = {
     padding: 'A',
     flow: 'column',
     round: 'Z+V',
-    gap: 'B',
     header: {
       title: { fontSize: 'B' },
       close: {
@@ -34,7 +33,8 @@ export const Modal = {
         fontSize: 'D',
         padding: '0'
       }
-    }
+    },
+    content: { flow: 'column' }
   }
 }
 
@@ -143,7 +143,9 @@ export const ChangePasswordModal = {
       },
       {
         title: { props: { text: 'Confirm new password' } },
-        field: { input: {} },
+        field: {
+          input: {}
+        },
         subTitle: {
           extend: IconText,
           props: {
@@ -161,13 +163,42 @@ export const ChangePasswordModal = {
   props: {
     minWidth: 'H',
     maxWidth: 'H',
+    gap: 'B',
     content: {
       flow: 'column',
       gap: 'B',
       childProps: {
-        field: { width: '100%' }
+        field: {
+          width: '100%',
+          input: { type: 'password' }
+        }
       }
     },
     footer: { justifyContent: 'flex-end' }
+  }
+}
+
+export const VerificationCodeModal = {
+  extend: ModalWithTitleParagraph,
+  header: {
+    heading: {
+      title: { props: { text: 'Verify your email' } },
+      paragraph: { props: { text: 'Verification code has been sent to you. Enter the code below.' } }
+    }
+  },
+
+  content: {
+    codeField: { extend: CodeField },
+    paragraph: { extend: ParagraphWithUnderlineButton }
+  },
+  footer: { 'CancenConfirmButtons.1': { ...[{}, { text: 'Verify' }] } },
+
+  props: {
+    maxWidth: 'G+E',
+    gap: 'B',
+    content: { gap: 'B' },
+    footer: {
+      justifyContent: 'flex-end'
+    }
   }
 }

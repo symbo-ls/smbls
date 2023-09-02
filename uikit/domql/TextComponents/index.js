@@ -30,44 +30,22 @@ export const TitleParagraph = {
   }
 }
 
-// export const TitleParagraphWithButton = {
-//   extend: TitleParagraph,
-//   heading: {
-//     title: {},
-//     button: {
-//       extend: Button,
-//       props: { icon: { name: 'x' } }
-//     }
-//   },
-
-//   props: {
-//     heading: {
-//       align: 'center space-between',
-//       title: { fontSize: 'A+V' },
-//       button: {
-//         padding: 'Y',
-//         background: 'transparent',
-//         color: 'white',
-//         cursor: 'pointer',
-//         icon: { fontSize: 'C' }
-//       }
-//     }
-//   }
-// }
-
 export const ParagraphWithUnderlineButton = {
   extend: Flex,
   p: { props: { text: 'Didnt get the code?' } },
   underlined: {
     extend: Button,
-    props: { text: 'Click to reset' }
+    props: { text: 'Click to resend' }
   },
 
   props: {
     align: 'center flex-start',
     gap: 'Z',
     fontSize: 'Z',
-    p: { color: '#A3A3A8' },
+    p: {
+      color: '#A3A3A8',
+      margin: '0'
+    },
     underlined: {
       padding: '0',
       background: 'transparent',
