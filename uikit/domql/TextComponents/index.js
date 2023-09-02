@@ -20,7 +20,7 @@ export const TitleParagraph = {
     flow: 'column',
     gap: 'Y',
     maxWidth: 'fit-content',
-    heading: { title: { fontSize: 'D' } },
+    title: { fontSize: 'D' },
     paragraph: {
       fontSize: 'Z',
       padding: '0',

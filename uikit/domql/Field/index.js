@@ -43,19 +43,15 @@ export const Field = {
 export const CustomizedField = {
   extend: Field,
   props: {
-    background: 'transparent',
-    border: '1px solid #3F3F43',
     padding: '0',
-    minHeight: 'C+W',
-    round: 'Z',
-    overflow: 'hidden',
+    round: '0',
     input: {
       background: 'transparent',
+      border: '1px solid #3F3F43',
+      round: 'Z',
       placeholder: 'placeholder',
-      color: 'white',
-      fontSize: 'Z',
-      round: '0',
-      '::placeholder': { textTransform: 'capitalize' }
+      minHeight: 'C+W',
+      color: 'white'
     }
   }
 }
@@ -85,11 +81,8 @@ export const CodeField = {
 
 export const FieldWithTitle = {
   extend: Flex,
-  title: {
-    tag: 'h6',
-    props: { text: 'Old password' }
-  },
 
+  title: { tag: 'h6', props: { text: 'Old password' } },
   field: { extend: CustomizedField },
 
   props: {
@@ -97,8 +90,14 @@ export const FieldWithTitle = {
     gap: 'Y',
     title: {
       fontSize: 'Z',
-      color: '#CFCFD1',
-      padding: '- - - Y+W'
+      color: '#CFCFD1'
+      // padding: '- - - Y+X'
+    },
+    subTitle: {
+      fontSize: 'Z',
+      gap: 'X+V',
+      padding: 'X - - -',
+      icon: { boxSize: 'Z+X Z+X' }
     }
   }
 }
