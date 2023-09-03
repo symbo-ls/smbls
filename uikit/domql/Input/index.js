@@ -27,12 +27,11 @@ export const Input = {
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
-    value: (el) => {
-      const { props, state, deps } = el
-      console.log(el)
+    value: ({ props, state, deps }) => {
       const { isString, replaceLiteralsWithObjectFields } = deps
-      if (isString(props.value) && props.value.includes('{{'))
+      if (isString(props.value) && props.value.includes('{{')) {
         return replaceLiteralsWithObjectFields(props.value, state)
+      }
       return props.value
     },
     disabled: ({ props }) => props.disabled || null,
