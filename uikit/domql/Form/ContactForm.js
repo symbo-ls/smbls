@@ -4,7 +4,7 @@ import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
 import { FieldWithTitle } from '@symbo.ls/field'
 import { TextareaWithTitle } from '@symbo.ls/textarea'
-import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/TextComponents'
+import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
 import { Button } from '@symbo.ls/button'
 
 export const ContactForm = {
