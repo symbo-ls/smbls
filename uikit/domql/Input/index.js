@@ -27,7 +27,9 @@ export const Input = {
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
-    value: ({ props, state, deps }) => {
+    value: (el) => {
+      const { props, state, deps } = el
+      console.log(el)
       const { isString, replaceLiteralsWithObjectFields } = deps
       if (isString(props.value) && props.value.includes('{{'))
         return replaceLiteralsWithObjectFields(props.value, state)

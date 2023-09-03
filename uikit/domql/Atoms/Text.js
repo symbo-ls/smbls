@@ -10,7 +10,9 @@ export const Text = {
   },
   class: {
     fontSize: ({ props, deps }) => props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null,
-    fontFamily: ({ props, deps }) => props.fontFamily && ({ fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily }),
+    fontFamily: ({ props, deps }) => props.fontFamily && ({
+      fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily 
+    }),
     lineHeight: ({ props }) => props.lineHeight && ({ lineHeight: props.lineHeight }),
     // lineHeight: ({ props }) => props.lineHeight && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
     textDecoration: ({ props }) => props.textDecoration && ({ textDecoration: props.textDecoration }),
