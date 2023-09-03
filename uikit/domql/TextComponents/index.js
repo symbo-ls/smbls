@@ -10,22 +10,19 @@ export const TitleParagraph = {
     props: { text: 'Log in to your account' }
   },
 
-  paragraph: {
-    tag: 'p',
-    props: { text: 'Enter your email address and password to log in.' }
+  P: {
+    fontSize: 'Z',
+    padding: '0',
+    margin: '0',
+    color: '#E0E0E2',
+    text: 'Enter your email address and password to log in.'
   },
 
   props: {
     flow: 'column',
     gap: 'Y',
     maxWidth: 'fit-content',
-    title: { fontSize: 'D' },
-    paragraph: {
-      fontSize: 'Z',
-      padding: '0',
-      margin: '0',
-      color: '#E0E0E2'
-    }
+    title: { fontSize: 'D' }
   }
 }
 
