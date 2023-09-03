@@ -1,10 +1,10 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraph } from '@symbo.ls/textcomponents'
-import { FieldWithTitle } from '@symbo.ls/field'
+import { TitleParagraph, ParagraphWithUnderlineButton } from '@symbo.ls/textcomponents'
 import { Button } from '@symbo.ls/button'
-import { Icon } from '@symbo.ls/icon'
+import { FieldWithTitle, CodeField } from '@symbo.ls/field'
+import { IconText } from '@symbo.ls/icon'
 import { CheckMark } from '@symbo.ls/accessories'
 
 export const Modal = {
@@ -17,7 +17,7 @@ export const Modal = {
     }
   },
   content: { extend: Flex },
-  footer: {},
+  footer: { extend: Flex },
 
   props: {
     background: '#1C1C1F',
@@ -25,7 +25,6 @@ export const Modal = {
     flow: 'column',
     round: 'Z+V',
     header: {
-      alignItems: 'center',
       title: { fontSize: 'B' },
       close: {
         margin: '- - - auto',
@@ -33,6 +32,21 @@ export const Modal = {
         color: 'white',
         fontSize: 'D',
         padding: '0'
+      }
+    },
+    content: { flow: 'column' }
+  }
+}
+
+export const ModalWithTitleParagraph = {
+  extend: Modal,
+  header: { heading: { extend: TitleParagraph } },
+  props: {
+    header: {
+      alignItems: 'flex-start',
+      heading: {
+        gap: 'A',
+        title: { fontSize: 'B' }
       }
     }
   }
@@ -103,9 +117,89 @@ export const MessageModal = {
   props: {
     minWidth: 'G+E',
     maxWidth: 'G+E',
-    content: {
-      p: { fontSize: 'Z' }
-    }
+    content: { p: { fontSize: 'Z' } }
+  }
+}
 
+export const ChangePasswordModal = {
+  extend: ModalWithTitleParagraph,
+  header: {},
+  content: {
+    childExtend: { extend: FieldWithTitle },
+    ...[
+      { title: { props: { text: 'Old password' } } },
+      {
+        title: { props: { text: 'New password' } },
+        field: { input: {} },
+        subTitle: {
+          extend: IconText,
+          props: {
+            icon: { name: 'info' },
+            text: '8 character minimum',
+            align: 'center flex-start',
+            boxSize: 'fit-content'
+          }
+        }
+      },
+      {
+        title: { props: { text: 'Confirm new password' } },
+        field: {
+          input: {}
+        },
+        subTitle: {
+          extend: IconText,
+          props: {
+            icon: { name: 'info' },
+            text: '8 character minimum',
+            align: 'center flex-start',
+            boxSize: 'fit-content'
+          }
+        }
+      }
+    ]
+  },
+  footer: { 'CancenConfirmButtons.1': { ...[{}, { text: 'Reset password' }] } },
+
+  props: {
+    minWidth: 'H',
+    maxWidth: 'H',
+    gap: 'B',
+    content: {
+      flow: 'column',
+      gap: 'B',
+      childProps: {
+        field: {
+          width: '100%',
+          input: { type: 'password' }
+        }
+      }
+    },
+    footer: { justifyContent: 'flex-end' }
+  }
+}
+
+export const VerificationCodeModal = {
+  extend: ModalWithTitleParagraph,
+  header: {
+    heading: {
+      title: { props: { text: 'Verify your email' } },
+      paragraph: { props: { text: 'Verification code has been sent to you. Enter the code below.' } }
+    }
+  },
+
+  content: {
+    codeField: { extend: CodeField },
+    paragraph: { extend: ParagraphWithUnderlineButton }
+  },
+  footer: { 'CancenConfirmButtons.1': { ...[{}, { text: 'Verify' }] } },
+
+  props: {
+    maxWidth: 'G+E',
+    minWidth: 'G+E',
+    gap: 'B',
+    content: { gap: 'B' },
+    footer: {
+      justifyContent: 'flex-end'
+    }
   }
 }

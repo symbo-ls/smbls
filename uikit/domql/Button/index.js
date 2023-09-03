@@ -63,6 +63,7 @@ export const CancenConfirmButtons = {
 
   props: {
     gap: 'Y',
+    maxWidth: 'fit-content',
     childProps: {
       fontWeight: '500',
       color: 'white',

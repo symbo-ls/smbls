@@ -43,21 +43,17 @@ export const Field = {
 export const CustomizedField = {
   extend: Field,
   props: {
-    background: 'transparent',
-    border: '1px solid #3F3F43',
     padding: '0',
-    minHeight: 'C+W',
-    round: 'Z',
-    overflow: 'hidden',
+    round: '0',
     input: {
       background: 'transparent',
-      placeholder: 'placeholder',
-      color: 'white',
-      fontSize: 'Z',
-      round: '0',
-      '::placeholder': { textTransform: 'capitalize' }
+      border: '1px solid #3F3F43',
+      round: 'Z',
+      minHeight: 'C+W',
+      color: 'white'
     }
-  }
+  },
+  input: { props: { placeholder: 'placeholder' } }
 }
 
 export const CodeField = {
@@ -65,12 +61,13 @@ export const CodeField = {
   childExtend: {
     extend: CustomizedField,
     props: {
-      boxSize: 'D D',
+      boxSize: 'D+Z D+Z',
       input: {
         type: 'number',
         placeholder: '0',
         textAlign: 'center',
-        fontSize: 'E'
+        fontSize: 'E',
+        round: 'Y'
       },
       style: { 'input[type=number]::-webkit-inner-spin-button': { '-webkit-appearance': ' none' } }
     }
@@ -78,18 +75,15 @@ export const CodeField = {
   ...[{}, {}, {}, {}],
 
   props: {
-    align: 'center flex-start',
+    align: 'center space-between',
     gap: 'A'
   }
 }
 
 export const FieldWithTitle = {
   extend: Flex,
-  title: {
-    tag: 'h6',
-    props: { text: 'Old password' }
-  },
 
+  title: { tag: 'h6', props: { text: 'Old password' } },
   field: { extend: CustomizedField },
 
   props: {
@@ -98,7 +92,13 @@ export const FieldWithTitle = {
     title: {
       fontSize: 'Z',
       color: '#CFCFD1',
-      padding: '- - - Y+W'
+      fontWeight: '400'
+    },
+    subTitle: {
+      fontSize: 'Z',
+      gap: 'X+V',
+      padding: 'X - - -',
+      icon: { boxSize: 'Z+X Z+X' }
     }
   }
 }
