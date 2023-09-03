@@ -1,8 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
-import { Checkbox } from '@symbo.ls/form'
 
 export const TitleParagraph = {
   extend: Flex,
@@ -11,6 +9,7 @@ export const TitleParagraph = {
     tag: 'h5',
     props: { text: 'Log in to your account' }
   },
+
   paragraph: {
     tag: 'p',
     props: { text: 'Enter your email address and password to log in.' }
@@ -32,41 +31,40 @@ export const TitleParagraph = {
 
 export const ParagraphWithUnderlineButton = {
   extend: Flex,
-  p: { props: { text: 'Didnt get the code?' } },
-  underlined: {
-    extend: Button,
-    props: { text: 'Click to resend' }
-  },
 
   props: {
     align: 'center flex-start',
     gap: 'Z',
-    fontSize: 'Z',
-    p: {
-      color: '#A3A3A8',
-      margin: '0'
-    },
-    underlined: {
-      padding: '0',
-      background: 'transparent',
-      color: '#E0E0E2',
-      cursor: 'pointer',
-      textDecoration: 'underline',
-      fontWeight: '500'
-    }
+    fontSize: 'Z'
+  },
+
+  P: {
+    color: '#A3A3A8',
+    margin: '0',
+    text: 'Didnt get the code?'
+  },
+
+  Button: {
+    text: 'Click to resend',
+    padding: '0',
+    background: 'transparent',
+    color: '#E0E0E2',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+    fontWeight: '500'
   }
 }
 
 export const ParagrapUnderlineLinkWithCheckbox = {
   extend: Flex,
-  checkBox: { extend: Checkbox },
-  paragraph: { extend: ParagraphWithUnderlineButton },
+
+  Checkbox: {
+    Flex: { boxSize: 'A+X' }
+  },
+  ParagraphWithUnderlineButton: { },
 
   props: {
     align: 'center flex-start',
-    gap: 'X',
-    checkBox: {
-      Flex: { boxSize: 'A+X' }
-    }
+    gap: 'X'
   }
 }
