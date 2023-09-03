@@ -4,7 +4,6 @@ import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
 import { FieldWithTitle } from '@symbo.ls/field'
 import { TextareaWithTitle } from '@symbo.ls/textarea'
-import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
 import { Button } from '@symbo.ls/button'
 
 export const ContactForm = {
@@ -42,12 +41,11 @@ export const ContactForm = {
 
       message: { extend: TextareaWithTitle }
     },
-    checkParagraph: {
-      extend: ParagrapUnderlineLinkWithCheckbox,
-      checkBox: {},
-      paragraph: {
-        p: { props: { text: 'You agree to ' } },
-        underlined: { props: { text: 'privacy policy' } }
+    ParagrapUnderlineLinkWithCheckbox: {
+      CheckBox: {},
+      ParagraphWithUnderlineButton: {
+        P: { text: 'You agree to ' },
+        Button: { text: 'privacy policy' }
       }
     }
   },

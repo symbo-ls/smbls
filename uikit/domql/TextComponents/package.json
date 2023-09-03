@@ -5,9 +5,7 @@
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
-    "@symbo.ls/button": "latest",
-    "@symbo.ls/form": "latest"
+    "@symbo.ls/atoms": "latest"
   },
   "gitHead": "f09e162a618613a10c3db8bff11177baf04da275"
 }
