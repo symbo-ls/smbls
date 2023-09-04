@@ -1,10 +1,8 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraph, ParagraphWithUnderlineButton } from '@symbo.ls/textcomponents'
 import { Button } from '@symbo.ls/button'
-import { FieldWithTitle, CodeField } from '@symbo.ls/field'
-import { CheckMark } from '@symbo.ls/accessories'
+import { FieldWithTitle } from '@symbo.ls/field'
 
 export const ModalHeader = {
   extend: Flex,
@@ -154,16 +152,18 @@ export const ChangePasswordModal = {
   ModalContent: {
     props: {
       flow: 'column',
-      gap: 'B',
-      childProps: {
-        field: {
+      gap: 'B'
+    },
+
+    childExtend: {
+      extend: FieldWithTitle,
+      props: {
+        CustomizedField: {
           width: '100%',
           input: { type: 'password' }
         }
       }
     },
-
-    childExtend: FieldWithTitle,
     ...[
       {
         Title: { props: { text: 'Old password' } }
@@ -200,6 +200,7 @@ export const ChangePasswordModal = {
       justifyContent: 'flex-end'
     },
     CancelConfirmButtons: {
+      props: {},
       ...[{}, { text: 'Reset password' }]
     }
   }
@@ -217,8 +218,8 @@ export const VerificationCodeModal = {
   ModalHeader: {
     props: {},
     heading: {
-      title: { props: { text: 'Verify your email' } },
-      paragraph: { props: { text: 'Verification code has been sent to you. Enter the code below.' } }
+      title: { text: 'Verify your email' },
+      paragraph: { text: 'Verification code has been sent to you. Enter the code below.' }
     }
   },
 
@@ -235,6 +236,7 @@ export const VerificationCodeModal = {
       justifyContent: 'flex-end'
     },
     CancelConfirmButtons: {
+      props: {},
       ...[{}, { text: 'Verify' }]
     }
   }
