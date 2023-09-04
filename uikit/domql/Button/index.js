@@ -53,7 +53,7 @@ export const KangorooButton = {
   childExtend: IconText
 }
 
-export const CancenConfirmButtons = {
+export const CancelConfirmButtons = {
   extend: Flex,
   childExtend: Button,
   ...[

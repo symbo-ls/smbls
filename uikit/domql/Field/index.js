@@ -83,22 +83,24 @@ export const CodeField = {
 export const FieldWithTitle = {
   extend: Flex,
 
-  title: { tag: 'h6', props: { text: 'Old password' } },
-  field: { extend: CustomizedField },
-
   props: {
     flow: 'column',
-    gap: 'Y',
-    title: {
+    gap: 'Y'
+  },
+
+  Title: {
+    tag: 'h6',
+    props: {
+      text: 'Old password',
       fontSize: 'Z',
       color: '#CFCFD1',
       fontWeight: '400'
-    },
-    subTitle: {
-      fontSize: 'Z',
-      gap: 'X+V',
-      padding: 'X - - -',
-      icon: { boxSize: 'Z+X Z+X' }
     }
+  },
+  CustomizedField: {
+    fontSize: 'Z',
+    gap: 'X+V',
+    padding: 'X - - -',
+    icon: { boxSize: 'Z+X Z+X' }
   }
 }

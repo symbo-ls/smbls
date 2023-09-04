@@ -4,45 +4,64 @@ import { Flex } from '@symbo.ls/atoms'
 import { TitleParagraph, ParagraphWithUnderlineButton } from '@symbo.ls/textcomponents'
 import { Button } from '@symbo.ls/button'
 import { FieldWithTitle, CodeField } from '@symbo.ls/field'
-import { IconText } from '@symbo.ls/icon'
 import { CheckMark } from '@symbo.ls/accessories'
+
+export const ModalHeader = {
+  extend: Flex,
+  props: {
+  },
+  title: {
+    props: {
+      fontSize: 'B'
+    }
+  },
+  close: {
+    extend: Button,
+    props: {
+      icon: 'x',
+      margin: '- - - auto',
+      background: 'transparent',
+      color: 'white',
+      fontSize: 'D',
+      padding: '0'
+    }
+  }
+}
+
+export const ModalContent = {
+  extend: Flex,
+  props: {
+    flow: 'column'
+  }
+}
+
+export const ModalFooter = {
+  extend: Flex,
+  props: {
+    flow: 'column'
+  }
+}
 
 export const Modal = {
   extend: Flex,
-  header: {
-    extend: Flex,
-    close: {
-      extend: Button,
-      props: { icon: 'x' }
-    }
-  },
-  content: { extend: Flex },
-  footer: { extend: Flex },
 
   props: {
     background: '#1C1C1F',
     padding: 'A',
     flow: 'column',
-    round: 'Z+V',
-    header: {
-      title: { fontSize: 'B' },
-      close: {
-        margin: '- - - auto',
-        background: 'transparent',
-        color: 'white',
-        fontSize: 'D',
-        padding: '0'
-      }
-    },
-    content: { flow: 'column' }
-  }
+    round: 'Z+V'
+  },
+
+  ModalHeader: {},
+  ModalContent: {},
+  ModalFooter: {}
 }
 
 export const ModalWithTitleParagraph = {
   extend: Modal,
-  header: { heading: { extend: TitleParagraph } },
-  props: {
-    header: {
+  ModalHeader: {
+    props: {},
+    TitleParagraph: {
       alignItems: 'flex-start',
       heading: {
         gap: 'A',
@@ -55,27 +74,15 @@ export const ModalWithTitleParagraph = {
 export const ResetCompleteModal = {
   extend: Modal,
 
-  header: {},
-  content: {
-    icon: { extend: CheckMark },
-    titleParagraph: {
-      extend: TitleParagraph,
-      title: { props: { text: 'Reset complete!' } },
-      paragraph: { props: { text: 'Your request has been approved!' } }
-    }
-  },
-  footer: {
-    button: {
-      extend: Button,
-      props: { text: 'Done' }
-    }
-  },
-
   props: {
     minWidth: 'G+E',
     maxWidth: 'G+E',
-    gap: 'B',
-    content: {
+    gap: 'B'
+  },
+
+  ModalHeader: {},
+  ModalContent: {
+    props: {
       flow: 'column',
       align: 'center center',
       gap: 'B',
@@ -84,7 +91,14 @@ export const ResetCompleteModal = {
         title: { fontSize: 'B' }
       }
     },
-    footer: {
+    CheckMark: {},
+    TitleParagraph: {
+      title: { text: 'Reset complete!' },
+      paragraph: { text: 'Your request has been approved!' }
+    }
+  },
+  ModalFooter: {
+    props: {
       minWidth: '100%',
       button: {
         background: '#0474F2',
@@ -93,6 +107,9 @@ export const ResetCompleteModal = {
         padding: 'A -',
         round: 'A'
       }
+    },
+    Button: {
+      props: { text: 'Done' }
     }
   }
 }
@@ -100,71 +117,42 @@ export const ResetCompleteModal = {
 export const MessageModal = {
   extend: Modal,
 
-  header: {
+  props: {
+    minWidth: 'G+E',
+    maxWidth: 'G+E'
+  },
+
+  ModalHeader: {
     title: {
       tag: 'h5',
       props: { text: 'Message' }
     },
     close: {}
   },
-  content: {
+  ModalContent: {
+    props: {
+      p: { fontSize: 'Z' }
+    },
     p: {
       props: { text: 'Yes. If you change your mind and no longer wish to keep your iPhone, you have the option to return it to us. The returned iPhone must be in good condition and in the original packaging, which contains all accessories, manuals and instructions. Returns are subject to Apples Sales and Refunds Policy.' }
     }
   },
-  footer: null,
-
-  props: {
-    minWidth: 'G+E',
-    maxWidth: 'G+E',
-    content: { p: { fontSize: 'Z' } }
-  }
+  ModalFooter: null
 }
 
 export const ChangePasswordModal = {
   extend: ModalWithTitleParagraph,
-  header: {},
-  content: {
-    childExtend: { extend: FieldWithTitle },
-    ...[
-      { title: { props: { text: 'Old password' } } },
-      {
-        title: { props: { text: 'New password' } },
-        field: { input: {} },
-        subTitle: {
-          extend: IconText,
-          props: {
-            icon: { name: 'info' },
-            text: '8 character minimum',
-            align: 'center flex-start',
-            boxSize: 'fit-content'
-          }
-        }
-      },
-      {
-        title: { props: { text: 'Confirm new password' } },
-        field: {
-          input: {}
-        },
-        subTitle: {
-          extend: IconText,
-          props: {
-            icon: { name: 'info' },
-            text: '8 character minimum',
-            align: 'center flex-start',
-            boxSize: 'fit-content'
-          }
-        }
-      }
-    ]
-  },
-  footer: { 'CancenConfirmButtons.1': { ...[{}, { text: 'Reset password' }] } },
 
   props: {
     minWidth: 'H',
     maxWidth: 'H',
-    gap: 'B',
-    content: {
+    gap: 'B'
+  },
+
+  ModalHeader: {},
+
+  ModalContent: {
+    props: {
       flow: 'column',
       gap: 'B',
       childProps: {
@@ -174,32 +162,80 @@ export const ChangePasswordModal = {
         }
       }
     },
-    footer: { justifyContent: 'flex-end' }
+
+    childExtend: FieldWithTitle,
+    ...[
+      {
+        Title: { props: { text: 'Old password' } }
+      },
+      {
+        Title: { props: { text: 'New password' } },
+        CustomizedField: { input: {} },
+        IconText: {
+          props: {
+            icon: { name: 'info' },
+            text: '8 character minimum',
+            align: 'center flex-start',
+            boxSize: 'fit-content'
+          }
+        }
+      },
+      {
+        Title: { props: { text: 'Confirm new password' } },
+        CustomizedField: {
+          input: {}
+        },
+        IconText: {
+          icon: { name: 'info' },
+          text: '8 character minimum',
+          align: 'center flex-start',
+          boxSize: 'fit-content'
+        }
+      }
+    ]
+  },
+
+  ModalFooter: {
+    props: {
+      justifyContent: 'flex-end'
+    },
+    CancelConfirmButtons: {
+      ...[{}, { text: 'Reset password' }]
+    }
   }
 }
 
 export const VerificationCodeModal = {
   extend: ModalWithTitleParagraph,
-  header: {
+
+  props: {
+    maxWidth: 'G+E',
+    minWidth: 'G+E',
+    gap: 'B'
+  },
+
+  ModalHeader: {
+    props: {},
     heading: {
       title: { props: { text: 'Verify your email' } },
       paragraph: { props: { text: 'Verification code has been sent to you. Enter the code below.' } }
     }
   },
 
-  content: {
-    codeField: { extend: CodeField },
-    paragraph: { extend: ParagraphWithUnderlineButton }
+  ModalContent: {
+    props: {
+      gap: 'B'
+    },
+    CodeField: { },
+    ParagraphWithUnderlineButton: { }
   },
-  footer: { 'CancenConfirmButtons.1': { ...[{}, { text: 'Verify' }] } },
 
-  props: {
-    maxWidth: 'G+E',
-    minWidth: 'G+E',
-    gap: 'B',
-    content: { gap: 'B' },
-    footer: {
+  ModalFooter: {
+    props: {
       justifyContent: 'flex-end'
+    },
+    CancelConfirmButtons: {
+      ...[{}, { text: 'Verify' }]
     }
   }
 }
