@@ -7,6 +7,61 @@ import { TextareaWithTitle } from '@symbo.ls/textarea'
 import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/TextComponents'
 import { Button } from '@symbo.ls/button'
 
+const fields = {
+  names: {
+    extend: Flex,
+    childExtend: FieldWithTitle,
+    ...[
+      {
+        title: { props: { text: 'First name' } },
+        field: { input: { props: { placeholder: 'First name' } } }
+      },
+      {
+        title: { props: { text: 'Last name' } },
+        field: { input: { props: { placeholder: 'Last name' } } }
+      }
+    ]
+  },
+
+  mail: {
+    extend: FieldWithTitle,
+    title: { props: { text: 'Email' } },
+    field: { input: { props: { placeholder: 'example@email.com' } } }
+  },
+
+  message: { extend: TextareaWithTitle },
+
+  props: {
+    flow: 'column',
+    gap: 'A',
+    names: {
+      gap: 'B+Z',
+      childProps: {
+        width: '50%',
+        field: { width: '100%' }
+      }
+    },
+    mail: { field: { width: '100%' } },
+    message: { textArea: { width: '100%' } }
+  }
+}
+
+const checkParagraph = {
+  extend: ParagrapUnderlineLinkWithCheckbox,
+  checkBox: {},
+  paragraph: {
+    p: { props: { text: 'You agree to ' } },
+    underlined: { props: { text: 'privacy policy' } }
+  },
+  props: {
+    padding: 'A - - -',
+    paragraph: {
+      p: { color: '#E0E0E2' },
+      underlined: { fontWeight: '400' }
+    }
+  }
+}
+
 export const ContactForm = {
   extend: ModalWithTitleParagraph,
   header: {
@@ -17,39 +72,8 @@ export const ContactForm = {
   },
 
   content: {
-    fields: {
-      extend: Flex,
-      names: {
-        extend: Flex,
-        childExtend: FieldWithTitle,
-        ...[
-          {
-            title: { props: { text: 'First name' } },
-            field: { input: { props: { placeholder: 'First name' } } }
-          },
-          {
-            title: { props: { text: 'Last name' } },
-            field: { input: { props: { placeholder: 'Last name' } } }
-          }
-        ]
-      },
-
-      mail: {
-        extend: FieldWithTitle,
-        title: { props: { text: 'Email' } },
-        field: { input: { props: { placeholder: 'example@email.com' } } }
-      },
-
-      message: { extend: TextareaWithTitle }
-    },
-    checkParagraph: {
-      extend: ParagrapUnderlineLinkWithCheckbox,
-      checkBox: {},
-      paragraph: {
-        p: { props: { text: 'You agree to ' } },
-        underlined: { props: { text: 'privacy policy' } }
-      }
-    }
+    fields,
+    checkParagraph
   },
 
   footer: {
@@ -73,27 +97,7 @@ export const ContactForm = {
       }
     },
     content: {
-      padding: 'B - A -',
-      fields: {
-        flow: 'column',
-        gap: 'A',
-        names: {
-          gap: 'B+Z',
-          childProps: {
-            width: '50%',
-            field: { width: '100%' }
-          }
-        },
-        mail: { field: { width: '100%' } },
-        message: { textArea: { width: '100%' } }
-      },
-      checkParagraph: {
-        padding: 'A - - -',
-        paragraph: {
-          p: { color: '#E0E0E2' },
-          underlined: { fontWeight: '400' }
-        }
-      }
+      padding: 'B - A -'
     },
     footer: {
       sendButton: {
