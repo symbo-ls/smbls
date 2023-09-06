@@ -46,7 +46,8 @@ export const Search = {
       padding: '- - - C3',
       ':hover': { background: 'transparent' },
       ':focus': { background: 'transparent' },
-      ':focus + button': { opacity: '1' }
+      ':focus ~ button': { opacity: '1' },
+      ':focus ~ svg': { opacity: '0' }
     }
   },
 

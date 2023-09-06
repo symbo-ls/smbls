@@ -4,6 +4,10 @@
 
 export * from '@symbo.ls/atoms'
 export * from '@symbo.ls/box'
+export * from '@symbo.ls/indicatordot'
+export * from '@symbo.ls/checkindicator'
+export * from '@symbo.ls/checkbox'
+
 export * from '@symbo.ls/avatar'
 export * from '@symbo.ls/button'
 export * from '@symbo.ls/dialog'

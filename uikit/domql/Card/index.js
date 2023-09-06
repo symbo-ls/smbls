@@ -142,3 +142,63 @@ export const ConvertCard = {
     }
   }
 }
+
+export const ConvertBoard = {
+  extend: Flex,
+  header: {
+    title: {
+      tag: 'h6',
+      props: { text: 'convert' }
+    }
+  },
+
+  content: {
+    extend: Flex,
+    childExtend: ConvertCard,
+    ...[
+      {},
+      {}
+    ]
+  },
+
+  footer: {
+    extend: Button,
+    props: { text: 'Convert' }
+  },
+
+  props: {
+    background: '#1C1C1F',
+    maxWidth: 'fit-content',
+    padding: 'A',
+    round: 'A',
+    // gap: 'Z',
+    flow: 'column',
+    textTransform: 'capitalize',
+    header: {
+      padding: '- - - Z',
+      margin: '- - Y -',
+      title: { fontSize: 'Z', fontWeight: '700' }
+    },
+
+    content: {
+      flow: 'column',
+      gap: 'Z',
+      childProps: {
+        minWidth: 'G+D',
+        background: 'black '
+      }
+    },
+
+    footer: {
+      background: '#0474F2',
+      color: 'white',
+      minWidth: '100%',
+      padding: 'A -',
+      margin: 'Z - - -',
+      fontSize: 'Z',
+      round: 'Y+W',
+      fontWeight: '500',
+      cursor: 'pointer'
+    }
+  }
+}

@@ -13,6 +13,10 @@
     "dist"
   ],
   "dependencies": {
+    "@symbo.ls/indicatordot": "latest",
+    "@symbo.ls/checkindicator": "latest",
+    "@symbo.ls/checkbox": "latest",
+
     "@domql/utils": "latest",
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/avatar": "latest",
@@ -49,6 +53,7 @@
     "@symbo.ls/modal": "latest",
     "@symbo.ls/textcomponents": "latest",
     "@symbo.ls/slidetabs": "latest"
+
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
