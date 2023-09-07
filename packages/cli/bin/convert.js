@@ -55,7 +55,7 @@ function generatePackageJsonStr(frameworkStr, packageName) {
   "version": "1.0.0",
   "license": "UNLICENSED",
   "dependencies": {
-    "css-in-props": "latest"
+    "css-in-props": "latest",
     "@emotion/${frameworkStr}": "^11.11.0",
     "@emotion/css": "^11.11.0",
     "@symbo.ls/create": "latest",
