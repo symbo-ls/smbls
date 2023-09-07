@@ -15,3 +15,14 @@ export const CheckIndicator = {
     checkIcon: { fontSize: 'X' }
   }
 }
+
+export const CheckIconWIthBorder = {
+  extend: CheckIndicator,
+  props: {
+    border: '2px solid #04F214',
+    color: '#04F214',
+    padding: 'Y+V',
+    background: 'transparent',
+    checkIcon: { fontSize: 'G' }
+  }
+}

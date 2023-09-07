@@ -9,6 +9,7 @@ export * from '@symbo.ls/checkindicator'
 export * from '@symbo.ls/checkbox'
 export * from '@symbo.ls/titleparagraph'
 export * from '@symbo.ls/notificationindicator'
+export * from '@symbo.ls/radiobutton'
 
 export * from '@symbo.ls/avatar'
 export * from '@symbo.ls/button'
