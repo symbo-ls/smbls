@@ -17,6 +17,7 @@
     "@symbo.ls/checkindicator": "latest",
     "@symbo.ls/checkbox": "latest",
     "@symbo.ls/titleparagraph": "latest",
+    "@symbo.ls/notificationindicator": "latest",
 
     "@domql/utils": "latest",
     "@symbo.ls/atoms": "latest",
