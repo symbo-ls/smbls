@@ -5,7 +5,7 @@ import { Flex } from '@symbo.ls/atoms'
 export const TitleParagraph = {
   extend: Flex,
   h5: { props: { text: 'Title' } },
-  p: { props: { text: 'paragraph' } },
+  p: { props: { text: 'Paragraph' } },
 
   props: {
     flow: 'column',
