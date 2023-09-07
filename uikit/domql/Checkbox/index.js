@@ -14,6 +14,7 @@ export const CheckBox = {
 
   props: {
     boxSize: 'fit-content fit-content',
+    cursor: 'pointer',
     style: {
       'input:checked ~ div': {
         background: '#0474F2',
