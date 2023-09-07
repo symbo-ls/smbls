@@ -16,9 +16,10 @@
     "@symbo.ls/indicatordot": "latest",
     "@symbo.ls/checkindicator": "latest",
     "@symbo.ls/checkbox": "latest",
+    "@symbo.ls/radiobutton": "latest",
+    "@symbo.ls/toggleswitch": "latest",
     "@symbo.ls/titleparagraph": "latest",
     "@symbo.ls/notificationindicator": "latest",
-    "@symbo.ls/radiobutton": "latest",
 
     "@domql/utils": "latest",
     "@symbo.ls/atoms": "latest",
