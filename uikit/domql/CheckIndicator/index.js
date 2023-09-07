@@ -12,8 +12,6 @@ export const CheckIndicator = {
     boxSize: 'fit-content fit-content',
     round: '100%',
     background: '#0474F2',
-    checkIcon: {
-      fontSize: 'X'
-    }
+    checkIcon: { fontSize: 'X' }
   }
 }
