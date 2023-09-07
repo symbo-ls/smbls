@@ -48,6 +48,54 @@ const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
   license: 'ISC'
 })
 
+function generatePackageJsonStr(frameworkStr, packageName) {
+  return (
+    `{
+  "name": "@symbo.ls/${frameworkStr}-${packageName}",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "css-in-props": "latest"
+    "@emotion/${frameworkStr}": "^11.11.0",
+    "@emotion/css": "^11.11.0",
+    "@symbo.ls/create": "latest",
+    "@symbo.ls/react": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "main": "index.js",
+  "source": "index.js"
+}`
+  )
+}
+
+function generatePackageJsonFile(
+  sourcePackageJsonPath,
+  destPath,
+  desiredFormat,
+  options
+) {
+  // Extract package name from source package.json
+  const str = fs.readFileSync(sourcePackageJsonPath, { encoding: 'utf8' })
+  let struct
+  try {
+    struct = JSON.parse(str)
+  } catch (error) {
+    console.error(`Error when parsing ${sourcePackageJsonPath}`)
+    return;
+  }
+  const split = struct.name.split('/')
+  const packageName = split.length > 1 ? 
+        split[split.length - 1] : split[0]
+
+  const genStr = generatePackageJsonStr(desiredFormat, packageName)
+  fs.writeFileSync(destPath, genStr)
+}
+
 function isDirectory (dir) { // eslint-disable-line no-unused-vars
   if (!fs.existsSync(dir)) return false
 
@@ -321,23 +369,34 @@ program
       return 1
     }
 
-    const sourceFileNames = (await fs.promises.readdir(srcPath))
+    const sourceDirNames = (await fs.promises.readdir(srcPath))
           .filter(file => !IGNORED_FILES.includes(file))
 
-    for (const file of sourceFileNames) {
+    for (const dir of sourceDirNames) {
       // Ignored directories
       if (options.internalUikit) {
-        if (file.match(/Threejs$/)) continue
+        if (dir.match(/Threejs$/)) continue
       }
 
-      const indexFilePath = path.join(srcPath, file, 'index.js')
+      const dirPath = path.join(srcPath, dir)
+      const indexFilePath = path.join(dirPath, 'index.js')
+      const pjFilePath = path.join(dirPath, 'package.json')
 
       await convertFile(
-        indexFilePath,
-        path.join(tmpDirPath, file),
-        path.join(destDirPath, file, 'index.js'),
+        indexFilePath,                           // src
+        path.join(tmpDirPath, dir),              // tmp
+        path.join(destDirPath, dir, 'index.js'), // dst
         desiredFormat,
         options
       )
+
+      if (fs.existsSync(pjFilePath)) {
+        generatePackageJsonFile(
+          pjFilePath,                                  // src
+          path.join(destDirPath, dir, 'package.json'), // dst
+          desiredFormat,
+          options
+        )
+      }
     }
   })
