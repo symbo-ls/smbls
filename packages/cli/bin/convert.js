@@ -6,10 +6,7 @@ import { parse } from 'globusa'
 import fs from 'fs'
 import path from 'path'
 
-// Set up webpack
-import syncWebpack from 'webpack'
-import { promisify } from 'util'
-const webpack = promisify(syncWebpack)
+import * as esbuild from 'esbuild'
 
 // Set up jsdom
 import { JSDOM } from 'jsdom'
@@ -19,15 +16,29 @@ global.document = window.document
 
 const IGNORED_FILES = ['index.js', 'package.json', 'node_modules', 'dist']
 const EXCLUDED_FROM_INTERNAL_UIKIT = [
+  // We have our own React Svg implementation
   'Svg',
+
+  // We have our own React Box implementation
+  'Box',
+
+  // These are not domql objects
   'keySetters',
   'getSystemTheme',
   'splitTransition',
   'transformDuration',
   'transformShadow',
   'transformTransition',
+
+  // FIXME: Temporary list of components we want to skip
+  'DatePicker',
   'DatePickerDay',
+  'DatePickerTwoColumns',
   'DatePickerGrid',
+  'DatePickerGridContainer',
+
+  // Not a domql object (headless-datepicker)
+  'calendar',
 ]
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
@@ -155,28 +166,23 @@ async function convertFile(srcPath, tmpDirPath, destPath,
   const fileContent = await fs.promises.readFile(srcPath, 'utf8')
   const globusaStruct = parse(fileContent)
 
-  // Bundle with webpack
-  const libraryName = 'banunu' // This can literally be anything
   const fileName = path.basename(srcPath)
   const bundledFilePath = path.resolve(tmpDirPath, fileName)
-  console.log(`Webpack ${srcPath} -> ${bundledFilePath}`)
-  await webpack({
-    entry: srcPath,
-    output: {
-      path: tmpDirPath,
-      filename: fileName,
-      chunkFormat: 'commonjs',
-      library: { name: libraryName,
-                 type: 'commonjs-static' },
-    },
-    // experiments:  { outputModule: true },
-    target: 'node',
-    mode: 'development'
+
+  // Bundle with esbuild
+  await esbuild.build({
+    entryPoints: [srcPath],
+    bundle: true,
+    sourcemap: true,
+    target: 'node12',
+    format: 'cjs',
+    outdir: tmpDirPath
   })
 
   // Import the bundled module to obtain exported domql objects
   console.log(`Importing ${bundledFilePath}`)
-  const domqlModule = (await import(bundledFilePath))[libraryName]
+  const mod = (await import(bundledFilePath))
+  const domqlModule = mod.default
 
   // Convert it/them with kalduna
   console.log(`Converting components in ${bundledFilePath}:`)
@@ -200,8 +206,7 @@ async function convertFile(srcPath, tmpDirPath, destPath,
 
 program
   .command('convert')
-  .description('(DEPRECATED) Convert and copy all DomQL components ' +
-               'under a directory')
+  .description('Convert and copy all DomQL components under a directory')
   .argument('[src]', 'Source directory/file. By default, it is "src/"')
   .argument('[dest]',
             'Destination directory/file. Will be overwritten. By ' +
@@ -214,16 +219,12 @@ program
           'Use this directory for storing intermediate & build files instead of ' +
           `the default (dest/${TMP_DIR_NAME})`)
   .option('-o, --only <components>',
-          'Only convert these components; comma separated ' + 
+          'Only convert these components; comma separated ' +
           '(for example: --only=Flex,Img)')
   .option('--internal-uikit',
-          '(For internal use only). ' + 
+          '(For internal use only). ' +
           'Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
-    console.log('smbls convert is deprecated. ' +
-                'Please use the Kalduna build script instead.')
-    return 1
-
     if (!convert) {
       throw new Error(
         'convert() from `kalduna` is not defined. Try to install ' +
@@ -324,6 +325,11 @@ program
           .filter(file => !IGNORED_FILES.includes(file))
 
     for (const file of sourceFileNames) {
+      // Ignored directories
+      if (options.internalUikit) {
+        if (file.match(/Threejs$/)) continue
+      }
+
       const indexFilePath = path.join(srcPath, file, 'index.js')
 
       await convertFile(
