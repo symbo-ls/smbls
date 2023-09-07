@@ -59,9 +59,7 @@ function generatePackageJsonStr(frameworkStr, packageName) {
     "@emotion/${frameworkStr}": "^11.11.0",
     "@emotion/css": "^11.11.0",
     "@symbo.ls/create": "latest",
-    "@symbo.ls/react": "latest",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@symbo.ls/react": "latest"
   },
   "peerDependencies": {
     "react": "^18.2.0",
