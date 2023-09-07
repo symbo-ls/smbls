@@ -87,8 +87,7 @@ function generatePackageJsonFile(
     return;
   }
   const split = struct.name.split('/')
-  const packageName = split.length > 1 ? 
-        split[split.length - 1] : split[0]
+  const packageName = split[split.length - 1]
 
   const genStr = generatePackageJsonStr(desiredFormat, packageName)
   fs.writeFileSync(destPath, genStr)
