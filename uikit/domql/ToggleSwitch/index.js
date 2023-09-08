@@ -20,7 +20,7 @@ export const ToggleSwitch = {
       }
     },
     check: {
-      boxSize: 'A+X C',
+      boxSize: 'A+X B+Z',
       padding: '- W',
       round: 'D',
       align: 'center flex-start',

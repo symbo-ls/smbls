@@ -21,9 +21,9 @@ export const Field = {
     cursor: 'pointer',
     fontFamily: 'inherit',
     boxSizing: 'border-box',
-    Icon: { position: 'absolute' },
+    alignItems: 'center',
     input: {
-      minWidth: '100%',
+      flex: '1',
       minHeight: '100%'
     }
   })
@@ -32,13 +32,16 @@ export const Field = {
 export const CustomizedField = {
   extend: Field,
   props: {
-    padding: '0',
-    round: '0',
-    Icon: { right: 'A' },
+    padding: '- Z',
+    round: 'Y',
+    minHeight: 'C+X',
+    border: '1px solid #3F3F43',
+    gap: 'Y',
+    Icon: { fontSize: 'C' },
     input: {
+      padding: '0',
       background: 'transparent',
-      border: '1px solid #3F3F43',
-      round: 'Y',
+      round: '0',
       color: 'white',
       fontFamily: 'avenir',
       placeholder: 'Placeholder'
@@ -63,7 +66,8 @@ export const CodeField = {
       textAlign: 'center',
       fontSize: 'E',
       round: 'Y',
-      padding: '0'
+      padding: '0',
+      boxSize: '100% 100%'
     },
     style: {
       'input[type=number]::-webkit-inner-spin-button': {

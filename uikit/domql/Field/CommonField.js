@@ -3,8 +3,7 @@
 import { Flex } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/icon'
 
-import { CustomizedField } from './CustomizedField'
-import { FieldWithIcon } from './Field'
+import { FieldWithIcon, CustomizedField } from './Field'
 
 export const CommonField = {
   extend: Flex,
