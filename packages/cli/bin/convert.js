@@ -48,48 +48,52 @@ const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
   license: 'ISC'
 })
 
-function generatePackageJsonStr(frameworkStr, packageName) {
-  return (
-    `{
-  "name": "@symbo.ls/${frameworkStr}-${packageName}",
-  "version": "1.0.0",
-  "license": "UNLICENSED",
-  "dependencies": {
-    "css-in-props": "latest",
-    "@emotion/${frameworkStr}": "^11.11.0",
-    "@emotion/css": "^11.11.0",
-    "@symbo.ls/create": "latest",
-    "@symbo.ls/react": "latest"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "main": "index.js",
-  "source": "index.js"
-}`
-  )
-}
-
 function generatePackageJsonFile(
   sourcePackageJsonPath,
   destPath,
+  globusaStruct,
   desiredFormat,
   options
 ) {
   // Extract package name from source package.json
   const str = fs.readFileSync(sourcePackageJsonPath, { encoding: 'utf8' })
-  let struct
+  let packageStruct
   try {
-    struct = JSON.parse(str)
+    packageStruct = JSON.parse(str)
   } catch (error) {
     console.error(`Error when parsing ${sourcePackageJsonPath}`)
     return;
   }
-  const split = struct.name.split('/')
+  const split = packageStruct.name.split('/')
   const packageName = split[split.length - 1]
 
-  const genStr = generatePackageJsonStr(desiredFormat, packageName)
+  // Generate list of dependencies
+  const deps = {
+    'css-in-props': 'latest',
+    [`@emotion/${desiredFormat}`]: '^11.11.0',
+    '@emotion/css': '^11.11.0',
+    '@symbo.ls/create': 'latest',
+    '@symbo.ls/react': 'latest',
+  }
+  globusaStruct.imports
+    .filter(imp => imp.path.match(/^@symbo\.ls\//))
+    .filter(imp => imp.path !== packageName)
+    .forEach(imp => deps[imp.path] = 'latest')
+
+  // Generate final package.json string
+  const genStr = JSON.stringify({
+    name: `@symbo.ls/${desiredFormat}-${packageName}`,
+    version: packageStruct.version ?? '1.0.0',
+    license: packageStruct.license ?? 'UNLICENSED',
+    dependencies: deps,
+    peerDependencies: {
+      'react': '^18.2.0',
+      'react-dom': '^18.2.0'
+    },
+    main: 'index.js',
+    source: 'index.js'
+  }, undefined, 2)
+
   fs.writeFileSync(destPath, genStr)
 }
 
@@ -179,8 +183,10 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
       out = convert(dobj, desiredFormat, {
         ...kaldunaOpts,
         removeReactImport: false,
-        importsToInclude: globusaStruct.imports,
-        declarationsToInclude: globusaStruct.declarations,
+        // NOTE(nikaoto): Commented these out because we're using deps now, so
+        // all the imports and decls are going to be redundant
+        // importsToInclude: globusaStruct.imports,
+        // declarationsToInclude: globusaStruct.declarations,
       })
     } else {
       out = convert(dobj, desiredFormat, {
@@ -204,6 +210,7 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
 // Takes a source file, then bundles, parses and converts it and writes the
 // result to the destination. The tmpDirPath is used as a working directory for
 // temporary files.
+// Returns globusaStruct for later usage.
 async function convertFile(srcPath, tmpDirPath, destPath,
                            desiredFormat, options) {
   // Parse with globusa
@@ -247,6 +254,8 @@ async function convertFile(srcPath, tmpDirPath, destPath,
     await fh.writeFile(convertedModuleStr, 'utf8')
     await fh.close()
   }
+
+  return globusaStruct
 }
 
 program
@@ -369,17 +378,22 @@ program
     const sourceDirNames = (await fs.promises.readdir(srcPath))
           .filter(file => !IGNORED_FILES.includes(file))
 
+    const dirs = []
+
     for (const dir of sourceDirNames) {
       // Ignored directories
       if (options.internalUikit) {
+        // TODO: check with @nikoloza on these components
         if (dir.match(/Threejs$/)) continue
+        if (dir.match(/Editorjs$/)) continue
+        if (dir.match(/User$/)) continue
       }
 
       const dirPath = path.join(srcPath, dir)
       const indexFilePath = path.join(dirPath, 'index.js')
       const pjFilePath = path.join(dirPath, 'package.json')
 
-      await convertFile(
+      const globusaStruct = await convertFile(
         indexFilePath,                           // src
         path.join(tmpDirPath, dir),              // tmp
         path.join(destDirPath, dir, 'index.js'), // dst
@@ -391,9 +405,23 @@ program
         generatePackageJsonFile(
           pjFilePath,                                  // src
           path.join(destDirPath, dir, 'package.json'), // dst
+          globusaStruct,
           desiredFormat,
           options
         )
       }
+
+      dirs.push(dir)
+    }
+
+    // Generate top index.js file
+    if (dirs.length > 0) {
+      const importLines = dirs.map(d => `import ${d} from './${d}'`).join('\n') + '\n'
+      const exportLines = 'export {\n' + dirs.map(d => `  ${d}`).join(',\n') + '\n}\n'
+      const fileContent = importLines + '\n' + exportLines
+
+      const fh = await fs.promises.open(path.join(destDirPath, 'index.js'), 'w')
+      await fh.writeFile(fileContent, 'utf8')
+      await fh.close()
     }
   })

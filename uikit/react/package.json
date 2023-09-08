@@ -10,6 +10,8 @@
     "@symbo.ls/react-icon": "latest",
     "@symbo.ls/react-provider": "latest",
     "@symbo.ls/react-tooltip": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "smbls": "latest"
   },
   "devDependencies": {
