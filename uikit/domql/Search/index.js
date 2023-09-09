@@ -2,21 +2,22 @@
 
 import { CustomizedField } from '@symbo.ls/field'
 import { Button } from '@symbo.ls/button'
+import { DropDownButton } from '@symbo.ls/dropdownbutton'
 
 export const Search = {
   extend: CustomizedField,
+
   Icon: { props: { name: 'search' } },
   input: {},
-  x: {
-    extend: Button,
-    props: { icon: 'x' }
-  },
+  x: { extend: Button, props: { icon: { name: 'x' } } },
 
   props: {
-    padding: '- A',
-    gap: 'Z',
+    padding: '- B',
+    width: 'H+D',
+    minHeight: 'C+A',
+    gap: 'A',
     round: 'Z',
-    width: 'H',
+    overflow: 'hidden',
 
     input: {
       placeholder: 'Type a command or search',
@@ -29,10 +30,21 @@ export const Search = {
       color: 'white',
       opacity: '0',
       margin: '- - - auto',
-      Icon: {
-        width: 'X2',
-        height: 'X2'
+      icon: {
+        fontSize: 'C'
       }
+    }
+  }
+}
+
+export const SearchWithDropDownButton = {
+  extend: Search,
+  dropDownButton: { extend: DropDownButton },
+  props: {
+    padding: '- B - 0',
+    background: '#1C1C1F',
+    dropDownButton: {
+      minHeight: '100%'
     }
   }
 }

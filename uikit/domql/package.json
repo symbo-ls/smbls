@@ -20,6 +20,11 @@
     "@symbo.ls/toggleswitch": "latest",
     "@symbo.ls/titleparagraph": "latest",
     "@symbo.ls/notificationindicator": "latest",
+    "@symbo.ls/field": "latest",
+    "@symbo.ls/search": "latest",
+    "@symbo.ls/dropdownbutton": "latest",
+    "@symbo.ls/uploadfile": "latest",
+
 
     "@domql/utils": "latest",
     "@symbo.ls/atoms": "latest",
@@ -31,7 +36,6 @@
     "@symbo.ls/datepicker": "latest",
     "@symbo.ls/dialog": "latest",
     "@symbo.ls/dropdown": "latest",
-    "@symbo.ls/field": "latest",
     "@symbo.ls/form": "latest",
     "@symbo.ls/input": "latest",
     "@symbo.ls/label": "latest",
@@ -40,7 +44,6 @@
     "@symbo.ls/pills": "latest",
     "@symbo.ls/range": "latest",
     "@symbo.ls/scratch": "latest",
-    "@symbo.ls/search": "latest",
     "@symbo.ls/select": "latest",
     "@symbo.ls/slider": "latest",
     "@symbo.ls/steps": "latest",

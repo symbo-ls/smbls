@@ -22,7 +22,7 @@ export const UploadLabel = {
       type: 'file',
       position: 'absolute',
       inset: '0 0 0 0',
-      opacity: '0',
+      opacity: '1',
       visibility: 'hidden'
     }
   },
