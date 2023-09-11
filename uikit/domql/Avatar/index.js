@@ -236,9 +236,8 @@ export const AvatarBundleInfoSet = {
     ...[
       {
         title: { props: { text: 'ETH/BNB' } },
-        label: {
-          extend: CardLabel,
-          props: { text: '1 ETH = 240.7 BNB' }
+        CardLabel: {
+          text: '1 ETH = 240.7 BNB'
         },
         subTitle: null
       }
@@ -257,9 +256,6 @@ export const AvatarBundleInfoSet = {
           border: 'solid, black 0',
           borderWidth: '1px'
         }
-        // style: {
-        //   '&:not(:first-child)': { border: '1px solid rgba(0, 0, 0, 0)' }
-        // }
       }
     },
     infos: {
