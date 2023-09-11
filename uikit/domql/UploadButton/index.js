@@ -3,7 +3,7 @@
 import { Input } from '@symbo.ls/input'
 import { Button } from '@symbo.ls/button'
 
-export const UploadFile = {
+export const UploadButton = {
   extend: Button,
 
   upload: { extend: Input },
@@ -31,8 +31,8 @@ export const UploadFile = {
   }
 }
 
-export const BrowseFile = {
-  extend: UploadFile,
+export const UploadButtonWithBackground = {
+  extend: UploadButton,
   props: {
     gap: 'Z',
     color: 'white',
@@ -45,5 +45,4 @@ export const BrowseFile = {
       fontSize: 'B'
     }
   }
-
 }

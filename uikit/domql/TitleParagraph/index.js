@@ -4,14 +4,26 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const TitleParagraph = {
   extend: Flex,
-  h5: { props: { text: 'Title' } },
-  p: { props: { text: 'Paragraph' } },
+  title: {
+    extend: Flex,
+    h5: { props: { text: 'Title' } }
+  },
+  paragraph: {
+    extend: Flex,
+    p: { props: { text: 'Paragraph' } }
+  },
 
   props: {
     flow: 'column',
-    p: {
-      margin: '0',
-      color: '#A3A3A8'
+    title: {
+      align: 'center flex-start',
+      h5: { color: '#CFCFD1' }
+    },
+    paragraph: {
+      p: {
+        margin: '0',
+        color: '#818186'
+      }
     }
   }
 }
