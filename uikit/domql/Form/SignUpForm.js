@@ -97,6 +97,7 @@ const socialLinks = {
       background: '#252527',
       round: 'Y+W',
       padding: 'Z+W -',
+      cursor: 'pointer',
       p: {
         margin: '0',
         fontWeight: '500'
