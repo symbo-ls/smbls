@@ -5,9 +5,18 @@ import { Flex } from '@symbo.ls/atoms'
 export const TitleParagraph = {
   extend: Flex,
 
-  title: {
+  props: {
+    flow: 'column',
+    gap: 'Y',
+    maxWidth: 'fit-content'
+  },
+
+  Title: {
     tag: 'h5',
-    props: { text: 'Log in to your account' }
+    props: {
+      fontSize: 'D',
+      text: 'Log in to your account'
+    }
   },
 
   P: {
@@ -16,13 +25,6 @@ export const TitleParagraph = {
     margin: '0',
     color: '#E0E0E2',
     text: 'Enter your email address and password to log in.'
-  },
-
-  props: {
-    flow: 'column',
-    gap: 'Y',
-    maxWidth: 'fit-content',
-    title: { fontSize: 'D' }
   }
 }
 
@@ -55,13 +57,35 @@ export const ParagraphWithUnderlineButton = {
 export const ParagrapUnderlineLinkWithCheckbox = {
   extend: Flex,
 
+  props: {
+    align: 'center flex-start',
+    gap: 'W'
+  },
+
   Checkbox: {
+    props: {},
     Flex: { boxSize: 'A+X' }
   },
-  ParagraphWithUnderlineButton: { },
+
+  ParagraphWithUnderlineButton: { }
+}
+
+export const CheckBoxWithParagraph = {
+  extend: Flex,
 
   props: {
     align: 'center flex-start',
-    gap: 'X'
+    gap: 'W'
+  },
+
+  Checkbox: {
+    props: {},
+    Flex: { boxSize: 'A+X' }
+  },
+
+  P: {
+    text: 'Keep me logged in',
+    fontSize: 'Z',
+    margin: '0'
   }
 }

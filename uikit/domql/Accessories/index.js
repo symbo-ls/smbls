@@ -85,3 +85,23 @@ export const CheckMark = {
     check: { fontSize: 'G' }
   }
 }
+
+export const OrLines = {
+  extend: Flex,
+  props: {
+    fontSize: 'Z',
+    text: 'Or',
+    align: 'center space-between',
+    gap: 'B',
+    ':before': {
+      content: '""',
+      boxSize: '1px 50%',
+      background: '#3F3F43'
+    },
+    ':after': {
+      content: '""',
+      boxSize: '1px 50%',
+      background: '#3F3F43'
+    }
+  }
+}
