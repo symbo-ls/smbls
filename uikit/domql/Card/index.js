@@ -80,8 +80,9 @@ export const Card = {
 
 export const ConvertCard = {
   extend: Card,
-  heading: {
-    title: {
+  Heading: {
+    props: {},
+    Title: {
       text: 'From',
       color: 'rgba(163, 163, 168, 1)',
       fontWeight: '400'
@@ -89,6 +90,7 @@ export const ConvertCard = {
     BalancesIndicator: {},
     icon: null
   },
+
   content: {
     props: { align: 'center space-between' },
 
