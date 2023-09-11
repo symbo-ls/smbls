@@ -144,6 +144,7 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
 
   const isSingleComponent = (exports.length === 1)
   const uniqueImports = []
+  let globalSymbolTable = {}
   for (const idx in exports) {
     const exportName = exports[idx]
 
@@ -163,6 +164,7 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
     const kaldunaOpts = {
       verbose: false,
       returnMitosisIR: true,
+      globalSymbolTable,
       exportDefault: isSingleComponent,
       importsToRemove: uniqueImports,
 
@@ -200,6 +202,7 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
       convertedStr += '\n'
     }
     uniqueImports.push(...out.mitosisIR.imports)
+    globalSymbolTable = out.mitosisIR._globalSymbolTable
     console.groupEnd()
   }
   console.groupEnd()
