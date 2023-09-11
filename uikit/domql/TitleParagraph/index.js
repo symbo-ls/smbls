@@ -16,7 +16,7 @@ export const TitleParagraph = {
   props: {
     flow: 'column',
     title: {
-      align: 'center flex-start',
+      align: 'center space-between',
       h5: { color: '#CFCFD1' }
     },
     paragraph: {
@@ -25,5 +25,26 @@ export const TitleParagraph = {
         color: '#818186'
       }
     }
+  }
+}
+
+export const TitleParagraphWithButton = {
+  extend: TitleParagraph,
+  title: {
+    h5: {},
+    Button: { props: { icon: { name: 'x' } } }
+  },
+  paragraph: {},
+
+  props: {
+    title: {
+      Button: {
+        background: 'transparent',
+        color: 'white',
+        padding: '0',
+        icon: { fontSize: 'C' }
+      }
+    }
+
   }
 }

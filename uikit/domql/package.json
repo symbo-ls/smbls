@@ -26,6 +26,8 @@
     "@symbo.ls/uploadbutton": "latest",
     "@symbo.ls/progress": "latest",
     "@symbo.ls/uploadlabel": "latest",
+    "@symbo.ls/unitvalue": "latest",
+    "@symbo.ls/uploadingprocess": "latest",
 
 
     "@domql/utils": "latest",

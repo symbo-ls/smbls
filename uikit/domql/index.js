@@ -17,6 +17,8 @@ export * from '@symbo.ls/dropdownbutton'
 export * from '@symbo.ls/uploadbutton'
 export * from '@symbo.ls/progress'
 export * from '@symbo.ls/uploadlabel'
+export * from '@symbo.ls/unitvalue'
+export * from '@symbo.ls/uploadingprocess'
 
 export * from '@symbo.ls/avatar'
 export * from '@symbo.ls/button'
