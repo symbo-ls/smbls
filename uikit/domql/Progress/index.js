@@ -1,5 +1,7 @@
 'use strict'
 
+import { Flex } from '@symbo.ls/atoms'
+
 export const ProgressLine = {
   tag: 'progress',
   attr: {
@@ -52,15 +54,12 @@ export const ProgressCircle = {
 
     progress: {
       boxSize: '100% 100%',
-      value: '.7',
+      value: 0.7,
       round: '100%',
       overflow: 'hidden',
       style: {
         '&::-webkit-progress-bar': { background: '#0474F2' },
-        '&::-webkit-progress-value': {
-          background: '#252527',
-          borderRadius: '2px'
-        }
+        '&::-webkit-progress-value': { background: '#252527' }
       }
     },
 
@@ -71,6 +70,32 @@ export const ProgressCircle = {
       transform: 'translate(-50%, -50%)',
       zIndex: '3',
       fontSize: 'Z'
+    }
+  }
+}
+
+export const ProgressCircleWithAsideValue = {
+  extend: Flex,
+  circle: {
+    extend: ProgressCircle,
+    progressValue: null
+  },
+  value: { props: { text: '70%' } },
+
+  props: {
+    align: 'center flex-start',
+    boxSize: 'fit-content fit-content',
+    gap: 'X',
+    circle: {
+      boxSize: 'A A',
+      ':after': {
+        width: 'calc(100% - 5px)',
+        height: 'calc(100% - 5px)'
+      }
+    },
+    value: {
+      fontSize: 'Z',
+      color: '#A3A3A8'
     }
   }
 }
