@@ -15,6 +15,7 @@ export * from '@symbo.ls/field'
 export * from '@symbo.ls/search'
 export * from '@symbo.ls/dropdownbutton'
 export * from '@symbo.ls/uploadfile'
+export * from '@symbo.ls/progress'
 
 export * from '@symbo.ls/avatar'
 export * from '@symbo.ls/button'

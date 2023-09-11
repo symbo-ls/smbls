@@ -24,6 +24,7 @@
     "@symbo.ls/search": "latest",
     "@symbo.ls/dropdownbutton": "latest",
     "@symbo.ls/uploadfile": "latest",
+    "@symbo.ls/progress": "latest",
 
 
     "@domql/utils": "latest",
