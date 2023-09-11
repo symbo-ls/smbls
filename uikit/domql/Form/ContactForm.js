@@ -3,8 +3,6 @@
 import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
 import { FieldWithTitle } from '@symbo.ls/field'
-import { TextareaWithTitle } from '@symbo.ls/textarea'
-import { Button } from '@symbo.ls/button'
 
 export const ContactForm = {
   extend: ModalWithTitleParagraph,
@@ -33,13 +31,13 @@ export const ContactForm = {
         ]
       },
 
-      mail: {
-        extend: FieldWithTitle,
+      FieldWithTitle: {
+        props: {},
         title: { props: { text: 'Email' } },
         field: { input: { props: { placeholder: 'example@email.com' } } }
       },
 
-      message: { extend: TextareaWithTitle }
+      TextareaWithTitle: { }
     },
     ParagrapUnderlineLinkWithCheckbox: {
       CheckBox: {},
@@ -51,9 +49,14 @@ export const ContactForm = {
   },
 
   footer: {
-    sendButton: {
-      extend: Button,
-      props: { text: 'Send message' }
+    Button: {
+      text: 'Send message',
+      background: '#0474F2',
+      color: 'white',
+      minWidth: '100%',
+      padding: 'A -',
+      round: 'Z',
+      fontWeight: '500'
     }
   },
 
@@ -91,16 +94,6 @@ export const ContactForm = {
           p: { color: '#E0E0E2' },
           underlined: { fontWeight: '400' }
         }
-      }
-    },
-    footer: {
-      sendButton: {
-        background: '#0474F2',
-        color: 'white',
-        minWidth: '100%',
-        padding: 'A -',
-        round: 'Z',
-        fontWeight: '500'
       }
     }
   }

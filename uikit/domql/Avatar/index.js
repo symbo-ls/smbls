@@ -29,7 +29,7 @@ export const DropDownWithAvatar = {
   },
   downArrow: {
     extend: Button,
-    props: { icon: 'arrowDown' }
+    props: { icon: 'chevronDown' }
   },
 
   props: {
