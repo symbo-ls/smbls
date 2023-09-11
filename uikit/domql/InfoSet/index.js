@@ -8,11 +8,11 @@ export const InfoSet = {
   props: {
     flow: 'column',
     childProps: {
-      title: {
+      Title: {
         fontSize: 'Z',
         fontWeight: '500'
       },
-      subTitle: {
+      Subtitle: {
         fontSize: 'Y',
         color: '#A3A3A8'
       }

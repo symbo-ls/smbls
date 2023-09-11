@@ -1,20 +1,16 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
 import { InfoSet } from '@symbo.ls/infoset'
-import { Icon } from '@symbo.ls/icon'
-import { Avatar, DropDownWithAvatar } from '@symbo.ls/avatar'
-import { BalancesIndicator } from '@symbo.ls/accessories'
-import { CardLabel } from '@symbo.ls/label'
 
 export const AmountWithLabel = {
   extend: Flex,
   amount: { props: { text: '240.59' } },
-  label: {
-    extend: CardLabel,
-    props: { text: '-0.25%' }
+
+  CardLabel: {
+    text: '-0.25%'
   },
+
   props: {
     align: 'center flex-start',
     gap: 'Y+V',
@@ -28,23 +24,6 @@ export const AmountWithLabel = {
 export const Card = {
   extend: InfoSet,
 
-  heading: {
-    title: { props: { text: 'Total crypto assets' } },
-    icon: { extend: Icon, props: { name: 'arrowUpRight' } }
-  },
-  contentx: {
-    extend: AmountWithLabel,
-    amount: { props: { text: '$ 12,759' } },
-    label: { props: { text: '+ 8.8%' } }
-  },
-  footer: {
-    subTitle: {
-      extend: Flex,
-      caption: { props: { text: 'Last update:' } },
-      span: { props: { text: 'an hour ago' } }
-    }
-  },
-
   props: {
     minWidth: 'G',
     maxWidth: 'G',
@@ -55,34 +34,67 @@ export const Card = {
     childProps: {
       alignItems: 'center',
 
-      title: { fontWeight: '700' },
-      icon: { fontSize: 'C', color: '#A3A3A8' },
       amount: { fontSize: `${24 / 16}em` },
-      label: { padding: 'Y Z', background: '#04040466' },
-      subTitle: {
+      Subtitle: {
         gap: 'Y',
         caption: { color: 'rgba(224, 224, 226, 1)' },
         span: { color: 'rgba(233, 233, 234, 1)' }
       }
     },
 
-    heading: { justifyContent: 'space-between' },
     content: { gap: 'Y' }
+  },
+
+  Heading: {
+    props: {
+      justifyContent: 'space-between'
+    },
+    Title: {
+      fontWeight: '700',
+      text: 'Total crypto assets'
+    },
+    Icon: {
+      fontSize: 'C',
+      color: '#A3A3A8',
+      name: 'arrowUpRight'
+    }
+  },
+
+  AmountWithLabel: {
+    props: {
+      padding: 'Y Z', background: '#04040466'
+    },
+    amount: { props: { text: '$ 12,759' } },
+    label: { props: { text: '+ 8.8%' } }
+  },
+
+  Footer: {
+    props: {},
+    Flex: {
+      props: {},
+      caption: { props: { text: 'Last update:' } },
+      span: { props: { text: 'an hour ago' } }
+    }
   }
 }
 
 export const ConvertCard = {
   extend: Card,
   heading: {
-    title: { props: { text: 'From' } },
-    balance: { extend: BalancesIndicator },
+    title: {
+      text: 'From',
+      color: 'rgba(163, 163, 168, 1)',
+      fontWeight: '400'
+    },
+    BalancesIndicator: {},
     icon: null
   },
   content: {
+    props: { align: 'center space-between' },
+
     amount: { props: { text: '0.00' } },
     label: null,
-    currency: { extend: DropDownWithAvatar },
-    props: { align: 'center space-between' }
+    DropDownWithAvatar: {}
   },
   footer: null,
 
@@ -90,10 +102,6 @@ export const ConvertCard = {
     background: 'rgba(28, 28, 31, .5)',
     gap: 'A',
     childProps: {
-      title: {
-        color: 'rgba(163, 163, 168, 1)',
-        fontWeight: '400'
-      },
       amount: { color: 'rgba(163, 163, 168, 1)' }
     }
   }
