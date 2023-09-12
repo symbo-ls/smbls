@@ -77,5 +77,38 @@ export const CancenConfirmButtons = {
       }
     }
   }
+}
+
+export const ButtonIcon = {
+  extend: Button,
+  props: {
+    icon: { name: 'circle' },
+    boxSize: 'fit-content fit-content',
+    padding: 'A',
+    round: 'A',
+    color: 'white',
+    background: '#F4454E'
+  }
+}
+
+export const ButtonText = {
+  extend: ButtonIcon,
+  icon: null,
+  props: { text: 'Button' }
+}
+
+export const ButtonIconText = {
+  extend: ButtonIcon,
+  props: {
+    text: 'Button',
+    gap: 'Z'
+  }
+}
+
+export const ButtonDoubleIcon = {
+  extend: ButtonIconText,
+  icon: {},
+  text: 'Button',
+  Icon: { props: { icon: 'circle' } }
 
 }
