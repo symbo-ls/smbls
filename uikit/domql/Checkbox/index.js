@@ -36,3 +36,32 @@ export const CheckBox = {
     }
   }
 }
+
+export const CheckboxWithLabel = {
+  extend: Flex,
+  CheckBox: {},
+  H6: { text: 'Label' },
+  props: {
+    align: 'center flex-start',
+    gap: 'Z+X',
+    CheckBox: {
+      check: { background: 'black' }
+    },
+    H6: { fontSize: 'A' }
+  }
+}
+
+export const CheckBoxWithImgWithLabel = {
+  extend: CheckboxWithLabel,
+  CheckBox: {},
+  Img: {},
+  H6: { text: 'Label' },
+
+  props: {
+    Img: {
+      boxSize: 'A+Y C',
+      background: 'linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%)',
+      round: 'X'
+    }
+  }
+}
