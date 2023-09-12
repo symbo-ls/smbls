@@ -386,7 +386,7 @@ program
 
     const ignoredFiles = ['index.js', 'package.json', 'node_modules', 'dist']
     const sourceDirNames = (await fs.promises.readdir(srcPath))
-          .filter(file => !ignoredFiles.includes(file))
+          .filter(dir => !ignoredFiles.includes(dir))
 
     const dirs = []
 
@@ -400,6 +400,10 @@ program
       }
 
       const dirPath = path.join(srcPath, dir)
+      if (!isDirectory(dirPath)) {
+        console.log(`Skipping ${dirPath} because it is not a directory`)
+        continue
+      }
       const indexFilePath = path.join(dirPath, 'index.js')
       const pjFilePath = path.join(dirPath, 'package.json')
 
