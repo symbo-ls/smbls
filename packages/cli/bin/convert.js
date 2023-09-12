@@ -426,9 +426,10 @@ program
 
     // Generate top index.js file
     if (dirs.length > 0) {
-      const importLines = dirs.map(d => `import ${d} from './${d}'`).join('\n') + '\n'
-      const exportLines = 'export {\n' + dirs.map(d => `  ${d}`).join(',\n') + '\n}\n'
-      const fileContent = importLines + '\n' + exportLines
+      //const importLines = dirs.map(d => `import ${d} from './${d}'`).join('\n') + '\n'
+      //const exportLines = 'export {\n' + dirs.map(d => `  ${d}`).join(',\n') + '\n}\n'
+      //const fileContent = importLines + '\n' + exportLines
+      const fileContent = dirs.map(d => `export * from './${d}'`).join('\n')
 
       const fh = await fs.promises.open(path.join(destDirPath, 'index.js'), 'w')
       await fh.writeFile(fileContent, 'utf8')
