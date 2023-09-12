@@ -19,7 +19,15 @@ export const Box = (props) => {
   const transformedProps = transformClassname(props, context, undefined, excludedProps, element)
   const propsClass = transformEmotion(transformedProps)
 
-  let { children, tag, className, text, ...restProps } = excludedProps
+  let {
+    children,
+    tag,
+    className,
+    text,
+    innerRef,
+    domqlElementObject,
+    ...restProps
+  } = excludedProps
   if (props.text) {
     if (isArray(children)) children = children.concat(text)
     else children = [text]
@@ -29,7 +37,8 @@ export const Box = (props) => {
     tag || 'div',
     {
       ...restProps,
-      className: `${className ?? ''} ${propsClass}`
+      className: `${className ?? ''} ${propsClass}`,
+      ref: props.ref || props.innerRef
     },
     children
   )

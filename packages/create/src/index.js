@@ -142,7 +142,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
       document
     }
   }, parent, key, {
-    // extend: [uikit.Box],
+    extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
   })

@@ -22,8 +22,8 @@ export const Input = {
 
   attr: {
     pattern: ({ props }) => props.pattern,
-    minlength: ({ props }) => props.minlength,
-    maxlength: ({ props }) => props.maxlength,
+    minLength: ({ props }) => props.minlength,
+    maxLength: ({ props }) => props.maxlength,
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
