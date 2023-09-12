@@ -8,7 +8,7 @@ export const UnitValue = {
   unit: { props: { text: '%' } },
 
   props: {
-    color: '#A3A3A8',
+    color: '#818186',
     align: 'center flex-start',
     gap: 'V',
     fontSize: 'Z'
@@ -31,13 +31,13 @@ export const DoubleUnitValue = {
 
   props: {
     align: 'center flex-start',
-    gap: 'Z',
+    gap: 'Y',
     dot: {
       boxSize: 'W W',
       round: '100%',
       background: '#A3A3A8'
     },
-    unitValue2: { gap: 'X' }
+    unitValue2: { gap: 'X+W' }
   }
 }
 

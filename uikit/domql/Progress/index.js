@@ -4,11 +4,13 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const ProgressLine = {
   tag: 'progress',
+
   attr: {
     max: ({ props }) => props.max,
     progress: ({ props }) => props.progress,
     value: ({ props }) => props.value
   },
+
   props: {
     value: 0.7,
     height: 'Y+V',
@@ -26,6 +28,18 @@ export const ProgressLine = {
   }
 }
 
+export const ProgressLineWithUnitValue = {
+  extend: Flex,
+
+  ProgressLine: {},
+  UnitValue: {},
+
+  props: {
+    align: 'center flex-start',
+    gap: 'A'
+  }
+}
+
 export const ProgressCircle = {
   progress: {
     attr: {
@@ -35,16 +49,14 @@ export const ProgressCircle = {
     }
   },
 
-  progressValue: { props: { text: '70%' } },
-
   props: {
     boxSize: 'D D',
     position: 'relative',
     ':after': {
       content: '""',
       position: 'absolute',
-      width: 'calc(100% - 8px)',
-      height: 'calc(100% - 8px)',
+      width: 'calc(100% - 5px)',
+      height: 'calc(100% - 5px)',
       background: 'black',
       top: '50%',
       left: '50%',
@@ -61,9 +73,33 @@ export const ProgressCircle = {
         '&::-webkit-progress-bar': { background: '#0474F2' },
         '&::-webkit-progress-value': { background: '#252527' }
       }
-    },
+    }
+  }
+}
 
-    progressValue: {
+export const ProgressCircleWithIcon = {
+  extend: ProgressCircle,
+  Icon: { props: { icon: 'arrowUp' } },
+  props: {
+    Icon: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: '3',
+      fontSize: 'E'
+    }
+  }
+}
+
+export const ProgressCircleWithUnitValue = {
+  extend: ProgressCircle,
+
+  progress: {},
+  UnitValue: {},
+
+  props: {
+    UnitValue: {
       position: 'absolute',
       top: '50%',
       left: '50%',
@@ -74,28 +110,22 @@ export const ProgressCircle = {
   }
 }
 
-export const ProgressCircleWithAsideValue = {
+export const ProgressCircleWithSideUnitValue = {
   extend: Flex,
-  circle: {
-    extend: ProgressCircle,
-    progressValue: null
-  },
-  value: { props: { text: '70%' } },
+
+  ProgressCircle: {},
+  UnitValue: {},
 
   props: {
     align: 'center flex-start',
     boxSize: 'fit-content fit-content',
-    gap: 'X',
-    circle: {
+    gap: 'X+V',
+    ProgressCircle: {
       boxSize: 'A A',
       ':after': {
         width: 'calc(100% - 5px)',
         height: 'calc(100% - 5px)'
       }
-    },
-    value: {
-      fontSize: 'Z',
-      color: '#A3A3A8'
     }
   }
 }

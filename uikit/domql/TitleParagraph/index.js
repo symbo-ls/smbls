@@ -17,12 +17,16 @@ export const TitleParagraph = {
     flow: 'column',
     title: {
       align: 'center space-between',
-      h5: { color: '#CFCFD1' }
+      h5: {
+        color: '#CFCFD1',
+        fontSize: 'A'
+      }
     },
     paragraph: {
       p: {
         margin: '0',
-        color: '#818186'
+        color: '#818186',
+        fontSize: 'Z'
       }
     }
   }
@@ -38,6 +42,7 @@ export const TitleParagraphWithButton = {
 
   props: {
     title: {
+      alignItems: 'center',
       Button: {
         background: 'transparent',
         color: 'white',
