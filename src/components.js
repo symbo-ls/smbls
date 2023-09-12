@@ -66,6 +66,10 @@ create({
     UploadFileModal3: {},
     UploadFileModal4: {},
     UploadFileModal5: {},
+    ButtonIcon: {},
+    ButtonText: {},
+    ButtonIconText: {},
+    ButtonDoubleIcon: {},
 
     // IndicatorDot: {},
     // NotificationAlert: {},
