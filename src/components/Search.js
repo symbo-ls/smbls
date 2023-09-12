@@ -60,7 +60,7 @@ export const Search = {
   props,
   searchButton: {
     extend: Button,
-    props: { icon: 'search' }
+    props: { icon: { name: 'search'} }
   },
   class: {
     show: (event, element, state) => {
