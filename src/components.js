@@ -70,6 +70,14 @@ create({
     ButtonText: {},
     ButtonIconText: {},
     ButtonDoubleIcon: {},
+    DropdownParent: {},
+    CheckboxWithLabel: {},
+    CheckBoxWithImgWithLabel: {},
+    DropDownComponent: {},
+    DropDownComponent2: {},
+    DropDownGroupList: {},
+    DropDownGroupListWithTitle: {},
+    DropDownGroup: {},
 
     // IndicatorDot: {},
     // NotificationAlert: {},
@@ -130,7 +138,6 @@ create({
     // UploadResult: {},
     // UploadLabel: {},
     // UploadModal: {},
-    // dropDownItem: { extend: DropDownItem },
     // tab: { extend: Tab },
     // steps: { extend: Steps },
     state: { globalTheme: 'dark'}
