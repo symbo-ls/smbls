@@ -31,7 +31,7 @@ export const UploadButton = {
   }
 }
 
-export const UploadButtonWithBackground = {
+export const UploadButtonWithIcon = {
   extend: UploadButton,
   props: {
     gap: 'Z',

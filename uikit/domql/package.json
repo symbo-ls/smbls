@@ -28,6 +28,8 @@
     "@symbo.ls/uploadlabel": "latest",
     "@symbo.ls/unitvalue": "latest",
     "@symbo.ls/uploadingprocess": "latest",
+    "@symbo.ls/modal": "latest",
+    "@symbo.ls/uploadfilemodal": "latest",
 
 
     "@domql/utils": "latest",
@@ -61,7 +63,6 @@
     "@symbo.ls/infoset": "latest",
     "@symbo.ls/accessories": "latest",
     "@symbo.ls/icontextwithnotification": "latest",
-    "@symbo.ls/modal": "latest",
     "@symbo.ls/textcomponents": "latest",
     "@symbo.ls/slidetabs": "latest"
 

@@ -55,7 +55,7 @@ export const UploadLabel2 = {
     }
   },
 
-  UploadButtonWithBackground: {},
+  UploadButtonWithIcon: {},
 
   props: {
     gap: 'B',

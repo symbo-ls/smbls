@@ -6,37 +6,67 @@ import { Button } from '@symbo.ls/button'
 import { FieldWithTitle, CodeField } from '@symbo.ls/field'
 import { IconText } from '@symbo.ls/icon'
 import { CheckMark } from '@symbo.ls/accessories'
+import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
 
 export const Modal = {
   extend: Flex,
-  header: {
-    extend: Flex,
-    close: {
-      extend: Button,
-      props: { icon: 'x' }
-    }
-  },
+  header: { extend: TitleParagraphWithButton },
   content: { extend: Flex },
   footer: { extend: Flex },
 
   props: {
-    background: '#1C1C1F',
-    padding: 'A',
     flow: 'column',
-    round: 'Z+V',
+    background: '#252527',
+    boxSize: 'fit-content fit-content',
+    round: 'Z',
+    padding: 'A',
     header: {
-      title: { fontSize: 'B' },
-      close: {
-        margin: '- - - auto',
-        background: 'transparent',
-        color: 'white',
-        fontSize: 'D',
-        padding: '0'
+      title: {
+        h5: {
+          fontSize: 'B',
+          color: 'white'
+        },
+        Button: {
+          icon: {
+            fontSize: 'D',
+            color: 'white'
+          }
+        }
       }
-    },
-    content: { flow: 'column' }
+    }
   }
 }
+
+// export const Modal = {
+//   extend: Flex,
+//   header: {
+//     extend: Flex,
+//     close: {
+//       extend: Button,
+//       props: { icon: 'x' }
+//     }
+//   },
+//   content: { extend: Flex },
+//   footer: { extend: Flex },
+
+//   props: {
+//     background: '#1C1C1F',
+//     padding: 'A',
+//     flow: 'column',
+//     round: 'Z+V',
+//     header: {
+//       title: { fontSize: 'B' },
+//       close: {
+//         margin: '- - - auto',
+//         background: 'transparent',
+//         color: 'white',
+//         fontSize: 'D',
+//         padding: '0'
+//       }
+//     },
+//     content: { flow: 'column' }
+//   }
+// }
 
 export const ModalWithTitleParagraph = {
   extend: Modal,
