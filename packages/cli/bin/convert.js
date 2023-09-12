@@ -14,32 +14,41 @@ const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
 
-const IGNORED_FILES = ['index.js', 'package.json', 'node_modules', 'dist']
-const EXCLUDED_FROM_INTERNAL_UIKIT = [
-  // We have our own React Svg implementation
-  'Svg',
+const INTERNAL_UIKIT_CONF = {
+  excludedComponents: [
+    // We have our own React Svg implementation
+    'Svg',
 
-  // We have our own React Box implementation
-  'Box',
+    // We have our own React Box implementation
+    'Box',
 
-  // These are not domql objects
-  'keySetters',
-  'getSystemTheme',
-  'splitTransition',
-  'transformDuration',
-  'transformShadow',
-  'transformTransition',
+    // These are not domql objects
+    'keySetters',
+    'getSystemTheme',
+    'splitTransition',
+    'transformDuration',
+    'transformShadow',
+    'transformTransition',
 
-  // FIXME: Temporary list of components we want to skip
-  'DatePicker',
-  'DatePickerDay',
-  'DatePickerTwoColumns',
-  'DatePickerGrid',
-  'DatePickerGridContainer',
+    // FIXME: Temporary list of components we want to skip
+    'DatePicker',
+    'DatePickerDay',
+    'DatePickerTwoColumns',
+    'DatePickerGrid',
+    'DatePickerGridContainer',
 
-  // Not a domql object (headless-datepicker)
-  'calendar',
-]
+    // Not a domql object (headless-datepicker)
+    'calendar',
+  ],
+
+  // Can be strings or regex patterns
+  excludedDirectories: [
+    // TODO: Review these ignores with @nikoloza
+    /Threejs$/,
+    /Editorjs$/,
+    /User$/,
+  ],
+}
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
   name: 'smbls_convert_tmp',
@@ -97,10 +106,8 @@ function generatePackageJsonFile(
   fs.writeFileSync(destPath, genStr)
 }
 
-function isDirectory (dir) { // eslint-disable-line no-unused-vars
-  if (!fs.existsSync(dir)) return false
-
-  const stat = fs.statSync(dir)
+function isDirectory (dir) {
+  const stat = fs.statSync(dir, { throwIfNoEntry: false })
   if (!stat) return false
 
   return stat.isDirectory()
@@ -135,7 +142,7 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
         })
         .filter(exportName => {
           if (!options.internalUikit) return true
-          if (EXCLUDED_FROM_INTERNAL_UIKIT.includes(exportName)) {
+          if (INTERNAL_UIKIT_CONF.excludedComponents.includes(exportName)) {
             console.log(`Skipping ${exportName} component due to internal uikit exclusion`)
             return false
           }
@@ -310,7 +317,6 @@ program
       console.erorr(`Source directory/file ('${srcPath}') does not exist`)
       return 1
     }
-    const srcIsDir = fs.statSync(srcPath).isDirectory()
 
     // Resolve & create tmp dir
     const tmpDirPath = options.tmpDir ??
@@ -326,7 +332,7 @@ program
     await pj.close()
 
     // Convert single file. Output will also be a single file.
-    if (!srcIsDir) {
+    if (!isDirectory(srcPath)) {
       // Determine destFilePath and create it if needed
       let destFilePath
       if (dest) {
@@ -334,7 +340,7 @@ program
         if (!fs.existsSync(dest)) {
           // dest doesn't exist. That's the output file we'll create.
           destFilePath = path.resolve(dest)
-        } else if (fs.statSync(dest).isDirectory()) {
+        } else if (isDirectory(dest)) {
           // dest exists and is a directory. Create our output file inside it.
           destFilePath = path.join(path.resolve(dest), path.basename(srcPath))
         } else {
@@ -367,7 +373,7 @@ program
       // dest doesn't exist. Create it.
       destDirPath = path.resolve(dest)
       await mkdirp(destDirPath)
-    } else if (fs.statSync(dest).isDirectory()) {
+    } else if (isDirectory(dest)) {
       // dest exists and is a directory.
       destDirPath = path.resolve(dest)
     } else {
@@ -378,18 +384,19 @@ program
       return 1
     }
 
+    const ignoredFiles = ['index.js', 'package.json', 'node_modules', 'dist']
     const sourceDirNames = (await fs.promises.readdir(srcPath))
-          .filter(file => !IGNORED_FILES.includes(file))
+          .filter(file => !ignoredFiles.includes(file))
 
     const dirs = []
 
     for (const dir of sourceDirNames) {
       // Ignored directories
       if (options.internalUikit) {
-        // TODO: check with @nikoloza on these components
-        if (dir.match(/Threejs$/)) continue
-        if (dir.match(/Editorjs$/)) continue
-        if (dir.match(/User$/)) continue
+        let skip = false
+        for (const pat of INTERNAL_UIKIT_CONF.excludedDirectories)
+          if (dir.match(pat)) { skip = true; break; }
+        if (skip) continue
       }
 
       const dirPath = path.join(srcPath, dir)
