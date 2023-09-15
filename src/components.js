@@ -24,6 +24,9 @@ create({
     CheckIndicator: {},
     CheckIconWIthBorder: {},
     CheckBox: {},
+    CheckboxWithLabel: {},
+    CheckBoxWithImgWithLabel: {},
+    CheckBoxWithSet: {},
     RadioButton: {},
     ToggleSwitch: {},
     TitleParagraph: {},
@@ -66,18 +69,20 @@ create({
     UploadFileModal3: {},
     UploadFileModal4: {},
     UploadFileModal5: {},
-    ButtonIcon: {},
-    ButtonText: {},
-    ButtonIconText: {},
-    ButtonDoubleIcon: {},
-    DropdownParent: {},
-    CheckboxWithLabel: {},
-    CheckBoxWithImgWithLabel: {},
-    DropDownComponent: {},
-    DropDownComponent2: {},
-    DropDownGroupList: {},
-    DropDownGroupListWithTitle: {},
-    DropDownGroup: {},
+    ButtonTemplate1: {},
+    ButtonTemplate2: {},
+    ButtonTemplate3: {},
+    ButtonTemplate4: {},
+    ListTemplate: {},
+    ListWithLabelTemplate: {},
+    GroupListTemplate: {},
+    GroupListWithSearchTemplate: {},
+    Tab: {},
+
+
+
+
+    //old components
 
     // IndicatorDot: {},
     // NotificationAlert: {},
@@ -154,13 +159,10 @@ create({
   },
 
   props: {
-    // position: 'relative',
     fontFamily: 'avenir',
-    // boxSize: '100% 100%',
-    // overflow: 'hidden',
     ':before': {
       content: '""',
-      boxSize: 'F 100%',
+      boxSize: 'E 100%',
       position: 'fixed',
       top: '0',
       left: '0',
@@ -170,7 +172,7 @@ create({
     },
     ':after': {
       content: '""',
-      boxSize: 'F 100%',
+      boxSize: 'E 100%',
       position: 'fixed',
       bottom: '0',
       left: '0',
@@ -178,6 +180,7 @@ create({
       background:' linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
       pointerEvents: 'none'
     },
+
 
     header: {
       zIndex: '51',
@@ -214,9 +217,10 @@ create({
       minWidth: 'calc(100% - 70px)',
       height: '100%',
       margin: '- - - auto',
-      style: { overflowY: 'auto'},
-      scrollBehavior: 'smooth',
-      '::-webkit-scrollbar': { display: 'none' }
+      style: {
+        overflowY: 'auto',
+        scrollBehavior: 'smooth'
+      }
     },
 
     footer: {

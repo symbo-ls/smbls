@@ -14,11 +14,9 @@
   "dependencies": {
     "@domql/emotion": "latest",
     "@domql/router": "latest",
-    "@symbo.ls/atoms": "latest",
-    "@symbo.ls/form": "^2.11.16",
     "domql": "latest",
     "headless-datepicker": "^1.0.1",
-    "smbls": "^2.11.16"
+    "smbls": "latest"
   },
   "devDependencies": {
     "parcel-bundler": "^1.5.1",
