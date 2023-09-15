@@ -14,21 +14,21 @@ export const CommonField = {
 
   props: {
     flow: 'column',
-    gap: 'Y',
+    gap: 'Y+V',
     boxSize: 'fit-content fit-content',
     align: 'flex-start flex-start',
     title: {
       text: 'Title',
       fontSize: 'Z',
       color: '#CFCFD1',
-      padding: '- - - Z',
+      padding: '- - - Z+X',
       lineHeight: '1em'
     },
     description: {
       text: 'Description',
       fontSize: 'Z',
       color: '#CFCFD1',
-      padding: '- - - Z',
+      padding: '- - - Z+X',
       gap: 'Y',
       align: 'center center',
       icon: 'info'

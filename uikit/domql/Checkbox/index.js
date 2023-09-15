@@ -1,5 +1,6 @@
 'use strict'
 import { Flex } from '@symbo.ls/atoms'
+import { Button } from '@symbo.ls/button'
 import { Icon } from '@symbo.ls/icon'
 
 export const CheckBox = {
@@ -15,6 +16,7 @@ export const CheckBox = {
   props: {
     boxSize: 'fit-content fit-content',
     cursor: 'pointer',
+    round: 'Y',
     style: {
       'input:checked ~ div': {
         background: '#0474F2',
@@ -22,7 +24,9 @@ export const CheckBox = {
         '> svg': { opacity: '1' }
       }
     },
+
     Input: { display: 'none' },
+
     check: {
       align: 'center center',
       boxSize: 'A+X A+X',
@@ -62,6 +66,45 @@ export const CheckBoxWithImgWithLabel = {
       boxSize: 'A+Y C',
       background: 'linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%)',
       round: 'X'
+    }
+  }
+}
+
+export const CheckBoxWithSet = {
+  extend: Flex,
+
+  arrowButton: {
+    extend: Button,
+    props: { icon: { name: 'chevronRight' } }
+  },
+  CheckBoxWithImgWithLabel: {},
+  UnitValue: {
+    value: { text: '5' },
+    unit: { text: 'MB' }
+  },
+  threeDotButton: {
+    extend: Button,
+    props: { icon: { name: 'moreHorizontal' } }
+  },
+
+  props: {
+    align: 'center flex-start',
+    height: 'fit-content',
+    maxWidth: 'G+D',
+    background: '#1C1C1F',
+    padding: 'Z A',
+    round: 'Z',
+    gap: 'A',
+    '& > button': {
+      boxSize: 'fit-content fit-content',
+      padding: '0',
+      color: '#A3A3A8',
+      background: 'transparent',
+      fontSize: 'C'
+    },
+    UnitValue: {
+      gap: 'Y',
+      margin: '- - - auto'
     }
   }
 }

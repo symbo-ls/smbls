@@ -32,11 +32,11 @@ export const Field = {
 export const CustomizedField = {
   extend: Field,
   props: {
-    padding: '- Z',
-    round: 'Y',
+    padding: '- Z+W',
+    round: 'Y+W',
     minHeight: 'C+X',
     border: '1px solid #3F3F43',
-    gap: 'Y',
+    gap: 'Y+V',
     Icon: { fontSize: 'C' },
     input: {
       padding: '0',

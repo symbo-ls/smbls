@@ -36,7 +36,8 @@ const execClass = (key, props, result, element) => {
   let classExec = classnameExec({
     props,
     context: element.context,
-    state: element.state
+    state: element.state,
+    deps: element.deps
   })
   if (isArray(classExec)) {
     classExec = classExec.reduce((a, c) => merge(a, c), {})

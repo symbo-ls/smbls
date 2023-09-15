@@ -79,7 +79,7 @@ export const CancenConfirmButtons = {
   }
 }
 
-export const ButtonIcon = {
+export const ButtonTemplate1 = {
   extend: Button,
   props: {
     icon: { name: 'circle' },
@@ -91,22 +91,22 @@ export const ButtonIcon = {
   }
 }
 
-export const ButtonText = {
-  extend: ButtonIcon,
+export const ButtonTemplate2 = {
+  extend: ButtonTemplate1,
   icon: null,
   props: { text: 'Button' }
 }
 
-export const ButtonIconText = {
-  extend: ButtonIcon,
+export const ButtonTemplate3 = {
+  extend: ButtonTemplate1,
   props: {
     text: 'Button',
     gap: 'Z'
   }
 }
 
-export const ButtonDoubleIcon = {
-  extend: ButtonIconText,
+export const ButtonTemplate4 = {
+  extend: ButtonTemplate3,
   icon: {},
   text: 'Button',
   Icon: { props: { icon: 'circle' } }

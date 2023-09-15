@@ -163,7 +163,7 @@ export const Hr = {
 }
 export const Br = { tag: 'br' }
 export const Span = { tag: 'span' }
-export const List = {
+export const Ul = {
   tag: 'ul',
   childExtend: { tag: 'li' }
 }

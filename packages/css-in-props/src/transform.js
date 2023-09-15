@@ -20,7 +20,7 @@ export const transformClassname = (props, context = {}, registry = CSS_PROPS_REG
 
     if (setter) setter(key, props[key], CLASS_NAMES, element, true)
     else if (isFunction(hasCSS)) {
-      const stack = hasCSS({ props, context })
+      const stack = hasCSS({ props, context, deps: element.deps })
       const exec = isArray(stack)
         ? stack.reduce((a, c) => {
           return merge(a, c)

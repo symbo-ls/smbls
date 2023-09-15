@@ -17,49 +17,60 @@ export const getSystemTheme = ({ context, state }) => {
 }
 
 export const Theme = {
+  deps: {
+    depth,
+    getSystemTheme,
+    getMediaTheme,
+    getMediaColor,
+    transformTextStroke,
+    transformShadow,
+    transformBorder,
+    transformBackgroundImage
+  },
   class: {
-    depth: ({ props }) => props.depth && depth[props.depth],
+    depth: ({ props, deps }) => props.depth && deps.depth[props.depth],
 
     theme: (element) => {
-      const { props } = element
-      const globalTheme = getSystemTheme(element)
+      const { props, deps } = element
+      const globalTheme = deps.getSystemTheme(element)
       if (!props.theme) return
-      return getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
+      const getMediaTheme = deps.getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
+      return getMediaTheme
     },
 
     color: (element) => {
-      const { props } = element
-      const globalTheme = getSystemTheme(element)
+      const { props, deps } = element
+      const globalTheme = deps.getSystemTheme(element)
       if (!props.color) return
       return {
-        color: getMediaColor(props.color, globalTheme)
+        color: deps.getMediaColor(props.color, globalTheme)
       }
     },
 
     background: (element) => {
-      const { props } = element
-      const globalTheme = getSystemTheme(element)
+      const { props, deps } = element
+      const globalTheme = deps.getSystemTheme(element)
       if (!props.background) return
       return {
-        background: getMediaColor(props.background, globalTheme)
+        background: deps.getMediaColor(props.background, globalTheme)
       }
     },
 
     backgroundColor: (element) => {
-      const { props } = element
-      const globalTheme = getSystemTheme(element)
+      const { props, deps } = element
+      const globalTheme = deps.getSystemTheme(element)
       if (!props.backgroundColor) return
       return {
-        backgroundColor: getMediaColor(props.backgroundColor, globalTheme)
+        backgroundColor: deps.getMediaColor(props.backgroundColor, globalTheme)
       }
     },
 
     backgroundImage: (element) => {
-      const { props } = element
-      const globalTheme = getSystemTheme(element)
+      const { props, deps } = element
+      const globalTheme = deps.getSystemTheme(element)
       if (!props.backgroundImage) return
       return ({
-        backgroundImage: transformBackgroundImage(props.backgroundImage, globalTheme)
+        backgroundImage: deps.transformBackgroundImage(props.backgroundImage, globalTheme)
       })
     },
     backgroundSize: ({ props }) => props.backgroundSize
@@ -73,45 +84,45 @@ export const Theme = {
         })
       : null,
 
-    textStroke: ({ props }) => props.textStroke
+    textStroke: ({ props, deps }) => props.textStroke
       ? ({
-          WebkitTextStroke: transformTextStroke(props.textStroke)
+          WebkitTextStroke: deps.transformTextStroke(props.textStroke)
         })
       : null,
 
-    outline: ({ props }) => props.outline && ({
-      outline: transformBorder(props.outline)
+    outline: ({ props, deps }) => props.outline && ({
+      outline: deps.transformBorder(props.outline)
     }),
 
-    border: ({ props }) => props.border && ({
-      border: transformBorder(props.border)
+    border: ({ props, deps }) => props.border && ({
+      border: deps.transformBorder(props.border)
     }),
-    borderColor: ({ props }) => props.borderColor && ({
-      borderColor: getMediaColor(props.borderColor)
+    borderColor: ({ props, deps }) => props.borderColor && ({
+      borderColor: deps.getMediaColor(props.borderColor)
     }),
     borderStyle: ({ props }) => props.borderStyle && ({
       borderStyle: props.borderStyle
     }),
 
-    borderLeft: ({ props }) => props.borderLeft && ({
-      borderLeft: transformBorder(props.borderLeft)
+    borderLeft: ({ props, deps }) => props.borderLeft && ({
+      borderLeft: deps.transformBorder(props.borderLeft)
     }),
-    borderTop: ({ props }) => props.borderTop && ({
-      borderTop: transformBorder(props.borderTop)
+    borderTop: ({ props, deps }) => props.borderTop && ({
+      borderTop: deps.transformBorder(props.borderTop)
     }),
-    borderRight: ({ props }) => props.borderRight && ({
-      borderRight: transformBorder(props.borderRight)
+    borderRight: ({ props, deps }) => props.borderRight && ({
+      borderRight: deps.transformBorder(props.borderRight)
     }),
-    borderBottom: ({ props }) => props.borderBottom && ({
-      borderBottom: transformBorder(props.borderBottom)
-    }),
-
-    boxShadow: ({ props }) => props.boxShadow && ({
-      boxShadow: transformShadow(props.boxShadow)
+    borderBottom: ({ props, deps }) => props.borderBottom && ({
+      borderBottom: deps.transformBorder(props.borderBottom)
     }),
 
-    textShadow: ({ props }) => props.textShadow && ({
-      textShadow: transformShadow(props.textShadow)
+    boxShadow: ({ props, deps }) => props.boxShadow && ({
+      boxShadow: deps.transformShadow(props.boxShadow)
+    }),
+
+    textShadow: ({ props, deps }) => props.textShadow && ({
+      textShadow: deps.transformShadow(props.textShadow)
     }),
 
     opacity: ({ props }) => props.opacity && ({
@@ -121,8 +132,8 @@ export const Theme = {
       visibility: props.visibility
     }),
 
-    columnRule: ({ props }) => props.columnRule && ({
-      columnRule: transformBorder(props.columnRule)
+    columnRule: ({ props, deps }) => props.columnRule && ({
+      columnRule: deps.transformBorder(props.columnRule)
     }),
 
     appearance: ({ props }) => props.appearance && ({
