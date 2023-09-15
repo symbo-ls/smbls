@@ -2,7 +2,7 @@
 
 import { Img, Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
-import { IndicatorDot } from '@symbo.ls/accessories'
+import { IndicatorDot } from '@symbo.ls/indicatordot'
 import { InfoSet } from '@symbo.ls/infoset'
 import { CardLabel } from '@symbo.ls/label'
 

@@ -48,7 +48,6 @@
     "@symbo.ls/input": "latest",
     "@symbo.ls/label": "latest",
     "@symbo.ls/link": "latest",
-    "@symbo.ls/modal": "latest",
     "@symbo.ls/notification": "latest",
     "@symbo.ls/pills": "latest",
     "@symbo.ls/icon": "latest",
@@ -65,17 +64,7 @@
     "@symbo.ls/timepicker": "latest",
     "@symbo.ls/tooltip": "latest",
     "@symbo.ls/upload": "latest",
-<<<<<<< HEAD
     "@symbo.ls/video": "latest"
-=======
-    "@symbo.ls/video": "latest",
-    "@symbo.ls/infoset": "latest",
-    "@symbo.ls/accessories": "latest",
-    "@symbo.ls/icontextwithnotification": "latest",
-    "@symbo.ls/textcomponents": "latest",
-    "@symbo.ls/slidetabs": "latest"
-
->>>>>>> origin/feature/new-components
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"

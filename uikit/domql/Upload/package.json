@@ -8,6 +8,7 @@
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/avatar": "latest",
+    "@symbo.ls/uploadlabel": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/icon": "latest"
   }

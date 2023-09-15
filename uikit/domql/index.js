@@ -23,7 +23,6 @@ export * from '@symbo.ls/uploadingprocess'
 export * from '@symbo.ls/modal'
 export * from '@symbo.ls/uploadfilemodal'
 export * from '@symbo.ls/list'
-
 export * from '@symbo.ls/avatar'
 export * from '@symbo.ls/button'
 export * from '@symbo.ls/dialog'

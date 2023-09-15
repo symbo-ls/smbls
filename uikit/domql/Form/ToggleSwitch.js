@@ -2,8 +2,6 @@
 
 import { Flex } from '@symbo.ls/atoms'
 
-import { Checkbox } from './Checkbox'
-
 // export const ToggleSwitch = {
 //   extend: Checkbox,
 //   props: {

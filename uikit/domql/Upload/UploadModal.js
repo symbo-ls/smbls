@@ -4,7 +4,7 @@ import { Flex } from '@symbo.ls/atoms'
 import { Link } from '@symbo.ls/link'
 import { IconText } from '@symbo.ls/icon'
 import { Dialog } from '@symbo.ls/dialog'
-import { UploadLabel } from './UploadLabel'
+import { UploadLabel } from '@symbo.ls/uploadlabel'
 
 export const UploadModalFooter = {
   extend: Flex,

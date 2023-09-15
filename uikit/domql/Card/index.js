@@ -2,6 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { InfoSet } from '@symbo.ls/infoset'
+import { Button } from '@symbo.ls/button'
 
 export const AmountWithLabel = {
   extend: Flex,
