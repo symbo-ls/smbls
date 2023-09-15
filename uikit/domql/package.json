@@ -13,6 +13,24 @@
     "dist"
   ],
   "dependencies": {
+    "@symbo.ls/indicatordot": "latest",
+    "@symbo.ls/checkindicator": "latest",
+    "@symbo.ls/checkbox": "latest",
+    "@symbo.ls/radiobutton": "latest",
+    "@symbo.ls/toggleswitch": "latest",
+    "@symbo.ls/titleparagraph": "latest",
+    "@symbo.ls/notificationindicator": "latest",
+    "@symbo.ls/field": "latest",
+    "@symbo.ls/search": "latest",
+    "@symbo.ls/dropdownbutton": "latest",
+    "@symbo.ls/uploadbutton": "latest",
+    "@symbo.ls/progress": "latest",
+    "@symbo.ls/uploadlabel": "latest",
+    "@symbo.ls/unitvalue": "latest",
+    "@symbo.ls/uploadingprocess": "latest",
+    "@symbo.ls/modal": "latest",
+    "@symbo.ls/uploadfilemodal": "latest",
+    "@symbo.ls/list": "latest",
     "@domql/utils": "latest",
     "@symbo.ls/accessories": "latest",
     "@symbo.ls/atoms": "latest",
@@ -24,7 +42,6 @@
     "@symbo.ls/datepicker": "latest",
     "@symbo.ls/dialog": "latest",
     "@symbo.ls/dropdown": "latest",
-    "@symbo.ls/field": "latest",
     "@symbo.ls/form": "latest",
     "@symbo.ls/icontextwithnotification": "latest",
     "@symbo.ls/infoset": "latest",
@@ -34,9 +51,9 @@
     "@symbo.ls/modal": "latest",
     "@symbo.ls/notification": "latest",
     "@symbo.ls/pills": "latest",
+    "@symbo.ls/icon": "latest",
     "@symbo.ls/range": "latest",
     "@symbo.ls/scratch": "latest",
-    "@symbo.ls/search": "latest",
     "@symbo.ls/select": "latest",
     "@symbo.ls/slider": "latest",
     "@symbo.ls/slidetabs": "latest",
@@ -48,7 +65,17 @@
     "@symbo.ls/timepicker": "latest",
     "@symbo.ls/tooltip": "latest",
     "@symbo.ls/upload": "latest",
+<<<<<<< HEAD
     "@symbo.ls/video": "latest"
+=======
+    "@symbo.ls/video": "latest",
+    "@symbo.ls/infoset": "latest",
+    "@symbo.ls/accessories": "latest",
+    "@symbo.ls/icontextwithnotification": "latest",
+    "@symbo.ls/textcomponents": "latest",
+    "@symbo.ls/slidetabs": "latest"
+
+>>>>>>> origin/feature/new-components
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"

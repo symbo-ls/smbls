@@ -13,6 +13,7 @@ const props = {
 export const Tab = {
   extend: Button,
   props,
+
   Icon: {
     props: {
       name: 'star',
@@ -23,9 +24,13 @@ export const Tab = {
     textTransform: 'capitalize',
     text: 'label'
   },
+
+  Button: { text: '123' },
+
   Box: {
     text: '19',
-    background: '#313141',
+    theme: 'warning',
+    background: 'indigo',
     margin: '- -X - A',
     padding: 'Y Y',
     round: 'Y1',

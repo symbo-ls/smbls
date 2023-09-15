@@ -2,7 +2,7 @@
 import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
 import { FieldWithTitle } from '@symbo.ls/field'
-import { CheckBoxWithParagraph } from '@symbo.ls/textcomponents'
+import { CheckBoxWithParagraph } from '@symbo.ls/TextComponents'
 import { Button } from '@symbo.ls/button'
 import { Icon } from '@symbo.ls/icon'
 import { OrLines } from '@symbo.ls/accessories'

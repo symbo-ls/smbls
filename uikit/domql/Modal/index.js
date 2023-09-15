@@ -1,59 +1,68 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
 import { FieldWithTitle } from '@symbo.ls/field'
-
-export const ModalHeader = {
-  extend: Flex,
-  props: {
-  },
-  title: {
-    props: {
-      fontSize: 'B'
-    }
-  },
-  close: {
-    extend: Button,
-    props: {
-      icon: 'x',
-      margin: '- - - auto',
-      background: 'transparent',
-      color: 'white',
-      fontSize: 'D',
-      padding: '0'
-    }
-  }
-}
-
-export const ModalContent = {
-  extend: Flex,
-  props: {
-    flow: 'column'
-  }
-}
-
-export const ModalFooter = {
-  extend: Flex,
-  props: {
-    flow: 'column'
-  }
-}
+import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
 
 export const Modal = {
   extend: Flex,
+  header: { extend: TitleParagraphWithButton },
+  content: { extend: Flex },
+  footer: { extend: Flex },
 
   props: {
-    background: '#1C1C1F',
-    padding: 'A',
     flow: 'column',
-    round: 'Z+V'
-  },
-
-  ModalHeader: {},
-  ModalContent: {},
-  ModalFooter: {}
+    background: '#252527',
+    boxSize: 'fit-content fit-content',
+    round: 'Z',
+    padding: 'A',
+    header: {
+      title: {
+        h5: {
+          fontSize: 'B',
+          color: 'white'
+        },
+        Button: {
+          icon: {
+            fontSize: 'D',
+            color: 'white'
+          }
+        }
+      }
+    }
+  }
 }
+
+// export const Modal = {
+//   extend: Flex,
+//   header: {
+//     extend: Flex,
+//     close: {
+//       extend: Button,
+//       props: { icon: 'x' }
+//     }
+//   },
+//   content: { extend: Flex },
+//   footer: { extend: Flex },
+
+//   props: {
+//     background: '#1C1C1F',
+//     padding: 'A',
+//     flow: 'column',
+//     round: 'Z+V',
+//     header: {
+//       title: { fontSize: 'B' },
+//       close: {
+//         margin: '- - - auto',
+//         background: 'transparent',
+//         color: 'white',
+//         fontSize: 'D',
+//         padding: '0'
+//       }
+//     },
+//     content: { flow: 'column' }
+//   }
+// }
 
 export const ModalWithTitleParagraph = {
   extend: Modal,

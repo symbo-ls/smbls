@@ -3,16 +3,6 @@
 import { Flex } from '@symbo.ls/atoms'
 import { Icon } from '@symbo.ls/icon'
 
-export const IndicatorDot = {
-  props: {
-    boxSize: 'Y+V1',
-    background: '#04F214',
-    round: '100%',
-    border: 'solid, black 0',
-    borderWidth: '1px'
-  }
-}
-
 export const BalancesIndicator = {
   extend: Flex,
   caption: { props: { text: 'Balance:' } },

@@ -62,20 +62,53 @@ export const CancelConfirmButtons = {
   ],
 
   props: {
-    gap: 'Y',
+    gap: 'Z',
     maxWidth: 'fit-content',
     childProps: {
       fontWeight: '500',
       color: 'white',
       padding: 'A B+X',
+      round: 'A',
       ':first-child': {
         background: 'transparent'
       },
       ':last-child': {
-        background: '#0474F2',
-        round: 'A'
+        background: '#0474F2'
       }
     }
   }
+}
+
+export const ButtonTemplate1 = {
+  extend: Button,
+  props: {
+    icon: { name: 'circle' },
+    boxSize: 'fit-content fit-content',
+    padding: 'A',
+    round: 'A',
+    color: 'white',
+    background: '#F4454E'
+  }
+}
+
+export const ButtonTemplate2 = {
+  extend: ButtonTemplate1,
+  icon: null,
+  props: { text: 'Button' }
+}
+
+export const ButtonTemplate3 = {
+  extend: ButtonTemplate1,
+  props: {
+    text: 'Button',
+    gap: 'Z'
+  }
+}
+
+export const ButtonTemplate4 = {
+  extend: ButtonTemplate3,
+  icon: {},
+  text: 'Button',
+  Icon: { props: { icon: 'circle' } }
 
 }

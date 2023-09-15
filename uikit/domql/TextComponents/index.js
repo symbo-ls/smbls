@@ -2,31 +2,31 @@
 
 import { Flex } from '@symbo.ls/atoms'
 
-export const TitleParagraph = {
-  extend: Flex,
+// export const TitleParagraph = {
+//   extend: Flex,
 
-  props: {
-    flow: 'column',
-    gap: 'Y',
-    maxWidth: 'fit-content'
-  },
+//   title: {
+//     tag: 'h5',
+//     props: { text: 'Log in to your account' }
+//   },
+//   paragraph: {
+//     tag: 'p',
+//     props: { text: 'Enter your email address and password to log in.' }
+//   },
 
-  Title: {
-    tag: 'h5',
-    props: {
-      fontSize: 'D',
-      text: 'Log in to your account'
-    }
-  },
-
-  P: {
-    fontSize: 'Z',
-    padding: '0',
-    margin: '0',
-    color: '#E0E0E2',
-    text: 'Enter your email address and password to log in.'
-  }
-}
+//   props: {
+//     flow: 'column',
+//     gap: 'Y',
+//     maxWidth: 'fit-content',
+//     title: { fontSize: 'D' },
+//     paragraph: {
+//       fontSize: 'Z',
+//       padding: '0',
+//       margin: '0',
+//       color: '#E0E0E2'
+//     }
+//   }
+// }
 
 export const ParagraphWithUnderlineButton = {
   extend: Flex,
@@ -59,33 +59,21 @@ export const ParagrapUnderlineLinkWithCheckbox = {
 
   props: {
     align: 'center flex-start',
-    gap: 'W'
-  },
-
-  Checkbox: {
-    props: {},
-    Flex: { boxSize: 'A+X' }
-  },
-
-  ParagraphWithUnderlineButton: { }
+    gap: 'W',
+    checkBox: {
+      Flex: { boxSize: 'A+X' }
+    }
+  }
 }
 
 export const CheckBoxWithParagraph = {
   extend: Flex,
-
+  Checkbox: {},
+  p: { props: { text: 'Keep me logged in' } },
   props: {
     align: 'center flex-start',
-    gap: 'W'
-  },
-
-  Checkbox: {
-    props: {},
-    Flex: { boxSize: 'A+X' }
-  },
-
-  P: {
-    text: 'Keep me logged in',
-    fontSize: 'Z',
-    margin: '0'
+    gap: 'W',
+    checkBox: { Flex: { boxSize: 'A+X' } },
+    p: { fontSize: 'Z', margin: '0' }
   }
 }
