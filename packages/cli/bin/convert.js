@@ -1,5 +1,5 @@
 'use strict'
-
+// TODO: --only flag doesn't work!!!
 import { program } from './program.js'
 import { convert } from 'kalduna'
 import { parse } from 'globusa'
@@ -149,7 +149,6 @@ function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options)
       return true
     })
 
-  const isSingleComponent = (exports.length === 1)
   const uniqueImports = []
   let globalSymbolTable = {}
   for (const idx in exports) {
@@ -163,7 +162,7 @@ function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options)
     }
 
     console.group()
-    console.log(dobj.__name) // NOTE(Nikaoto): @nikoloza, don't remove this
+    console.log(dobj.__name) // NOTE: Don't remove this
 
     // NOTE: Don't use '===' here!
     const isFirst = (idx == 0) // eslint-disable-line
@@ -173,7 +172,7 @@ function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options)
       verbose: false,
       returnMitosisIR: true,
       globalSymbolTable,
-      exportDefault: isSingleComponent,
+      exportDefault: false,
       importsToRemove: uniqueImports,
 
       /* NOTE: The option below prevents a name collision bug. For example:
@@ -237,6 +236,7 @@ async function convertFile (srcPath, tmpDirPath, destPath,
     entryPoints: [srcPath],
     bundle: true,
     sourcemap: true,
+    keepNames: false,
     target: 'node12',
     format: 'cjs',
     outdir: tmpDirPath
