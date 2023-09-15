@@ -20,7 +20,7 @@ export const FEATHER_ICONS = {
   arrowLeftCircle: require('./src/arrow-left-circle.svg'),
   arrowLeft: require('./src/arrow-left.svg'),
   arrowRight: require('./src/arrow-right.svg'),
-  // arrowRightCircle: require('./src/arrow-right-circle.svg'),
+  arrowRightCircle: require('./src/arrow-right-circle.svg'),
   arrowUpCircle: require('./src/arrow-up-circle.svg'),
   arrowUpLeft: require('./src/arrow-up-left.svg'),
   arrowUpRight: require('./src/arrow-up-right.svg'),
