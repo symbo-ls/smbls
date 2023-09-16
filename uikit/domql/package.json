@@ -14,8 +14,7 @@
   ],
   "dependencies": {
     "@symbo.ls/indicatordot": "latest",
-    "@symbo.ls/checkindicator": "latest",
-    "@symbo.ls/checkbox": "latest",
+    "@symbo.ls/check": "latest",
     "@symbo.ls/radiobutton": "latest",
     "@symbo.ls/toggleswitch": "latest",
     "@symbo.ls/titleparagraph": "latest",
