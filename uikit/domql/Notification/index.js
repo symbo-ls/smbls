@@ -45,3 +45,17 @@ export const Notification = {
     p: {}
   }
 }
+
+export const NotificationIndicator = {
+  extend: Flex,
+  props: {
+    text: '2',
+    fontSize: 'Z',
+    lineHeight: '1em',
+    background: '#0474F2',
+    boxSize: 'fit-content fit-content',
+    padding: 'X+W',
+    round: 'Y+X',
+    color: 'white'
+  }
+}
