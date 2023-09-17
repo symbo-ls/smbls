@@ -8,12 +8,21 @@ export const Field = {
     minWidth: 'G',
     maxWidth: 'G',
     minHeight: 'C+X',
+    align: 'center flex-start',
+    gap: 'Y+W',
     boxSizing: 'border-box',
     padding: '- Z+W',
     round: 'Y+W',
     border: '1px solid #3F3F43',
-    gap: 'Y+W',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    position: 'relative'
+  },
+
+  Icon: {
+    props: {
+      display: 'block',
+      margin: '-V - - -'
+    }
   },
 
   Input: {
@@ -28,11 +37,6 @@ export const Field = {
   }
 }
 
-export const FieldWithIcon = {
-  extend: Field,
-  props: { icon: { name: 'info' } }
-}
-
 export const FieldWithButton = {
   extend: Field,
   Input: {},
@@ -45,11 +49,10 @@ export const FieldWithButton = {
   }
 }
 
-export const FieldWithIconWithButton = {
+export const FieldWithSet = {
   extend: FieldWithButton,
   Icon: { props: { name: 'info' } },
-  Input: {},
-  Button: {}
+  Input: {}
 }
 
 export const CodeField = {
@@ -75,7 +78,7 @@ export const CodeField = {
   }
 }
 
-export const LabeledHintField = {
+export const LabeledFieldWithHint = {
   extend: Flex,
   props: {
     flow: 'column',

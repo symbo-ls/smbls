@@ -79,6 +79,23 @@ export const CancenConfirmButtons = {
   }
 }
 
+export const DropDownButton = {
+  extend: Button,
+  props: {
+    gap: 'Y',
+    boxSize: 'fit-content fit-content',
+    padding: 'A B A A+X',
+    round: 'Z',
+    background: '#141416',
+    color: 'white',
+    icon: {
+      name: 'chevronDown',
+      fontSize: 'D'
+    },
+    text: 'All'
+  }
+}
+
 export const ButtonTemplate1 = {
   extend: Button,
   props: {
@@ -110,5 +127,4 @@ export const ButtonTemplate4 = {
   icon: {},
   text: 'Button',
   Icon: { props: { icon: 'circle' } }
-
 }
