@@ -1,6 +1,6 @@
 'use strict'
 
-import { create, Flex, Search } from "smbls"
+import { create, Flex, SearchWithButton } from "smbls"
 
 import designSystem from '@symbo.ls/default-config'
 console.log(designSystem)
@@ -36,20 +36,23 @@ create({
     TitleParagraphWithButton: {},
     Label: {},
     NotificationIndicator: {},
-    CustomizedField: {},
-    FieldWithIcon: {},
-    FieldWithTitle: {},
-    FieldWithDescription: {},
-    CommonField: {},
-    FieldWithAllSet: {},
     CodeField: {},
-    DropDownButton: {},
+    Field: {},
+    FieldWithButton: {},
+    FieldWithSet: {},
+    LabeledFieldWithHint: {},
     Search: {},
+    SearchWithButton: {},
     SearchWithDropDownButton: {},
+    DropDownButton: {},
+    Tab: {},
+    IconTab: {},
+    CheckIndicatorWithLabel: {},
+    Step: {},
+    Steps: {},
+    ProgressLineSteps: {},
     UploadButton: {},
     UploadButtonWithIcon: {},
-    UploadLabel: {},
-    UploadLabel2: {},
     UnitValue: {},
     ProgressLine: {},
     ProgressLineWithUnitValue: {},
@@ -60,18 +63,19 @@ create({
     DoubleUnitValue: {},
     UploadingProcess: {},
     UploadedProcess: {},
-    UploadingProcess4: {},
-    UploadedProcess4: {},
     UploadingProcess2: {},
     UploadedProcess2: {},
     UploadingProcess3: {},
     UploadedProcess3: {},
+    UploadingProcess4: {},
+    UploadedProcess4: {},
+    UploadLabel: {},
+    UploadLabel2: {},
     Modal: {},
-    UploadFileModal: {},
-    UploadFileModal2: {},
-    UploadFileModal3: {},
-    UploadFileModal4: {},
-    UploadFileModal5: {},
+    UploadModal: {},
+    UploadModal2: {},
+    UploadModal3: {},
+    UploadModal4: {},
     ButtonTemplate1: {},
     ButtonTemplate2: {},
     ButtonTemplate3: {},
@@ -80,7 +84,6 @@ create({
     ListWithLabelTemplate: {},
     GroupListTemplate: {},
     GroupListWithSearchTemplate: {},
-    Tab: {},
 
 
 
@@ -153,11 +156,32 @@ create({
 
   footer: {
     extend: Flex,
-    search: {
-      extend: Search,
-      input: {},
-      Icon: {},
-      x: {}
+    Search: {
+      extend: SearchWithButton,
+      props: {
+        minWidth: 'G+C',
+        minHeight: 'C+Z',
+        maxHeight: 'C+Z',
+        round: 'C',
+        border: 'none',
+        padding: '- A+W - A+Y'
+      },
+      Input: {
+        placeholder: 'find component ...',
+        ':focus ~ svg': { opacity: '0' }
+      },
+      Icon: {
+        props: {
+          fontSize: 'C',
+          color: '#3F3F43'
+        }
+      },
+      Button: {
+        position: 'absolute',
+        margin: 'auto',
+        right: 'Z',
+        color: '#3F3F43'
+      }
     }
   },
 
@@ -205,7 +229,6 @@ create({
         margin: '0',
         padding: '0',
         letterSpacing: '1px',
-        // fontWeight: '900',
         style: {
           writingMode: 'vertical-rl',
           textOrientation: 'mixed'
@@ -248,7 +271,6 @@ create({
         borderWidth: '1px',
         width: 'G+D',
         padding: 'Z A Z B',
-        minHeight: 'C+Z',
         position: 'relative',
         Icon: {
           boxSize: 'A+V A+V',
