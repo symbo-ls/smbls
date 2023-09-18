@@ -268,6 +268,21 @@ async function convertFile (srcPath, tmpDirPath, destPath,
   return globusaStruct
 }
 
+function mergeDirectories(mrg, dst, { globusaMerge, exclude }) {
+  // Merge uikit dirs:
+  //  0) if dst doesn't have the given folder, just copy it
+  //     completely from mrg, otherwise start the merging with
+  //     step 1
+  //  1) concatenate dst/*/index.js and mrg/*/index.js files
+  //     into a buffer and then dedup its imports with globusa
+  //  2) copy over all files (except index.js, package.json)
+  //     and dirs (except node_modules) recursively from mrg to
+  //     dst
+
+  console.log(fs.readdirSync(mrg).filter(f => !exclude.includes(f)))
+  // TODO: finish this function
+}
+
 program
   .command('convert')
   .description('Convert and copy all DomQL components under a directory')
@@ -285,6 +300,8 @@ program
   .option('-o, --only <components>',
     'Only convert these components; comma separated ' +
           '(for example: --only=Flex,Img)')
+  .option('-m, --merge <dir>',
+          'After converting an entire directory, perform a recursive merge that takes files from this directory and puts them in the dest directory. It also concatenates index.js files')
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
@@ -384,12 +401,23 @@ program
       return 1
     }
 
-    const ignoredFiles = ['index.js', 'package.json', 'node_modules', 'dist']
+    // Resolve merge dir
+    let mergeDirPath = null
+    if (options.merge && options.internalUikit) {
+      mergeDirPath = path.resolve(options.merge)
+      if (!fs.existsSync(mergeDirPath)) {
+        console.error(`Merge directory '${mergeDirPath}' does not exist`)
+        return 1
+      }
+    }
+
+    const dontConvert = ['index.js', 'package.json', 'node_modules', 'dist']
     const sourceDirNames = (await fs.promises.readdir(srcPath))
-      .filter(dir => !ignoredFiles.includes(dir))
+      .filter(dir => !dontConvert.includes(dir))
 
     const dirs = []
 
+    // Core convert loop
     for (const dir of sourceDirNames) {
       // Ignored directories
       if (options.internalUikit) {
@@ -414,7 +442,7 @@ program
         options
       )
 
-      if (fs.existsSync(pjFilePath)) {
+      if (options.internalUikit && fs.existsSync(pjFilePath)) {
         generatePackageJsonFile(
           pjFilePath, // src
           path.join(destDirPath, dir, 'package.json'), // dst
@@ -429,13 +457,16 @@ program
 
     // Generate top index.js file
     if (dirs.length > 0) {
-      // const importLines = dirs.map(d => `import ${d} from './${d}'`).join('\n') + '\n'
-      // const exportLines = 'export {\n' + dirs.map(d => `  ${d}`).join(',\n') + '\n}\n'
-      // const fileContent = importLines + '\n' + exportLines
       const fileContent = dirs.map(d => `export * from './${d}'`).join('\n')
-
       const fh = await fs.promises.open(path.join(destDirPath, 'index.js'), 'w')
       await fh.writeFile(fileContent, 'utf8')
       await fh.close()
+    }
+
+    if (mergeDirPath) {
+      mergeDirectories(mergeDirPath, destDirPath, {
+        globusaMerge: ['index.js'],
+        exclude: ['node_modules', 'package.json'],
+      })
     }
   })
