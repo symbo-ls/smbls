@@ -1,11 +1,11 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { ModalWithTitleParagraph } from '@symbo.ls/modal'
-// import { FieldWithTitle } from '@symbo.ls/field'
-import { TextareaWithTitle } from '@symbo.ls/textarea'
-import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
 import { Button } from '@symbo.ls/button'
+import { TextareaWithTitle } from '@symbo.ls/textarea'
+import { ModalWithTitleParagraph } from '@symbo.ls/modal'
+// import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
+// import { FieldWithTitle } from '@symbo.ls/field'
 
 const fields = {
   names: {
@@ -47,7 +47,7 @@ const fields = {
 }
 
 const checkParagraph = {
-  extend: ParagrapUnderlineLinkWithCheckbox,
+  // extend: ParagrapUnderlineLinkWithCheckbox,
   checkBox: {},
   paragraph: {
     p: { props: { text: 'You agree to ' } },

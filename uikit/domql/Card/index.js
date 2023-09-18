@@ -5,8 +5,8 @@ import { Button } from '@symbo.ls/button'
 import { InfoSet } from '@symbo.ls/infoset'
 import { Icon } from '@symbo.ls/icon'
 import { Avatar } from '@symbo.ls/avatar'
-import { BalancesIndicator } from '@symbo.ls/accessories'
 import { Label } from '@symbo.ls/label'
+// import { BalancesIndicator } from '@symbo.ls/accessories'
 
 export const DropDownWithAvatar = {
   extend: Flex,
@@ -109,7 +109,7 @@ export const ConvertCard = {
   extend: Card,
   heading: {
     title: { props: { text: 'From' } },
-    balance: { extend: BalancesIndicator },
+    // balance: { extend: BalancesIndicator },
     icon: null
   },
   content: {

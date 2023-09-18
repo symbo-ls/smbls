@@ -54,8 +54,6 @@
     "@symbo.ls/upload": "latest",
     "@symbo.ls/video": "latest",
     "@symbo.ls/infoset": "latest",
-    "@symbo.ls/accessories": "latest",
-    "@symbo.ls/textcomponents": "latest",
     "@symbo.ls/slidetabs": "latest"
   },
   "scripts": {

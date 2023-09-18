@@ -8,7 +8,6 @@
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/dialog": "latest",
-    "@symbo.ls/icon": "latest",
     "headless-datepicker": "^1.0.1"
   },
   "source": "src/index.js"

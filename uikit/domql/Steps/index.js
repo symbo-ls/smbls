@@ -1,7 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-
 import { ProgressLine } from '@symbo.ls/progress'
 
 export const Step = {

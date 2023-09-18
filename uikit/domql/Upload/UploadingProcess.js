@@ -1,7 +1,5 @@
 'use strict'
 
-'use strict'
-
 import { Flex } from '@symbo.ls/atoms'
 import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
 

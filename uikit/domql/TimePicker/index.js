@@ -3,6 +3,9 @@
 import { Flex } from '@symbo.ls/atoms'
 import { Dialog } from '@symbo.ls/dialog'
 
+export * from './TimePickerItem'
+export * from './TimeSwitcher'
+
 export const TimePicker = {
   extend: [Dialog, Flex],
 
@@ -73,6 +76,3 @@ export const TimePicker = {
     }
   }
 }
-
-export * from './TimePickerItem'
-export * from './TimeSwitcher'

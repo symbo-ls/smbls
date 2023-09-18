@@ -6,9 +6,7 @@
   "gitHead": "cad1a2675e0d9f1e052187d5ec388051edc5714e",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/button": "latest",
-    "@symbo.ls/dialog": "latest",
-    "@symbo.ls/input": "latest"
+    "@symbo.ls/dialog": "latest"
   },
   "source": "src/index.js"
 }

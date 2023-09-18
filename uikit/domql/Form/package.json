@@ -6,6 +6,11 @@
   "license": "MIT",
   "gitHead": "b5026caaa298c5171c505578d44d107ddafd338f",
   "dependencies": {
-    "@symbo.ls/atoms": "latest"
+    "@symbo.ls/atoms": "latest",
+    "@symbo.ls/button": "latest",
+    "@symbo.ls/textarea": "latest",
+    "@symbo.ls/icon": "latest",
+    "@symbo.ls/link": "latest",
+    "@symbo.ls/modal": "latest"
   }
 }

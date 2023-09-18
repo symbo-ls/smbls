@@ -6,6 +6,7 @@
   "license": "MIT",
   "gitHead": "c220caaef0f1e5c7a8f767f9c5f03587711c033d",
   "dependencies": {
-    "@symbo.ls/atoms": "latest"
+    "@symbo.ls/atoms": "latest",
+    "@domql/utils": "latest"
   }
 }

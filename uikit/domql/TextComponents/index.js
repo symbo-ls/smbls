@@ -2,7 +2,6 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
-import { Checkbox } from '@symbo.ls/check'
 
 // export const TitleParagraph = {
 //   extend: Flex,
@@ -59,26 +58,36 @@ export const ParagraphWithUnderlineButton = {
 
 export const ParagrapUnderlineLinkWithCheckbox = {
   extend: Flex,
-  checkBox: { extend: Checkbox },
-  paragraph: { extend: ParagraphWithUnderlineButton },
+  
+  Checkbox: {
+    Flex: { boxSize: 'A+X' }
+  },
+  
+  ParagraphWithUnderlineButton: { },
 
   props: {
     align: 'center flex-start',
     gap: 'W',
     checkBox: {
-      Flex: { boxSize: 'A+X' }
     }
   }
 }
 
 export const CheckBoxWithParagraph = {
   extend: Flex,
-  checkBox: { extend: Checkbox },
-  p: { props: { text: 'Keep me logged in' } },
+
   props: {
     align: 'center flex-start',
     gap: 'W',
-    checkBox: { Flex: { boxSize: 'A+X' } },
-    p: { fontSize: 'Z', margin: '0' }
-  }
+  },
+
+  Checkbox: {
+    Flex: { boxSize: 'A+X' }
+  },
+
+  P: { 
+    fontSize: 'Z',
+    margin: '0',
+    text: 'Keep me logged in' 
+  },
 }

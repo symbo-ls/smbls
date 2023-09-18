@@ -1,7 +1,5 @@
 'use strict'
 
-'use strict'
-
 import { Modal } from '@symbo.ls/modal'
 import { UploadLabel, UploadLabel2 } from './UploadLabel'
 
