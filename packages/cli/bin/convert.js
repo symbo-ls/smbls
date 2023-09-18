@@ -1,5 +1,4 @@
 'use strict'
-// TODO: --only flag doesn't work!!!
 import { program } from './program.js'
 import { convert } from 'kalduna'
 import { parse } from 'globusa'
@@ -134,7 +133,7 @@ function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options)
   const exports = Object.keys(domqlModule)
     .filter(exportName => {
       if (!whitelist) return true
-      if (whitelist.includes(exportName)) {
+      if (!whitelist.includes(exportName)) {
         console.log(`Skipping ${exportName} component due to whitelist exclusion`)
         return false
       }
