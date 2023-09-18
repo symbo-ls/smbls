@@ -124,9 +124,8 @@ export const ConvertBoard = {
     ]
   },
 
-  footer: {
-    extend: Button,
-    props: { text: 'Convert' }
+  Button: {
+    text: 'Convert'
   },
 
   props: {
@@ -148,7 +147,7 @@ export const ConvertBoard = {
       gap: 'Z',
       childProps: {
         minWidth: 'G+D',
-        background: 'black '
+        background: 'black'
       }
     },
 

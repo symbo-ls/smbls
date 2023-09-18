@@ -2,12 +2,12 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
-// import { FieldWithTitle } from '@symbo.ls/field'
-// import { CheckBoxWithParagraph } from '@symbo.ls/textcomponents'
+import { Link } from '@symbo.ls/link'
 import { Button } from '@symbo.ls/button'
 import { Icon } from '@symbo.ls/icon'
+// import { FieldWithTitle } from '@symbo.ls/field'
+// import { CheckBoxWithParagraph } from '@symbo.ls/textcomponents'
 // import { OrLines } from '@symbo.ls/accessories'
-import { Link } from '@symbo.ls/link'
 
 const fields = {
   extend: Flex,

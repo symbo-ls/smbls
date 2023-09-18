@@ -5,7 +5,7 @@ import { router } from '@domql/router'
 import { init } from '@symbo.ls/init'
 import { set } from '@symbo.ls/scratch'
 import { connect } from '@symbo.ls/socket/client'
-import { Notification } from '@symbo.ls/uikit'
+import { Notification } from '@symbo.ls/notification'
 
 const ANIMATION = {
   fadeInUp: {
