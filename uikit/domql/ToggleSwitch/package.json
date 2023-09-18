@@ -1,12 +1,12 @@
 {
-  "name": "@symbo.ls/accessories",
+  "name": "@symbo.ls/toggleswitch",
   "version": "2.11.160",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "f09e162a618613a10c3db8bff11177baf04da275",
+  "gitHead": "dfc71a41e1d64da4fef5ad0ecc0b8f6a3be79890",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/icon": "latest"
+    "@symbo.ls/utils": "latest"
   },
   "source": "src/index.js"
 }

@@ -1,6 +1,8 @@
 'use strict'
 
-import { create, Flex, SearchWithButton } from 'smbls'
+import { create } from '@symbo.ls/create'
+import { Flex } from '@symbo.ls/atoms'
+import { SearchWithButton } from '@symbo.ls/search'
 
 import designSystem from '@symbo.ls/default-config'
 designSystem.globalTheme = 'dark'
@@ -216,7 +218,6 @@ create({
       position: 'fixed',
       flow: 'column',
       title: {
-        color: 'white',
         transform: 'rotate(180deg)',
         textTransform: 'capitalize',
         fontSize: 'C',
@@ -259,7 +260,6 @@ create({
       search: {
         fontFamily: 'avenir',
         fontWeight: '400',
-        border: 'none',
         round: 'D',
         flow: 'row',
         border: 'solid, #252527',
@@ -278,7 +278,6 @@ create({
           ':focus ~ svg': { opacity: '0' }
         },
         x: {
-          right: 'Y',
           color: 'white',
           position: 'absolute',
           right: 'A'

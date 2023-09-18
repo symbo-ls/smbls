@@ -5,7 +5,7 @@ import { router } from '@domql/router'
 import { init } from '@symbo.ls/init'
 import { set } from '@symbo.ls/scratch'
 import { connect } from '@symbo.ls/socket/client'
-import { Notification } from '@symbo.ls/uikit'
+import { Notification } from '@symbo.ls/notification'
 
 const ANIMATION = {
   fadeInUp: {
@@ -152,7 +152,7 @@ export const Sync = {
     render: (el, s, ctx) => {
       connect(ctx.key, {
         source: 'client',
-        // socketUrl: 'wss://localhost:13335',
+        socketUrl: 'localhost:13335',
         location: window.location.host,
         onConnect: onConnect(el, s, ctx),
         onDisconnect: onDisconnect(el, s, ctx),

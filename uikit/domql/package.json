@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "2.11.136",
+  "version": "2.11.161",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -31,16 +31,18 @@
     "@symbo.ls/button": "latest",
     "@symbo.ls/card": "latest",
     "@symbo.ls/chat": "latest",
+    "@symbo.ls/checkbox": "latest",
     "@symbo.ls/datepicker": "latest",
     "@symbo.ls/dialog": "latest",
     "@symbo.ls/dropdown": "latest",
     "@symbo.ls/form": "latest",
+    "@symbo.ls/icon": "latest",
+    "@symbo.ls/infoset": "latest",
     "@symbo.ls/input": "latest",
     "@symbo.ls/label": "latest",
     "@symbo.ls/link": "latest",
     "@symbo.ls/notification": "latest",
     "@symbo.ls/pills": "latest",
-    "@symbo.ls/icon": "latest",
     "@symbo.ls/range": "latest",
     "@symbo.ls/scratch": "latest",
     "@symbo.ls/select": "latest",
@@ -53,13 +55,12 @@
     "@symbo.ls/tooltip": "latest",
     "@symbo.ls/upload": "latest",
     "@symbo.ls/video": "latest",
-    "@symbo.ls/infoset": "latest",
     "@symbo.ls/slidetabs": "latest"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "e139ece289d929e41123a0a72e55155eb1eac605",
+  "gitHead": "caacd12bb10dfaa479ca3247642a88222e826789",
   "source": "src/index.js"
 }

@@ -7,6 +7,8 @@ export const Input = {
   extend: [Focusable],
   tag: 'input',
 
+  deps: { isString, replaceLiteralsWithObjectFields },
+
   props: {
     border: 'none',
     type: 'input',
@@ -20,13 +22,16 @@ export const Input = {
 
   attr: {
     pattern: ({ props }) => props.pattern,
-    minlength: ({ props }) => props.minlength,
-    maxlength: ({ props }) => props.maxlength,
+    minLength: ({ props }) => props.minlength,
+    maxLength: ({ props }) => props.maxlength,
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
-    value: ({ props, state }) => {
-      if (isString(props.value) && props.value.includes('{{')) return replaceLiteralsWithObjectFields(props.value, state)
+    value: ({ props, state, deps }) => {
+      const { isString, replaceLiteralsWithObjectFields } = deps
+      if (isString(props.value) && props.value.includes('{{')) {
+        return replaceLiteralsWithObjectFields(props.value, state)
+      }
       return props.value
     },
     disabled: ({ props }) => props.disabled || null,

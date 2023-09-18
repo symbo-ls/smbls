@@ -1,34 +1,54 @@
 'use strict'
-
 import { program } from './program.js'
 import { convert } from 'kalduna'
 import { parse } from 'globusa'
 import fs from 'fs'
 import path from 'path'
 
-// Set up webpack
-import syncWebpack from 'webpack'
-import { promisify } from 'util'
-const webpack = promisify(syncWebpack)
+import * as esbuild from 'esbuild'
 
 // Set up jsdom
 import { JSDOM } from 'jsdom'
+const webpack = promisify(syncWebpack)
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
 
-const IGNORED_FILES = ['index.js', 'package.json', 'node_modules', 'dist']
-const EXCLUDED_FROM_INTERNAL_UIKIT = [
-  'Svg',
-  'keySetters',
-  'getSystemTheme',
-  'splitTransition',
-  'transformDuration',
-  'transformShadow',
-  'transformTransition',
-  'DatePickerDay',
-  'DatePickerGrid',
-]
+const INTERNAL_UIKIT_CONF = {
+  excludedComponents: [
+    // We have our own React Svg implementation
+    'Svg',
+
+    // We have our own React Box implementation
+    'Box',
+
+    // These are not domql objects
+    'keySetters',
+    'getSystemTheme',
+    'splitTransition',
+    'transformDuration',
+    'transformShadow',
+    'transformTransition',
+
+    // FIXME: Temporary list of components we want to skip
+    'DatePicker',
+    'DatePickerDay',
+    'DatePickerTwoColumns',
+    'DatePickerGrid',
+    'DatePickerGridContainer',
+
+    // Not a domql object (headless-datepicker)
+    'calendar'
+  ],
+
+  // Can be strings or regex patterns
+  excludedDirectories: [
+    // TODO: Review these ignores with @nikoloza
+    /Threejs$/,
+    /Editorjs$/,
+    /User$/
+  ]
+}
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
   name: 'smbls_convert_tmp',
@@ -37,10 +57,57 @@ const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
   license: 'ISC'
 })
 
-function isDirectory (dir) { // eslint-disable-line no-unused-vars
-  if (!fs.existsSync(dir)) return false
+function generatePackageJsonFile (
+  sourcePackageJsonPath,
+  destPath,
+  globusaStruct,
+  desiredFormat,
+  options
+) {
+  // Extract package name from source package.json
+  const str = fs.readFileSync(sourcePackageJsonPath, { encoding: 'utf8' })
+  let packageStruct
+  try {
+    packageStruct = JSON.parse(str)
+  } catch (error) {
+    console.error(`Error when parsing ${sourcePackageJsonPath}`)
+    return
+  }
+  const split = packageStruct.name.split('/')
+  const packageName = split[split.length - 1]
 
-  const stat = fs.statSync(dir)
+  // Generate list of dependencies
+  const deps = {
+    'css-in-props': 'latest',
+    [`@emotion/${desiredFormat}`]: '^11.11.0',
+    '@emotion/css': '^11.11.0',
+    '@symbo.ls/create': 'latest',
+    '@symbo.ls/react': 'latest'
+  }
+  globusaStruct.imports
+    .filter(imp => imp.path.match(/^@symbo\.ls\//))
+    .filter(imp => imp.path !== packageName)
+    .forEach(imp => { deps[imp.path] = 'latest' })
+
+  // Generate final package.json string
+  const genStr = JSON.stringify({
+    name: `@symbo.ls/${desiredFormat}-${packageName}`,
+    version: packageStruct.version ?? '1.0.0',
+    license: packageStruct.license ?? 'UNLICENSED',
+    dependencies: deps,
+    peerDependencies: {
+      react: '^18.2.0',
+      'react-dom': '^18.2.0'
+    },
+    main: 'index.js',
+    source: 'index.js'
+  }, undefined, 2)
+
+  fs.writeFileSync(destPath, genStr)
+}
+
+function isDirectory (dir) {
+  const stat = fs.statSync(dir, { throwIfNoEntry: false })
   if (!stat) return false
 
   return stat.isDirectory()
@@ -59,31 +126,31 @@ async function mkdirp (dir) {
 }
 
 // Returns a string
-function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) {
+function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options) {
   let convertedStr = ''
   const whitelist = (options.only ? options.only.split(',') : null)
 
   console.group()
   const exports = Object.keys(domqlModule)
-        .filter(exportName => {
-          if (!whitelist) return true
-          if (whitelist.includes(exportName)) {
-            console.log(`Skipping ${exportName} component due to whitelist exclusion`)
-            return false
-          }
-          return true
-        })
-        .filter(exportName => {
-          if (!options.internalUikit) return true
-          if (EXCLUDED_FROM_INTERNAL_UIKIT.includes(exportName)) {
-            console.log(`Skipping ${exportName} component due to internal uikit exclusion`)
-            return false
-          }
-          return true
-        })
+    .filter(exportName => {
+      if (!whitelist) return true
+      if (!whitelist.includes(exportName)) {
+        console.log(`Skipping ${exportName} component due to whitelist exclusion`)
+        return false
+      }
+      return true
+    })
+    .filter(exportName => {
+      if (!options.internalUikit) return true
+      if (INTERNAL_UIKIT_CONF.excludedComponents.includes(exportName)) {
+        console.log(`Skipping ${exportName} component due to internal uikit exclusion`)
+        return false
+      }
+      return true
+    })
 
-  const isSingleComponent = (exports.length === 1)
   const uniqueImports = []
+  let globalSymbolTable = {}
   for (const idx in exports) {
     const exportName = exports[idx]
 
@@ -95,15 +162,17 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
     }
 
     console.group()
-    console.log(dobj.__name) // NOTE(Nikaoto): @nikoloza, don't remove this
+    console.log(dobj.__name) // NOTE: Don't remove this
 
-    const isFirst = (idx == 0)
-    const isLast = (idx == (exports.length - 1)) // NOTE: Don't use '===' here!
+    // NOTE: Don't use '===' here!
+    const isFirst = (idx == 0) // eslint-disable-line
+    const isLast = (idx == (exports.length - 1)) // eslint-disable-line
 
     const kaldunaOpts = {
       verbose: false,
       returnMitosisIR: true,
-      exportDefault: isSingleComponent,
+      globalSymbolTable,
+      exportDefault: false,
       importsToRemove: uniqueImports,
 
       /* NOTE: The option below prevents a name collision bug. For example:
@@ -115,21 +184,23 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
          But, in this case, because A is in local scope as one of the exports,
          the component import will be ignored, preventing the collision.
       */
-      componentImportsToIgnore: exports,
+      componentImportsToIgnore: exports
     }
 
     let out = null
     if (isFirst) {
       out = convert(dobj, desiredFormat, {
         ...kaldunaOpts,
-        removeReactImport: false,
-        importsToInclude: globusaStruct.imports,
-        declarationsToInclude: globusaStruct.declarations,
+        removeReactImport: false
+        // NOTE(nikaoto): Commented these out because we're using deps now, so
+        // all the imports and decls are going to be redundant
+        // importsToInclude: globusaStruct.imports,
+        // declarationsToInclude: globusaStruct.declarations,
       })
     } else {
       out = convert(dobj, desiredFormat, {
         ...kaldunaOpts,
-        removeReactImport: true,
+        removeReactImport: true
       })
     }
 
@@ -138,6 +209,7 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
       convertedStr += '\n'
     }
     uniqueImports.push(...out.mitosisIR.imports)
+    globalSymbolTable = out.mitosisIR._globalSymbolTable
     console.groupEnd()
   }
   console.groupEnd()
@@ -148,35 +220,32 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
 // Takes a source file, then bundles, parses and converts it and writes the
 // result to the destination. The tmpDirPath is used as a working directory for
 // temporary files.
-async function convertFile(srcPath, tmpDirPath, destPath,
-                           desiredFormat, options) {
+// Returns globusaStruct for later usage.
+async function convertFile (srcPath, tmpDirPath, destPath,
+  desiredFormat, options) {
   // Parse with globusa
   console.log(`Parsing components in ${srcPath}`)
   const fileContent = await fs.promises.readFile(srcPath, 'utf8')
   const globusaStruct = parse(fileContent)
 
-  // Bundle with webpack
-  const libraryName = 'banunu' // This can literally be anything
   const fileName = path.basename(srcPath)
   const bundledFilePath = path.resolve(tmpDirPath, fileName)
-  console.log(`Webpack ${srcPath} -> ${bundledFilePath}`)
-  await webpack({
-    entry: srcPath,
-    output: {
-      path: tmpDirPath,
-      filename: fileName,
-      chunkFormat: 'commonjs',
-      library: { name: libraryName,
-                 type: 'commonjs-static' },
-    },
-    // experiments:  { outputModule: true },
-    target: 'node',
-    mode: 'development'
+
+  // Bundle with esbuild
+  await esbuild.build({
+    entryPoints: [srcPath],
+    bundle: true,
+    sourcemap: true,
+    keepNames: false,
+    target: 'node12',
+    format: 'cjs',
+    outdir: tmpDirPath
   })
 
   // Import the bundled module to obtain exported domql objects
   console.log(`Importing ${bundledFilePath}`)
-  const domqlModule = (await import(bundledFilePath))[libraryName]
+  const mod = (await import(bundledFilePath))
+  const domqlModule = mod.default
 
   // Convert it/them with kalduna
   console.log(`Converting components in ${bundledFilePath}:`)
@@ -196,34 +265,31 @@ async function convertFile(srcPath, tmpDirPath, destPath,
     await fh.writeFile(convertedModuleStr, 'utf8')
     await fh.close()
   }
+
+  return globusaStruct
 }
 
 program
   .command('convert')
-  .description('(DEPRECATED) Convert and copy all DomQL components ' +
-               'under a directory')
+  .description('Convert and copy all DomQL components under a directory')
   .argument('[src]', 'Source directory/file. By default, it is "src/"')
   .argument('[dest]',
-            'Destination directory/file. Will be overwritten. By ' +
+    'Destination directory/file. Will be overwritten. By ' +
             'default, it becomes the name of the desired format')
   .option('--react', 'Convert all DomQL components to React')
   .option('--angular', 'Convert all DomQL components to Angular')
   .option('--vue2', 'Convert all DomQL components to Vue2')
   .option('--vue3', 'Convert all DomQL components to Vue3')
   .option('-t, --tmp-dir <path>',
-          'Use this directory for storing intermediate & build files instead of ' +
+    'Use this directory for storing intermediate & build files instead of ' +
           `the default (dest/${TMP_DIR_NAME})`)
   .option('-o, --only <components>',
-          'Only convert these components; comma separated ' + 
+    'Only convert these components; comma separated ' +
           '(for example: --only=Flex,Img)')
   .option('--internal-uikit',
-          '(For internal use only). ' + 
+    '(For internal use only). ' +
           'Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
-    console.log('smbls convert is deprecated. ' +
-                'Please use the Kalduna build script instead.')
-    return 1
-
     if (!convert) {
       throw new Error(
         'convert() from `kalduna` is not defined. Try to install ' +
@@ -252,7 +318,6 @@ program
       console.erorr(`Source directory/file ('${srcPath}') does not exist`)
       return 1
     }
-    const srcIsDir = fs.statSync(srcPath).isDirectory()
 
     // Resolve & create tmp dir
     const tmpDirPath = options.tmpDir ??
@@ -268,7 +333,7 @@ program
     await pj.close()
 
     // Convert single file. Output will also be a single file.
-    if (!srcIsDir) {
+    if (!isDirectory(srcPath)) {
       // Determine destFilePath and create it if needed
       let destFilePath
       if (dest) {
@@ -276,7 +341,7 @@ program
         if (!fs.existsSync(dest)) {
           // dest doesn't exist. That's the output file we'll create.
           destFilePath = path.resolve(dest)
-        } else if (fs.statSync(dest).isDirectory()) {
+        } else if (isDirectory(dest)) {
           // dest exists and is a directory. Create our output file inside it.
           destFilePath = path.join(path.resolve(dest), path.basename(srcPath))
         } else {
@@ -309,7 +374,7 @@ program
       // dest doesn't exist. Create it.
       destDirPath = path.resolve(dest)
       await mkdirp(destDirPath)
-    } else if (fs.statSync(dest).isDirectory()) {
+    } else if (isDirectory(dest)) {
       // dest exists and is a directory.
       destDirPath = path.resolve(dest)
     } else {
@@ -320,18 +385,58 @@ program
       return 1
     }
 
-    const sourceFileNames = (await fs.promises.readdir(srcPath))
-          .filter(file => !IGNORED_FILES.includes(file))
+    const ignoredFiles = ['index.js', 'package.json', 'node_modules', 'dist']
+    const sourceDirNames = (await fs.promises.readdir(srcPath))
+      .filter(dir => !ignoredFiles.includes(dir))
 
-    for (const file of sourceFileNames) {
-      const indexFilePath = path.join(srcPath, file, 'index.js')
+    const dirs = []
 
-      await convertFile(
-        indexFilePath,
-        path.join(tmpDirPath, file),
-        path.join(destDirPath, file, 'index.js'),
+    for (const dir of sourceDirNames) {
+      // Ignored directories
+      if (options.internalUikit) {
+        let skip = false
+        for (const pat of INTERNAL_UIKIT_CONF.excludedDirectories) { if (dir.match(pat)) { skip = true; break } }
+        if (skip) continue
+      }
+
+      const dirPath = path.join(srcPath, dir)
+      if (!isDirectory(dirPath)) {
+        console.log(`Skipping ${dirPath} because it is not a directory`)
+        continue
+      }
+      const indexFilePath = path.join(dirPath, 'index.js')
+      const pjFilePath = path.join(dirPath, 'package.json')
+
+      const globusaStruct = await convertFile(
+        indexFilePath, // src
+        path.join(tmpDirPath, dir), // tmp
+        path.join(destDirPath, dir, 'index.js'), // dst
         desiredFormat,
         options
       )
+
+      if (fs.existsSync(pjFilePath)) {
+        generatePackageJsonFile(
+          pjFilePath, // src
+          path.join(destDirPath, dir, 'package.json'), // dst
+          globusaStruct,
+          desiredFormat,
+          options
+        )
+      }
+
+      dirs.push(dir)
+    }
+
+    // Generate top index.js file
+    if (dirs.length > 0) {
+      // const importLines = dirs.map(d => `import ${d} from './${d}'`).join('\n') + '\n'
+      // const exportLines = 'export {\n' + dirs.map(d => `  ${d}`).join(',\n') + '\n}\n'
+      // const fileContent = importLines + '\n' + exportLines
+      const fileContent = dirs.map(d => `export * from './${d}'`).join('\n')
+
+      const fh = await fs.promises.open(path.join(destDirPath, 'index.js'), 'w')
+      await fh.writeFile(fileContent, 'utf8')
+      await fh.close()
     }
   })

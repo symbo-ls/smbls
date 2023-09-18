@@ -18,6 +18,41 @@ export const Avatar = {
   }
 }
 
+export const DropDownWithAvatar = {
+  extend: Flex,
+  avatar: { extend: Avatar },
+  list: {
+    childExtend: { tag: 'H6' },
+    ...[{ props: { text: 'eth' } }]
+  },
+  downArrow: {
+    extend: Button,
+    props: { icon: 'chevronDown' }
+  },
+
+  props: {
+    boxSize: 'fit-content fit-content',
+    align: 'center flex-start',
+    padding: 'Y Z',
+    gap: 'Z',
+    round: 'Z',
+    background: 'rgba(28, 28, 31, 1)',
+    avatar: { boxSize: 'A+Y' },
+    list: {
+      childProps: {
+        fontSize: 'Z',
+        textTransform: 'uppercase'
+      }
+    },
+    downArrow: {
+      padding: '0',
+      background: 'transparent',
+      color: 'white',
+      fontSize: 'Y'
+    }
+  }
+}
+
 export const AvatarWithIndicator = {
   avatar: { extend: Avatar },
   indicator: { extend: IndicatorDot },
@@ -69,6 +104,7 @@ export const AvatarChooser = {
 
   select: {
     props: {
+      id: 'avatar-chooser',
       outline: 'none',
       pointerEvents: 'all',
       appearance: 'none',
@@ -83,7 +119,7 @@ export const AvatarChooser = {
       padding: '0 A 0 B1+X'
     },
 
-    attr: { name: 'avatar-chooser', id: 'avatar-chooser' },
+    attr: { name: 'avatar-chooser' },
 
     childExtend: { tag: 'option' },
     $setPropsCollection: ({ parent }) => parent.props.options,

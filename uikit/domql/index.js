@@ -4,8 +4,8 @@
 
 export * from '@symbo.ls/atoms'
 export * from '@symbo.ls/box'
-export * from '@symbo.ls/indicator'
 export * from '@symbo.ls/icon'
+export * from '@symbo.ls/indicator'
 export * from '@symbo.ls/titleparagraph'
 export * from '@symbo.ls/unitvalue'
 export * from '@symbo.ls/infoset'
