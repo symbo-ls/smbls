@@ -156,7 +156,9 @@ export const UploadingProcess4 = {
     minWidth: 'G+E',
     background: 'transparent',
     border: '1px solid #3F3F43',
-    gap: 'A'
+    gap: 'A',
+    padding: 'A',
+    round: 'Z+X'
   },
   File: null,
   ProgressCircleWithUnitValue: {},

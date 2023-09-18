@@ -11,7 +11,8 @@ export const UploadLabel = {
     gap: 'C',
     background: '#141416',
     padding: 'C D+Z',
-    round: 'Z+X'
+    round: 'Z+X',
+    border: '1px dashed #57575C'
   },
 
   Icon: {
