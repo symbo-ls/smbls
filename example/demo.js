@@ -216,7 +216,6 @@ create({
       position: 'fixed',
       flow: 'column',
       title: {
-        color: 'white',
         transform: 'rotate(180deg)',
         textTransform: 'capitalize',
         fontSize: 'C',
@@ -259,7 +258,6 @@ create({
       search: {
         fontFamily: 'avenir',
         fontWeight: '400',
-        border: 'none',
         round: 'D',
         flow: 'row',
         border: 'solid, #252527',
@@ -278,7 +276,6 @@ create({
           ':focus ~ svg': { opacity: '0' }
         },
         x: {
-          right: 'Y',
           color: 'white',
           position: 'absolute',
           right: 'A'
