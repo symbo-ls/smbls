@@ -58,11 +58,11 @@ export const ParagraphWithUnderlineButton = {
 
 export const ParagrapUnderlineLinkWithCheckbox = {
   extend: Flex,
-  
+
   Checkbox: {
     Flex: { boxSize: 'A+X' }
   },
-  
+
   ParagraphWithUnderlineButton: { },
 
   props: {
@@ -78,16 +78,16 @@ export const CheckBoxWithParagraph = {
 
   props: {
     align: 'center flex-start',
-    gap: 'W',
+    gap: 'W'
   },
 
   Checkbox: {
     Flex: { boxSize: 'A+X' }
   },
 
-  P: { 
+  P: {
     fontSize: 'Z',
     margin: '0',
-    text: 'Keep me logged in' 
-  },
+    text: 'Keep me logged in'
+  }
 }

@@ -1,7 +1,9 @@
+'use strict'
+
 const parseHtml = (html) => {
-  let parser = new DOMParser();
-  let doc = parser.parseFromString(html, 'text/html');
-  return parseNodes(doc.body.childNodes);
+  const parser = new window.DOMParser()
+  const doc = parser.parseFromString(html, 'text/html')
+  return parseNodes(doc.body.childNodes)
 }
 
 // Return children array
@@ -23,47 +25,47 @@ const parseHtml = (html) => {
 //   { type: 'text', value: 'text here', textWeight: 'bold', children: [ ... ] }
 // ]
 const parseNode = (node) => {
-  let obj = {
+  const obj = {
     // children: [],
-  };
+  }
 
-  if (node.nodeType === Node.TEXT_NODE) {
-    obj.type = 'text';
-    obj.value = decodeHTMLSpaces(node.nodeValue.trim());
+  if (node.nodeType === window.Node.TEXT_NODE) {
+    obj.type = 'text'
+    obj.value = decodeHTMLSpaces(node.nodeValue.trim())
   } else if (node.nodeName === 'B') {
-    obj.type = 'text-cosmetic';
-    obj.textWeight = 'bold';
-    obj.value = 'bold value';
+    obj.type = 'text-cosmetic'
+    obj.textWeight = 'bold'
+    obj.value = 'bold value'
   } else if (node.nodeName === 'I') {
-    obj.type = 'text-cosmetic';
-    obj.textStyle = 'italic';
-    obj.value = 'italic value';
+    obj.type = 'text-cosmetic'
+    obj.textStyle = 'italic'
+    obj.value = 'italic value'
   } if (node.nodeName === 'A') {
-    obj.type = 'hyperlink';
-    obj.url = node.getAttribute('href');
+    obj.type = 'hyperlink'
+    obj.url = node.getAttribute('href')
   } else if (node.nodeName === 'MARK') {
-    obj.type = 'marker';
+    obj.type = 'marker'
   }
 
   if (node.childNodes.length > 0) {
-    obj.children = parseNodes(node.childNodes);
+    obj.children = parseNodes(node.childNodes)
   }
 
-  return obj;
+  return obj
 }
 
 const parseNodes = (childNodes) => {
-  let currentLevel = [];
+  const currentLevel = []
 
-  for (let node of childNodes) {
+  for (const node of childNodes) {
     currentLevel.push(parseNode(node))
   }
 
-  return currentLevel;
+  return currentLevel
 }
 
 const decodeHTMLSpaces = (string) => {
-  return string.replace(/&nbsp;/g, '\u00A0');
+  return string.replace(/&nbsp;/g, '\u00A0')
 }
 
 const mutateItemsAccordingToRules = (data, mutatedItems) => {
@@ -71,43 +73,37 @@ const mutateItemsAccordingToRules = (data, mutatedItems) => {
     'change-list-structure': {
       conditional: (item) => (item.type === 'list'),
       action: (item) => {
-        const itemInTopData = data[item.arrayIndex];
-        itemInTopData.type = 'list-nested-dom-values';
+        const itemInTopData = data[item.arrayIndex]
+        itemInTopData.type = 'list-nested-dom-values'
 
         itemInTopData.children = itemInTopData.data.items.map((item, i) => {
-          if (typeof item === "string") {
-            return { type: 'listRow', children: [ { type: 'text', value: item } ] }
+          if (typeof item === 'string') {
+            return { type: 'listRow', children: [{ type: 'text', value: item }] }
           }
 
-          item.type = 'listRow';
+          item.type = 'listRow'
 
-          return item;
-        });
-
-      },
+          return item
+        })
+      }
     }, // Rename to 'DomValuesList', objectize
     'change-mutated-paragraph-structure': {
       conditional: (item) => (item.type === 'paragraph'),
       action: (item) => {
-        data[item.arrayIndex].type = 'paragraph-nested-dom-values';
-      },
-    }, // Rename to DomValuesParagraph , objectize text
-  };
+        data[item.arrayIndex].type = 'paragraph-nested-dom-values'
+      }
+    } // Rename to DomValuesParagraph , objectize text
+  }
 
   mutatedItems.forEach((item, pIndex) => {
     Object.keys(rules).forEach((ruleKey) => {
-      const rule = rules[ruleKey];
-      if (rule['conditional'](item)) {
-        rule['action'](item);
+      const rule = rules[ruleKey]
+      if (rule.conditional(item)) {
+        rule.action(item)
       }
     })
-  });
-};
-
-const normalizeArray = () => {
-  // TODO
-  // Objectize array according to DomValues rules
-};
+  })
+}
 
 const shouldParseHTML = (value) => (
   value.includes('<a') ||
@@ -123,11 +119,11 @@ const weSupportParsingItAsHtml = (parentItem) => (
 )
 
 const deepIterate = (obj, callback) => {
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      callback(obj, key, obj[key]);
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) { // eslint-disable-line
+      callback(obj, key, obj[key])
       if (typeof obj[key] === 'object' && obj[key] !== null) {
-        deepIterate(obj[key], callback);
+        deepIterate(obj[key], callback)
       }
     }
   }
@@ -135,35 +131,35 @@ const deepIterate = (obj, callback) => {
 
 const deepMetaIterate = (data, callback) => {
   for (let arrayIndex = 0; arrayIndex < data.length; arrayIndex++) {
-    const item = data[arrayIndex];
+    const item = data[arrayIndex]
     deepIterate(
       item,
       (obj, key, value) => {
-        callback({ arrayIndex, ...item }, obj, key, value)
+        callback({ arrayIndex, ...item }, obj, key, value) // eslint-disable-line
       }
-    );
+    )
   }
-};
+}
 
 export const DomValueInterceptor = (data) => {
   // deep iterate keys
   // check values if shouldParseHTML
   // parse if any html and convert to type = 'type-nested' if needed
-  const mutatedItems = [];
+  const mutatedItems = []
 
   deepMetaIterate(data, (parent, obj, key, value) => {
     if (typeof value === 'string' && shouldParseHTML(value) && weSupportParsingItAsHtml(parent)) {
       obj[key] = {
         type: 'nested-block',
-        children: parseHtml(value), // temp hack bcs of markdown->domql func prblm
-      };
-      mutatedItems.push(parent);
+        children: parseHtml(value) // temp hack bcs of markdown->domql func prblm
+      }
+      mutatedItems.push(parent)
     } else if (typeof value === 'string' && (!shouldParseHTML(value) || !weSupportParsingItAsHtml(parent))) {
-      obj[key] = decodeHTMLSpaces(value);
+      obj[key] = decodeHTMLSpaces(value)
     }
-  });
+  })
 
-  mutateItemsAccordingToRules(data, mutatedItems);
+  mutateItemsAccordingToRules(data, mutatedItems)
 
-  return data;
+  return data
 }

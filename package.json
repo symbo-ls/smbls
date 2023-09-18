@@ -27,7 +27,11 @@
     "standard": "^17.0.0"
   },
   "standard": {
-    "parser": "@babel/eslint-parser"
+    "parser": "@babel/eslint-parser",
+    "ignore": [
+      "**test**",
+      "**copy**"
+    ]
   },
   "workspaces": [
     "icons/*",

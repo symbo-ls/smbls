@@ -9,10 +9,10 @@ import path from 'path'
 // Set up webpack
 import syncWebpack from 'webpack'
 import { promisify } from 'util'
-const webpack = promisify(syncWebpack)
 
 // Set up jsdom
 import { JSDOM } from 'jsdom'
+const webpack = promisify(syncWebpack)
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
@@ -27,7 +27,7 @@ const EXCLUDED_FROM_INTERNAL_UIKIT = [
   'transformShadow',
   'transformTransition',
   'DatePickerDay',
-  'DatePickerGrid',
+  'DatePickerGrid'
 ]
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
@@ -59,28 +59,28 @@ async function mkdirp (dir) {
 }
 
 // Returns a string
-function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) {
+function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options) {
   let convertedStr = ''
   const whitelist = (options.only ? options.only.split(',') : null)
 
   console.group()
   const exports = Object.keys(domqlModule)
-        .filter(exportName => {
-          if (!whitelist) return true
-          if (whitelist.includes(exportName)) {
-            console.log(`Skipping ${exportName} component due to whitelist exclusion`)
-            return false
-          }
-          return true
-        })
-        .filter(exportName => {
-          if (!options.internalUikit) return true
-          if (EXCLUDED_FROM_INTERNAL_UIKIT.includes(exportName)) {
-            console.log(`Skipping ${exportName} component due to internal uikit exclusion`)
-            return false
-          }
-          return true
-        })
+    .filter(exportName => {
+      if (!whitelist) return true
+      if (whitelist.includes(exportName)) {
+        console.log(`Skipping ${exportName} component due to whitelist exclusion`)
+        return false
+      }
+      return true
+    })
+    .filter(exportName => {
+      if (!options.internalUikit) return true
+      if (EXCLUDED_FROM_INTERNAL_UIKIT.includes(exportName)) {
+        console.log(`Skipping ${exportName} component due to internal uikit exclusion`)
+        return false
+      }
+      return true
+    })
 
   const isSingleComponent = (exports.length === 1)
   const uniqueImports = []
@@ -115,7 +115,7 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
          But, in this case, because A is in local scope as one of the exports,
          the component import will be ignored, preventing the collision.
       */
-      componentImportsToIgnore: exports,
+      componentImportsToIgnore: exports
     }
 
     let out = null
@@ -124,12 +124,12 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
         ...kaldunaOpts,
         removeReactImport: false,
         importsToInclude: globusaStruct.imports,
-        declarationsToInclude: globusaStruct.declarations,
+        declarationsToInclude: globusaStruct.declarations
       })
     } else {
       out = convert(dobj, desiredFormat, {
         ...kaldunaOpts,
-        removeReactImport: true,
+        removeReactImport: true
       })
     }
 
@@ -148,8 +148,8 @@ function convertDomqlModule(domqlModule, globusaStruct, desiredFormat, options) 
 // Takes a source file, then bundles, parses and converts it and writes the
 // result to the destination. The tmpDirPath is used as a working directory for
 // temporary files.
-async function convertFile(srcPath, tmpDirPath, destPath,
-                           desiredFormat, options) {
+async function convertFile (srcPath, tmpDirPath, destPath,
+  desiredFormat, options) {
   // Parse with globusa
   console.log(`Parsing components in ${srcPath}`)
   const fileContent = await fs.promises.readFile(srcPath, 'utf8')
@@ -166,8 +166,10 @@ async function convertFile(srcPath, tmpDirPath, destPath,
       path: tmpDirPath,
       filename: fileName,
       chunkFormat: 'commonjs',
-      library: { name: libraryName,
-                 type: 'commonjs-static' },
+      library: {
+        name: libraryName,
+        type: 'commonjs-static'
+      }
     },
     // experiments:  { outputModule: true },
     target: 'node',
@@ -204,25 +206,24 @@ program
                'under a directory')
   .argument('[src]', 'Source directory/file. By default, it is "src/"')
   .argument('[dest]',
-            'Destination directory/file. Will be overwritten. By ' +
+    'Destination directory/file. Will be overwritten. By ' +
             'default, it becomes the name of the desired format')
   .option('--react', 'Convert all DomQL components to React')
   .option('--angular', 'Convert all DomQL components to Angular')
   .option('--vue2', 'Convert all DomQL components to Vue2')
   .option('--vue3', 'Convert all DomQL components to Vue3')
   .option('-t, --tmp-dir <path>',
-          'Use this directory for storing intermediate & build files instead of ' +
+    'Use this directory for storing intermediate & build files instead of ' +
           `the default (dest/${TMP_DIR_NAME})`)
   .option('-o, --only <components>',
-          'Only convert these components; comma separated ' + 
+    'Only convert these components; comma separated ' +
           '(for example: --only=Flex,Img)')
   .option('--internal-uikit',
-          '(For internal use only). ' + 
+    '(For internal use only). ' +
           'Excludes particular components from the conversion')
   .action(async (src, dest, options) => {
     console.log('smbls convert is deprecated. ' +
                 'Please use the Kalduna build script instead.')
-    return 1
 
     if (!convert) {
       throw new Error(
@@ -321,7 +322,7 @@ program
     }
 
     const sourceFileNames = (await fs.promises.readdir(srcPath))
-          .filter(file => !IGNORED_FILES.includes(file))
+      .filter(file => !IGNORED_FILES.includes(file))
 
     for (const file of sourceFileNames) {
       const indexFilePath = path.join(srcPath, file, 'index.js')
