@@ -13,6 +13,7 @@
     "dist"
   ],
   "dependencies": {
+    "@symbo.ls/atoms": "latest",
     "@symbo.ls/indicator": "latest",
     "@symbo.ls/check": "latest",
     "@symbo.ls/radiobutton": "latest",
@@ -25,7 +26,6 @@
     "@symbo.ls/modal": "latest",
     "@symbo.ls/list": "latest",
     "@domql/utils": "latest",
-    "@symbo.ls/atoms": "latest",
     "@symbo.ls/avatar": "latest",
     "@symbo.ls/box": "latest",
     "@symbo.ls/button": "latest",

@@ -1,6 +1,6 @@
 'use strict'
 
-export * from './List'
+export * from './LIst'
 export * from './ListWithLabel'
 export * from './GroupList'
 export * from './GroupListWithSearch'

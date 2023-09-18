@@ -1,7 +1,7 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { List } from './List'
+import { List } from './LIst'
 
 export const ListWithLabel = {
   extend: Flex,

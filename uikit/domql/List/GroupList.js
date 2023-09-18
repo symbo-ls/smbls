@@ -42,7 +42,6 @@ export const GroupList = {
           overflow: 'visible',
           Label: {},
           List: {
-
           }
         }
       }
