@@ -2,45 +2,8 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { InfoSet } from '@symbo.ls/infoset'
-import { Icon } from '@symbo.ls/icon'
-import { Avatar } from '@symbo.ls/avatar'
 import { Label } from '@symbo.ls/label'
 // import { BalancesIndicator } from '@symbo.ls/accessories'
-
-export const DropDownWithAvatar = {
-  extend: Flex,
-  avatar: { extend: Avatar },
-  list: {
-    childExtend: { tag: 'H6' },
-    ...[{ props: { text: 'eth' } }]
-  },
-  downArrow: {
-    extend: Button,
-    props: { icon: 'arrowDown' }
-  },
-
-  props: {
-    boxSize: 'fit-content fit-content',
-    align: 'center flex-start',
-    padding: 'Y Z',
-    gap: 'Z',
-    round: 'Z',
-    background: 'rgba(28, 28, 31, 1)',
-    avatar: { boxSize: 'A+Y' },
-    list: {
-      childProps: {
-        fontSize: 'Z',
-        textTransform: 'uppercase'
-      }
-    },
-    downArrow: {
-      padding: '0',
-      background: 'transparent',
-      color: 'white',
-      fontSize: 'Y'
-    }
-  }
-}
 
 export const AmountWithLabel = {
   extend: Flex,

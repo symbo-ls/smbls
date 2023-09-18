@@ -1,6 +1,8 @@
 'use strict'
 
-import { create, Flex, SearchWithButton } from 'smbls'
+import { create } from '@symbo.ls/create'
+import { Flex } from '@symbo.ls/atoms'
+import { SearchWithButton } from '@symbo.ls/search'
 
 import designSystem from '@symbo.ls/default-config'
 designSystem.globalTheme = 'dark'
