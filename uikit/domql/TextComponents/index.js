@@ -1,10 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-<<<<<<< HEAD
-import { Button } from '@symbo.ls/button'
-=======
->>>>>>> main
 
 // export const TitleParagraph = {
 //   extend: Flex,
@@ -60,15 +56,12 @@ export const ParagraphWithUnderlineButton = {
 
 export const ParagrapUnderlineLinkWithCheckbox = {
   extend: Flex,
-<<<<<<< HEAD
 
   Checkbox: {
     Flex: { boxSize: 'A+X' }
   },
 
   ParagraphWithUnderlineButton: { },
-=======
->>>>>>> main
 
   props: {
     align: 'center flex-start',
@@ -80,12 +73,6 @@ export const ParagrapUnderlineLinkWithCheckbox = {
 
 export const CheckBoxWithParagraph = {
   extend: Flex,
-<<<<<<< HEAD
-
-=======
-  Checkbox: {},
-  p: { props: { text: 'Keep me logged in' } },
->>>>>>> main
   props: {
     align: 'center flex-start',
     gap: 'W'
