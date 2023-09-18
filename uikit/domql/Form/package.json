@@ -1,10 +1,10 @@
 {
   "name": "@symbo.ls/form",
-  "version": "2.11.132",
+  "version": "2.11.161",
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
-  "gitHead": "b5026caaa298c5171c505578d44d107ddafd338f",
+  "gitHead": "c2039e2bc334997e92cfd072ab24658821c24caf",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/button": "latest",

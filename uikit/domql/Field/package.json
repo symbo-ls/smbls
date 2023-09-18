@@ -1,9 +1,9 @@
 {
   "name": "@symbo.ls/field",
-  "version": "2.11.132",
+  "version": "2.11.160",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
+  "gitHead": "f09e162a618613a10c3db8bff11177baf04da275",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/icon": "latest"

@@ -95,19 +95,6 @@ export const ContactForm = {
           fontWeight: '800'
         }
       }
-    },
-    content: {
-      padding: 'B - A -'
-    },
-    footer: {
-      sendButton: {
-        background: '#0474F2',
-        color: 'white',
-        minWidth: '100%',
-        padding: 'A -',
-        round: 'Z',
-        fontWeight: '500'
-      }
     }
   }
 }

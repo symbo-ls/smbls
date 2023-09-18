@@ -31,10 +31,19 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   if (appIsKey) App = {}
   await fetchSync(key, options)
 
+  if (typeof (document) === 'undefined') {
+    if (typeof (window) === 'undefined') window = {}
+    if (!window.document) window.document = { body: {} }
+    document = window.document
+  }
   const doc = options.parent || options.document || document
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
-  const state = options.state || {}
+  let state
+  if (options.state) state = options.state
+  else if (App && App.state) state = App.state
+  else state = {}
+
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
@@ -87,10 +96,24 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 
   if (appIsKey) App = {}
 
-  const doc = options.parent || options.document || document
+  // Set parent
+  if (typeof (document) === 'undefined') {
+    if (typeof (window) === 'undefined') window = {}
+    if (!window.document) window.document = { body: {} }
+    document = window.document
+  }
+  let parent
+  if (options.parent) parent = options.parent
+  else if (options.document) parent = options.document
+  else parent = document.body
+
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
 
-  const state = options.state || {}
+  let state
+  if (options.state) state = options.state
+  else if (App && App.state) state = App.state
+  else state = {}
+
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratchSystem || {}
@@ -116,10 +139,10 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
       registry,
       emotion,
       // routerOptions,
-      document: doc
+      document
     }
-  }, doc.body, key, {
-    // extend: [uikit.Box],
+  }, parent, key, {
+    extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions
   })

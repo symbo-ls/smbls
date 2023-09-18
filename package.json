@@ -40,5 +40,8 @@
     "packages/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "0.0.3"
+  "version": "0.0.3",
+  "dependencies": {
+    "@emotion/react": "^11.11.1"
+  }
 }

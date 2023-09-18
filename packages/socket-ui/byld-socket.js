@@ -152,7 +152,7 @@ export const Sync = {
     render: (el, s, ctx) => {
       connect(ctx.key, {
         source: 'client',
-        // socketUrl: 'wss://localhost:13335',
+        socketUrl: 'localhost:13335',
         location: window.location.host,
         onConnect: onConnect(el, s, ctx),
         onDisconnect: onDisconnect(el, s, ctx),

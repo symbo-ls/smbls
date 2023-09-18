@@ -39,9 +39,10 @@ export const Box = {
     XYZ,
     Animation
   ],
+  deps: { isString },
   attr: {
-    id: ({ props }) => isString(props.id) && props.id,
-    title: ({ props }) => isString(props.title) && props.title,
+    id: ({ props, deps }) => deps.isString(props.id) && props.id,
+    title: ({ props, deps }) => deps.isString(props.title) && props.title,
     contentEditable: ({ props }) => props.contentEditable || props.contenteditable,
     dir: ({ props }) => props.dir,
     draggable: ({ props }) => props.draggable,
