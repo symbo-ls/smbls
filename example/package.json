@@ -1,0 +1,25 @@
+{
+  "name": "@domql/starter-kit",
+  "description": "Example DOMQL dev setup (boilerplate)",
+  "private": false,
+  "author": "symbo.ls",
+  "version": "0.0.1",
+  "repository": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html",
+    "reinstall": "rm -rf node_modules yarn.lock dist .cache && yarn"
+  },
+  "dependencies": {
+    "@domql/emotion": "latest",
+    "@domql/router": "latest",
+    "domql": "latest",
+    "headless-datepicker": "^1.0.1",
+    "smbls": "latest"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.5.1",
+    "parcel-plugin-inlinesvg": "^0.1.1"
+  }
+}
