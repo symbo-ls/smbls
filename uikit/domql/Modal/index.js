@@ -10,9 +10,9 @@ import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
 
 export const Modal = {
   extend: Flex,
-  header: { extend: TitleParagraphWithButton },
-  content: { extend: Flex },
-  footer: { extend: Flex },
+  Header: { extend: TitleParagraphWithButton },
+  Content: { extend: Flex },
+  Footer: { extend: Flex },
 
   props: {
     flow: 'column',
@@ -21,7 +21,7 @@ export const Modal = {
     round: 'Z',
     padding: 'A',
     header: {
-      title: {
+      Title: {
         h5: {
           fontSize: 'B',
           color: 'white'
@@ -36,37 +36,6 @@ export const Modal = {
     }
   }
 }
-
-// export const Modal = {
-//   extend: Flex,
-//   header: {
-//     extend: Flex,
-//     close: {
-//       extend: Button,
-//       props: { icon: 'x' }
-//     }
-//   },
-//   content: { extend: Flex },
-//   footer: { extend: Flex },
-
-//   props: {
-//     background: '#1C1C1F',
-//     padding: 'A',
-//     flow: 'column',
-//     round: 'Z+V',
-//     header: {
-//       title: { fontSize: 'B' },
-//       close: {
-//         margin: '- - - auto',
-//         background: 'transparent',
-//         color: 'white',
-//         fontSize: 'D',
-//         padding: '0'
-//       }
-//     },
-//     content: { flow: 'column' }
-//   }
-// }
 
 export const ModalWithTitleParagraph = {
   extend: Modal,

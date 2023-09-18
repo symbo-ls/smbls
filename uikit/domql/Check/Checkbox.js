@@ -22,7 +22,7 @@ export const Checkbox = {
     ':checked ~ div > svg': { opacity: '1' }
   },
 
-  check: {
+  Check: {
     extend: Flex,
     props: {
       align: 'center center',
@@ -32,9 +32,11 @@ export const Checkbox = {
       transition: 'background .15s ease-in-out'
     },
     Icon: {
-      icon: 'check',
-      opacity: '0',
-      transition: 'opacity .15s ease-in-out'
+      props: {
+        icon: 'check',
+        opacity: '0',
+        transition: 'opacity .15s ease-in-out'
+      }
     }
   }
 }
@@ -47,10 +49,11 @@ export const CheckboxWithLabel = {
   },
 
   Checkbox: {},
-  label: {
-    tag: 'h6',
-    text: 'Label',
-    props: { fontSize: 'A' }
+  Caption: {
+    props: {
+      text: 'Label',
+      fontSize: 'A'
+    }
   }
 }
 
@@ -75,7 +78,7 @@ export const CheckboxWithImgWithLabel = {
     background: 'linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%)',
     round: 'X'
   },
-  label: {}
+  Caption: {}
 }
 
 export const CheckBoxWithSet = {

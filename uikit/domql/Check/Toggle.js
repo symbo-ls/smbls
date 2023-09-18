@@ -13,7 +13,7 @@ export const Toggle = {
     }
   },
 
-  check: {
+  Check: {
     props: {
       boxSize: 'A+X B+Z',
       padding: '- W',

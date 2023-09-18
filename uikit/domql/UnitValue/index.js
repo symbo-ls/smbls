@@ -4,66 +4,66 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const UnitValue = {
   extend: Flex,
-  value: { props: { text: '72' } },
-  unit: { props: { text: '%' } },
-
   props: {
     color: '#818186',
     align: 'center flex-start',
     gap: 'V',
     fontSize: 'Z'
-  }
+  },
+
+  Value: { props: { text: '72' } },
+  Unit: { props: { text: '%' } }
 }
 
 export const DoubleUnitValue = {
   extend: Flex,
-  unitValue1: {
-    extend: UnitValue,
-    value: { props: { text: '72' } },
-    unit: { props: { text: '%' } }
-  },
-  dot: {},
-  unitValue2: {
-    extend: UnitValue,
-    value: { props: { text: '2' } },
-    unit: { props: { text: 'Second left' } }
-  },
-
   props: {
     align: 'center flex-start',
-    gap: 'Y',
-    dot: {
+    gap: 'Y'
+  },
+
+  UnitValue: {
+    Value: { text: '72' },
+    Unit: { text: '%' }
+  },
+
+  dot: {
+    props: {
       boxSize: 'W W',
       round: '100%',
       background: '#A3A3A8'
-    },
-    unitValue2: { gap: 'X+W' }
+    }
+  },
+
+  UnitValue2: {
+    extend: UnitValue,
+    props: { gap: 'X+W' },
+    Value: { text: '2' },
+    Unit: { text: 'Second left' }
   }
 }
 
-export const UnitValueWithtitle = {
+export const UnitValueWithTitle = {
   extend: Flex,
-  title: {
-    tag: 'caption',
-    props: { text: 'balance:' }
-  },
-  unitValue: {
-    extend: UnitValue,
-    value: { props: { text: '0' } },
-    unit: { props: { text: 'bnb' } }
-  },
-
   props: {
     align: 'center flex-start',
-    gap: 'Y',
-    title: {
+    gap: 'Y'
+  },
+
+  Title: {
+    tag: 'caption',
+    props: {
+      text: 'balance:',
       fontSize: 'Z',
       textTransform: 'capitalize',
       color: '#A3A3A8'
-    },
-    unitValue: {
-      textTransform: 'uppercase',
-      gap: 'Y'
     }
+  },
+
+  UnitValue: {
+    textTransform: 'uppercase',
+    gap: 'Y',
+    Value: { text: '0' },
+    Unit: { text: 'bnb' }
   }
 }

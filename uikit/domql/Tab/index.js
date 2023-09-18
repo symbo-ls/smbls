@@ -10,7 +10,8 @@ export const Tab = {
     align: 'center flex-start',
     padding: 'Y Z',
     round: 'Z',
-    gap: 'Y'
+    gap: 'Y',
+    position: 'relative'
   },
 
   Icon: {
@@ -28,5 +29,23 @@ export const Tab = {
   },
   NotificationIndicator: {
     text: '19'
+  }
+}
+
+export const IconTab = {
+  extend: Tab,
+  props: {
+    padding: 'Z+W'
+  },
+
+  Icon: {},
+  Span: null,
+  NotificationIndicator: {
+    position: 'absolute',
+    top: '-Z',
+    right: '-Z',
+    fontSize: 'X',
+    fontWeight: '500',
+    padding: 'X X+W'
   }
 }

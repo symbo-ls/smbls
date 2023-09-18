@@ -4,8 +4,6 @@ import { Flex } from '@symbo.ls/atoms'
 
 import { ProgressLine } from '@symbo.ls/progress'
 
-import { CheckIndicatorWithLabel } from '@symbo.ls/check'
-
 export const Step = {
   extend: Flex,
   props: {
@@ -14,7 +12,7 @@ export const Step = {
     gap: 'Y+V'
   },
 
-  CheckIndicatorWithLabel,
+  CheckIndicatorWithLabel: {},
   ProgressLine: {
     props: {
       value: 1,
@@ -50,6 +48,7 @@ export const ProgressLineSteps = {
     boxSize: 'fit-content fit-content',
     gap: 'Y'
   },
+
   childExtend: {
     extend: ProgressLine,
     props: {

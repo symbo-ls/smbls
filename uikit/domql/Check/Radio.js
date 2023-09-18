@@ -11,7 +11,7 @@ export const Radio = {
     ':checked ~ div:after': { opacity: '1' }
   },
 
-  check: {
+  Check: {
     props: {
       round: '100%',
       ':after': {

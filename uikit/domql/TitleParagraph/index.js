@@ -4,26 +4,25 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const TitleParagraph = {
   extend: Flex,
-  title: {
-    extend: Flex,
-    h5: { props: { text: 'Title' } }
-  },
-  paragraph: {
-    extend: Flex,
-    p: { props: { text: 'Paragraph' } }
-  },
+  props: { flow: 'column' },
 
-  props: {
-    flow: 'column',
-    title: {
-      align: 'center space-between',
-      h5: {
+  Title: {
+    extend: Flex,
+    props: { align: 'center space-between' },
+    h5: {
+      props: {
+        text: 'Title',
         color: '#CFCFD1',
         fontSize: 'A'
       }
-    },
-    paragraph: {
-      p: {
+    }
+  },
+
+  Paragraph: {
+    extend: Flex,
+    p: {
+      props: {
+        text: 'Paragraph',
         margin: '0',
         color: '#818186',
         fontSize: 'Z'
@@ -34,22 +33,21 @@ export const TitleParagraph = {
 
 export const TitleParagraphWithButton = {
   extend: TitleParagraph,
-  title: {
-    h5: {},
-    Button: { props: { icon: { name: 'x' } } }
-  },
-  paragraph: {},
 
-  props: {
-    title: {
-      alignItems: 'center',
-      Button: {
+  Title: {
+    props: { justifyContent: 'space-between' },
+    h5: {},
+    Button: {
+      props: {
         background: 'transparent',
         color: 'white',
         padding: '0',
-        icon: { fontSize: 'C' }
+        icon: {
+          name: 'x',
+          fontSize: 'C'
+        }
       }
     }
-
-  }
+  },
+  Paragraph: {}
 }
