@@ -5,9 +5,9 @@ export const List = {
     position: 'relative',
     overflow: 'hidden',
     round: 'Z+Y',
-    background: '#1C1C1F',
-    minWidth: 'F',
-    maxWidth: 'G',
+    theme: 'primary',
+    minWidth: 'F1',
+    // maxWidth: 'H',
     ':before': {
       content: '""',
       position: 'absolute',

@@ -7,13 +7,24 @@ const PRIORITIES = {
       background: 'blue',
       '.color-only': {
         color: 'blue'
+      },
+      '.inactive': {
+        background: 'gray 1 +16'
+      },
+      '.gradient': {
+        color: 'white',
+        background: 'gradient-blue'
       }
     },
     '@light': {
       color: 'white',
-      background: 'gradient-colorful',
+      background: 'gradient-blue',
       '.color-only': {
         color: 'blue'
+      },
+      '.gradient': {
+        color: 'white',
+        background: 'gradient-colorful'
       }
     }
   },

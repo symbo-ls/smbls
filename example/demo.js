@@ -104,7 +104,7 @@ create({
     // ChatUserWithUploadedFile: {},
     // ChatUserWithButtonSet: {},
     // ChatUserWithNotification: {},
-    // Card: {},
+    Card: {},
     // DropDownWithAvatar: {},
     // ConvertCard: {},
     // ConvertBoard: {},

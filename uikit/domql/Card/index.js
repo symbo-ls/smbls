@@ -31,8 +31,14 @@ export const Card = {
     maxWidth: 'G',
     padding: 'A',
     round: 'Z+V',
+    // theme: 'secondary',
+    // theme: 'secondary @dark .color-only',
+    // childProps: {
+    //   theme: 'secondary .child'
+    // }
     gap: 'Y',
-    style: { background: 'linear-gradient(to right, rgba(4, 116, 242, 1), rgba(0, 48, 103, 1))' },
+    '@dark': { theme: 'primary @dark .gradient' },
+    '@light': { theme: 'primary @light .gradient' },
     childProps: {
       alignItems: 'center',
 

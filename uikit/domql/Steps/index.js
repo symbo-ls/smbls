@@ -6,7 +6,7 @@ import { ProgressLine } from '@symbo.ls/progress'
 export const Step = {
   extend: Flex,
   props: {
-    boxSize: 'fit-content fit-content',
+    boxSize: 'fit-content',
     align: 'center flex-start',
     gap: 'Y+V'
   },
@@ -18,6 +18,10 @@ export const Step = {
       height: 'W',
       minWidth: 'E',
       maxWidth: 'E'
+      // isActive: true, // or if `state.isActive` exists
+      // '.isActive': {
+      //   background: 'blue'
+      // }
     }
   }
 }
@@ -28,7 +32,9 @@ export const Steps = {
     boxSize: 'fit-content fit-content',
     align: 'center flex-start',
     gap: 'Y+V',
-    style: { '> div:last-child > progress': { display: 'none' } }
+    childProps: {
+      ':last-child > progress': { display: 'none' }
+    }
   },
 
   childExtend: Step,
@@ -44,7 +50,7 @@ export const Steps = {
 export const ProgressLineSteps = {
   extend: Flex,
   props: {
-    boxSize: 'fit-content fit-content',
+    boxSize: 'fit-content',
     gap: 'Y'
   },
 
@@ -57,6 +63,7 @@ export const ProgressLineSteps = {
       round: 'X'
     }
   },
+
   ...[
     {},
     {},

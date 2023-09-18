@@ -17,6 +17,10 @@ export const COLOR = {
 }
 
 export const GRADIENT = {
+  'gradient-blue': `linear-gradient(to right,
+    rgba(4, 116, 242, 1),
+    rgba(0, 48, 103, 1)
+  )`,
   'gradient-dark': `linear-gradient(0deg,
     rgba(0,0,0,0.06) 0%,
     rgba(0,0,0,0.07) 100%

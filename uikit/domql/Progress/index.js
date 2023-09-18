@@ -8,15 +8,17 @@ export const ProgressLine = {
     value: 0.7,
     height: 'Y+V',
     minWidth: 'G+C',
-    background: '#252527',
     round: 'W',
     overflow: 'hidden',
-    style: {
-      '&::-webkit-progress-bar': { background: '#252527' },
-      '&::-webkit-progress-value': {
-        background: '#0474F2',
-        borderRadius: '2px'
-      }
+    // add @dark and @light conditions
+    // @dark: {}, @light: {}
+    theme: 'primary @dark .inactive',
+    '::-webkit-progress-bar': {
+      theme: 'primary @dark .inactive'
+    },
+    '::-webkit-progress-value': {
+      theme: 'primary',
+      borderRadius: '2px'
     }
   },
   attr: {
