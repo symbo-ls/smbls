@@ -332,8 +332,8 @@ program
     // Resolve source file/dir
     const srcPath = path.resolve(src || './src')
     if (!fs.existsSync(srcPath)) {
-      console.erorr(`Source directory/file ('${srcPath}') does not exist`)
-      return 1
+      console.error(`Source directory/file ('${srcPath}') does not exist`)
+      process.exit(1)
     }
 
     // Resolve & create tmp dir
@@ -380,7 +380,7 @@ program
         options
       )
 
-      return 0
+      process.exit(0)
     }
 
     // We're converting multiple files (in a directory).
@@ -399,7 +399,7 @@ program
       console.error(
         `The destination ('${path.resolve(dest)}') must be a directory when ` +
           `the source ('${srcPath}') is a directory`)
-      return 1
+      process.exit(1)
     }
 
     // Resolve merge dir
@@ -408,7 +408,7 @@ program
       mergeDirPath = path.resolve(options.merge)
       if (!fs.existsSync(mergeDirPath)) {
         console.error(`Merge directory '${mergeDirPath}' does not exist`)
-        return 1
+        process.exit(1)
       }
     }
 
@@ -467,7 +467,9 @@ program
     if (mergeDirPath) {
       mergeDirectories(mergeDirPath, destDirPath, {
         globusaMerge: ['index.js'],
-        exclude: ['node_modules', 'package.json'],
+        exclude: ['dist', 'node_modules', 'package.json'],
       })
     }
+
+    process.exit(0)
   })
