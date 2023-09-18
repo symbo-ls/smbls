@@ -2,9 +2,7 @@
 
 import { Img, Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
-import { IndicatorDot } from '@symbo.ls/accessories'
-import { InfoSet } from '@symbo.ls/infoset'
-import { CardLabel } from '@symbo.ls/card'
+import { IndicatorDot } from '@symbo.ls/indicator'
 
 export const Avatar = {
   extend: Img,
@@ -99,38 +97,46 @@ export const AvatarChooser = {
 
 export const AvatarWithInfoSet = {
   extend: Flex,
-  avatar: { extend: AvatarWithIndicator },
-  infos: {
-    extend: InfoSet,
-    ...[
-      {
-        title: { props: { text: 'Erin Schleifer' } },
-        subTitle: { caption: { props: { text: 'email@symbols.com' } } }
-      }
-    ]
-  },
 
   props: {
     boxSize: 'fit-content',
     align: 'center flex-start',
-    gap: 'A',
-    infos: {
+    gap: 'A'
+  },
+
+  AvatarWithIndicator: {},
+
+  InfoSet: {
+    props: {
       childProps: {
         flow: 'column',
         subTitle: { caption: { whiteSpace: 'nowrap' } }
       }
-    }
+    },
+
+    ...[{
+      title: { props: { text: 'Erin Schleifer' } },
+      subTitle: { caption: { props: { text: 'email@symbols.com' } } }
+    }]
   }
 }
 
 export const AvatarInfoSetWithLabel = {
   extend: AvatarWithInfoSet,
-  avatar: { extend: Avatar },
+
+  AvatarWithIndicator: { boxSize: 'B' },
+
   infos: {
+    props: {
+      gap: 'X',
+      childProps: {
+        flow: 'row'
+      }
+    },
     ...[
       {
         title: { props: { text: 'ETHDOWN' } },
-        label: { extend: CardLabel },
+        Label: {},
         subTitle: null,
         props: { gap: 'Z' }
       },
@@ -138,45 +144,26 @@ export const AvatarInfoSetWithLabel = {
         subTitle: { props: { text: 'Short ADA with up to 4x Leverage' } }
       }
     ]
-  },
-
-  props: {
-    avatar: { boxSize: 'B' },
-    infos: {
-      gap: 'X',
-      childProps: {
-        flow: 'row'
-      }
-    }
   }
 }
 
 export const AvatarInfoSetWithButton = {
   extend: AvatarWithInfoSet,
-  avatar: { extend: Avatar },
-  infos: {
-    ...[
-      {
-        title: { props: { text: 'Wallet ID' } },
-        subTitle: { caption: { props: { text: '0xfb59...d862' } } }
-      },
-      {
-        extend: Button,
-        props: { icon: 'copyOutline' }
-      }
-    ]
-  },
 
   props: {
     padding: 'Y A Y Y',
     border: '1px solid #57575C',
     round: 'Z',
-    gap: 'Z',
-    avatar: {
-      boxSize: 'A+B',
-      round: 'Y'
-    },
-    infos: {
+    gap: 'Z'
+  },
+
+  AvatarWithIndicator: {
+    boxSize: 'A+B',
+    round: 'Y'
+  },
+
+  infos: {
+    props: {
       flow: 'row',
       align: 'center flex-start',
       gap: 'A+X',
@@ -189,44 +176,40 @@ export const AvatarInfoSetWithButton = {
           background: 'transparent'
         }
       }
-    }
+    },
+
+    ...[{
+      title: { props: { text: 'Wallet ID' } },
+      subTitle: { caption: { props: { text: '0xfb59...d862' } } }
+    }, {
+      extend: Button,
+      props: { icon: 'copyOutline' }
+    }]
   }
 }
 
 export const AvatarBundleInfoSet = {
   extend: AvatarWithInfoSet,
-  avatar: { extend: AvatarBundle },
-  infos: {
-    ...[
-      {
-        title: { props: { text: 'ETH/BNB' } },
-        label: {
-          extend: CardLabel,
-          props: { text: '1 ETH = 240.7 BNB' }
-        },
-        subTitle: null
-      }
-    ]
-  },
 
   props: {
     gap: 'Z',
     background: '#1C1C1F',
     padding: 'A A',
-    round: 'Z',
-    avatar: {
-      childProps: {
-        boxSize: 'A+A',
-        ':not(:first-child)': {
-          border: 'solid, black 0',
-          borderWidth: '1px'
-        }
-        // style: {
-        //   '&:not(:first-child)': { border: '1px solid rgba(0, 0, 0, 0)' }
-        // }
+    round: 'Z'
+  },
+
+  AvatarBundle: {
+    childProps: {
+      boxSize: 'A+A',
+      ':not(:first-child)': {
+        border: 'solid, black 0',
+        borderWidth: '1px'
       }
-    },
-    infos: {
+    }
+  },
+
+  infos: {
+    props: {
       childProps: {
         flow: 'row',
         gap: 'Z',
@@ -237,6 +220,14 @@ export const AvatarBundleInfoSet = {
           padding: 'Y Z'
         }
       }
-    }
+    },
+
+    ...[{
+      title: { props: { text: 'ETH/BNB' } },
+      Label: {
+        text: '1 ETH = 240.7 BNB'
+      },
+      subTitle: null
+    }]
   }
 }

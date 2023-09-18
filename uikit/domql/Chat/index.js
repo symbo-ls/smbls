@@ -1,5 +1,6 @@
 'use strict'
-import { UploadResult } from '@symbo.ls/upload'
+
+// import { UploadResult } from '@symbo.ls/upload'
 import { Flex } from '@symbo.ls/atoms'
 import { ButtonSet } from '@symbo.ls/button'
 import { DateIndicator, NotificationAlert } from '@symbo.ls/accessories'
@@ -49,7 +50,7 @@ export const ChatUserWithUploadedFile = {
       {
         chatText: null,
         uploadedFile: {
-          extend: UploadResult,
+          // extend: UploadResult,
           FileIcon: {},
           Flex: {
             H6: { text: 'File.jpg' },

@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
-import { Checkbox } from '@symbo.ls/form'
+import { Checkbox } from '@symbo.ls/check'
 
 // export const TitleParagraph = {
 //   extend: Flex,

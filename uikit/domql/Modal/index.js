@@ -1,11 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraph, ParagraphWithUnderlineButton } from '@symbo.ls/textcomponents'
-import { Button } from '@symbo.ls/button'
-import { FieldWithTitle, CodeField } from '@symbo.ls/field'
-import { IconText } from '@symbo.ls/icon'
-import { CheckMark } from '@symbo.ls/accessories'
 import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
 
 export const Modal = {
@@ -34,7 +29,7 @@ export const Modal = {
   Footer: { extend: Flex }
 }
 
-// export const ModalWithTitleParagraph = {
+export const ModalWithTitleParagraph = {
 //   extend: Modal,
 //   header: { heading: { extend: TitleParagraph } },
 //   props: {
@@ -46,26 +41,26 @@ export const Modal = {
 //       }
 //     }
 //   }
-// }
+}
 
-// export const ResetCompleteModal = {
+export const ResetCompleteModal = {
 //   extend: Modal,
 
-//   header: {},
-//   content: {
-//     icon: { extend: CheckMark },
-//     titleParagraph: {
-//       extend: TitleParagraph,
-//       title: { props: { text: 'Reset complete!' } },
-//       paragraph: { props: { text: 'Your request has been approved!' } }
-//     }
-//   },
-//   footer: {
-//     button: {
-//       extend: Button,
-//       props: { text: 'Done' }
-//     }
-//   },
+  //   header: {},
+  //   content: {
+  //     icon: { extend: CheckMark },
+  //     titleParagraph: {
+  //       extend: TitleParagraph,
+  //       title: { props: { text: 'Reset complete!' } },
+  //       paragraph: { props: { text: 'Your request has been approved!' } }
+  //     }
+  //   },
+  //   footer: {
+  //     button: {
+  //       extend: Button,
+  //       props: { text: 'Done' }
+  //     }
+  //   },
 
 //   props: {
 //     minWidth: 'G+E',
@@ -91,33 +86,33 @@ export const Modal = {
 //       }
 //     }
 //   }
-// }
+}
 
-// export const MessageModal = {
+export const MessageModal = {
 //   extend: Modal,
 
-//   header: {
-//     title: {
-//       tag: 'h5',
-//       props: { text: 'Message' }
-//     },
-//     close: {}
-//   },
-//   content: {
-//     p: {
-//       props: { text: 'Yes. If you change your mind and no longer wish to keep your iPhone, you have the option to return it to us. The returned iPhone must be in good condition and in the original packaging, which contains all accessories, manuals and instructions. Returns are subject to Apples Sales and Refunds Policy.' }
-//     }
-//   },
-//   footer: null,
+  //   header: {
+  //     title: {
+  //       tag: 'h5',
+  //       props: { text: 'Message' }
+  //     },
+  //     close: {}
+  //   },
+  //   content: {
+  //     p: {
+  //       props: { text: 'Yes. If you change your mind and no longer wish to keep your iPhone, you have the option to return it to us. The returned iPhone must be in good condition and in the original packaging, which contains all accessories, manuals and instructions. Returns are subject to Apples Sales and Refunds Policy.' }
+  //     }
+  //   },
+  //   footer: null,
 
 //   props: {
 //     minWidth: 'G+E',
 //     maxWidth: 'G+E',
 //     content: { p: { fontSize: 'Z' } }
 //   }
-// }
+}
 
-// export const ChangePasswordModal = {
+export const ChangePasswordModal = {
 //   extend: ModalWithTitleParagraph,
 //   header: {},
 //   content: {
@@ -172,9 +167,9 @@ export const Modal = {
 //     },
 //     footer: { justifyContent: 'flex-end' }
 //   }
-// }
+}
 
-// export const VerificationCodeModal = {
+export const VerificationCodeModal = {
 //   extend: ModalWithTitleParagraph,
 //   header: {
 //     heading: {
@@ -183,11 +178,11 @@ export const Modal = {
 //     }
 //   },
 
-//   content: {
-//     codeField: { extend: CodeField },
-//     paragraph: { extend: ParagraphWithUnderlineButton }
-//   },
-//   footer: { 'CancenConfirmButtons.1': { ...[{}, { text: 'Verify' }] } },
+  //   content: {
+  //     codeField: { extend: CodeField },
+  //     paragraph: { extend: ParagraphWithUnderlineButton }
+  //   },
+  //   footer: { 'CancenConfirmButtons.1': { ...[{}, { text: 'Verify' }] } },
 
 //   props: {
 //     maxWidth: 'G+E',
@@ -198,4 +193,4 @@ export const Modal = {
 //       justifyContent: 'flex-end'
 //     }
 //   }
-// }
+}

@@ -1,7 +1,8 @@
 'use strict'
+
 import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
-import { FieldWithTitle } from '@symbo.ls/field'
+// import { FieldWithTitle } from '@symbo.ls/field'
 import { CheckBoxWithParagraph } from '@symbo.ls/TextComponents'
 import { Button } from '@symbo.ls/button'
 import { Icon } from '@symbo.ls/icon'
@@ -10,7 +11,7 @@ import { Link } from '@symbo.ls/link'
 
 const fields = {
   extend: Flex,
-  childExtend: FieldWithTitle,
+  // childExtend: FieldWithTitle,
   ...[
     {
       title: { props: { text: 'Email' } },

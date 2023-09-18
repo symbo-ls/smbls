@@ -2,15 +2,15 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
-import { FieldWithTitle } from '@symbo.ls/field'
+// import { FieldWithTitle } from '@symbo.ls/field'
 import { TextareaWithTitle } from '@symbo.ls/textarea'
-import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/TextComponents'
+import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
 import { Button } from '@symbo.ls/button'
 
 const fields = {
   names: {
     extend: Flex,
-    childExtend: FieldWithTitle,
+    // childExtend: FieldWithTitle,
     ...[
       {
         title: { props: { text: 'First name' } },
@@ -24,7 +24,7 @@ const fields = {
   },
 
   mail: {
-    extend: FieldWithTitle,
+    // extend: FieldWithTitle,
     title: { props: { text: 'Email' } },
     field: { input: { props: { placeholder: 'example@email.com' } } }
   },

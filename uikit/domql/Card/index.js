@@ -6,17 +6,7 @@ import { InfoSet } from '@symbo.ls/infoset'
 import { Icon } from '@symbo.ls/icon'
 import { Avatar } from '@symbo.ls/avatar'
 import { BalancesIndicator } from '@symbo.ls/accessories'
-
-export const CardLabel = {
-  props: {
-    text: '-2.902x',
-    fontSize: 'Y',
-    background: '#F4454E',
-    boxSize: 'fit-content fit-content',
-    padding: 'W Y',
-    round: 'Y'
-  }
-}
+import { Label } from '@symbo.ls/label'
 
 export const DropDownWithAvatar = {
   extend: Flex,
@@ -57,7 +47,7 @@ export const AmountWithLabel = {
   extend: Flex,
   amount: { props: { text: '240.59' } },
   label: {
-    extend: CardLabel,
+    extend: Label,
     props: { text: '-0.25%' }
   },
   props: {

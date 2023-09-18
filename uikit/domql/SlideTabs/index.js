@@ -2,7 +2,7 @@
 
 import { Flex, Grid } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
-import { TitleParagraph } from '@symbo.ls/textcomponents'
+import { TitleParagraph } from '@symbo.ls/titleparagraph'
 import { Icon } from '@symbo.ls/icon'
 
 export const SlideTabs = {
