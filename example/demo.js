@@ -21,9 +21,11 @@ create({
   content: {
     extend: Flex,
 
-    IndicatorDot: {},
+    StatusIndicator: {},
     CheckIndicator: {},
-    CheckIndicatorWithBorder: {},
+    RadioIndicator: {},
+    SuccessIndicator: {},
+    CountIndicator: {},
     Checkbox: {},
     CheckboxWithTitleParagraph: {},
     CheckboxWithLabel: {},
@@ -88,7 +90,6 @@ create({
 
     // old components
 
-    // IndicatorDot: {},
     // NotificationAlert: {},
     // Avatar: {},
     // AvatarWithIndicator: {},

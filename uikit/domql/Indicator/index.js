@@ -2,16 +2,25 @@
 
 import { Flex } from '@symbo.ls/atoms'
 
-export const IndicatorDot = {
+export const StatusIndicator = {
   props: {
-    minWidth: 'Y+V1',
-    minHeight: 'Y+V1',
-    maxWidth: 'Y+V1',
-    maxHeight: 'Y+V1',
-    background: '#04F214',
+    boxSize: 'Y',
+    background: 'green2',
     round: '100%',
     border: 'solid, black 0',
     borderWidth: '1px'
+  }
+}
+
+export const CountIndicator = {
+  props: {
+    text: '2',
+    theme: 'primary',
+    boxSize: 'fit-content',
+    lineHeight: '1em',
+    padding: 'X X2',
+    round: 'Z',
+    color: 'white'
   }
 }
 
@@ -20,19 +29,34 @@ export const CheckIndicator = {
     padding: 'W',
     boxSize: 'fit-content fit-content',
     round: '100%',
-    background: '#0474F2',
-    fontSize: 'D'
+    theme: 'primary',
+    fontSize: 'X'
   },
   Icon: { name: 'check' }
 }
 
-export const CheckIndicatorWithBorder = {
+export const RadioIndicator = {
+  props: {
+    padding: 'Z',
+    theme: 'primary',
+    boxSize: 'fit-content',
+    round: '100%',
+    ':after': {
+      content: '""',
+      boxSize: 'Z1',
+      background: 'white',
+      display: 'block',
+      round: '100%'
+    }
+  }
+}
+
+export const SuccessIndicator = {
   extend: CheckIndicator,
   props: {
-    border: '2px solid #04F214',
-    color: '#04F214',
-    padding: 'Y+V',
-    background: 'transparent'
+    theme: 'success',
+    padding: 'X+V2',
+    fontSize: 'G2'
   }
 }
 
@@ -43,7 +67,9 @@ export const CheckIndicatorWithLabel = {
     gap: 'Z'
   },
 
-  CheckIndicator: {},
+  CheckIndicator: {
+    fontSize: 'D2'
+  },
   Caption: {
     props: {
       text: 'Label',

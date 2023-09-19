@@ -2,7 +2,7 @@
 
 import { Img, Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
-import { IndicatorDot } from '@symbo.ls/indicator'
+import { StatusIndicator } from '@symbo.ls/indicator'
 
 export const Avatar = {
   extend: Img,
@@ -55,7 +55,7 @@ export const DropDownWithAvatar = {
 
 export const AvatarWithIndicator = {
   avatar: { extend: Avatar },
-  indicator: { extend: IndicatorDot },
+  indicator: { extend: StatusIndicator },
 
   props: {
     boxSize: 'fit-content fit-content',

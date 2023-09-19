@@ -13,7 +13,10 @@ export const COLOR = {
   brown: '#7D6755',
   pink: '#FD8ABF',
   purple: '#7345AF',
-  white: 'white'
+  white: 'white',
+
+  green2: '#04F214',
+  blue2: '#0474F2'
 }
 
 export const GRADIENT = {
