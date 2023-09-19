@@ -1,6 +1,6 @@
 'use strict'
 
-import { Field, FieldWithButton } from '@symbo.ls/field'
+import { Field } from './Field'
 
 export const Search = {
   extend: Field,
@@ -23,8 +23,7 @@ export const Search = {
 }
 
 export const SearchWithButton = {
-  extend: [Search, FieldWithButton],
-
+  extend: Search,
   Icon: {},
   Input: { ':focus ~ button': { opacity: '1' } },
   Button: {
