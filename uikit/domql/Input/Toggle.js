@@ -1,10 +1,9 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Checkbox } from './Checkbox'
+import { CheckBox, CheckBoxTitleParagraph } from './CheckBox'
 
 export const Toggle = {
-  extend: Checkbox,
+  extend: CheckBox,
 
   Input: {
     ':checked ~ div': {
@@ -13,7 +12,7 @@ export const Toggle = {
     }
   },
 
-  Check: {
+  Flex: {
     props: {
       boxSize: 'A+X B+Z',
       padding: '- W',
@@ -34,13 +33,8 @@ export const Toggle = {
   }
 }
 
-export const ToggleWithTitleParagraph = {
-  extend: Flex,
-  props: {
-    align: 'flex-start flex-start',
-    gap: 'Z'
-  },
-
-  Toggle: {},
-  TitleParagraph: {}
+export const ToggleTitleParagraph = {
+  extend: CheckBoxTitleParagraph,
+  CheckBox: null,
+  Toggle: {}
 }

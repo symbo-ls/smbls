@@ -16,7 +16,8 @@ export const COLOR = {
   white: 'white',
 
   green2: '#04F214',
-  blue2: '#0474F2'
+  blue2: '#0474F2',
+  gray2: '#A3A3A8'
 }
 
 export const GRADIENT = {

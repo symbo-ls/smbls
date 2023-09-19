@@ -1,23 +1,23 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Checkbox } from './Checkbox'
+import { CheckBox, CheckBoxTitleParagraph } from './CheckBox'
 
 export const Radio = {
-  extend: Checkbox,
+  extend: CheckBox,
 
   Input: {
     type: 'radio',
     ':checked ~ div:after': { opacity: '1' }
   },
 
-  Check: {
+  Flex: {
     props: {
       round: '100%',
+      padding: 'Y',
       ':after': {
         content: '""',
         display: 'block',
-        boxSize: 'Y Y',
+        boxSize: 'X+W1',
         round: '100%',
         background: 'white',
         opacity: '0',
@@ -28,13 +28,8 @@ export const Radio = {
   }
 }
 
-export const RadioWithTitleParagraph = {
-  extend: Flex,
-  props: {
-    align: 'flex-start flex-start',
-    gap: 'Z'
-  },
-
-  Radio: { check: { boxSize: 'A+Y A+Y' } },
-  TitleParagraph: {}
+export const RadioTitleParagraph = {
+  extend: CheckBoxTitleParagraph,
+  CheckBox: null,
+  Radio: {}
 }

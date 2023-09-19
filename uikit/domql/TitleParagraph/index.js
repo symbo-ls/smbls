@@ -4,7 +4,10 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const TitleParagraph = {
   extend: Flex,
-  props: { flow: 'column' },
+  props: {
+    flow: 'column',
+    gap: 'Y'
+  },
 
   Title: {
     extend: Flex,
@@ -12,8 +15,8 @@ export const TitleParagraph = {
     h5: {
       props: {
         text: 'Title',
-        color: '#CFCFD1',
-        fontSize: 'A'
+        fontSize: 'A',
+        lineHeight: '1em'
       }
     }
   },
@@ -23,9 +26,10 @@ export const TitleParagraph = {
     p: {
       props: {
         text: 'Paragraph',
+        fontSize: 'Y',
+        lineHeight: '1em',
         margin: '0',
-        color: '#818186',
-        fontSize: 'Z'
+        color: 'gray2'
       }
     }
   }
