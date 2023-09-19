@@ -2345,9 +2345,9 @@
   resolved "https://registry.yarnpkg.com/@symbo.ls/chat/-/chat-2.11.143.tgz#2598515e720f020b72547fad9b7311f9e4cee987"
   integrity sha512-nYG+UexrTEgtuCO+HWvt5AGHwVSkCmpy2N+LnQZcKvOZDBS6fVCORe49UnXtcu3nxAf6Z2gHtyY2vUvoRQf7KQ==
 
-"@symbo.ls/check@latest":
+"@symbo.ls/checkbox@latest":
   version "2.11.132"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/check/-/check-2.11.132.tgz#a6df6137a75431446b7b6b7aa85c69a94f79eb39"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/checkbox/-/check-2.11.132.tgz#a6df6137a75431446b7b6b7aa85c69a94f79eb39"
   integrity sha512-dLVUbz+Lh3HShJmkPtbIV9+iWX/FO/48NdOUERtEwH7jOAsMvbjq41bT3RDcjQI6yJ4pd5t79rA5A8Uf1LD9ZA==
   dependencies:
     "@symbo.ls/atoms" latest
@@ -2361,9 +2361,9 @@
     "@symbo.ls/atoms" latest
     "@symbo.ls/utils" latest
 
-"@symbo.ls/checkindicator@latest":
+"@symbo.ls/checkboxindicator@latest":
   version "2.11.160"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/checkindicator/-/checkindicator-2.11.160.tgz#b24d945c7f509aca54ebc3f4b3301ebf5d742ea5"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/checkboxindicator/-/checkindicator-2.11.160.tgz#b24d945c7f509aca54ebc3f4b3301ebf5d742ea5"
   integrity sha512-XOCgJJCrLa+ggO2JURgXn6kGu1RIdjVxKoEPohN/k/e9AF6AhQTakcB2zIyED4E3/+hRHtKpEG5VwEMg020OkQ==
   dependencies:
     "@symbo.ls/atoms" latest
@@ -2822,7 +2822,7 @@
     "@symbo.ls/card" latest
     "@symbo.ls/chat" latest
     "@symbo.ls/checkbox" latest
-    "@symbo.ls/checkindicator" latest
+    "@symbo.ls/checkboxindicator" latest
     "@symbo.ls/datepicker" latest
     "@symbo.ls/dialog" latest
     "@symbo.ls/dropdown" latest
