@@ -6,41 +6,45 @@ export const Tab = {
   extend: Button,
   props: {
     boxSize: 'fit-content fit-content',
-    background: '#3F3F43',
+    background: 'gray .92 +8',
     align: 'center flex-start',
-    padding: 'Y Z',
+    padding: 'Y1 Z1',
     round: 'Z',
-    gap: 'Y',
+    gap: 'Y2',
     position: 'relative'
   },
 
   Icon: {
     props: {
-      name: 'circle',
+      name: 'arrowDownCircle',
       fontSize: 'C',
       color: 'white'
     }
   },
+
   Span: {
     text: 'Label',
     color: 'white',
     lineHeight: '1em',
     margin: 'V - - -'
   },
-  NotificationIndicator: {
-    text: '19'
+
+  CountIndicator: {
+    text: '19',
+    padding: 'Y'
   }
 }
 
 export const IconTab = {
   extend: Tab,
-  props: {
-    padding: 'Z+W'
+  props: { padding: 'Z+W' },
+
+  Icon: {
+    props: { name: 'messageCircle' }
   },
 
-  Icon: {},
   Span: null,
-  NotificationIndicator: {
+  CountIndicator: {
     position: 'absolute',
     top: '-Z',
     right: '-Z',

@@ -2,7 +2,7 @@
 
 import { create } from '@symbo.ls/create'
 import { Flex } from '@symbo.ls/atoms'
-import { SearchWithButton } from '@symbo.ls/search'
+import { SearchWithButton } from '@symbo.ls/field'
 
 import designSystem from '@symbo.ls/default-config'
 designSystem.globalTheme = 'dark'
@@ -45,9 +45,12 @@ create({
     Tab: {},
     IconTab: {},
     CheckIndicatorWithLabel: {},
-    Step: {},
-    Steps: {},
-    ProgressLineSteps: {},
+    CheckStep: {},
+    CheckSteps: {},
+    RadioIndicatorWithLabel: {},
+    RadioStep: {},
+    RadioSteps: {},
+    LineSteps: {},
     UploadButton: {},
     UploadButtonWithIcon: {},
     UnitValue: {},

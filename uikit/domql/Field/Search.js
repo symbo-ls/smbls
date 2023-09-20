@@ -9,7 +9,7 @@ export const Search = {
     maxWidth: 'H',
     gap: 'Z+W',
     padding: '- A',
-    background: '#141416'
+    background: 'gray .92 +8'
   },
 
   Icon: {
@@ -41,7 +41,7 @@ export const SearchWithDropDownButton = {
     maxWidth: 'H+C'
   },
   DropDownButton: {
-    background: '#141416',
+    background: 'gray',
     margin: '- Y - -'
   },
   Icon: {},
