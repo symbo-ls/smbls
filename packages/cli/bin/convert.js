@@ -268,43 +268,43 @@ async function convertFile (srcPath, tmpDirPath, destPath,
   return globusaStruct
 }
 
-function recursiveCopy(src, dst, { exclude }) {
+function recursiveCopy (src, dst, { exclude }) {
   // TODO: maybe replace with a better function that uses the exclude list?
   return fs.cpSync(src, dst, { recursive: true })
 }
 
-function mergeDirectories(mrg, dst, { globusaMerge, exclude }) {
+function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
   // Source doesn't exist, skip
   if (!fs.existsSync(mrg)) {
     console.error(`Error: Source merge directory '${mrg}' does not exist.`)
-    return;
+    return
   }
 
   // Direct copy, no merging needed
   if (!fs.existsSync(dst)) {
     recursiveCopy(mrg, dst, { exclude })
-    return;
+    return
   }
 
   const isMrgDir = isDirectory(mrg)
   const isDstDir = isDirectory(dst)
 
   if (!isMrgDir && !isDstDir) {
-    return;
+    return
   }
 
   if (!isMrgDir && isDstDir) {
     console.error(`mergeDirectories('${mrg}', '${dst}') skipped. ` +
-                  `Merge source (mrg) is a regular file and the ` +
-                  `destination (dst) is a directory.`)
-    return;
+                  'Merge source (mrg) is a regular file and the ' +
+                  'destination (dst) is a directory.')
+    return
   }
 
   if (isMrgDir && !isDstDir) {
     console.error(`mergeDirectories('${mrg}', '${dst}') skipped. ` +
-                  `Merge source (mrg) is a directory and the ` +
-                  `destination (dst) is a regular file.`)
-    return;
+                  'Merge source (mrg) is a directory and the ' +
+                  'destination (dst) is a regular file.')
+    return
   }
 
   const mrgFiles = fs.readdirSync(mrg).filter(f => !exclude.includes(f))
@@ -321,8 +321,8 @@ function mergeDirectories(mrg, dst, { globusaMerge, exclude }) {
   for (const f of directMrgFiles) {
     if (!dstFilesMap[f]) {
       recursiveCopy(path.resolve(mrg, f),
-                    path.resolve(dst, f),
-                    { recursive: true })
+        path.resolve(dst, f),
+        { recursive: true })
     } else {
       mergeDirectories(path.resolve(mrg, f), path.resolve(dst, f), {
         globusaMerge, exclude
@@ -337,7 +337,7 @@ function mergeDirectories(mrg, dst, { globusaMerge, exclude }) {
       // Nothing to merge. Do a direct copy
       const p = path.resolve(mrg, f)
       if (isDirectory(p)) {
-        console.error(`Error: Globusa merge can only be done on files, ` +
+        console.error('Error: Globusa merge can only be done on files, ' +
                       `but '${p}' is a directory`)
       } else {
         fs.copyFileSync(p, path.resolve(dst, f))
@@ -373,7 +373,7 @@ program
     'Only convert these components; comma separated ' +
           '(for example: --only=Flex,Img)')
   .option('-m, --merge <dir>',
-          'After converting an entire directory, perform a recursive merge that takes files from this directory and puts them in the dest directory. It also concatenates index.js files')
+    'After converting an entire directory, perform a recursive merge that takes files from this directory and puts them in the dest directory. It also concatenates index.js files')
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
@@ -539,7 +539,7 @@ program
       console.log(`Merging '${mergeDirPath}' and ${destDirPath}...`)
       mergeDirectories(mergeDirPath, destDirPath, {
         globusaMerge: ['index.js', 'index.jsx'],
-        exclude: ['dist', 'node_modules'],
+        exclude: ['dist', 'node_modules']
       })
     }
 
