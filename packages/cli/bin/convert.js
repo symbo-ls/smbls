@@ -269,6 +269,7 @@ async function convertFile (srcPath, tmpDirPath, destPath,
   return globusaStruct
 }
 
+<<<<<<< HEAD
 function recursiveCopy (src, dst, { exclude }) {
   // TODO: maybe replace with a better function that uses the exclude list?
   return fs.cpSync(src, dst, { recursive: true })
@@ -354,6 +355,21 @@ function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
       fs.writeFileSync(path.resolve(dst, f), outTxt, { encoding: 'utf8' })
     }
   }
+=======
+function mergeDirectories(mrg, dst, { globusaMerge, exclude }) {
+  // Merge uikit dirs:
+  //  0) if dst doesn't have the given folder, just copy it
+  //     completely from mrg, otherwise start the merging with
+  //     step 1
+  //  1) concatenate dst/*/index.js and mrg/*/index.js files
+  //     into a buffer and then dedup its imports with globusa
+  //  2) copy over all files (except index.js, package.json)
+  //     and dirs (except node_modules) recursively from mrg to
+  //     dst
+
+  console.log(fs.readdirSync(mrg).filter(f => !exclude.includes(f)))
+  // TODO: finish this function
+>>>>>>> d5aa9139 (WIP merge flag)
 }
 
 program
@@ -374,7 +390,11 @@ program
     'Only convert these components; comma separated ' +
           '(for example: --only=Flex,Img)')
   .option('-m, --merge <dir>',
+<<<<<<< HEAD
     'After converting an entire directory, perform a recursive merge that takes files from this directory and puts them in the dest directory. It also concatenates index.js files')
+=======
+          'After converting an entire directory, perform a recursive merge that takes files from this directory and puts them in the dest directory. It also concatenates index.js files')
+>>>>>>> d5aa9139 (WIP merge flag)
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
@@ -480,7 +500,11 @@ program
       mergeDirPath = path.resolve(options.merge)
       if (!fs.existsSync(mergeDirPath)) {
         console.error(`Merge directory '${mergeDirPath}' does not exist`)
+<<<<<<< HEAD
         process.exit(1)
+=======
+        return 1
+>>>>>>> d5aa9139 (WIP merge flag)
       }
     }
 
@@ -537,6 +561,7 @@ program
     }
 
     if (mergeDirPath) {
+<<<<<<< HEAD
       console.log(`Merging '${mergeDirPath}' and ${destDirPath}...`)
       mergeDirectories(mergeDirPath, destDirPath, {
         globusaMerge: ['index.js', 'index.jsx'],
@@ -545,4 +570,11 @@ program
     }
 
     process.exit(0)
+=======
+      mergeDirectories(mergeDirPath, destDirPath, {
+        globusaMerge: ['index.js'],
+        exclude: ['node_modules', 'package.json'],
+      })
+    }
+>>>>>>> d5aa9139 (WIP merge flag)
   })
