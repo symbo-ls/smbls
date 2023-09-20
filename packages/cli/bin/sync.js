@@ -24,12 +24,18 @@ program
     rc.then(data => {
       const opts = { ...data, ...options }
       const key = data.key || options.key
+      console.log(data.key)
       socketClient.connect(key, {
+        source: 'cli',
         onConnect: (id, socket) => {
+          console.log(key)
           console.log(id)
         },
         onChange: (event, data) => {
           data = JSON.parse(data)
+          console.log('change')
+          console.log(event)
+          console.log(data)
           const d = {}
           const {
             PROJECT_DESIGN_SYSTEM,

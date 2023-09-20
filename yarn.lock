@@ -2347,23 +2347,15 @@
 
 "@symbo.ls/checkbox@latest":
   version "2.11.132"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/checkbox/-/check-2.11.132.tgz#a6df6137a75431446b7b6b7aa85c69a94f79eb39"
-  integrity sha512-dLVUbz+Lh3HShJmkPtbIV9+iWX/FO/48NdOUERtEwH7jOAsMvbjq41bT3RDcjQI6yJ4pd5t79rA5A8Uf1LD9ZA==
+  resolved "https://registry.yarnpkg.com/@symbo.ls/checkbox/-/checkbox-2.11.132.tgz#495560ce53da76cafc10854fb2b75baf3fa5ac07"
+  integrity sha512-YjbxfjU3dpUMsb3WhRH3vgKxogSR9Z6t6TRg7maDwo3p26OSr7PAuNh/IJoiZKYrWUHr5uirVjNzfDzJHn0iWQ==
   dependencies:
     "@symbo.ls/atoms" latest
-    "@symbo.ls/utils" latest
+    "@symbo.ls/button" latest
 
-"@symbo.ls/checkbox@latest":
+"@symbo.ls/checkindicator@latest":
   version "2.11.160"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/checkbox/-/checkbox-2.11.160.tgz#363b5a8497e7f8c49ac4c1e444002b9ac082d2b1"
-  integrity sha512-oO+jESJYNortpXWk58EMziOqQ/J4z8dOBMjA0bFCfiXKz8/vuPr5YrzozTNjqj5nhCDGCO2PJXYPbgJM1jnmwA==
-  dependencies:
-    "@symbo.ls/atoms" latest
-    "@symbo.ls/utils" latest
-
-"@symbo.ls/checkboxindicator@latest":
-  version "2.11.160"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/checkboxindicator/-/checkindicator-2.11.160.tgz#b24d945c7f509aca54ebc3f4b3301ebf5d742ea5"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/checkindicator/-/checkindicator-2.11.160.tgz#b24d945c7f509aca54ebc3f4b3301ebf5d742ea5"
   integrity sha512-XOCgJJCrLa+ggO2JURgXn6kGu1RIdjVxKoEPohN/k/e9AF6AhQTakcB2zIyED4E3/+hRHtKpEG5VwEMg020OkQ==
   dependencies:
     "@symbo.ls/atoms" latest
@@ -2822,7 +2814,7 @@
     "@symbo.ls/card" latest
     "@symbo.ls/chat" latest
     "@symbo.ls/checkbox" latest
-    "@symbo.ls/checkboxindicator" latest
+    "@symbo.ls/checkindicator" latest
     "@symbo.ls/datepicker" latest
     "@symbo.ls/dialog" latest
     "@symbo.ls/dropdown" latest
@@ -3995,9 +3987,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001517:
-  version "1.0.30001535"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001535.tgz#908a5b7ef11172f51f0b88f3d850aef1c6a3cf7b"
-  integrity sha512-48jLyUkiWFfhm/afF7cQPqPjaUmSraEhK4j+FCTJpgnGGEZHqyLe3hmWH7lIooZdSzXL0ReMvHz0vKDoTBsrwg==
+  version "1.0.30001538"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001538.tgz#9dbc6b9af1ff06b5eb12350c2012b3af56744f3f"
+  integrity sha512-HWJnhnID+0YMtGlzcp3T9drmBJUVDchPJ08tpUGFLs9CYlwWPH2uLgpHn8fND5pCgXVtnGS3H4QR9XLMHVNkHw==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -5228,9 +5220,9 @@ ejs@^3.1.7:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.477:
-  version "1.4.523"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.523.tgz#f82f99243c827df05c26776d49712cb284972df6"
-  integrity sha512-9AreocSUWnzNtvLcbpng6N+GkXnCcBR80IQkxRC9Dfdyg4gaWNUPBujAHUpKkiUkoSoR9UlhA4zD/IgBklmhzg==
+  version "1.4.524"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.524.tgz#ef9733e044ef99d00ae1c810846f73ef4374e0b8"
+  integrity sha512-iTmhuiGXYo29QoFXwwXbxhAKiDRZQzme6wYVaZNoitg9h1iRaMGu3vNvDyk+gqu5ETK1D6ug9PC5GVS7kSURuw==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -6148,9 +6140,9 @@ flatted@^3.2.7:
   integrity sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==
 
 follow-redirects@^1.15.0:
-  version "1.15.2"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
-  integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.3.tgz#fe2f3ef2690afce7e82ed0b44db08165b207123a"
+  integrity sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==
 
 for-each@^0.3.3:
   version "0.3.3"
@@ -11687,9 +11679,9 @@ spdx-expression-parse@^3.0.0:
     spdx-license-ids "^3.0.0"
 
 spdx-license-ids@^3.0.0:
-  version "3.0.13"
-  resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-3.0.13.tgz#7189a474c46f8d47c7b0da4b987bb45e908bd2d5"
-  integrity sha512-XkD+zwiqXHikFZm4AX/7JSCXA98U5Db4AFd5XUg/+9UNtnH75+Z9KxtpYiJZx36mUDVOwH83pl7yvCer6ewM3w==
+  version "3.0.15"
+  resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-3.0.15.tgz#142460aabaca062bc7cd4cc87b7d50725ed6a4ba"
+  integrity sha512-lpT8hSQp9jAKp9mhtBU4Xjon8LPGBvLIuBiSVhMEtmLecTh2mO0tlqrAMp47tBXzMr13NJMQ2lf7RpQGLJ3HsQ==
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
@@ -13136,9 +13128,9 @@ ws@^6.1.2:
     async-limiter "~1.0.0"
 
 ws@^8.13.0:
-  version "8.14.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.1.tgz#4b9586b4f70f9e6534c7bb1d3dc0baa8b8cf01e0"
-  integrity sha512-4OOseMUq8AzRBI/7SLMUwO+FEDnguetSk7KMb1sHwvF2w2Wv5Hoj0nlifx8vtGsftE/jWHojPy8sMMzYLJ2G/A==
+  version "8.14.2"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.2.tgz#6c249a806eb2db7a20d26d51e7709eab7b2e6c7f"
+  integrity sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==
 
 ws@~8.11.0:
   version "8.11.0"
