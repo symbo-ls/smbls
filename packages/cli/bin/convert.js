@@ -501,10 +501,14 @@ program
       if (!fs.existsSync(mergeDirPath)) {
         console.error(`Merge directory '${mergeDirPath}' does not exist`)
 <<<<<<< HEAD
+<<<<<<< HEAD
         process.exit(1)
 =======
         return 1
 >>>>>>> d5aa9139 (WIP merge flag)
+=======
+        process.exit(1)
+>>>>>>> 977719cf (add dist to exclude list; exit with correct codes for script interop)
       }
     }
 
@@ -573,8 +577,13 @@ program
 =======
       mergeDirectories(mergeDirPath, destDirPath, {
         globusaMerge: ['index.js'],
-        exclude: ['node_modules', 'package.json'],
+        exclude: ['dist', 'node_modules', 'package.json'],
       })
     }
+<<<<<<< HEAD
 >>>>>>> d5aa9139 (WIP merge flag)
+=======
+
+    process.exit(0)
+>>>>>>> 977719cf (add dist to exclude list; exit with correct codes for script interop)
   })
