@@ -15,10 +15,12 @@ const transformBorderRadius = (radius, props, propertyName) => {
 export const Shape = {
   extend: Pseudo,
 
+  deps: { exec, getSpacingBasedOnRatio, getMediaColor, transformBorderRadius },
+
   class: {
-    shape: ({ props }) => {
+    shape: ({ props, deps }) => {
       const { shape } = props
-      return exec(SHAPES[shape], ({ props }))
+      return deps.exec(SHAPES[shape], ({ props }))
     },
     shapeDirection: ({ props }) => {
       const { shape, shapeDirection } = props
@@ -26,16 +28,16 @@ export const Shape = {
       const shapeDir = SHAPES[shape + 'Direction']
       return shape && shapeDir ? shapeDir[shapeDirection || 'left'] : null
     },
-    shapeDirectionColor: ({ props }) => {
+    shapeDirectionColor: ({ props, deps }) => {
       const { background, backgroundColor } = props
       const borderColor = {
-        borderColor: getMediaColor(background || backgroundColor)
+        borderColor: deps.getMediaColor(background || backgroundColor)
       }
       return props.shapeDirection ? borderColor : null
     },
 
-    round: ({ props, key, ...el }) => transformBorderRadius(props.round || props.borderRadius, props, 'round'),
-    borderRadius: ({ props, key, ...el }) => transformBorderRadius(props.borderRadius || props.round, props, 'borderRadius')
+    round: ({ props, key, deps, ...el }) => deps.transformBorderRadius(props.round || props.borderRadius, props, 'round'),
+    borderRadius: ({ props, key, deps, ...el }) => deps.transformBorderRadius(props.borderRadius || props.round, props, 'borderRadius')
   }
 }
 
