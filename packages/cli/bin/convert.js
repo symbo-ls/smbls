@@ -408,7 +408,7 @@ program
       mergeDirPath = path.resolve(options.merge)
       if (!fs.existsSync(mergeDirPath)) {
         console.error(`Merge directory '${mergeDirPath}' does not exist`)
-        return 1
+        process.exit(1)
       }
     }
 
@@ -467,7 +467,9 @@ program
     if (mergeDirPath) {
       mergeDirectories(mergeDirPath, destDirPath, {
         globusaMerge: ['index.js'],
-        exclude: ['node_modules', 'package.json']
+        exclude: ['dist', 'node_modules', 'package.json']
       })
     }
+
+    process.exit(0)
   })
