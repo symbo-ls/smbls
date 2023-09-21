@@ -32,9 +32,9 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   await fetchSync(key, options)
 
   if (typeof (document) === 'undefined') {
-    if (typeof (window) === 'undefined') window = {}
+    if (typeof (window) === 'undefined') window = {} // eslint-disable-line
     if (!window.document) window.document = { body: {} }
-    document = window.document
+    document = window.document // eslint-disable-line
   }
   const doc = options.parent || options.document || document
   const [scratchSystem, emotion, registry] = initEmotion(key, options)
@@ -98,9 +98,9 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 
   // Set parent
   if (typeof (document) === 'undefined') {
-    if (typeof (window) === 'undefined') window = {}
+    if (typeof (window) === 'undefined') window = {} // eslint-disable-line
     if (!window.document) window.document = { body: {} }
-    document = window.document
+    document = window.document // eslint-disable-line
   }
   let parent
   if (options.parent) parent = options.parent

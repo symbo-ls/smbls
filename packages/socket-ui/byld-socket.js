@@ -1,6 +1,5 @@
 'use strict'
 
-import { isNumber } from '@domql/utils'
 import { router } from '@domql/router'
 import { init } from '@symbo.ls/init'
 import { set } from '@symbo.ls/scratch'
