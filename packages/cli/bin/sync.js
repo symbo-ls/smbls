@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import { updateDynamycFile } from '@symbo.ls/socket'
-import * as socketClient from '@symbo.ls/socket/client.js'
+import chalk from 'chalk'
 import { program } from './program.js'
 import { loadModule } from './require.js'
-import chalk from 'chalk'
+import { updateDynamycFile } from '@symbo.ls/socket'
+
+import * as socketClient from '@symbo.ls/socket/client.js'
 
 const SOCKET_API_URL = 'https://api.symbols.app/'
 const SOCKET_API_URL_LOCAL = 'https://localhost:13335/'
@@ -29,7 +30,6 @@ program
     rc.then(data => {
       const opts = { ...data, ...options }
       const key = data.key || options.key
-      console.log(data.key)
       socketClient.connect(key, {
         source: 'cli',
         socketUrl: options.dev ? SOCKET_API_URL_LOCAL : SOCKET_API_URL,

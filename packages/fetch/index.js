@@ -30,17 +30,15 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 
   let response
   try {
-    console.log(baseUrl + route, key)
     response = await fetch(baseUrl + route, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
     })
+    return await response.json()
   } catch (e) {
-    console.error('rrr')
-    console.error(e)
+    if (utils.isFunction(options.onError)) return options.onError(e)
+    else console.error(e)
   }
-
-  return await response.json()
 }
 
 export const fetchProject = async (key, options) => {

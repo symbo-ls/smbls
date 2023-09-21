@@ -1,9 +1,10 @@
 'use strict'
+
+import fs from 'fs'
+import path from 'path'
 import { program } from './program.js'
 import { convert } from 'kalduna'
 import { parse } from 'globusa'
-import fs from 'fs'
-import path from 'path'
 
 import * as esbuild from 'esbuild'
 
