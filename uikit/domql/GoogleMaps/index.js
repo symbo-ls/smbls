@@ -3,6 +3,7 @@
 import { Loader } from '@googlemaps/js-api-loader'
 
 export const GoogleMaps = {
+  deps: { Loader },
   props: {
     mapOptions: {
       disableDefaultUI: true
@@ -11,10 +12,10 @@ export const GoogleMaps = {
   data: { loader: null },
   on: {
     init: (el, s, ctx) => {
-      const { data, props } = el
+      const { data, props, deps } = el
       const { version, apiKey } = props
       if (data.loader) return
-      data.loader = new Loader({
+      data.loader = new deps.Loader({
         apiKey: apiKey || process.env.GOOGLE_MAPS_API_KEY,
         version: version || 'weekly'
       })
