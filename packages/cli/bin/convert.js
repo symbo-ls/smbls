@@ -113,9 +113,9 @@ function isDirectory (dir) {
 }
 
 // Essentially does 'mkdir -P'
-async function mkdirp (dir) {
+function mkdirp (dir) {
   try {
-    return await fs.promises.mkdir(dir)
+    return fs.mkdirSync(dir, { recursive: true })
   } catch (err) {
     if (err.code !== 'EEXIST') {
       throw err
@@ -256,7 +256,7 @@ async function convertFile (srcPath, tmpDirPath, destPath,
   )
 
   // Create dest dir
-  await mkdirp(path.dirname(destPath))
+  mkdirp(path.dirname(destPath))
 
   // Write file
   if (convertedModuleStr && convertedModuleStr.length > 0) {
@@ -268,9 +268,34 @@ async function convertFile (srcPath, tmpDirPath, destPath,
   return globusaStruct
 }
 
-function recursiveCopy (src, dst, { exclude }) {
-  // TODO: maybe replace with a better function that uses the exclude list?
-  return fs.cpSync(src, dst, { recursive: true })
+// Aborts copying if destination exists
+function recursiveCopy (src, dst, exclude) {
+  if (exclude && exclude.includes(src))
+    return
+
+  if (!fs.existsSync(src)) {
+    console.error(`Error (recursiveCopy): Source file '${src}' does not exist.`)
+    return
+  }
+
+  if (fs.existsSync(dst)) {
+    console.error(`Error (recursiveCopy): Destination file '${dst}' exists.`)
+    return
+  }
+
+  if (!isDirectory(src)) {
+    fs.copyFileSync(src, dst)
+    return
+  }
+
+  mkdirp(dst)
+  const files = fs.readdirSync(src)
+  for (const f of files) {
+    if (exclude && exclude.includes(f))
+      continue
+
+    recursiveCopy(path.join(src, f), path.join(dst, f), exclude)
+  }
 }
 
 function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
@@ -282,7 +307,7 @@ function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
 
   // Direct copy, no merging needed
   if (!fs.existsSync(dst)) {
-    recursiveCopy(mrg, dst, { exclude })
+    recursiveCopy(mrg, dst, exclude)
     return
   }
 
@@ -320,9 +345,7 @@ function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
   const directMrgFiles = mrgFiles.filter(f => !globusaMerge.includes(f))
   for (const f of directMrgFiles) {
     if (!dstFilesMap[f]) {
-      recursiveCopy(path.resolve(mrg, f),
-        path.resolve(dst, f),
-        { recursive: true })
+      recursiveCopy(path.resolve(mrg, f), path.resolve(dst, f), exclude)
     } else {
       mergeDirectories(path.resolve(mrg, f), path.resolve(dst, f), {
         globusaMerge, exclude
@@ -410,7 +433,7 @@ program
     // Resolve & create tmp dir
     const tmpDirPath = options.tmpDir ??
           path.resolve(path.dirname(srcPath), TMP_DIR_NAME)
-    await mkdirp(tmpDirPath)
+    mkdirp(tmpDirPath)
 
     // Put a package.json file so that when we import() the modules from the
     // directory, node doesn't recognize them as ES modules (in case the parent
@@ -439,7 +462,7 @@ program
       } else {
         // dest not given. Use default (desiredFormat as directory).
         const destDir = path.resolve(desiredFormat)
-        await mkdirp(destDir)
+        mkdirp(destDir)
         destFilePath = path.join(destDir, path.basename(srcPath))
       }
 
@@ -461,7 +484,7 @@ program
     if (!fs.existsSync(dest)) {
       // dest doesn't exist. Create it.
       destDirPath = path.resolve(dest)
-      await mkdirp(destDirPath)
+      mkdirp(destDirPath)
     } else if (isDirectory(dest)) {
       // dest exists and is a directory.
       destDirPath = path.resolve(dest)
