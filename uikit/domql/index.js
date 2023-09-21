@@ -28,6 +28,7 @@ export * from '@symbo.ls/tooltip'
 export * from '@symbo.ls/pills'
 export * from '@symbo.ls/tab'
 export * from '@symbo.ls/steps'
+export * from '@symbo.ls/paragraphbutton'
 
 export * from '@symbo.ls/dialog'
 export * from '@symbo.ls/modal'

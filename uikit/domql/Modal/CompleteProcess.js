@@ -7,7 +7,6 @@ import { Button } from '@symbo.ls/button'
 export const CompleteProcess = {
   extend: Modal,
   props: {
-    minWidth: 'G3',
     maxWidth: 'G3',
     gap: 'B1'
   },

@@ -11,16 +11,7 @@ export const Message = {
   },
 
   Header: {
-    Title: {
-      h5: {
-        props: {
-          text: 'Message',
-          fontSize: 'B',
-          fontWeight: '700',
-          minWidth: ''
-        }
-      }
-    },
+    Title: { h5: { props: { text: 'Message' } } },
     Paragraph: null
   },
 

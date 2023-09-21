@@ -7,10 +7,11 @@ export const Modal = {
   extend: Flex,
   props: {
     flow: 'column',
-    background: 'gray',
+    background: 'gray3',
     boxSize: 'fit-content fit-content',
     round: 'Z+X',
-    padding: 'A'
+    padding: 'A',
+    minWidth: 'G3'
   },
 
   Header: {

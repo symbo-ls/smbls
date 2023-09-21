@@ -22,7 +22,7 @@ export const GroupList = {
     },
     h4: {
       props: {
-        text: 'header',
+        text: 'Header',
         fontSize: 'A',
         fontWeight: '500',
         color: 'gray4'

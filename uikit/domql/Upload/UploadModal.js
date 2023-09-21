@@ -2,6 +2,7 @@
 
 import { Modal } from '@symbo.ls/modal'
 import { UploadLabel, UploadLabel2 } from './UploadLabel'
+import { CancelConfirmButtons } from '@symbo.ls/button'
 
 export const UploadModal = {
   extend: Modal,
@@ -28,7 +29,8 @@ export const UploadModal = {
   Footer: {
     UploadButtonWithIcon: {
       flex: 1,
-      Icon: { display: 'none' }
+      Icon: { display: 'none' },
+      text: 'Choose file'
     }
   }
 
@@ -58,14 +60,15 @@ export const UploadModal2 = {
       gap: 'Z'
     },
     CancenConfirmButtons: {
+      extend: CancelConfirmButtons,
       props: {
         childProps: {
-          ':first-child': { background: '#141416' }
+          ':first-child': { background: 'gray' }
         }
       },
       ...[
-        { props: { background: 'red' } },
-        { text: 'Attach file' }
+        { props: { text: 'Cancel' } },
+        { props: { text: 'Attach file' } }
       ]
     }
   }

@@ -5,9 +5,9 @@ import { Field } from './Field'
 export const NumberField = {
   extend: Field,
   props: {
-    minWidth: 'D',
-    maxWidth: 'D',
-    minHeight: 'D',
+    minWidth: 'D+Y2',
+    maxWidth: 'D+Y2',
+    minHeight: 'D+Y2',
     padding: '0',
     style: {
       'input[type=number]::-webkit-inner-spin-button': {

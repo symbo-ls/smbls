@@ -86,6 +86,8 @@ create({
     GroupListWithSearchTemplate: {},
     CompleteProcess: {},
     Message: {},
+    ParagraphButton: {},
+    VerificationCode: {},
 
     // old components
 
