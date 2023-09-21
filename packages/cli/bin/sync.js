@@ -6,6 +6,9 @@ import { program } from './program.js'
 import { loadModule } from './require.js'
 import chalk from 'chalk'
 
+const SOCKET_API_URL = 'https://api.symbols.app/'
+const SOCKET_API_URL_LOCAL = 'https://localhost:13335/'
+
 const RC_PATH = process.cwd() + '/symbols.json'
 let rc = {}
 try {
@@ -16,6 +19,7 @@ program
   .command('sync')
   .description('Sync with Symbols')
   .option('-l, --live', 'Bypass the local build')
+  .option('-d, --dev', 'Bypass the local build')
   .option('--key', 'Bypass the local build')
   .action(async (options) => {
     if (!rc) {
@@ -28,14 +32,17 @@ program
       console.log(data.key)
       socketClient.connect(key, {
         source: 'cli',
-        socketUrl: 'http://localhost:13335',
+        socketUrl: options.dev ? SOCKET_API_URL_LOCAL : SOCKET_API_URL,
         onConnect: (id, socket) => {
           console.log(key)
           console.log(id)
         },
         onChange: (event, data) => {
           if (event === 'clients') {
-            console.log(chalk.green.bold('Active clients:'), Object.keys(data))
+            console.log(
+              chalk.green.bold('Active clients:'),
+              Object.keys(data)
+            )
             return
           }
 

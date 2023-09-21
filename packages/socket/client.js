@@ -9,14 +9,17 @@ const { window } = globals.default || globals
 
 const ENV = process.env.NODE_ENV
 
-const isLocalhost = window && window.location && window.location.host.includes('local')
-const SOCKET_BACKEND_URL = isLocalhost
-  ? 'localhost:13335'
-  : 'https://socket.symbols.app/'
-
 const defautlOpts = {}
 
 export const connect = (key, options = {}) => {
+  const isDev = options.development ||
+    (window && window.location && window.location.host.includes('local')) ||
+    (ENV === 'test' || ENV === 'development')
+
+  const SOCKET_BACKEND_URL = isDev
+    ? 'http://localhost:13335/'
+    : 'https://socket.symbols.app/'
+
   const socketUrls = isArray(options.socketUrl)
     ? options.socketUrl
     : [options.socketUrl || SOCKET_BACKEND_URL]
@@ -27,7 +30,7 @@ export const connect = (key, options = {}) => {
   const socket = io(primaryUrl || SOCKET_BACKEND_URL)
 
   socket.on('connect', () => {
-    if (ENV === 'test' || ENV === 'development') {
+    if (isDev) {
       console.log(
         `Connected to %c${primaryUrl || SOCKET_BACKEND_URL} %c${key} %c${socket.id}`,
         'font-weight: bold; color: green;',
@@ -47,17 +50,18 @@ export const connect = (key, options = {}) => {
     }
   })
 
-  let tryConnect = 0
-  const tryConnectMax = 1
+  let CONNECT_ATTEPT = 0
+  const CONNECT_ATTEPT_MAX_ALLOWED = 1
+
   socket.on('connect_error', (err) => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
       if (isFunction(options.onError)) options.onError(err, socket)
 
-      if (tryConnect < tryConnectMax) {
+      if (CONNECT_ATTEPT < CONNECT_ATTEPT_MAX_ALLOWED) {
         socket.disconnect()
 
-        tryConnect++
+        CONNECT_ATTEPT++
 
         if (ENV === 'test' || ENV === 'development') {
           console.log(
@@ -88,7 +92,9 @@ export const connect = (key, options = {}) => {
     if (event === 'connect') return
 
     try {
-      if (isFunction(options.onChange)) options.onChange(event, args[0], socket)
+      if (isFunction(options.onChange)) {
+        options.onChange(event, args[0], socket)
+      }
     } catch (e) {
       console.error(e)
     }

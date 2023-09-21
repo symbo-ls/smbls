@@ -2346,6 +2346,25 @@
   integrity sha512-nYG+UexrTEgtuCO+HWvt5AGHwVSkCmpy2N+LnQZcKvOZDBS6fVCORe49UnXtcu3nxAf6Z2gHtyY2vUvoRQf7KQ==
 
 "@symbo.ls/checkbox@latest":
+<<<<<<< Updated upstream
+=======
+  version "2.11.132"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/checkbox/-/checkbox-2.11.132.tgz#495560ce53da76cafc10854fb2b75baf3fa5ac07"
+  integrity sha512-YjbxfjU3dpUMsb3WhRH3vgKxogSR9Z6t6TRg7maDwo3p26OSr7PAuNh/IJoiZKYrWUHr5uirVjNzfDzJHn0iWQ==
+  dependencies:
+    "@symbo.ls/atoms" latest
+    "@symbo.ls/button" latest
+
+"@symbo.ls/checkindicator@latest":
+  version "2.11.160"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/checkindicator/-/checkindicator-2.11.160.tgz#b24d945c7f509aca54ebc3f4b3301ebf5d742ea5"
+  integrity sha512-XOCgJJCrLa+ggO2JURgXn6kGu1RIdjVxKoEPohN/k/e9AF6AhQTakcB2zIyED4E3/+hRHtKpEG5VwEMg020OkQ==
+  dependencies:
+    "@symbo.ls/atoms" latest
+    "@symbo.ls/utils" latest
+
+"@symbo.ls/cli@latest":
+>>>>>>> Stashed changes
   version "2.11.132"
   resolved "https://registry.yarnpkg.com/@symbo.ls/checkbox/-/checkbox-2.11.132.tgz#495560ce53da76cafc10854fb2b75baf3fa5ac07"
   integrity sha512-YjbxfjU3dpUMsb3WhRH3vgKxogSR9Z6t6TRg7maDwo3p26OSr7PAuNh/IJoiZKYrWUHr5uirVjNzfDzJHn0iWQ==
@@ -2492,6 +2511,7 @@
     "@symbo.ls/atoms" latest
     "@symbo.ls/utils" latest
 
+<<<<<<< Updated upstream
 "@symbo.ls/indicator@latest":
   version "2.11.132"
   resolved "https://registry.yarnpkg.com/@symbo.ls/indicator/-/indicator-2.11.132.tgz#f672fd40339353b7175f20355d6b5924316abfa0"
@@ -2500,6 +2520,8 @@
     "@symbo.ls/atoms" latest
     "@symbo.ls/utils" latest
 
+=======
+>>>>>>> Stashed changes
 "@symbo.ls/indicatordot@latest":
   version "2.11.160"
   resolved "https://registry.yarnpkg.com/@symbo.ls/indicatordot/-/indicatordot-2.11.160.tgz#9a6df0a57a75ba4bb0fde3e1f2f4f0dc5918eec1"
@@ -2878,6 +2900,46 @@
     "@symbo.ls/button" latest
     "@symbo.ls/icon" latest
     "@symbo.ls/uploadlabel" latest
+
+"@symbo.ls/uploadbutton@latest":
+  version "2.11.160"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uploadbutton/-/uploadbutton-2.11.160.tgz#9585e3085dc4e2b123a62e5d04098d7c369a4292"
+  integrity sha512-9+cmKb7OYbS6r5TpGk49MsywXDEBSbgvUCSEhiuc4MJL2hxkNoZCp0DPlcumRLWrPi9bP2wNJ5OKkSg6XHD99A==
+  dependencies:
+    "@symbo.ls/atoms" latest
+    "@symbo.ls/avatar" latest
+    "@symbo.ls/button" latest
+    "@symbo.ls/icon" latest
+
+"@symbo.ls/uploadfilemodal@latest":
+  version "2.11.160"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uploadfilemodal/-/uploadfilemodal-2.11.160.tgz#f714b3216428f1ffba6af1f4936c6ec423111ba4"
+  integrity sha512-H6uxJld/KQi/rsvnYhvz0Q0EdD21MIryNSgCTZ+WXfwvVHeBvF6M6ClLR5equXXW/ysm1+oxzLKfXeapI/MGWg==
+  dependencies:
+    "@symbo.ls/atoms" latest
+    "@symbo.ls/avatar" latest
+    "@symbo.ls/button" latest
+    "@symbo.ls/icon" latest
+
+"@symbo.ls/uploadingprocess@latest":
+  version "2.11.160"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uploadingprocess/-/uploadingprocess-2.11.160.tgz#c70da61a14a19dd0dea6966441f234be0b87c7a6"
+  integrity sha512-yxonFLkZqKzzpKS6rgHK4uyrblGA23yqPsX+zJkCsAcYjihdlDuOkZ/tZSqwrPpIWE+lP95BI5HC+vYXRzhDXQ==
+  dependencies:
+    "@symbo.ls/atoms" latest
+    "@symbo.ls/avatar" latest
+    "@symbo.ls/button" latest
+    "@symbo.ls/icon" latest
+
+"@symbo.ls/uploadlabel@latest":
+  version "2.11.160"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/uploadlabel/-/uploadlabel-2.11.160.tgz#d268e01b832e58564f7ac4a4b583f572779dbbbb"
+  integrity sha512-IetmXs8CfuchhhKPEzsQbw0+3abvrCZwtlSS4kERdn6wVd3tgu2QVN4Iu2VUsPB64EkHxxoxHHRxIEDxkmNXHQ==
+  dependencies:
+    "@symbo.ls/atoms" latest
+    "@symbo.ls/avatar" latest
+    "@symbo.ls/button" latest
+    "@symbo.ls/icon" latest
 
 "@symbo.ls/uploadbutton@latest":
   version "2.11.160"

@@ -15,7 +15,8 @@ const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
 const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
 
-const API_URL = 'https://api.symbols.app/' // eslint-disable-line
+const API_URL = 'https://api.symbols.app/'
+const API_URL_LOCAL = 'https://localhost:13335/'
 
 const pkg = loadModule(PACKAGE_PATH)
 const rcFile = loadModule(RC_PATH) // eslint-disable-line
@@ -32,8 +33,10 @@ program
 program
   .command('install')
   .description('Install Symbols')
+  .option('-d, --dev', 'Bypass the local build')
   .option('--framework', 'Which Symbols to install (domql, react)')
-  .action(async (framework) => {
+  .action(async (options) => {
+    const { framework } = options
     if (!rcFile || !localConfig) {
       console.error('symbols.json not found in the root of the repository')
       return
@@ -70,26 +73,36 @@ program
       console.log('\n')
       console.log(chalk.green.bold(packageName), 'successfuly added!')
       console.log('')
-      console.log(chalk.dim('Now you can import components like:'), 'import { Button } from \'smbls')
+      console.log(
+        chalk.dim('Now you can import components like:'),
+        'import { Button } from \'smbls'
+      )
     })
   })
 
 program
   .command('fetch [destination]')
   .description('Fetch symbols')
+  .option('-d, --dev', 'Bypass the local build')
   .action(async (options) => {
+    console.log(options)
     rc.then(async data => {
       const opts = { ...data, ...options } // eslint-disable-line
       const key = data.key || (options && options.key)
 
       const body = await fetchRemote(key, {
-        endpoint: 'http://localhost:8080/'
+        endpoint: options.dev ? API_URL_LOCAL : API_URL
       })
       const { version, ...config } = body
 
       console.log(chalk.bold('Symbols'), 'config fetched:')
       if (key) console.log(chalk.green(key))
-      else console.log(chalk.dim('- Default config from:'), chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY))
+      else {
+        console.log(
+          chalk.dim('- Default config from:'),
+          chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY)
+        )
+      }
       console.log('')
 
       for (const t in config) {
@@ -104,11 +117,15 @@ program
         body.designSystem = body.designsystem
         delete body.designsystem
       }
+
       const bodyString = JSON.stringify(body)
 
       try {
         fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
-        console.log(chalk.dim('- dynamic.json updated:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
+        console.log(
+          chalk.dim('- dynamic.json updated:'),
+          chalk.dim.underline(LOCAL_CONFIG_PATH)
+        )
         console.log('')
 
         console.log('Successfully wrote file')
