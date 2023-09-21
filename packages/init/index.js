@@ -8,7 +8,7 @@ import {
   appendIconsSprite
 } from '@symbo.ls/scratch'
 
-import { isObject, deepMerge } from '@domql/utils'
+import { isObject, deepMerge, deepClone } from '@domql/utils'
 
 import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 // import { setClassname } from 'css-in-props'
@@ -19,8 +19,8 @@ const CONFIG = getActiveConfig()
 
 const mergeWithLocalFile = (config = CONFIG, RC_FILE) => {
   const rcfile = isObject(RC_FILE) ? RC_FILE : DYNAMIC_JSON || {}
-  const fileData = deepMerge(config, rcfile)
-  return fileData && fileData.designSystem
+  const clonedFile = deepClone(rcfile.designSystem || {})
+  return deepMerge(config, clonedFile)
 }
 
 const SET_OPTIONS = {
@@ -54,9 +54,9 @@ export const init = (config, options = SET_OPTIONS) => {
   const useVariable = conf.useVariable
   const useFontImport = conf.useFontImport
   const useSvgSprite = conf.useSvgSprite
-  const hasSvgs = config.svg || resultConfig.SVG
+  const hasSvgs = config.svg || config.SVG
   const useIconSprite = conf.useIconSprite
-  const hasIcons = config.icons || resultConfig.ICONS
+  const hasIcons = config.icons || config.ICONS
 
   if (useFontImport) emotion.injectGlobal(FontFace)
   if (useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })

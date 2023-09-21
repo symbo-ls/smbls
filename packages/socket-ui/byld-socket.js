@@ -42,8 +42,8 @@ set({
   ANIMATION
 })
 
-const connectedToSymbols = (clientsCount, element, state) => {
-  if (isNumber(clientsCount) && clientsCount > 1) {
+const connectedToSymbols = (clients, element, state) => {
+  if (clients.symbols) {
     if (!state.connected) {
       state.notifications.connected = {
         title: 'Connected',
@@ -93,7 +93,8 @@ const onDisconnect = (element, state) => {
 
 const onChange = (element, state, context) => {
   return (event, data) => {
-    if (event === 'liveChange') {
+    console.log(event, data)
+    if (event === 'change') {
       const obj = JSON.parse(data)
       const { PROJECT_STATE, PROJECT_DESIGN_SYSTEM } = obj
       const { utils } = context
@@ -104,10 +105,11 @@ const onChange = (element, state, context) => {
         else state.update(PROJECT_STATE)
       }
 
+      console.log(PROJECT_DESIGN_SYSTEM)
       if (PROJECT_DESIGN_SYSTEM) init(PROJECT_DESIGN_SYSTEM)
     }
 
-    if (event === 'clientsCount') {
+    if (event === 'clients') {
       connectedToSymbols(data, element, state)
     }
   }
