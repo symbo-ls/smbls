@@ -84,6 +84,7 @@ create({
     ListWithTitleTemplate: {},
     GroupListTemplate: {},
     GroupListWithSearchTemplate: {},
+    CompleteProcess: {},
 
     // old components
 
