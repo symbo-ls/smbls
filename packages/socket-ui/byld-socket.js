@@ -93,7 +93,6 @@ const onDisconnect = (element, state) => {
 
 const onChange = (element, state, context) => {
   return (event, data) => {
-    console.log(event, data)
     if (event === 'change') {
       const obj = JSON.parse(data)
       const { PROJECT_STATE, PROJECT_DESIGN_SYSTEM } = obj
@@ -105,7 +104,6 @@ const onChange = (element, state, context) => {
         else state.update(PROJECT_STATE)
       }
 
-      console.log(PROJECT_DESIGN_SYSTEM)
       if (PROJECT_DESIGN_SYSTEM) init(PROJECT_DESIGN_SYSTEM)
     }
 
@@ -156,7 +154,7 @@ export const Sync = {
     render: (el, s, ctx) => {
       connect(ctx.key, {
         source: isLocalhost ? 'localhost' : 'client',
-        socketUrl: 'localhost:13335',
+        socketUrl: isLocalhost ? 'localhost:13336' : 'socket.symbols.app',
         location: window.location.host,
         onConnect: onConnect(el, s, ctx),
         onDisconnect: onDisconnect(el, s, ctx),

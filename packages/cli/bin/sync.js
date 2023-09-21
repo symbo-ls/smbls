@@ -6,9 +6,12 @@ import { loadModule } from './require.js'
 import { updateDynamycFile } from '@symbo.ls/socket'
 
 import * as socketClient from '@symbo.ls/socket/client.js'
+import { fetchFromCli } from './fetch.js'
 
-const SOCKET_API_URL = 'https://api.symbols.app/'
-const SOCKET_API_URL_LOCAL = 'https://localhost:13335/'
+const SOCKET_API_URL_LOCAL = 'http://localhost:13336/'
+const SOCKET_API_URL = 'https://socket.symbols.app/'
+
+const debugMsg = chalk.dim('Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls')
 
 const RC_PATH = process.cwd() + '/symbols.json'
 let rc = {}
@@ -19,34 +22,51 @@ try {
 program
   .command('sync')
   .description('Sync with Symbols')
-  .option('-l, --live', 'Bypass the local build')
-  .option('-d, --dev', 'Bypass the local build')
-  .option('--key', 'Bypass the local build')
-  .action(async (options) => {
+  .option('-d, --dev', 'Running from local server')
+  .option('-v, --verbose', 'Verbose errors and warnings')
+  .option('-k, --key', 'Bypass the symbols.json key, overriding the key manually')
+  .parse(process.argv)
+  .action(async (opts) => {
+    const { dev, verbose } = opts
+
+    await fetchFromCli(opts)
+    console.log('')
+    console.log(chalk.dim('----------------'))
+    console.log('')
+
     if (!rc) {
       console.error('symbols.json not found in the root of the repository')
       return
     }
-    rc.then(data => {
-      const opts = { ...data, ...options }
-      const key = data.key || options.key
+
+    // if (rc) return false /// /////////////////////
+
+    await rc.then(data => {
+      const options = { ...data, ...opts }
+      const key = data.key || opts.key
+      const socketUrl = dev ? SOCKET_API_URL_LOCAL : SOCKET_API_URL
+
+      console.log('Connecting to:', chalk.bold(socketUrl))
+      console.log('')
+
       socketClient.connect(key, {
         source: 'cli',
-        socketUrl: options.dev ? SOCKET_API_URL_LOCAL : SOCKET_API_URL,
+        socketUrl,
         onConnect: (id, socket) => {
-          console.log(key)
-          console.log(id)
+          console.log('Connected to', chalk.green(key), 'from', chalk.bold('Symbols'), 'socket server')
+          console.log('Socket id:', id)
+          console.log('')
+          console.log(chalk.dim('Listening to updates...'))
         },
         onChange: (event, data) => {
           if (event === 'clients') {
             console.log(
-              chalk.green.bold('Active clients:'),
-              Object.keys(data)
+              'Active clients:',
+              chalk.green.bold(Object.keys(data).join(', '))
             )
             return
           }
 
-          console.log(data)
           data = JSON.parse(data)
           const d = {}
           const {
@@ -63,12 +83,14 @@ program
           if (DATA && DATA.components) d.components = DATA.components
           if (PROJECT_SNIPPETS) d.snippets = PROJECT_SNIPPETS
           if (PROJECT_PAGES) d.pages = PROJECT_PAGES
-          if (Object.keys(d).length) updateDynamycFile(d)
+          if (Object.keys(d).length) updateDynamycFile(d, options)
         },
         onError: (err, socket) => {
-          console.log(err)
+          console.log(chalk.bold.green('Error during connection'))
+          if (verbose) console.error(err)
+          else console.log(debugMsg)
         },
-        ...opts
+        ...options
       })
     })
   })

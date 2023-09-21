@@ -8,7 +8,7 @@ const ENV = process.env.NODE_ENV
 
 const SOCKET_BACKEND_URL = window.location
   ?.host.includes('local')
-  ? 'localhost:13335'
+  ? 'localhost:13336'
   : 'socket.symbols.app'
 
 let socket

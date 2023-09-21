@@ -17,7 +17,7 @@ export const connect = (key, options = {}) => {
     (ENV === 'test' || ENV === 'development')
 
   const SOCKET_BACKEND_URL = isDev
-    ? 'http://localhost:13335/'
+    ? 'http://localhost:13336/'
     : 'https://socket.symbols.app/'
 
   const socketUrls = isArray(options.socketUrl)
