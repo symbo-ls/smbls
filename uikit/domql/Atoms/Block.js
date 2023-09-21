@@ -170,11 +170,13 @@ export const Ul = {
 // export const Article = { tag: 'article' }
 
 export const Gutter = {
+  deps: { getSpacingByKey },
   props: {
     size: 'C1'
   },
   class: {
-    size: ({ props }) => {
+    size: ({ props, deps }) => {
+      const { getSpacingByKey } = deps
       if (typeof props.size !== 'string') return
       const [height, width] = props.size.split(' ')
       return {

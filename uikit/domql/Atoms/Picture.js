@@ -3,13 +3,15 @@
 import { getSystemTheme } from './Theme'
 
 export const Picture = {
+  deps: { getSystemTheme },
   tag: 'picture',
 
   childExtend: {
     tag: 'source',
     attr: {
       media: (element) => {
-        const { props, key, context } = element
+        const { props, key, context, deps } = element
+        const { getSystemTheme } = deps
         const { MEDIA } = context.designSystem
         const globalTheme = getSystemTheme(element)
         const mediaName = (props.media || key).slice(1)

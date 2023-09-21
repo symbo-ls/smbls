@@ -16,7 +16,7 @@ export const CheckIndicator = {
   }
 }
 
-export const CheckIconWIthBorder = {
+export const CheckIconWithBorder = {
   extend: CheckIndicator,
   props: {
     border: '2px solid #04F214',

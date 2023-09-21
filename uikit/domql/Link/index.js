@@ -14,7 +14,8 @@ export const Link = {
     draggable: false
   },
   attr: {
-    href: (el, s, ctx) => {
+    href: (el) => {
+      const { context: ctx } = el
       const { exec } = ctx.utils
       return exec(el.props.href, el) || exec(el.props, el).href
     },
@@ -26,8 +27,8 @@ export const Link = {
 
 export const RouterLink = {
   on: {
-    click: (event, el, s, ctx) => {
-      const { props } = el
+    click: (event, el) => {
+      const { props, context: ctx } = el
       const { href } = props
       if (!href) return
       const { utils, routerOptions } = ctx
