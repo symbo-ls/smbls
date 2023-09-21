@@ -23,7 +23,6 @@ export const UploadModal = {
         UploadButton: null
       }
     }
-
   },
 
   Footer: {

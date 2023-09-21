@@ -46,6 +46,7 @@ export const UploadingProcess = {
     ProgressLine: {}
   }
 }
+
 export const UploadedProcess = {
   extend: UploadingProcess,
   File: {},

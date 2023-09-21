@@ -1,27 +1,27 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { List } from './LIst'
+import { List } from './List'
 
-export const ListWithLabel = {
+export const ListWithTitle = {
   extend: Flex,
   props: {
     flow: 'column',
-    background: '#1C1C1F',
-    round: 'Z+Y',
-    minWidth: 'F',
-    maxWidth: 'G',
-    overflow: 'hidden'
+    background: 'gray',
+    overflow: 'hidden',
+    round: 'Z1',
+    maxWidth: 'F1'
   },
 
-  Label: {
-    tag: 'h6',
+  Title: {
+    tag: 'h5',
     props: {
       text: 'Group name',
-      color: '#818186',
       fontSize: 'Z',
+      color: 'gray .92 +68',
+      fontWeight: '400',
       background: 'transparent',
-      padding: 'Z+X A+W'
+      padding: 'A'
     }
   },
 
@@ -30,15 +30,15 @@ export const ListWithLabel = {
     props: {
       round: '0',
       background: 'transparent',
-      minWidth: '100%',
-      maxWidth: '100%'
+      minWidth: '100%'
     }
   }
 }
 
-export const ListWithLabelTemplate = {
-  extend: ListWithLabel,
-  Label: {},
+export const ListWithTitleTemplate = {
+  extend: ListWithTitle,
+
+  Title: {},
   List: {
     Flex: {
       ...[

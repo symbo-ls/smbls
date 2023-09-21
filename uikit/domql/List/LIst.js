@@ -4,27 +4,26 @@ export const List = {
   props: {
     position: 'relative',
     overflow: 'hidden',
-    round: 'Z+Y',
-    theme: 'primary',
+    round: 'Z1',
+    background: 'gray',
     minWidth: 'F1',
-    // maxWidth: 'H',
     ':before': {
       content: '""',
       position: 'absolute',
-      boxSize: 'A 100%',
+      boxSize: 'A2 100%',
       top: '0',
       left: '0',
       zIndex: '2',
-      background: 'linear-gradient(to bottom, rgba(28, 28, 31, 1) 0%, rgba(28, 28, 31, 0) 100%)'
+      background: 'linear-gradient(to bottom, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)'
     },
     ':after': {
       content: '""',
       position: 'absolute',
-      boxSize: 'A 100%',
+      boxSize: 'A2 100%',
       bottom: '0',
       left: '0',
       zIndex: '2',
-      background: 'linear-gradient(to top, rgba(28, 28, 31, 1) 0%, rgba(28, 28, 31, 0) 100%)'
+      background: 'linear-gradient(to top, rgba(20, 20, 22, 1) 0%, rgba(20, 20, 22, 0) 100%)'
     }
   },
 
@@ -40,7 +39,7 @@ export const List = {
 
     childExtend: {
       props: {
-        padding: 'A A+Y',
+        padding: 'Z1 A1',
         position: 'relative',
         cursor: 'pointer',
         ':after': {
@@ -50,8 +49,8 @@ export const List = {
           top: '0',
           left: '0',
           opacity: '0',
-          transition: 'opacity .15s ease-in-out',
-          background: '#141416'
+          background: 'gray .92 +8'
+          // background: '#141416'
         },
         ':hover > *': { zIndex: '5' },
         ':hover:after': { opacity: '1', zIndex: '4' },

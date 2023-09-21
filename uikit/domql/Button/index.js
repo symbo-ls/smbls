@@ -104,7 +104,7 @@ export const ButtonTemplate1 = {
     padding: 'A',
     round: 'A',
     color: 'white',
-    background: '#F4454E'
+    background: 'red'
   }
 }
 

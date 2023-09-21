@@ -1,47 +1,93 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { ListWithLabel } from './ListWithLabel'
+import { ListWithTitle } from './ListWithTitle'
 
 export const GroupList = {
   extend: Flex,
   props: {
     flow: 'column',
-    background: '#1C1C1F',
-    minWidth: 'F',
-    maxWidth: 'G',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    maxHeight: 'H',
+    background: 'gray3',
+    round: 'Z1',
+    maxWidth: 'G'
   },
 
   Header: {
     extend: Flex,
     props: {
-      background: '#141416'
+      background: 'gray',
+      padding: 'Z - Z A'
     },
     h4: {
       props: {
-        text: 'Header'
+        text: 'header',
+        fontSize: 'A',
+        fontWeight: '500',
+        color: 'gray4'
       }
     }
   },
 
   Groups: {
-    extend: Flex,
+    props: {
+      overflow: 'hidden',
+      maxHeight: '100%',
+      position: 'relative',
+      ':before': {
+        content: '""',
+        position: 'absolute',
+        boxSize: 'A1 100%',
+        top: '0',
+        left: '0',
+        zIndex: '2',
+        background: 'linear-gradient(to bottom, rgba(28, 28, 31, 1) 0%, rgba(28, 28, 31, 0) 100%)'
+      },
+      ':after': {
+        content: '""',
+        position: 'absolute',
+        boxSize: 'A1 100%',
+        bottom: '0',
+        left: '0',
+        zIndex: '2',
+        background: 'linear-gradient(to top, rgba(28, 28, 31, 1) 0%, rgba(28, 28, 31, 0) 100%)'
+      }
+    },
     Flex: {
+      extend: Flex,
       props: {
         flow: 'column',
-        flex: '1'
+        maxHeight: 'G2',
+        style: {
+          overflowY: 'auto !important',
+          '::-webkit-scrollbar': { display: 'none' }
+        }
       },
       childExtend: {
-        extend: ListWithLabel,
+        extend: ListWithTitle,
         props: {
-          background: 'transparent',
           round: '0',
           minWidth: '100%',
-          maxWidth: '100%',
           overflow: 'visible',
-          Label: {},
-          List: {
+          background: 'transparent'
+        },
+        Title: {},
+        List: {
+          props: {
+            overflow: 'visible',
+            ':before': { display: 'none' },
+            ':after': { display: 'none' }
+          },
+          Flex: {
+            props: {
+              style: { overflowY: 'visible' },
+              minHeight: 'fit-content',
+              maxHeight: 'fit-content',
+              childProps: {
+                ':after': { background: 'gray' }
+              }
+            }
           }
         }
       }
@@ -56,7 +102,7 @@ export const GroupListTemplate = {
     Flex: {
       ...[
         {
-          Label: {},
+          Title: null,
           List: {
             Flex: {
               ...[
@@ -67,7 +113,7 @@ export const GroupListTemplate = {
           }
         },
         {
-          Label: {},
+          Title: {},
           List: {
             Flex: {
               ...[
@@ -79,7 +125,7 @@ export const GroupListTemplate = {
           }
         },
         {
-          Label: {},
+          Title: {},
           List: {
             Flex: {
               ...[

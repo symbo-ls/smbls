@@ -81,7 +81,7 @@ create({
     ButtonTemplate3: {},
     ButtonTemplate4: {},
     ListTemplate: {},
-    ListWithLabelTemplate: {},
+    ListWithTitleTemplate: {},
     GroupListTemplate: {},
     GroupListWithSearchTemplate: {},
 
@@ -102,7 +102,7 @@ create({
     // ChatUserWithUploadedFile: {},
     // ChatUserWithButtonSet: {},
     // ChatUserWithNotification: {},
-    Card: {},
+    // Card: {},
     // DropDownWithAvatar: {},
     // ConvertCard: {},
     // ConvertBoard: {},
