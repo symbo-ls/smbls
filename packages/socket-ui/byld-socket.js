@@ -7,6 +7,8 @@ import { set } from '@symbo.ls/scratch'
 import { connect } from '@symbo.ls/socket/client'
 import { Notification } from '@symbo.ls/notification'
 
+const isLocalhost = window && window.location && window.location.host.includes('local')
+
 const ANIMATION = {
   fadeInUp: {
     from: {
@@ -151,7 +153,7 @@ export const Sync = {
   on: {
     render: (el, s, ctx) => {
       connect(ctx.key, {
-        source: 'client',
+        source: isLocalhost ? 'localhost' : 'client',
         socketUrl: 'localhost:13335',
         location: window.location.host,
         onConnect: onConnect(el, s, ctx),

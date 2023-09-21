@@ -9,16 +9,12 @@ const { window } = globals.default || globals
 
 const ENV = process.env.NODE_ENV
 
-const SOCKET_BACKEND_URL = window && window.location &&
-  window.location.host.includes('local')
+const isLocalhost = window && window.location && window.location.host.includes('local')
+const SOCKET_BACKEND_URL = isLocalhost
   ? 'localhost:13335'
-  : 'https://socket.symbols.app/' ||
-  'https://socket.symbols.app'
+  : 'https://socket.symbols.app/'
 
-let socket
-let tryConnect = 0
 const defautlOpts = {}
-const tryConnectMax = 1
 
 export const connect = (key, options = {}) => {
   const socketUrls = isArray(options.socketUrl)
@@ -28,9 +24,7 @@ export const connect = (key, options = {}) => {
   const primaryUrl = socketUrls[0]
   const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
 
-  console.log(primaryUrl)
-
-  socket = io(primaryUrl || SOCKET_BACKEND_URL)
+  const socket = io(primaryUrl || SOCKET_BACKEND_URL)
 
   socket.on('connect', () => {
     if (ENV === 'test' || ENV === 'development') {
@@ -42,7 +36,7 @@ export const connect = (key, options = {}) => {
       )
     }
 
-    socket.emit('initConnect', options)
+    socket.emit('initConnect', { key, ...options })
 
     try {
       if (isFunction(options.onConnect)) {
@@ -53,6 +47,8 @@ export const connect = (key, options = {}) => {
     }
   })
 
+  let tryConnect = 0
+  const tryConnectMax = 1
   socket.on('connect_error', (err) => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
@@ -97,12 +93,14 @@ export const connect = (key, options = {}) => {
       console.error(e)
     }
   })
+
+  return socket
 }
 
-export const send = (event = 'change', changes, options) => {
-  socket.emit(event, changes, { ...options, ...defautlOpts })
+export function send (event = 'change', changes, options) {
+  this.emit(event, changes, { ...options, ...defautlOpts })
 }
 
-export const disconnect = () => {
-  socket.disconnect()
+export function disconnect () {
+  this.disconnect()
 }

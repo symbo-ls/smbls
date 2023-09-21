@@ -10,7 +10,7 @@ const DEFAULT_PROPS = {
     remote: true,
     async: true,
     serviceRoute: 'state',
-    endpoint: 'api.symbols.dev'
+    endpoint: 'https://api.symbols.app/'
   },
   state: {},
   pages: {},

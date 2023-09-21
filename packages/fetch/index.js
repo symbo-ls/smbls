@@ -11,8 +11,8 @@ const IS_DEVELOPMENT = window && window.location
   : process.env.NODE_ENV === 'development'
 
 const SERVER_URL = IS_DEVELOPMENT
-  ? 'localhost:13335'
-  : 'https://api.symbols.dev'
+  ? 'http://localhost:13335/'
+  : 'https://api.symbols.app/'
 
 const defaultOptions = {
   endpoint: SERVER_URL
@@ -21,11 +21,7 @@ const defaultOptions = {
 export const fetch = globalThis.fetch
 
 export const fetchRemote = async (key, options = defaultOptions) => {
-  const baseUrl = options.endpoint
-    ? options.endpoint.includes('http')
-      ? options.endpoint
-      : `https://${options.endpoint}/`
-    : SERVER_URL
+  const baseUrl = options.endpoint || SERVER_URL
   const route = options.serviceRoute
     ? utils.isArray(options.serviceRoute)
       ? options.serviceRoute.map(v => v.toLowerCase()).join(',')
@@ -34,11 +30,13 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 
   let response
   try {
+    console.log(baseUrl + route, key)
     response = await fetch(baseUrl + route, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
     })
   } catch (e) {
+    console.error('rrr')
     console.error(e)
   }
 

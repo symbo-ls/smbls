@@ -6,7 +6,7 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { createRequire } from 'module'
 import * as utils from '@domql/utils'
-const { overwriteDeep } = utils
+const { overwriteDeep } = utils.default
 
 const require = createRequire(import.meta.url) // construct the require method
 const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
@@ -15,20 +15,23 @@ const app = express()
 let io
 
 export const updateDynamycFile = (changes, options = {}) => {
-  const { key, live } = options
+  // const { key, live } = options
   const file = require('@symbo.ls/init/dynamic.json')
+  console.log(file)
 
-  const newMerge = overwriteDeep(changes, file)
+  const newMerge = overwriteDeep(file, changes)
   const mergeStr = JSON.stringify(newMerge, null, 2)
   const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 
-  if (live) {
-    io.to(key).emit('liveChange', mergeStr)
-  } else {
-    fs.writeFile(initPath, mergeStr, function (err) {
-      if (err) { return console.log(err) }
-    })
-  }
+  console.log(mergeStr)
+
+  // if (live) {
+  //   io.to(key).emit('liveChange', mergeStr)
+  // } else {
+  fs.writeFile(initPath, mergeStr, function (err) {
+    if (err) { return console.log(err) }
+  })
+  // }
 }
 
 export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {

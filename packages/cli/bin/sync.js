@@ -4,6 +4,7 @@ import { updateDynamycFile } from '@symbo.ls/socket'
 import * as socketClient from '@symbo.ls/socket/client.js'
 import { program } from './program.js'
 import { loadModule } from './require.js'
+import chalk from 'chalk'
 
 const RC_PATH = process.cwd() + '/symbols.json'
 let rc = {}
@@ -27,28 +28,34 @@ program
       console.log(data.key)
       socketClient.connect(key, {
         source: 'cli',
+        socketUrl: 'http://localhost:13335',
         onConnect: (id, socket) => {
           console.log(key)
           console.log(id)
         },
         onChange: (event, data) => {
-          data = JSON.parse(data)
-          console.log('change')
-          console.log(event)
+          if (event === 'clients') {
+            console.log(chalk.green.bold('Active clients:'), Object.keys(data))
+            return
+          }
+
           console.log(data)
+          data = JSON.parse(data)
           const d = {}
           const {
             PROJECT_DESIGN_SYSTEM,
             PROJECT_STATE,
             PROJECT_COMPONENTS,
             PROJECT_SNIPPETS,
-            PROJECT_PAGES
+            PROJECT_PAGES,
+            DATA
           } = data
           if (PROJECT_DESIGN_SYSTEM) d.designSystem = PROJECT_DESIGN_SYSTEM
-          if (PROJECT_STATE) d.designSystem = PROJECT_STATE
-          if (PROJECT_COMPONENTS) d.designSystem = PROJECT_COMPONENTS
-          if (PROJECT_SNIPPETS) d.designSystem = PROJECT_SNIPPETS
-          if (PROJECT_PAGES) d.designSystem = PROJECT_PAGES
+          if (PROJECT_STATE) d.state = PROJECT_STATE
+          if (PROJECT_COMPONENTS) d.components = PROJECT_COMPONENTS
+          if (DATA && DATA.components) d.components = DATA.components
+          if (PROJECT_SNIPPETS) d.snippets = PROJECT_SNIPPETS
+          if (PROJECT_PAGES) d.pages = PROJECT_PAGES
           if (Object.keys(d).length) updateDynamycFile(d)
         },
         onError: (err, socket) => {

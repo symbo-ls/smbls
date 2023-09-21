@@ -6,16 +6,16 @@ import { loadModule } from './require.js'
 import { exec } from 'child_process'
 import { program } from './program.js'
 
-import fetch from '@symbo.ls/fetch'
-const { fetchRemote } = fetch
+import * as fetch from '@symbo.ls/fetch'
+const { fetchRemote } = fetch.default
 
 const PACKAGE_PATH = process.cwd() + '/package.json'
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.dev/' // eslint-disable-line
+const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
 
-const API_URL = 'https://api.symbols.dev/' // eslint-disable-line
+const API_URL = 'https://api.symbols.app/' // eslint-disable-line
 
 const pkg = loadModule(PACKAGE_PATH)
 const rcFile = loadModule(RC_PATH) // eslint-disable-line
@@ -82,15 +82,14 @@ program
       const opts = { ...data, ...options } // eslint-disable-line
       const key = data.key || (options && options.key)
 
-      const body = await fetchRemote(key, { endpoint: 'api.symbols.dev' })
+      const body = await fetchRemote(key, {
+        endpoint: 'http://localhost:8080/'
+      })
       const { version, ...config } = body
 
       console.log(chalk.bold('Symbols'), 'config fetched:')
       if (key) console.log(chalk.green(key))
       else console.log(chalk.dim('- Default config from:'), chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY))
-      console.log('')
-
-      console.log(chalk.dim('- dynamic.json updated:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
       console.log('')
 
       for (const t in config) {
@@ -101,14 +100,20 @@ program
         console.log('  ', chalk.dim(arr.join(', ')))
       }
 
+      if (body.designsystem) {
+        body.designSystem = body.designsystem
+        delete body.designsystem
+      }
       const bodyString = JSON.stringify(body)
-      fs.writeFile(LOCAL_CONFIG_PATH, bodyString, err => {
+
+      try {
+        fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
+        console.log(chalk.dim('- dynamic.json updated:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
         console.log('')
-        if (err) {
-          console.log('Error writing file', err)
-        } else {
-          console.log('Successfully wrote file')
-        }
-      })
+
+        console.log('Successfully wrote file')
+      } catch (e) {
+        console.log('Error writing file', e)
+      }
     })
   })

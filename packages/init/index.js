@@ -35,6 +35,7 @@ const SET_OPTIONS = {
 
 export const init = (config, options = SET_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
+  const resultConfig = mergeWithLocalFile(config || {})
 
   const conf = set({
     verbose: options.verbose,
@@ -44,7 +45,7 @@ export const init = (config, options = SET_OPTIONS) => {
     useSvgSprite: options.useSvgSprite,
     useDocumentTheme: options.useDocumentTheme,
     useIconSprite: options.useIconSprite,
-    ...config
+    ...resultConfig
   }, { newConfig: options.newConfig })
 
   const FontFace = getFontFaceString(conf.FONT)
@@ -53,9 +54,9 @@ export const init = (config, options = SET_OPTIONS) => {
   const useVariable = conf.useVariable
   const useFontImport = conf.useFontImport
   const useSvgSprite = conf.useSvgSprite
-  const hasSvgs = config.svg || config.SVG
+  const hasSvgs = config.svg || resultConfig.SVG
   const useIconSprite = conf.useIconSprite
-  const hasIcons = config.icons || config.ICONS
+  const hasIcons = config.icons || resultConfig.ICONS
 
   if (useFontImport) emotion.injectGlobal(FontFace)
   if (useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })
