@@ -2411,6 +2411,11 @@
   dependencies:
     "@symbo.ls/feather-icons" latest
 
+"@symbo.ls/default-icons@latest":
+  version "2.11.132"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/default-icons/-/default-icons-2.11.132.tgz#26a9bb64ebccf06b96747d2e3261fab7d4becec2"
+  integrity sha512-s1izsf70Nadmw9Juso0Oz2DJNymgxCq37+KtM7y5yxvhdVuUdLAuc1z/BKXtwDsjpgikGO1f/iLnjjBt3xlZLg==
+
 "@symbo.ls/dialog@latest":
   version "2.11.132"
   resolved "https://registry.yarnpkg.com/@symbo.ls/dialog/-/dialog-2.11.132.tgz#a87e4195bf4542f151e0095902f9a3f3a83019c2"
