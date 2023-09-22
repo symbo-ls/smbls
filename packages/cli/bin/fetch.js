@@ -38,8 +38,7 @@ export const fetchFromCli = async (opts) => {
 
     const endpoint = dev ? API_URL_LOCAL : API_URL
 
-    console.log('Fetching from:', chalk.bold(endpoint))
-    console.log()
+    console.log('Fetching from:', chalk.bold(endpoint), '\n')
 
     const body = await fetchRemote(key, {
       endpoint,
@@ -97,11 +96,9 @@ export const fetchFromCli = async (opts) => {
         console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
       }
 
-      console.log()
-      console.log(chalk.bold.green('Successfully wrote file'))
+      console.log(chalk.bold.green('\nSuccessfully wrote file'))
     } catch (e) {
-      console.log()
-      console.log(chalk.bold.red('Error writing file'))
+      console.log(chalk.bold.red('\nError writing file'))
       if (verbose) console.error(e)
       else console.log(debugMsg)
     }

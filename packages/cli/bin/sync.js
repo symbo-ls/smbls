@@ -26,14 +26,17 @@ program
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('-k, --key', 'Bypass the symbols.json key, overriding the key manually')
+  .option('-f, --fetch', 'Verbose errors and warnings', true)
   .parse(process.argv)
   .action(async (opts) => {
-    const { dev, verbose } = opts
+    const { dev, verbose, fetch: fetchAlso } = opts
 
-    await fetchFromCli(opts)
-    console.log('')
-    console.log(chalk.dim('----------------'))
-    console.log('')
+    if (fetchAlso) {
+      await fetchFromCli(opts)
+      console.log()
+      console.log(chalk.dim('----------------'))
+      console.log()
+    }
 
     if (!rc) {
       console.error('symbols.json not found in the root of the repository')
@@ -49,7 +52,7 @@ program
       const socketUrl = dev ? SOCKET_API_URL_LOCAL : SOCKET_API_URL
 
       console.log('Connecting to:', chalk.bold(socketUrl))
-      console.log('')
+      console.log()
 
       socketClient.connect(key, {
         source: 'cli',
@@ -57,8 +60,7 @@ program
         onConnect: (id, socket) => {
           console.log('Connected to', chalk.green(key), 'from', chalk.bold('Symbols'), 'socket server')
           console.log('Socket id:', id)
-          console.log('')
-          console.log(chalk.dim('Listening to updates...'))
+          console.log(chalk.dim('\nListening to updates...'))
         },
         onChange: (event, data) => {
           if (event === 'clients') {
