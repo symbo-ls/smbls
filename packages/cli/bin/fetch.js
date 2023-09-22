@@ -7,6 +7,7 @@ import { program } from './program.js'
 import * as fetch from '@symbo.ls/fetch'
 
 import * as utils from '@domql/utils'
+import { convertFromCli } from './convert.js'
 const { isObjectLike } = utils.default
 
 const { fetchRemote } = fetch.default
@@ -30,10 +31,10 @@ try {
 } catch (e) { console.error('Please include symbols.json to your root of respository') }
 
 export const fetchFromCli = async (opts) => {
-  const { dev, verbose } = opts
+  const { dev, verbose, prettify } = opts
 
   await rc.then(async data => {
-    const key = data.key
+    const { key, framework } = data
 
     const endpoint = dev ? API_URL_LOCAL : API_URL
 
@@ -85,7 +86,7 @@ export const fetchFromCli = async (opts) => {
       delete body.designsystem
     }
 
-    const bodyString = JSON.stringify(body)
+    const bodyString = JSON.stringify(body, null, prettify ?? 2)
 
     try {
       await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
@@ -103,6 +104,10 @@ export const fetchFromCli = async (opts) => {
       console.log(chalk.bold.green('Error writing file'))
       if (verbose) console.error(e)
       else console.log(debugMsg)
+    }
+
+    if (body.components && framework) {
+      convertFromCli(body.components, { ...opts, framework })
     }
   })
 }

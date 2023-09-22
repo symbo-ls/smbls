@@ -14,18 +14,8 @@
         "ratio": 1.618
       }
     },
-    "Button": {
-      "extend": {
-        "extend": "Button",
-        "props": {
-          "icon": "arrow up right",
-          "gap": "Y1",
-          "theme": "primary",
-          "text": "Call to Action",
-          "padding": "Z2 B2",
-          "round": "C"
-        }
-      }
+    "ChatUserWithButtonSet": {
+      "ChatUserWithButtonSet": {}
     }
   },
   "snippets": {},
@@ -57,20 +47,15 @@
     "THEME": {
       "document": {
         "@light": {
-          "color": "indigo",
-          "background": "white"
+          "color": "white",
+          "background": "indigo"
         },
         "@dark": {
           "color": "white",
-          "background": "gray"
+          "background": "black"
         },
         "@midnight": {
-          "background": "blue",
-          "color": "white"
-        },
-        "@evening": {
-          "background": "brown",
-          "color": "white"
+          "background": "orange"
         }
       },
       "primary": {
@@ -218,7 +203,8 @@
           "margin": 0,
           "lineHeight": 1.5,
           "fontWeight": 400
-        }
+        },
+        "body": {}
       }
     },
     "SPACING": {

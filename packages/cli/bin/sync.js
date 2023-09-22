@@ -7,6 +7,7 @@ import { updateDynamycFile } from '@symbo.ls/socket'
 
 import * as socketClient from '@symbo.ls/socket/client.js'
 import { fetchFromCli } from './fetch.js'
+import { convertFromCli } from './convert.js'
 
 const SOCKET_API_URL_LOCAL = 'http://localhost:13336/'
 const SOCKET_API_URL = 'https://socket.symbols.app/'
@@ -41,9 +42,10 @@ program
 
     // if (rc) return false /// /////////////////////
 
-    await rc.then(data => {
-      const options = { ...data, ...opts }
-      const key = data.key || opts.key
+    await rc.then(symbolsrc => {
+      const options = { ...symbolsrc, ...opts }
+      const { framework } = symbolsrc
+      const key = symbolsrc.key || opts.key
       const socketUrl = dev ? SOCKET_API_URL_LOCAL : SOCKET_API_URL
 
       console.log('Connecting to:', chalk.bold(socketUrl))
@@ -83,7 +85,16 @@ program
           if (DATA && DATA.components) d.components = DATA.components
           if (PROJECT_SNIPPETS) d.snippets = PROJECT_SNIPPETS
           if (PROJECT_PAGES) d.pages = PROJECT_PAGES
-          if (Object.keys(d).length) updateDynamycFile(d, options)
+
+          if (Object.keys(d).length) {
+            updateDynamycFile(d, { framework, ...options })
+          }
+
+          if (d.components && framework) {
+            convertFromCli(d.components, {
+              ...options, framework
+            })
+          }
         },
         onError: (err, socket) => {
           console.log(chalk.bold.green('Error during connection'))

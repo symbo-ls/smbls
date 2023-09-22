@@ -1,6 +1,7 @@
 'use strict'
 
 import fs from 'fs'
+import chalk from 'chalk'
 import path from 'path'
 import { program } from './program.js'
 import { convert } from 'kalduna'
@@ -126,7 +127,7 @@ async function mkdirp (dir) {
 }
 
 // Returns a string
-function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options) {
+export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options = {}) {
   let convertedStr = ''
   const whitelist = (options.only ? options.only.split(',') : null)
 
@@ -215,6 +216,15 @@ function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options)
   console.groupEnd()
 
   return convertedStr
+}
+
+export function convertFromCli (data, opts) {
+  const { framework } = opts
+  console.log('')
+  console.log(chalk.dim('----------------'))
+  console.log('')
+  console.log('Converting components to', chalk.bold(framework))
+  convertDomqlModule(data, null, framework)
 }
 
 // Takes a source file, then bundles, parses and converts it and writes the
@@ -356,6 +366,175 @@ function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
   }
 }
 
+export async function convertKalduna (src, dest, options) {
+  if (!convert) {
+    throw new Error(
+      'convert() from `kalduna` is not defined. Try to install ' +
+        '`kalduna` and run this command again.')
+  }
+
+  if (!parse) {
+    throw new Error(
+      'parse() from `globusa` is not defined. Try to install ' +
+        '`globusa` and run this command again.')
+  }
+
+  // Desired format
+  let desiredFormat = 'react'
+  if (options.angular) {
+    desiredFormat = 'angular'
+  } else if (options.vue2) {
+    desiredFormat = 'vue2'
+  } else if (options.vue3) {
+    desiredFormat = 'vue3'
+  }
+
+  // Resolve source file/dir
+  const srcPath = path.resolve(src || './src')
+  if (!fs.existsSync(srcPath)) {
+    console.error(`Source directory/file ('${srcPath}') does not exist`)
+    process.exit(1)
+  }
+
+  // Resolve & create tmp dir
+  const tmpDirPath = options.tmpDir ??
+        path.resolve(path.dirname(srcPath), TMP_DIR_NAME)
+  await mkdirp(tmpDirPath)
+
+  // Put a package.json file so that when we import() the modules from the
+  // directory, node doesn't recognize them as ES modules (in case the parent
+  // directory of the tmp dir has "type": "module" in its package.json
+  const pj = await fs.promises.open(
+    path.resolve(tmpDirPath, 'package.json'), 'w')
+  await pj.writeFile(TMP_DIR_PACKAGE_JSON_STR, 'utf8')
+  await pj.close()
+
+  // Convert single file. Output will also be a single file.
+  if (!isDirectory(srcPath)) {
+    // Determine destFilePath and create it if needed
+    let destFilePath
+    if (dest) {
+      // dest is given.
+      if (!fs.existsSync(dest)) {
+        // dest doesn't exist. That's the output file we'll create.
+        destFilePath = path.resolve(dest)
+      } else if (isDirectory(dest)) {
+        // dest exists and is a directory. Create our output file inside it.
+        destFilePath = path.join(path.resolve(dest), path.basename(srcPath))
+      } else {
+        // dest exists and is not a directory. Overwrite the file.
+        destFilePath = path.resolve(dest)
+      }
+    } else {
+      // dest not given. Use default (desiredFormat as directory).
+      const destDir = path.resolve(desiredFormat)
+      await mkdirp(destDir)
+      destFilePath = path.join(destDir, path.basename(srcPath))
+    }
+
+    await convertFile(
+      srcPath,
+      tmpDirPath,
+      destFilePath,
+      desiredFormat,
+      options
+    )
+
+    process.exit(0)
+  }
+
+  // We're converting multiple files (in a directory).
+  // Determine destDirPath & create it if needed
+  if (!dest) dest = path.resolve(desiredFormat)
+  let destDirPath
+  if (!fs.existsSync(dest)) {
+    // dest doesn't exist. Create it.
+    destDirPath = path.resolve(dest)
+    await mkdirp(destDirPath)
+  } else if (isDirectory(dest)) {
+    // dest exists and is a directory.
+    destDirPath = path.resolve(dest)
+  } else {
+    // dest exists and is not a directory.
+    console.error(
+      `The destination ('${path.resolve(dest)}') must be a directory when ` +
+        `the source ('${srcPath}') is a directory`)
+    process.exit(1)
+  }
+
+  // Resolve merge dir
+  let mergeDirPath = null
+  if (options.merge && options.internalUikit) {
+    mergeDirPath = path.resolve(options.merge)
+    if (!fs.existsSync(mergeDirPath)) {
+      console.error(`Merge directory '${mergeDirPath}' does not exist`)
+      process.exit(1)
+    }
+  }
+
+  const dontConvert = ['index.js', 'package.json', 'node_modules', 'dist']
+  const sourceDirNames = (await fs.promises.readdir(srcPath))
+    .filter(dir => !dontConvert.includes(dir))
+
+  const dirs = []
+
+  // Core convert loop
+  for (const dir of sourceDirNames) {
+    // Ignored directories
+    if (options.internalUikit) {
+      let skip = false
+      for (const pat of INTERNAL_UIKIT_CONF.excludedDirectories) { if (dir.match(pat)) { skip = true; break } }
+      if (skip) continue
+    }
+
+    const dirPath = path.join(srcPath, dir)
+    if (!isDirectory(dirPath)) {
+      console.log(`Skipping ${dirPath} because it is not a directory`)
+      continue
+    }
+    const indexFilePath = path.join(dirPath, 'index.js')
+    const pjFilePath = path.join(dirPath, 'package.json')
+
+    const globusaStruct = await convertFile(
+      indexFilePath, // src
+      path.join(tmpDirPath, dir), // tmp
+      path.join(destDirPath, dir, 'index.js'), // dst
+      desiredFormat,
+      options
+    )
+
+    if (options.internalUikit && fs.existsSync(pjFilePath)) {
+      generatePackageJsonFile(
+        pjFilePath, // src
+        path.join(destDirPath, dir, 'package.json'), // dst
+        globusaStruct,
+        desiredFormat,
+        options
+      )
+    }
+
+    dirs.push(dir)
+  }
+
+  // Generate top index.js file
+  if (dirs.length > 0) {
+    const fileContent = dirs.map(d => `export * from './${d}'`).join('\n')
+    const fh = await fs.promises.open(path.join(destDirPath, 'index.js'), 'w')
+    await fh.writeFile(fileContent, 'utf8')
+    await fh.close()
+  }
+
+  if (mergeDirPath) {
+    console.log(`Merging '${mergeDirPath}' and ${destDirPath}...`)
+    mergeDirectories(mergeDirPath, destDirPath, {
+      globusaMerge: ['index.js', 'index.jsx'],
+      exclude: ['dist', 'node_modules']
+    })
+  }
+
+  process.exit(0)
+}
+
 program
   .command('convert')
   .description('Convert and copy all DomQL components under a directory')
@@ -378,171 +557,4 @@ program
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
-  .action(async (src, dest, options) => {
-    if (!convert) {
-      throw new Error(
-        'convert() from `kalduna` is not defined. Try to install ' +
-          '`kalduna` and run this command again.')
-    }
-
-    if (!parse) {
-      throw new Error(
-        'parse() from `globusa` is not defined. Try to install ' +
-          '`globusa` and run this command again.')
-    }
-
-    // Desired format
-    let desiredFormat = 'react'
-    if (options.angular) {
-      desiredFormat = 'angular'
-    } else if (options.vue2) {
-      desiredFormat = 'vue2'
-    } else if (options.vue3) {
-      desiredFormat = 'vue3'
-    }
-
-    // Resolve source file/dir
-    const srcPath = path.resolve(src || './src')
-    if (!fs.existsSync(srcPath)) {
-      console.error(`Source directory/file ('${srcPath}') does not exist`)
-      process.exit(1)
-    }
-
-    // Resolve & create tmp dir
-    const tmpDirPath = options.tmpDir ??
-          path.resolve(path.dirname(srcPath), TMP_DIR_NAME)
-    await mkdirp(tmpDirPath)
-
-    // Put a package.json file so that when we import() the modules from the
-    // directory, node doesn't recognize them as ES modules (in case the parent
-    // directory of the tmp dir has "type": "module" in its package.json
-    const pj = await fs.promises.open(
-      path.resolve(tmpDirPath, 'package.json'), 'w')
-    await pj.writeFile(TMP_DIR_PACKAGE_JSON_STR, 'utf8')
-    await pj.close()
-
-    // Convert single file. Output will also be a single file.
-    if (!isDirectory(srcPath)) {
-      // Determine destFilePath and create it if needed
-      let destFilePath
-      if (dest) {
-        // dest is given.
-        if (!fs.existsSync(dest)) {
-          // dest doesn't exist. That's the output file we'll create.
-          destFilePath = path.resolve(dest)
-        } else if (isDirectory(dest)) {
-          // dest exists and is a directory. Create our output file inside it.
-          destFilePath = path.join(path.resolve(dest), path.basename(srcPath))
-        } else {
-          // dest exists and is not a directory. Overwrite the file.
-          destFilePath = path.resolve(dest)
-        }
-      } else {
-        // dest not given. Use default (desiredFormat as directory).
-        const destDir = path.resolve(desiredFormat)
-        await mkdirp(destDir)
-        destFilePath = path.join(destDir, path.basename(srcPath))
-      }
-
-      await convertFile(
-        srcPath,
-        tmpDirPath,
-        destFilePath,
-        desiredFormat,
-        options
-      )
-
-      process.exit(0)
-    }
-
-    // We're converting multiple files (in a directory).
-    // Determine destDirPath & create it if needed
-    if (!dest) dest = path.resolve(desiredFormat)
-    let destDirPath
-    if (!fs.existsSync(dest)) {
-      // dest doesn't exist. Create it.
-      destDirPath = path.resolve(dest)
-      await mkdirp(destDirPath)
-    } else if (isDirectory(dest)) {
-      // dest exists and is a directory.
-      destDirPath = path.resolve(dest)
-    } else {
-      // dest exists and is not a directory.
-      console.error(
-        `The destination ('${path.resolve(dest)}') must be a directory when ` +
-          `the source ('${srcPath}') is a directory`)
-      process.exit(1)
-    }
-
-    // Resolve merge dir
-    let mergeDirPath = null
-    if (options.merge && options.internalUikit) {
-      mergeDirPath = path.resolve(options.merge)
-      if (!fs.existsSync(mergeDirPath)) {
-        console.error(`Merge directory '${mergeDirPath}' does not exist`)
-        process.exit(1)
-      }
-    }
-
-    const dontConvert = ['index.js', 'package.json', 'node_modules', 'dist']
-    const sourceDirNames = (await fs.promises.readdir(srcPath))
-      .filter(dir => !dontConvert.includes(dir))
-
-    const dirs = []
-
-    // Core convert loop
-    for (const dir of sourceDirNames) {
-      // Ignored directories
-      if (options.internalUikit) {
-        let skip = false
-        for (const pat of INTERNAL_UIKIT_CONF.excludedDirectories) { if (dir.match(pat)) { skip = true; break } }
-        if (skip) continue
-      }
-
-      const dirPath = path.join(srcPath, dir)
-      if (!isDirectory(dirPath)) {
-        console.log(`Skipping ${dirPath} because it is not a directory`)
-        continue
-      }
-      const indexFilePath = path.join(dirPath, 'index.js')
-      const pjFilePath = path.join(dirPath, 'package.json')
-
-      const globusaStruct = await convertFile(
-        indexFilePath, // src
-        path.join(tmpDirPath, dir), // tmp
-        path.join(destDirPath, dir, 'index.js'), // dst
-        desiredFormat,
-        options
-      )
-
-      if (options.internalUikit && fs.existsSync(pjFilePath)) {
-        generatePackageJsonFile(
-          pjFilePath, // src
-          path.join(destDirPath, dir, 'package.json'), // dst
-          globusaStruct,
-          desiredFormat,
-          options
-        )
-      }
-
-      dirs.push(dir)
-    }
-
-    // Generate top index.js file
-    if (dirs.length > 0) {
-      const fileContent = dirs.map(d => `export * from './${d}'`).join('\n')
-      const fh = await fs.promises.open(path.join(destDirPath, 'index.js'), 'w')
-      await fh.writeFile(fileContent, 'utf8')
-      await fh.close()
-    }
-
-    if (mergeDirPath) {
-      console.log(`Merging '${mergeDirPath}' and ${destDirPath}...`)
-      mergeDirectories(mergeDirPath, destDirPath, {
-        globusaMerge: ['index.js', 'index.jsx'],
-        exclude: ['dist', 'node_modules']
-      })
-    }
-
-    process.exit(0)
-  })
+  .action(convertKalduna)
