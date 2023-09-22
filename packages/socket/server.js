@@ -41,7 +41,7 @@ export const updateDynamycFile = (changes, options = {}) => {
     }
   } catch (e) {
     console.log('')
-    console.log(chalk.bold.green('Error writing file'))
+    console.log(chalk.bold.red('Error writing file'))
     if (verbose) console.error(e)
     else console.log(debugMsg)
   }

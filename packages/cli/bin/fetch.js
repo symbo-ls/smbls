@@ -101,7 +101,7 @@ export const fetchFromCli = async (opts) => {
       console.log(chalk.bold.green('Successfully wrote file'))
     } catch (e) {
       console.log()
-      console.log(chalk.bold.green('Error writing file'))
+      console.log(chalk.bold.red('Error writing file'))
       if (verbose) console.error(e)
       else console.log(debugMsg)
     }
