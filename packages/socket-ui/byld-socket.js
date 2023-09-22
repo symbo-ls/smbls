@@ -5,6 +5,7 @@ import { init } from '@symbo.ls/init'
 import { set } from '@symbo.ls/scratch'
 import { connect } from '@symbo.ls/socket/client'
 import { Notification } from '@symbo.ls/notification'
+import { window } from '@domql/globals'
 
 const isLocalhost = window && window.location && window.location.host.includes('local')
 
