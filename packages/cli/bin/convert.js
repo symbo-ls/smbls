@@ -358,11 +358,11 @@ function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
 }
 
 export function convertFromCli (data, opts) {
-  const { framework, verbose, verboseConvert } = opts
+  const { framework, verbose, verboseCode } = opts
   console.log(chalk.dim('\n----------------\n'))
   console.log('Converting components to', chalk.bold(framework))
   const convertedStrings = convertDomqlModule(data, null, framework)
-  if (verboseConvert) console.log(convertedStrings)
+  if (verboseCode) console.log(convertedStrings)
   console.log(chalk.bold.green('\nSuccessfully converted'))
   return verbose
 }

@@ -91,8 +91,7 @@ export const fetchFromCli = async (opts) => {
       await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
 
       if (verbose) {
-        console.log()
-        console.log(chalk.dim('dynamic.json has been updated:'))
+        console.log(chalk.dim('\ndynamic.json has been updated:'))
         console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
       }
 
@@ -114,5 +113,5 @@ program
   .description('Fetch symbols')
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
-  .parse(process.argv)
+  .option('--verbose-code', 'Verbose errors and warnings')
   .action(fetchFromCli)

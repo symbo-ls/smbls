@@ -18,7 +18,7 @@ let io
 const debugMsg = chalk.dim('Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls')
 
 export const updateDynamycFile = (changes, options = {}) => {
-  const { verbose, prettify } = options
+  const { verbose, prettify, verboseCode } = options
   const file = require('@symbo.ls/init/dynamic.json')
 
   const newMerge = overwriteDeep(file, changes)
@@ -31,7 +31,7 @@ export const updateDynamycFile = (changes, options = {}) => {
 
   console.log(chalk.dim('Received update'))
   console.log(Object.keys(changes).join(', '))
-  if (verbose) console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
+  if (verboseCode) console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
 
   try {
     fs.writeFileSync(initPath, mergeStr)

@@ -27,15 +27,13 @@ program
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('-k, --key', 'Bypass the symbols.json key, overriding the key manually')
   .option('-f, --fetch', 'Verbose errors and warnings', true)
-  .parse(process.argv)
+  .option('--verbose-code', 'Verbose errors and warnings')
   .action(async (opts) => {
     const { dev, verbose, fetch: fetchAlso } = opts
 
     if (fetchAlso) {
       await fetchFromCli(opts)
-      console.log()
-      console.log(chalk.dim('----------------'))
-      console.log()
+      console.log(chalk.dim('\n----------------\n'))
     }
 
     if (!rc) {

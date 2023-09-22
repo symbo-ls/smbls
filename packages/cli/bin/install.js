@@ -70,6 +70,6 @@ program
   .description('Install Symbols')
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
+  .option('-f, --fetch', 'Verbose errors and warnings', true)
   .option('--framework', 'Which Symbols to install (domql, react)')
-  .parse(process.argv)
   .action(installFromCli)
