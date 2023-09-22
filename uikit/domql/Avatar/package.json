@@ -1,13 +1,13 @@
 {
   "name": "@symbo.ls/avatar",
-  "version": "2.11.160",
+  "version": "2.11.162",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f09e162a618613a10c3db8bff11177baf04da275",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/indicator": "latest",
-    "@symbo.ls/button": "latest"
+    "@symbo.ls/button": "latest",
+    "@symbo.ls/indicator": "latest"
   },
   "source": "src/index.js"
 }

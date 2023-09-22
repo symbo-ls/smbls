@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/react-provider",
-  "version": "2.11.132",
+  "version": "2.11.162",
   "dependencies": {
-    "@symbo.ls/init": "latest",
-    "@symbo.ls/fetch": "latest",
-    "@symbo.ls/default-config": "latest",
+    "@babel/runtime": "^7.11.2",
     "@emotion/react": "^11.11.1",
-    "@babel/runtime": "^7.11.2"
+    "@symbo.ls/default-config": "latest",
+    "@symbo.ls/fetch": "latest",
+    "@symbo.ls/init": "latest"
   },
   "peerDependencies": {
     "react": "^18.0.0",

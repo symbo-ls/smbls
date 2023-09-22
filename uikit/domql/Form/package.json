@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/form",
-  "version": "2.11.161",
+  "version": "2.11.162",
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
@@ -8,9 +8,9 @@
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/textarea": "latest",
     "@symbo.ls/icon": "latest",
     "@symbo.ls/link": "latest",
-    "@symbo.ls/modal": "latest"
+    "@symbo.ls/modal": "latest",
+    "@symbo.ls/textarea": "latest"
   }
 }
