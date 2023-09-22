@@ -27,6 +27,7 @@ export const Theme = {
     transformBorder,
     transformBackgroundImage
   },
+
   class: {
     depth: ({ props, deps }) => props.depth && deps.depth[props.depth],
 

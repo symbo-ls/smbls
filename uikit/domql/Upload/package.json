@@ -7,9 +7,8 @@
   "source": "index.js",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/avatar": "latest",
+    "@symbo.ls/modal": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/icon": "latest",
-    "@symbo.ls/uploadlabel": "latest"
+    "@symbo.ls/titleparagraph": "latest"
   }
 }

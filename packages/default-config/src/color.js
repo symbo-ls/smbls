@@ -13,10 +13,18 @@ export const COLOR = {
   brown: '#7D6755',
   pink: '#FD8ABF',
   purple: '#7345AF',
-  white: 'white'
+  white: 'white',
+
+  green2: '#04F214',
+  blue2: '#0474F2',
+  gray2: '#A3A3A8'
 }
 
 export const GRADIENT = {
+  'gradient-blue': `linear-gradient(to right,
+    rgba(4, 116, 242, 1),
+    rgba(0, 48, 103, 1)
+  )`,
   'gradient-dark': `linear-gradient(0deg,
     rgba(0,0,0,0.06) 0%,
     rgba(0,0,0,0.07) 100%

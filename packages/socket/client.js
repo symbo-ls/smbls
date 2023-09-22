@@ -9,28 +9,28 @@ const { window } = globals.default || globals
 
 const ENV = process.env.NODE_ENV
 
-const SOCKET_BACKEND_URL = window && window.location &&
-  window.location.host.includes('local')
-  ? 'localhost:13335'
-  : 'socket.symbols.app' ||
-  'https://socket.symbols.app'
-
-let socket
-let tryConnect = 0
 const defautlOpts = {}
-const tryConnectMax = 1
 
 export const connect = (key, options = {}) => {
+  const isDev = options.development ||
+    (window && window.location && window.location.host.includes('local')) ||
+    (ENV === 'test' || ENV === 'development')
+
+  const SOCKET_BACKEND_URL = isDev
+    ? 'http://localhost:13336/'
+    : 'https://socket.symbols.app/'
+
   const socketUrls = isArray(options.socketUrl)
     ? options.socketUrl
     : [options.socketUrl || SOCKET_BACKEND_URL]
+
   const primaryUrl = socketUrls[0]
   const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
 
-  socket = io(primaryUrl || SOCKET_BACKEND_URL)
+  const socket = io(primaryUrl || SOCKET_BACKEND_URL)
 
   socket.on('connect', () => {
-    if (ENV === 'test' || ENV === 'development') {
+    if (isDev) {
       console.log(
         `Connected to %c${primaryUrl || SOCKET_BACKEND_URL} %c${key} %c${socket.id}`,
         'font-weight: bold; color: green;',
@@ -39,7 +39,7 @@ export const connect = (key, options = {}) => {
       )
     }
 
-    socket.emit('initConnect', options)
+    socket.emit('initConnect', { key, ...options })
 
     try {
       if (isFunction(options.onConnect)) {
@@ -50,15 +50,18 @@ export const connect = (key, options = {}) => {
     }
   })
 
+  let CONNECT_ATTEPT = 0
+  const CONNECT_ATTEPT_MAX_ALLOWED = 1
+
   socket.on('connect_error', (err) => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
       if (isFunction(options.onError)) options.onError(err, socket)
 
-      if (tryConnect < tryConnectMax) {
+      if (CONNECT_ATTEPT < CONNECT_ATTEPT_MAX_ALLOWED) {
         socket.disconnect()
 
-        tryConnect++
+        CONNECT_ATTEPT++
 
         if (ENV === 'test' || ENV === 'development') {
           console.log(
@@ -89,17 +92,21 @@ export const connect = (key, options = {}) => {
     if (event === 'connect') return
 
     try {
-      if (isFunction(options.onChange)) options.onChange(event, args[0], socket)
+      if (isFunction(options.onChange)) {
+        options.onChange(event, args[0], socket)
+      }
     } catch (e) {
       console.error(e)
     }
   })
+
+  return socket
 }
 
-export const send = (event = 'change', changes, options) => {
-  socket.emit(event, changes, { ...options, ...defautlOpts })
+export function send (event = 'change', changes, options) {
+  this.emit(event, changes, { ...options, ...defautlOpts })
 }
 
-export const disconnect = () => {
-  socket.disconnect()
+export function disconnect () {
+  this.disconnect()
 }

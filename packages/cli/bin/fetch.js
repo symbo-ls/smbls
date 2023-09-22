@@ -3,112 +3,115 @@
 import fs from 'fs'
 import chalk from 'chalk'
 import { loadModule } from './require.js'
-import { exec } from 'child_process'
 import { program } from './program.js'
+import * as fetch from '@symbo.ls/fetch'
 
-import fetch from '@symbo.ls/fetch'
-const { fetchRemote } = fetch
+import * as utils from '@domql/utils'
+import { convertFromCli } from './convert.js'
+const { isObjectLike } = utils.default
 
-const PACKAGE_PATH = process.cwd() + '/package.json'
+const { fetchRemote } = fetch.default
+
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.dev/' // eslint-disable-line
+const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
 
-const API_URL = 'https://api.symbols.dev/' // eslint-disable-line
+const API_URL_LOCAL = 'http://localhost:13335/'
+const API_URL = 'https://api.symbols.app/'
 
-const pkg = loadModule(PACKAGE_PATH)
 const rcFile = loadModule(RC_PATH) // eslint-disable-line
 const localConfig = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
+
+const debugMsg = chalk.dim('Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls')
 
 let rc = {}
 try {
   rc = loadModule(RC_PATH) // eslint-disable-line
 } catch (e) { console.error('Please include symbols.json to your root of respository') }
 
-program
-  .version(pkg.version ?? 'unknown')
+export const fetchFromCli = async (opts) => {
+  const { dev, verbose, prettify } = opts
 
-program
-  .command('install')
-  .description('Install Symbols')
-  .option('--framework', 'Which Symbols to install (domql, react)')
-  .action(async (framework) => {
-    if (!rcFile || !localConfig) {
-      console.error('symbols.json not found in the root of the repository')
-      return
-    }
+  await rc.then(async data => {
+    const { key, framework } = data
 
-    // const packageName = `@symbo.ls/${mode || 'uikit'}`
-    const packageName = 'smbls'
-    console.log('Adding', chalk.green.bold(packageName))
+    const endpoint = dev ? API_URL_LOCAL : API_URL
 
-    if (framework === 'domql' || rcFile.framework === 'domql') {
-      exec('yarn add domql@^1.15.26 --force', (error, stdout, stderr) => {
-        if (error) {
-          console.log(`error: ${error.message}`)
-          return
-        }
-        if (stderr) {
-          console.log(`stderr: ${stderr}`)
-          // return;
-        }
-      })
-    }
+    console.log('\nFetching from:', chalk.bold(endpoint), '\n')
 
-    exec(`yarn add ${packageName}@^0.15.22 --force`, (error, stdout, stderr) => {
-      if (error) {
-        console.log(`error: ${error.message}`)
-        return
+    const body = await fetchRemote(key, {
+      endpoint,
+      onError: (e) => {
+        console.log(chalk.red('Failed to fetch:'), key)
+        if (verbose) console.error(e)
+        else console.log(debugMsg)
       }
-      if (stderr) {
-        console.log(`stderr: ${stderr}`)
-        // return;
-      }
-      console.log('')
-      console.log(`stdout: ${stdout}`)
-      console.log('\n')
-      console.log(chalk.green.bold(packageName), 'successfuly added!')
-      console.log('')
-      console.log(chalk.dim('Now you can import components like:'), 'import { Button } from \'smbls')
     })
-  })
+    if (!body) return
 
-program
-  .command('fetch [destination]')
-  .description('Fetch symbols')
-  .action(async (options) => {
-    rc.then(async data => {
-      const opts = { ...data, ...options } // eslint-disable-line
-      const key = data.key || (options && options.key)
+    const { version, ...config } = body
 
-      const body = await fetchRemote(key, { endpoint: 'api.symbols.dev' })
-      const { version, ...config } = body
+    if (verbose) {
+      if (key) {
+        console.log(chalk.bold('Symbols'), 'data fetched for', chalk.green(body.name))
+      } else {
+        console.log(
+          chalk.bold('Symbols'),
+          'config fetched from',
+          chalk.bold('default-config from:'),
+          chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY)
+        )
+      }
+      console.log()
+    }
 
-      console.log(chalk.bold('Symbols'), 'config fetched:')
-      if (key) console.log(chalk.green(key))
-      else console.log(chalk.dim('- Default config from:'), chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY))
-      console.log('')
-
-      console.log(chalk.dim('- dynamic.json updated:'), chalk.dim.underline(LOCAL_CONFIG_PATH))
-      console.log('')
-
-      for (const t in config) {
-        const type = config[t]
-        console.log(chalk.bold(t))
-        const arr = []
+    for (const t in config) {
+      const type = config[t]
+      const arr = []
+      if (isObjectLike(type)) {
         for (const v in type) arr.push(v)
-        console.log('  ', chalk.dim(arr.join(', ')))
+        if (arr.length) {
+          console.log(chalk.dim(t + ':'))
+          console.log(chalk.bold(arr.join(', ')))
+        } else {
+          console.log(chalk.dim(t + ':'), chalk.dim('- empty -'))
+        }
+      } else console.log(chalk.dim(t + ':'), chalk.bold(type))
+    }
+
+    if (body.designsystem) {
+      body.designSystem = body.designsystem
+      delete body.designsystem
+    }
+
+    const bodyString = JSON.stringify(body, null, prettify ?? 2)
+
+    try {
+      await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
+
+      if (verbose) {
+        console.log(chalk.dim('\ndynamic.json has been updated:'))
+        console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
       }
 
-      const bodyString = JSON.stringify(body)
-      fs.writeFile(LOCAL_CONFIG_PATH, bodyString, err => {
-        console.log('')
-        if (err) {
-          console.log('Error writing file', err)
-        } else {
-          console.log('Successfully wrote file')
-        }
-      })
-    })
+      console.log(chalk.bold.green('\nSuccessfully wrote file'))
+    } catch (e) {
+      console.log(chalk.bold.red('\nError writing file'))
+      if (verbose) console.error(e)
+      else console.log(debugMsg)
+    }
+
+    if (body.components && framework) {
+      convertFromCli(body.components, { ...opts, framework })
+    }
   })
+}
+
+program
+  .command('fetch')
+  .description('Fetch symbols')
+  .option('-d, --dev', 'Running from local server')
+  .option('-v, --verbose', 'Verbose errors and warnings')
+  .option('--verbose-code', 'Verbose errors and warnings')
+  .action(fetchFromCli)

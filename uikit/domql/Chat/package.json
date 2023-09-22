@@ -3,6 +3,11 @@
   "version": "2.11.143",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "f09e162a618613a10c3db8bff11177baf04da275",
+  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
+  "dependencies": {
+    "@symbo.ls/atoms": "latest",
+    "@symbo.ls/button": "latest",
+    "@symbo.ls/avatar": "latest"
+  },
   "source": "index.js"
 }

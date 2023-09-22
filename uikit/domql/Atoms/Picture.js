@@ -11,9 +11,8 @@ export const Picture = {
     attr: {
       media: (element) => {
         const { props, key, context, deps } = element
-        const { getSystemTheme } = deps
         const { MEDIA } = context.designSystem
-        const globalTheme = getSystemTheme(element)
+        const globalTheme = deps.getSystemTheme(element)
         const mediaName = (props.media || key).slice(1)
 
         if (mediaName === globalTheme) return '(min-width: 0px)'

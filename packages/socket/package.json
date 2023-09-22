@@ -12,6 +12,7 @@
   "dependencies": {
     "@domql/utils": "latest",
     "express": "^4.18.1",
+    "chalk": "^5.0.0",
     "http": "^0.0.1-security",
     "merge-deep": "^3.0.3",
     "socket.io": "^4.5.2",

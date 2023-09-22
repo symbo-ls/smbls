@@ -1,12 +1,11 @@
 {
-  "name": "@symbo.ls/checkindicator",
-  "version": "2.11.160",
+  "name": "@symbo.ls/indicator",
+  "version": "2.11.132",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "dfc71a41e1d64da4fef5ad0ecc0b8f6a3be79890",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
-    "@symbo.ls/utils": "latest"
+    "@symbo.ls/atoms": "latest"
   },
   "source": "src/index.js"
 }

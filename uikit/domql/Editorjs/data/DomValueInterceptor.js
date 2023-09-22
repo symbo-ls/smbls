@@ -1,5 +1,7 @@
+'use strict'
+
 const parseHtml = (html) => {
-  const parser = new DOMParser()
+  const parser = new window.DOMParser()
   const doc = parser.parseFromString(html, 'text/html')
   return parseNodes(doc.body.childNodes)
 }
@@ -27,7 +29,7 @@ const parseNode = (node) => {
     // children: [],
   }
 
-  if (node.nodeType === Node.TEXT_NODE) {
+  if (node.nodeType === window.Node.TEXT_NODE) {
     obj.type = 'text'
     obj.value = decodeHTMLSpaces(node.nodeValue.trim())
   } else if (node.nodeName === 'B') {
@@ -103,11 +105,6 @@ const mutateItemsAccordingToRules = (data, mutatedItems) => {
   })
 }
 
-const normalizeArray = () => {
-  // TODO
-  // Objectize array according to DomValues rules
-}
-
 const shouldParseHTML = (value) => (
   value.includes('<a') ||
   value.includes('<mark') ||
@@ -123,7 +120,7 @@ const weSupportParsingItAsHtml = (parentItem) => (
 
 const deepIterate = (obj, callback) => {
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (obj.hasOwnProperty(key)) { // eslint-disable-line
       callback(obj, key, obj[key])
       if (typeof obj[key] === 'object' && obj[key] !== null) {
         deepIterate(obj[key], callback)
@@ -138,7 +135,7 @@ const deepMetaIterate = (data, callback) => {
     deepIterate(
       item,
       (obj, key, value) => {
-        callback({ arrayIndex, ...item }, obj, key, value)
+        callback({ arrayIndex, ...item }, obj, key, value) // eslint-disable-line
       }
     )
   }

@@ -3,6 +3,8 @@
 import { getSpacingBasedOnRatio } from '@symbo.ls/scratch'
 
 export const Grid = {
+  deps: { getSpacingBasedOnRatio },
+
   props: { display: 'grid' },
 
   class: {
@@ -24,7 +26,7 @@ export const Grid = {
 
     autoFlow: ({ props }) => props.autoFlow ? ({ gridAutoFlow: props.autoFlow }) : null,
 
-    columnGap: ({ props }) => props.columnGap ? getSpacingBasedOnRatio(props, 'columnGap') : null,
-    rowGap: ({ props }) => props.rowGap ? getSpacingBasedOnRatio(props, 'rowGap') : null
+    columnGap: ({ props, deps }) => props.columnGap ? deps.getSpacingBasedOnRatio(props, 'columnGap') : null,
+    rowGap: ({ props, deps }) => props.rowGap ? deps.getSpacingBasedOnRatio(props, 'rowGap') : null
   }
 }

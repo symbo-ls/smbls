@@ -1,51 +1,74 @@
 'use strict'
 
-// import { Focusable, Flex } from '@symbo.ls/atoms'
+import { Flex } from '@symbo.ls/atoms'
 
-// export const UploadLabel = {
-//   extend: [Focusable, Flex],
-//   tag: 'label',
+export const UploadLabel = {
+  extend: Flex,
+  props: {
+    flow: 'column',
+    align: 'center flex-start',
+    boxSize: 'fit-content fit-content',
+    gap: 'C',
+    background: '#141416',
+    padding: 'C D+Z',
+    round: 'Z+X',
+    border: '1px dashed #57575C'
+  },
 
-//   props: {
-//     position: 'relative',
-//     theme: 'tertiary',
-//     flow: 'column',
-//     align: 'center center',
-//     round: 'A',
-//     cursor: 'pointer',
-//     border: '1.6px, dashed, white 0.1',
-//     padding: 'B B2'
-//   },
+  Icon: {
+    name: 'upload',
+    fontSize: 'I',
+    color: '#818186'
+  },
 
-//   Input: {
-//     props: {
-//       type: 'file',
-//       position: 'absolute',
-//       inset: '0 0 0 0',
-//       opacity: '1',
-//       visibility: 'hidden'
-//     }
-//   },
+  TitleParagraph: {
+    props: {
+      align: 'center flex-start',
+      gap: 'Y'
+    },
 
-//   Icon: {
-//     props: {
-//       name: 'upload',
-//       fontSize: 'B',
-//       opacity: '.2'
-//     }
-//   },
+    Title: {
+      props: {
+        gap: 'Y',
+        h5: {
+          text: 'Drag & drop your files here or',
+          fontSize: 'A',
+          fontWeight: '400'
+        }
+      },
+      h5: {},
+      UploadButton: {}
+    },
 
-//   P: {
-//     props: {
-//       text: ' or click and upload from your computer',
-//       flexFlow: 'column',
-//       flexAlign: 'center center',
-//       opacity: '.22',
-//       margin: '0'
-//     },
-//     Span: {
-//       text: 'Drag and drop your font file',
-//       display: 'block'
-//     }
-//   }
-// }
+    Paragraph: {
+      props: {
+        p: {
+          text: '50 MB max file size',
+          fontSize: 'Z'
+        }
+      }
+    }
+  }
+}
+
+export const UploadLabel2 = {
+  extend: UploadLabel,
+  props: {
+    gap: 'B',
+    padding: 'C E+A'
+  },
+
+  Icon: { name: 'file' },
+
+  TitleParagraph: {
+    Title: {
+      h5: { text: 'Drag & drop your files here' },
+      UploadButton: { display: 'none' }
+    },
+    Paragraph: {
+      p: { text: '50 MB max file size' }
+    }
+  },
+
+  UploadButtonWithIcon: {}
+}

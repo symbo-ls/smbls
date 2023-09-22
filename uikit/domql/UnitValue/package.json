@@ -6,9 +6,6 @@
   "gitHead": "ce24ae69aa4be9b21beea8118953d112d7e62bc3",
   "source": "index.js",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
-    "@symbo.ls/avatar": "latest",
-    "@symbo.ls/button": "latest",
-    "@symbo.ls/icon": "latest"
+    "@symbo.ls/atoms": "latest"
   }
 }

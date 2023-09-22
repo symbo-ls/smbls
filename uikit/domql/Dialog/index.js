@@ -1,7 +1,7 @@
 'use strict'
 
-import { Button } from '@symbo.ls/button'
 import { Flex } from '@symbo.ls/atoms'
+import { Button } from '@symbo.ls/button'
 
 export const Dialog = {
   props: {

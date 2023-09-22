@@ -1,9 +1,9 @@
 'use strict'
 
-import { UploadResult } from '@symbo.ls/upload'
+// import { UploadResult } from '@symbo.ls/upload'
 import { Flex } from '@symbo.ls/atoms'
 import { ButtonSet } from '@symbo.ls/button'
-import { DateIndicator, NotificationAlert } from '@symbo.ls/accessories'
+// import { DateIndicator, NotificationAlert } from '@symbo.ls/accessories'
 import { AvatarWithInfoSet } from '@symbo.ls/avatar'
 
 export const ChatUser = {
@@ -14,7 +14,7 @@ export const ChatUser = {
       {
         title: {},
         subTitle: {
-          extend: DateIndicator,
+          // extend: DateIndicator,
           caption: null
         }
       },
@@ -50,7 +50,7 @@ export const ChatUserWithUploadedFile = {
       {
         chatText: null,
         uploadedFile: {
-          extend: UploadResult,
+          // extend: UploadResult,
           FileIcon: {},
           Flex: {
             H6: { text: 'File.jpg' },
@@ -159,8 +159,8 @@ export const ChatUserWithNotification = {
         subTitle: { days: null }
       },
       {
-        chatText: { props: { text: 'Hey team, Ive finished the re...' } },
-        notification: { extend: NotificationAlert }
+        chatText: { props: { text: 'Hey team, Ive finished the re...' } }
+        // notification: { extend: NotificationAlert }
       }
     ]
   },

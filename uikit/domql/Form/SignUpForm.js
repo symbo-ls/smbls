@@ -2,16 +2,16 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { ModalWithTitleParagraph } from '@symbo.ls/modal'
-import { FieldWithTitle } from '@symbo.ls/field'
-import { CheckBoxWithParagraph } from '@symbo.ls/textcomponents'
+import { Link } from '@symbo.ls/link'
 import { Button } from '@symbo.ls/button'
 import { Icon } from '@symbo.ls/icon'
-import { OrLines } from '@symbo.ls/accessories'
-import { Link } from '@symbo.ls/link'
+// import { FieldWithTitle } from '@symbo.ls/field'
+// import { CheckBoxWithParagraph } from '@symbo.ls/textcomponents'
+// import { OrLines } from '@symbo.ls/accessories'
 
 const fields = {
   extend: Flex,
-  childExtend: FieldWithTitle,
+  // childExtend: FieldWithTitle,
   ...[
     {
       title: { props: { text: 'Email' } },
@@ -41,7 +41,7 @@ const fields = {
 
 const subOptions = {
   extend: Flex,
-  keepLogged: { extend: CheckBoxWithParagraph },
+  // keepLogged: { extend: CheckBoxWithParagraph },
   forgotPass: {
     extend: Link,
     props: {
@@ -119,8 +119,8 @@ export const SignUpForm = {
   content: {
     fields,
     subOptions,
-    signButton,
-    or: { extend: OrLines }
+    signButton
+    // or: { extend: OrLines }
   },
 
   footer: { socialLinks },

@@ -1,9 +1,11 @@
 'use strict'
+
+import fs from 'fs'
+import chalk from 'chalk'
+import path from 'path'
 import { program } from './program.js'
 import { convert } from 'kalduna'
 import { parse } from 'globusa'
-import fs from 'fs'
-import path from 'path'
 
 import * as esbuild from 'esbuild'
 
@@ -125,7 +127,7 @@ function mkdirp (dir) {
 }
 
 // Returns a string
-function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options) {
+export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options = {}) {
   let convertedStr = ''
   const whitelist = (options.only ? options.only.split(',') : null)
 
@@ -376,6 +378,16 @@ function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
       fs.writeFileSync(path.resolve(dst, f), outTxt, { encoding: 'utf8' })
     }
   }
+}
+
+export function convertFromCli (data, opts) {
+  const { framework, verbose, verboseCode } = opts
+  console.log(chalk.dim('\n----------------\n'))
+  console.log('Converting components to', chalk.bold(framework))
+  const convertedStrings = convertDomqlModule(data, null, framework)
+  if (verboseCode) console.log(convertedStrings)
+  console.log(chalk.bold.green('\nSuccessfully converted'))
+  return verbose
 }
 
 program

@@ -1,6 +1,6 @@
 'use strict'
 
-export * from './UploadResult'
+export * from './UploadButton'
 export * from './UploadLabel'
 export * from './UploadModal'
-export * from './UploadProgress'
+export * from './UploadingProcess'

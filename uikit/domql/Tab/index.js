@@ -2,38 +2,50 @@
 
 import { Button } from '@symbo.ls/button'
 
-const props = {
-  gap: 'Z',
-  theme: 'tertiary',
-  round: 'Z2',
-  padding: 'Y2 A',
-  align: 'center center'
-}
-
 export const Tab = {
   extend: Button,
-  props,
+  props: {
+    boxSize: 'fit-content fit-content',
+    background: '#3F3F43',
+    align: 'center flex-start',
+    padding: 'Y Z',
+    round: 'Z',
+    gap: 'Y',
+    position: 'relative'
+  },
 
   Icon: {
     props: {
-      name: 'star',
-      fontSize: 'A1'
+      name: 'circle',
+      fontSize: 'C',
+      color: 'white'
     }
   },
   Span: {
-    textTransform: 'capitalize',
-    text: 'label'
+    text: 'Label',
+    color: 'white',
+    lineHeight: '1em',
+    margin: 'V - - -'
+  },
+  NotificationIndicator: {
+    text: '19'
+  }
+}
+
+export const IconTab = {
+  extend: Tab,
+  props: {
+    padding: 'Z+W'
   },
 
-  Button: { text: '123' },
-
-  Box: {
-    text: '19',
-    theme: 'warning',
-    background: 'indigo',
-    margin: '- -X - A',
-    padding: 'Y Y',
-    round: 'Y1',
-    textAlign: 'center'
+  Icon: {},
+  Span: null,
+  NotificationIndicator: {
+    position: 'absolute',
+    top: '-Z',
+    right: '-Z',
+    fontSize: 'X',
+    fontWeight: '500',
+    padding: 'X X+W'
   }
 }

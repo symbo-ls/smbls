@@ -8,9 +8,9 @@
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/field": "latest",
-    "@symbo.ls/modal": "latest",
     "@symbo.ls/textarea": "latest",
-    "@symbo.ls/textcomponents": "latest"
+    "@symbo.ls/icon": "latest",
+    "@symbo.ls/link": "latest",
+    "@symbo.ls/modal": "latest"
   }
 }

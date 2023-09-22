@@ -1,16 +1,16 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { ModalWithTitleParagraph } from '@symbo.ls/modal'
 import { Button } from '@symbo.ls/button'
 import { TextareaWithTitle } from '@symbo.ls/textarea'
-import { FieldWithTitle } from '@symbo.ls/field'
-import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
+import { ModalWithTitleParagraph } from '@symbo.ls/modal'
+// import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
+// import { FieldWithTitle } from '@symbo.ls/field'
 
 const fields = {
   names: {
     extend: Flex,
-    childExtend: FieldWithTitle,
+    // childExtend: FieldWithTitle,
     ...[
       {
         title: { props: { text: 'First name' } },
@@ -24,7 +24,7 @@ const fields = {
   },
 
   mail: {
-    extend: FieldWithTitle,
+    // extend: FieldWithTitle,
     title: { props: { text: 'Email' } },
     field: { input: { props: { placeholder: 'example@email.com' } } }
   },
@@ -47,7 +47,7 @@ const fields = {
 }
 
 const checkParagraph = {
-  extend: ParagrapUnderlineLinkWithCheckbox,
+  // extend: ParagrapUnderlineLinkWithCheckbox,
   checkBox: {},
   paragraph: {
     p: { props: { text: 'You agree to ' } },

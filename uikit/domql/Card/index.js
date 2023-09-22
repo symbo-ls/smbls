@@ -2,14 +2,15 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { InfoSet } from '@symbo.ls/infoset'
-import { Button } from '@symbo.ls/button'
+import { Label } from '@symbo.ls/label'
+// import { BalancesIndicator } from '@symbo.ls/accessories'
 
 export const AmountWithLabel = {
   extend: Flex,
   amount: { props: { text: '240.59' } },
-
-  CardLabel: {
-    text: '-0.25%'
+  label: {
+    extend: Label,
+    props: { text: '-0.25%' }
   },
 
   props: {
@@ -30,8 +31,14 @@ export const Card = {
     maxWidth: 'G',
     padding: 'A',
     round: 'Z+V',
+    // theme: 'secondary',
+    // theme: 'secondary @dark .color-only',
+    // childProps: {
+    //   theme: 'secondary .child'
+    // }
     gap: 'Y',
-    style: { background: 'linear-gradient(to right, rgba(4, 116, 242, 1), rgba(0, 48, 103, 1))' },
+    '@dark': { theme: 'primary @dark .gradient' },
+    '@light': { theme: 'primary @light .gradient' },
     childProps: {
       alignItems: 'center',
 
@@ -81,14 +88,9 @@ export const Card = {
 
 export const ConvertCard = {
   extend: Card,
-  Heading: {
-    props: {},
-    Title: {
-      text: 'From',
-      color: 'rgba(163, 163, 168, 1)',
-      fontWeight: '400'
-    },
-    BalancesIndicator: {},
+  heading: {
+    title: { props: { text: 'From' } },
+    // balance: { extend: BalancesIndicator },
     icon: null
   },
 
@@ -128,9 +130,8 @@ export const ConvertBoard = {
     ]
   },
 
-  footer: {
-    extend: Button,
-    props: { text: 'Convert' }
+  Button: {
+    text: 'Convert'
   },
 
   props: {
@@ -152,7 +153,7 @@ export const ConvertBoard = {
       gap: 'Z',
       childProps: {
         minWidth: 'G+D',
-        background: 'black '
+        background: 'black'
       }
     },
 
