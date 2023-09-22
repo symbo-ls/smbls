@@ -25,19 +25,16 @@ export const updateDynamycFile = (changes, options = {}) => {
   const mergeStr = JSON.stringify(newMerge, null, 2)
   const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 
-  console.log('')
-  console.log(chalk.dim('----------------'))
-  console.log('')
+  console.log(chalk.dim('\n----------------\n'))
 
-  console.log(chalk.dim('Received update'))
+  console.log(chalk.dim('Received update:'))
   console.log(Object.keys(changes).join(', '))
   if (verboseCode) console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
 
   try {
     fs.writeFileSync(initPath, mergeStr)
     if (verbose) {
-      console.log('')
-      console.log('Changes wrote to file')
+      console.log('\nChanges wrote to file')
     }
   } catch (e) {
     console.log('')

@@ -38,7 +38,7 @@ export const fetchFromCli = async (opts) => {
 
     const endpoint = dev ? API_URL_LOCAL : API_URL
 
-    console.log('Fetching from:', chalk.bold(endpoint), '\n')
+    console.log('\nFetching from:', chalk.bold(endpoint), '\n')
 
     const body = await fetchRemote(key, {
       endpoint,

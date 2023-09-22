@@ -58,7 +58,7 @@ program
         onConnect: (id, socket) => {
           console.log('Connected to', chalk.green(key), 'from', chalk.bold('Symbols'), 'socket server')
           console.log('Socket id:', id)
-          console.log(chalk.dim('\nListening to updates...'))
+          console.log(chalk.dim('\nListening to updates...\n'))
         },
         onChange: (event, data) => {
           if (event === 'clients') {
