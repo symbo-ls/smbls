@@ -1,5 +1,4 @@
 import _extends from '@babel/runtime/helpers/esm/extends'
-import _typeof from '@babel/runtime/helpers/esm/typeof'
 import _objectSpread from '@babel/runtime/helpers/esm/objectSpread2'
 import _objectWithoutProperties from '@babel/runtime/helpers/esm/objectWithoutProperties'
 import * as React from 'react'
@@ -8,7 +7,6 @@ import { transformClassname, transformEmotion } from 'css-in-props'
 
 function B (props, ref) {
   const className = props.className
-  var tag = props.tag
   const href = props.href
   const target = props.target
   const ariaLabel = props.ariaLabel
@@ -29,7 +27,7 @@ function B (props, ref) {
 
   const extraProps = _objectSpread({}, restProps, restProps.props)
 
-  var tag = props.tag || extraProps.tag || 'div'
+  const tag = props.tag || extraProps.tag || 'div'
 
   const children = props.text ? props.text : props.children
 
