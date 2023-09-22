@@ -39,7 +39,7 @@ export const fetchFromCli = async (opts) => {
     const endpoint = dev ? API_URL_LOCAL : API_URL
 
     console.log('Fetching from:', chalk.bold(endpoint))
-    console.log('')
+    console.log()
 
     const body = await fetchRemote(key, {
       endpoint,
@@ -64,7 +64,7 @@ export const fetchFromCli = async (opts) => {
           chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY)
         )
       }
-      console.log('')
+      console.log()
     }
 
     for (const t in config) {
@@ -92,15 +92,15 @@ export const fetchFromCli = async (opts) => {
       await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
 
       if (verbose) {
-        console.log('')
+        console.log()
         console.log(chalk.dim('dynamic.json has been updated:'))
         console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
       }
 
-      console.log('')
+      console.log()
       console.log(chalk.bold.green('Successfully wrote file'))
     } catch (e) {
-      console.log('')
+      console.log()
       console.log(chalk.bold.green('Error writing file'))
       if (verbose) console.error(e)
       else console.log(debugMsg)
