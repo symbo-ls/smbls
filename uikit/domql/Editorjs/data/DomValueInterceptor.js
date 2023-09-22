@@ -1,11 +1,7 @@
 'use strict'
 
 const parseHtml = (html) => {
-<<<<<<< HEAD
   const parser = new window.DOMParser()
-=======
-  const parser = new DOMParser()
->>>>>>> main
   const doc = parser.parseFromString(html, 'text/html')
   return parseNodes(doc.body.childNodes)
 }
@@ -33,11 +29,7 @@ const parseNode = (node) => {
     // children: [],
   }
 
-<<<<<<< HEAD
   if (node.nodeType === window.Node.TEXT_NODE) {
-=======
-  if (node.nodeType === Node.TEXT_NODE) {
->>>>>>> main
     obj.type = 'text'
     obj.value = decodeHTMLSpaces(node.nodeValue.trim())
   } else if (node.nodeName === 'B') {
@@ -112,14 +104,6 @@ const mutateItemsAccordingToRules = (data, mutatedItems) => {
     })
   })
 }
-<<<<<<< HEAD
-=======
-
-const normalizeArray = () => {
-  // TODO
-  // Objectize array according to DomValues rules
-}
->>>>>>> main
 
 const shouldParseHTML = (value) => (
   value.includes('<a') ||
@@ -136,11 +120,7 @@ const weSupportParsingItAsHtml = (parentItem) => (
 
 const deepIterate = (obj, callback) => {
   for (const key in obj) {
-<<<<<<< HEAD
     if (obj.hasOwnProperty(key)) { // eslint-disable-line
-=======
-    if (obj.hasOwnProperty(key)) {
->>>>>>> main
       callback(obj, key, obj[key])
       if (typeof obj[key] === 'object' && obj[key] !== null) {
         deepIterate(obj[key], callback)
