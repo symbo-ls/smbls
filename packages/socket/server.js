@@ -34,7 +34,7 @@ export const updateDynamycFile = (changes, options = {}) => {
   try {
     fs.writeFileSync(initPath, mergeStr)
     if (verbose) {
-      console.log('\nChanges wrote to file')
+      console.log(chalk.bold.green('\nChanges wrote to the file'))
     }
   } catch (e) {
     console.log('')
