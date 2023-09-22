@@ -1,6 +1,6 @@
 'use strict'
 
-import ICONS from '@symbo.ls/feather-icons'
+import ICONS from '@symbo.ls/default-icons'
 import { COLOR, GRADIENT } from './color'
 import { THEME } from './theme'
 import { TYPOGRAPHY } from './typography'
