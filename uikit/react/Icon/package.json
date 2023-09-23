@@ -19,14 +19,14 @@
   "exports": "./dist/cjs/index.js",
   "source": "index.js",
   "files": [
-    "*.jsx",
+    "*.js",
     "dist"
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild *.jsx --target=es2020 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild *.jsx --target=node16 --format=cjs --outdir=dist/cjs --loader:.js=jsx",
-    "build:iife": "npx esbuild *.jsx --target=node16 --format=iife --outdir=dist/iife",
+    "build:esm": "npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --loader:.js=jsx",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.js=jsx",
+    "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
     "build": "yarn build:esm && yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },

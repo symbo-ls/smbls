@@ -1,53 +1,17 @@
 'use strict'
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DEFAULT_CONFIG from '@symbo.ls/default-config'
 import { init } from '@symbo.ls/init'
 import { fetchProjectAsync } from '@symbo.ls/fetch'
+import { SyncProvider } from './sync'
+import { PROVIDER_DEFAULT_PROPS, SymbolsContext } from './hooks'
 
-const DEFAULT_PROPS = {
-  editor: {
-    remote: true,
-    async: true,
-    serviceRoute: 'state',
-    endpoint: 'https://api.symbols.app/'
-  },
-  state: {},
-  pages: {},
-  designSystem: {
-    useReset: true,
-    useVariable: true,
-    useIconSprite: true,
-    useSvgSprite: true,
-    useDocumentTheme: true,
-    useFontImport: true
-  },
-  components: {},
-  snippets: {}
-}
+import SYMBOLSRC from '~/symbols.json'
 
-export const SymbolsContext = React.createContext(DEFAULT_PROPS)
-
-export const useGlobalState = () => {
-  const { state, setState } = useContext(SymbolsContext)
-  return [state, setState]
-}
-
-export const useGlobalTheme = (prop) => {
-  const { designSystem, globalTheme, setGlobalTheme } = useContext(SymbolsContext)
-  designSystem.globalTheme = globalTheme
-  return [globalTheme, setGlobalTheme]
-}
-
-export const useDesignSystem = () => {
-  const { designSystem } = useContext(SymbolsContext)
-  return designSystem
-}
-
-export const useSymbols = () => useContext(SymbolsContext)
-
-export const SymbolsProvider = (options = DEFAULT_PROPS) => {
-  const { appKey, children } = options
+export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
+  const { appKey, children, liveSync } = options
+  const key = SYMBOLSRC.key || options.key
 
   const ds = init(options.designSystem || DEFAULT_CONFIG)
   const [designSystem, setDesignSystem] = useState(ds)
@@ -60,7 +24,8 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
       try {
         if (options.editor.async) {
           fetchProjectAsync(appKey, options, (data) => {
-            setState(data.state)
+            if (data.state) setState(data.state)
+            if (data.designsystem) init(data.designsystem)
           })
         }
       } catch (e) {
@@ -69,14 +34,18 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
     }
   }, [Object.values[state]])
 
+  if (liveSync) SyncProvider({ key, ...options })
+
   return React.createElement(
     Provider,
     {
       value: {
         designSystem,
         setDesignSystem,
+
         state,
         setState,
+
         globalTheme,
         setGlobalTheme
       }
@@ -84,3 +53,5 @@ export const SymbolsProvider = (options = DEFAULT_PROPS) => {
     children
   )
 }
+
+export * from './hooks'

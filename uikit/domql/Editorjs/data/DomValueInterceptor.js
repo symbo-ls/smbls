@@ -120,7 +120,7 @@ const weSupportParsingItAsHtml = (parentItem) => (
 
 const deepIterate = (obj, callback) => {
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) { // eslint-disable-line
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       callback(obj, key, obj[key])
       if (typeof obj[key] === 'object' && obj[key] !== null) {
         deepIterate(obj[key], callback)

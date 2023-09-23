@@ -5,7 +5,8 @@
   "dependencies": {
     "@babel/runtime": "^7.11.2",
     "@symbo.ls/react-provider": "latest",
-    "css-in-props": "latest"
+    "css-in-props": "latest",
+    "attrs-in-props": "latest"
   },
   "peerDependencies": {
     "react": "^18.0.0",

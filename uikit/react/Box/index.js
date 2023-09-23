@@ -1,11 +1,12 @@
 'use strict '
 
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { transformEmotion, transformClassname } from 'css-in-props'
 import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 import { isArray } from '@domql/utils'
+import { filterAttributesByTagName } from 'attrs-in-props'
 
-export const Box = (props) => {
+export const Box = forwardRef((props, ref) => {
   const context = useSymbols()
   const [theme, setTheme] = useGlobalTheme() // eslint-disable-line no-unused-vars
 
@@ -26,8 +27,11 @@ export const Box = (props) => {
     text,
     innerRef,
     domqlElementObject,
-    ...restProps
+    ...rest
   } = excludedProps
+
+  const allowedAttributes = filterAttributesByTagName(tag, rest)
+
   if (props.text) {
     if (isArray(children)) children = children.concat(text)
     else children = [text]
@@ -36,10 +40,10 @@ export const Box = (props) => {
   return React.createElement(
     tag || 'div',
     {
-      ...restProps,
+      ...allowedAttributes,
       className: `${className ?? ''} ${propsClass}`,
-      ref: props.ref || props.innerRef
+      ref
     },
     children
   )
-}
+})

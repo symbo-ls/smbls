@@ -3,6 +3,7 @@
   "version": "2.11.162",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
+    "@symbo.ls/socket": "^11.11.1",
     "@emotion/react": "^11.11.1",
     "@symbo.ls/default-config": "latest",
     "@symbo.ls/fetch": "latest",

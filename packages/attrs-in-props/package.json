@@ -5,5 +5,8 @@
   "version": "2.11.132",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
-  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4"
+  "gitHead": "bb04754011c9d569b2486b9add6f8e45a33001e4",
+  "dependencies": {
+    "@domql/utils": "latest"
+  }
 }
