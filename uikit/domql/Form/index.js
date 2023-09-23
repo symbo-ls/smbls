@@ -1,4 +1,8 @@
 'use strict'
 
+export * from './CommonForm'
 export * from './VerificationCode'
-export * from './ChangePassword'
+export * from './ResetPassword'
+export * from './ContactForm'
+export * from './SignUp'
+export * from './LogIn'

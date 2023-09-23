@@ -24,12 +24,16 @@ export const CommonField = {
       text: 'Label',
       fontSize: 'Z',
       lineHeight: '1em',
-      padding: '- - - Z'
+      padding: '- - - Z',
+      color: 'gray4'
     }
   },
 
   Field: { extend: Field },
-  Hint: { extend: IconText }
+  Hint: {
+    extend: IconText,
+    props: { color: 'gray4' }
+  }
 }
 
 export const CommonFieldTemplate = {

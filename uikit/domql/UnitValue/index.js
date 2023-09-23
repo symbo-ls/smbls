@@ -8,7 +8,8 @@ export const UnitValue = {
     color: '#818186',
     align: 'center flex-start',
     gap: 'V',
-    fontSize: 'Z'
+    fontSize: 'Z',
+    '> *': { lineHeight: '1em' }
   },
 
   Value: { props: { text: '72' } },

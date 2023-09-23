@@ -53,32 +53,6 @@ export const KangorooButton = {
   childExtend: IconText
 }
 
-export const CancelConfirmButtons = {
-  extend: Flex,
-  childExtend: Button,
-  ...[
-    { props: { text: 'Cancel' } },
-    { props: { text: 'Confirm' } }
-  ],
-
-  props: {
-    gap: 'Z',
-    maxWidth: 'fit-content',
-    childProps: {
-      fontWeight: '500',
-      color: 'white',
-      padding: 'A B+X',
-      round: 'A',
-      ':first-child': {
-        background: 'transparent'
-      },
-      ':last-child': {
-        background: '#0474F2'
-      }
-    }
-  }
-}
-
 export const DropDownButton = {
   extend: Button,
   props: {
@@ -96,35 +70,65 @@ export const DropDownButton = {
   }
 }
 
-export const ButtonTemplate1 = {
+export const CommonButton = {
   extend: Button,
   props: {
-    icon: { name: 'circle' },
+    color: 'white',
+    background: 'blue',
+    boxSize: 'fit-content',
+    padding: 'A A2',
+    round: 'Z2',
+    gap: 'Y2',
+    position: 'relative'
+  },
+  icon: {
+    props: { fontSize: 'C' }
+  },
+  Caption: { props: { text: 'Button', line_height: '1em' } }
+}
+
+export const IconButton = {
+  extend: CommonButton,
+  props: {
+    icon: { name: 'smile' },
     boxSize: 'fit-content fit-content',
     padding: 'A',
-    round: 'A',
-    color: 'white',
-    background: 'red'
-  }
+    background: 'gray3'
+  },
+  Caption: null
 }
 
-export const ButtonTemplate2 = {
-  extend: ButtonTemplate1,
-  icon: null,
-  props: { text: 'Button' }
-}
+export const CancelConfirmButtons = {
+  extend: Flex,
+  childExtend: {
+    extend: CommonButton,
+    props: {
+      minWidth: 'D2',
+      ':first-child': {
+        background: 'transparent',
+        border: '1px solid #20202B'
+      },
+      ':last-child': {
+      }
+    }
+  },
+  ...[
+    { Caption: { text: 'No' } },
+    { Caption: { text: 'Yes' } }
+  ],
 
-export const ButtonTemplate3 = {
-  extend: ButtonTemplate1,
   props: {
-    text: 'Button',
-    gap: 'Z'
+    gap: 'Z',
+    maxWidth: 'fit-content'
   }
 }
 
-export const ButtonTemplate4 = {
-  extend: ButtonTemplate3,
-  icon: {},
-  text: 'Button',
-  Icon: { props: { icon: 'circle' } }
+export const IcontextButton = {
+  extend: CommonButton,
+  props: {
+    padding: 'A',
+    position: 'relative',
+    background: 'gray3',
+    icon: { name: 'smile' }
+  }
 }

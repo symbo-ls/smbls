@@ -2,7 +2,7 @@
 
 import { Modal } from './Modal'
 
-import { Button } from '@symbo.ls/button'
+import { CommonButton } from '@symbo.ls/button'
 
 export const CompleteProcess = {
   extend: Modal,
@@ -57,14 +57,10 @@ export const CompleteProcess = {
     }
   },
   Footer: {
-    extend: Button,
+    extend: CommonButton,
     props: {
-      text: 'Done',
-      theme: 'primary',
       minWidth: '100%',
-      padding: 'A -',
-      fontWeight: '500',
-      round: 'A'
+      fontWeight: '500'
     }
   }
 }

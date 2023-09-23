@@ -21,6 +21,23 @@ export const ParagraphButton = {
     background: 'transparent',
     color: 'white',
     textDecoration: 'underline'
+  }
+}
 
+export const ParagraphButtonWithCheckBox = {
+  extend: Flex,
+  props: {
+    gap: 'Z',
+    alignItems: 'center'
+  },
+  CheckBox: {
+    Input: {},
+    Flex: {
+      fontSize: 'A1'
+    }
+  },
+  ParagraphButton: {
+    fontSize: 'Z',
+    P: { color: 'white' }
   }
 }

@@ -1,46 +1,29 @@
 'use strict'
-
-import { Button } from '@symbo.ls/button'
+import { IconButton, IcontextButton } from '@symbo.ls/button'
 
 export const Tab = {
-  extend: Button,
+  extend: IcontextButton,
   props: {
     boxSize: 'fit-content fit-content',
     background: 'gray .92 +8',
     align: 'center flex-start',
-    padding: 'Y1 Z1',
-    round: 'Z',
-    gap: 'Y2',
+    padding: 'Z Z2',
+    gap: 'Z',
     position: 'relative'
   },
+  icon: {},
 
-  Icon: {
-    props: {
-      name: 'arrowDownCircle',
-      fontSize: 'C',
-      color: 'white'
-    }
-  },
-
-  Span: {
-    text: 'Label',
-    color: 'white',
-    lineHeight: '1em',
-    margin: 'V - - -'
-  },
+  Caption: {},
 
   CountIndicator: {
     text: '19',
-    padding: 'Y'
+    padding: 'Y Y1'
   }
 }
 
 export const IconTab = {
-  extend: Tab,
-  props: { padding: 'Z+W' },
-
-  Icon: {
-    props: { name: 'messageCircle' }
+  extend: IconButton,
+  props: {
   },
 
   Span: null,
@@ -48,8 +31,9 @@ export const IconTab = {
     position: 'absolute',
     top: '-Z',
     right: '-Z',
-    fontSize: 'X',
+    fontSize: 'Y',
     fontWeight: '500',
-    padding: 'X X+W'
+    padding: 'X X+W',
+    text: '19'
   }
 }

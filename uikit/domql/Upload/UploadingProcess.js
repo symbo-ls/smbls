@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
-
+import { UploadImage } from './UploadImage'
 export const UploadingProcess = {
   extend: Flex,
   props: {
@@ -13,30 +13,20 @@ export const UploadingProcess = {
     gap: 'Z'
   },
 
-  File: {
-    props: {
-      padding: 'A+X',
-      background: '#57575C',
-      round: 'Z'
-    },
-    Icon: {
-      name: 'file',
-      fontSize: 'D'
-    }
-  },
+  Image: { extend: UploadImage },
 
   Flex: {
     props: {
       flex: '1',
       flow: 'column',
       boxSizing: 'border-box',
-      gap: 'Y',
-      padding: '- - V -'
+      justifyContent: 'center',
+      gap: 'Y2'
     },
 
     TitleParagraph: {
       extend: TitleParagraphWithButton,
-      props: { gap: 'X' },
+      props: { gap: 'Y2' },
       Title: { h5: { text: 'Image.jpg' } },
       Paragraph: {
         p: null,
@@ -49,7 +39,7 @@ export const UploadingProcess = {
 
 export const UploadedProcess = {
   extend: UploadingProcess,
-  File: {},
+  Image: {},
   Flex: {
     TitleParagraph: {
       Title: {},
@@ -71,12 +61,12 @@ export const UploadingProcess2 = {
     border: '1px solid #3F3F43'
   },
 
-  File: { props: { padding: 'Z+Y' } },
+  Image: { props: { padding: 'Z+Y' } },
   Flex: {
     props: {
       justifyContent: 'center',
       padding: '0 0 0 0',
-      gap: 'Y',
+      gap: 'Y2',
       position: 'relative'
     },
     TitleParagraph: {
@@ -89,7 +79,7 @@ export const UploadingProcess2 = {
 }
 export const UploadedProcess2 = {
   extend: UploadingProcess2,
-  File: {},
+  Image: {},
   Flex: {
     TitleParagraph: {},
     ProgressLineWithUnitValue: {
@@ -107,7 +97,7 @@ export const UploadingProcess3 = {
   props: {
     minWidth: 'G+E'
   },
-  File: {},
+  Image: {},
   Flex: {
     TitleParagraph: {
       Title: {
@@ -129,9 +119,10 @@ export const UploadingProcess3 = {
     ProgressCircleWithSideUnitValue: {}
   }
 }
+
 export const UploadedProcess3 = {
   extend: UploadingProcess3,
-  File: {},
+  Image: {},
   Flex: {
     TitleParagraph: {},
     ProgressCircleWithSideUnitValue: {
@@ -159,7 +150,7 @@ export const UploadingProcess4 = {
     padding: 'A',
     round: 'Z+X'
   },
-  File: null,
+  Image: null,
   ProgressCircleWithUnitValue: {},
 
   Flex: {

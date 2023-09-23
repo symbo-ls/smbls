@@ -5,7 +5,7 @@ import { Icon } from '@symbo.ls/icon'
 
 export const CheckIndicator = {
   props: {
-    padding: 'W',
+    padding: 'X',
     boxSize: 'fit-content fit-content',
     round: '100%',
     theme: 'primary',

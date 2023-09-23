@@ -7,11 +7,11 @@ export const Modal = {
   extend: Flex,
   props: {
     flow: 'column',
-    background: 'gray3',
+    background: 'gray',
     boxSize: 'fit-content fit-content',
     round: 'Z+X',
     padding: 'A',
-    minWidth: 'G3'
+    minWidth: 'G3+Z1'
   },
 
   Header: {
@@ -24,8 +24,13 @@ export const Modal = {
         }
       },
       Button: { props: { fontSize: 'C' } }
+    },
+
+    Paragraph: {
+      p: { props: { color: 'white' } }
     }
   },
-  Content: { extend: Flex },
+
+  Content: { extend: [Flex] },
   Footer: { extend: Flex }
 }

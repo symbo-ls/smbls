@@ -15,23 +15,8 @@ export const VerificationCode = {
 
   Header: {
     props: { gap: 'A' },
-    Title: {
-      h5: {
-        props: {
-          text: 'Verify your email'
-        }
-      }
-    },
-    Paragraph: {
-      p: {
-        props: {
-          text: 'Verification code has been sent to you. Enter the code below.',
-          fontSize: 'Z',
-          lineHeight: 'B',
-          color: 'white'
-        }
-      }
-    }
+    Title: { h5: { text: 'Verify your email' } },
+    Paragraph: { p: { text: 'Verification code has been sent to you. Enter the code below.' } }
   },
 
   Content: {
@@ -56,11 +41,12 @@ export const VerificationCode = {
       justifyContent: 'flex-end',
       padding: 'Y2 - - -'
     },
-    CancelConfirmButtons: {
+    Buttons: {
       extend: CancelConfirmButtons,
+      props: { childProps: { ':first-child': { border: 'none' } } },
       ...[
         {},
-        { props: { text: 'Verify' } }
+        { Caption: { text: 'Verify' } }
       ]
     }
   }

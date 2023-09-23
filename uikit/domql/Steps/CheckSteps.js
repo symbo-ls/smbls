@@ -13,7 +13,7 @@ export const CheckStep = {
   CheckIndicatorWithLabel: {
     CheckIndicator: {
       theme: 'transparent',
-      border: '2px solid #3F3F43',
+      border: '2px solid #1C1C1F',
       '.isActive': {
         theme: 'primary',
         border: 'none'

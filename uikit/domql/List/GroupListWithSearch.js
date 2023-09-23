@@ -20,7 +20,8 @@ export const GroupListWithSearch = {
         maxWidth: '100%',
         minWidth: '100%',
         minHeight: 'C+Y',
-        round: 'Z2'
+        round: 'Z2',
+        background: 'transparent'
       },
       Icon: {
         props: {
