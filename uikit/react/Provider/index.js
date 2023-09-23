@@ -10,7 +10,7 @@ import { PROVIDER_DEFAULT_PROPS, SymbolsContext } from './hooks'
 import SYMBOLSRC from '~/symbols.json'
 
 export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
-  const { appKey, children, liveSync } = options
+  const { appKey, children, editor } = options
   const key = SYMBOLSRC.key || options.key
 
   const ds = init(options.designSystem || DEFAULT_CONFIG)
@@ -20,9 +20,9 @@ export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
   const { Provider } = SymbolsContext
 
   useEffect(() => {
-    if (appKey && options.editor) {
+    if (appKey && editor) {
       try {
-        if (options.editor.async) {
+        if (editor.async) {
           fetchProjectAsync(appKey, options, (data) => {
             if (data.state) setState(data.state)
             if (data.designsystem) init(data.designsystem)
@@ -34,7 +34,7 @@ export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
     }
   }, [Object.values[state]])
 
-  if (liveSync) SyncProvider({ key, ...options })
+  if (editor && editor.liveSync) SyncProvider({ key, ...options })
 
   return React.createElement(
     Provider,

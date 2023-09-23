@@ -19,6 +19,9 @@ const onDisconnect = (element, state) => {
 }
 
 const onChange = (options) => {
+  const [setDesignSystem] = useDesignSystem()
+  const [setState] = useGlobalState()
+
   return (event, data) => {
     if (event === 'change') {
       const obj = JSON.parse(data)
@@ -28,14 +31,12 @@ const onChange = (options) => {
         const route = PROJECT_STATE.route
         if (route) window.history.pushState(null, null, route)
         else {
-          const [setState] = useGlobalState()
           setState(prev => overwriteDeep(prev, PROJECT_STATE))
         }
       }
 
       if (PROJECT_DESIGN_SYSTEM) {
         init(PROJECT_DESIGN_SYSTEM)
-        const [setDesignSystem] = useDesignSystem()
         setDesignSystem(prev => overwriteDeep(prev, PROJECT_DESIGN_SYSTEM))
       }
     }
