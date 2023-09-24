@@ -28,6 +28,8 @@ create({
     AvatarBundle: {},
     TitleParagraph: {},
     User: {},
+    Label: {},
+    UserWithLabel: {},
     CountIndicator: {},
     unitValue: {
       extend: UnitValue,
@@ -41,6 +43,7 @@ create({
     },
     UserButtonSet: {},
     UserMessage: {},
+    UserWithButton: {},
     // AvatarWithIndicator: {},
     // AvatarBundle: {},
     // AvatarChooser: {},
@@ -130,7 +133,14 @@ create({
     RadioSteps: {},
     LineSteps: {},
     LineStepsWithTitleParagraph: {},
+
     StepCard: {},
+    UnitValueWithLabel: {},
+    BalanceCard: {},
+    UnitValueWithTitle: {},
+    DropDownButtonWithAvatar: {},
+    ConvertCard: {},
+    CurrencyConvert: {},
 
     // old components
 

@@ -65,13 +65,13 @@ export const ListTemplate = {
   props: { maxWidth: 'F' },
   Flex: {
     ...[
-      { span: { text: 'Label' } },
-      { span: { text: 'Label' } },
-      { span: { text: 'Label' } },
-      { span: { text: 'Label' } },
-      { span: { text: 'Label' } },
-      { span: { text: 'Label' } },
-      { span: { text: 'Label' } }
+      { span: { text: 'Item' } },
+      { span: { text: 'Item' } },
+      { span: { text: 'Item' } },
+      { span: { text: 'Item' } },
+      { span: { text: 'Item' } },
+      { span: { text: 'Item' } },
+      { span: { text: 'Item' } }
     ]
   }
 }

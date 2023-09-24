@@ -42,13 +42,13 @@ export const ListWithTitleTemplate = {
   List: {
     Flex: {
       ...[
-        { span: { text: 'Label' } },
-        { span: { text: 'Label' } },
-        { span: { text: 'Label' } },
-        { span: { text: 'Label' } },
-        { span: { text: 'Label' } },
-        { span: { text: 'Label' } },
-        { span: { text: 'Label' } }
+        { span: { text: 'Item' } },
+        { span: { text: 'Item' } },
+        { span: { text: 'Item' } },
+        { span: { text: 'Item' } },
+        { span: { text: 'Item' } },
+        { span: { text: 'Item' } },
+        { span: { text: 'Item' } }
       ]
     }
   }

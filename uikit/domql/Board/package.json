@@ -1,0 +1,12 @@
+{
+  "name": "@symbo.ls/board",
+  "version": "2.11.160",
+  "main": "index.js",
+  "license": "MIT",
+  "gitHead": "f09e162a618613a10c3db8bff11177baf04da275",
+  "dependencies": {
+    "@symbo.ls/atoms": "latest",
+    "@symbo.ls/button": "latest"
+  },
+  "source": "src/index.js"
+}

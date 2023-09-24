@@ -40,6 +40,7 @@ export * from '@symbo.ls/dropdown'
 export * from '@symbo.ls/form'
 export * from '@symbo.ls/upload'
 export * from '@symbo.ls/user'
+export * from '@symbo.ls/board'
 
 export * from '@symbo.ls/table'
 export * from '@symbo.ls/card'

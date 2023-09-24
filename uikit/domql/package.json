@@ -42,6 +42,7 @@
     "@symbo.ls/input": "latest",
     "@symbo.ls/label": "latest",
     "@symbo.ls/link": "latest",
+    "@symbo.ls/board": "latest",
     "@symbo.ls/notification": "latest",
     "@symbo.ls/pills": "latest",
     "@symbo.ls/range": "latest",

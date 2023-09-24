@@ -106,8 +106,8 @@ export const GroupListTemplate = {
           List: {
             Flex: {
               ...[
-                { span: { text: 'Label' } },
-                { span: { text: 'Label' } }
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } }
               ]
             }
           }
@@ -117,9 +117,9 @@ export const GroupListTemplate = {
           List: {
             Flex: {
               ...[
-                { span: { text: 'Label' } },
-                { span: { text: 'Label' } },
-                { span: { text: 'Label' } }
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } }
               ]
             }
           }
@@ -129,11 +129,11 @@ export const GroupListTemplate = {
           List: {
             Flex: {
               ...[
-                { span: { text: 'Label' } },
-                { span: { text: 'Label' } },
-                { span: { text: 'Label' } },
-                { span: { text: 'Label' } },
-                { span: { text: 'Label' } }
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } }
               ]
             }
           }

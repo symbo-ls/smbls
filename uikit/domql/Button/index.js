@@ -47,23 +47,6 @@ export const KangorooButton = {
   childExtend: IconText
 }
 
-export const DropDownButton = {
-  extend: Button,
-  props: {
-    gap: 'Y',
-    boxSize: 'fit-content fit-content',
-    padding: 'A B A A+X',
-    round: 'Z',
-    background: '#141416',
-    color: 'white',
-    icon: {
-      name: 'chevronDown',
-      fontSize: 'D'
-    },
-    text: 'All'
-  }
-}
-
 export const CommonButton = {
   extend: Button,
   props: {
@@ -130,5 +113,42 @@ export const IcontextButton = {
     position: 'relative',
     background: 'gray3',
     icon: { name: 'smile' }
+  }
+}
+
+export const DropDownButton = {
+  extend: CommonButton,
+  props: {
+    gap: 'Y',
+    boxSize: 'fit-content fit-content',
+    padding: 'A B A A+X',
+    round: 'Z',
+    background: '#141416',
+    color: 'white',
+    icon: {
+      name: 'chevronDown',
+      fontSize: 'D'
+    },
+    Caption: { text: 'all' }
+  }
+}
+
+export const DropDownButtonWithAvatar = {
+  extend: DropDownButton,
+  props: {
+    gap: 'Z',
+    padding: 'Y1 Z',
+    round: 'Y2',
+    background: 'gray3'
+  },
+
+  Avatar: {
+    boxSize: 'A1 A1'
+  },
+  Caption: {
+    text: 'ETH',
+    props: {
+      fontSize: 'Z1'
+    }
   }
 }
