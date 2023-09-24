@@ -4,7 +4,7 @@ import { Input } from './Input'
 
 export const TextArea = {
   tag: 'textarea',
-  extend: [Input],
+  extend: [Input, Flex],
   props: {
     border: '1px solid #3F3F43',
     background: 'transparent',
@@ -37,4 +37,25 @@ export const TextAreaWithTitle = {
     }
   },
   TextArea: {}
+}
+
+export const TextAreaWithButton = {
+  extend: Flex,
+  props: { gap: 'Y2' },
+  TextArea: {
+    height: '52px',
+    padding: 'A',
+    fontSize: 'Z1',
+    color: 'white',
+    placeholder: 'Message',
+    round: 'Z2'
+    // background: 'gray'
+
+  },
+  IconButton: {
+    props: {
+      background: 'blue',
+      icon: { name: 'send' }
+    }
+  }
 }

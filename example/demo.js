@@ -5,6 +5,7 @@ import { Flex } from '@symbo.ls/atoms'
 import { SearchWithButton } from '@symbo.ls/field'
 
 import designSystem from '@symbo.ls/default-config'
+import { IconButton, UnitValue } from '@symbo.ls/uikit'
 designSystem.globalTheme = 'dark'
 
 create({
@@ -22,8 +23,30 @@ create({
     extend: Flex,
 
     StatusIndicator: {},
-    SuccessIndicator: {},
+    Avatar: {},
+    AvatarIndicator: {},
+    AvatarBundle: {},
+    TitleParagraph: {},
+    User: {},
     CountIndicator: {},
+    unitValue: {
+      extend: UnitValue,
+      Value: { text: '2:20' },
+      Unit: { text: 'AM' }
+    },
+    ChatUser: {},
+    iconButton: {
+      extend: IconButton,
+      props: { icon: { name: 'phone' } }
+    },
+    UserButtonSet: {},
+    UserMessage: {},
+    // AvatarWithIndicator: {},
+    // AvatarBundle: {},
+    // AvatarChooser: {},
+    // AvatarWithInfoSet: {},
+    // vatarInfoSetWithButton: {},
+    // AvatarBundleInfoSet: {},
 
     CommonButton: {},
     CancelConfirmButtons: {},
@@ -32,10 +55,10 @@ create({
 
     Tab: {},
     IconTab: {},
-    TitleParagraph: {},
     TitleParagraphWithButton: {},
     Modal: {},
     Message: {},
+    SuccessIndicator: {},
     CompleteProcess: {},
     UploadButtonWithIcon: {},
     UploadLabel2: {},
@@ -75,6 +98,7 @@ create({
     CommonField: {},
     CommonFieldTemplate: {},
     TextArea: {},
+    TextAreaWithButton: {},
     NumberField: {},
     ParagraphButton: {},
     VerificationCode: {},
@@ -85,6 +109,7 @@ create({
     DoubleHr: {},
     SocialLink: {},
     LogIn: {},
+    SlideTabs: {},
 
     Search: {},
     SearchWithButton: {},

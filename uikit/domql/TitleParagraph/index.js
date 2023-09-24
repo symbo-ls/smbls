@@ -27,7 +27,7 @@ export const TitleParagraph = {
       props: {
         text: 'Paragraph',
         fontSize: 'Z',
-        lineHeight: 'B',
+        lineHeight: '1em',
         margin: '0',
         color: 'gray2'
       }

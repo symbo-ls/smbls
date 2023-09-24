@@ -37,12 +37,6 @@ export const SquareButton = {
   }
 }
 
-export const ButtonSet = {
-  tag: 'nav',
-  extend: Flex,
-  childExtend: SquareButton
-}
-
 export const CircleButton = {
   extend: SquareButton,
   props: { round: 'C' }
@@ -96,6 +90,12 @@ export const IconButton = {
     background: 'gray3'
   },
   Caption: null
+}
+
+export const ButtonSet = {
+  tag: 'nav',
+  extend: Flex,
+  childExtend: IconButton
 }
 
 export const CancelConfirmButtons = {
