@@ -30,5 +30,7 @@ export default {
   moon: require('./src/moon.svg'),
   moreHorizontal: require('./src/more-horizontal.svg'),
   moreVertical: require('./src/more-vertical.svg'),
+  sun: require('./src/sun.svg'),
+  search: require('./src/search.svg'),
   plus: require('./src/plus.svg')
 }
