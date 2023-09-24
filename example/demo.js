@@ -129,6 +129,8 @@ create({
     RadioStep: {},
     RadioSteps: {},
     LineSteps: {},
+    LineStepsWithTitleParagraph: {},
+    StepCard: {},
 
     // old components
 

@@ -23,7 +23,40 @@ export const LineSteps = {
   ...[
     {},
     {},
-    { props: { value: 0 } },
     { props: { value: 0 } }
   ]
+}
+
+export const LineStepsWithTitleParagraph = {
+  extend: Flex,
+  props: {
+    flow: 'column',
+    padding: 'B',
+    background: 'gray',
+    round: 'A',
+    boxSize: 'fit-content',
+    gap: 'B'
+  },
+
+  TitleParagraph: {
+    gap: 'Z1',
+    Title: {
+      h5: {
+        text: 'Symbols',
+        fontSize: 'B'
+      }
+    },
+    Paragraph: {
+      p: {
+        text: 'The easiest way to build your own website.',
+        fontSIze: 'A'
+      }
+    }
+  },
+  LineSteps: {
+    childProps: {
+      minWidth: 'E+A',
+      maxWidth: 'E+A'
+    }
+  }
 }
