@@ -8,7 +8,7 @@
     "@symbo.ls/atoms": "latest"
   },
   "source": "src/index.js",
-  "gitHead": "c220caaef0f1e5c7a8f767f9c5f03587711c033d",
+  "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }

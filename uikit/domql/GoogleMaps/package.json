@@ -4,7 +4,7 @@
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "d0e4ae6e75cabfd8c8a36ed6fb2f0de0096f7252",
+  "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.15.1"
   }
