@@ -1,5 +1,8 @@
 'use strict'
 
-export * from './FieldLabel'
+export * from './CommonForm'
+export * from './VerificationCode'
+export * from './ResetPassword'
 export * from './ContactForm'
-export * from './SignUpForm'
+export * from './SignUp'
+export * from './LogIn'

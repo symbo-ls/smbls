@@ -9,7 +9,7 @@ export const UploadLabel = {
     align: 'center flex-start',
     boxSize: 'fit-content fit-content',
     gap: 'C',
-    background: '#141416',
+    background: 'gray',
     padding: 'C D+Z',
     round: 'Z+X',
     border: '1px dashed #57575C'

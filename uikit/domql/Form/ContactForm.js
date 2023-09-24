@@ -1,100 +1,90 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
-import { TextareaWithTitle } from '@symbo.ls/textarea'
-import { ModalWithTitleParagraph } from '@symbo.ls/modal'
-// import { ParagrapUnderlineLinkWithCheckbox } from '@symbo.ls/textcomponents'
-// import { FieldWithTitle } from '@symbo.ls/field'
-
-const fields = {
-  names: {
-    extend: Flex,
-    // childExtend: FieldWithTitle,
-    ...[
-      {
-        title: { props: { text: 'First name' } },
-        field: { input: { props: { placeholder: 'First name' } } }
-      },
-      {
-        title: { props: { text: 'Last name' } },
-        field: { input: { props: { placeholder: 'Last name' } } }
-      }
-    ]
-  },
-
-  mail: {
-    // extend: FieldWithTitle,
-    title: { props: { text: 'Email' } },
-    field: { input: { props: { placeholder: 'example@email.com' } } }
-  },
-
-  message: { extend: TextareaWithTitle },
-
-  props: {
-    flow: 'column',
-    gap: 'A',
-    names: {
-      gap: 'B+Z',
-      childProps: {
-        width: '50%',
-        field: { width: '100%' }
-      }
-    },
-    mail: { field: { width: '100%' } },
-    message: { textArea: { width: '100%' } }
-  }
-}
-
-const checkParagraph = {
-  // extend: ParagrapUnderlineLinkWithCheckbox,
-  checkBox: {},
-  paragraph: {
-    p: { props: { text: 'You agree to ' } },
-    underlined: { props: { text: 'privacy policy' } }
-  },
-  props: {
-    padding: 'A - - -',
-    paragraph: {
-      p: { color: '#E0E0E2' },
-      underlined: { fontWeight: '400' }
-    }
-  }
-}
+import { Modal } from '@symbo.ls/modal'
+import { TextArea } from '@symbo.ls/input'
+import { CommonForm } from './CommonForm'
 
 export const ContactForm = {
-  extend: ModalWithTitleParagraph,
-  header: {
-    heading: {
-      title: { props: { text: 'We’d love to help' } },
-      paragraph: { props: { text: 'Reach out and we’ll get in touch within 24 hours.' } }
-    }
-  },
-
-  content: {
-    fields,
-    checkParagraph
-  },
-
-  footer: {
-    sendButton: {
-      extend: Button,
-      props: { text: 'Send message' }
-    }
-  },
-
+  extend: Modal,
   props: {
-    padding: 'B',
-    minWidth: 'H+C',
-    maxWidth: 'H+C',
-    header: {
-      heading: {
-        gap: 'Y',
-        title: {
-          fontSize: `${24 / 16}em`,
-          fontWeight: '800'
+    minWidth: 'H+B',
+    maxWidth: 'H+B',
+    padding: 'B A'
+  },
+
+  Header: {
+    props: {
+      gap: 'Y2',
+      padding: '- - B1 W'
+    },
+    Title: {
+      h5: {
+        props: {
+          text: 'We’d love to help',
+          fontSize: 'D1'
         }
       }
+    },
+    Paragraph: {
+      p: {
+        props: {
+          text: 'Reach out and we’ll get in touch within 24 hours.',
+          color: 'gray4'
+        }
+      }
+    }
+  },
+
+  Content: {
+    props: { flow: 'column' },
+    Form: {
+      extend: CommonForm,
+      props: { columns: 'repeat(2, 1fr)' },
+      ...[
+        {
+          Title: { text: 'First name' },
+          Field: { Input: { placeholder: 'First name' } },
+          Hint: null
+        },
+        {
+          Title: { text: 'Last name' },
+          Field: { Input: { placeholder: 'Last name' } },
+          Hint: null
+        },
+        {
+          props: { gridColumn: '1 / span 2' },
+          Title: { text: 'Email' },
+          Field: { Input: { placeholder: 'example@email.com' } },
+          Hint: null
+        },
+        {
+          props: { gridColumn: '1 / span 2' },
+          Title: { text: 'Message' },
+          Field: null,
+          TextArea,
+          Hint: null
+        }
+      ]
+    },
+
+    ParagraphButtonWithCheckBox: {
+      padding: 'A1 Z A1 Y',
+      CheckBox: {},
+      ParagraphButton: {
+        P: { text: 'You agree to' },
+        Button: { text: 'privacy policy' }
+      }
+    }
+  },
+
+  Footer: {
+    Button: {
+      text: 'Send message',
+      theme: 'primary',
+      flex: '1',
+      round: 'Y+W',
+      fontWeight: '500',
+      padding: 'A -'
     }
   }
 }

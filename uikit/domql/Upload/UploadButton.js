@@ -1,11 +1,10 @@
 'use strict'
 
-import { Button } from '@symbo.ls/button'
+import { CommonButton } from '@symbo.ls/button'
 
 export const UploadButton = {
-  extend: Button,
+  extend: CommonButton,
   props: {
-    text: 'Choose file',
     position: 'relative',
     padding: '0',
     color: '#0474F2',
@@ -13,7 +12,8 @@ export const UploadButton = {
     overflow: 'hidden',
     fontWeight: '500',
     background: 'transparent',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    Caption: { text: 'Choose file' }
   },
 
   Input: {
@@ -36,7 +36,6 @@ export const UploadButtonWithIcon = {
     color: 'white',
     background: '#0474F2',
     padding: 'A B',
-    text: 'Browse files',
     round: 'A'
   },
 
@@ -45,5 +44,6 @@ export const UploadButtonWithIcon = {
       name: 'upload',
       fontSize: 'B'
     }
-  }
+  },
+  Caption: { text: 'Browse files' }
 }

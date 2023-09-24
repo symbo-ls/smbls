@@ -8,7 +8,8 @@ export const UnitValue = {
     color: '#818186',
     align: 'center flex-start',
     gap: 'V',
-    fontSize: 'Z'
+    fontSize: 'Z',
+    '> *': { lineHeight: '1em' }
   },
 
   Value: { props: { text: '72' } },
@@ -43,6 +44,34 @@ export const DoubleUnitValue = {
   }
 }
 
+export const UnitValueWithLabel = {
+  extend: DoubleUnitValue,
+  props: { gap: 'Y2' },
+
+  UnitValue: {
+    flow: 'row-reverse',
+    fontSize: 'D1',
+    fontWeight: '700',
+    color: 'white',
+    Value: { text: '12,759' },
+    Unit: { text: '$' }
+  },
+  dot: null,
+  UnitValue2: {
+    props: {
+      background: 'purple',
+      padding: 'Z',
+      round: 'Y',
+      fontSize: 'Z',
+      gap: '0',
+      color: 'white'
+    },
+    Value: { text: '+8.8' },
+    Unit: { text: '%' }
+  }
+
+}
+
 export const UnitValueWithTitle = {
   extend: Flex,
   props: {
@@ -54,9 +83,9 @@ export const UnitValueWithTitle = {
     tag: 'caption',
     props: {
       text: 'balance:',
-      fontSize: 'Z',
+      fontSize: 'Z1',
       textTransform: 'capitalize',
-      color: '#A3A3A8'
+      color: 'gray4'
     }
   },
 

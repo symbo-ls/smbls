@@ -7,7 +7,7 @@ export const Toggle = {
 
   Input: {
     ':checked ~ div': {
-      background: '#47FF09',
+      background: 'green2 +8',
       justifyContent: 'flex-end'
     }
   },
@@ -18,7 +18,7 @@ export const Toggle = {
       padding: '- W',
       round: 'D',
       align: 'center flex-start',
-      background: '#CFCFD1',
+      background: 'gray .8 +68',
       border: 'none',
       transition: 'opacity .15s ease',
       ':after': {

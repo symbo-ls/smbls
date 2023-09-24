@@ -23,13 +23,13 @@ export const UploadModal = {
         UploadButton: null
       }
     }
-
   },
 
   Footer: {
     UploadButtonWithIcon: {
       flex: 1,
-      Icon: { display: 'none' }
+      icon: { display: 'none' },
+      Caption: { text: 'Choose file' }
     }
   }
 
@@ -58,15 +58,15 @@ export const UploadModal2 = {
       text: 'Support',
       gap: 'Z'
     },
-    CancenConfirmButtons: {
+    CancelConfirmButtons: {
       props: {
         childProps: {
-          ':first-child': { background: '#141416' }
+          ':first-child': { background: 'gray' }
         }
       },
       ...[
-        { props: { background: 'red' } },
-        { text: 'Attach file' }
+        { Caption: { text: 'Cancel' } },
+        { Caption: { text: 'Attach file' } }
       ]
     }
   }
@@ -78,7 +78,7 @@ export const UploadModal3 = {
   Content: { extend: UploadLabel2 },
   Footer: {
     IconText: null,
-    CancenConfirmButtons: {
+    CancelConfirmButtons: {
       props: {
         minWidth: '100%',
         childProps: { flex: '1' }

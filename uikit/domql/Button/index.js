@@ -37,12 +37,6 @@ export const SquareButton = {
   }
 }
 
-export const ButtonSet = {
-  tag: 'nav',
-  extend: Flex,
-  childExtend: SquareButton
-}
-
 export const CircleButton = {
   extend: SquareButton,
   props: { round: 'C' }
@@ -53,34 +47,77 @@ export const KangorooButton = {
   childExtend: IconText
 }
 
+export const CommonButton = {
+  extend: Button,
+  props: {
+    color: 'white',
+    background: 'blue',
+    boxSize: 'fit-content',
+    padding: 'A A2',
+    round: 'Z2',
+    gap: 'Y2',
+    position: 'relative'
+  },
+  icon: {
+    props: { fontSize: 'C' }
+  },
+  Caption: { props: { text: 'Button', line_height: '1em' } }
+}
+
+export const IconButton = {
+  extend: CommonButton,
+  props: {
+    icon: { name: 'smile' },
+    boxSize: 'fit-content fit-content',
+    padding: 'A',
+    background: 'gray3'
+  },
+  Caption: null
+}
+
+export const ButtonSet = {
+  tag: 'nav',
+  extend: Flex,
+  childExtend: IconButton
+}
+
 export const CancelConfirmButtons = {
   extend: Flex,
-  childExtend: Button,
+  childExtend: {
+    extend: CommonButton,
+    props: {
+      minWidth: 'D2',
+      ':first-child': {
+        background: 'transparent',
+        border: '1px solid #20202B'
+      },
+      ':last-child': {
+      }
+    }
+  },
   ...[
-    { props: { text: 'Cancel' } },
-    { props: { text: 'Confirm' } }
+    { Caption: { text: 'No' } },
+    { Caption: { text: 'Yes' } }
   ],
 
   props: {
     gap: 'Z',
-    maxWidth: 'fit-content',
-    childProps: {
-      fontWeight: '500',
-      color: 'white',
-      padding: 'A B+X',
-      round: 'A',
-      ':first-child': {
-        background: 'transparent'
-      },
-      ':last-child': {
-        background: '#0474F2'
-      }
-    }
+    maxWidth: 'fit-content'
+  }
+}
+
+export const IcontextButton = {
+  extend: CommonButton,
+  props: {
+    padding: 'A',
+    position: 'relative',
+    background: 'gray3',
+    icon: { name: 'smile' }
   }
 }
 
 export const DropDownButton = {
-  extend: Button,
+  extend: CommonButton,
   props: {
     gap: 'Y',
     boxSize: 'fit-content fit-content',
@@ -92,39 +129,26 @@ export const DropDownButton = {
       name: 'chevronDown',
       fontSize: 'D'
     },
-    text: 'All'
+    Caption: { text: 'all' }
   }
 }
 
-export const ButtonTemplate1 = {
-  extend: Button,
+export const DropDownButtonWithAvatar = {
+  extend: DropDownButton,
   props: {
-    icon: { name: 'circle' },
-    boxSize: 'fit-content fit-content',
-    padding: 'A',
-    round: 'A',
-    color: 'white',
-    background: '#F4454E'
+    gap: 'Z',
+    padding: 'Y1 Z',
+    round: 'Y2',
+    background: 'gray3'
+  },
+
+  Avatar: {
+    boxSize: 'A1 A1'
+  },
+  Caption: {
+    text: 'ETH',
+    props: {
+      fontSize: 'Z1'
+    }
   }
-}
-
-export const ButtonTemplate2 = {
-  extend: ButtonTemplate1,
-  icon: null,
-  props: { text: 'Button' }
-}
-
-export const ButtonTemplate3 = {
-  extend: ButtonTemplate1,
-  props: {
-    text: 'Button',
-    gap: 'Z'
-  }
-}
-
-export const ButtonTemplate4 = {
-  extend: ButtonTemplate3,
-  icon: {},
-  text: 'Button',
-  Icon: { props: { icon: 'circle' } }
 }

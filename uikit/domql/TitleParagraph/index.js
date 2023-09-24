@@ -14,8 +14,8 @@ export const TitleParagraph = {
     props: { align: 'center space-between' },
     h5: {
       props: {
-        text: 'Title',
         fontSize: 'A',
+        text: 'Title',
         lineHeight: '1em'
       }
     }
@@ -26,7 +26,7 @@ export const TitleParagraph = {
     p: {
       props: {
         text: 'Paragraph',
-        fontSize: 'Y',
+        fontSize: 'Z',
         lineHeight: '1em',
         margin: '0',
         color: 'gray2'
