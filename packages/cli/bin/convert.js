@@ -272,8 +272,7 @@ async function convertFile (srcPath, tmpDirPath, destPath,
 
 // Aborts copying if destination exists
 function recursiveCopy (src, dst, exclude) {
-  if (exclude && exclude.includes(src))
-    return
+  if (exclude && exclude.includes(src)) { return }
 
   if (!fs.existsSync(src)) {
     console.error(`Error (recursiveCopy): Source file '${src}' does not exist.`)
@@ -293,8 +292,7 @@ function recursiveCopy (src, dst, exclude) {
   mkdirp(dst)
   const files = fs.readdirSync(src)
   for (const f of files) {
-    if (exclude && exclude.includes(f))
-      continue
+    if (exclude && exclude.includes(f)) { continue }
 
     recursiveCopy(path.join(src, f), path.join(dst, f), exclude)
   }

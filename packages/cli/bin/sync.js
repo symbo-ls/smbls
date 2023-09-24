@@ -27,11 +27,12 @@ program
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('-k, --key', 'Bypass the symbols.json key, overriding the key manually')
   .option('-f, --fetch', 'Verbose errors and warnings', true)
+  .option('--convert', 'Verbose errors and warnings', true)
   .option('--verbose-code', 'Verbose errors and warnings')
   .action(async (opts) => {
-    const { dev, verbose, fetch: fetchAlso } = opts
+    const { dev, verbose, fetch: fetchOpt, convert: convertOpt } = opts
 
-    if (fetchAlso) {
+    if (fetchOpt) {
       await fetchFromCli(opts)
       console.log(chalk.dim('\n----------------\n'))
     }
@@ -90,7 +91,7 @@ program
             updateDynamycFile(d, { framework, ...options })
           }
 
-          if (d.components && framework) {
+          if (d.components && convertOpt && framework) {
             convertFromCli(d.components, {
               ...options, framework
             })

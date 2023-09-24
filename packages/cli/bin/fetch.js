@@ -31,7 +31,7 @@ try {
 } catch (e) { console.error('Please include symbols.json to your root of respository') }
 
 export const fetchFromCli = async (opts) => {
-  const { dev, verbose, prettify } = opts
+  const { dev, verbose, prettify, convert: convertOpt } = opts
 
   await rc.then(async data => {
     const { key, framework } = data
@@ -102,7 +102,8 @@ export const fetchFromCli = async (opts) => {
       else console.log(debugMsg)
     }
 
-    if (body.components && framework) {
+    console.log(convertOpt)
+    if (body.components && convertOpt && framework) {
       convertFromCli(body.components, { ...opts, framework })
     }
   })
@@ -113,5 +114,6 @@ program
   .description('Fetch symbols')
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
+  .option('--convert', 'Verbose errors and warnings', true)
   .option('--verbose-code', 'Verbose errors and warnings')
   .action(fetchFromCli)

@@ -21,8 +21,8 @@ const getComputedBackgroundColor = ({ props }) => {
     getColor(props.background)
 }
 
-const inheritTransition = ({ props }) => {
-  const exec = Timing.class.transition({ props })
+const inheritTransition = ({ props, deps }) => {
+  const exec = Timing.class.transition({ props, deps })
   return exec && exec.transition
 }
 
@@ -34,7 +34,7 @@ export const SHAPES = {
     borderRadius: '1.15em/2.5em'
   },
 
-  tooltip: ({ props }) => ({
+  tooltip: ({ props, deps }) => ({
     position: props.position || 'relative',
     '&:before': {
       content: '""',
@@ -42,8 +42,8 @@ export const SHAPES = {
       width: '0px',
       height: '0px',
       border: '.35em solid',
-      borderColor: getComputedBackgroundColor({ props }),
-      transition: inheritTransition({ props }),
+      borderColor: getComputedBackgroundColor({ props, deps }),
+      transition: inheritTransition({ props, deps }),
       transitionProperty: 'border-color',
       position: 'absolute',
       borderRadius: '.15em'
@@ -81,13 +81,13 @@ export const SHAPES = {
     }
   },
 
-  tag: ({ props }) => ({
+  tag: ({ props, deps }) => ({
     position: 'relative',
     '&:before': {
       content: '""',
       display: 'block',
-      background: getComputedBackgroundColor({ props }),
-      transition: inheritTransition({ props }),
+      background: getComputedBackgroundColor({ props, deps }),
+      transition: inheritTransition({ props, deps }),
       transitionProperty: 'background',
       borderRadius: '.25em',
       position: 'absolute',
@@ -130,7 +130,7 @@ export const SHAPES = {
     }
   },
 
-  hexagon: ({ props }) => ({
+  hexagon: ({ props, deps }) => ({
     position: 'relative',
     '&:before, &:after': {
       content: '""',
@@ -142,8 +142,8 @@ export const SHAPES = {
       top: '50%',
       transformOrigin: '50% 50%',
       height: '73%',
-      background: getComputedBackgroundColor({ props }),
-      transition: inheritTransition({ props }),
+      background: getComputedBackgroundColor({ props, deps }),
+      transition: inheritTransition({ props, deps }),
       transitionProperty: 'background'
     },
     '&:before': {
@@ -156,7 +156,7 @@ export const SHAPES = {
     }
   }),
 
-  chevron: ({ props }) => ({
+  chevron: ({ props, deps }) => ({
     position: 'relative',
     // overflow: 'hidden',
     '&:before, &:after': {
@@ -167,15 +167,15 @@ export const SHAPES = {
       aspectRatio: '1/1',
       top: '50%',
       transformOrigin: '50% 50%',
-      transition: inheritTransition({ props }),
+      transition: inheritTransition({ props, deps }),
       transitionProperty: 'background'
 
     },
     '&:before': {
-      background: `linear-gradient(225deg, ${getComputedBackgroundColor({ props })} 25%, transparent 25%), linear-gradient(315deg, ${getComputedBackgroundColor({ props })} 25%, transparent 25%)`
+      background: `linear-gradient(225deg, ${getComputedBackgroundColor({ props, deps })} 25%, transparent 25%), linear-gradient(315deg, ${getComputedBackgroundColor({ props, deps })} 25%, transparent 25%)`
     },
     '&:after': {
-      background: getComputedBackgroundColor({ props }),
+      background: getComputedBackgroundColor({ props, deps }),
       borderRadius: '.25em'
     }
   }),

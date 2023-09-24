@@ -20,7 +20,7 @@ export const Shape = {
   class: {
     shape: ({ props, deps }) => {
       const { shape } = props
-      return deps.exec(SHAPES[shape], ({ props }))
+      return deps.exec(SHAPES[shape], ({ props, deps }))
     },
     shapeDirection: ({ props }) => {
       const { shape, shapeDirection } = props
