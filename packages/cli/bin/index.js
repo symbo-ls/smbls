@@ -3,6 +3,7 @@
 import 'v8-compile-cache'
 
 import { program } from './program.js'
+import './install.js'
 import './init.js'
 import './fetch.js'
 import './sync.js'

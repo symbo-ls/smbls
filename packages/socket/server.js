@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 import fs from 'fs'
+import chalk from 'chalk'
 import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
 import { createRequire } from 'module'
 import * as utils from '@domql/utils'
-const { overwriteDeep } = utils
+const { overwriteDeep } = utils.default
 
 const require = createRequire(import.meta.url) // construct the require method
 const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
@@ -14,20 +15,32 @@ const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in 
 const app = express()
 let io
 
+const debugMsg = chalk.dim('Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls')
+
 export const updateDynamycFile = (changes, options = {}) => {
-  const { key, live } = options
+  const { verbose, prettify, verboseCode } = options
   const file = require('@symbo.ls/init/dynamic.json')
 
-  const newMerge = overwriteDeep(changes, file)
+  const newMerge = overwriteDeep(file, changes)
   const mergeStr = JSON.stringify(newMerge, null, 2)
   const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 
-  if (live) {
-    io.to(key).emit('liveChange', mergeStr)
-  } else {
-    fs.writeFile(initPath, mergeStr, function (err) {
-      if (err) { return console.log(err) }
-    })
+  console.log(chalk.dim('\n----------------\n'))
+
+  console.log(chalk.dim('Received update:'))
+  console.log(Object.keys(changes).join(', '))
+  if (verboseCode) console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
+
+  try {
+    fs.writeFileSync(initPath, mergeStr)
+    if (verbose) {
+      console.log(chalk.bold.green('\nChanges wrote to the file'))
+    }
+  } catch (e) {
+    console.log('')
+    console.log(chalk.bold.red('Error writing file'))
+    if (verbose) console.error(e)
+    else console.log(debugMsg)
   }
 }
 
@@ -75,7 +88,7 @@ export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
     })
   })
 
-  server.listen(13335, () => {
-    console.log('listening on *:13335')
+  server.listen(13336, () => {
+    console.log('listening on *:13336')
   })
 }

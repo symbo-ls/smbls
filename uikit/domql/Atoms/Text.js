@@ -4,10 +4,12 @@ import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
 export const Text = {
   deps: { getFontSizeByKey, getFontFamily },
+
   text: ({ key, props, state, deps }) => {
     if (props.text === true) return (state && state[key]) || (props && props[key])
     return props.text
   },
+
   class: {
     fontSize: (el) => {
       const { props, deps } = el

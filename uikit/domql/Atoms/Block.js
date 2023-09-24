@@ -3,6 +3,8 @@
 import { getSpacingBasedOnRatio, getSpacingByKey, transfromGap } from '@symbo.ls/scratch'
 
 export const Block = {
+  deps: { getSpacingBasedOnRatio, getSpacingByKey, transfromGap },
+
   class: {
     boxSizing: ({ props }) => props.boxSizing
       ? ({ boxSizing: props.boxSizing })
@@ -14,36 +16,36 @@ export const Block = {
 
     hide: ({ props }) => props.hide && ({ display: 'none !important' }),
 
-    width: ({ props }) => props.width && getSpacingBasedOnRatio(props, 'width'),
-    height: ({ props }) => props.height && getSpacingBasedOnRatio(props, 'height'),
-    boxSize: ({ props }) => {
+    width: ({ props, deps }) => props.width && deps.getSpacingBasedOnRatio(props, 'width'),
+    height: ({ props, deps }) => props.height && deps.getSpacingBasedOnRatio(props, 'height'),
+    boxSize: ({ props, deps }) => {
       if (typeof props.boxSize !== 'string') return
       const [height, width] = props.boxSize.split(' ')
       return {
-        ...getSpacingByKey(height, 'height'),
-        ...getSpacingByKey(width || height, 'width')
+        ...deps.getSpacingByKey(height, 'height'),
+        ...deps.getSpacingByKey(width || height, 'width')
       }
     },
 
-    maxWidth: ({ props }) => props.maxWidth && getSpacingBasedOnRatio(props, 'maxWidth'),
-    minWidth: ({ props }) => props.minWidth && getSpacingBasedOnRatio(props, 'minWidth'),
-    widthRange: ({ props }) => {
+    maxWidth: ({ props, deps }) => props.maxWidth && deps.getSpacingBasedOnRatio(props, 'maxWidth'),
+    minWidth: ({ props, deps }) => props.minWidth && deps.getSpacingBasedOnRatio(props, 'minWidth'),
+    widthRange: ({ props, deps }) => {
       if (typeof props.widthRange !== 'string') return
       const [minWidth, maxWidth] = props.widthRange.split(' ')
       return {
-        ...getSpacingByKey(minWidth, 'minWidth'),
-        ...getSpacingByKey(maxWidth || minWidth, 'maxWidth')
+        ...deps.getSpacingByKey(minWidth, 'minWidth'),
+        ...deps.getSpacingByKey(maxWidth || minWidth, 'maxWidth')
       }
     },
 
-    maxHeight: ({ props }) => props.maxHeight && getSpacingBasedOnRatio(props, 'maxHeight'),
-    minHeight: ({ props }) => props.minHeight && getSpacingBasedOnRatio(props, 'minHeight'),
-    heightRange: ({ props }) => {
+    maxHeight: ({ props, deps }) => props.maxHeight && deps.getSpacingBasedOnRatio(props, 'maxHeight'),
+    minHeight: ({ props, deps }) => props.minHeight && deps.getSpacingBasedOnRatio(props, 'minHeight'),
+    heightRange: ({ props, deps }) => {
       if (typeof props.heightRange !== 'string') return
       const [minHeight, maxHeight] = props.heightRange.split(' ')
       return {
-        ...getSpacingByKey(minHeight, 'minHeight'),
-        ...getSpacingByKey(maxHeight || minHeight, 'maxHeight')
+        ...deps.getSpacingByKey(minHeight, 'minHeight'),
+        ...deps.getSpacingByKey(maxHeight || minHeight, 'maxHeight')
       }
     },
 
@@ -51,58 +53,58 @@ export const Block = {
 
     aspectRatio: ({ props }) => props.aspectRatio && ({ aspectRatio: props.aspectRatio }),
 
-    borderWidth: ({ props }) => props.borderWidth ? getSpacingBasedOnRatio(props, 'borderWidth') : null,
+    borderWidth: ({ props, deps }) => props.borderWidth ? deps.getSpacingBasedOnRatio(props, 'borderWidth') : null,
 
-    padding: ({ props }) => props.padding ? getSpacingBasedOnRatio(props, 'padding') : null,
-    paddingInline: ({ props }) => {
+    padding: ({ props, deps }) => props.padding ? deps.getSpacingBasedOnRatio(props, 'padding') : null,
+    paddingInline: ({ props, deps }) => {
       if (typeof props.paddingInline !== 'string') return
       const [paddingInlineStart, paddingInlineEnd] = props.paddingInline.split(' ')
       return {
-        ...getSpacingByKey(paddingInlineStart, 'paddingInlineStart'),
-        ...getSpacingByKey(paddingInlineEnd || paddingInlineStart, 'paddingInlineEnd')
+        ...deps.getSpacingByKey(paddingInlineStart, 'paddingInlineStart'),
+        ...deps.getSpacingByKey(paddingInlineEnd || paddingInlineStart, 'paddingInlineEnd')
       }
     },
-    paddingBlock: ({ props }) => {
+    paddingBlock: ({ props, deps }) => {
       if (typeof props.paddingBlock !== 'string') return
       const [paddingBlockStart, paddingBlockEnd] = props.paddingBlock.split(' ')
       return {
-        ...getSpacingByKey(paddingBlockStart, 'paddingBlockStart'),
-        ...getSpacingByKey(paddingBlockEnd || paddingBlockStart, 'paddingBlockEnd')
+        ...deps.getSpacingByKey(paddingBlockStart, 'paddingBlockStart'),
+        ...deps.getSpacingByKey(paddingBlockEnd || paddingBlockStart, 'paddingBlockEnd')
       }
     },
-    paddingInlineStart: ({ props }) => props.paddingInlineStart ? getSpacingBasedOnRatio(props, 'paddingInlineStart') : null,
-    paddingInlineEnd: ({ props }) => props.paddingInlineEnd ? getSpacingBasedOnRatio(props, 'paddingInlineEnd') : null,
-    paddingBlockStart: ({ props }) => props.paddingBlockStart ? getSpacingBasedOnRatio(props, 'paddingBlockStart') : null,
-    paddingBlockEnd: ({ props }) => props.paddingBlockEnd ? getSpacingBasedOnRatio(props, 'paddingBlockEnd') : null,
+    paddingInlineStart: ({ props, deps }) => props.paddingInlineStart ? deps.getSpacingBasedOnRatio(props, 'paddingInlineStart') : null,
+    paddingInlineEnd: ({ props, deps }) => props.paddingInlineEnd ? deps.getSpacingBasedOnRatio(props, 'paddingInlineEnd') : null,
+    paddingBlockStart: ({ props, deps }) => props.paddingBlockStart ? deps.getSpacingBasedOnRatio(props, 'paddingBlockStart') : null,
+    paddingBlockEnd: ({ props, deps }) => props.paddingBlockEnd ? deps.getSpacingBasedOnRatio(props, 'paddingBlockEnd') : null,
 
-    margin: ({ props }) => props.margin ? getSpacingBasedOnRatio(props, 'margin') : null,
-    marginInline: ({ props }) => {
+    margin: ({ props, deps }) => props.margin ? deps.getSpacingBasedOnRatio(props, 'margin') : null,
+    marginInline: ({ props, deps }) => {
       if (typeof props.marginInline !== 'string') return
       const [marginInlineStart, marginInlineEnd] = props.marginInline.split(' ')
       return {
-        ...getSpacingByKey(marginInlineStart, 'marginInlineStart'),
-        ...getSpacingByKey(marginInlineEnd || marginInlineStart, 'marginInlineEnd')
+        ...deps.getSpacingByKey(marginInlineStart, 'marginInlineStart'),
+        ...deps.getSpacingByKey(marginInlineEnd || marginInlineStart, 'marginInlineEnd')
       }
     },
-    marginBlock: ({ props }) => {
+    marginBlock: ({ props, deps }) => {
       if (typeof props.marginBlock !== 'string') return
       const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
       return {
-        ...getSpacingByKey(marginBlockStart, 'marginBlockStart'),
-        ...getSpacingByKey(marginBlockEnd || marginBlockStart, 'marginBlockEnd')
+        ...deps.getSpacingByKey(marginBlockStart, 'marginBlockStart'),
+        ...deps.getSpacingByKey(marginBlockEnd || marginBlockStart, 'marginBlockEnd')
       }
     },
-    marginInlineStart: ({ props }) => props.marginInlineStart ? getSpacingBasedOnRatio(props, 'marginInlineStart') : null,
-    marginInlineEnd: ({ props }) => props.marginInlineEnd ? getSpacingBasedOnRatio(props, 'marginInlineEnd') : null,
-    marginBlockStart: ({ props }) => props.marginBlockStart ? getSpacingBasedOnRatio(props, 'marginBlockStart') : null,
-    marginBlockEnd: ({ props }) => props.marginBlockEnd ? getSpacingBasedOnRatio(props, 'marginBlockEnd') : null,
+    marginInlineStart: ({ props, deps }) => props.marginInlineStart ? deps.getSpacingBasedOnRatio(props, 'marginInlineStart') : null,
+    marginInlineEnd: ({ props, deps }) => props.marginInlineEnd ? deps.getSpacingBasedOnRatio(props, 'marginInlineEnd') : null,
+    marginBlockStart: ({ props, deps }) => props.marginBlockStart ? deps.getSpacingBasedOnRatio(props, 'marginBlockStart') : null,
+    marginBlockEnd: ({ props, deps }) => props.marginBlockEnd ? deps.getSpacingBasedOnRatio(props, 'marginBlockEnd') : null,
 
     gap: ({ props }) => props.gap
       ? ({
           gap: transfromGap(props.gap)
         })
       : null,
-    gridArea: ({ props }) => props.gridArea && ({ gridArea: props.gridArea }),
+    gridArea: ({ props, deps }) => props.gridArea && ({ gridArea: props.gridArea }),
 
     flex: ({ props }) => props.flex && ({ flex: props.flex }),
     flexDirection: ({ props }) => props.flexDirection && ({ flexDirection: props.flexDirection }),
@@ -140,17 +142,17 @@ export const Block = {
     gridRow: ({ props }) => props.gridRow && ({ gridRow: props.gridRow }),
     gridRowStart: ({ props }) => props.gridRowStart ? ({ gridRowStart: props.gridRowStart }) : null,
 
-    size: ({ props }) => {
+    size: ({ props, deps }) => {
       if (typeof props.heightRange !== 'string') return
       const [minHeight, maxHeight] = props.heightRange.split(' ')
       return {
-        ...getSpacingByKey(minHeight, 'minHeight'),
-        ...getSpacingByKey(maxHeight || minHeight, 'maxHeight')
+        ...deps.getSpacingByKey(minHeight, 'minHeight'),
+        ...deps.getSpacingByKey(maxHeight || minHeight, 'maxHeight')
       }
     },
 
     columns: ({ props }) => props.columns && ({ columns: props.columns }),
-    columnGap: ({ props }) => props.columnGap ? getSpacingBasedOnRatio(props, 'columnGap') : null,
+    columnGap: ({ props, deps }) => props.columnGap ? deps.getSpacingBasedOnRatio(props, 'columnGap') : null,
     columnSpan: ({ props }) => props.columnSpan && ({ columns: props.columnSpan }),
     columnFill: ({ props }) => props.columnFill && ({ columns: props.columnFill }),
     columnCount: ({ props }) => props.columnCount && ({ columns: props.columnCount })
@@ -174,12 +176,12 @@ export const Gutter = {
     size: 'C1'
   },
   class: {
-    size: ({ props }) => {
+    size: ({ props, deps }) => {
       if (typeof props.size !== 'string') return
       const [height, width] = props.size.split(' ')
       return {
-        ...getSpacingByKey(height, 'height'),
-        ...getSpacingByKey(width || height, 'width')
+        ...deps.getSpacingByKey(height, 'height'),
+        ...deps.getSpacingByKey(width || height, 'width')
       }
     }
   }

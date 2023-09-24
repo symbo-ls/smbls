@@ -1,15 +1,16 @@
 'use strict'
+
+import fs from 'fs'
+import chalk from 'chalk'
+import path from 'path'
 import { program } from './program.js'
 import { convert } from 'kalduna'
 import { parse } from 'globusa'
-import fs from 'fs'
-import path from 'path'
 
 import * as esbuild from 'esbuild'
 
 // Set up jsdom
 import { JSDOM } from 'jsdom'
-const webpack = promisify(syncWebpack)
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
@@ -126,7 +127,7 @@ async function mkdirp (dir) {
 }
 
 // Returns a string
-function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options) {
+export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, options = {}) {
   let convertedStr = ''
   const whitelist = (options.only ? options.only.split(',') : null)
 
@@ -269,6 +270,103 @@ async function convertFile (srcPath, tmpDirPath, destPath,
   return globusaStruct
 }
 
+function recursiveCopy (src, dst, { exclude }) {
+  // TODO: maybe replace with a better function that uses the exclude list?
+  return fs.cpSync(src, dst, { recursive: true })
+}
+
+function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
+  // Source doesn't exist, skip
+  if (!fs.existsSync(mrg)) {
+    console.error(`Error: Source merge directory '${mrg}' does not exist.`)
+    return
+  }
+
+  // Direct copy, no merging needed
+  if (!fs.existsSync(dst)) {
+    recursiveCopy(mrg, dst, { exclude })
+    return
+  }
+
+  const isMrgDir = isDirectory(mrg)
+  const isDstDir = isDirectory(dst)
+
+  if (!isMrgDir && !isDstDir) {
+    return
+  }
+
+  if (!isMrgDir && isDstDir) {
+    console.error(`mergeDirectories('${mrg}', '${dst}') skipped. ` +
+                  'Merge source (mrg) is a regular file and the ' +
+                  'destination (dst) is a directory.')
+    return
+  }
+
+  if (isMrgDir && !isDstDir) {
+    console.error(`mergeDirectories('${mrg}', '${dst}') skipped. ` +
+                  'Merge source (mrg) is a directory and the ' +
+                  'destination (dst) is a regular file.')
+    return
+  }
+
+  const mrgFiles = fs.readdirSync(mrg).filter(f => !exclude.includes(f))
+  const dstFiles = fs.readdirSync(dst)
+
+  // Make a map of dstFiles for quick access
+  const dstFilesMap = {}
+  for (const f of dstFiles) {
+    dstFilesMap[f] = true
+  }
+
+  // Do a direct directory merge (without globusa)
+  const directMrgFiles = mrgFiles.filter(f => !globusaMerge.includes(f))
+  for (const f of directMrgFiles) {
+    if (!dstFilesMap[f]) {
+      recursiveCopy(path.resolve(mrg, f),
+        path.resolve(dst, f),
+        { recursive: true })
+    } else {
+      mergeDirectories(path.resolve(mrg, f), path.resolve(dst, f), {
+        globusaMerge, exclude
+      })
+    }
+  }
+
+  // Do a smart file merge (with globusa)
+  const globusaMrgFiles = mrgFiles.filter(f => globusaMerge.includes(f))
+  for (const f of globusaMrgFiles) {
+    if (!dstFilesMap[f]) {
+      // Nothing to merge. Do a direct copy
+      const p = path.resolve(mrg, f)
+      if (isDirectory(p)) {
+        console.error('Error: Globusa merge can only be done on files, ' +
+                      `but '${p}' is a directory`)
+      } else {
+        fs.copyFileSync(p, path.resolve(dst, f))
+      }
+    } else {
+      // Concatenate the files
+      const mrgTxt = fs.readFileSync(path.resolve(mrg, f), { encoding: 'utf8' })
+      const dstTxt = fs.readFileSync(path.resolve(dst, f), { encoding: 'utf8' })
+      const outTxt = mrgTxt + '\n' + dstTxt
+
+      // TODO: Dedup the imports with globusa here
+
+      fs.writeFileSync(path.resolve(dst, f), outTxt, { encoding: 'utf8' })
+    }
+  }
+}
+
+export function convertFromCli (data, opts) {
+  const { framework, verbose, verboseCode } = opts
+  console.log(chalk.dim('\n----------------\n'))
+  console.log('Converting components to', chalk.bold(framework))
+  const convertedStrings = convertDomqlModule(data, null, framework)
+  if (verboseCode) console.log(convertedStrings)
+  console.log(chalk.bold.green('\nSuccessfully converted'))
+  return verbose
+}
+
 program
   .command('convert')
   .description('Convert and copy all DomQL components under a directory')
@@ -286,6 +384,8 @@ program
   .option('-o, --only <components>',
     'Only convert these components; comma separated ' +
           '(for example: --only=Flex,Img)')
+  .option('-m, --merge <dir>',
+    'After converting an entire directory, perform a recursive merge that takes files from this directory and puts them in the dest directory. It also concatenates index.js files')
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
@@ -315,8 +415,8 @@ program
     // Resolve source file/dir
     const srcPath = path.resolve(src || './src')
     if (!fs.existsSync(srcPath)) {
-      console.erorr(`Source directory/file ('${srcPath}') does not exist`)
-      return 1
+      console.error(`Source directory/file ('${srcPath}') does not exist`)
+      process.exit(1)
     }
 
     // Resolve & create tmp dir
@@ -363,7 +463,7 @@ program
         options
       )
 
-      return 0
+      process.exit(0)
     }
 
     // We're converting multiple files (in a directory).
@@ -382,15 +482,26 @@ program
       console.error(
         `The destination ('${path.resolve(dest)}') must be a directory when ` +
           `the source ('${srcPath}') is a directory`)
-      return 1
+      process.exit(1)
     }
 
-    const ignoredFiles = ['index.js', 'package.json', 'node_modules', 'dist']
+    // Resolve merge dir
+    let mergeDirPath = null
+    if (options.merge && options.internalUikit) {
+      mergeDirPath = path.resolve(options.merge)
+      if (!fs.existsSync(mergeDirPath)) {
+        console.error(`Merge directory '${mergeDirPath}' does not exist`)
+        process.exit(1)
+      }
+    }
+
+    const dontConvert = ['index.js', 'package.json', 'node_modules', 'dist']
     const sourceDirNames = (await fs.promises.readdir(srcPath))
-      .filter(dir => !ignoredFiles.includes(dir))
+      .filter(dir => !dontConvert.includes(dir))
 
     const dirs = []
 
+    // Core convert loop
     for (const dir of sourceDirNames) {
       // Ignored directories
       if (options.internalUikit) {
@@ -415,7 +526,7 @@ program
         options
       )
 
-      if (fs.existsSync(pjFilePath)) {
+      if (options.internalUikit && fs.existsSync(pjFilePath)) {
         generatePackageJsonFile(
           pjFilePath, // src
           path.join(destDirPath, dir, 'package.json'), // dst
@@ -430,13 +541,19 @@ program
 
     // Generate top index.js file
     if (dirs.length > 0) {
-      // const importLines = dirs.map(d => `import ${d} from './${d}'`).join('\n') + '\n'
-      // const exportLines = 'export {\n' + dirs.map(d => `  ${d}`).join(',\n') + '\n}\n'
-      // const fileContent = importLines + '\n' + exportLines
       const fileContent = dirs.map(d => `export * from './${d}'`).join('\n')
-
       const fh = await fs.promises.open(path.join(destDirPath, 'index.js'), 'w')
       await fh.writeFile(fileContent, 'utf8')
       await fh.close()
     }
+
+    if (mergeDirPath) {
+      console.log(`Merging '${mergeDirPath}' and ${destDirPath}...`)
+      mergeDirectories(mergeDirPath, destDirPath, {
+        globusaMerge: ['index.js', 'index.jsx'],
+        exclude: ['dist', 'node_modules']
+      })
+    }
+
+    process.exit(0)
   })
