@@ -1,13 +1,13 @@
 {
   "name": "@symbo.ls/input",
-  "version": "2.11.163",
+  "version": "2.11.164",
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
   "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
   "dependencies": {
-    "@symbo.ls/paragraphbutton": "latest",
     "@domql/utils": "latest",
-    "@symbo.ls/atoms": "latest"
+    "@symbo.ls/atoms": "latest",
+    "@symbo.ls/paragraphbutton": "latest"
   }
 }
