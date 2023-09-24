@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD:uikit/domql/Accessories/package.json
-  "name": "@symbo.ls/accessories",
-  "version": "2.11.162",
-=======
   "name": "@symbo.ls/board",
   "version": "2.11.160",
->>>>>>> origin/feature/new-components:uikit/domql/Board/package.json
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f09e162a618613a10c3db8bff11177baf04da275",
