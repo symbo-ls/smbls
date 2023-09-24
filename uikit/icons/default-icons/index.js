@@ -20,6 +20,7 @@ export default {
   chevronLeft: require('./src/chevron-left.svg'),
   chevronRight: require('./src/chevron-right.svg'),
   chevronUp: require('./src/chevron-up.svg'),
+  copy: require('./src/copy.svg'),
   dribbble: require('./src/dribbble.svg'),
   eyeOff: require('./src/eye-off.svg'),
   eye: require('./src/eye.svg'),
@@ -31,6 +32,13 @@ export default {
   moreHorizontal: require('./src/more-horizontal.svg'),
   moreVertical: require('./src/more-vertical.svg'),
   sun: require('./src/sun.svg'),
+  send: require('./src/send.svg'),
+  smile: require('./src/smile.svg'),
   search: require('./src/search.svg'),
+  phone: require('./src/phone.svg'),
+  twitch: require('./src/twitch.svg'),
+  upload: require('./src/upload.svg'),
+  video: require('./src/video.svg'),
+  x: require('./src/x.svg'),
   plus: require('./src/plus.svg')
 }

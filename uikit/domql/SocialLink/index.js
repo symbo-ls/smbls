@@ -15,9 +15,9 @@ export const SocialLink = {
     maxHeight: `${48 / 16}em`,
     cursor: 'pointer',
     icon: {
-      name: 'instagram',
+      name: 'twitch',
       boxSize: 'A2'
     },
-    text: 'Continue with Instagram'
+    text: 'Continue with Twitch'
   }
 }
