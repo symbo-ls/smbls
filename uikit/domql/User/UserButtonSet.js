@@ -33,12 +33,6 @@ export const UserButtonSet = {
   ButtonSet: {
     extend: ButtonSet,
     props: { gap: 'Y2' },
-    childExtend: {
-      props: {
-        // padding: '0',
-        // maxHeight: 'fit-content'
-      }
-    },
     ...[
       { props: { icon: { name: 'phone' } } },
       { props: { icon: { name: 'video' } } },
