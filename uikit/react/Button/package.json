@@ -28,7 +28,7 @@
     "build:cjs": "npx esbuild *.jsx --target=node16 --format=cjs --outdir=dist/cjs --loader:.js=jsx",
     "build:iife": "npx esbuild *.jsx --target=node16 --format=iife --outdir=dist/iife",
     "build": "yarn build:esm && yarn build:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "prepublish": "npx rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "browserslist": [
     ">0.2%",
