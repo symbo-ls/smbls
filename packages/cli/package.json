@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@symbo.ls/init": "latest",
+    "@symbo.ls/fetch": "latest",
     "@symbo.ls/socket": "latest",
     "chalk": "^5.0.0",
     "commander": "latest",

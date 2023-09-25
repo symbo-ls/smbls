@@ -20,7 +20,7 @@
     "@symbo.ls/socket-ui": "latest",
     "@symbo.ls/uikit": "latest",
     "@symbo.ls/utils": "latest",
-    "attr-in-props": "latest",
+    "attrs-in-props": "latest",
     "css-in-props": "latest",
     "domql": "latest"
   }

@@ -10,6 +10,7 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "@symbo.ls/init": "latest",
     "@domql/utils": "latest",
     "chalk": "^5.0.0",
     "express": "^4.18.1",
