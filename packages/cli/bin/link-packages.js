@@ -83,7 +83,7 @@ program
     try {
       for (const packageName of packagesToLink) {
         console.log(`Linking ${packageName}...`)
-        execSync(`yarn link ${packageName}`, { stdio: 'inherit' })
+        execSync(`yarn link ${packageName} --force`, { stdio: 'inherit' })
       }
       console.log('All packages linked successfully.')
     } catch (error) {
