@@ -152,3 +152,20 @@ export const DropDownButtonWithAvatar = {
     }
   }
 }
+
+export const PlusMinusButtons = {
+  extend: Flex,
+  props: {
+    alignItems: 'center',
+    gap: 'A'
+  },
+  Minus: {
+    extend: IconButton,
+    props: { icon: { name: 'minus' } }
+  },
+  Value: { props: { text: '1' } },
+  Plus: {
+    extend: IconButton,
+    props: { icon: { name: 'plus' } }
+  }
+}
