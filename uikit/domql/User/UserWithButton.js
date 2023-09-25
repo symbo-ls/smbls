@@ -1,4 +1,5 @@
 'use strict'
+
 import { User } from './User'
 
 export const UserWithButton = {

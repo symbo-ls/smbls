@@ -27,7 +27,9 @@ export const connect = (key, options = {}) => {
   const primaryUrl = socketUrls[0]
   const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
 
-  const socket = io(primaryUrl || SOCKET_BACKEND_URL)
+  const socket = io(primaryUrl || SOCKET_BACKEND_URL, {
+    withCredentials: true
+  })
 
   socket.on('connect', () => {
     if (isDev) {
