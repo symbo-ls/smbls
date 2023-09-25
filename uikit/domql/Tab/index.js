@@ -1,5 +1,5 @@
 'use strict'
-import { IconButton, IcontextButton } from '@symbo.ls/button'
+import { IconCommonButton, IcontextButton } from '@symbo.ls/button'
 
 export const Tab = {
   extend: IcontextButton,
@@ -22,7 +22,7 @@ export const Tab = {
 }
 
 export const IconTab = {
-  extend: IconButton,
+  extend: IconCommonButton,
   props: {
   },
 

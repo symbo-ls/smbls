@@ -2,7 +2,6 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/icon'
-import { Field } from './Field'
 
 export const CommonField = {
   extend: Flex,
@@ -29,7 +28,7 @@ export const CommonField = {
     }
   },
 
-  Field: { extend: Field },
+  Field: {},
   Hint: {
     extend: IconText,
     props: { color: 'gray4' }

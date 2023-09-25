@@ -64,7 +64,7 @@ export const CommonButton = {
   Caption: { props: { text: 'Button', line_height: '1em' } }
 }
 
-export const IconButton = {
+export const IconCommonButton = {
   extend: CommonButton,
   props: {
     icon: { name: 'smile' },
@@ -78,7 +78,7 @@ export const IconButton = {
 export const ButtonSet = {
   tag: 'nav',
   extend: Flex,
-  childExtend: IconButton
+  childExtend: IconCommonButton
 }
 
 export const CancelConfirmButtons = {

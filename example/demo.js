@@ -5,7 +5,7 @@ import { Flex } from '@symbo.ls/atoms'
 import { SearchWithButton } from '@symbo.ls/field'
 
 import designSystem from '@symbo.ls/default-config'
-import { IconButton, UnitValue } from '@symbo.ls/uikit'
+import { IconCommonButton, UnitValue } from '@symbo.ls/uikit'
 designSystem.globalTheme = 'dark'
 
 create({
@@ -38,7 +38,7 @@ create({
     },
     ChatUser: {},
     iconButton: {
-      extend: IconButton,
+      extend: IconCommonButton,
       props: { icon: { name: 'phone' } }
     },
     UserButtonSet: {},
@@ -53,7 +53,7 @@ create({
 
     CommonButton: {},
     CancelConfirmButtons: {},
-    IconButton: {},
+    IconCommonButton: {},
     IcontextButton: {},
 
     Tab: {},

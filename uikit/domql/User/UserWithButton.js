@@ -36,7 +36,7 @@ export const UserWithButton = {
       }
     }
   },
-  IconButton: {
+  IconCommonButton: {
     round: '0',
     background: 'transparent',
     icon: {

@@ -52,7 +52,7 @@ export const TextAreaWithButton = {
     // background: 'gray'
 
   },
-  IconButton: {
+  IconCommonButton: {
     props: {
       background: 'blue',
       icon: { name: 'send' }

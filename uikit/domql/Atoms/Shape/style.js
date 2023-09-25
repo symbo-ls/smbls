@@ -1,6 +1,6 @@
 'use strict'
 
-import { getActiveConfig, getColor, getTheme } from '@symbo.ls/scratch' // eslint-disable-line no-unused-vars
+import { getActiveConfig, getColor } from '@symbo.ls/scratch' // eslint-disable-line no-unused-vars
 import { Timing } from '../Timing'
 
 const CONFIG = getActiveConfig()
@@ -158,7 +158,6 @@ export const SHAPES = {
 
   chevron: ({ props, deps }) => ({
     position: 'relative',
-    // overflow: 'hidden',
     '&:before, &:after': {
       content: '""',
       display: 'block',
