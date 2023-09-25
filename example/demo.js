@@ -136,6 +136,7 @@ create({
     ConvertCard: {},
     CurrencyConvert: {},
     PlusMinusButtons: {},
+    Pracing: {},
 
     state: { globalTheme: 'dark' }
   },

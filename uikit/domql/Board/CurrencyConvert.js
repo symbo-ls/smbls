@@ -44,7 +44,7 @@ export const CurrencyConvert = {
       flex: '1',
       padding: 'Z1 -',
       round: 'Z',
-      Caption: { text: 'Convert' }
+      Caption: { text: 'Convert', fontWeight: '500' }
     }
   }
 
