@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/utils",
-  "version": "2.11.170",
+  "version": "2.11.175",
   "main": "src/index.js",
   "author": "symbo.ls",
   "license": "ISC",
