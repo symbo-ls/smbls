@@ -9,7 +9,6 @@
     "@symbo.ls/avatar": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/icon": "latest",
-    "@symbo.ls/infoset": "latest",
     "@symbo.ls/label": "latest"
   },
   "source": "index.js"
