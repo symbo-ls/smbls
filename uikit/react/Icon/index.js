@@ -1,8 +1,9 @@
 'use strict'
 
 import { isString } from '@domql/utils'
-import { IconText as D } from '@symbo.ls/icon'
 import { Svg, Text, Flex } from '@symbo.ls/react-atoms'
+
+import * as D from '@symbo.ls/icon'
 
 import React from 'react'
 
@@ -36,4 +37,4 @@ export const IconText = (props) => {
   )
 }
 
-IconText.defaultProps = D.props
+IconText.defaultProps = D.IconText.props

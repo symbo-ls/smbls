@@ -3,7 +3,8 @@
 import React from 'react'
 import { Box } from '@symbo.ls/react-box'
 import { Flex } from '@symbo.ls/react-atoms'
-import { Tooltip as D } from '@symbo.ls/tooltip'
+
+import * as D.Tooltip from '@symbo.ls/tooltip'
 
 export const Tooltip = (props) => {
   const { title, p, ...restProps } = props
@@ -16,4 +17,4 @@ export const Tooltip = (props) => {
   )
 }
 
-Tooltip.defaultProps = D.props
+Tooltip.defaultProps = D.Tooltip.props
