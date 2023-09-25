@@ -7,7 +7,7 @@ import { fetchProjectAsync } from '@symbo.ls/fetch'
 import { SyncProvider } from './sync'
 import { PROVIDER_DEFAULT_PROPS, SymbolsContext } from './hooks'
 
-import SYMBOLSRC from '~/symbols.json'
+const SYMBOLSRC = process.cwd() + '/symbols.json'
 
 export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
   const { appKey, children, editor } = options
