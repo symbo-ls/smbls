@@ -72,9 +72,9 @@ export const SignUp = {
         }
       ]
     },
-    ParagraphButtonWithCheckBox: {
+    ParagraphButtonWithCheckbox: {
       padding: 'A1 Z A1 Y',
-      CheckBox: {},
+      Checkbox: {},
       ParagraphButton: {
         P: { text: 'You agree to' },
         Button: { text: 'privacy policy' }

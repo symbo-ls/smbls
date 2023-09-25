@@ -24,13 +24,13 @@ export const ParagraphButton = {
   }
 }
 
-export const ParagraphButtonWithCheckBox = {
+export const ParagraphButtonWithCheckbox = {
   extend: Flex,
   props: {
     gap: 'Z',
     alignItems: 'center'
   },
-  CheckBox: {
+  Checkbox: {
     Input: {},
     Flex: {
       fontSize: 'A1'

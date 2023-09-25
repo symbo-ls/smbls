@@ -77,10 +77,10 @@ create({
     UploadedProcess4: {},
     UploadModal4: {},
 
-    CheckBox: {},
+    Checkbox: {},
     Radio: {},
     Toggle: {},
-    CheckBoxTitleParagraph: {},
+    CheckboxTitleParagraph: {},
     RadioTitleParagraph: {},
     ToggleTitleParagraph: {},
 
@@ -94,7 +94,7 @@ create({
     ParagraphButton: {},
     VerificationCode: {},
     ResetPassword: {},
-    ParagraphButtonWithCheckBox: {},
+    ParagraphButtonWithCheckbox: {},
     ContactForm: {},
     SignUp: {},
     DoubleHr: {},

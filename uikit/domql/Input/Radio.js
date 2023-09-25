@@ -1,9 +1,9 @@
 'use strict'
 
-import { CheckBox, CheckBoxTitleParagraph } from './CheckBox'
+import { Checkbox, CheckboxTitleParagraph } from './Checkbox'
 
 export const Radio = {
-  extend: CheckBox,
+  extend: Checkbox,
 
   Input: {
     type: 'radio',
@@ -29,7 +29,7 @@ export const Radio = {
 }
 
 export const RadioTitleParagraph = {
-  extend: CheckBoxTitleParagraph,
-  CheckBox: null,
+  extend: CheckboxTitleParagraph,
+  Checkbox: null,
   Radio: {}
 }

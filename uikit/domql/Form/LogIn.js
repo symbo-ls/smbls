@@ -62,9 +62,9 @@ export const LogIn = {
         }
       ]
     },
-    ParagraphButtonWithCheckBox: {
+    ParagraphButtonWithCheckbox: {
       padding: 'A Z A Y',
-      CheckBox: {},
+      Checkbox: {},
       ParagraphButton: {
         flex: '1',
         justifyContent: 'space-between',

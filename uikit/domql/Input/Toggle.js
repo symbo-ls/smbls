@@ -1,9 +1,9 @@
 'use strict'
 
-import { CheckBox, CheckBoxTitleParagraph } from './CheckBox'
+import { Checkbox, CheckboxTitleParagraph } from './Checkbox'
 
 export const Toggle = {
-  extend: CheckBox,
+  extend: Checkbox,
 
   Input: {
     ':checked ~ div': {
@@ -34,7 +34,7 @@ export const Toggle = {
 }
 
 export const ToggleTitleParagraph = {
-  extend: CheckBoxTitleParagraph,
-  CheckBox: null,
+  extend: CheckboxTitleParagraph,
+  Checkbox: null,
   Toggle: {}
 }

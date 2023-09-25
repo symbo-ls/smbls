@@ -81,7 +81,7 @@ export const CheckboxWithImgWithLabel = {
   Caption: {}
 }
 
-export const CheckBoxWithSet = {
+export const CheckboxWithSet = {
   extend: Flex,
   props: {
     align: 'center flex-start',

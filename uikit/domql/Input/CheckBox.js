@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 
-export const CheckBox = {
+export const Checkbox = {
   tag: 'label',
 
   props: {
@@ -40,7 +40,7 @@ export const CheckBox = {
   }
 }
 
-export const CheckBoxTitleParagraph = {
+export const CheckboxTitleParagraph = {
   extend: Flex,
   props: {
     boxSize: 'fit-content',
@@ -48,7 +48,7 @@ export const CheckBoxTitleParagraph = {
     gap: 'A'
   },
 
-  CheckBox: {},
+  Checkbox: {},
   TitleParagraph: {
     gap: 'Z1',
     margin: 'Y - - -'
