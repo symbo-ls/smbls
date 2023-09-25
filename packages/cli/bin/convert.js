@@ -17,11 +17,12 @@ global.document = window.document
 
 const INTERNAL_UIKIT_CONF = {
   excludedComponents: [
-    // We have our own React Svg implementation
+    // We have our own implementations of these components
     'Svg',
-
-    // We have our own React Box implementation
     'Box',
+    'Icon',
+    'IconText',
+    'Tooltip',
 
     // These are not domql objects
     'keySetters',
