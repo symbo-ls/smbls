@@ -61,7 +61,12 @@ export const CommonButton = {
   icon: {
     props: { fontSize: 'C' }
   },
-  Caption: { props: { text: 'Button', line_height: '1em' } }
+  Caption: {
+    props: {
+      text: 'Button',
+      line_height: '1em'
+    }
+  }
 }
 
 export const IconCommonButton = {
