@@ -165,12 +165,12 @@ export const PlusMinusButtons = {
     gap: 'A'
   },
   Minus: {
-    extend: IconButton,
+    extend: IconCommonButton,
     props: { icon: { name: 'minus' } }
   },
   Value: { props: { text: '1' } },
   Plus: {
-    extend: IconButton,
+    extend: IconCommonButton,
     props: { icon: { name: 'plus' } }
   }
 }
