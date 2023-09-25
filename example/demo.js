@@ -31,16 +31,7 @@ create({
     Label: {},
     UserWithLabel: {},
     CountIndicator: {},
-    unitValue: {
-      extend: UnitValue,
-      Value: { text: '2:20' },
-      Unit: { text: 'AM' }
-    },
     ChatUser: {},
-    iconButton: {
-      extend: IconCommonButton,
-      props: { icon: { name: 'phone' } }
-    },
     UserButtonSet: {},
     UserMessage: {},
     UserWithButton: {},
@@ -69,7 +60,10 @@ create({
     ProgressLine: {},
     UploadingProcess: {},
     UploadedProcess: {},
-    UnitValue: {},
+    UnitValue: {
+      Value: { text: '2:20' },
+      Unit: { text: 'AM' }
+    },
     ProgressLineWithUnitValue: {},
     UploadingProcess2: {},
     UploadedProcess2: {},

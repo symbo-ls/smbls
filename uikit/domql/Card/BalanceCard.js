@@ -41,6 +41,5 @@ export const BalanceCard = {
       Value: { text: 'an hour ago' }
     },
     p: null
-
   }
 }
