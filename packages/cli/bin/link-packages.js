@@ -25,7 +25,6 @@ const packagesToLink = [
   '@symbo.ls/box',
   '@symbo.ls/board',
   '@symbo.ls/button',
-  '@symbo.ls/chat',
   '@symbo.ls/card',
   '@symbo.ls/checkbox',
   '@symbo.ls/datepicker',
