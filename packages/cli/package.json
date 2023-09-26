@@ -21,13 +21,11 @@
     "chalk": "^5.0.0",
     "commander": "latest",
     "esbuild": "^0.19.2",
-    "globusa": "latest",
-    "jsdom": "^22.1.0",
     "node-fetch": "^3.1.0",
     "v8-compile-cache": "^2.3.0"
   },
   "peerDependencies": {
-    "kalduna": "latest"
+    "@symbo.ls/convert": "latest"
   },
   "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa"
 }

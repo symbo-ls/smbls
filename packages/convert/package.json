@@ -5,7 +5,24 @@
   "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
   "source": "index.js",
   "main": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
   "dependencies": {
+    "@domql/utils": "latest",
+    "chalk": "^5.0.0",
+    "jsdom": "^22.1.0",
+    "globusa": "latest",
+    "kalduna": "latest",
     "@symbo.ls/create": "latest"
+  },
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild ./index.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild ./index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
+    "build": "yarn build:cjs && yarn copy:package:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   }
 }
