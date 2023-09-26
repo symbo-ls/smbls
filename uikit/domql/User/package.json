@@ -7,7 +7,10 @@
   "source": "index.js",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
+    "@symbo.ls/avatar": "latest",
+    "@symbo.ls/button": "latest",
     "@symbo.ls/indicator": "latest",
+    "@symbo.ls/unitvalue": "latest",
     "@symbo.ls/titleparagraph": "latest"
   }
 }

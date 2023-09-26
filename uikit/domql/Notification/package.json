@@ -5,8 +5,7 @@
   "license": "MIT",
   "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
-    "@symbo.ls/icon": "latest"
+    "@symbo.ls/atoms": "latest"
   },
   "source": "src/index.js"
 }

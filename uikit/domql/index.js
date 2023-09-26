@@ -1,7 +1,5 @@
 'use strict'
 
-// export * from './styles'
-
 export * from '@symbo.ls/atoms'
 export * from '@symbo.ls/box'
 export * from '@symbo.ls/icon'
