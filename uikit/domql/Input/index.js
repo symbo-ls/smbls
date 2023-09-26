@@ -2,7 +2,7 @@
 
 export * from './Input'
 export * from './Number'
-export * from './Checkbox'
+export * from './CheckBox'
 export * from './Radio'
 export * from './Toggle'
 export * from './TextArea'
