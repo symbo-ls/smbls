@@ -1,6 +1,6 @@
 {
   "npmClient": "yarn",
-  "version": "2.11.188",
+  "version": "2.11.189",
   "useWorkspaces": true,
   "packages": [
     "uikit/*",
