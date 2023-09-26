@@ -3,8 +3,11 @@
   "version": "2.11.189",
   "license": "MIT",
   "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
-  "source": "index.js",
+  "type": "module",
+  "module": "index.js",
   "main": "index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
   "files": [
     "*.js",
     "dist"

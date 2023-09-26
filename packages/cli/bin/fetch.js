@@ -5,11 +5,11 @@ import chalk from 'chalk'
 import { loadModule } from './require.js'
 import { program } from './program.js'
 import * as fetch from '@symbo.ls/fetch'
-
 import * as utils from '@domql/utils'
-import { convertFromCli } from './convert.js'
-const { isObjectLike } = utils.default
+import * as smblsconvert from '@symbo.ls/convert'
 
+const { convertFromCli } = smblsconvert.default
+const { isObjectLike } = utils.default
 const { fetchRemote } = fetch.default
 
 const RC_PATH = process.cwd() + '/symbols.json'

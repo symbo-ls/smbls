@@ -1,7 +1,8 @@
 'use strict'
 
 import { program } from './program.js'
-import { CLIconvert } from '@symbo.ls/convert/index.js'
+import * as smblsconvert from '@symbo.ls/convert'
+const { convert } = smblsconvert.default
 
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 
@@ -27,4 +28,4 @@ program
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
-  .action(CLIconvert)
+  .action(convert)
