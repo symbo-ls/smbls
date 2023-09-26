@@ -1,6 +1,6 @@
 'use strict'
 
-import { Checkbox, CheckboxTitleParagraph } from './Checkbox'
+import { Checkbox, CheckboxTitleParagraph } from './CheckBox'
 
 export const Toggle = {
   extend: Checkbox,
