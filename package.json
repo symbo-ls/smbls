@@ -7,9 +7,9 @@
     "test:lint": "npx standard \"packages/**/*.js\" \"uikit/**/*.js\"",
     "test": "echo running all tests is not supported, maybe run: \"yarn test:lint\"",
     "clean": "yarn clean:dist; yarn clean:packages; yarn clean:modules",
-    "clean:dist": "npx rimraf ./dist ./.cache ./.parcel-cache",
-    "clean:modules": "npx rimraf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
-    "clean:packages": "lerna exec -- npx rimraf dist node_modules yarn.lock yarn-error.log package-lock.json",
+    "clean:dist": "rimraf ./dist ./.cache ./.parcel-cache",
+    "clean:modules": "rimraf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
+    "clean:packages": "lerna exec -- rimraf ./dist ./node_modules yarn.lock yarn-error.log package-lock.json",
     "reinstall": "yarn clean; yarn",
     "link:all": "npx lerna exec -- yarn unlink; npx lerna exec -- yarn link",
     "link:all-force": "npx lerna exec -- yarn unlink; yarn link:all"

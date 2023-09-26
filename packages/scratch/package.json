@@ -22,7 +22,7 @@
     "build:cjs": "npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
     "build:iife": "npx esbuild ./src/index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "yarn build:cjs",
-    "prepublish": "npx rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
     "@domql/utils": "latest",

@@ -28,7 +28,7 @@
     "build:cjs:bundle": "npx esbuild ./src/index.js --target=node16 --format=cjs --outdir=dist/cjs/bundle --bundle ",
     "build:iife": "npx esbuild ./src/index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "yarn build:cjs; yarn build:cjs:bundle",
-    "prepublish": "npx rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
     "@domql/emotion": "latest",
