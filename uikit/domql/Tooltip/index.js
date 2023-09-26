@@ -101,18 +101,22 @@ export const TooltipHidden = {
 }
 
 export const TooltipParent = {
-  props: ({ Tooltip, TooltipHidden }) => ({
-    position: 'relative',
-    zIndex: 999,
-    style: {
-      '&:hover, &:focus-visible': {
-        zIndex: 1000,
-        '& [tooltip]': (Tooltip || TooltipHidden)?.['.active'] || {
-          transform: 'translate3d(-50%,0,0)',
-          opacity: 1,
-          visibility: 'visible'
+  props: ({ Tooltip, TooltipHidden }) => {
+    const TooltipElem = (Tooltip || TooltipHidden)
+    const TooltipActive = TooltipElem && TooltipElem['.active']
+    return {
+      position: 'relative',
+      zIndex: 999,
+      style: {
+        '&:hover, &:focus-visible': {
+          zIndex: 1000,
+          '& [tooltip]': TooltipActive || {
+            transform: 'translate3d(-50%,0,0)',
+            opacity: 1,
+            visibility: 'visible'
+          }
         }
       }
     }
-  })
+  }
 }
