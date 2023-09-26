@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/convert",
-  "version": "2.11.189",
+  "version": "2.11.191",
   "license": "MIT",
   "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
   "source": "index.js",
@@ -11,11 +11,11 @@
   ],
   "dependencies": {
     "@domql/utils": "latest",
+    "@symbo.ls/create": "latest",
     "chalk": "^5.0.0",
-    "jsdom": "^22.1.0",
     "globusa": "latest",
-    "kalduna": "latest",
-    "@symbo.ls/create": "latest"
+    "jsdom": "^22.1.0",
+    "kalduna": "latest"
   },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
