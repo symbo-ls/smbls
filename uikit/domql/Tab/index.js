@@ -1,4 +1,5 @@
 'use strict'
+
 import { IconCommonButton, IcontextButton } from '@symbo.ls/button'
 
 export const Tab = {

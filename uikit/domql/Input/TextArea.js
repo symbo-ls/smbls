@@ -3,7 +3,7 @@
 import { Flex } from '@symbo.ls/atoms'
 import { Input } from './Input'
 
-export const TextArea = {
+export const Textarea = {
   tag: 'textarea',
   extend: [Input, Flex],
   props: {
@@ -21,7 +21,7 @@ export const TextArea = {
   }
 }
 
-export const TextAreaWithTitle = {
+export const TextareaWithTitle = {
   extend: Flex,
   props: {
     flow: 'column',
@@ -37,13 +37,13 @@ export const TextAreaWithTitle = {
       color: 'gray4'
     }
   },
-  TextArea: {}
+  Textarea: {}
 }
 
-export const TextAreaWithButton = {
+export const TextareaWithButton = {
   extend: Flex,
   props: { gap: 'Y2' },
-  TextArea: {
+  Textarea: {
     height: '52px',
     padding: 'A',
     fontSize: 'Z1',

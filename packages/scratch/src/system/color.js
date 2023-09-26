@@ -1,7 +1,7 @@
 'use strict'
 
-import { getActiveConfig } from '../factory.js'
 import { isObject, isArray, isString } from '@domql/utils'
+import { getActiveConfig } from '../factory.js'
 
 import {
   colorStringToRgbaArray,

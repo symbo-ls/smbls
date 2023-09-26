@@ -2,7 +2,7 @@
 
 import { deepMerge, merge, overwriteDeep } from '@domql/utils'
 import { getActiveConfig } from '../factory.js'
-import { getMediaTheme } from '.'
+import { getMediaTheme } from './theme.js'
 
 export const applyReset = (reset = {}) => {
   const CONFIG = getActiveConfig()

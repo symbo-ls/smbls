@@ -15,7 +15,7 @@ export const CommonForm = {
     extend: CommonField,
     props: {
       minWidth: '100%',
-      TextArea: { width: '100%' },
+      Textarea: { width: '100%' },
       Hint: { color: 'gray .92 +68' }
     },
 
