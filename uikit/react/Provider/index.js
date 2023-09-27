@@ -1,12 +1,12 @@
 'use strict'
 
 import React, { useEffect, useState } from 'react'
+import process from 'process'
 import DEFAULT_CONFIG from '@symbo.ls/default-config'
 import { init } from '@symbo.ls/init'
 import { fetchProjectAsync } from '@symbo.ls/fetch'
 import { SyncProvider } from './sync'
 import { PROVIDER_DEFAULT_PROPS, SymbolsContext } from './hooks'
-import process from 'process'
 
 const SYMBOLSRC = process.cwd() + '/symbols.json'
 
