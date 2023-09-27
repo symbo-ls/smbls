@@ -1,9 +1,7 @@
 'use strict'
 
 import { program } from './program.js'
-import { CLIconvert } from '@symbo.ls/convert/index.js'
-
-const TMP_DIR_NAME = '.smbls_convert_tmp'
+import { CLIconvert, TMP_DIR_NAME } from '@symbo.ls/convert/index.js'
 
 program
   .command('convert')

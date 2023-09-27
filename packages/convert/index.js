@@ -3,8 +3,8 @@
 import fs from 'fs'
 import chalk from 'chalk'
 import path from 'path'
+import { convert, generateImports, dedupMitosisImports } from 'kalduna'
 import { parse } from 'globusa'
-import { convert } from 'kalduna'
 import * as esbuild from 'esbuild'
 
 // Set up jsdom
@@ -13,13 +13,50 @@ const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
 
-const TMP_DIR_NAME = '.smbls_convert_tmp'
+export const TMP_DIR_NAME = '.smbls_convert_tmp'
 const TMP_DIR_PACKAGE_JSON_STR = JSON.stringify({
   name: 'smbls_convert_tmp',
   version: '1.0.0',
   // "main": "index.js",
   license: 'ISC'
 })
+
+export const INTERNAL_UIKIT_CONF = {
+  excludedComponents: [
+    // We have our own implementations of these components
+    'Svg',
+    'Box',
+    'Icon',
+    'IconText',
+    'Tooltip',
+
+    // These are not domql objects
+    'keySetters',
+    'getSystemTheme',
+    'splitTransition',
+    'transformDuration',
+    'transformShadow',
+    'transformTransition',
+
+    // FIXME: Temporary list of components we want to skip
+    'DatePicker',
+    'DatePickerDay',
+    'DatePickerTwoColumns',
+    'DatePickerGrid',
+    'DatePickerGridContainer',
+
+    // Not a domql object (headless-datepicker)
+    'calendar'
+  ],
+
+  // Can be strings or regex patterns
+  excludedDirectories: [
+    // TODO: Review these ignores with @nikoloza
+    /Threejs$/,
+    /Editorjs$/,
+    /User$/
+  ]
+}
 
 function generatePackageJsonFile (
   sourcePackageJsonPath,
@@ -70,44 +107,7 @@ function generatePackageJsonFile (
   fs.writeFileSync(destPath, genStr)
 }
 
-export const INTERNAL_UIKIT_CONF = {
-  excludedComponents: [
-    // We have our own implementations of these components
-    'Svg',
-    'Box',
-    'Icon',
-    'IconText',
-    'Tooltip',
-
-    // These are not domql objects
-    'keySetters',
-    'getSystemTheme',
-    'splitTransition',
-    'transformDuration',
-    'transformShadow',
-    'transformTransition',
-
-    // FIXME: Temporary list of components we want to skip
-    'DatePicker',
-    'DatePickerDay',
-    'DatePickerTwoColumns',
-    'DatePickerGrid',
-    'DatePickerGridContainer',
-
-    // Not a domql object (headless-datepicker)
-    'calendar'
-  ],
-
-  // Can be strings or regex patterns
-  excludedDirectories: [
-    // TODO: Review these ignores with @nikoloza
-    /Threejs$/,
-    /Editorjs$/,
-    /User$/
-  ]
-}
-
-export function isDirectory (dir) {
+function isDirectory (dir) {
   const stat = fs.statSync(dir, { throwIfNoEntry: false })
   if (!stat) return false
 
@@ -115,7 +115,7 @@ export function isDirectory (dir) {
 }
 
 // Essentially does 'mkdir -P'
-export function mkdirp (dir) {
+function mkdirp (dir) {
   try {
     return fs.mkdirSync(dir, { recursive: true })
   } catch (err) {
@@ -222,8 +222,13 @@ export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, o
 // result to the destination. The tmpDirPath is used as a working directory for
 // temporary files.
 // Returns globusaStruct for later usage.
-export async function convertFile (srcPath, tmpDirPath, destPath,
-  desiredFormat, options) {
+export async function convertFile (
+  srcPath,
+  tmpDirPath,
+  destPath,
+  desiredFormat,
+  options
+) {
   // Parse with globusa
   console.log(`Parsing components in ${srcPath}`)
   const fileContent = await fs.promises.readFile(srcPath, 'utf8')
@@ -298,7 +303,7 @@ function recursiveCopy (src, dst, exclude) {
   }
 }
 
-export function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
+function mergeDirectories (mrg, dst, desiredFormat, { globusaMerge, exclude }) {
   // Source doesn't exist, skip
   if (!fs.existsSync(mrg)) {
     console.error(`Error: Source merge directory '${mrg}' does not exist.`)
@@ -347,9 +352,8 @@ export function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
     if (!dstFilesMap[f]) {
       recursiveCopy(path.resolve(mrg, f), path.resolve(dst, f), exclude)
     } else {
-      mergeDirectories(path.resolve(mrg, f), path.resolve(dst, f), {
-        globusaMerge, exclude
-      })
+      mergeDirectories(path.resolve(mrg, f), path.resolve(dst, f),
+                       desiredFormat, { globusaMerge, exclude })
     }
   }
 
@@ -369,9 +373,16 @@ export function mergeDirectories (mrg, dst, { globusaMerge, exclude }) {
       // Concatenate the files
       const mrgTxt = fs.readFileSync(path.resolve(mrg, f), { encoding: 'utf8' })
       const dstTxt = fs.readFileSync(path.resolve(dst, f), { encoding: 'utf8' })
-      const outTxt = mrgTxt + '\n' + dstTxt
 
-      // TODO: Dedup the imports with globusa here
+      const mg = parse(mrgTxt)
+      const dg = parse(dstTxt)
+
+      const uniq = dedupMitosisImports([...mg.imports, ...dg.imports])
+      const importsTxt = generateImports(uniq, desiredFormat)
+
+      const outTxt = importsTxt + '\n\n' +
+            mg.linesExcludingImports.join('\n') + '\n' +
+            dg.linesExcludingImports.join('\n')
 
       fs.writeFileSync(path.resolve(dst, f), outTxt, { encoding: 'utf8' })
     }
@@ -496,7 +507,7 @@ export async function CLIconvert (src, dest, options) {
 
   const dontConvert = ['index.js', 'package.json', 'node_modules', 'dist']
   const sourceDirNames = (await fs.promises.readdir(srcPath))
-    .filter(dir => !dontConvert.includes(dir))
+        .filter(dir => !dontConvert.includes(dir))
 
   const dirs = []
 
@@ -548,7 +559,7 @@ export async function CLIconvert (src, dest, options) {
 
   if (mergeDirPath) {
     console.log(`Merging '${mergeDirPath}' and ${destDirPath}...`)
-    mergeDirectories(mergeDirPath, destDirPath, {
+    mergeDirectories(mergeDirPath, destDirPath, desiredFormat, {
       globusaMerge: ['index.js', 'index.jsx'],
       exclude: ['dist', 'node_modules']
     })
