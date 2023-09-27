@@ -3,7 +3,7 @@
 import fs from 'fs'
 import path from 'path'
 import { parse } from 'globusa'
-import { convert as kaldunaConvert, generateImports, dedupMitosisImports } from 'kalduna'
+import { convert, generateImports, dedupMitosisImports } from 'kalduna'
 import * as esbuild from 'esbuild'
 
 // Set up jsdom
@@ -28,7 +28,6 @@ export const INTERNAL_UIKIT_CONF = {
     'Box',
     'Icon',
     'IconText',
-    'Tooltip',
 
     // These are not domql objects
     'keySetters',
@@ -190,7 +189,7 @@ export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, o
 
     let out = null
     if (isFirst) {
-      out = kaldunaConvert(dobj, desiredFormat, {
+      out = convert(dobj, desiredFormat, {
         ...kaldunaOpts,
         removeReactImport: false
         // NOTE(nikaoto): Commented these out because we're using deps now, so
@@ -199,7 +198,7 @@ export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, o
         // declarationsToInclude: globusaStruct.declarations,
       })
     } else {
-      out = kaldunaConvert(dobj, desiredFormat, {
+      out = convert(dobj, desiredFormat, {
         ...kaldunaOpts,
         removeReactImport: true
       })
@@ -389,8 +388,8 @@ function mergeDirectories (mrg, dst, desiredFormat, { globusaMerge, exclude }) {
   }
 }
 
-export async function convert (src, dest, options) {
-  if (!kaldunaConvert) {
+export default async function (src, dest, options) {
+  if (!convert) {
     throw new Error(
       'convert() from `kalduna` is not defined. Try to install ' +
         '`kalduna` and run this command again.')

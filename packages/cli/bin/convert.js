@@ -2,7 +2,7 @@
 
 import chalk from 'chalk'
 import { program } from './program.js'
-import { convert, convertDomqlModule } from '@symbo.ls/convert'
+import convert, { convertDomqlModule } from '@symbo.ls/convert'
 
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 
