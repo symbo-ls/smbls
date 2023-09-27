@@ -7,9 +7,7 @@ import { updateDynamycFile } from '@symbo.ls/socket'
 
 import * as socketClient from '@symbo.ls/socket/client.js'
 import { fetchFromCli } from './fetch.js'
-import * as smblsconvert from '@symbo.ls/convert'
-
-const { convertFromCli } = smblsconvert.default
+import { convertFromCli } from './convert.js'
 
 const SOCKET_API_URL_LOCAL = 'http://localhost:13336/'
 const SOCKET_API_URL = 'https://socket.symbols.app/'

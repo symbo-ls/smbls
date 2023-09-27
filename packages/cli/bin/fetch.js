@@ -6,9 +6,8 @@ import { loadModule } from './require.js'
 import { program } from './program.js'
 import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
-import * as smblsconvert from '@symbo.ls/convert'
+import { convertFromCli } from './convert.js'
 
-const { convertFromCli } = smblsconvert.default
 const { isObjectLike } = utils.default
 const { fetchRemote } = fetch.default
 

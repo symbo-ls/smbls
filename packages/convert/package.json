@@ -15,7 +15,6 @@
   "dependencies": {
     "@domql/utils": "latest",
     "@symbo.ls/create": "latest",
-    "chalk": "^5.0.0",
     "globusa": "latest",
     "jsdom": "^22.1.0",
     "kalduna": "latest"

@@ -1,7 +1,6 @@
 'use strict'
 
 import fs from 'fs'
-import chalk from 'chalk'
 import path from 'path'
 import { parse } from 'globusa'
 import { convert as kaldunaConvert, generateImports, dedupMitosisImports } from 'kalduna'
@@ -9,6 +8,7 @@ import * as esbuild from 'esbuild'
 
 // Set up jsdom
 import { JSDOM } from 'jsdom'
+
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window
 global.document = window.document
@@ -387,16 +387,6 @@ function mergeDirectories (mrg, dst, desiredFormat, { globusaMerge, exclude }) {
       fs.writeFileSync(path.resolve(dst, f), outTxt, { encoding: 'utf8' })
     }
   }
-}
-
-export function convertFromCli (data, opts) {
-  const { framework, verbose, verboseCode } = opts
-  console.log(chalk.dim('\n----------------\n'))
-  console.log('Converting components to', chalk.bold(framework))
-  const convertedStrings = convertDomqlModule(data, null, framework)
-  if (verboseCode) console.log(convertedStrings)
-  console.log(chalk.bold.green('\nSuccessfully converted'))
-  return verbose
 }
 
 export async function convert (src, dest, options) {
