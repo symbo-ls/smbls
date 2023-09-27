@@ -5,6 +5,7 @@ import chalk from 'chalk'
 import path from 'path'
 import { convert, generateImports, dedupMitosisImports } from 'kalduna'
 import { parse } from 'globusa'
+import { convert as kaldunaConvert } from 'kalduna'
 import * as esbuild from 'esbuild'
 
 // Set up jsdom
@@ -190,7 +191,7 @@ export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, o
 
     let out = null
     if (isFirst) {
-      out = convert(dobj, desiredFormat, {
+      out = kaldunaConvert(dobj, desiredFormat, {
         ...kaldunaOpts,
         removeReactImport: false
         // NOTE(nikaoto): Commented these out because we're using deps now, so
@@ -199,7 +200,7 @@ export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, o
         // declarationsToInclude: globusaStruct.declarations,
       })
     } else {
-      out = convert(dobj, desiredFormat, {
+      out = kaldunaConvert(dobj, desiredFormat, {
         ...kaldunaOpts,
         removeReactImport: true
       })
@@ -399,8 +400,8 @@ export function convertFromCli (data, opts) {
   return verbose
 }
 
-export async function CLIconvert (src, dest, options) {
-  if (!convert) {
+export async function convert (src, dest, options) {
+  if (!kaldunaConvert) {
     throw new Error(
       'convert() from `kalduna` is not defined. Try to install ' +
         '`kalduna` and run this command again.')
