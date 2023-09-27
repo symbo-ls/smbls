@@ -3,9 +3,8 @@
 import fs from 'fs'
 import chalk from 'chalk'
 import path from 'path'
-import { convert, generateImports, dedupMitosisImports } from 'kalduna'
 import { parse } from 'globusa'
-import { convert as kaldunaConvert } from 'kalduna'
+import { convert as kaldunaConvert, generateImports, dedupMitosisImports } from 'kalduna'
 import * as esbuild from 'esbuild'
 
 // Set up jsdom
@@ -354,7 +353,7 @@ function mergeDirectories (mrg, dst, desiredFormat, { globusaMerge, exclude }) {
       recursiveCopy(path.resolve(mrg, f), path.resolve(dst, f), exclude)
     } else {
       mergeDirectories(path.resolve(mrg, f), path.resolve(dst, f),
-                       desiredFormat, { globusaMerge, exclude })
+        desiredFormat, { globusaMerge, exclude })
     }
   }
 
@@ -508,7 +507,7 @@ export async function convert (src, dest, options) {
 
   const dontConvert = ['index.js', 'package.json', 'node_modules', 'dist']
   const sourceDirNames = (await fs.promises.readdir(srcPath))
-        .filter(dir => !dontConvert.includes(dir))
+    .filter(dir => !dontConvert.includes(dir))
 
   const dirs = []
 
