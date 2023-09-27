@@ -6,7 +6,6 @@
   "type": "module",
   "module": "index.js",
   "main": "index.js",
-  "exports": "./dist/cjs/index.js",
   "source": "index.js",
   "files": [
     "*.js",
@@ -18,13 +17,5 @@
     "globusa": "latest",
     "jsdom": "^22.1.0",
     "kalduna": "latest"
-  },
-  "scripts": {
-    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./index.js --target=es2020 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "npx esbuild ./index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "yarn build:cjs && yarn copy:package:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   }
 }

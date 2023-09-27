@@ -2,9 +2,8 @@
 
 import chalk from 'chalk'
 import { program } from './program.js'
-import * as smblsconvert from '@symbo.ls/convert'
+import { convert, convertDomqlModule } from '@symbo.ls/convert'
 
-const { convert, convertDomqlModule } = smblsconvert.default
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 
 export function convertFromCli (data, opts) {
