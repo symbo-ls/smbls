@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.11.194",
+  "version": "2.11.189",
   "license": "MIT",
   "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
   "dependencies": {
@@ -15,7 +15,7 @@
     "smbls": "latest"
   },
   "devDependencies": {
-    "@symbo.ls/convert": "latest"
+    "kalduna": "latest"
   },
   "type": "module",
   "module": "dist/esm/index.js",
