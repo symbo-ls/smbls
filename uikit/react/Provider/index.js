@@ -6,12 +6,13 @@ import { init } from '@symbo.ls/init'
 import { fetchProjectAsync } from '@symbo.ls/fetch'
 import { SyncProvider } from './sync'
 import { PROVIDER_DEFAULT_PROPS, SymbolsContext } from './hooks'
+import process from 'process'
 
 const SYMBOLSRC = process.cwd() + '/symbols.json'
 
 export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
   const { appKey, children, editor } = options
-  const key = SYMBOLSRC.key || options.key
+  const key = (SYMBOLSRC || options || {}).key
 
   const ds = init(options.designSystem || DEFAULT_CONFIG)
   const [designSystem, setDesignSystem] = useState(ds)
