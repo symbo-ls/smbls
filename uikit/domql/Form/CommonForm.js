@@ -11,6 +11,7 @@ export const CommonForm = {
     margin: '0',
     width: '100%'
   },
+
   childExtend: {
     extend: CommonField,
     props: {

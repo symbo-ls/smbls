@@ -4,18 +4,13 @@ import { IconText } from '@symbo.ls/icon'
 
 export const Field = {
   extend: IconText,
+
   props: {
-    minWidth: 'G',
-    maxWidth: 'G',
-    minHeight: 'C+X',
     align: 'center flex-start',
     gap: 'Y+W',
     boxSizing: 'border-box',
-    padding: '- Z+W',
-    round: 'Y+W',
-    border: '1px solid #3F3F43',
-    overflow: 'hidden',
     position: 'relative',
+
     Button: {
       padding: '0',
       background: 'transparent',
@@ -25,15 +20,18 @@ export const Field = {
   },
 
   Input: {
-    padding: '0',
+    padding: '- Z+W',
+    round: 'Y+W',
+    border: '1px solid #3F3F43',
+    minWidth: 'G',
+    maxWidth: '100%',
+    minHeight: 'C+X',
+    width: '100%',
     background: 'transparent',
-    round: '0',
     color: 'white',
     fontFamily: 'avenir',
     placeholder: 'Placeholder',
     flex: '1',
-    minHeight: '100%',
-    outline: 'none !important',
     fontWeight: '400'
   }
 }
