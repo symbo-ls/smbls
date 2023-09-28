@@ -4,6 +4,8 @@
     "start": "yarn clean:dist; yarn clean:package-modules; parcel example/index.html --no-cache",
     "build": "yarn clean:dist; yarn clean:package-modules; parcel build example/index.html --no-cache",
     "postinstall": "npx lerna link --force-local && npx lerna run build && npx lerna run copy:package:cjs",
+    "prepublish": "yarn update-linkable-list",
+    "update-linkable-list": "npx smbls link-packages -c",
     "test:lint": "npx standard \"packages/**/*.js\" \"uikit/**/*.js\"",
     "test": "echo running all tests is not supported, maybe run: \"yarn test:lint\"",
     "clean": "yarn clean:dist; yarn clean:packages; yarn clean:modules",
