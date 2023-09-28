@@ -1,9 +1,9 @@
 {
   "name": "@symbo.ls/board",
-  "version": "2.11.180",
+  "version": "2.11.198",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "ea1297c67988aff202cb48c8abb6fef592e40ef8",
+  "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
   "dependencies": {
     "@symbo.ls/card": "latest",
     "@symbo.ls/modal": "latest"

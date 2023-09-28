@@ -1,10 +1,10 @@
 {
   "name": "@symbo.ls/editorjs",
-  "version": "2.11.179",
+  "version": "2.11.198",
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa",
+  "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
   "dependencies": {
     "@domql/converter": "latest",
     "@domql/utils": "latest"

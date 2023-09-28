@@ -70,9 +70,7 @@ const packagesToLink = [
   '@symbo.ls/react-atoms',
   '@symbo.ls/react-box',
   '@symbo.ls/react-icon',
-  '@symbo.ls/react-button',
-  '@symbo.ls/react-provider',
-  '@symbo.ls/react-tooltip'
+  '@symbo.ls/react-provider'
 ]
 
 program

@@ -1,3 +1,5 @@
+'use strict'
+
 import React, { useContext } from 'react'
 
 export const PROVIDER_DEFAULT_PROPS = {

@@ -11,6 +11,9 @@ const ENV = process.env.NODE_ENV
 
 const defautlOpts = {}
 
+let CONNECT_ATTEPT = 0
+const CONNECT_ATTEPT_MAX_ALLOWED = 1
+
 export const connect = (key, options = {}) => {
   const isDev = options.development ||
     (window && window.location && window.location.host.includes('local')) ||
@@ -28,7 +31,7 @@ export const connect = (key, options = {}) => {
   const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
 
   const socket = io(primaryUrl || SOCKET_BACKEND_URL, {
-    withCredentials: true
+    // withCredentials: true
   })
 
   socket.on('connect', () => {
@@ -52,18 +55,15 @@ export const connect = (key, options = {}) => {
     }
   })
 
-  let CONNECT_ATTEPT = 0
-  const CONNECT_ATTEPT_MAX_ALLOWED = 1
-
   socket.on('connect_error', (err) => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
       if (isFunction(options.onError)) options.onError(err, socket)
 
       if (CONNECT_ATTEPT < CONNECT_ATTEPT_MAX_ALLOWED) {
-        socket.disconnect()
-
         CONNECT_ATTEPT++
+
+        socket.disconnect()
 
         if (ENV === 'test' || ENV === 'development') {
           console.log(

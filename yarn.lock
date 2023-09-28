@@ -2370,16 +2370,6 @@
     "@symbo.ls/utils" latest
     domql latest
 
-"@symbo.ls/datepicker@latest":
-  version "2.11.198"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/datepicker/-/datepicker-2.11.198.tgz#9d0ad693c7089df6f778258d275ee67130419466"
-  integrity sha512-RX/fJgjKvqBugV2LEhVoqOcUMgLE1BmhQ6h8qA0MJTD3oUCrw3uORmhNwgCpNsSqXYH6643g2NVjh/CoNMZ8IQ==
-  dependencies:
-    "@symbo.ls/atoms" latest
-    "@symbo.ls/button" latest
-    "@symbo.ls/dialog" latest
-    headless-datepicker "^1.0.1"
-
 "@symbo.ls/default-config@latest":
   version "2.11.198"
   resolved "https://registry.yarnpkg.com/@symbo.ls/default-config/-/default-config-2.11.198.tgz#064dd3173f7e5d14b620569ff2bfa10af562de3d"
@@ -2572,16 +2562,6 @@
     "@symbo.ls/react-provider" latest
     css-in-props latest
 
-"@symbo.ls/react-button@latest":
-  version "2.11.195"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/react-button/-/react-button-2.11.195.tgz#4b195421b1455f6855af158bf393a0f89451f246"
-  integrity sha512-rymy4pAf7HCAuK56JNhOeia4nJ3c+WcJBloDaTtgottT7EVf3CA2EC5+P16DCmcel3LmLph3svTGPpEncpouTg==
-  dependencies:
-    "@babel/runtime" "^7.11.2"
-    "@symbo.ls/button" latest
-    "@symbo.ls/react-atoms" latest
-    "@symbo.ls/react-icon" latest
-
 "@symbo.ls/react-icon@latest":
   version "2.11.198"
   resolved "https://registry.yarnpkg.com/@symbo.ls/react-icon/-/react-icon-2.11.198.tgz#4a1f4628a22a9daa18c2ee3640fa60c75acbe103"
@@ -2604,16 +2584,6 @@
     "@symbo.ls/init" latest
     "@symbo.ls/socket" latest
     process "^0.11.10"
-
-"@symbo.ls/react-tooltip@latest":
-  version "2.11.195"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/react-tooltip/-/react-tooltip-2.11.195.tgz#819250bedb76fd73111d7c21751162e15105f795"
-  integrity sha512-PoNL2xI2hd2mUlNGgGKH385L+UFVjyFrCfq4tBRKn31WPOMnWoJ2/D0dkyXv99AGNVMVbjgybP3a2trZFZJ7Og==
-  dependencies:
-    "@babel/runtime" "^7.11.2"
-    "@symbo.ls/react-atoms" latest
-    "@symbo.ls/react-icon" latest
-    "@symbo.ls/tooltip" latest
 
 "@symbo.ls/scratch@latest":
   version "2.11.198"

@@ -16,32 +16,29 @@ export const ResetPassword = {
     Title: { h5: { text: 'Choose new password' } },
     Paragraph: { p: { text: 'Almost done. Enter your new password and you’re all set' } }
   },
+
   Content: {
     extend: CommonForm,
     props: { gap: 'B1' },
-    ...[
-      {
-        Title: { text: 'Old password' },
-        Field: {},
-        Hint: null
-      },
-      {
-        Title: { text: 'New password' },
-        Field: {},
-        Hint: {
-          Icon: { props: { name: 'info' } },
-          text: '8 character minimum'
-        }
-      },
-      {
-        Title: { text: 'Confirm new password' },
-        Field: {},
-        Hint: {
-          Icon: { props: { name: 'info' } },
-          text: '8 character minimum'
-        }
+    ...[{
+      Title: { text: 'Old password' },
+      Field: {},
+      Hint: null
+    }, {
+      Title: { text: 'New password' },
+      Field: {},
+      Hint: {
+        Icon: { props: { name: 'info' } },
+        text: '8 character minimum'
       }
-    ]
+    }, {
+      Title: { text: 'Confirm new password' },
+      Field: {},
+      Hint: {
+        Icon: { props: { name: 'info' } },
+        text: '8 character minimum'
+      }
+    }]
   },
 
   Footer: {

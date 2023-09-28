@@ -1,6 +1,7 @@
 'use strict'
 
 import React, { useEffect, useState } from 'react'
+import process from 'process'
 import DEFAULT_CONFIG from '@symbo.ls/default-config'
 import { init } from '@symbo.ls/init'
 import { fetchProjectAsync } from '@symbo.ls/fetch'
@@ -11,7 +12,7 @@ const SYMBOLSRC = process.cwd() + '/symbols.json'
 
 export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
   const { appKey, children, editor } = options
-  const key = SYMBOLSRC.key || options.key
+  const key = (SYMBOLSRC || options || {}).key
 
   const ds = init(options.designSystem || DEFAULT_CONFIG)
   const [designSystem, setDesignSystem] = useState(ds)

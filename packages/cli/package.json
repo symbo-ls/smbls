@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/cli",
-  "version": "2.11.187",
+  "version": "2.11.198",
   "description": "Fetch your Symbols configuration",
   "main": "bin/fetch.js",
   "author": "Symbols",
@@ -21,10 +21,11 @@
     "chalk": "^5.0.0",
     "commander": "latest",
     "esbuild": "^0.19.2",
-    "globusa": "latest",
-    "jsdom": "^22.1.0",
     "node-fetch": "^3.1.0",
     "v8-compile-cache": "^2.3.0"
   },
-  "gitHead": "75e0962f6d8d5c55467ed968e9aaabd97a729dfa"
+  "peerDependencies": {
+    "@symbo.ls/convert": "latest"
+  },
+  "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90"
 }

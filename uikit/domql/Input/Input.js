@@ -12,7 +12,7 @@ export const Input = {
   props: {
     border: 'none',
     type: 'input',
-    // theme: 'tertiary',
+    theme: 'tertiary',
     fontSize: 'A',
     round: 'C',
     lineHeight: 1,

@@ -131,8 +131,8 @@ create({
     PlusMinusButtons: {},
     Pracing: {},
 
-    // DatePicker: {},
-    // TimePicker: {},
+    DatePicker: {},
+    TimePicker: {},
 
     state: { globalTheme: 'dark' }
   },

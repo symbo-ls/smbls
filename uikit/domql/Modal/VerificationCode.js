@@ -1,7 +1,7 @@
 'use strict'
 
+import { Modal } from './Modal'
 import { Flex } from '@symbo.ls/atoms'
-import { Modal } from '@symbo.ls/modal'
 import { NumberField } from '@symbo.ls/field'
 import { ParagraphButton } from '@symbo.ls/paragraphbutton'
 import { CancelConfirmButtons } from '@symbo.ls/button'

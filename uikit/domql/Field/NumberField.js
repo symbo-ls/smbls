@@ -8,12 +8,7 @@ export const NumberField = {
     minWidth: 'D+Y2',
     maxWidth: 'D+Y2',
     minHeight: 'D+Y2',
-    padding: '0',
-    style: {
-      'input[type=number]::-webkit-inner-spin-button': {
-        '-webkit-appearance': ' none'
-      }
-    }
+    padding: '0'
   },
 
   Input: null,
@@ -22,9 +17,11 @@ export const NumberField = {
     placeholder: '0',
     boxSize: '100% 100%',
     textAlign: 'center',
-    borderRadius: '0',
+    round: '0',
     background: 'transparent',
-    outline: 'none !important',
-    color: 'white'
+    color: 'white',
+    '::-webkit-inner-spin-button': {
+      '-webkit-appearance': ' none'
+    }
   }
 }
