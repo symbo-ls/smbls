@@ -28,6 +28,7 @@ export const INTERNAL_UIKIT_CONF = {
     'Box',
     'Icon',
     'IconText',
+    'Img',
 
     // These are not domql objects
     'keySetters',
@@ -376,8 +377,23 @@ function mergeDirectories (mrg, dst, desiredFormat, { globusaMerge, exclude }) {
       const mg = parse(mrgTxt)
       const dg = parse(dstTxt)
 
-      const uniq = dedupMitosisImports([...mg.imports, ...dg.imports])
-      const importsTxt = generateImports(uniq, desiredFormat)
+      console.log(dstTxt)
+
+      const uniqueImports = dedupMitosisImports([...mg.imports, ...dg.imports])
+      console.log(dst)
+      console.log(mg.imports)
+      console.log(dg.imports)
+      console.log(uniqueImports)
+
+      const ids = [...mg.identifiers, ...dg.identifiers]
+      for (const id of ids) {
+        for (const imp of uniqueImports) {
+          if (Object.keys(imp.imports).includes(id))
+            delete imp.imports[id]
+        }
+      }
+
+      const importsTxt = generateImports(uniqueImports, desiredFormat)
 
       const outTxt = importsTxt + '\n\n' +
             mg.linesExcludingImports.join('\n') + '\n' +
