@@ -50,8 +50,7 @@ export const KangorooButton = {
 export const CommonButton = {
   extend: Button,
   props: {
-    color: 'white',
-    background: 'blue',
+    theme: 'primary',
     boxSize: 'fit-content',
     padding: 'A A2',
     round: 'Z2',
