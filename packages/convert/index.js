@@ -170,7 +170,7 @@ export function convertDomqlModule (domqlModule, globusaStruct, desiredFormat, o
     const isLast = (idx == (exports.length - 1)) // eslint-disable-line
 
     const kaldunaOpts = {
-      verbose: false,
+      verbose: options.verbose,
       returnMitosisIR: true,
       globalSymbolTable,
       exportDefault: false,
