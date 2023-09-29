@@ -1056,9 +1056,9 @@
     "@domql/report" latest
 
 "@domql/element@latest":
-  version "2.5.12"
-  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.5.12.tgz#d061f47c8f7e30ea9b69a67d8e99d00aee7e9257"
-  integrity sha512-FfFkyae6uTxqR9p1S7wBMAwsAUq+hEXucJ3KOS98l2N0vDjualyoyLjMnaQnFqrDVcB3laq0g9eugugVyaWvuQ==
+  version "2.5.13"
+  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.5.13.tgz#6562150ce6fb1e1a3cca7eae5240ee19d17bf0c1"
+  integrity sha512-VskzQvuTkGyQGRMsdqMbGoq9y9si12rpO8MMxo86LoH06tH0nTDA1lKARN4haKpM45yJvA6IRs5WiiZJ5AkaDA==
   dependencies:
     "@domql/event" latest
     "@domql/node" latest
@@ -1067,9 +1067,9 @@
     "@domql/utils" latest
 
 "@domql/emotion@latest":
-  version "2.5.8"
-  resolved "https://registry.yarnpkg.com/@domql/emotion/-/emotion-2.5.8.tgz#39a0d42c79c0b99869824f8f400df742b95e039f"
-  integrity sha512-ylqQ8lEQniOLJQfq1l6nc8PbDuGfULMDkRlVphkHiQUFXIWeFKMAlpGpWrA/+38pvJZ5wxJOD59L5LfQ3tEV2A==
+  version "2.5.13"
+  resolved "https://registry.yarnpkg.com/@domql/emotion/-/emotion-2.5.13.tgz#42c7f272e34a9f8f21cd6435dad8897351e7c1e8"
+  integrity sha512-wSWjd9aCqWqPpmaGLN0ZYyRRMuh8OIUUU1spSvLdaFaNMnrWQIC/5qnS+kq+lOeR48R/vck2sxusIzt/SrlfnQ==
   dependencies:
     "@domql/classlist" latest
     "@domql/env" latest
@@ -1214,9 +1214,9 @@
     "@domql/report" latest
 
 "@domql/utils@^2.4.12", "@domql/utils@latest":
-  version "2.4.12"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.4.12.tgz#0d6365d3095bdf01450a038d0240b7d5168d8642"
-  integrity sha512-D9bt0GkNBZUzJakvr8dMekreL1GkM3Vb+pfmOEDj32u3TOw9jdlSJNFhw8XB5tYCyOGCGZbUYkwURKVbH9clFg==
+  version "2.5.13"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.5.13.tgz#51b39d60745afe2be7a3c667e1065c89c1a7d8f5"
+  integrity sha512-Pfi01UKd25P+n/jR63MbtbrHd81ioG55H2iDSMWuJMHLX2ESgVVfDNjos47mJJnJWKjApRF4lLEKtZWXOYHYFA==
 
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"
@@ -2340,9 +2340,9 @@
     "@symbo.ls/titleparagraph" latest
 
 "@symbo.ls/cli@latest":
-  version "2.11.198"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/cli/-/cli-2.11.198.tgz#980da6c166af40986217009726f6a3e79afa1833"
-  integrity sha512-sF0VVfYAw8P9h8aFGkA5wx++MewRkjNWXYV5rdPegGscuVITtkJ/psOmtMQWgnSuLL8xcJdWAVvvOfbsp1PPWA==
+  version "2.11.199"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/cli/-/cli-2.11.199.tgz#64415efe32b6176291da81c9bf14d1f36b2342cd"
+  integrity sha512-14JYTI3MWfXvo2HkpYlzZ2QlqDaecMGS1LdFu0JzD8ZWdPjul7/RMyVifLoqMDJIQf1ebsHopX8TNqWXSzZA8Q==
   dependencies:
     "@symbo.ls/fetch" latest
     "@symbo.ls/init" latest
@@ -2456,9 +2456,9 @@
     "@symbo.ls/icon" latest
 
 "@symbo.ls/init@latest":
-  version "2.11.198"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/init/-/init-2.11.198.tgz#008a0f19d0a734829e6dd4b055a6f6376bc07f8d"
-  integrity sha512-WiA57U2LidR6xmlce+W9ACus8aZ/QmHz2qO2nAsaTRZ3ZbAn9Y1/Lo9Kz3V5vXNy8H2kXav87K0jZ3ejZoIihA==
+  version "2.11.199"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/init/-/init-2.11.199.tgz#1622c11e7fb8b2e60dc4ec981a69b606bbecb799"
+  integrity sha512-JLiC9NK8YTZNDGm3s7kd3J6j01JwK8W/Slt7EdAi7dimUlKaYdLpA9qsQMj22RdVm5zGEYyQZyGSwv+ebFjc0w==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/default-config" latest
@@ -2586,9 +2586,9 @@
     process "^0.11.10"
 
 "@symbo.ls/scratch@latest":
-  version "2.11.198"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.11.198.tgz#368c30424fca0723c55db4f97cbc50d2b54552f3"
-  integrity sha512-p2CLyWKSNyxbm9rjXwhZI+UuOEDPvtfqbDOQkZQ/CABRJBCQw3nEbF2PYvQG0CnVuMk/X7hNid1U5aMzns6fhw==
+  version "2.11.200"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/scratch/-/scratch-2.11.200.tgz#3f3df3d41034e6004d6501e2d5b833e0acb15a23"
+  integrity sha512-m9a3OxUJFwP/awAPCC8saWPIxSbYTII9j0bQOu/xOBYGG0Isc5DTm1kOoHg9l8j5Npq9UGXFY20EzOsyz566Lg==
   dependencies:
     "@domql/utils" latest
     "@symbo.ls/utils" latest
@@ -5090,9 +5090,9 @@ ejs@^3.1.7:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.535:
-  version "1.4.535"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.535.tgz#f14765820a0aa31425e1dbbae917cc70872b2a53"
-  integrity sha512-4548PpR4S5X5dlvX8NUIw0njH7btQtBoJWcgzpq7n2F9NQ5gMXOPP/6p6iVx6+YT3FVioNhEGa14WJj1k+2SfA==
+  version "1.4.536"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.536.tgz#ebdf960fbc27fb8bd0b0dfa9a899cc333bb15f1c"
+  integrity sha512-L4VgC/76m6y8WVCgnw5kJy/xs7hXrViCFdNKVG8Y7B2isfwrFryFyJzumh3ugxhd/oB1uEaEEvRdmeLrnd7OFA==
 
 elliptic@^6.5.3:
   version "6.5.4"
@@ -6431,9 +6431,9 @@ globby@11.1.0, globby@^11.0.1:
     slash "^3.0.0"
 
 globusa@latest:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/globusa/-/globusa-1.1.2.tgz#8da0f1c0a3e7f2c676b36e1cfaa8a75397286981"
-  integrity sha512-ABpIN+eJ0nRm80VDms7fCqP6BSBRDK3G7iY89ypmpGoWZXVToalM+jO+R45uzqwHPfZWz6jVtNJcOlmA2oCHOw==
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/globusa/-/globusa-1.1.3.tgz#cda5f616b1551f0ccfcd217ae98e63218a635ad8"
+  integrity sha512-0RRyTAmceXh7Ztn0YbZknzHsLhpFS8rVRaWJAQVSMgk2KJeO8DBvT8K18dg4EJV1ybyOWoaNOspCACqIalOyQA==
   dependencies:
     "@babel/core" "^7.22.8"
     "@babel/parser" "^7.22.7"
@@ -7674,9 +7674,9 @@ just-diff@^6.0.0:
   integrity sha512-S59eriX5u3/QhMNq3v/gm8Kd0w8OS6Tz2FS1NG4blv+z0MuQcBRJyFWjdovM0Rad4/P4aUPFtnkNjMjyMlMSYA==
 
 kalduna@latest:
-  version "1.5.15"
-  resolved "https://registry.yarnpkg.com/kalduna/-/kalduna-1.5.15.tgz#3387d8f71c3fc17ca642cb4768af2c90d2eeb411"
-  integrity sha512-gUfxDdxjXyu7DJ5wSxsqBF6J38E1ug4TVIynstj3HrEGcbQxdlRobxGOJk+GlgRV7c3umb62SwUIsWOWQrDk4Q==
+  version "1.5.16"
+  resolved "https://registry.yarnpkg.com/kalduna/-/kalduna-1.5.16.tgz#c895a863f22416b23b8476d877dc5075d899ebc7"
+  integrity sha512-JlW5VrS0n+Nym2nWktIoowe0wdqEOwCAHiaKnfGqt2ydZnH+D68BbN3ntdTiZN28giKOlNU/ckCUCAdDDlXX/Q==
   dependencies:
     "@domql/state" "^2.5.9"
     "@domql/utils" "^2.4.12"
@@ -8793,9 +8793,9 @@ minipass@^5.0.0:
   integrity sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==
 
 "minipass@^5.0.0 || ^6.0.2 || ^7.0.0", minipass@^7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/minipass/-/minipass-7.0.3.tgz#05ea638da44e475037ed94d1c7efcc76a25e1974"
-  integrity sha512-LhbbwCfz3vsb12j/WkWQPZfKTsgqIe1Nf/ti1pKjYESGLHIVjWU96G9/ljLH4F9mWNVhlQOm0VySdAWzf05dpg==
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/minipass/-/minipass-7.0.4.tgz#dbce03740f50a4786ba994c1fb908844d27b038c"
+  integrity sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==
 
 minizlib@^2.1.1, minizlib@^2.1.2:
   version "2.1.2"
