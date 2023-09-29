@@ -377,14 +377,7 @@ function mergeDirectories (mrg, dst, desiredFormat, { globusaMerge, exclude }) {
       const mg = parse(mrgTxt)
       const dg = parse(dstTxt)
 
-      console.log(dstTxt)
-
       const uniqueImports = dedupMitosisImports([...mg.imports, ...dg.imports])
-      console.log(dst)
-      console.log(mg.imports)
-      console.log(dg.imports)
-      console.log(uniqueImports)
-
       const ids = [...mg.identifiers, ...dg.identifiers]
       for (const id of ids) {
         for (const imp of uniqueImports) {
