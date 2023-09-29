@@ -10,8 +10,6 @@ import {
   isArray
 } from '@domql/utils'
 
-const ENV = process.env.NODE_ENV // eslint-disable-line
-
 const setThemeValue = theme => {
   const value = {}
   const { state, media, helpers, ...rest } = theme

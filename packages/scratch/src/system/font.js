@@ -10,8 +10,6 @@ import {
   setCustomFontMedia
 } from '../utils'
 
-// const ENV = process.env.NODE_ENV
-
 export const setFont = (val, key) => {
   const CSSvar = `--font-${key}`
   const fontFace = val[0]

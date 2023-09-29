@@ -18,8 +18,6 @@ import {
 
 import { isFunction } from '@domql/utils'
 
-const ENV = process.env.NODE_ENV // eslint-disable-line no-unused-vars
-
 const setCases = (val, key) => {
   if (isFunction(val)) return val()
   return val
