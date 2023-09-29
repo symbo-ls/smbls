@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/react-box",
-  "version": "2.11.203",
+  "version": "2.11.204",
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.11.2",
