@@ -4,14 +4,12 @@ import { Img } from '@symbo.ls/atoms'
 
 export const Avatar = {
   extend: Img,
-  props: {
+  props: ({ key, props }) => ({
     display: 'block',
     avatarType: 'initials',
     borderRadius: '100%',
     boxSize: 'C+X C+X',
-    cursor: 'pointer'
-  },
-  attr: {
-    src: ({ key, props }) => props.src || `https://avatars.dicebear.com/api/${props.avatarType || 'adventurer-neutral'}/${props.key || key}.svg`
-  }
+    cursor: 'pointer',
+    src: `https://api.dicebear.com/7.x/${props.avatarType || 'adventurer-neutral'}/svg?seed=${props.key || key}`
+  })
 }

@@ -20,11 +20,14 @@ export const AvatarChooser = {
   },
 
   Avatar: {
-    boxSize: 'B1',
-    pointerEvents: 'none'
+    props: ({ state }) => ({
+      key: state.key,
+      boxSize: 'B1',
+      pointerEvents: 'none'
+    })
   },
 
-  select: {
+  Select: {
     props: {
       id: 'avatar-chooser',
       outline: 'none',
@@ -38,16 +41,26 @@ export const AvatarChooser = {
       fontSize: 'A',
       lineHeight: 1,
       margin: '0 0 0 -B1+X',
-      padding: '0 A 0 B1+X'
+      padding: '0 A 0 B1+X',
+      ':focus-visible': {
+        outline: 'none'
+      }
     },
 
     attr: { name: 'avatar-chooser' },
 
     childExtend: { tag: 'option' },
-    $setPropsCollection: ({ parent }) => parent.props.options,
+    $setPropsCollection: ({ parent, state }) => {
+      return parent.props.options.map(v => {
+        if (v.text === state.key) return { ...v, selected: true }
+        return v
+      })
+    },
+
     on: {
-      change: (ev, { parent }) => {
-        parent.Avatar.update({ key: ev.target.value })
+      change: (ev, { state }) => {
+        state.update({ key: ev.target.value })
+        console.log(state.key)
       }
     }
   }
