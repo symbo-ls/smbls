@@ -29,7 +29,6 @@ export const AvatarChooser = {
 
   Select: {
     props: {
-      id: 'avatar-chooser',
       outline: 'none',
       pointerEvents: 'all',
       appearance: 'none',
@@ -46,8 +45,6 @@ export const AvatarChooser = {
         outline: 'none'
       }
     },
-
-    attr: { name: 'avatar-chooser' },
 
     childExtend: { tag: 'option' },
     $setPropsCollection: ({ parent, state }) => {
