@@ -25,6 +25,13 @@ create({
     Avatar: {},
     AvatarIndicator: {},
     AvatarBundle: {},
+    AvatarChooser: {
+      options: [{
+        text: 'Kevin'
+      }, {
+        text: 'John'
+      }]
+    },
     TitleParagraph: {},
     User: {},
     Label: {},

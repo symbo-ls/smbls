@@ -35,6 +35,7 @@ program
           '(for example: --only=Flex,Img)')
   .option('-m, --merge <dir>',
     'After converting an entire directory, perform a recursive merge that takes files from this directory and puts them in the dest directory. It also concatenates index.js files')
+  .option('-v, --verbose', 'Run the converter in verbose-mode')
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
