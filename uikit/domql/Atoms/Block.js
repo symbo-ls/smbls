@@ -152,10 +152,12 @@ export const Block = {
     },
 
     columns: ({ props }) => props.columns && ({ columns: props.columns }),
+    columnRule: ({ props }) => props.columnRule && ({ columnRule: props.columnRule }),
+    columnWidth: ({ props }) => props.columnWidth && ({ columnWidth: props.columnWidth }),
     columnGap: ({ props, deps }) => props.columnGap ? deps.getSpacingBasedOnRatio(props, 'columnGap') : null,
-    columnSpan: ({ props }) => props.columnSpan && ({ columns: props.columnSpan }),
-    columnFill: ({ props }) => props.columnFill && ({ columns: props.columnFill }),
-    columnCount: ({ props }) => props.columnCount && ({ columns: props.columnCount })
+    columnSpan: ({ props }) => props.columnSpan && ({ columnSpan: props.columnSpan }),
+    columnFill: ({ props }) => props.columnFill && ({ columnFill: props.columnFill }),
+    columnCount: ({ props }) => props.columnCount && ({ columnCount: props.columnCount })
   }
 }
 
