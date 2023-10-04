@@ -17,11 +17,14 @@ export const NumberField = {
     placeholder: '0',
     boxSize: '100% 100%',
     textAlign: 'center',
-    round: '0',
-    background: 'transparent',
+    round: 'Y',
     color: 'white',
-    '::-webkit-inner-spin-button': {
-      '-webkit-appearance': ' none'
+    background: 'rgba(0, 0, 0, 0)',
+    outline: 'none !important',
+    style: {
+      '&::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none'
+      }
     }
   }
 }

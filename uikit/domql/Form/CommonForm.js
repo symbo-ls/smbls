@@ -16,14 +16,20 @@ export const CommonForm = {
     extend: CommonField,
     props: {
       minWidth: '100%',
-      Textarea: { width: '100%' },
+      Textarea: {
+        width: '100%',
+        maxWidth: '100%',
+        fontSize: 'Y2'
+      },
       Hint: { color: 'gray .92 +68' }
     },
 
     Title: { props: { fontSize: 'Y2' } },
     Field: {
       props: { minWidth: '100%' },
-      Input: { fontSize: 'Y2' }
+      Input: {
+        fontSize: 'Y2'
+      }
     }
   }
 }

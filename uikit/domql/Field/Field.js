@@ -1,9 +1,11 @@
 'use strict'
 
+import { Focusable } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/icon'
 
 export const Field = {
-  extend: IconText,
+  tag: 'label',
+  extend: [Focusable, IconText],
   props: {
     minWidth: 'G',
     maxWidth: 'G',
@@ -16,6 +18,7 @@ export const Field = {
     border: '1px solid #3F3F43',
     overflow: 'hidden',
     position: 'relative',
+    ':focus-within': { outline: '1px solid #0474F2' },
     Button: {
       padding: '0',
       background: 'transparent',
@@ -26,7 +29,7 @@ export const Field = {
 
   Input: {
     padding: '0',
-    background: 'transparent',
+    background: 'rgba(0, 0, 0, 0)',
     round: '0',
     color: 'white',
     fontFamily: 'avenir',
