@@ -1,25 +1,22 @@
 'use strict'
 
 import { defaultDefine } from './define'
-import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 
-export default {
+export const DESIGN_SYSTEM_OPTIONS = {
+  useReset: true,
+  useVariable: true,
+  useIconSprite: true,
+  useSvgSprite: true,
+  useDocumentTheme: true,
+  useFontImport: true
+}
+
+export const CREATE_OPTIONS = {
   editor: {},
   state: {},
   pages: {},
   defaultConfig: true,
-  designSystem: {
-    useReset: true,
-    useVariable: true,
-    useIconSprite: true,
-    useSvgSprite: true,
-    useDocumentTheme: true,
-    useFontImport: true
-  },
   components: {},
-  initOptions: {
-    emotion: defaultEmotion
-  },
   router: {
     initRouter: true,
     popState: true,
@@ -27,3 +24,5 @@ export default {
   },
   define: defaultDefine
 }
+
+export default CREATE_OPTIONS
