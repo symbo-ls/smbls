@@ -7,6 +7,7 @@ export default {
   editor: {},
   state: {},
   pages: {},
+  defaultConfig: true,
   designSystem: {
     useReset: true,
     useVariable: true,

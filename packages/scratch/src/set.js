@@ -88,6 +88,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     useIconSprite,
     globalTheme,
     useDocumentTheme,
+    defaultConfig,
     ...config
   } = recivedConfig
 
@@ -103,6 +104,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (useIconSprite !== undefined) CONFIG.useIconSprite = useIconSprite
   if (useDocumentTheme !== undefined) CONFIG.useDocumentTheme = useDocumentTheme
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
+  if (defaultConfig !== undefined) CONFIG.defaultConfig = defaultConfig
   if (CONFIG.verbose) console.log(CONFIG)
 
   if (!CONFIG.__svg_cache) CONFIG.__svg_cache = {}
