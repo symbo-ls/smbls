@@ -24,7 +24,7 @@ const mergeWithLocalFile = (options, optionsExternalFile) => {
 
 export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
   const appIsKey = isString(App)
-  options = deepMerge(mergeWithLocalFile(options, optionsExternalFile), DEFAULT_CREATE_OPTIONS)
+  options = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
 
   const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
 

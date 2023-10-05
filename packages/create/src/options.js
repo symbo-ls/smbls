@@ -12,10 +12,9 @@ export const DESIGN_SYSTEM_OPTIONS = {
 }
 
 export const CREATE_OPTIONS = {
-  editor: {},
+  defaultConfig: true,
   state: {},
   pages: {},
-  defaultConfig: true,
   components: {},
   router: {
     initRouter: true,

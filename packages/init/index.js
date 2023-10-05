@@ -58,9 +58,6 @@ export const init = (config, options = SET_OPTIONS) => {
   const useIconSprite = conf.useIconSprite
   const hasIcons = config.icons || config.ICONS
 
-  console.log(emotion)
-  console.log(conf)
-
   if (useFontImport) emotion.injectGlobal(FontFace)
   if (useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })
   if (useReset) emotion.injectGlobal(conf.RESET)
