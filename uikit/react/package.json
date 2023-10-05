@@ -13,6 +13,7 @@
     "smbls": "latest"
   },
   "devDependencies": {
+    "globusa": "latest",
     "kalduna": "latest"
   },
   "type": "module",
