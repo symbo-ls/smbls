@@ -1,7 +1,7 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, diff, deepClone } from '@domql/utils'
+import { isString, isNot, isArray, isObject, isObjectLike, diff, deepClone, deepContains } from '@domql/utils'
 
 export const Collection = {
   define: {
@@ -53,8 +53,10 @@ export const Collection = {
         obj[key] = { state: isObjectLike(value) ? value : { value } }
       }
 
-      el.removeContent()
-      el.content = obj
+      if (!deepContains(obj, el.content)) {
+        el.removeContent()
+        el.content = obj
+      }
 
       return obj
     },
@@ -75,8 +77,10 @@ export const Collection = {
         obj[key] = { props: isObjectLike(value) ? value : { value } }
       }
 
-      el.removeContent()
-      el.content = obj
+      if (!deepContains(obj, el.content)) {
+        el.removeContent()
+        el.content = obj
+      }
 
       // const set = () => {
       //   el.set(obj, { preventDefineUpdate: '$setPropsCollection' })
