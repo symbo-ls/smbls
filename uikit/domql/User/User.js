@@ -20,7 +20,7 @@ export const User = {
     extend: TitleParagraph,
     props: {
       gap: 'Y2',
-      margin: 'X - - -'
+      margin: 'W - - -'
     },
     Title: {
       h5: {

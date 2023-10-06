@@ -8,6 +8,7 @@ export const AvatarChooser = {
 
   props: {
     round: 'C',
+    width: 'fit-content',
     gap: 'Y',
     padding: 'W2 A W2 W2',
     theme: 'tertiary',
@@ -57,5 +58,9 @@ export const AvatarChooser = {
         console.log(state.key)
       }
     }
+  },
+
+  Icon: {
+    name: 'arrowDown'
   }
 }

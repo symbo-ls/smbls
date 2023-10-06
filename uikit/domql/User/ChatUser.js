@@ -2,7 +2,6 @@
 
 import { User } from './User'
 
-import { CountIndicator } from '@symbo.ls/indicator'
 import { UnitValue } from '@symbo.ls/unitvalue'
 
 export const ChatUser = {
@@ -49,9 +48,8 @@ export const ChatUser = {
           fontSize: 'Z'
         }
       },
-      notification: {
-        extend: CountIndicator,
-        props: { fontSize: 'Y2' }
+      CountIndicator: {
+        fontSize: 'Y2'
       }
     }
   }

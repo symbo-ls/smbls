@@ -13,6 +13,7 @@ export const UserWithButton = {
     borderWidth: '1px',
     gap: 'Y2'
   },
+
   Avatar: {
     Avatar: {
       round: 'Y'
@@ -38,11 +39,21 @@ export const UserWithButton = {
     }
   },
   IconCommonButton: {
-    round: '0',
+    round: 'Y1',
     background: 'transparent',
+    theme: null,
+    color: 'currentColor',
+    opacity: '0.5',
+    transition: 'A defaultBezier',
+    transitionProperty: 'opacity, background',
+    ':hover': {
+      opacity: '1',
+      theme: 'secondary'
+    },
+    margin: '- - - Z2',
     icon: {
       name: 'copy',
-      fontSize: 'D1'
+      fontSize: 'C'
     }
   }
 }

@@ -9,7 +9,7 @@ export const UserButtonSet = {
     gap: 'E2',
     background: 'gray',
     boxSize: 'fit-content',
-    padding: 'A1',
+    padding: 'A',
     round: 'Z2'
   },
 

@@ -6,6 +6,7 @@ import { IconText } from '@symbo.ls/icon'
 export const Button = {
   extend: [FocusableComponent, IconText],
   tag: 'button',
+
   props: {
     fontSize: 'A',
     type: 'button',
@@ -113,7 +114,7 @@ export const CancelConfirmButtons = {
 export const IcontextButton = {
   extend: CommonButton,
   props: {
-    padding: 'A',
+    padding: 'A A1',
     position: 'relative',
     background: 'gray3',
     icon: { name: 'smile' }
