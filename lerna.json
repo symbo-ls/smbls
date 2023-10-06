@@ -1,6 +1,10 @@
 {
   "npmClient": "yarn",
+<<<<<<< HEAD
   "version": "2.11.209",
+=======
+  "version": "2.11.205",
+>>>>>>> origin/feature/components-reiterate
   "useWorkspaces": true,
   "packages": [
     "uikit/*",

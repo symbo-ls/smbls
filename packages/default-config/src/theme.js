@@ -151,7 +151,7 @@ export const THEME = {
   },
 
   transparent: {
-    color: 'transparent',
+    color: 'currentColor',
     background: 'transparent'
   }
 }

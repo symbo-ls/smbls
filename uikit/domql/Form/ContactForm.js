@@ -1,7 +1,6 @@
 'use strict'
 
 import { Modal } from '@symbo.ls/modal'
-import { Textarea } from '@symbo.ls/input'
 import { CommonForm } from './CommonForm'
 
 export const ContactForm = {
@@ -61,7 +60,7 @@ export const ContactForm = {
           props: { gridColumn: '1 / span 2' },
           Title: { text: 'Message' },
           Field: null,
-          Textarea,
+          Textarea: {},
           Hint: null
         }
       ]

@@ -8,7 +8,17 @@ export const Textarea = {
   extend: [Input, Flex],
 
   props: {
-    variant: 'outlined'
+    variant: 'outlined',
+    round: 'Z2',
+    maxWidth: 'H',
+    minHeight: 'E',
+    placeholder: 'Leave us a message...',
+    fontSize: 'Z1',
+    padding: 'A',
+    background: 'rgba(0, 0, 0, 0)',
+    border: '1px solid #3F3F43',
+    color: 'white',
+    style: { resize: 'none' }
   },
 
   '.simple': {
@@ -25,7 +35,7 @@ export const Textarea = {
     props: {
       border: '1px solid #3F3F43',
       background: 'transparent',
-      round: 'Y+W',
+      // round: 'Y+W',
       width: 'G1',
       height: 'D2+W',
       lineHeight: 1.4,
@@ -61,13 +71,13 @@ export const TextareaWithButton = {
   extend: Flex,
   props: { gap: 'Y2' },
   Textarea: {
-    height: '52px',
+    height: 'C2+W',
+    minWidth: 'H',
     padding: 'A',
     fontSize: 'Z1',
     color: 'white',
-    placeholder: 'Message',
-    round: 'Z2'
-    // background: 'gray'
+    round: 'Z2',
+    minHeight: 'dit-content'
 
   },
   IconCommonButton: {

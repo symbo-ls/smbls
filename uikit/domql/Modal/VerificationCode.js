@@ -16,7 +16,14 @@ export const VerificationCode = {
   Header: {
     props: { gap: 'A' },
     Title: { h5: { text: 'Verify your email' } },
-    Paragraph: { p: { text: 'Verification code has been sent to you. Enter the code below.' } }
+    Paragraph: {
+      p: {
+        props: {
+          text: 'Verification code has been sent to you. Enter the code below.',
+          lineHeight: '1.5em'
+        }
+      }
+    }
   },
 
   Content: {
@@ -33,7 +40,10 @@ export const VerificationCode = {
       childExtend: NumberField,
       ...[{}, {}, {}, {}]
     },
-    ParagraphButton: { extend: ParagraphButton }
+    ParagraphButton: {
+      extend: ParagraphButton,
+      props: { padding: '- - - Y' }
+    }
   },
 
   Footer: {
@@ -45,7 +55,7 @@ export const VerificationCode = {
       extend: CancelConfirmButtons,
       props: { childProps: { ':first-child': { border: 'none' } } },
       ...[
-        {},
+        { Caption: { text: 'Cancel' } },
         { Caption: { text: 'Verify' } }
       ]
     }
