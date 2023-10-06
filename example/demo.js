@@ -4,11 +4,13 @@ import { create } from '@symbo.ls/create'
 import { Flex } from '@symbo.ls/atoms'
 import { SearchWithButton } from '@symbo.ls/field'
 
-import designSystem from '@symbo.ls/default-config'
-designSystem.globalTheme = 'dark'
-
 create({
   extend: Flex,
+
+  state: {
+    globalTheme: 'dark',
+    value: ''
+  },
 
   header: {
     extend: Flex,
@@ -18,8 +20,32 @@ create({
     }
   },
 
-  content: {
+  cnt: {
     extend: Flex,
+
+    childExtend: {
+      props: ({ key, state }) => ({
+        hide: !key.toLowerCase().includes(state.value),
+        position: 'relative'
+      }),
+      __title: {
+        props: {
+          ignoreChildExtend: true,
+          position: 'absolute',
+          left: '0',
+          top: '-C',
+          fontSize: '14px',
+          color: 'white .35'
+        },
+        text: ({ parent }) => parent.key
+      }
+    },
+
+    H1: {
+      props: { hide: false },
+      __title: { text: 'Searched value:' },
+      text: ({ state }) => state.value
+    },
 
     StatusIndicator: {},
     Avatar: {},
@@ -139,9 +165,7 @@ create({
     Pricing: {},
 
     DatePicker: {},
-    TimePicker: {},
-
-    state: { globalTheme: 'dark' }
+    TimePicker: {}
   },
 
   footer: {
@@ -158,9 +182,17 @@ create({
         background: 'transparent'
       },
       Input: {
-        fontSize: 'Z1',
-        placeholder: 'find component ...',
-        ':focus ~ svg': { opacity: '0' }
+        props: {
+          fontSize: 'Z1',
+          placeholder: 'Find component ...',
+          ':focus ~ svg': { opacity: '0' }
+        },
+        on: {
+          keyup: (event, el, s) => {
+            const value = el.node.value
+            s.update({ value })
+          }
+        }
       },
       Icon: {
         props: {
@@ -226,7 +258,7 @@ create({
       }
     },
 
-    content: {
+    cnt: {
       flow: 'column',
       padding: 'F E E D',
       gap: 'E+C',
@@ -278,10 +310,5 @@ create({
         }
       }
     }
-  }
-}, {
-  designSystem,
-  state: {
-    globalTheme: 'dark'
   }
 })

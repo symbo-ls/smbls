@@ -9,22 +9,14 @@ export const CommonField = {
   props: {
     flow: 'column',
     boxSize: 'fit-content fit-content',
-    gap: 'Y+W',
-    Hint: {
-      align: 'center flex-start',
-      text: '',
-      fontSize: 'Y',
-      gap: 'Y',
-      padding: '- - - Z'
-    }
+    gap: 'Z'
   },
 
   Title: {
     props: {
       text: 'Label',
-      fontSize: 'Z',
       lineHeight: '1em',
-      padding: '- - - Z',
+      padding: '- - - V2',
       color: 'gray4'
     }
   },
@@ -34,7 +26,14 @@ export const CommonField = {
   },
   Hint: {
     extend: IconText,
-    props: { color: 'gray4' }
+    props: {
+      color: 'gray4',
+      align: 'center flex-start',
+      text: '',
+      fontSize: 'Z1',
+      gap: 'Y',
+      padding: 'W - - W'
+    }
   }
 }
 

@@ -12,7 +12,7 @@ export const GroupListWithSearch = {
   SearchContainer: {
     extend: Flex,
     props: {
-      padding: 'A Z1'
+      padding: 'Z'
     },
     Search: {
       extend: Search,

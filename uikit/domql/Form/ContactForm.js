@@ -8,13 +8,13 @@ export const ContactForm = {
   props: {
     minWidth: 'H+B',
     maxWidth: 'H+B',
-    padding: 'B A'
+    gap: 'B2',
+    padding: 'A2 A2'
   },
 
   Header: {
     props: {
-      gap: 'Y2',
-      padding: '- - B1 W'
+      gap: 'Y2'
     },
     Title: {
       h5: {
@@ -36,6 +36,7 @@ export const ContactForm = {
 
   Content: {
     props: { flow: 'column' },
+
     Form: {
       extend: CommonForm,
       props: { columns: 'repeat(2, 1fr)' },
@@ -67,11 +68,11 @@ export const ContactForm = {
     },
 
     ParagraphButtonWithCheckbox: {
-      padding: 'A1 Z A1 Y',
+      padding: 'A1 Z - W',
       Checkbox: {},
       ParagraphButton: {
         P: { text: 'You agree to' },
-        Button: { text: 'privacy policy' }
+        Button: { text: 'Privacy Policy' }
       }
     }
   },

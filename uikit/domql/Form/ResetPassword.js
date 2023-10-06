@@ -8,18 +8,20 @@ export const ResetPassword = {
   extend: Modal,
   props: {
     minWidth: 'H+B',
-    gap: 'B'
+    gap: 'B1',
+    Content: {}
   },
 
   Header: {
-    props: { gap: 'A' },
+    props: { gap: 'Z2' },
     Title: { h5: { text: 'Choose new password' } },
-    Paragraph: { p: { text: 'Almost done. Enter your new password and you’re all set' } }
+    Paragraph: { p: { text: 'Almost done. Enter your new password and you\'re all set' } }
   },
 
   Content: {
     extend: CommonForm,
-    props: { gap: 'B1' },
+    props: { flow: 'column' },
+
     ...[{
       Title: { text: 'Old password' },
       Field: {},

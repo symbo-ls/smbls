@@ -26,7 +26,7 @@ export const AvatarChooser = {
   Select: {
     props: {
       outline: 'none',
-      pointerEvents: 'all',
+      pointerEvents: 'All',
       appearance: 'none',
       border: 'none',
       width: '100%',

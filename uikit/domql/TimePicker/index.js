@@ -16,7 +16,7 @@ export const TimePicker = {
   props: {
     flow: 'column',
     width: 'fit-content',
-    padding: 'Z A'
+    padding: 'Z2 A'
   },
 
   Title: {

@@ -8,8 +8,8 @@ export const CurrencyConvert = {
   props: {
     boxSize: 'fit-content',
     minWidth: 'fit-content',
-    gap: 'Z2',
-    padding: 'A1'
+    gap: 'A',
+    padding: 'A'
   },
 
   Header: {
@@ -27,6 +27,7 @@ export const CurrencyConvert = {
 
   Content: {
     props: {
+      margin: '- -X2',
       flow: 'column',
       gap: 'Z'
     },
@@ -40,6 +41,9 @@ export const CurrencyConvert = {
   },
 
   Footer: {
+    props: {
+      margin: '- -X2 -X2'
+    },
     CommonButton: {
       flex: '1',
       padding: 'Z1 -',

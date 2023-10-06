@@ -16,7 +16,6 @@ export const Field = {
     padding: '- Z+W',
     round: 'Y+W',
     border: '1px solid #3F3F43',
-    overflow: 'hidden',
     position: 'relative',
     ':focus-within': { outline: '1px solid #0474F2' },
     Button: {
@@ -28,16 +27,18 @@ export const Field = {
   },
 
   Input: {
-    padding: '0',
-    background: 'rgba(0, 0, 0, 0)',
-    round: '0',
-    color: 'white',
-    fontFamily: 'avenir',
-    placeholder: 'Placeholder',
-    flex: '1',
-    minHeight: '100%',
-    outline: 'none !important',
-    fontWeight: '400'
+    props: {
+      padding: '0',
+      background: 'rgba(0, 0, 0, 0)',
+      round: '0',
+      color: 'white',
+      fontFamily: 'avenir',
+      placeholder: 'Placeholder',
+      flex: '1',
+      minHeight: '100%',
+      outline: 'none !important',
+      fontWeight: '400'
+    }
   }
 }
 

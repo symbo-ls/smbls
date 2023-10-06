@@ -8,7 +8,7 @@ export const ConvertCard = {
     boxSize: 'fit-content',
     gap: 'A',
     background: 'gray',
-    padding: 'Z A',
+    padding: 'Z2 A',
     round: 'Z'
   },
   Title: {

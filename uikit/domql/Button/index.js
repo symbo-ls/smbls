@@ -133,7 +133,7 @@ export const DropDownButton = {
       name: 'chevronDown',
       fontSize: 'D'
     },
-    Caption: { text: 'all' }
+    Caption: { text: 'All' }
   }
 }
 

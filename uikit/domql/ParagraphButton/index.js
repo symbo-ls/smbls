@@ -10,7 +10,7 @@ export const ParagraphButton = {
   },
   P: {
     props: {
-      text: 'Didn’t get the code?',
+      text: 'Didn\'t get the code?',
       color: 'gray2',
       margin: '0'
     }
@@ -28,7 +28,7 @@ export const ParagraphButtonWithCheckbox = {
   extend: Flex,
   tag: 'label',
   props: {
-    gap: 'Z',
+    gap: '1ch',
     alignItems: 'center'
   },
   Checkbox: {

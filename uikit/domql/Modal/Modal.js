@@ -6,10 +6,12 @@ import { Dialog } from '../Dialog'
 
 export const Modal = {
   extend: Dialog,
+
   props: {
     flow: 'column',
     boxSize: 'fit-content fit-content',
     padding: 'A',
+    gap: 'B1',
     minWidth: 'G3+Z1'
   },
 
@@ -30,6 +32,6 @@ export const Modal = {
     }
   },
 
-  Content: { extend: [Flex] },
+  Content: { extend: Flex },
   Footer: { extend: Flex }
 }

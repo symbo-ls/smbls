@@ -7,17 +7,17 @@ export const Pricing = {
   extend: Modal,
   props: {
     background: 'gray3',
-    gap: 'A',
+    gap: 'B',
     minWidth: 'G+B',
     maxWidth: 'G+B',
-    padding: 'A'
+    padding: 'A1'
   },
 
   Header: null,
   Content: {
     props: {
       flow: 'column',
-      gap: 'A'
+      gap: 'A1'
     },
     childExtend: {
       extend: UnitValue,
@@ -26,7 +26,6 @@ export const Pricing = {
         textTransform: 'capitalize',
         color: 'white'
       }
-
     },
     ...[
       {
@@ -45,11 +44,15 @@ export const Pricing = {
   },
 
   Footer: {
+    props: {
+      margin: '- -X -X'
+    },
     CommonButton: {
       flex: '1',
       padding: 'Z2 -',
       round: 'Y2',
-      background: 'gray',
+      theme: 'secondary',
+      margin: '- -X -X',
       Caption: {
         text: 'Add promo code',
         fontSize: 'Z',

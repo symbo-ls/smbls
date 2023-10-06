@@ -6,7 +6,7 @@ export const BalanceCard = {
   extend: TitleParagraphWithButton,
   props: {
     boxSize: 'fit-content',
-    padding: 'A',
+    padding: 'Z2 A',
     round: 'Z',
     gap: 'Z1',
     background: 'linear-gradient(to right, #0474F2, #003067)'

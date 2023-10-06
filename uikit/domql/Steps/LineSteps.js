@@ -31,7 +31,7 @@ export const LineStepsWithTitleParagraph = {
   extend: Flex,
   props: {
     flow: 'column',
-    padding: 'B',
+    padding: 'A1 B B',
     background: 'gray',
     round: 'A',
     boxSize: 'fit-content',

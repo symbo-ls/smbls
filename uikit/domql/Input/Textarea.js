@@ -40,7 +40,6 @@ export const Textarea = {
       height: 'D2+W',
       lineHeight: 1.4,
       placeholder: 'Leave us a message...',
-      fontSize: 'Y2',
       outline: 'none !important',
       color: 'white',
       resize: 'none'

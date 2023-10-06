@@ -8,7 +8,7 @@ export const SignUp = {
   props: {
     minWidth: 'H+B',
     maxWidth: 'H+B',
-    padding: 'B A'
+    padding: 'A2 A2'
   },
 
   Header: {
@@ -73,11 +73,11 @@ export const SignUp = {
       ]
     },
     ParagraphButtonWithCheckbox: {
-      padding: 'A1 Z A1 Y',
+      padding: 'A1 Z - W',
       Checkbox: {},
       ParagraphButton: {
         P: { text: 'You agree to' },
-        Button: { text: 'privacy policy' }
+        Button: { text: 'Privacy Policy' }
       }
     }
   },

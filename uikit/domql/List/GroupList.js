@@ -2,14 +2,15 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { ListWithTitle } from './ListWithTitle'
+import { List } from './List'
 
 export const GroupList = {
   extend: Flex,
   props: {
     flow: 'column',
     overflow: 'hidden',
+    theme: 'dialog',
     maxHeight: 'H',
-    background: 'gray3',
     round: 'Z1',
     maxWidth: 'G'
   },
@@ -17,7 +18,6 @@ export const GroupList = {
   Header: {
     extend: Flex,
     props: {
-      background: 'gray',
       padding: 'Z - Z A'
     },
     h4: {
@@ -32,37 +32,18 @@ export const GroupList = {
 
   Groups: {
     props: {
-      overflow: 'hidden',
-      maxHeight: '100%',
-      position: 'relative',
-      ':before': {
-        content: '""',
-        position: 'absolute',
-        boxSize: 'A1 100%',
-        top: '0',
-        left: '0',
-        zIndex: '2',
-        background: 'linear-gradient(to bottom, rgba(28, 28, 31, 1) 0%, rgba(28, 28, 31, 0) 100%)'
-      },
-      ':after': {
-        content: '""',
-        position: 'absolute',
-        boxSize: 'A1 100%',
-        bottom: '0',
-        left: '0',
-        zIndex: '2',
-        background: 'linear-gradient(to top, rgba(28, 28, 31, 1) 0%, rgba(28, 28, 31, 0) 100%)'
-      }
+      ...List.props,
+      theme: null,
+      round: '0'
     },
+
     Flex: {
       extend: Flex,
       props: {
         flow: 'column',
         maxHeight: 'G2',
-        style: {
-          overflowY: 'auto !important',
-          '::-webkit-scrollbar': { display: 'none' }
-        }
+        overflow: 'auto',
+        '::-webkit-scrollbar': { display: 'none' }
       },
       childExtend: {
         extend: ListWithTitle,
@@ -129,6 +110,14 @@ export const GroupListTemplate = {
           List: {
             Flex: {
               ...[
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
+                { span: { text: 'Item' } },
                 { span: { text: 'Item' } },
                 { span: { text: 'Item' } },
                 { span: { text: 'Item' } },

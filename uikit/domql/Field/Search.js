@@ -19,13 +19,14 @@ export const Search = {
       margin: '0 - - -'
     }
   },
-  Input: { placeholder: 'Type a command or search' }
+
+  Input: { props: { placeholder: 'Type a command or search' } }
 }
 
 export const SearchWithButton = {
   extend: Search,
   Icon: {},
-  Input: { ':focus ~ button': { opacity: '1' } },
+  Input: { props: { ':focus ~ button': { opacity: '1' } } },
   Button: {
     opacity: '0',
     fontSize: 'D',

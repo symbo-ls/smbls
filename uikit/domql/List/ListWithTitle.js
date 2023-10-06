@@ -16,11 +16,14 @@ export const ListWithTitle = {
   Title: {
     tag: 'h5',
     props: {
+      position: 'sticky',
+      top: '0',
+      zIndex: '3',
       text: 'Group name',
       fontSize: 'Z',
       color: 'gray .92 +68',
       fontWeight: '400',
-      background: 'transparent',
+      theme: 'dialog',
       padding: 'A'
     }
   },
@@ -42,8 +45,6 @@ export const ListWithTitleTemplate = {
   List: {
     Flex: {
       ...[
-        { span: { text: 'Item' } },
-        { span: { text: 'Item' } },
         { span: { text: 'Item' } },
         { span: { text: 'Item' } },
         { span: { text: 'Item' } },
