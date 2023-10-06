@@ -145,6 +145,20 @@ export const THEME = {
 
   ...PRIORITIES,
 
+  dialog: {
+    '@dark': {
+      color: 'white',
+      background: 'gray .92',
+      '.helper': {
+        color: 'white',
+        background: 'black'
+      }
+    },
+    '@light': {
+      background: 'gray .1'
+    }
+  },
+
   none: {
     color: 'none',
     background: 'none'

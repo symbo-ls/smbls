@@ -33,7 +33,7 @@ export const CurrencyConvert = {
     childExtend: {
       extend: ConvertCard,
       props: {
-        background: 'black'
+        theme: 'dialog @dark .helper'
       }
     },
     ...[{}, {}]

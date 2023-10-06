@@ -136,7 +136,7 @@ create({
     ConvertCard: {},
     CurrencyConvert: {},
     PlusMinusButtons: {},
-    Pracing: {},
+    Pricing: {},
 
     DatePicker: {},
     TimePicker: {},

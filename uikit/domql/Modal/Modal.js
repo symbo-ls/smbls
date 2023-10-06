@@ -2,14 +2,13 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
+import { Dialog } from '../Dialog'
 
 export const Modal = {
-  extend: Flex,
+  extend: Dialog,
   props: {
     flow: 'column',
-    background: 'gray',
     boxSize: 'fit-content fit-content',
-    round: 'Z+X',
     padding: 'A',
     minWidth: 'G3+Z1'
   },

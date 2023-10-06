@@ -3,7 +3,7 @@
 import { Modal } from './Modal'
 import { UnitValue } from '@symbo.ls/unitvalue'
 
-export const Pracing = {
+export const Pricing = {
   extend: Modal,
   props: {
     background: 'gray3',

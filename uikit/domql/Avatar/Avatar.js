@@ -10,6 +10,6 @@ export const Avatar = {
     borderRadius: '100%',
     boxSize: 'C+X C+X',
     cursor: 'pointer',
-    src: `https://api.dicebear.com/7.x/${props.avatarType || 'adventurer-neutral'}/svg?seed=${props.key || key}`
+    src: `https://api.dicebear.com/7.x/${props.avatarType || 'initials'}/svg?seed=${props.key || key}`
   })
 }

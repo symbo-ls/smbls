@@ -4,11 +4,10 @@ import { Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
 
 export const Dialog = {
+  extend: Flex,
   props: {
-    theme: 'tertiary',
+    theme: 'dialog',
     round: 'Z2',
-    margin: 'E',
-    overflow: 'hidden',
     padding: '- Z - -'
   }
 }
