@@ -1056,9 +1056,9 @@
     "@domql/report" latest
 
 "@domql/element@latest":
-  version "2.5.13"
-  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.5.13.tgz#6562150ce6fb1e1a3cca7eae5240ee19d17bf0c1"
-  integrity sha512-VskzQvuTkGyQGRMsdqMbGoq9y9si12rpO8MMxo86LoH06tH0nTDA1lKARN4haKpM45yJvA6IRs5WiiZJ5AkaDA==
+  version "2.5.14"
+  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.5.14.tgz#a3367805ad111a4df3ce7a2068b4b9bcb8ae8680"
+  integrity sha512-Qn2NS8y6AE+XUEGN/V80Q79U9EvuExbTn9CYZA36jFnOO61KhnAisJ8RZgyVPcgi0KwvyXyuVcdU1aXwAuzDKg==
   dependencies:
     "@domql/event" latest
     "@domql/node" latest
@@ -1214,9 +1214,9 @@
     "@domql/report" latest
 
 "@domql/utils@^2.4.12", "@domql/utils@latest":
-  version "2.5.13"
-  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.5.13.tgz#51b39d60745afe2be7a3c667e1065c89c1a7d8f5"
-  integrity sha512-Pfi01UKd25P+n/jR63MbtbrHd81ioG55H2iDSMWuJMHLX2ESgVVfDNjos47mJJnJWKjApRF4lLEKtZWXOYHYFA==
+  version "2.5.14"
+  resolved "https://registry.yarnpkg.com/@domql/utils/-/utils-2.5.14.tgz#94f016bff8348c3813b692d002d508cc0bafb56f"
+  integrity sha512-acOWQXI2wNe7kwLjJZO6K98wlyoguOxZT+CEpiHC18no5opbVt4aET8Fwh0KIQTqpWvuII3UAbLmqKxjitsn7g==
 
 "@emotion/babel-plugin@^11.11.0":
   version "11.11.0"
