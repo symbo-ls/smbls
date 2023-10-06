@@ -7,7 +7,7 @@ export const Radio = {
 
   Input: {
     type: 'radio',
-    ':checked ~ div:after': { opacity: '1' }
+    ':checked + div:after': { opacity: '1' }
   },
 
   Flex: {

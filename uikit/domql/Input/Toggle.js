@@ -6,7 +6,7 @@ export const Toggle = {
   extend: Checkbox,
 
   Input: {
-    ':checked ~ div': {
+    ':checked + div': {
       background: 'green2 +8',
       justifyContent: 'flex-end'
     }

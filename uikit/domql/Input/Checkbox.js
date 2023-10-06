@@ -14,11 +14,11 @@ export const Checkbox = {
   Input: {
     type: 'checkbox',
     display: 'none',
-    ':checked ~ div': {
+    ':checked + div': {
       background: '#0474F2',
       border: '1px solid transparent'
     },
-    ':checked ~ div > svg': { opacity: '1' }
+    ':checked + div > svg': { opacity: '1' }
   },
 
   Flex: {
@@ -42,13 +42,15 @@ export const Checkbox = {
 
 export const CheckboxTitleParagraph = {
   extend: Flex,
+  tag: 'label',
+
   props: {
     boxSize: 'fit-content',
     align: 'flex-start flex-start',
     gap: 'A'
   },
 
-  Checkbox: {},
+  Checkbox: { tag: 'div' },
   TitleParagraph: {
     gap: 'Z1',
     margin: 'Y - - -'
