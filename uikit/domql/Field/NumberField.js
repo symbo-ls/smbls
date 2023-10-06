@@ -13,17 +13,19 @@ export const NumberField = {
 
   Input: null,
   NumberInput: {
-    fontSize: 'E',
-    placeholder: '0',
-    boxSize: '100% 100%',
-    textAlign: 'center',
-    round: 'Y',
-    color: 'white',
-    background: 'rgba(0, 0, 0, 0)',
-    outline: 'none !important',
-    style: {
-      '&::-webkit-inner-spin-button': {
-        '-webkit-appearance': 'none'
+    props: {
+      fontSize: 'E',
+      placeholder: '0',
+      boxSize: '100% 100%',
+      textAlign: 'center',
+      round: 'Y',
+      color: 'white',
+      background: 'rgba(0, 0, 0, 0)',
+      outline: 'none !important',
+      style: {
+        '&::-webkit-inner-spin-button': {
+          '-webkit-appearance': 'none'
+        }
       }
     }
   }

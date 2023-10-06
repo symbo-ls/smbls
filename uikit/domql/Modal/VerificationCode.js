@@ -6,12 +6,16 @@ import { NumberField } from '@symbo.ls/field'
 import { ParagraphButton } from '@symbo.ls/paragraphbutton'
 import { CancelConfirmButtons } from '@symbo.ls/button'
 
+const NUMBERS = [null, null, null, null]
+
 export const VerificationCode = {
   extend: Modal,
   props: {
     maxWidth: 'G3',
     gap: 'A2'
   },
+
+  state: { value: NUMBERS },
 
   Header: {
     props: { gap: 'A' },
@@ -37,9 +41,48 @@ export const VerificationCode = {
         justifyContent: 'space-between',
         flex: '1'
       },
-      childExtend: NumberField,
+      childExtend: {
+        extend: NumberField,
+        NumberInput: {
+          props: ({ parent, state }) => ({
+            ...NumberField.NumberInput.props,
+            value: state.value[parent.key] || ''
+          }),
+          on: {
+            keydown: (event, element, state) => {
+              const { value } = element.node
+              if (value.length > 1) return false
+            },
+            keyup: (event, element, state) => {
+              const { target, keyCode } = event
+              const { value } = target
+              const next = element.parent.nextElement()
+              const previous = element.parent.previousElement()
+
+              const isNumber = (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105)
+              const isBackspace = event.keyCode === 8 || event.keyCode === 46
+
+              target.select()
+
+              if (isNumber && value.length && next) next.NumberInput.node.focus()
+              if ((!value.length || isBackspace) && previous) previous.NumberInput.node.focus()
+
+              state.value[element.parent.key] = value
+            },
+            paste: (event, element, state) => {
+              event.preventDefault()
+              const paste = (event.clipboardData || window.clipboardData).getData('text')
+              if (!paste) return
+              const value = paste.split('')
+              state.update({ value }, { overwrite: 'shallow' })
+            }
+          }
+        }
+      },
+
       ...[{}, {}, {}, {}]
     },
+
     ParagraphButton: {
       extend: ParagraphButton,
       props: { padding: '- - - Y' }
