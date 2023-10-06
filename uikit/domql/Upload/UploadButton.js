@@ -6,12 +6,12 @@ export const UploadButton = {
   extend: CommonButton,
   props: {
     position: 'relative',
+    theme: 'transparent',
     padding: '0',
     color: '#0474F2',
     boxSize: 'fit-content fit-content',
     overflow: 'hidden',
     fontWeight: '500',
-    background: 'transparent',
     cursor: 'pointer',
     Caption: { text: 'Choose file' }
   },
@@ -33,10 +33,10 @@ export const UploadButtonWithIcon = {
   extend: UploadButton,
   props: {
     gap: 'Z',
-    color: 'white',
-    background: '#0474F2',
+    theme: 'primary',
     padding: 'A B',
-    round: 'A'
+    round: 'A',
+    color: 'white'
   },
 
   Icon: {
