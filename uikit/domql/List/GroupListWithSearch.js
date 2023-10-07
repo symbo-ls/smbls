@@ -12,7 +12,7 @@ export const GroupListWithSearch = {
   SearchContainer: {
     extend: Flex,
     props: {
-      padding: 'Z'
+      padding: 'X Y'
     },
     Search: {
       extend: Search,
@@ -20,8 +20,10 @@ export const GroupListWithSearch = {
         maxWidth: '100%',
         minWidth: '100%',
         minHeight: 'C+Y',
-        round: 'Z2',
-        background: 'transparent'
+        round: 'C',
+        fontSize: 'Z2',
+        border: 'none',
+        background: 'black .25'
       },
       Icon: {
         props: {

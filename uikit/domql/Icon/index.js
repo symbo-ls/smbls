@@ -1,14 +1,16 @@
 'use strict'
 
 import { Flex, Svg } from '@symbo.ls/atoms'
+import { isString } from '@domql/utils'
 
 export const Icon = {
   extend: Svg,
-  props: ({ key, props, parent, context }) => {
+  deps: { isString },
+  props: ({ key, props, parent, context, deps }) => {
     const { ICONS, useIconSprite, verbose } = context && context.designSystem
     const { toCamelCase } = context && context.utils
     const iconName = props.inheritedString || props.name || props.icon || key
-    const camelCase = toCamelCase(iconName)
+    const camelCase = toCamelCase(deps.isString(iconName) ? iconName : key)
 
     const isArray = camelCase.split(/([a-z])([A-Z])/g)
 
@@ -58,15 +60,9 @@ export const IconText = {
     lineHeight: 1
   },
 
-  // TODO: remove this variant
-  icon: {
-    extend: Icon,
-    if: ({ parent }) => parent.props.icon
-  },
-
   Icon: {
-    props: {},
-    if: ({ props }) => props.name || props.icon
+    props: ({ parent, props }) => ({ icon: parent.props.icon || props.name || props.icon }),
+    if: ({ parent, props }) => parent.props.icon || parent.props.Icon || props.name || props.icon
   },
 
   text: ({ props }) => props.text,

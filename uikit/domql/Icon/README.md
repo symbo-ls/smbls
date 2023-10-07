@@ -31,7 +31,7 @@ For example, you can change the color and size of the icon:
 ```javascript
 const MyComponent = {
   IconText: {
-    icon: {
+    Icon: {
       name: 'star',
       color: 'blue'
     },

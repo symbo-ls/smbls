@@ -189,7 +189,7 @@ create({
         },
         on: {
           keyup: (event, el, s) => {
-            const value = el.node.value
+            const value = el.node.value.toLowerCase()
             s.update({ value })
           }
         }
@@ -201,10 +201,12 @@ create({
         }
       },
       Button: {
-        position: 'absolute',
-        margin: 'auto',
-        right: 'Z',
-        color: '#3F3F43'
+        props: {
+          position: 'absolute',
+          margin: 'auto',
+          right: 'Z',
+          color: '#3F3F43'
+        }
       }
     }
   },

@@ -82,7 +82,7 @@ export const TextareaWithButton = {
   IconCommonButton: {
     props: {
       background: 'blue',
-      icon: { name: 'send' }
+      Icon: { name: 'send' }
     }
   }
 }

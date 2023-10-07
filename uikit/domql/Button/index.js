@@ -1,7 +1,7 @@
 'use strict'
 
 import { Flex, FocusableComponent } from '@symbo.ls/atoms'
-import { IconText } from '@symbo.ls/icon'
+import { IconText } from '@symbo.ls/Icon'
 
 export const Button = {
   extend: [FocusableComponent, IconText],
@@ -58,7 +58,7 @@ export const CommonButton = {
     gap: 'Y2',
     position: 'relative'
   },
-  icon: {
+  Icon: {
     props: { fontSize: 'C' }
   },
   Caption: {
@@ -72,7 +72,7 @@ export const CommonButton = {
 export const IconCommonButton = {
   extend: CommonButton,
   props: {
-    icon: { name: 'smile' },
+    Icon: { name: 'smile' },
     boxSize: 'fit-content fit-content',
     padding: 'A',
     background: 'gray3'
@@ -117,20 +117,20 @@ export const IcontextButton = {
     padding: 'A A1',
     position: 'relative',
     background: 'gray3',
-    icon: { name: 'smile' }
+    Icon: { name: 'smile' }
   }
 }
 
 export const DropDownButton = {
   extend: CommonButton,
   props: {
-    gap: 'Y',
+    gap: 'X2',
     boxSize: 'fit-content fit-content',
-    padding: 'A B A A+X',
+    padding: 'Z2 B Z2 A',
     round: 'Z',
     background: '#141416',
     color: 'white',
-    icon: {
+    Icon: {
       name: 'chevronDown',
       fontSize: 'D'
     },
@@ -166,11 +166,11 @@ export const PlusMinusButtons = {
   },
   Minus: {
     extend: IconCommonButton,
-    props: { icon: { name: 'minus' } }
+    props: { Icon: { name: 'minus' } }
   },
   Value: { props: { text: '1' } },
   Plus: {
     extend: IconCommonButton,
-    props: { icon: { name: 'plus' } }
+    props: { Icon: { name: 'plus' } }
   }
 }

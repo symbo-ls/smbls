@@ -18,6 +18,7 @@ export const Field = {
     border: '1px solid #3F3F43',
     position: 'relative',
     ':focus-within': { outline: '1px solid #0474F2' },
+
     Button: {
       padding: '0',
       background: 'transparent',
@@ -46,5 +47,5 @@ export const FieldTemplate = {
   extend: Field,
   Icon: { props: { name: 'info' } },
   Input: {},
-  Button: { icon: { name: 'eye' } }
+  Button: { Icon: { name: 'eye' } }
 }

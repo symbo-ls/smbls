@@ -131,6 +131,23 @@ const PRIORITIES = {
   }
 }
 
+const UI = {
+  field: '--tertiary',
+
+  dialog: {
+    '@dark': {
+      background: 'gray .92',
+      '.helper': {
+        color: 'white',
+        background: 'black'
+      }
+    },
+    '@light': {
+      background: 'gray .1'
+    }
+  }
+}
+
 export const THEME = {
   document: {
     '@light': {
@@ -145,19 +162,7 @@ export const THEME = {
 
   ...PRIORITIES,
 
-  dialog: {
-    '@dark': {
-      color: 'white',
-      background: 'gray .92',
-      '.helper': {
-        color: 'white',
-        background: 'black'
-      }
-    },
-    '@light': {
-      background: 'gray .1'
-    }
-  },
+  ...UI,
 
   none: {
     color: 'none',

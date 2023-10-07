@@ -46,7 +46,7 @@ export const TitleParagraphWithButton = {
         background: 'transparent',
         color: 'white',
         padding: '0',
-        icon: {
+        Icon: {
           name: 'x',
           fontSize: 'C'
         }

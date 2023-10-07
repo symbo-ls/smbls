@@ -15,7 +15,7 @@ export const BalanceCard = {
   Title: {
     props: { gap: 'E1' },
     h5: { props: { text: 'Total crypto assets' } },
-    Button: { props: { icon: { name: 'arrowUpRight' } } }
+    Button: { props: { Icon: { name: 'arrowUpRight' } } }
   },
 
   Paragraph: {

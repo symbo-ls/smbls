@@ -9,8 +9,7 @@ export const UserWithButton = {
     boxSize: 'fit-content',
     padding: 'X X2',
     round: 'Z',
-    border: 'solid, gray3',
-    borderWidth: '1px',
+    border: '1px, solid, gray3',
     gap: 'Y2'
   },
 
@@ -51,7 +50,7 @@ export const UserWithButton = {
       theme: 'secondary'
     },
     margin: '- - - Z2',
-    icon: {
+    Icon: {
       name: 'copy',
       fontSize: 'C'
     }

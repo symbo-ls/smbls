@@ -57,7 +57,7 @@ export const LogIn = {
           Title: { text: 'Password' },
           Field: {
             Input: { placeholder: 'Enter your password' },
-            Button: { icon: { name: 'eye' } }
+            Button: { Icon: { name: 'eye' } }
           }
         }
       ]
@@ -102,7 +102,7 @@ export const LogIn = {
       {},
       {
         props: {
-          icon: { name: 'facebook' },
+          Icon: { name: 'facebook' },
           text: 'Continue with Facebook'
         }
       }

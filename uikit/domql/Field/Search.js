@@ -5,32 +5,42 @@ import { Field } from './Field'
 export const Search = {
   extend: Field,
   props: {
-    minHeight: 'C+A',
     maxWidth: 'H',
-    gap: 'Z+W',
-    padding: '- A',
+    gap: 'Y2',
+    padding: 'Z2 A1',
     background: 'gray .92 +8'
   },
 
   Icon: {
     props: {
+      opacity: '.65',
       name: 'search',
-      fontSize: 'D',
+      fontSize: 'B',
       margin: '0 - - -'
     }
   },
 
-  Input: { props: { placeholder: 'Type a command or search' } }
+  Input: {
+    props: { placeholder: 'Type a command or search' }
+  }
 }
 
 export const SearchWithButton = {
   extend: Search,
   Icon: {},
   Input: { props: { ':focus ~ button': { opacity: '1' } } },
+
   Button: {
-    opacity: '0',
-    fontSize: 'D',
-    icon: { name: 'x' }
+    props: {
+      opacity: '0',
+      fontSize: 'D',
+      icon: 'x'
+    },
+    Icon: {
+      on: {
+        click: (e, el) => { el.parent.parent.Input.node.value = '' }
+      }
+    }
   }
 }
 
@@ -38,12 +48,12 @@ export const SearchWithDropDownButton = {
   extend: SearchWithButton,
   props: {
     padding: '- A - 0',
-    background: '#1C1C1F',
+    theme: 'tertiary',
     maxWidth: 'H+C'
   },
   DropDownButton: {
     background: 'gray',
-    margin: '- Y - -'
+    margin: '- Z - -'
   },
   Icon: {},
   Input: {},

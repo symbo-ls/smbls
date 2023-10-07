@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
-import { Dialog } from '../Dialog'
+import { Dialog } from '@symbo.ls/dialog'
 
 export const Modal = {
   extend: Dialog,

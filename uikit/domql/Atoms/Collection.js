@@ -46,7 +46,12 @@ export const Collection = {
         }
       }
 
-      const obj = { tag: 'fragment' }
+      const obj = {
+        tag: 'fragment',
+        props: {
+          childProps: el.props.childProps
+        }
+      }
 
       for (const key in param) {
         const value = param[key]
@@ -71,7 +76,13 @@ export const Collection = {
       if (isState(param)) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
-      const obj = { tag: 'fragment' }
+      const obj = {
+        tag: 'fragment',
+        props: {
+          childProps: el.props.childProps
+        }
+      }
+
       for (const key in param) {
         const value = param[key]
         obj[key] = { props: isObjectLike(value) ? value : { value } }

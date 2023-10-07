@@ -5,14 +5,18 @@ import { Avatar } from './Avatar'
 
 export const AvatarBundle = {
   extend: Flex,
-  childExtend: {
-    extend: Avatar,
-    props: {
-      border: '0.1312em, black .85, solid',
+  props: {
+    childProps: {
+      '@light': {
+        border: 'X, var(--theme-document-light-background), solid'
+      },
+      '@dark': {
+        border: 'X, var(--theme-document-dark-background), solid'
+      },
       ':not(:last-child)': {
         margin: '0 -Y2 0 0'
       }
     }
   },
-  ...[{}, {}, {}, {}]
+  childExtend: Avatar
 }

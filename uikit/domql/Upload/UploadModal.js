@@ -28,7 +28,7 @@ export const UploadModal = {
   Footer: {
     UploadButtonWithIcon: {
       flex: 1,
-      icon: { display: 'none' },
+      Icon: { display: 'none' },
       Caption: { text: 'Choose file' }
     }
   }
@@ -54,7 +54,7 @@ export const UploadModal2 = {
     },
 
     IconText: {
-      icon: { name: 'info' },
+      Icon: { name: 'info' },
       text: 'Support',
       gap: 'Z'
     },

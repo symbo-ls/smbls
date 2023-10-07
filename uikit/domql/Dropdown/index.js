@@ -35,7 +35,7 @@ export const DropdownList = {
         }
       },
 
-      icon: {
+      Icon: {
         active: state.active === key,
         name: 'checkmark',
         opacity: '0.1',

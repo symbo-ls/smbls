@@ -14,7 +14,7 @@ export const SocialLink = {
     round: 'Y+W',
     maxHeight: `${48 / 16}em`,
     cursor: 'pointer',
-    icon: {
+    Icon: {
       name: 'twitch',
       boxSize: 'A2'
     },
