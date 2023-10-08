@@ -22,6 +22,9 @@ export const keySetters = {
   $: (key, props, result, element, isSubtree) => applyCaseProps(
     key, props, isSubtree ? result : (result && result.case), element
   ),
+  '-': (key, props, result, element, isSubtree) => applyVariableProps(
+    key, props, isSubtree ? result : (result && result.variable), element
+  ),
   '.': (key, props, result, element, isSubtree) => applyConditionalCaseProps(
     key, props, isSubtree ? result : (result && result.case), element
   ),
@@ -110,6 +113,11 @@ const applyCaseProps = (key, props, result, element) => {
   return merge(result, convertPropsToClass(props, result, element))
 }
 
+const applyVariableProps = (key, props, result, element) => {
+  result[key] = props
+  return result
+}
+
 const applyConditionalCaseProps = (key, props, result, element) => {
   const caseKey = key.slice(1)
   const isPropTrue = element.props[caseKey] || element.state[caseKey]
@@ -131,7 +139,8 @@ const beforeClassAssign = (element, s) => {
   const CLASS_NAMES = {
     media: {},
     selector: {},
-    case: {}
+    case: {},
+    variable: {}
   }
 
   if (!context) return

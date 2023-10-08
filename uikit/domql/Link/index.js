@@ -31,8 +31,7 @@ export const RouterLink = {
       const { props, context: ctx } = el
       const { href } = props
       if (!href) return
-      const { utils, routerOptions } = ctx
-      const { router } = utils
+      const { utils, snippets, routerOptions } = ctx
       const root = el.__ref.__root
       const linkIsExternal = href.includes('http://') ||
         href.includes('https://') ||
@@ -42,7 +41,7 @@ export const RouterLink = {
         scrollToOptions: { behaviour: 'instant' }
       }
       if (href && !linkIsExternal) {
-        (router || defaultRouter)(href, root, {}, options)
+        (snippets.router || utils.router || defaultRouter)(href, root, {}, options)
         event.preventDefault()
       }
     }

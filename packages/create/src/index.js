@@ -37,16 +37,15 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
     document = window.document // eslint-disable-line
   }
   const doc = options.parent || options.document || document
-  const [scratchSystem, emotion, registry] = initEmotion(key, options)
+  const [scratcDesignhSystem, emotion, registry] = initEmotion(key, options)
 
-  let state
-  if (options.state) state = options.state
-  else if (App && App.state) state = App.state
-  else state = {}
+  const state = {}
+  if (options.state) deepMerge(state, options.state)
+  if (App && App.state) deepMerge(state, App.state)
 
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
-  const designSystem = scratchSystem || {}
+  const designSystem = scratcDesignhSystem || {}
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 
@@ -107,7 +106,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   else if (options.document) parent = options.document
   else parent = document.body
 
-  const [scratchSystem, emotion, registry] = initEmotion(key, options)
+  const [scratcDesignhSystem, emotion, registry] = initEmotion(key, options)
 
   let state
   if (options.state) state = options.state
@@ -116,7 +115,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
-  const designSystem = scratchSystem || {}
+  const designSystem = scratcDesignhSystem || {}
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 

@@ -3,6 +3,23 @@
 import { Flex, FocusableComponent } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/Icon'
 
+/**
+ * A Button component
+ * The `Button` component represents a clickable button element with customizable styles and properties.
+ *
+ * @description
+ * @extends {FocusableComponent, IconText}
+ * @typedef {Object} Button
+ * @property {string} tag - The HTML tag used to render the button (e.g., 'button').
+ * @property {string} props.type - The type attribute of the button ('button' by default).
+ *
+ * @example
+ * // Example usage of the Button component:
+ * const myButton = {
+ *   extend: Button
+ * }
+ */
+
 export const Button = {
   extend: [FocusableComponent, IconText],
   tag: 'button',

@@ -11,11 +11,11 @@ const DEFAULT_ROUTING_OPTIONS = {
 }
 
 export const initRouter = (element, options) => {
-  let routerOptions = merge(options.router || {}, DEFAULT_ROUTING_OPTIONS)
+  if (options.router === false) return
+  else if (options.router === true) options.router = DEFAULT_ROUTING_OPTIONS
+  else merge(options.router || {}, DEFAULT_ROUTING_OPTIONS)
 
-  if (routerOptions === false) return
-  if (routerOptions === true) routerOptions = DEFAULT_ROUTING_OPTIONS
-
+  const routerOptions = options.router
   const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
 
   const onRouterRenderDefault = (el, s) => {
