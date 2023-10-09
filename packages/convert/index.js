@@ -381,8 +381,7 @@ function mergeDirectories (mrg, dst, desiredFormat, { globusaMerge, exclude }) {
       const ids = [...mg.identifiers, ...dg.identifiers]
       for (const id of ids) {
         for (const imp of uniqueImports) {
-          if (Object.keys(imp.imports).includes(id))
-            delete imp.imports[id]
+          if (Object.keys(imp.imports).includes(id)) { delete imp.imports[id] }
         }
       }
 

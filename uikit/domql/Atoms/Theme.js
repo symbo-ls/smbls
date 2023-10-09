@@ -10,6 +10,7 @@ import {
 } from '@symbo.ls/scratch'
 
 import { depth } from './Shape/style'
+import { isUndefined } from '@domql/utils'
 
 export const getSystemTheme = ({ context, state }) => {
   const rootState = state && state.__root
@@ -29,7 +30,7 @@ export const Theme = {
   },
 
   class: {
-    depth: ({ props, deps }) => props.depth && deps.depth[props.depth],
+    depth: ({ props, deps }) => !isUndefined(props.depth) && deps.depth[props.depth],
 
     theme: (element) => {
       const { props, deps } = element
@@ -74,70 +75,70 @@ export const Theme = {
         backgroundImage: deps.transformBackgroundImage(props.backgroundImage, globalTheme)
       })
     },
-    backgroundSize: ({ props }) => props.backgroundSize
+    backgroundSize: ({ props }) => !isUndefined(props.backgroundSize)
       ? ({
           backgroundSize: props.backgroundSize
         })
       : null,
-    backgroundPosition: ({ props }) => props.backgroundPosition
+    backgroundPosition: ({ props }) => !isUndefined(props.backgroundPosition)
       ? ({
           backgroundPosition: props.backgroundPosition
         })
       : null,
 
-    textStroke: ({ props, deps }) => props.textStroke
+    textStroke: ({ props, deps }) => !isUndefined(props.textStroke)
       ? ({
           WebkitTextStroke: deps.transformTextStroke(props.textStroke)
         })
       : null,
 
-    outline: ({ props, deps }) => props.outline && ({
+    outline: ({ props, deps }) => !isUndefined(props.outline) && ({
       outline: deps.transformBorder(props.outline)
     }),
 
-    border: ({ props, deps }) => props.border && ({
+    border: ({ props, deps }) => !isUndefined(props.border) && ({
       border: deps.transformBorder(props.border)
     }),
-    borderColor: ({ props, deps }) => props.borderColor && ({
+    borderColor: ({ props, deps }) => !isUndefined(props.borderColor) && ({
       borderColor: deps.getMediaColor(props.borderColor)
     }),
-    borderStyle: ({ props }) => props.borderStyle && ({
+    borderStyle: ({ props }) => !isUndefined(props.borderStyle) && ({
       borderStyle: props.borderStyle
     }),
 
-    borderLeft: ({ props, deps }) => props.borderLeft && ({
+    borderLeft: ({ props, deps }) => !isUndefined(props.borderLeft) && ({
       borderLeft: deps.transformBorder(props.borderLeft)
     }),
-    borderTop: ({ props, deps }) => props.borderTop && ({
+    borderTop: ({ props, deps }) => !isUndefined(props.borderTop) && ({
       borderTop: deps.transformBorder(props.borderTop)
     }),
-    borderRight: ({ props, deps }) => props.borderRight && ({
+    borderRight: ({ props, deps }) => !isUndefined(props.borderRight) && ({
       borderRight: deps.transformBorder(props.borderRight)
     }),
-    borderBottom: ({ props, deps }) => props.borderBottom && ({
+    borderBottom: ({ props, deps }) => !isUndefined(props.borderBottom) && ({
       borderBottom: deps.transformBorder(props.borderBottom)
     }),
 
-    boxShadow: ({ props, deps }) => props.boxShadow && ({
+    boxShadow: ({ props, deps }) => !isUndefined(props.boxShadow) && ({
       boxShadow: deps.transformShadow(props.boxShadow)
     }),
 
-    textShadow: ({ props, deps }) => props.textShadow && ({
+    textShadow: ({ props, deps }) => !isUndefined(props.textShadow) && ({
       textShadow: deps.transformShadow(props.textShadow)
     }),
 
-    opacity: ({ props }) => props.opacity && ({
+    opacity: ({ props }) => !isUndefined(props.opacity) && ({
       opacity: props.opacity
     }),
-    visibility: ({ props }) => props.visibility && ({
+    visibility: ({ props }) => !isUndefined(props.visibility) && ({
       visibility: props.visibility
     }),
 
-    columnRule: ({ props, deps }) => props.columnRule && ({
+    columnRule: ({ props, deps }) => !isUndefined(props.columnRule) && ({
       columnRule: deps.transformBorder(props.columnRule)
     }),
 
-    appearance: ({ props }) => props.appearance && ({
+    appearance: ({ props }) => !isUndefined(props.appearance) && ({
       appearance: props.appearance
     })
   }
