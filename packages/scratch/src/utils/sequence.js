@@ -158,20 +158,24 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   let absValue = isNegative ? letterVal.slice(1) : letterVal
 
   let mediaName = ''
-  if (absValue.includes('-')) {
-    mediaName = '-' + absValue.split('-')[1].toLowerCase()
-    absValue = absValue.split('-')[0]
+  if (absValue.includes('_')) {
+    mediaName = '_' + absValue.split('_')[1].toLowerCase()
+    absValue = absValue.split('_')[0]
   }
 
-  const varValue = v => `var(${prefix}${v}${mediaName})`
+  const varValue = v => startsWithDashOrLetterRegex.test(v) ? `var(${prefix}${v}${mediaName})` : v
   if (absValue.includes('+')) {
-    const args = absValue.split('+')
-    const [first, second] = args
+    const [first, second] = absValue.split('+')
     const joint = `${varValue(first)} + ${varValue(second)}`
     return isNegative ? `calc((${joint}) * -1)` : `calc(${joint})`
+  } else if (absValue.includes('*')) {
+    const [first, second] = absValue.split('*')
+    const joint = `${varValue(first)} * ${varValue(second)}`
+    return isNegative ? `calc((${joint}) * -1)` : `calc(${joint})`
   } else if (absValue.includes('-')) {
-    const args = absValue.split('-')
-    const [first, second] = args
+    // TODO: check this
+    // check for the first char
+    const [first, second] = absValue.split('-')
     const joint = `${varValue(first)} - ${varValue(second)}`
     return isNegative ? `calc((${joint}) * -1)` : `calc(${joint})`
   }

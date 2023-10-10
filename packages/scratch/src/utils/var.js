@@ -32,14 +32,14 @@ export const applySequenceVars = (props, mediaName, options = {}) => {
       }
       let underMediaQuery = CSS_VARS[`@media ${query}`]
       if (!underMediaQuery) underMediaQuery = CSS_VARS[`@media ${query}`] = {}
-      underMediaQuery[item.variable] = `var(${item.variable + '-' + mediaName})`
-      CSS_VARS[item.variable + '-' + mediaName] = value
+      underMediaQuery[item.variable] = `var(${item.variable + '_' + mediaName})`
+      CSS_VARS[item.variable + '_' + mediaName] = value
     } else {
       if (options.useDefault === false) {
         CSS_VARS[item.variable] = value
       } else {
-        CSS_VARS[item.variable + '-default'] = value
-        CSS_VARS[item.variable] = `var(${item.variable + '-default'})`
+        CSS_VARS[item.variable + '_default'] = value
+        CSS_VARS[item.variable] = `var(${item.variable + '_default'})`
       }
     }
   }
