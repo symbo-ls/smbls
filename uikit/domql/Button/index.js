@@ -143,7 +143,7 @@ export const DropDownButtonWithAvatar = {
     gap: 'Z',
     padding: 'Y1 Z',
     round: 'Y2',
-    background: 'gray3'
+    theme: 'label'
   },
 
   Avatar: {

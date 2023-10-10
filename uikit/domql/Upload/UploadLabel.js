@@ -21,9 +21,10 @@ export const UploadLabel = {
     color: '#818186'
   },
 
-  TitleParagraph: {
+  TitleParagraphRows: {
     props: {
       align: 'center flex-start',
+      text: 'Drag & drop your files here or',
       gap: 'Y'
     },
 
@@ -31,12 +32,9 @@ export const UploadLabel = {
       props: {
         gap: 'Y',
         h5: {
-          text: 'Drag & drop your files here or',
-          fontSize: 'A',
-          fontWeight: '400'
         }
       },
-      h5: {},
+      Span: {},
       UploadButton: {}
     },
 
@@ -60,7 +58,7 @@ export const UploadLabel2 = {
 
   Icon: { name: 'file' },
 
-  TitleParagraph: {
+  TitleParagraphRows: {
     Title: {
       h5: { text: 'Drag & drop your files here' },
       UploadButton: { display: 'none' }

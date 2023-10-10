@@ -108,8 +108,10 @@ const PRIORITIES = {
         background: 'gradient-dark-active'
       }
     }
-  },
+  }
+}
 
+const STATES = {
   alert: {
     '@dark': {
       color: 'white',
@@ -131,6 +133,73 @@ const PRIORITIES = {
   }
 }
 
+<<<<<<< Updated upstream
+=======
+const UI = {
+  field: '--tertiary',
+
+  label: {
+    '@dark': {
+      color: 'white',
+      background: 'gray .92 +8'
+    },
+
+    '@light': {
+      background: 'gray .1'
+    },
+
+    '.light': {
+      color: 'white',
+      background: 'gray3'
+    },
+
+    '.dark': {
+      color: 'white',
+      background: 'black .35'
+    }
+  },
+
+  card: {
+    '@dark': {
+      color: 'white',
+      background: 'gray .92 +8'
+    },
+
+    '@light': {
+      background: 'gray .1'
+    },
+
+    '.child': {
+      color: 'white',
+      background: 'gray3'
+    },
+
+    '.secondary': {
+      color: 'white',
+      background: 'gradient-blue-dark',
+
+      '.child': {
+        color: 'white',
+        background: 'black .35'
+      }
+    }
+  },
+
+  dialog: {
+    '@dark': {
+      background: 'gray .92',
+      '.helper': {
+        color: 'white',
+        background: 'black'
+      }
+    },
+    '@light': {
+      background: 'gray .1'
+    }
+  }
+}
+
+>>>>>>> Stashed changes
 export const THEME = {
   document: {
     '@light': {
@@ -144,6 +213,7 @@ export const THEME = {
   },
 
   ...PRIORITIES,
+  ...STATES,
 
   dialog: {
     '@dark': {

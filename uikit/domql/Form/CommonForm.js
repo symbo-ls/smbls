@@ -6,8 +6,6 @@ import { CommonField } from '@symbo.ls/field'
 export const CommonForm = {
   extend: [Form, Grid],
 
-  tag: 'form',
-
   props: {
     gap: 'B2',
     height: 'fit-content',

@@ -1,10 +1,15 @@
 'use strict'
 
+<<<<<<< Updated upstream:uikit/domql/Board/CurrencyConvert.js
 import { Modal } from '@symbo.ls/modal'
 import { ConvertCard } from '@symbo.ls/card'
+=======
+import { Card, ConvertCard } from './'
+>>>>>>> Stashed changes:uikit/domql/Card/CurrencyConvertCard.js
 
 export const CurrencyConvert = {
-  extend: Modal,
+  extend: Card,
+
   props: {
     boxSize: 'fit-content',
     minWidth: 'fit-content',
@@ -51,5 +56,4 @@ export const CurrencyConvert = {
       Caption: { text: 'Convert', fontWeight: '500' }
     }
   }
-
 }

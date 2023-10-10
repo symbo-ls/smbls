@@ -10,37 +10,35 @@ export const TitleParagraph = {
   },
 
   Title: {
-    extend: Flex,
-    props: { align: 'center space-between' },
-    h5: {
-      props: {
-        fontSize: 'A',
-        text: 'Title',
-        lineHeight: '1em'
-      }
-    }
+    tag: 'h3',
+    props: ({ scope, parent }) => ({ text: parent.props.title })
   },
 
   Paragraph: {
-    extend: Flex,
-    p: {
-      props: {
-        text: 'Paragraph',
-        fontSize: 'Z',
-        lineHeight: '1em',
-        margin: '0',
-        color: 'gray2'
-      }
-    }
+    props: ({ scope, parent }) => ({ text: parent.props.paragraph })
   }
 }
 
-export const TitleParagraphWithButton = {
+export const TitleParagraphRows = {
   extend: TitleParagraph,
 
   Title: {
+    extend: Flex,
+    props: { align: 'center space-between' }
+  },
+
+  Paragraph: {
+    extend: Flex
+  }
+}
+
+export const TitleParagraphButton = {
+  extend: TitleParagraphRows,
+
+  Title: {
     props: { justifyContent: 'space-between' },
-    h5: {},
+
+    Span: {},
     Button: {
       props: {
         background: 'transparent',
@@ -53,5 +51,6 @@ export const TitleParagraphWithButton = {
       }
     }
   },
+
   Paragraph: {}
 }

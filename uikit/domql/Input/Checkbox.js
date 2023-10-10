@@ -51,7 +51,7 @@ export const CheckboxTitleParagraph = {
   },
 
   Checkbox: { tag: 'div' },
-  TitleParagraph: {
+  TitleParagraphRows: {
     gap: 'Z1',
     margin: 'Y - - -'
   }

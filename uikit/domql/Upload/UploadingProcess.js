@@ -1,12 +1,12 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
+import { TitleParagraphButton } from '@symbo.ls/titleparagraph'
+import { Dialog } from '@symbo.ls/dialog'
 import { UploadImage } from './UploadImage'
+
 export const UploadingProcess = {
-  extend: Flex,
+  extend: Dialog,
   props: {
-    background: '#141416',
     boxSize: 'fit-content fit-content',
     padding: 'Z A Z Z',
     round: 'Z+X',
@@ -24,8 +24,8 @@ export const UploadingProcess = {
       gap: 'Y2'
     },
 
-    TitleParagraph: {
-      extend: TitleParagraphWithButton,
+    TitleParagraphRows: {
+      extend: TitleParagraphButton,
       props: { gap: 'Y2' },
       Title: { h5: { text: 'Image.jpg' } },
       Paragraph: {
@@ -41,10 +41,10 @@ export const UploadedProcess = {
   extend: UploadingProcess,
   Image: {},
   Flex: {
-    TitleParagraph: {
+    TitleParagraphRows: {
       Title: {},
       Paragraph: {
-        p: { props: { text: 'Done' } },
+        Span: { props: { text: 'Done' } },
         DoubleUnitValue: null
       }
     },
@@ -69,7 +69,7 @@ export const UploadingProcess2 = {
       gap: 'Y2',
       position: 'relative'
     },
-    TitleParagraph: {
+    TitleParagraphRows: {
       Title: {},
       Paragraph: null
     },
@@ -81,7 +81,7 @@ export const UploadedProcess2 = {
   extend: UploadingProcess2,
   Image: {},
   Flex: {
-    TitleParagraph: {},
+    TitleParagraphRows: {},
     ProgressLineWithUnitValue: {
       ProgressLine: {
         value: 1,
@@ -99,7 +99,7 @@ export const UploadingProcess3 = {
   },
   Image: {},
   Flex: {
-    TitleParagraph: {
+    TitleParagraphRows: {
       Title: {
         h5: {},
         Button: {
@@ -124,7 +124,7 @@ export const UploadedProcess3 = {
   extend: UploadingProcess3,
   Image: {},
   Flex: {
-    TitleParagraph: {},
+    TitleParagraphRows: {},
     ProgressCircleWithSideUnitValue: {
       ProgressCircle: {
         Progress: {
@@ -158,7 +158,7 @@ export const UploadingProcess4 = {
       justifyContent: 'center',
       position: 'relative'
     },
-    TitleParagraph: {
+    TitleParagraphRows: {
       props: { justifyContent: 'center' },
       Title: {
         h5: {},
@@ -199,7 +199,7 @@ export const UploadedProcess4 = {
     }
   },
   Flex: {
-    TitleParagraph: {
+    TitleParagraphRows: {
       Title: {},
       Paragraph: { p: { text: 'Uploaded' } }
     }
