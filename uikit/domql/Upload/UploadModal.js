@@ -17,7 +17,7 @@ export const UploadModal = {
     extend: UploadLabel,
     props: { padding: 'C E' },
     Icon: {},
-    TitleParagraph: {
+    TitleParagraphRows: {
       Title: {
         h5: {},
         UploadButton: null

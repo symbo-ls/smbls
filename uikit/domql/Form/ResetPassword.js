@@ -5,42 +5,41 @@ import { CancelConfirmButtons } from '@symbo.ls/button'
 import { CommonForm } from './CommonForm'
 
 export const ResetPassword = {
+  extend: CommonForm,
+  props: { flow: 'column' },
+
+  ...[{
+    Title: { text: 'Old password' },
+    Field: {},
+    Hint: null
+  }, {
+    Title: { text: 'New password' },
+    Field: {},
+    Hint: {
+      Icon: { props: { name: 'info' } },
+      text: '8 character minimum'
+    }
+  }, {
+    Title: { text: 'Confirm new password' },
+    Field: {},
+    Hint: {
+      Icon: { props: { name: 'info' } },
+      text: '8 character minimum'
+    }
+  }]
+}
+
+export const ResetPasswordInModal = {
   extend: Modal,
-  props: {
-    minWidth: 'H+B',
-    gap: 'B1',
-    Content: {}
-  },
 
   Header: {
     props: { gap: 'Z2' },
-    Title: { h5: { text: 'Choose new password' } },
-    Paragraph: { p: { text: 'Almost done. Enter your new password and you\'re all set' } }
+    Title: { text: 'Choose new password' },
+    Paragraph: { text: 'Almost done. Enter your new password and you\'re all set' }
   },
 
   Content: {
-    extend: CommonForm,
-    props: { flow: 'column' },
-
-    ...[{
-      Title: { text: 'Old password' },
-      Field: {},
-      Hint: null
-    }, {
-      Title: { text: 'New password' },
-      Field: {},
-      Hint: {
-        Icon: { props: { name: 'info' } },
-        text: '8 character minimum'
-      }
-    }, {
-      Title: { text: 'Confirm new password' },
-      Field: {},
-      Hint: {
-        Icon: { props: { name: 'info' } },
-        text: '8 character minimum'
-      }
-    }]
+    extend: ResetPassword
   },
 
   Footer: {

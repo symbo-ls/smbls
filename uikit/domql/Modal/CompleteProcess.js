@@ -32,7 +32,7 @@ export const CompleteProcess = {
     SuccessIndicator: {
       fontSize: 'G'
     },
-    TitleParagraph: {
+    TitleParagraphRows: {
       props: {
         align: 'center flex-start',
         gap: 'Z1'

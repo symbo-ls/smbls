@@ -20,7 +20,7 @@ export const StepCard = {
       boxSize: 'E'
     }
   },
-  LineStepsWithTitleParagraph: {
+  LineStepsWithTitleParagraphRows: {
     position: 'absolute',
     left: '0',
     bottom: '0',

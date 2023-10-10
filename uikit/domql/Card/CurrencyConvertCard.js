@@ -1,10 +1,10 @@
 'use strict'
 
-import { ConvertCard } from '.'
-import { Modal } from '@symbo.ls/modal'
+import { Card, ConvertCard } from './'
 
 export const CurrencyConvert = {
-  extend: Modal,
+  extend: Card,
+
   props: {
     boxSize: 'fit-content',
     minWidth: 'fit-content',
@@ -73,5 +73,4 @@ export const CurrencyConvert = {
       }
     }
   }
-
 }

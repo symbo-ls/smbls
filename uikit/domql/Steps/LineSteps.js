@@ -27,7 +27,7 @@ export const LineSteps = {
   ]
 }
 
-export const LineStepsWithTitleParagraph = {
+export const LineStepsWithTitleParagraphRows = {
   extend: Flex,
   props: {
     flow: 'column',
@@ -38,7 +38,7 @@ export const LineStepsWithTitleParagraph = {
     gap: 'B'
   },
 
-  TitleParagraph: {
+  TitleParagraphRows: {
     gap: 'Z1',
     Title: {
       h5: {

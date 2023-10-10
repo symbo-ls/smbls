@@ -58,7 +58,7 @@ create({
         text: 'John'
       }]
     },
-    TitleParagraph: {},
+    TitleParagraphRows: {},
     User: {},
     Label: {},
     UserWithLabel: {},
@@ -75,7 +75,7 @@ create({
 
     Tab: {},
     IconTab: {},
-    TitleParagraphWithButton: {},
+    TitleParagraphButton: {},
     Modal: {},
     Message: {},
     SuccessIndicator: {},
@@ -152,7 +152,7 @@ create({
     RadioStep: {},
     RadioSteps: {},
     LineSteps: {},
-    LineStepsWithTitleParagraph: {},
+    LineStepsWithTitleParagraphRows: {},
 
     StepCard: {},
     UnitValueWithLabel: {},

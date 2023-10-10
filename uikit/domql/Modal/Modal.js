@@ -1,7 +1,7 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
+import { TitleParagraphButton } from '@symbo.ls/titleparagraph'
 import { Dialog } from '@symbo.ls/dialog'
 
 export const Modal = {
@@ -16,7 +16,7 @@ export const Modal = {
   },
 
   Header: {
-    extend: TitleParagraphWithButton,
+    extend: TitleParagraphButton,
     Title: {
       h5: {
         props: {

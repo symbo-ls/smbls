@@ -1,13 +1,13 @@
 'use strict'
 
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Card } from './Card'
+import { TitleParagraphRows } from '@symbo.ls/titleparagraph'
 
 export const ConvertCard = {
-  extend: TitleParagraph,
+  extend: [Card, TitleParagraphRows],
   props: {
     boxSize: 'fit-content',
     gap: 'A',
-    background: 'gray',
     padding: 'Z2 A',
     round: 'Z'
   },
@@ -17,7 +17,6 @@ export const ConvertCard = {
       props: {
         text: 'From',
         fontSize: 'Z1',
-        color: 'gray4',
         fontWeight: '400'
       }
     },
@@ -37,7 +36,9 @@ export const ConvertCard = {
         }
       },
       Unit: null,
-      DropDownButtonWithAvatar: {}
+      DropDownButtonWithAvatar: {
+        theme: 'card .child'
+      }
     }
   }
 }

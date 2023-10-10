@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { AvatarIndicator } from '@symbo.ls/avatar'
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { TitleParagraphRows } from '@symbo.ls/titleparagraph'
 
 export const User = {
   extend: Flex,
@@ -17,7 +17,7 @@ export const User = {
   },
 
   Notes: {
-    extend: TitleParagraph,
+    extend: TitleParagraphRows,
     props: {
       gap: 'Y2',
       margin: 'W - - -'

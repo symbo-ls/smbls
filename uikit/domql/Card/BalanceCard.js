@@ -1,15 +1,12 @@
 'use strict'
 
-import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
+import { Card } from './Card'
+import { TitleParagraphButton } from '@symbo.ls/titleparagraph'
 
 export const BalanceCard = {
-  extend: TitleParagraphWithButton,
+  extend: [Card, TitleParagraphButton],
   props: {
-    boxSize: 'fit-content',
-    padding: 'Z2 A',
-    round: 'Z',
-    gap: 'Z1',
-    background: 'linear-gradient(to right, #0474F2, #003067)'
+    theme: 'card .secondary'
   },
 
   Title: {
@@ -26,8 +23,7 @@ export const BalanceCard = {
     UnitValueWithLabel: {
       UnitValue: {},
       UnitValue2: {
-        background: 'black .35',
-        color: 'white'
+        theme: 'card .secondary .child'
       }
     },
     UnitValue: {
