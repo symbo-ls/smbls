@@ -133,8 +133,6 @@ const STATES = {
   }
 }
 
-<<<<<<< Updated upstream
-=======
 const UI = {
   field: '--tertiary',
 
@@ -199,7 +197,6 @@ const UI = {
   }
 }
 
->>>>>>> Stashed changes
 export const THEME = {
   document: {
     '@light': {
@@ -214,6 +211,7 @@ export const THEME = {
 
   ...PRIORITIES,
   ...STATES,
+  ...UI,
 
   dialog: {
     '@dark': {

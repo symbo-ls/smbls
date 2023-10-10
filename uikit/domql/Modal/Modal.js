@@ -1,13 +1,8 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-<<<<<<< Updated upstream
-import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
-import { Dialog } from '../Dialog'
-=======
 import { TitleParagraphButton } from '@symbo.ls/titleparagraph'
 import { Dialog } from '@symbo.ls/dialog'
->>>>>>> Stashed changes
 
 export const Modal = {
   extend: Dialog,
