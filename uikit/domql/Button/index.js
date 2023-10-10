@@ -1,7 +1,7 @@
 'use strict'
 
 import { Flex, FocusableComponent } from '@symbo.ls/atoms'
-import { IconText } from '@symbo.ls/Icon'
+import { IconText } from '@symbo.ls/icon'
 
 /**
  * A Button component
