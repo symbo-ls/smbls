@@ -1,6 +1,6 @@
 # Symbols
 
-Check out the [documentation page](https://docs.symbols.app/).
+Check out the [documentation page](https://symbols.app/developers).
 
 ---
 

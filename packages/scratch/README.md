@@ -33,7 +33,7 @@ set({
 })
 ```
 
-Read more at [docs](https://www.docs.symbols.app/design-system)
+Read more at [docs](https://www.symbols.app/developersdesign-system)
 
 ### TODO:
 - [ ] Accessibility (WCAG) automated  tests
