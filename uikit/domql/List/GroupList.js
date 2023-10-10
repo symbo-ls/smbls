@@ -80,12 +80,16 @@ export const GroupListTemplate = {
   extend: GroupList,
   Header: {},
   Groups: {
+    props: {},
     Flex: {
+      props: {},
       ...[
         {
           Title: null,
           List: {
+            props: {},
             Flex: {
+              props: {},
               ...[
                 { span: { text: 'Item' } },
                 { span: { text: 'Item' } }
@@ -96,7 +100,9 @@ export const GroupListTemplate = {
         {
           Title: {},
           List: {
+            props: {},
             Flex: {
+              props: {},
               ...[
                 { span: { text: 'Item' } },
                 { span: { text: 'Item' } },
@@ -108,7 +114,9 @@ export const GroupListTemplate = {
         {
           Title: {},
           List: {
+            props: {},
             Flex: {
+              props: {},
               ...[
                 { span: { text: 'Item' } },
                 { span: { text: 'Item' } },

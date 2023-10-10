@@ -49,15 +49,15 @@ export const VerificationCode = {
             value: state.value[parent.key] || ''
           }),
           on: {
-            keydown: (event, element, state) => {
-              const { value } = element.node
+            keydown: (event, { node }) => {
+              const { value } = node
               if (value.length > 1) return false
             },
-            keyup: (event, element, state) => {
+            keyup: (event, { parent, state }) => {
               const { target, keyCode } = event
               const { value } = target
-              const next = element.parent.nextElement()
-              const previous = element.parent.previousElement()
+              const next = parent.nextElement()
+              const previous = parent.previousElement()
 
               const isNumber = (keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105)
               const isBackspace = event.keyCode === 8 || event.keyCode === 46
@@ -67,9 +67,9 @@ export const VerificationCode = {
               if (isNumber && value.length && next) next.NumberInput.node.focus()
               if ((!value.length || isBackspace) && previous) previous.NumberInput.node.focus()
 
-              state.value[element.parent.key] = value
+              state.value[parent.key] = value
             },
-            paste: (event, element, state) => {
+            paste: (event, { state }) => {
               event.preventDefault()
               const paste = (event.clipboardData || window.clipboardData).getData('text')
               if (!paste) return

@@ -1,7 +1,7 @@
 'use strict'
 
+import { ConvertCard } from '.'
 import { Modal } from '@symbo.ls/modal'
-import { ConvertCard } from '@symbo.ls/card'
 
 export const CurrencyConvert = {
   extend: Modal,
@@ -45,10 +45,32 @@ export const CurrencyConvert = {
       margin: '- -X2 -X2'
     },
     CommonButton: {
-      flex: '1',
-      padding: 'Z1 -',
-      round: 'Z',
-      Caption: { text: 'Convert', fontWeight: '500' }
+      extend: {
+        extend: 'Button',
+        props: {
+          theme: 'primary',
+          boxSize: 'fit-content',
+          padding: 'A A2',
+          round: 'Z2',
+          gap: 'Y2',
+          position: 'relative'
+        },
+        Icon: {
+          props: { fontSize: 'C' }
+        },
+        Caption: {
+          props: {
+            text: 'Button',
+            line_height: '1em'
+          }
+        }
+      },
+      props: {
+        flex: '1',
+        padding: 'Z1 -',
+        round: 'Z',
+        Caption: { text: 'Convert', fontWeight: '500' }
+      }
     }
   }
 

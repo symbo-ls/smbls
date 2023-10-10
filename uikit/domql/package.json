@@ -16,7 +16,6 @@
     "@domql/utils": "latest",
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/avatar": "latest",
-    "@symbo.ls/board": "latest",
     "@symbo.ls/box": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/card": "latest",

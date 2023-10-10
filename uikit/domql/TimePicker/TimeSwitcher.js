@@ -31,8 +31,9 @@ export const TimeSwitcher = {
       '.active': { theme: 'primary' }
     }),
     on: {
-      click: (event, element, state) => {
-        state.update({ activeShift: element.key })
+      click: (event, { key, state }) => {
+        console.log(event, key, state)
+        state.update({ activeShift: key })
       }
     }
   },
