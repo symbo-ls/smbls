@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/react",
-  "version": "2.11.212",
+  "version": "2.11.214",
   "license": "MIT",
   "gitHead": "9d7c64eccdec7466262b60ceb8348b6f9909b004",
   "dependencies": {
     "@symbo.ls/react-atoms": "latest",
     "@symbo.ls/react-box": "latest",
+    "@symbo.ls/react-button": "latest",
     "@symbo.ls/react-icon": "latest",
     "@symbo.ls/react-provider": "latest",
-    "@symbo.ls/react-button": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "smbls": "latest"
