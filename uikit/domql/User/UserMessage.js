@@ -5,8 +5,8 @@ import { User } from './User'
 export const UserMessage = {
   extend: User,
   props: { gap: 'Z' },
-  Avatar: {
-    props: { fontSize: 'Z' }
+  AvatarIndicator: {
+    fontSize: 'Z'
   },
   Notes: {
     Title: null,

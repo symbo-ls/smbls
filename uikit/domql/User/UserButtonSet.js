@@ -14,7 +14,7 @@ export const UserButtonSet = {
   },
 
   User: {
-    Avatar: { fontSize: 'A2' },
+    AvatarIndicator: { fontSize: 'A2' },
     Notes: {
       Title: {
         h5: {

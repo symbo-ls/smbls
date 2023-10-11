@@ -14,8 +14,12 @@ export const SymbolsProvider = (options = PROVIDER_DEFAULT_PROPS) => {
   const { appKey, children, editor } = options
   const key = (SYMBOLSRC || options || {}).key
 
-  const ds = init(options.designSystem || DEFAULT_CONFIG)
-  const [designSystem, setDesignSystem] = useState(ds)
+  const initialDesignSystem = options.designSystem || DEFAULT_CONFIG
+
+  if (options.globalTheme) initialDesignSystem.globalTheme = options.globalTheme
+
+  const scratchInit = init(initialDesignSystem)
+  const [designSystem, setDesignSystem] = useState(scratchInit)
   const [state, setState] = useState(options.state)
   const [globalTheme, setGlobalTheme] = useState(designSystem.globalTheme)
   const { Provider } = SymbolsContext

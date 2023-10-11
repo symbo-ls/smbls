@@ -13,7 +13,7 @@ export const UserWithButton = {
     gap: 'Y2'
   },
 
-  Avatar: {
+  AvatarIndicator: {
     Avatar: {
       round: 'Y'
     },

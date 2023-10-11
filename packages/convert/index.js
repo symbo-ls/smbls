@@ -28,6 +28,7 @@ export const INTERNAL_UIKIT_CONF = {
     'Box',
     'Icon',
     'IconText',
+    'Button',
     'Img',
 
     // These are not domql objects
@@ -53,8 +54,8 @@ export const INTERNAL_UIKIT_CONF = {
   excludedDirectories: [
     // TODO: Review these ignores with @nikoloza
     /Threejs$/,
-    /Editorjs$/,
-    /User$/
+    /Editorjs$/
+    // /User$/
   ]
 }
 

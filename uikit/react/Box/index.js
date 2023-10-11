@@ -5,14 +5,20 @@ import { transformEmotion, transformClassname } from 'css-in-props'
 import { useGlobalTheme, useSymbols } from '@symbo.ls/react-provider'
 import { isArray } from '@domql/utils'
 import { filterAttributesByTagName } from 'attrs-in-props'
+import { createSync } from '@symbo.ls/create'
 
 export const Box = forwardRef((props, ref) => {
   const context = useSymbols()
   const [theme, setTheme] = useGlobalTheme() // eslint-disable-line no-unused-vars
 
+  const domqlElement = props.domqlElementObject || createSync({
+    context
+  }, { domqlOptions: { onlyResolveExtends: true } })
+
   const element = {
-    ...props.domqlElementObject,
+    ...domqlElement,
     context,
+    node: ref,
     class: {}
   }
   const excludedProps = {}

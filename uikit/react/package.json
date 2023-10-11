@@ -8,6 +8,7 @@
     "@symbo.ls/react-box": "latest",
     "@symbo.ls/react-icon": "latest",
     "@symbo.ls/react-provider": "latest",
+    "@symbo.ls/react-button": "latest",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "smbls": "latest"

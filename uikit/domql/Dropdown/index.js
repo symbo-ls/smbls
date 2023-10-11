@@ -48,7 +48,9 @@ export const DropdownList = {
         borderWidth: '1px 0 0'
       }
     })
-  }
+  },
+
+  $setPropsCollection: ({ props }) => props.options
 }
 
 export const DropdownParent = {

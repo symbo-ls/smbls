@@ -5,7 +5,7 @@ import { User } from './User'
 export const UserWithLabel = {
   extend: User,
 
-  Avatar: {
+  AvatarIndicator: {
     StatusIndicator: null,
     Avatar: { boxSize: 'B' }
   },

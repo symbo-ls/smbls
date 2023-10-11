@@ -21,7 +21,7 @@ import { IconText } from '@symbo.ls/icon'
  */
 
 export const Button = {
-  extend: [FocusableComponent, IconText],
+  extend: [IconText, FocusableComponent],
   tag: 'button',
 
   props: {

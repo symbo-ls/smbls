@@ -25,14 +25,16 @@ Icon.defaultProps = {
 }
 
 export const IconText = (props) => {
-  const iconName = isString(props.icon) ? props.icon : props.name
+  const iconName = props.icon || props.name
   const iconModifier = props.iconModifier || ''
+  const iconPosition = props.iconPosition || 'start'
+  const IconComponent = <Icon name={iconName} iconModifier={iconModifier} />
 
   return (
     <Flex tag={props.tag} alignItems='center' {...props}>
-      {iconName ? <Icon name={iconName} iconModifier={iconModifier} /> : null}
-      <Text text={props.text} />
+      {iconName && iconPosition === 'start' ? IconComponent : null}
       {props.children}
+      {iconName && iconPosition === 'end' ? IconComponent : null}
     </Flex>
   )
 }

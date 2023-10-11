@@ -13,7 +13,7 @@ export const ChatUser = {
     round: 'Z'
   },
 
-  Avatar: { props: { margin: '0' } },
+  AvatarIndicator: { margin: '0' },
   Notes: {
     props: { flex: '1' },
     Title: {

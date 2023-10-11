@@ -1,7 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { AvatarIndicator } from '@symbo.ls/avatar'
 import { TitleParagraph } from '@symbo.ls/titleparagraph'
 
 export const User = {
@@ -11,9 +10,8 @@ export const User = {
     gap: 'Z2'
   },
 
-  Avatar: {
-    extend: AvatarIndicator,
-    props: { margin: '0 - - -' }
+  AvatarIndicator: {
+    margin: '0 - - -'
   },
 
   Notes: {

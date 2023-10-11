@@ -106,6 +106,18 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   else if (options.document) parent = options.document
   else parent = document.body
 
+  // if (options.domqlOptions && options.domqlOptions.onlyResolveExtends) {
+  //   return DOM.create({
+  //     context: {
+  //       document
+  //     }
+  //   }, parent, key, {
+  //     extend: [uikit.Box],
+  //     verbose: options.verbose,
+  //     ...options.domqlOptions
+  //   })
+  // }
+
   const [scratcDesignhSystem, emotion, registry] = initEmotion(key, options)
 
   let state
