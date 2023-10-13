@@ -9,8 +9,7 @@ export const AvatarChooser = {
   props: {
     round: 'C',
     width: 'fit-content',
-    gap: 'Y',
-    padding: 'W2 A W2 W2',
+    padding: 'W2 Y2 W2 X',
     theme: 'tertiary',
     position: 'relative',
     cursor: 'pointer'
@@ -19,7 +18,7 @@ export const AvatarChooser = {
   Avatar: {
     props: ({ state }) => ({
       key: state.key,
-      boxSize: 'B1',
+      boxSize: 'B1+W2',
       pointerEvents: 'none'
     })
   },
@@ -29,15 +28,12 @@ export const AvatarChooser = {
       outline: 'none',
       pointerEvents: 'All',
       appearance: 'none',
-      border: 'none',
-      width: '100%',
       height: '100%',
       background: 'none',
       color: 'currentColor',
       fontSize: 'A',
       lineHeight: 1,
-      margin: '0 0 0 -B1+X',
-      padding: '0 A 0 B1+X',
+      padding: '- Y - Y',
       ':focus-visible': {
         outline: 'none'
       }
@@ -61,6 +57,9 @@ export const AvatarChooser = {
   },
 
   Icon: {
-    name: 'arrowDown'
+    props: {
+      icon: 'chevronDown',
+      fontSize: 'B2'
+    }
   }
 }

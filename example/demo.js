@@ -50,7 +50,7 @@ create({
     StatusIndicator: {},
     Avatar: {},
     AvatarIndicator: {},
-    AvatarBundle: {},
+    AvatarBundleTemplate: {},
     AvatarChooser: {
       options: [{
         text: 'Kevin'
