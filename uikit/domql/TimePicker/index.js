@@ -45,7 +45,7 @@ export const TimePicker = {
           max: '11'
         }
       },
-      Span: ':',
+      Span: { text: ':' },
       TimePickerItem_mm: {
         NumberInput: {
           placeholder: 'MM',
@@ -53,7 +53,7 @@ export const TimePicker = {
           max: '59'
         }
       },
-      Span_2: ':',
+      Span_2: { text: ':' },
       TimePickerItem_ss: {
         NumberInput: {
           placeholder: 'SS',

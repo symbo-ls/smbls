@@ -1,8 +1,10 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
+import { Flex, Focusable } from '@symbo.ls/atoms'
 
 export const Checkbox = {
+  extend: Focusable,
+
   tag: 'label',
 
   props: {
@@ -12,13 +14,16 @@ export const Checkbox = {
   },
 
   Input: {
-    type: 'checkbox',
-    display: 'none',
-    ':checked + div': {
-      background: '#0474F2',
-      border: '1px solid transparent'
+    props: {
+      type: 'checkbox',
+      display: 'none',
+      ':checked + div': { theme: 'primary' },
+      ':checked + div > svg': {
+        transform: 'none',
+        opacity: '1'
+      }
     },
-    ':checked + div > svg': { opacity: '1' }
+    attr: { checked: ({ parent }) => parent.props.checked }
   },
 
   Flex: {
@@ -26,15 +31,16 @@ export const Checkbox = {
       align: 'center center',
       fontSize: 'B1',
       padding: 'V',
-      border: '1px solid #57575C',
+      theme: 'tertiary .outline',
       round: 'X2',
-      transition: 'background .15s ease-in-out'
+      transition: 'background A defaultBezier'
     },
     Icon: {
       props: {
         icon: 'check',
         opacity: '0',
-        transition: 'opacity .15s ease-in-out'
+        transform: 'scale(0.9) rotate(-15deg)',
+        transition: 'opacity B defaultBezier'
       }
     }
   }

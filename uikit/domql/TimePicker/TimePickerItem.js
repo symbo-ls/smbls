@@ -6,14 +6,12 @@ const props = {
   align: 'center center',
   flow: 'column',
   gap: 'X',
-  style: {
-    '> button': {
-      padding: '0',
-      background: 'transparent',
-      color: 'white',
-      fontSize: `${12 / 16}em`,
-      display: 'none'
-    }
+  '> button': {
+    padding: '0',
+    background: 'transparent',
+    color: 'white',
+    fontSize: 'Z',
+    display: 'none'
   }
 }
 

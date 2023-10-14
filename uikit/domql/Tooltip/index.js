@@ -1,5 +1,6 @@
 'use strict'
 
+import { isDefined } from '@domql/utils'
 import { Flex } from '@symbo.ls/atoms'
 
 export const Tooltip = {
@@ -22,21 +23,25 @@ export const Tooltip = {
   attr: { tooltip: true },
 
   Title: {
-    props: {
+    if: ({ parent, props }) => isDefined(parent.props.title) || props.text,
+    props: ({ parent }) => ({
+      width: 'fit-content',
       fontWeight: 500,
       color: 'gray12',
-      text: 'And tooltip is coming'
-    }
+      text: parent.props.title
+    })
   },
 
   P: {
-    props: {
+    if: ({ parent, props }) => isDefined(parent.props.description) || props.text,
+    props: ({ parent }) => ({
+      width: 'fit-content',
       fontSize: 'Z2',
       margin: '0',
       color: 'gray6',
-      text: 'and winter too',
-      fontWeight: '400'
-    }
+      fontWeight: '400',
+      text: parent.props.description
+    })
   }
 }
 
@@ -103,7 +108,7 @@ export const TooltipHidden = {
 export const TooltipParent = {
   props: ({ Tooltip, TooltipHidden }) => {
     const TooltipElem = (Tooltip || TooltipHidden)
-    const TooltipActive = TooltipElem && TooltipElem['.active']
+    const TooltipActive = TooltipElem && TooltipElem.props['.active']
     return {
       position: 'relative',
       zIndex: 999,

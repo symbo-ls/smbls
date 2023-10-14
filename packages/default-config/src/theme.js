@@ -136,6 +136,7 @@ const UI = {
 
   dialog: {
     '@dark': {
+      color: 'white',
       background: 'gray .92',
       '.helper': {
         color: 'white',
@@ -143,6 +144,7 @@ const UI = {
       }
     },
     '@light': {
+      color: 'currentColor',
       background: 'gray .1'
     }
   }

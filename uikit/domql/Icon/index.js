@@ -9,7 +9,7 @@ export const Icon = {
   props: ({ key, props, parent, context, deps }) => {
     const { ICONS, useIconSprite, verbose } = context && context.designSystem
     const { toCamelCase } = context && context.utils
-    const iconName = props.inheritedString || props.name || props.icon || key
+    const iconName = props.name || props.icon || key
     const camelCase = toCamelCase(deps.isString(iconName) ? iconName : key)
 
     const isArray = camelCase.split(/([a-z])([A-Z])/g)
@@ -61,8 +61,11 @@ export const IconText = {
   },
 
   Icon: {
-    props: ({ parent, props }) => ({ icon: parent.props.icon || props.name || props.icon }),
-    if: ({ parent, props }) => parent.props.icon || parent.props.Icon || props.name || props.icon
+    props: ({ parent, props }) => ({ icon: parent.props.icon }),
+    if: ({ parent, props }) => {
+      const doesExist = parent.props.icon || parent.props.Icon || props.name || props.icon
+      return doesExist
+    }
   },
 
   text: ({ props }) => props.text,

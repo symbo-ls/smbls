@@ -127,6 +127,10 @@ export const Theme = {
       textShadow: deps.transformShadow(props.textShadow)
     }),
 
+    backdropFilter: ({ props, deps }) => !isUndefined(props.backdropFilter) && ({
+      backdropFilter: props.backdropFilter
+    }),
+
     opacity: ({ props }) => !isUndefined(props.opacity) && ({
       opacity: props.opacity
     }),

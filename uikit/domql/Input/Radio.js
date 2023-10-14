@@ -1,5 +1,6 @@
 'use strict'
 
+import { Pseudo } from '@symbo.ls/atoms'
 import { Checkbox, CheckboxTitleParagraph } from './Checkbox'
 
 export const Radio = {
@@ -11,6 +12,7 @@ export const Radio = {
   },
 
   Flex: {
+    extend: Pseudo,
     props: {
       round: '100%',
       padding: 'Y',

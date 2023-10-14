@@ -6,6 +6,8 @@ export const AvatarChooser = {
   extend: Button,
   tag: 'label',
 
+  state: { key: 'am' },
+
   props: {
     round: 'C',
     width: 'fit-content',
@@ -54,8 +56,8 @@ export const AvatarChooser = {
 
     on: {
       change: (ev, { state }) => {
-        state.update({ key: ev.target.value })
         console.log(state.key)
+        state.update({ key: ev.target.value })
       }
     }
   },
