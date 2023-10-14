@@ -2,41 +2,34 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { AvatarIndicator } from '@symbo.ls/avatar'
-import { TitleParagraphRows } from '@symbo.ls/titleparagraph'
+import { TitleParagraph } from '@symbo.ls/titleparagraph'
 
 export const User = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    gap: 'Z2'
+    gap: 'Z',
+    boxSize: 'fit-content'
   },
 
   Avatar: {
     extend: AvatarIndicator,
-    props: { margin: '0 - - -' }
+    Avatar: { props: { boxSize: 'C' } }
   },
-
   Notes: {
-    extend: TitleParagraphRows,
+    extend: TitleParagraph,
     props: {
-      gap: 'Y2',
-      margin: 'W - - -'
+      justifyContent: 'center',
+      margin: 'Y - - -',
+      gap: 'X'
     },
     Title: {
-      h5: {
-        props: {
-          text: 'Erin Schleifer',
-          fontWeight: '500',
-          fontSize: 'A'
-        }
-      }
+      props: { fontWeight: '500' }
     },
     Paragraph: {
-      p: {
-        props: {
-          text: 'email@symbols.com',
-          fontSize: 'Z1'
-        }
+      props: {
+        fontSize: 'Z1',
+        color: 'gray2'
       }
     }
   }

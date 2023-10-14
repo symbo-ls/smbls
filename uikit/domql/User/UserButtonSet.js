@@ -1,7 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { ButtonSet } from '@symbo.ls/button'
 
 export const UserButtonSet = {
   extend: Flex,
@@ -14,24 +13,25 @@ export const UserButtonSet = {
   },
 
   User: {
-    Avatar: { fontSize: 'A2' },
+    gap: 'A',
+    Avatar: {
+      fontSize: 'B'
+    },
     Notes: {
+      gap: 'Y',
       Title: {
-        h5: {
-          fontSize: 'C',
-          fontWeight: '700'
-        }
+        text: 'Group chat',
+        fontSize: 'C',
+        fontWeight: '700'
       },
       Paragraph: {
-        p: {
-          text: 'Active now',
-          fontSize: 'Y2'
-        }
+        text: 'Active now',
+        fontSize: 'Y1'
       }
     }
   },
+
   ButtonSet: {
-    extend: ButtonSet,
     props: { gap: 'Y2' },
     ...[
       { props: { Icon: { name: 'phone' } } },

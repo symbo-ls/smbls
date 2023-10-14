@@ -5,18 +5,37 @@ import { Flex } from '@symbo.ls/atoms'
 export const TitleParagraph = {
   extend: Flex,
   props: {
-    flow: 'column',
-    gap: 'Y'
+    flow: 'column'
   },
 
   Title: {
-    tag: 'h3',
-    props: ({ scope, parent }) => ({ text: parent.props.title })
+    extend: Flex,
+    props: { lineHeight: '1em' }
   },
 
   Paragraph: {
-    props: ({ scope, parent }) => ({ text: parent.props.paragraph })
+    extend: Flex,
+    props: {
+      margin: '0',
+      '> p': { margin: '0' }
+    }
   }
+
+  // Title: {
+  //   extend: Flex,
+  //   props: ({ scope, parent }) => ({
+  //     text: parent.props.title,
+  //     lineHeight: '1em'
+  //   })
+  // },
+
+  // Paragraph: {
+  //   extend: Flex,
+  //   props: ({ scope, parent }) => ({
+  //     text: parent.props.paragraph,
+  //     margin: '0'
+  //   })
+  // }
 }
 
 export const TitleParagraphRows = {

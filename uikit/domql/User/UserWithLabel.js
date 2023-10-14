@@ -1,35 +1,38 @@
 'use strict'
 
+import { Label } from '../Label'
 import { User } from './User'
 
 export const UserWithLabel = {
   extend: User,
+  props: { gap: 'A' },
 
   Avatar: {
     StatusIndicator: null,
-    Avatar: { boxSize: 'B' }
+    Avatar: { props: { boxSize: 'B2' } }
   },
   Notes: {
-    props: { gap: 'X' },
+    props: {
+      gap: 'W',
+      margin: 'W - - -'
+    },
     Title: {
       props: {
-        justifyContent: 'flex-start',
-        gap: 'Y2'
+        gap: 'Z'
       },
-      h5: {
+      caption: {
         props: {
           text: 'ETHDOWN',
-          fontSize: 'Z'
+          fontSize: 'Z1'
         }
       },
-      Label: {}
+      label: { extend: Label }
     },
     Paragraph: {
-      p: {
-        props: {
-          fontSize: 'Y2',
-          text: 'Short ETH with up to 4x Leverage'
-        }
+      tag: 'p',
+      props: {
+        text: 'Short ETH with up to 4x Leverage',
+        fontSize: 'Y2'
       }
     }
   }

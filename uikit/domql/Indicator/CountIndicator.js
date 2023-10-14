@@ -9,7 +9,7 @@ export const CountIndicator = {
     theme: 'primary',
     boxSize: 'fit-content',
     lineHeight: '1em',
-    padding: 'X1',
+    padding: 'X2',
     round: '100%',
     align: 'center center',
     aspectRatio: '1 / 1',

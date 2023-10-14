@@ -10,8 +10,9 @@ export const Label = {
     fontSize: 'Y',
     boxSize: 'fit-content fit-content',
     background: '#F4454E',
-    padding: 'W Y',
-    round: 'Y'
+    padding: 'W2 Y1',
+    round: 'Y',
+    fontWeight: '500'
   }
 }
 

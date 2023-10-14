@@ -3,6 +3,7 @@
 import { create } from '@symbo.ls/create'
 import { Flex } from '@symbo.ls/atoms'
 import { SearchWithButton } from '@symbo.ls/field'
+import { Avatar } from '@symbo.ls/uikit'
 
 create({
   extend: Flex,
@@ -50,7 +51,10 @@ create({
     StatusIndicator: {},
     Avatar: {},
     AvatarIndicator: {},
-    AvatarBundleTemplate: {},
+    AvatarBundle: {
+      childExtend: Avatar,
+      ...[{}, {}, {}]
+    },
     AvatarChooser: {
       options: [{
         text: 'Kevin'
@@ -58,8 +62,17 @@ create({
         text: 'John'
       }]
     },
-    TitleParagraphRows: {},
-    User: {},
+    TitleParagraph: {
+      Title: { text: 'Title' },
+      Paragraph: { text: 'Paragraph' }
+    },
+    User: {
+      Avatar: {},
+      Notes: {
+        Title: { text: 'Erin Schleifer' },
+        Paragraph: { text: 'email@symbols.com' }
+      }
+    },
     Label: {},
     UserWithLabel: {},
     CountIndicator: {},

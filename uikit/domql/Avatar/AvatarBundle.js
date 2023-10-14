@@ -20,8 +20,3 @@ export const AvatarBundle = {
   },
   childExtend: Avatar
 }
-
-export const AvatarBundleTemplate = {
-  extend: AvatarBundle,
-  ...[{}, {}, {}]
-}
