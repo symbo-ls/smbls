@@ -49,7 +49,7 @@ export const Collection = {
       const obj = {
         tag: 'fragment',
         props: {
-          childProps: el.props.childProps
+          childProps: el.props && el.props.childProps
         }
       }
 
@@ -79,7 +79,7 @@ export const Collection = {
       const obj = {
         tag: 'fragment',
         props: {
-          childProps: el.props.childProps
+          childProps: el.props && el.props.childProps
         }
       }
 
