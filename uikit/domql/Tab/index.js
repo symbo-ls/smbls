@@ -11,6 +11,7 @@ export const Tab = {
     gap: 'Z',
     position: 'relative'
   },
+
   Icon: {},
 
   Caption: {},

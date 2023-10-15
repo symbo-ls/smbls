@@ -81,7 +81,7 @@ export const CommonButton = {
   Caption: {
     props: {
       text: 'Button',
-      line_height: '1em'
+      lineHeight: '1em'
     }
   }
 }

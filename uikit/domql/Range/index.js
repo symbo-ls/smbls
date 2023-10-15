@@ -85,27 +85,38 @@ export const Range = {
   attr: { type: 'range' }
 }
 
-const listenProp = (el, prop, def) => {
-  const val = el.props && el.props[prop]
+const returnPropertyValue = (el, property, def) => {
+  const val = el.props && el.props[property]
   const r = (isFunction(val) ? val(el, el.state) : val !== undefined ? val : def !== undefined ? def : 50)
   return r + ''
 }
 
 export const RangeWithButtons = {
+  props: {},
   minus: {
     extend: SquareButton,
     props: { theme: 'tertiary', icon: 'minus' },
     on: {
       click: (ev, el, s) => {
-        el.props && isFunction(el.props.onClick) && el.props.onClick(ev, el, s)
+        const parentProps = el.parent.props
+        if (isFunction(parentProps.onDecrease)) {
+          parentProps.onDecrease(ev, el.parent, s)
+        } else {
+          const value = parseFloat(s.value)
+          const min = returnPropertyValue(el.parent, 'min', 1)
+          const step = returnPropertyValue(el.parent, 'step', 1)
+          if (value > min) {
+            s.update({ value: value - step })
+          }
+        }
       }
     }
   },
   value: {
-    style: { width: '4ch' },
+    props: { width: '4ch' },
     tag: 'span',
     text: ({ state, parent }) => {
-      const unit = listenProp(parent.input, 'unit', '')
+      const unit = returnPropertyValue(parent, 'unit', '')
       return '' + (state.value || 50) + unit
     }
   },
@@ -113,13 +124,27 @@ export const RangeWithButtons = {
     extend: Range,
     attr: {
       value: (el, s) => parseFloat(el.state.value),
-      min: (el, s) => listenProp(el, 'min', 0),
-      max: (el, s) => listenProp(el, 'max', 100),
-      step: (el, s) => listenProp(el, 'step', 1)
+      min: (el, s) => returnPropertyValue(el.parent, 'min', 0),
+      max: (el, s) => returnPropertyValue(el.parent, 'max', 100),
+      step: (el, s) => returnPropertyValue(el.parent, 'step', 1)
     },
     on: {
-      input: (ev, el, s) => el.props && isFunction(el.props.onInput) && el.props.onInput(ev, el, el.state),
-      change: (ev, el, s) => el.props && isFunction(el.props.onChange) && el.props.onChange(ev, el, el.state)
+      input: (ev, el, s) => {
+        const parentProps = el.parent.props
+        if (isFunction(parentProps.onInput)) {
+          parentProps.onInput(ev, el, s)
+        } else {
+          s.update({ value: parseFloat(el.node.value) })
+        }
+      },
+      change: (ev, el, s) => {
+        const parentProps = el.parent.props
+        if (isFunction(parentProps.onChange)) {
+          parentProps.onChange(ev, el, s)
+        } else {
+          s.update({ value: parseFloat(el.node.value) })
+        }
+      }
     }
   },
   plus: {
@@ -127,7 +152,17 @@ export const RangeWithButtons = {
     props: { theme: 'tertiary', icon: 'plus' },
     on: {
       click: (ev, el, s) => {
-        el.props && isFunction(el.props.onClick) && el.props.onClick(ev, el, el.state)
+        const parentProps = el.parent.props
+        if (isFunction(parentProps.onIncrease)) {
+          parentProps.onIncrease(ev, el.parent, s)
+        } else {
+          const value = parseFloat(s.value)
+          const max = returnPropertyValue(el.parent, 'max', 1)
+          const step = returnPropertyValue(el.parent, 'step', 1)
+          if (value < max) {
+            s.update({ value: value + step })
+          }
+        }
       }
     }
   }
