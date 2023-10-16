@@ -6,17 +6,22 @@ export const TitleParagraph = {
   extend: Flex,
   props: {
     flow: 'column'
+    // gap: 'Y2'
   },
 
   Title: {
     extend: Flex,
-    props: { lineHeight: '1em' }
+    props: {
+      lineHeight: '1em',
+      fontWeight: '700'
+    }
   },
 
   Paragraph: {
     extend: Flex,
     props: {
       margin: '0',
+      fontWeight: '400',
       '> p': { margin: '0' }
     }
   }

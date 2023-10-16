@@ -7,7 +7,8 @@
   "source": "index.js",
   "dependencies": {
     "@symbo.ls/atoms": "latest",
-    "@symbo.ls/dialog": "latest",
-    "@symbo.ls/titleparagraph": "latest"
+    "@symbo.ls/titleparagraph": "latest",
+    "@symbo.ls/button": "latest",
+    "@symbo.ls/dialog": "latest"
   }
 }

@@ -70,18 +70,19 @@ export const CommonButton = {
   props: {
     theme: 'primary',
     boxSize: 'fit-content',
-    padding: 'A A2',
-    round: 'Z2',
-    gap: 'Y2',
+    padding: 'Z1 A',
+    round: 'Z',
+    gap: 'Y',
     position: 'relative'
   },
   Icon: {
-    props: { fontSize: 'C' }
+    props: { fontSize: 'B2' }
   },
-  Caption: {
+  caption: {
     props: {
       text: 'Button',
-      line_height: '1em'
+      line_height: '1em',
+      fontSize: 'Z2'
     }
   }
 }
@@ -91,10 +92,10 @@ export const IconCommonButton = {
   props: {
     Icon: { name: 'smile' },
     boxSize: 'fit-content fit-content',
-    padding: 'A',
+    padding: 'Z2',
     background: 'gray3'
   },
-  Caption: null
+  caption: null
 }
 
 export const ButtonSet = {
@@ -105,33 +106,25 @@ export const ButtonSet = {
 
 export const CancelConfirmButtons = {
   extend: Flex,
-  childExtend: {
-    extend: CommonButton,
-    props: {
-      minWidth: 'D2',
-      ':first-child': {
-        background: 'transparent',
-        border: '1px solid #20202B'
-      },
-      ':last-child': {
-      }
-    }
-  },
-  ...[
-    { Caption: { text: 'No' } },
-    { Caption: { text: 'Yes' } }
-  ],
-
   props: {
     gap: 'Z',
     maxWidth: 'fit-content'
-  }
+  },
+  childExtend: {
+    extend: CommonButton
+  },
+  ...[
+    {
+      props: { theme: 'dialog', color: 'white' },
+      caption: { text: 'No' }
+    },
+    { caption: { text: 'Yes' } }
+  ]
 }
 
 export const IcontextButton = {
   extend: CommonButton,
   props: {
-    padding: 'A A1',
     position: 'relative',
     background: 'gray3',
     Icon: { name: 'smile' }
@@ -151,7 +144,7 @@ export const DropDownButton = {
       name: 'chevronDown',
       fontSize: 'D'
     },
-    Caption: { text: 'All' }
+    caption: { text: 'All' }
   }
 }
 
@@ -167,7 +160,7 @@ export const DropDownButtonWithAvatar = {
   Avatar: {
     boxSize: 'A1 A1'
   },
-  Caption: {
+  caption: {
     text: 'ETH',
     props: {
       fontSize: 'Z1'

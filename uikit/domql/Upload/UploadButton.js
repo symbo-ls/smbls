@@ -11,9 +11,15 @@ export const UploadButton = {
     color: '#0474F2',
     boxSize: 'fit-content fit-content',
     overflow: 'hidden',
-    fontWeight: '500',
-    cursor: 'pointer',
-    Caption: { text: 'Choose file' }
+    cursor: 'pointer'
+  },
+
+  caption: {
+    props: {
+      text: 'Choose file',
+      fontSize: 'Z2',
+      fontWeight: '500'
+    }
   },
 
   Input: {
@@ -29,21 +35,14 @@ export const UploadButton = {
   }
 }
 
-export const UploadButtonWithIcon = {
+export const UploadButtonWithBackground = {
   extend: UploadButton,
   props: {
-    gap: 'Z',
+    fontFamily: 'Avenir',
     theme: 'primary',
-    padding: 'A B',
-    round: 'A',
-    color: 'white'
+    padding: 'Z2 A2',
+    color: 'white',
+    fontWeight: '400'
   },
-
-  Icon: {
-    props: {
-      name: 'upload',
-      fontSize: 'B'
-    }
-  },
-  Caption: { text: 'Browse files' }
+  caption: { text: 'Browse files' }
 }

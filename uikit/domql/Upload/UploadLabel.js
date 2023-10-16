@@ -8,42 +8,46 @@ export const UploadLabel = {
     flow: 'column',
     align: 'center flex-start',
     boxSize: 'fit-content fit-content',
-    gap: 'C',
-    background: 'gray',
-    padding: 'C D+Z',
+    gap: 'B2',
+    padding: 'C D1',
     round: 'Z+X',
-    border: '1px dashed #57575C'
+    border: 'solid, gray2 .05',
+    borderWidth: '1px',
+    theme: 'dialog'
   },
 
   Icon: {
-    name: 'upload',
-    fontSize: 'I',
+    name: 'file',
+    fontSize: 'I1',
     color: '#818186'
   },
 
-  TitleParagraphRows: {
+  TitleParagraph: {
     props: {
       align: 'center flex-start',
-      text: 'Drag & drop your files here or',
-      gap: 'Y'
+      gap: 'Y',
+      fontWeight: '400'
     },
 
     Title: {
       props: {
-        gap: 'Y',
-        h5: {
-        }
+        text: 'Drag & drop your files here or',
+        flow: 'row-reverse',
+        fontWeight: '400',
+        gap: 'Y2',
+        align: 'center flex-start',
+        fontSize: 'Z',
+        color: 'gray2'
       },
-      Span: {},
-      UploadButton: {}
+      UploadButton: {
+        caption: { fontSize: 'A2' }
+      }
     },
 
     Paragraph: {
       props: {
-        p: {
-          text: '50 MB max file size',
-          fontSize: 'Z'
-        }
+        text: '50 MB max file size',
+        fontSize: 'Z'
       }
     }
   }
@@ -52,21 +56,22 @@ export const UploadLabel = {
 export const UploadLabel2 = {
   extend: UploadLabel,
   props: {
-    gap: 'B',
-    padding: 'C E+A'
+    padding: 'B2 E1',
+    gap: 'A2'
   },
-
-  Icon: { name: 'file' },
-
-  TitleParagraphRows: {
+  Icon: {
+    fontSize: 'H2'
+  },
+  TitleParagraph: {
     Title: {
-      h5: { text: 'Drag & drop your files here' },
-      UploadButton: { display: 'none' }
+      props: { fontSize: 'Y2' },
+      UploadButton: null
     },
-    Paragraph: {
-      p: { text: '50 MB max file size' }
-    }
+    Paragraph: { props: { fontSize: 'Y2' } }
   },
-
-  UploadButtonWithIcon: {}
+  UploadButtonWithBackground: {
+    padding: 'A C1',
+    round: 'Z1',
+    margin: 'Z - - -'
+  }
 }

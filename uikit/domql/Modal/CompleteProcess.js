@@ -2,65 +2,44 @@
 
 import { Modal } from './Modal'
 
-import { CommonButton } from '@symbo.ls/button'
-
 export const CompleteProcess = {
   extend: Modal,
   props: {
-    maxWidth: 'G3',
-    gap: 'B1'
+    maxWidth: 'G3+W',
+    minWidth: 'G3+W',
+    alignItems: 'center',
+    gap: 'B',
+    padding: 'Z1 Z1 Z2 Z1'
   },
 
   Header: {
-    Title: {
-      h5: null,
-      Button: {
-        props: {
-          margin: '- - - auto'
-        }
-      }
-    },
+    props: { alignSelf: 'flex-end' },
+    Title: { caption: null },
     Paragraph: null
   },
 
-  Content: {
-    props: {
-      flow: 'column',
-      align: 'center flex-start',
-      gap: 'B1'
+  SuccessIndicator: { fontSize: 'F2' },
+
+  TitleParagraph: {
+    alignItems: 'center',
+    gap: 'Y',
+    Title: {
+      text: 'Reset complete!',
+      fontSize: 'C2'
     },
-    SuccessIndicator: {
-      fontSize: 'G'
-    },
-    TitleParagraphRows: {
-      props: {
-        align: 'center flex-start',
-        gap: 'Z1'
-      },
-      Title: {
-        h5: {
-          props: {
-            text: 'Reset complete!',
-            fontSize: 'B',
-            fontWeight: '700'
-          }
-        }
-      },
-      Paragraph: {
-        p: {
-          props: {
-            text: 'Your request has been approved!',
-            fontSize: 'Z'
-          }
-        }
-      }
+    Paragraph: {
+      text: 'Your request has been approved!',
+      fontSize: 'Y2',
+      color: 'gray2'
     }
   },
-  Footer: {
-    extend: CommonButton,
-    props: {
-      minWidth: '100%',
-      fontWeight: '500'
-    }
+
+  CommonButton: {
+    minWidth: '98.7%',
+    fontWeight: '500',
+    padding: 'A -',
+    margin: 'Y1 - - -',
+    round: 'Z1',
+    caption: { text: 'Done' }
   }
 }

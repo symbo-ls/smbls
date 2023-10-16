@@ -1,35 +1,41 @@
 'use strict'
 
+import { Flex } from '@symbo.ls/atoms'
 import { User } from './User'
 
 export const UserWithButton = {
-  extend: User,
+  extend: Flex,
   props: {
     background: 'gray',
     boxSize: 'fit-content',
-    padding: 'X Z2 X X',
+    padding: 'X Z2 X X2',
     round: 'Z',
-    border: '1px, solid, gray3'
+    border: '1px, solid, gray3',
+    alignItems: 'center',
+    gap: 'Z1'
   },
 
-  Avatar: {
+  User: {
+    extend: User,
+    props: { gap: 'Y2' },
     Avatar: {
-      props: { round: 'Y' }
+      Avatar: { props: { round: 'Y1' } },
+      StatusIndicator: null
     },
-    StatusIndicator: null
-  },
 
-  Notes: {
-    Title: {
-      props: {
-        text: 'Wallet ID',
-        fontSize: 'Y2'
-      }
-    },
-    Paragraph: {
-      props: {
-        text: '0xfb59...d862',
-        fontSize: 'Y2'
+    Notes: {
+      props: { gap: 'X' },
+      Title: {
+        props: {
+          text: 'Wallet ID',
+          fontSize: 'Y1'
+        }
+      },
+      Paragraph: {
+        props: {
+          text: '0xfb59...d862',
+          fontSize: 'Y1'
+        }
       }
     }
   },

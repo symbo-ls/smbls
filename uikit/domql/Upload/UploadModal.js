@@ -1,102 +1,135 @@
 'use strict'
 
+import { Flex } from '@symbo.ls/atoms'
+import { IconText } from '@symbo.ls/icon'
+// import { UploadLabel2 } from './UploadLabel'
+import { CancelConfirmButtons } from '@symbo.ls/button'
+import { UploadButtonWithBackground } from './UploadButton'
 import { Modal } from '@symbo.ls/modal'
-import { UploadLabel, UploadLabel2 } from './UploadLabel'
 
-export const UploadModal = {
-  extend: Modal,
-  props: { gap: 'A' },
-
-  Header: {
-    props: { padding: '- X' },
-    Title: { h5: { text: 'File Upload' } },
-    Paragraph: null
+export const UploadFooter = {
+  extend: Flex,
+  props: {
+    boxSize: 'fit-content',
+    gap: 'E',
+    align: 'center space-between'
   },
-
-  Content: {
-    extend: UploadLabel,
-    props: { padding: 'C E' },
-    Icon: {},
-    TitleParagraphRows: {
-      Title: {
-        h5: {},
-        UploadButton: null
+  IconText: {
+    extend: IconText,
+    props: {
+      text: 'Support',
+      gap: 'Y',
+      fontSize: 'Z',
+      fontWeight: '400'
+    },
+    Icon: {
+      props: {
+        name: 'info',
+        fontSize: 'B'
       }
     }
   },
-
-  Footer: {
-    UploadButtonWithIcon: {
-      flex: 1,
-      Icon: { display: 'none' },
-      Caption: { text: 'Choose file' }
-    }
+  Buttons: {
+    extend: CancelConfirmButtons,
+    props: {
+      childProps: {
+        padding: 'Z2 B',
+        cursor: 'pointer',
+        caption: {
+          fontWeight: '500',
+          fontSize: 'Z1'
+        }
+      }
+    },
+    ...[
+      {
+        props: {
+          border: 'solid, gray2 .05',
+          borderWidth: '1px'
+        },
+        caption: { text: 'Cancel' }
+      },
+      {
+        extend: UploadButtonWithBackground,
+        props: {
+          border: 'solid, transparent',
+          borderWidth: '1px'
+        },
+        caption: { text: 'Attach file' }
+      }
+    ]
   }
-
 }
 
-export const UploadModal2 = {
+export const UploadModal = {
   extend: Modal,
-  props: { gap: 'A' },
+  props: { gap: 'Z2' },
 
   Header: {
-    props: { padding: '- X' },
-    Title: { h5: { text: 'File Upload' } },
+    Title: {
+      props: {
+        padding: 'V - - W1'
+      },
+      caption: {
+        props: {
+          text: 'File Upload',
+          fontSize: 'B'
+        }
+      }
+    },
     Paragraph: null
   },
 
-  Content: { extend: UploadLabel },
+  UploadLabel: { round: 'Z1' },
+  UploadFooter: {
+    boxSize: 'fit-content 100%',
+    margin: '-W - - -',
+    padding: '0 - - A1',
+    boxSizing: 'border-box',
+    alignSelf: 'center',
+    gap: '0'
+  }
+}
 
-  Footer: {
-    props: {
-      align: 'center space-between',
-      padding: '- X'
-    },
-
-    IconText: {
-      Icon: { name: 'info' },
-      text: 'Support',
-      gap: 'Z'
-    },
-    CancelConfirmButtons: {
-      props: {
-        childProps: {
-          ':first-child': { background: 'gray' }
-        }
-      },
-      ...[
-        { Caption: { text: 'Cancel' } },
-        { Caption: { text: 'Attach file' } }
-      ]
-    }
+export const UploadModal2 = {
+  extend: UploadModal,
+  Header: {},
+  UploadLabel: null,
+  UploadLabel2: {
+    Icon: {},
+    TitleParagraph: {},
+    UploadButtonWithBackground: { theme: 'tertiary' }
   }
 }
 
 export const UploadModal3 = {
   extend: UploadModal2,
   Header: {},
-  Content: { extend: UploadLabel2 },
-  Footer: {
-    IconText: null,
-    CancelConfirmButtons: {
-      props: {
-        minWidth: '100%',
-        childProps: { flex: '1' }
+  UploadLabel2: {},
+  UploadFooter: {
+    padding: '0',
+    IconText: { display: 'none' },
+    Buttons: {
+      minWidth: '100%',
+      childProps: {
+        flex: '1',
+        padding: 'Z2+V -'
       }
     }
+
   }
 }
 
 export const UploadModal4 = {
-  extend: UploadModal3,
-  Header: {},
-  Content: {},
-  UploadingProcess4: {
-    minWidth: '100%',
-    background: 'black',
-    ProgressCircleWithUnitValue: {
-      boxSize: 'C+A C+A'
-    }
-  },
-  Footer: {}
+  extend: UploadModal3
+  // Header: {},
+  // Content: {},
+  // UploadingProcess4: {
+  //   minWidth: '100%',
+  //   background: 'black',
+  //   ProgressCircleWithUnitValue: {
+  //     boxSize: 'C+A C+A'
+  //   }
+  // },
+  // Footer: {}
 }

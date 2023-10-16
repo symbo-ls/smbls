@@ -1,7 +1,6 @@
 'use strict'
-
-import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraphButton } from '@symbo.ls/titleparagraph'
+import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Button } from '@symbo.ls/button'
 import { Dialog } from '@symbo.ls/dialog'
 
 export const Modal = {
@@ -9,29 +8,40 @@ export const Modal = {
 
   props: {
     flow: 'column',
-    boxSize: 'fit-content fit-content',
-    padding: 'A',
-    gap: 'B1',
+    boxSize: 'fit-content',
+    padding: 'Z1',
     minWidth: 'G3+Z1'
   },
 
   Header: {
-    extend: TitleParagraphButton,
+    extend: TitleParagraph,
+    props: { gap: 'Y2' },
     Title: {
-      h5: {
+      props: { align: 'center space-between' },
+      caption: {
         props: {
-          fontSize: 'B',
+          text: 'Title',
+          fontSize: 'C',
           fontWeight: '700'
         }
       },
-      Button: { props: { fontSize: 'C' } }
+      closeBtn: {
+        extend: Button,
+        props: {
+          icon: 'x',
+          padding: '0',
+          boxSize: 'fit-content',
+          theme: 'transparent',
+          fontSize: 'B1',
+          margin: '- - - auto'
+        }
+      }
     },
-
     Paragraph: {
-      p: { props: { color: 'white' } }
+      props: {
+        fontSize: 'Z',
+        color: 'gray4'
+      }
     }
-  },
-
-  Content: { extend: Flex },
-  Footer: { extend: Flex }
+  }
 }

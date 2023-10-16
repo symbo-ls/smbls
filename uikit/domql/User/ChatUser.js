@@ -9,14 +9,14 @@ export const ChatUser = {
   props: {
     boxSize: 'fit-content',
     background: 'gray3',
-    padding: 'A',
-    round: 'Z',
-    gap: 'Z2'
+    padding: 'Z1 A Z1 Z1',
+    round: 'Z'
   },
 
   Avatar: {},
+
   Notes: {
-    props: { gap: 'Y1' },
+    props: { gap: 'Y' },
     Title: {
       props: { align: 'center space-between' },
       caption: { props: { text: 'Maria Kenter' } },
@@ -24,7 +24,7 @@ export const ChatUser = {
         extend: UnitValue,
         props: {
           gap: 'X2',
-          fontSize: 'Y'
+          fontSize: 'X2'
         },
         Unit: { props: { text: '2:22' } },
         Value: { props: { text: 'AM' } }
@@ -45,11 +45,7 @@ export const ChatUser = {
       },
       notification: {
         extend: CountIndicator,
-        props: {
-          fontSize: 'Y',
-          round: 'Z1',
-          padding: 'X2 Y'
-        }
+        props: { fontSize: 'X2' }
       }
     }
   }

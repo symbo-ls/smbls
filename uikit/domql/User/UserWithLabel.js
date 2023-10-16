@@ -5,7 +5,6 @@ import { User } from './User'
 
 export const UserWithLabel = {
   extend: User,
-  props: { gap: 'A' },
 
   Avatar: {
     StatusIndicator: null,
@@ -17,9 +16,7 @@ export const UserWithLabel = {
       margin: 'W - - -'
     },
     Title: {
-      props: {
-        gap: 'Z'
-      },
+      props: { gap: 'Z' },
       caption: {
         props: {
           text: 'ETHDOWN',

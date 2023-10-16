@@ -8,25 +8,25 @@ export const UserButtonSet = {
     gap: 'E2',
     background: 'gray',
     boxSize: 'fit-content',
-    padding: 'A',
-    round: 'Z2'
+    padding: 'Z1 Z2 Z1 Z1',
+    round: 'Z',
+    alignItems: 'center'
   },
 
   User: {
-    gap: 'A',
-    Avatar: {
-      fontSize: 'B'
-    },
+    gap: 'Z1',
+    Avatar: { fontSize: 'A1' },
     Notes: {
       gap: 'Y',
+      margin: 'W - - -',
       Title: {
         text: 'Group chat',
-        fontSize: 'C',
+        fontSize: 'B2',
         fontWeight: '700'
       },
       Paragraph: {
         text: 'Active now',
-        fontSize: 'Y1'
+        fontSize: 'X2'
       }
     }
   },

@@ -8,7 +8,7 @@ export const User = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    gap: 'Z',
+    gap: 'Z+V',
     boxSize: 'fit-content'
   },
 
@@ -20,8 +20,8 @@ export const User = {
     extend: TitleParagraph,
     props: {
       justifyContent: 'center',
-      margin: 'Y - - -',
-      gap: 'X'
+      margin: 'X1 - - -',
+      gap: 'X2'
     },
     Title: {
       props: { fontWeight: '500' }
