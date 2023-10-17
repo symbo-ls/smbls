@@ -15,8 +15,6 @@ export const Textarea = {
     placeholder: 'Leave us a message...',
     fontSize: 'Z1',
     padding: 'A',
-    background: 'rgba(0, 0, 0, 0)',
-    border: '1px solid #3F3F43',
     color: 'white',
     style: { resize: 'none' }
   },
