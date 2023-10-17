@@ -13,7 +13,8 @@ import {
   applySpacingSequence,
   applyReset,
   applyTimingSequence,
-  applyDocument
+  applyDocument,
+  setShadow
 } from './system'
 
 import { isFunction } from '@domql/utils'
@@ -36,6 +37,7 @@ export const VALUE_TRANSFORMERS = {
   svg_data: setSameValue,
   typography: setSameValue,
   cases: setCases,
+  shadow: setShadow,
   spacing: setSameValue,
   media: setSameValue,
   timing: setSameValue,

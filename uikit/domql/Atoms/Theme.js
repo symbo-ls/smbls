@@ -5,6 +5,7 @@ import {
   getMediaColor,
   transformTextStroke,
   transformShadow,
+  transformBoxShadow,
   transformBorder,
   transformBackgroundImage
 } from '@symbo.ls/scratch'
@@ -25,6 +26,7 @@ export const Theme = {
     getMediaColor,
     transformTextStroke,
     transformShadow,
+    transformBoxShadow,
     transformBorder,
     transformBackgroundImage
   },
@@ -119,12 +121,21 @@ export const Theme = {
       borderBottom: deps.transformBorder(props.borderBottom)
     }),
 
+    shadow: (element) => {
+      const { props, deps } = element
+      const globalTheme = deps.getSystemTheme(element)
+      if (!props.backgroundImage) return
+      return ({
+        boxShadow: deps.transformShadow(props.backgroundImage, globalTheme)
+      })
+    },
+
     boxShadow: ({ props, deps }) => !isUndefined(props.boxShadow) && ({
-      boxShadow: deps.transformShadow(props.boxShadow)
+      boxShadow: deps.transformBoxShadow(props.boxShadow)
     }),
 
     textShadow: ({ props, deps }) => !isUndefined(props.textShadow) && ({
-      textShadow: deps.transformShadow(props.textShadow)
+      textShadow: deps.transformBoxShadow(props.textShadow)
     }),
 
     backdropFilter: ({ props, deps }) => !isUndefined(props.backdropFilter) && ({

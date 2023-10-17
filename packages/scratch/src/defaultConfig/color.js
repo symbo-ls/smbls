@@ -2,8 +2,7 @@
 
 var proto = { // eslint-disable-line
   name: '',
-  value: '',
-  themes: {}
+  value: ''
 }
 
 export const COLOR = {}

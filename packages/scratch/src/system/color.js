@@ -98,7 +98,13 @@ export const setColor = (val, key, suffix) => {
 
   if (isObject(val)) {
     const obj = {}
-    for (const variant in val) obj[variant] = setColor(val[variant], key, variant.slice(0, 1) === '@' ? variant.slice(1) : variant)
+    for (const variant in val) {
+      obj[variant] = setColor(
+        val[variant],
+        key,
+        variant.slice(0, 1) === '@' ? variant.slice(1) : variant
+      )
+    }
     return obj
   }
 
