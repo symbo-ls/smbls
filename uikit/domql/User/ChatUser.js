@@ -10,7 +10,7 @@ export const ChatUser = {
     boxSize: 'fit-content',
     background: 'gray3',
     padding: 'Z1 A Z1 Z1',
-    round: 'Z'
+    round: 'Z1'
   },
 
   Avatar: {},

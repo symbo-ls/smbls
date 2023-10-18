@@ -109,16 +109,25 @@ export const CancelConfirmButtons = {
   props: {
     gap: 'Z',
     maxWidth: 'fit-content'
+    // border: '1px solid red'
   },
   childExtend: {
-    extend: CommonButton
+    extend: CommonButton,
+    props: {
+      padding: 'Z2 B'
+    }
   },
   ...[
     {
-      props: { theme: 'dialog', color: 'white' },
+      props: {
+        theme: 'dialog',
+        color: 'white'
+      },
       caption: { text: 'No' }
     },
-    { caption: { text: 'Yes' } }
+    {
+      caption: { text: 'Yes' }
+    }
   ]
 }
 

@@ -21,7 +21,7 @@ export const User = {
     props: {
       justifyContent: 'center',
       margin: 'X1 - - -',
-      gap: 'X2'
+      gap: 'X1'
     },
     Title: {
       props: { fontWeight: '500' }

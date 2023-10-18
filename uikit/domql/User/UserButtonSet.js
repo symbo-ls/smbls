@@ -9,7 +9,7 @@ export const UserButtonSet = {
     background: 'gray',
     boxSize: 'fit-content',
     padding: 'Z1 Z2 Z1 Z1',
-    round: 'Z',
+    round: 'Z1',
     alignItems: 'center'
   },
 

@@ -107,8 +107,8 @@ create({
     UploadingProcess: {},
     UploadedProcess: {},
     UnitValue: {
-      Value: { text: '2:20' },
-      Unit: { text: 'AM' }
+      Value: { text: '72' },
+      Unit: { text: '%' }
     },
     ProgressLineWithUnitValue: {},
     UploadingProcess2: {},

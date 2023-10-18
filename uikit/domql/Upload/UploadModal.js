@@ -2,7 +2,6 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/icon'
-// import { UploadLabel2 } from './UploadLabel'
 import { CancelConfirmButtons } from '@symbo.ls/button'
 import { UploadButtonWithBackground } from './UploadButton'
 import { Modal } from '@symbo.ls/modal'
@@ -37,7 +36,7 @@ export const UploadFooter = {
         cursor: 'pointer',
         caption: {
           fontWeight: '500',
-          fontSize: 'Z1'
+          fontSize: 'Z2'
         }
       }
     },
@@ -52,8 +51,8 @@ export const UploadFooter = {
       {
         extend: UploadButtonWithBackground,
         props: {
-          border: 'solid, transparent',
-          borderWidth: '1px'
+          border: 'solid, blue',
+          borderWidth: '.8px'
         },
         caption: { text: 'Attach file' }
       }
@@ -121,15 +120,11 @@ export const UploadModal3 = {
 }
 
 export const UploadModal4 = {
-  extend: UploadModal3
-  // Header: {},
-  // Content: {},
-  // UploadingProcess4: {
-  //   minWidth: '100%',
-  //   background: 'black',
-  //   ProgressCircleWithUnitValue: {
-  //     boxSize: 'C+A C+A'
-  //   }
-  // },
-  // Footer: {}
+  extend: UploadModal3,
+  Header: {},
+  UploadLabel2: {},
+  UploadingProcess4: {
+    minWidth: '100%'
+  },
+  UploadFooter: {}
 }

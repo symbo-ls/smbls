@@ -4,10 +4,7 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const TitleParagraph = {
   extend: Flex,
-  props: {
-    flow: 'column'
-    // gap: 'Y2'
-  },
+  props: { flow: 'column' },
 
   Title: {
     extend: Flex,

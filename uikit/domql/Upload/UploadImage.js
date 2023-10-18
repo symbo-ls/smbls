@@ -4,14 +4,14 @@ import { Flex, Focusable } from '@symbo.ls/atoms'
 
 export const UploadImage = {
   props: {
-    padding: 'A1',
-    background: '#57575C',
+    padding: 'A+V',
+    theme: 'tertiary',
     boxSize: 'fit-content',
     round: 'Z'
   },
   Icon: {
     name: 'file',
-    fontSize: 'D'
+    fontSize: 'C2'
   }
 }
 

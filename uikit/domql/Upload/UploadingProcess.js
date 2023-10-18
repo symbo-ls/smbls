@@ -1,39 +1,56 @@
 'use strict'
 
-import { TitleParagraphButton } from '@symbo.ls/titleparagraph'
 import { Dialog } from '@symbo.ls/dialog'
+import { Button } from '@symbo.ls/button'
+import { TitleParagraph } from '@symbo.ls/titleparagraph'
 import { UploadImage } from './UploadImage'
 
 export const UploadingProcess = {
   extend: Dialog,
   props: {
-    boxSize: 'fit-content fit-content',
-    padding: 'Z A Z Z',
-    round: 'Z+X',
-    gap: 'Z'
+    boxSize: 'fit-content',
+    padding: 'Y1',
+    round: 'Z1',
+    gap: 'Y2'
   },
 
   Image: { extend: UploadImage },
 
   Flex: {
+    extend: TitleParagraph,
     props: {
-      flex: '1',
-      flow: 'column',
-      boxSizing: 'border-box',
-      justifyContent: 'center',
-      gap: 'Y2'
+      justifyContent: 'space-between',
+      gap: 'Y',
+      flex: '1'
     },
 
-    TitleParagraphRows: {
-      extend: TitleParagraphButton,
-      props: { gap: 'Y2' },
-      Title: { h5: { text: 'Image.jpg' } },
-      Paragraph: {
-        p: null,
-        DoubleUnitValue: {}
+    Title: {
+      caption: {
+        props: {
+          text: 'Image.jpg',
+          fontSize: 'Z2',
+          margin: 'X - - -'
+        }
+      },
+      closeBtn: {
+        extend: Button,
+        props: {
+          icon: 'x',
+          padding: '0',
+          boxSize: 'fit-content',
+          theme: 'transparent',
+          fontSize: 'B',
+          margin: 'V1 V1 - auto'
+        }
       }
     },
-    ProgressLine: {}
+
+    Paragraph: {
+      props: { margin: '-V - - -' },
+      DoubleUnitValue: { fontSize: 'Y' }
+    },
+
+    ProgressLine: { margin: '- X1 X -' }
   }
 }
 
@@ -41,11 +58,16 @@ export const UploadedProcess = {
   extend: UploadingProcess,
   Image: {},
   Flex: {
-    TitleParagraphRows: {
-      Title: {},
-      Paragraph: {
-        Span: { props: { text: 'Done' } },
-        DoubleUnitValue: null
+    Title: {},
+    Paragraph: {
+      DoubleUnitValue: null,
+      span: {
+        props: {
+          text: 'Done',
+          fontSize: 'Y',
+          lineHeight: '1em',
+          color: 'gray2'
+        }
       }
     },
     ProgressLine: {
@@ -58,30 +80,37 @@ export const UploadedProcess = {
 export const UploadingProcess2 = {
   extend: UploadingProcess,
   props: {
-    border: '1px solid #3F3F43'
+    border: 'solid, gray3',
+    borderWidth: '1px',
+    gap: 'Y1',
+    padding: 'Y'
   },
-
-  Image: { props: { padding: 'Z+Y' } },
+  Image: {
+    props: { padding: 'Z2' },
+    Icon: { fontSize: 'D' }
+  },
   Flex: {
-    props: {
-      justifyContent: 'center',
-      padding: '0 0 0 0',
-      gap: 'Y2',
-      position: 'relative'
+    Title: {
+      caption: {
+        props: {
+          fontSize: 'A',
+          margin: 'X2 - - -'
+        }
+      }
     },
-    TitleParagraphRows: {
-      Title: {},
-      Paragraph: null
+    ProgressLineWithUnitValue: {
+      fontSize: 'Y2',
+      margin: '- X V -'
     },
-    ProgressLine: null,
-    ProgressLineWithUnitValue: {}
+    Paragraph: null,
+    ProgressLine: null
   }
 }
 export const UploadedProcess2 = {
   extend: UploadingProcess2,
   Image: {},
   Flex: {
-    TitleParagraphRows: {},
+    Title: {},
     ProgressLineWithUnitValue: {
       ProgressLine: {
         value: 1,
@@ -95,25 +124,36 @@ export const UploadedProcess2 = {
 export const UploadingProcess3 = {
   extend: UploadingProcess2,
   props: {
-    minWidth: 'G+E'
+    minWidth: 'G+C2',
+    gap: 'Z'
   },
   Image: {},
   Flex: {
-    TitleParagraphRows: {
-      Title: {
-        h5: {},
-        Button: {
-          props: {
-            padding: 'Y',
-            background: '#252527',
-            position: 'absolute',
-            top: '50%',
-            right: '0',
-            transform: 'translate(0%, -50%)'
-          }
+    props: {
+      position: 'relative',
+      justifyContent: 'center',
+      gap: 'Z',
+      padding: 'V1 - - -'
+    },
+    Title: {
+      caption: {
+        props: {
+          margin: '0',
+          fontSize: 'Z2'
         }
       },
-      Paragraph: null
+      closeBtn: {
+        props: {
+          position: 'absolute',
+          margin: '0',
+          top: '50%',
+          right: 'A1',
+          transform: 'translate(50%, -50%)',
+          padding: 'Y',
+          fontSize: 'A1',
+          theme: 'tertiary'
+        }
+      }
     },
     ProgressLineWithUnitValue: null,
     ProgressCircleWithSideUnitValue: {}
@@ -124,7 +164,7 @@ export const UploadedProcess3 = {
   extend: UploadingProcess3,
   Image: {},
   Flex: {
-    TitleParagraphRows: {},
+    Title: {},
     ProgressCircleWithSideUnitValue: {
       ProgressCircle: {
         Progress: {
@@ -141,55 +181,51 @@ export const UploadedProcess3 = {
 }
 
 export const UploadingProcess4 = {
-  extend: UploadingProcess,
+  extend: UploadingProcess3,
   props: {
-    minWidth: 'G+E',
-    background: 'transparent',
-    border: '1px solid #3F3F43',
-    gap: 'A',
-    padding: 'A',
-    round: 'Z+X'
+    alignItems: 'center',
+    padding: 'Y2 Y2 Y2 Z',
+    gap: 'Z1'
   },
-  Image: null,
-  ProgressCircleWithUnitValue: {},
 
+  Image: null,
+  ProgressCircleWithIcon: {
+    boxSize: 'C+X1',
+    Icon: { fontSize: 'C' }
+  },
   Flex: {
     props: {
-      justifyContent: 'center',
-      position: 'relative'
+      gap: 'Y1',
+      padding: 'W2 - - -'
     },
-    TitleParagraphRows: {
-      props: { justifyContent: 'center' },
-      Title: {
-        h5: {},
-        Button: {
-          props: {
-            position: 'absolute',
-            top: '50%',
-            right: '0',
-            transform: 'translate(0%, -50%)',
-            padding: '0'
-          }
-        }
-      },
-      Paragraph: {
-        p: { text: 'Uploading...' },
-        DoubleUnitValue: { display: 'none' }
+    Title: {},
+    Paragraph: {
+      tag: 'p',
+      DoubleUnitValue: null,
+      props: {
+        text: 'Uploading . . .',
+        margin: '0',
+        padding: '0',
+        fontSize: 'Y1',
+        color: 'gray2'
       }
     },
-    ProgressLine: null
+    ProgressCircleWithSideUnitValue: null
   }
 }
 
 export const UploadedProcess4 = {
   extend: UploadingProcess4,
 
-  ProgressCircleWithUnitValue: null,
   ProgressCircleWithIcon: {
+    ':after': {
+      width: 'calc(100% - 3px)',
+      height: 'calc(100% - 3px)'
+    },
     Icon: {
       name: 'check',
       color: '#04F214',
-      fontSize: 'H'
+      fontSize: 'E1'
     },
     Progress: {
       value: 1,
@@ -198,10 +234,9 @@ export const UploadedProcess4 = {
       }
     }
   },
+
   Flex: {
-    TitleParagraphRows: {
-      Title: {},
-      Paragraph: { p: { text: 'Uploaded' } }
-    }
+    Title: {},
+    Paragraph: { text: 'Uploaded' }
   }
 }

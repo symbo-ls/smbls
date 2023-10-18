@@ -25,7 +25,7 @@ export const UploadLabel = {
   TitleParagraph: {
     props: {
       align: 'center flex-start',
-      gap: 'Y',
+      gap: 'Y2',
       fontWeight: '400'
     },
 
@@ -57,18 +57,12 @@ export const UploadLabel2 = {
   extend: UploadLabel,
   props: {
     padding: 'B2 E1',
-    gap: 'A2'
+    gap: 'B'
   },
   Icon: {
-    fontSize: 'H2'
+    // fontSize: 'H2'
   },
-  TitleParagraph: {
-    Title: {
-      props: { fontSize: 'Y2' },
-      UploadButton: null
-    },
-    Paragraph: { props: { fontSize: 'Y2' } }
-  },
+  TitleParagraph: { Title: { UploadButton: null } },
   UploadButtonWithBackground: {
     padding: 'A C1',
     round: 'Z1',
