@@ -57,7 +57,7 @@ export const popStateRouter = (element, options) => {
 }
 
 export const injectRouterInLinkComponent = (routerOptions) => {
-  if (routerOptions.injectRouterInLinkComponent) {
+  if (routerOptions && routerOptions.injectRouterInLinkComponent) {
     return deepMerge(Link, RouterLink)
   }
 }
