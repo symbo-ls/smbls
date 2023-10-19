@@ -25,7 +25,7 @@ export const initRouter = (element, options) => {
   }
 
   const hasRenderRouter = element.on && !isUndefined(element.on.renderRouter)
-  if (routerOptions.initRouter && !hasRenderRouter) {
+  if (routerOptions && routerOptions.initRouter && !hasRenderRouter) {
     if (element.on) {
       element.on.renderRouter = onRouterRenderDefault
     } else {

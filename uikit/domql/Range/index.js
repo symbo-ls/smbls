@@ -92,7 +92,6 @@ const returnPropertyValue = (el, property, def) => {
 }
 
 export const RangeWithButtons = {
-  props: {},
   minus: {
     extend: SquareButton,
     props: { theme: 'tertiary', icon: 'minus' },

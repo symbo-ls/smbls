@@ -85,7 +85,6 @@ export const DatePickerGridContainer = {
   },
 
   Flex: {
-    props: {},
     childExtend: {
       extend: DatePickerGrid,
       on: {

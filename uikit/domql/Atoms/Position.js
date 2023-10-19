@@ -5,8 +5,6 @@ import { getSpacingByKey } from '@symbo.ls/scratch'
 export const Position = {
   deps: { getSpacingByKey },
 
-  props: {},
-
   class: {
     position: ({ props }) => props.position && ({ position: props.position }),
     inset: ({ props, deps }) => {
