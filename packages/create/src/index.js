@@ -52,7 +52,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   const routerOptions = initRouter(App, options) // eslint-disable-line
   const extend = applySyncDebug([App], options)
 
-  const domqlApp = DOM.create({
+  const domqlApp = (DOM.default.create || DOM.create)({
     extend,
     routes: options.pages,
     state,
