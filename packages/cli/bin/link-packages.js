@@ -37,8 +37,20 @@ program
   .command('link-packages')
   .description('Run "yarn link" on specified packages')
   .option('-c, --capture', 'Capture and write all package names.')
+  .option('-j, --join', 'Join all links into one command.', true)
   .action((opts) => {
     if (opts.capture) return capture(opts)
+    if (opts.join) {
+      try {
+        console.log('Linking all smbls packages...')
+        execSync(`yarn link ${packages.join(' ')} --force`, { stdio: 'inherit' })
+        console.log('All packages linked successfully.')
+      } catch (error) {
+        console.error('Error linking packages:', error.message)
+        process.exit(1)
+      }
+      return
+    }
     try {
       for (const packageName of packages) {
         console.log(`Linking ${packageName}...`)
