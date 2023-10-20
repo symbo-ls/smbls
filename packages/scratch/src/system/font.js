@@ -1,6 +1,6 @@
 'use strict'
 
-import { isObject } from '@domql/utils'
+import { isObject, isArray } from '@domql/utils'
 import { arrayzeValue } from '@symbo.ls/utils'
 import { getActiveConfig } from '../factory.js'
 
@@ -12,6 +12,9 @@ import {
 
 export const setFont = (val, key) => {
   const CSSvar = `--font-${key}`
+
+  if (!val || (isArray(val) && !val[0])) return
+
   const fontFace = val[0]
     ? getFontFaceEach(key, val)
     : setCustomFontMedia(key, val.url)
