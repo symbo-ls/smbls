@@ -11,46 +11,47 @@ export const UploadingProcess = {
     boxSize: 'fit-content',
     padding: 'Y1',
     round: 'Z1',
-    gap: 'Y2'
+    gap: 'Y2',
+    position: 'relative'
+  },
+
+  X: {
+    extend: Button,
+    props: {
+      icon: 'x',
+      fontSize: 'B',
+      boxSize: 'fit-content',
+      padding: '0',
+      theme: 'transparent',
+      position: 'absolute',
+      top: 'Y1',
+      right: 'Y1'
+    }
   },
 
   Image: { extend: UploadImage },
-
   Flex: {
     extend: TitleParagraph,
     props: {
       justifyContent: 'space-between',
-      gap: 'Y',
-      flex: '1'
+      padding: 'X -'
     },
 
     Title: {
-      caption: {
-        props: {
-          text: 'Image.jpg',
-          fontSize: 'Z2',
-          margin: 'X - - -'
-        }
-      },
-      closeBtn: {
-        extend: Button,
-        props: {
-          icon: 'x',
-          padding: '0',
-          boxSize: 'fit-content',
-          theme: 'transparent',
-          fontSize: 'B',
-          margin: 'V1 V1 - auto'
-        }
+      props: {
+        text: 'Image.jpg',
+        fontSize: 'Z2'
       }
     },
 
     Paragraph: {
-      props: { margin: '-V - - -' },
-      DoubleUnitValue: { fontSize: 'Y' }
-    },
-
-    ProgressLine: { margin: '- X1 X -' }
+      props: {
+        flow: 'column',
+        gap: 'Y2'
+      },
+      DoubleUnitValue: { fontSize: 'Y' },
+      ProgressLine: { margin: '- X - -' }
+    }
   }
 }
 
@@ -68,11 +69,11 @@ export const UploadedProcess = {
           lineHeight: '1em',
           color: 'gray2'
         }
+      },
+      ProgressLine: {
+        value: '1',
+        style: { '&::-webkit-progress-value': { background: '#04F214' } }
       }
-    },
-    ProgressLine: {
-      value: '1',
-      style: { '&::-webkit-progress-value': { background: '#04F214' } }
     }
   }
 }
@@ -81,29 +82,25 @@ export const UploadingProcess2 = {
   extend: UploadingProcess,
   props: {
     border: 'solid, gray3',
-    borderWidth: '1px',
-    gap: 'Y1',
-    padding: 'Y'
+    borderWidth: '1px'
   },
+
   Image: {
     props: { padding: 'Z2' },
     Icon: { fontSize: 'D' }
   },
   Flex: {
-    Title: {
-      caption: {
-        props: {
-          fontSize: 'A',
-          margin: 'X2 - - -'
-        }
-      }
-    },
-    ProgressLineWithUnitValue: {
-      fontSize: 'Y2',
-      margin: '- X V -'
-    },
-    Paragraph: null,
-    ProgressLine: null
+    props: { padding: 'Y - W -' },
+    Title: { props: { fontSize: 'A2' } },
+    Paragraph: {
+      ProgressLineWithUnitValue: {
+        margin: '- X - -',
+        ProgressLine: {},
+        UnitValue: { fontSize: 'Y2' }
+      },
+      DoubleUnitValue: null,
+      ProgressLine: null
+    }
   }
 }
 export const UploadedProcess2 = {
@@ -111,12 +108,14 @@ export const UploadedProcess2 = {
   Image: {},
   Flex: {
     Title: {},
-    ProgressLineWithUnitValue: {
-      ProgressLine: {
-        value: 1,
-        style: { '&::-webkit-progress-value': { background: '#04F214' } }
-      },
-      UnitValue: { Value: { text: '100' } }
+    Paragraph: {
+      ProgressLineWithUnitValue: {
+        ProgressLine: {
+          value: 1,
+          style: { '&::-webkit-progress-value': { background: '#04F214' } }
+        },
+        UnitValue: { Value: { text: '100' } }
+      }
     }
   }
 }
@@ -127,36 +126,30 @@ export const UploadingProcess3 = {
     minWidth: 'G+C2',
     gap: 'Z'
   },
+
+  X: {
+    props: {
+      top: '50%',
+      right: 'B',
+      transform: 'translate(50%, -50%)',
+      padding: 'Y',
+      fontSize: 'A1',
+      theme: 'tertiary'
+    }
+  },
+
   Image: {},
   Flex: {
     props: {
-      position: 'relative',
+      padding: '0',
       justifyContent: 'center',
-      gap: 'Z',
-      padding: 'V1 - - -'
+      gap: 'Z'
     },
-    Title: {
-      caption: {
-        props: {
-          margin: '0',
-          fontSize: 'Z2'
-        }
-      },
-      closeBtn: {
-        props: {
-          position: 'absolute',
-          margin: '0',
-          top: '50%',
-          right: 'A1',
-          transform: 'translate(50%, -50%)',
-          padding: 'Y',
-          fontSize: 'A1',
-          theme: 'tertiary'
-        }
-      }
-    },
-    ProgressLineWithUnitValue: null,
-    ProgressCircleWithSideUnitValue: {}
+    Title: { props: { fontSize: 'Z2' } },
+    Paragraph: {
+      ProgressLineWithUnitValue: null,
+      ProgressCircleWithSideUnitValue: {}
+    }
   }
 }
 
@@ -165,16 +158,18 @@ export const UploadedProcess3 = {
   Image: {},
   Flex: {
     Title: {},
-    ProgressCircleWithSideUnitValue: {
-      ProgressCircle: {
-        Progress: {
-          value: 1,
-          style: { '&::-webkit-progress-value': { background: '#04F214' } }
+    Paragraph: {
+      ProgressCircleWithSideUnitValue: {
+        ProgressCircle: {
+          Progress: {
+            value: 1,
+            style: { '&::-webkit-progress-value': { background: '#04F214' } }
+          }
+        },
+        UnitValue: {
+          Value: { text: 'Done' },
+          Unit: { display: 'none' }
         }
-      },
-      UnitValue: {
-        Value: { text: 'Done' },
-        Unit: { display: 'none' }
       }
     }
   }
@@ -193,6 +188,7 @@ export const UploadingProcess4 = {
     boxSize: 'C+X1',
     Icon: { fontSize: 'C' }
   },
+
   Flex: {
     props: {
       gap: 'Y1',
@@ -201,16 +197,15 @@ export const UploadingProcess4 = {
     Title: {},
     Paragraph: {
       tag: 'p',
-      DoubleUnitValue: null,
       props: {
         text: 'Uploading . . .',
         margin: '0',
         padding: '0',
         fontSize: 'Y1',
         color: 'gray2'
-      }
-    },
-    ProgressCircleWithSideUnitValue: null
+      },
+      ProgressCircleWithSideUnitValue: null
+    }
   }
 }
 

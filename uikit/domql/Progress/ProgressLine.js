@@ -30,12 +30,11 @@ export const ProgressLineWithUnitValue = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    gap: 'A'
+    gap: 'Z1'
   },
 
   ProgressLine: {
-    minWidth: 'F2+B1',
-    height: 'X2'
+    minWidth: 'F2+B1'
   },
   UnitValue: {}
 }
