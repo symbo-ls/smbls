@@ -155,7 +155,8 @@ export const opacify = (color, opacity) => {
 }
 
 export const getRgbTone = (rgb, tone) => {
-  if (isString(rgb)) rgb = rgb.split(', ').map(v => parseFloat(v))
+  if (isString(rgb) && rgb.includes('rgb')) rgb = colorStringToRgbaArray(rgb).join(', ')
+  if (isString(rgb)) rgb = rgb.split(',').map(v => parseFloat(v.trim()))
   if (isNumber(tone)) tone += ''
   const toHex = rgbArrayToHex(rgb)
   const abs = tone.slice(0, 1)

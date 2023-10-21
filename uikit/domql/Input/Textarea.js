@@ -10,10 +10,9 @@ export const Textarea = {
   props: {
     variant: 'outlined',
     round: 'Z2',
-    maxWidth: 'H',
+    width: 'H',
     minHeight: 'E',
     placeholder: 'Leave us a message...',
-    fontSize: 'Z1',
     padding: 'A',
     color: 'white',
     style: { resize: 'none' }
@@ -33,7 +32,7 @@ export const Textarea = {
     props: {
       border: '1px solid #3F3F43',
       background: 'transparent',
-      // round: 'Y+W',
+      round: 'Y+W', //
       width: 'G1',
       height: 'D2+W',
       lineHeight: 1.4,
