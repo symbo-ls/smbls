@@ -10,7 +10,7 @@ export const UploadLabel = {
     boxSize: 'fit-content fit-content',
     gap: 'B2',
     padding: 'C D1',
-    round: 'Z+X',
+    round: 'Z',
     border: 'solid, gray2 .05',
     borderWidth: '1px',
     theme: 'dialog'
@@ -25,7 +25,7 @@ export const UploadLabel = {
   TitleParagraph: {
     props: {
       align: 'center flex-start',
-      gap: 'Y2',
+      gap: 'Z',
       fontWeight: '400'
     },
 
@@ -40,7 +40,10 @@ export const UploadLabel = {
         color: 'gray2'
       },
       UploadButton: {
-        caption: { fontSize: 'A2' }
+        caption: {
+          fontSize: 'A2',
+          fontWeight: '500'
+        }
       }
     },
 
@@ -59,13 +62,10 @@ export const UploadLabel2 = {
     padding: 'B2 E1',
     gap: 'B'
   },
-  Icon: {
-    // fontSize: 'H2'
-  },
+  Icon: {},
   TitleParagraph: { Title: { UploadButton: null } },
   UploadButtonWithBackground: {
-    padding: 'A C1',
-    round: 'Z1',
+    padding: 'A C',
     margin: 'Z - - -'
   }
 }

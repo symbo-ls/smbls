@@ -9,52 +9,42 @@ import { Modal } from '@symbo.ls/modal'
 export const UploadFooter = {
   extend: Flex,
   props: {
-    boxSize: 'fit-content',
     gap: 'E',
-    align: 'center space-between'
+    align: 'center space-between',
+    padding: '- - - A',
+    boxSize: 'fit-content'
   },
+
   IconText: {
     extend: IconText,
     props: {
+      icon: 'info',
       text: 'Support',
       gap: 'Y',
       fontSize: 'Z',
-      fontWeight: '400'
-    },
-    Icon: {
-      props: {
-        name: 'info',
-        fontSize: 'B'
-      }
+      fontWeight: '500'
     }
   },
+
   Buttons: {
     extend: CancelConfirmButtons,
     props: {
       childProps: {
-        padding: 'Z2 B',
-        cursor: 'pointer',
-        caption: {
-          fontWeight: '500',
-          fontSize: 'Z2'
-        }
+        padding: 'Z2+V B',
+        ':first-child': {
+          theme: 'tertiary',
+          padding: '- B'
+        },
+        caption: { fontWeight: '500' }
       }
     },
     ...[
       {
-        props: {
-          border: 'solid, gray2 .05',
-          borderWidth: '1px'
-        },
-        caption: { text: 'Cancel' }
+        caption: { props: { text: 'Cancel' } }
       },
       {
         extend: UploadButtonWithBackground,
-        props: {
-          border: 'solid, blue',
-          borderWidth: '.8px'
-        },
-        caption: { text: 'Attach file' }
+        caption: { props: { text: 'Attach file' } }
       }
     ]
   }
@@ -62,31 +52,35 @@ export const UploadFooter = {
 
 export const UploadModal = {
   extend: Modal,
-  props: { gap: 'Z2' },
+  props: {
+    gap: 'Z2'
+  },
+
+  X: {
+    props: {
+      top: 'Z',
+      right: 'Z'
+    }
+  },
 
   Header: {
+    props: { padding: '- - - W' },
     Title: {
       props: {
-        padding: 'V - - W1'
-      },
-      caption: {
-        props: {
-          text: 'File Upload',
-          fontSize: 'B'
-        }
+        text: 'File Upload',
+        fontSize: 'C'
       }
     },
     Paragraph: null
   },
 
-  UploadLabel: { round: 'Z1' },
+  UploadLabel: {},
+
   UploadFooter: {
-    boxSize: 'fit-content 100%',
-    margin: '-W - - -',
-    padding: '0 - - A1',
-    boxSizing: 'border-box',
-    alignSelf: 'center',
-    gap: '0'
+    props: {
+      gap: '0',
+      minWidth: '100%'
+    }
   }
 }
 
@@ -106,13 +100,12 @@ export const UploadModal3 = {
   Header: {},
   UploadLabel2: {},
   UploadFooter: {
-    padding: '0',
-    IconText: { display: 'none' },
+    props: { padding: '0' },
+    IconText: null,
     Buttons: {
-      minWidth: '100%',
-      childProps: {
-        flex: '1',
-        padding: 'Z2+V -'
+      props: {
+        minWidth: '100%',
+        childProps: { flex: '1' }
       }
     }
 

@@ -1,44 +1,53 @@
 'use strict'
 
-import { Focusable } from '@symbo.ls/atoms'
+import { Flex, Focusable } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/icon'
 
 export const Field = {
   tag: 'label',
   extend: [Focusable, IconText],
   props: {
-    minWidth: 'G',
-    maxWidth: 'G',
-    minHeight: 'C+X',
+    minWidth: 'F2+Z2',
+    maxWidth: 'F2+Z2',
+    minHeight: 'C+V',
     align: 'center flex-start',
-    gap: 'Y+W',
+    gap: 'Y',
     boxSizing: 'border-box',
-    padding: '- Z+W',
-    round: 'Y+W',
-    border: '1px solid #3F3F43',
+    padding: '- Z2 - Z1',
+    round: 'Y2',
+    border: 'solid, gray .45 +65',
+    borderWidth: '.8px',
     position: 'relative',
     ':focus-within': { outline: '1px solid #0474F2' },
+
+    Icon: {
+      color: 'gray2',
+      fontSize: 'Z2'
+    },
 
     Button: {
       padding: '0',
       background: 'transparent',
-      color: 'white',
-      margin: '- - - auto'
+      color: 'gray2',
+      margin: '- - - auto',
+      fontSize: 'Z2'
     }
   },
 
   Input: {
     props: {
+      fontSize: 'Z',
+      fontWeight: '400',
       padding: '0',
       background: 'rgba(0, 0, 0, 0)',
       round: '0',
-      color: 'white',
+      color: 'gray2',
       fontFamily: 'avenir',
       placeholder: 'Placeholder',
       flex: '1',
       minHeight: '100%',
       outline: 'none !important',
-      fontWeight: '400'
+      '::placeholder': { color: 'gray 1 +64' }
     }
   }
 }
@@ -48,4 +57,52 @@ export const FieldTemplate = {
   Icon: { props: { name: 'info' } },
   Input: {},
   Button: { Icon: { name: 'eye' } }
+}
+
+export const FieldWithTitle = {
+  extend: Flex,
+  props: {
+    flow: 'column',
+    boxSize: 'fit-content fit-content',
+    gap: 'Y1',
+    Hint: {
+      color: 'gray 1 +64',
+      align: 'center flex-start',
+      fontSize: 'Y',
+      gap: 'Y',
+      padding: 'W - - Z'
+    }
+  },
+
+  Title: {
+    props: {
+      text: 'Label',
+      fontSize: 'Z',
+      lineHeight: '1em',
+      color: 'gray2',
+      padding: '- - - Y2',
+      fontWeight: '400'
+    }
+  },
+
+  Field: {
+    extend: Field
+  }
+}
+
+export const FieldWithTitleTemplate = {
+  extend: FieldWithTitle,
+  Title: {},
+  Field: {
+    Icon: { props: { name: 'info' } },
+    Input: {},
+    Button: { icon: 'eye' }
+  },
+  Hint: {
+    extend: IconText,
+    props: {
+      icon: 'info',
+      text: 'Description'
+    }
+  }
 }

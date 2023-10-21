@@ -16,16 +16,13 @@ export const UploadButton = {
 
   caption: {
     props: {
-      text: 'Choose file',
-      fontSize: 'Z2',
-      fontWeight: '500'
+      text: 'Choose file'
     }
   },
 
   Input: {
     type: 'file',
     inset: '0 0 0 0',
-    border: '2px solid red',
     position: 'absolute',
     boxSize: '100% 100%',
     top: '0',
@@ -40,9 +37,9 @@ export const UploadButtonWithBackground = {
   props: {
     fontFamily: 'Avenir',
     theme: 'primary',
-    padding: 'Z2 A2',
     color: 'white',
-    fontWeight: '400'
+    padding: 'Z2 A2'
+
   },
-  caption: { text: 'Browse files' }
+  caption: { props: { text: 'Browse files' } }
 }

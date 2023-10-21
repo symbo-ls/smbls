@@ -6,12 +6,13 @@ export const ParagraphButton = {
   extend: Flex,
   props: {
     alignItems: 'center',
-    gap: 'Y2'
+    gap: 'Y2',
+    fontSize: 'Y2'
   },
   P: {
     props: {
       text: 'Didn\'t get the code?',
-      color: 'gray2',
+      color: 'gray4',
       margin: '0'
     }
   },
@@ -20,7 +21,9 @@ export const ParagraphButton = {
     padding: '0',
     background: 'transparent',
     color: 'white',
-    textDecoration: 'underline'
+    textDecoration: 'underline',
+    fontWeight: '500',
+    Icon: { display: 'none' }
   }
 }
 
@@ -35,13 +38,11 @@ export const ParagraphButtonWithCheckbox = {
     tag: 'div',
     props: {
       Input: {},
-      Flex: {
-        fontSize: 'A1'
-      }
+      Flex: { fontSize: 'A' }
     }
   },
   ParagraphButton: {
-    fontSize: 'Z',
-    P: { color: 'white' }
+    P: { text: 'You agree to' },
+    Button: { text: 'privacy policy' }
   }
 }

@@ -1,93 +1,60 @@
 'use strict'
 
-import { Modal } from '@symbo.ls/modal'
+import { CommonButton } from '@symbo.ls/button'
+import { IconText } from '@symbo.ls/icon'
 import { CommonForm } from './CommonForm'
 
 export const SignUp = {
-  extend: Modal,
-  props: {
-    minWidth: 'H+B',
-    maxWidth: 'H+B',
-    padding: 'A2 A2'
-  },
+  extend: CommonForm,
+  props: { minWidth: 'H' },
 
   Header: {
-    props: { gap: 'Y1' },
-    Title: {
-      h5: {
-        props: {
-          text: 'Create your account',
-          fontSize: 'D1'
-        }
-      }
-    },
-    Paragraph: {
-      p: {
-        props: {
-          text: 'Let’s get started with your 30 days free trial',
-          color: 'gray4'
-        }
-      }
-    }
+    Title: { props: { text: 'Create your account' } },
+    Paragraph: { props: { text: 'Let’s get started with your 30 days free trial' } }
   },
 
-  Content: {
-    props: { flow: 'column' },
-    Form: {
-      extend: CommonForm,
-      props: {
-        gap: 'B',
-        padding: 'B - - -',
-        childProps: {
-          Field: {
-            background: 'gray3',
-            border: 'none'
-          }
-        }
-      },
+  Form: {
+    Fields: {
       ...[
         {
-          Title: { text: 'Full name' },
-          Field: { Input: { placeholder: 'Enter your full name' } }
+          Title: { props: { text: 'Full name' } },
+          Field: { Input: { props: { placeholder: 'Enter your full name' } } }
         },
         {
-          Title: { text: 'Email' },
-          Field: { Input: { placeholder: 'Email address' } }
+          Title: { props: { text: 'Email' } },
+          Field: { Input: { props: { placeholder: 'Email address' } } }
         },
         {
-          Title: { text: 'Password' },
-          Field: { Input: { placeholder: 'Create a password' } },
+          Title: { props: { text: 'Password' } },
+          Field: { Input: { props: { placeholder: 'Create a password' } } },
           Hint: {
-            Icon: { props: { name: 'info' } },
-            text: '8 characters reqired'
+            extend: IconText,
+            props: {
+              icon: 'info',
+              text: '8 character minimum'
+            }
           }
         },
         {
-          Title: { text: 'Confirm password' },
-          Field: { Input: { placeholder: 'Repeat password' } },
+          Title: { props: { text: 'Confirm password' } },
+          Field: { Input: { props: { placeholder: 'Repeat password' } } },
           Hint: {
-            Icon: { props: { name: 'info' } },
-            text: '8 characters reqired'
+            extend: IconText,
+            props: {
+              icon: 'info',
+              text: '8 character minimum'
+            }
           }
         }
       ]
     },
     ParagraphButtonWithCheckbox: {
-      padding: 'A1 Z - W',
-      Checkbox: {},
-      ParagraphButton: {
-        P: { text: 'You agree to' },
-        Button: { text: 'Privacy Policy' }
-      }
-    }
-  },
-
-  Footer: {
-    CommonButton: {
-      flex: '1',
-      round: 'Y+W',
-      Caption: { text: 'Create an account' }
+      padding: '0 Z1 - 0',
+      justifyContent: 'flex-end'
+    },
+    Submit: {
+      extend: CommonButton,
+      caption: { props: { text: 'Create an account' } }
     }
   }
-
 }

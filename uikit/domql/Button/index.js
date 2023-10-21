@@ -70,19 +70,20 @@ export const CommonButton = {
   props: {
     theme: 'primary',
     boxSize: 'fit-content',
-    padding: 'Z1 A',
-    round: 'Z',
+    padding: 'Z2 A2',
+    round: 'Y2',
     gap: 'Y',
     position: 'relative'
   },
   Icon: {
-    props: { fontSize: 'B2' }
+    props: { fontSize: 'B1' }
   },
   caption: {
     props: {
       text: 'Button',
       line_height: '1em',
-      fontSize: 'Z2'
+      fontSize: 'Z2',
+      letterSpacing: '.005em'
     }
   }
 }
@@ -107,27 +108,21 @@ export const ButtonSet = {
 export const CancelConfirmButtons = {
   extend: Flex,
   props: {
-    gap: 'Z',
+    gap: 'Z2',
     maxWidth: 'fit-content'
-    // border: '1px solid red'
   },
   childExtend: {
     extend: CommonButton,
     props: {
-      padding: 'Z2 B'
+      ':first-child': {
+        theme: 'transparent',
+        padding: '- Y1'
+      }
     }
   },
   ...[
-    {
-      props: {
-        theme: 'dialog',
-        color: 'white'
-      },
-      caption: { text: 'No' }
-    },
-    {
-      caption: { text: 'Yes' }
-    }
+    { caption: { props: { text: 'No' } } },
+    { caption: { props: { text: 'Yes' } } }
   ]
 }
 

@@ -1,69 +1,42 @@
 'use strict'
 
-import { Modal } from '@symbo.ls/modal'
+import { Flex } from '@symbo.ls/atoms'
+import { CommonButton } from '@symbo.ls/button'
 import { SocialLink } from '@symbo.ls/sociallink'
 import { CommonForm } from './CommonForm'
 
 export const LogIn = {
-  extend: Modal,
-  props: {
-    minWidth: 'H+B',
-    maxWidth: 'H+B',
-    padding: 'B A'
-  },
+  extend: CommonForm,
+  props: { minWidth: 'G3+C1' },
 
   Header: {
-    props: { gap: 'Y1' },
-    Title: {
-      h5: {
-        props: {
-          text: 'Log in to your account',
-          fontSize: 'D1'
-        }
-      }
-    },
-    Paragraph: {
-      p: {
-        props: {
-          text: 'Enter your email address and password to log in.',
-          color: 'gray4'
-        }
-      }
-    }
+    Title: { props: { text: 'Log in to your account' } },
+    Paragraph: { props: { text: 'Enter your email address and password to log in.' } }
   },
 
-  Content: {
+  Form: {
     props: {
-      flow: 'column',
-      padding: 'B - - -'
+      ParagraphButtonWithCheckbox: { margin: 'A -' }
     },
-    Form: {
-      extend: CommonForm,
-      props: {
-        gap: 'B',
-        childProps: {
-          Field: {
-            background: 'gray3',
-            border: 'none'
-          }
-        }
-      },
+    Fields: {
       ...[
         {
-          Title: { text: 'Email' },
-          Field: { Input: { placeholder: 'Enter your email' } }
+          Title: { props: { text: 'Email' } },
+          Field: { Input: { props: { placeholder: 'Enter your email' } } }
         },
         {
-          Title: { text: 'Password' },
+          Title: { props: { text: 'Password' } },
           Field: {
-            Input: { placeholder: 'Enter your password' },
-            Button: { Icon: { name: 'eye' } }
+            Icon: null,
+            Input: { props: { placeholder: 'Enter your password' } },
+            Button: { props: { icon: 'eye' } }
+
           }
         }
       ]
     },
     ParagraphButtonWithCheckbox: {
-      padding: 'A Z A Y',
+      padding: '- Y1',
       Checkbox: {},
       ParagraphButton: {
         flex: '1',
@@ -71,42 +44,32 @@ export const LogIn = {
         P: { text: 'Keep me logged in' },
         Button: {
           text: 'Forgot your password?',
+          fontWeight: '400',
           textDecoration: 'none'
         }
       }
     },
-
-    CommonButton: {
-      minWidth: '100%',
-      round: 'Y+W',
-      Caption: { text: 'Sign in' }
-    },
-
-    DoubleHr: {
-      padding: 'B -'
+    Submit: {
+      extend: CommonButton,
+      props: { margin: 'A - - -' },
+      caption: { props: { text: 'Sign in' } }
     }
   },
 
+  DoubleHr: {},
   Footer: {
+    extend: Flex,
     props: {
       flow: 'column',
-      gap: 'A'
+      gap: 'Z2'
     },
     childExtend: {
       extend: SocialLink,
       props: {
-        width: '100%'
+        minWidth: '100%',
+        color: 'gray4'
       }
     },
-    ...[
-      {},
-      {
-        props: {
-          Icon: { name: 'facebook' },
-          text: 'Continue with Facebook'
-        }
-      }
-    ]
+    ...[{}, {}]
   }
-
 }

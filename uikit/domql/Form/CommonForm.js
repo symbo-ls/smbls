@@ -1,32 +1,59 @@
 'use strict'
 
-import { Grid, Form } from '@symbo.ls/atoms'
-import { CommonField } from '@symbo.ls/field'
+import { Flex, Grid } from '@symbo.ls/atoms'
+import { Modal } from '@symbo.ls/modal'
+import { FieldWithTitle } from '@symbo.ls/field'
 
 export const CommonForm = {
-  extend: [Form, Grid],
-
+  extend: Modal,
   props: {
-    gap: 'B2',
-    height: 'fit-content',
-    margin: '0',
-    width: '100%'
+    gap: 'B',
+    boxSizing: 'border-box',
+    padding: 'A1 A A A'
   },
 
-  childExtend: {
-    extend: CommonField,
+  X: {
     props: {
-      minWidth: '100%',
-      Textarea: {
-        width: '100%',
-        maxWidth: '100%'
-      },
-      Hint: { color: 'gray .92 +68' }
+      top: 'Y2',
+      right: 'Y2'
+    }
+  },
+
+  Header: { props: { gap: 'Y' } },
+
+  Form: {
+    extend: Flex,
+    props: {
+      flow: 'column',
+      ParagraphButton: { margin: 'Z2 - - Z2' },
+      ParagraphButtonWithCheckbox: { margin: 'Z1 - - Z' },
+      '> div ~ div > button': { padding: 'Z2+V1 B1' },
+      '> div ~ button': { padding: 'Z2+V1 B1' }
     },
 
-    Title: {},
-    Field: {
-      props: { minWidth: '100%' }
+    Fields: {
+      extend: Grid,
+      props: {
+        columnGap: 'A',
+        rowGap: 'A2'
+      },
+      childExtend: {
+        extend: FieldWithTitle,
+        props: {
+          width: '100%',
+          Field: { minWidth: '100%' }
+        }
+      }
+    },
+
+    Submit: {
+      props: {
+        minWidth: '100%',
+        margin: 'C1 - - -',
+        childProps: {
+          fontWeight: '500'
+        }
+      }
     }
   }
 }

@@ -9,15 +9,16 @@ export const Textarea = {
 
   props: {
     variant: 'outlined',
-    round: 'Z2',
+    fontfamily: 'Avenir',
+    round: 'Z1',
     maxWidth: 'H',
     minHeight: 'E',
     placeholder: 'Leave us a message...',
     fontSize: 'Z1',
     padding: 'A',
-    background: 'rgba(0, 0, 0, 0)',
-    border: '1px solid #3F3F43',
+    theme: 'transparent',
     color: 'white',
+    border: 'none',
     style: { resize: 'none' }
   },
 
@@ -33,7 +34,7 @@ export const Textarea = {
 
   '.outlined': {
     props: {
-      border: '1px solid #3F3F43',
+      // border: '1px solid #3F3F43',
       background: 'transparent',
       // round: 'Y+W',
       width: 'G1',

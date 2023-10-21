@@ -7,6 +7,8 @@ export const SocialLink = {
   extend: [Link, IconText],
   props: {
     fontWeight: '500',
+    text: 'Continue with Twitch',
+    fontSize: 'Z2',
     gap: 'Z',
     boxSize: 'fit-content',
     padding: 'A A2',
@@ -17,7 +19,6 @@ export const SocialLink = {
     Icon: {
       name: 'twitch',
       boxSize: 'A2'
-    },
-    text: 'Continue with Twitch'
+    }
   }
 }
