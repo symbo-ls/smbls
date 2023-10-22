@@ -5,36 +5,45 @@ import { isString, merge } from '@domql/utils'
 
 import { getActiveConfig } from '../factory.js'
 import {
+  applyMediaSequenceVars,
   applySequenceVars,
   generateSequence,
   getSequenceValuePropertyPair
 } from '../utils'
 
-const runThroughMedia = sequenceProps => {
-  for (const prop in sequenceProps) {
-    const mediaProps = sequenceProps[prop]
-    if (prop.slice(0, 1) === '@') {
-      const { type, base, ratio, range, subSequence, h1Matches, unit } = sequenceProps
+const runThroughMedia = FACTORY => {
+  for (const prop in FACTORY) {
+    const mediaProps = FACTORY[prop]
 
-      merge(mediaProps, {
-        type,
-        base,
-        ratio,
-        range,
-        subSequence,
-        h1Matches,
-        unit,
-        sequence: {},
-        scales: {},
-        templates: {},
-        vars: {}
-      })
+    const isMediaName = prop.slice(0, 1) === '@'
+    if (!isMediaName) continue
 
-      generateSequence(mediaProps)
+    const {
+      type,
+      base,
+      ratio,
+      range,
+      subSequence,
+      h1Matches,
+      unit
+    } = FACTORY
 
-      const mediaName = prop.slice(1)
-      applySequenceVars(mediaProps, mediaName)
-    }
+    merge(mediaProps, {
+      type,
+      base,
+      ratio,
+      range,
+      subSequence,
+      h1Matches,
+      unit,
+      sequence: {},
+      scales: {},
+      templates: {},
+      vars: {}
+    })
+
+    generateSequence(mediaProps)
+    applyMediaSequenceVars(FACTORY, prop)
   }
 }
 
@@ -127,7 +136,7 @@ export const getSpacingBasedOnRatio = (props, propertyName, val) => {
       })
     }
 
-    applySequenceVars(sequenceProps, null, { useDefault: false })
+    applySequenceVars(sequenceProps, { useDefault: false })
 
     return getSpacingByKey(value, propertyName, sequenceProps)
   }

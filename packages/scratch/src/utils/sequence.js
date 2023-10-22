@@ -34,50 +34,88 @@ export const numToLetterMap = {
 }
 
 const setSequenceValue = (props, sequenceProps) => {
-  const { key, variable, value, scaling, index } = props
+  const { key, variable, value, scaling, index, scalingVariable } = props
   sequenceProps.sequence[key] = {
     key,
     decimal: ~~(value * 100) / 100,
     val: ~~(value),
     scaling,
     index,
+    scalingVariable,
     variable
   }
   sequenceProps.scales[key] = scaling
   sequenceProps.vars[variable] = scaling + sequenceProps.unit
 }
 
+export const setScalingVar = (key, sequenceProps) => {
+  const { type } = sequenceProps
+  if (key === 0) return '1em'
+
+  const prefix = '--' + (type && type.replace('.', '-'))
+  const ratioVar = `${prefix}-ratio`
+
+  if (key > 0) {
+    const prevLetterKey = numToLetterMap[key - 1]
+    return `calc(var(${prefix}-${prevLetterKey}) * var(${ratioVar}))`
+  }
+  if (key < 0) {
+    const nextLetterKey = numToLetterMap[key + 1]
+    return `calc(var(${prefix}-${nextLetterKey}) / var(${ratioVar}))`
+  }
+}
+
+export const setSubScalingVar = (index, arr, variable, sequenceProps) => {
+  const { type } = sequenceProps
+  const skipMiddle = index === 2 && arr.length === 2
+  const indexMapWithLength = skipMiddle ? index + 1 : index
+
+  const prefix = '--' + (type && type.replace('.', '-'))
+  const subRatioVarPrefix = `${prefix}-sub-ratio-`
+
+  return `calc(var(${variable}) * var(${subRatioVarPrefix + indexMapWithLength}))`
+}
+
+export const getSubratioDifference = (base, ratio) => {
+  const diff = (base * ratio - base)
+  const subRatio = diff / 1.618
+  const first = (base * ratio - subRatio)
+  const second = base + subRatio
+  const middle = (first + second) / 2
+  return [first, middle, second]
+}
+
+export const getSubratio = (base, ratio) => {
+  return getSubratioDifference(base, ratio).map(v => v / base)
+}
+
 export const generateSubSequence = (props, sequenceProps) => {
   const { key, base, value, ratio, variable, index } = props
 
   const next = value * ratio
-  const diff = next - value
-  const smallscale = diff / 1.618
+  const diffRounded = ~~next - ~~value
 
-  const valueRounded = ~~(value)
-  const nextRounded = ~~(next)
-  const diffRounded = nextRounded - valueRounded
-
-  let arr = []
-  const first = next - smallscale
-  const second = value + smallscale
-  const middle = (first + second) / 2
+  let arr
+  const [first, middle, second] = getSubratioDifference(value, ratio)
   if (diffRounded > 16) arr = [first, middle, second]
   else arr = [first, second]
 
-  arr.map((v, k) => {
+  arr.forEach((v, k) => {
     const scaling = ~~(v / base * 1000) / 1000
     const newVar = variable + (k + 1)
+    const newIndex = index + (k + 1) / 10
+    const scalingVariable = setSubScalingVar(k + 1, arr, variable, sequenceProps)
 
     const props = {
       key: key + (k + 1),
       variable: newVar,
       value: v,
       scaling,
-      index: index + (k + 1) / 10
+      scalingVariable,
+      index: newIndex
     }
 
-    return setSequenceValue(props, sequenceProps)
+    setSequenceValue(props, sequenceProps)
   })
 }
 
@@ -106,6 +144,7 @@ export const generateSequence = (sequenceProps) => {
     const value = switchSequenceOnNegative(key, base, ratio)
     const scaling = ~~(value / base * 100) / 100
     const variable = prefix + letterKey
+    const scalingVariable = setScalingVar(key, sequenceProps)
 
     const props = {
       key: letterKey,
@@ -113,6 +152,7 @@ export const generateSequence = (sequenceProps) => {
       value,
       base,
       scaling,
+      scalingVariable,
       ratio,
       index: key
     }

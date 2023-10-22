@@ -9,6 +9,7 @@ const defaultProps = {
   ratio: SEQUENCE.phi,
   range: [-5, +15],
   subSequence: true,
+  mediaRegenerate: false,
   unit: 'em',
   sequence: {},
   scales: {},

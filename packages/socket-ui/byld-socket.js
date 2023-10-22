@@ -37,10 +37,10 @@ const COLOR = {
   blue: '#3686F7'
 }
 
-set({
-  COLOR,
-  ANIMATION
-})
+// set({
+//   COLOR,
+//   ANIMATION
+// })
 
 const connectedToSymbols = (clients, element, state) => {
   if (clients.symbols) {

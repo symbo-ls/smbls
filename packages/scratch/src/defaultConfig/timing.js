@@ -8,6 +8,7 @@ const defaultProps = {
   type: 'timing',
   ratio: SEQUENCE['perfect-fourth'],
   range: [-3, +12],
+  mediaRegenerate: false,
   unit: 'ms',
   sequence: {},
   scales: {},

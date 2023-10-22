@@ -11,7 +11,7 @@ import {
 } from '@symbo.ls/scratch'
 
 import { depth } from './Shape/style'
-import { isUndefined } from '@domql/utils'
+import { isUndefined, isString } from '@domql/utils'
 
 export const getSystemTheme = ({ context, state }) => {
   const rootState = state && state.__root
@@ -136,7 +136,7 @@ export const Theme = {
       })
     },
 
-    boxShadow: ({ props, deps }) => !isUndefined(props.boxShadow) && ({
+    boxShadow: ({ props, deps }) => isString(props.boxShadow) && ({
       boxShadow: deps.transformBoxShadow(props.boxShadow)
     }),
 

@@ -11,6 +11,7 @@ const defaultProps = {
   h1Matches: +6,
   lineHeight: 1.5,
   subSequence: true,
+  mediaRegenerate: false,
   unit: 'em',
   templates: {},
   sequence: {},
