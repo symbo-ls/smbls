@@ -46,11 +46,19 @@ export const transformTextStroke = stroke => {
   }).join(' ')
 }
 
-export const transformShadow = (sh, globalTheme) => {
-  return sh.split(',').map(shadow => getShadow(shadow, globalTheme)).join(',')
-}
+export const transformShadow = (sh, globalTheme) => getShadow(sh, globalTheme)
 
-export const transformBoxShadow = (sh, globalTheme) => getShadow(sh, globalTheme)
+export const transformBoxShadow = shadows => shadows.split('|').map(shadow => {
+  return shadow.split(', ').map(v => {
+    v = v.trim()
+    if (v.slice(0, 2) === '--') return `var(${v})`
+    if (getColor(v).length > 2) return getColor(v)
+    if (v.includes('px') || v.slice(-2) === 'em') return v
+    const arr = v.split(' ')
+    if (!arr.length) return v
+    return arr.map(v => getSpacingByKey(v, 'shadow').shadow).join(' ')
+  }).join(' ')
+}).join(',')
 
 export const transformBackgroundImage = (backgroundImage, globalTheme) => {
   const CONFIG = getActiveConfig()

@@ -101,9 +101,15 @@ export const Theme = {
     border: ({ props, deps }) => !isUndefined(props.border) && ({
       border: deps.transformBorder(props.border)
     }),
-    borderColor: ({ props, deps }) => !isUndefined(props.borderColor) && ({
-      borderColor: deps.getMediaColor(props.borderColor)
-    }),
+
+    borderColor: (element) => {
+      const { props, deps } = element
+      const globalTheme = deps.getSystemTheme(element)
+      if (!props.borderColor) return
+      return {
+        borderColor: deps.getMediaColor(props.borderColor, globalTheme)
+      }
+    },
     borderStyle: ({ props }) => !isUndefined(props.borderStyle) && ({
       borderStyle: props.borderStyle
     }),

@@ -94,7 +94,7 @@ const returnPropertyValue = (el, property, def) => {
 export const RangeWithButtons = {
   minus: {
     extend: SquareButton,
-    props: { theme: 'tertiary', icon: 'minus' },
+    props: { theme: 'secondary', icon: 'minus' },
     on: {
       click: (ev, el, s) => {
         const parentProps = el.parent.props
@@ -148,7 +148,7 @@ export const RangeWithButtons = {
   },
   plus: {
     extend: SquareButton,
-    props: { theme: 'tertiary', icon: 'plus' },
+    props: { theme: 'secondary', icon: 'plus' },
     on: {
       click: (ev, el, s) => {
         const parentProps = el.parent.props

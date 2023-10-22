@@ -10,6 +10,7 @@ export const Select = {
     fontSize: 'A',
     border: 'none',
     boxSizing: 'border-box',
+    theme: 'field',
     cursor: 'pointer'
   },
 

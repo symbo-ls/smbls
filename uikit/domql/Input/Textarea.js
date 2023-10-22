@@ -20,7 +20,7 @@ export const Textarea = {
 
   '.simple': {
     props: {
-      theme: 'tertiary',
+      theme: 'field',
       round: 'Z2',
       width: 'G1',
       height: 'E1',
