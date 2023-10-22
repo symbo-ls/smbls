@@ -3,6 +3,7 @@
 import { isString } from '@domql/utils'
 import { toDashCase } from '@symbo.ls/utils'
 import { getActiveConfig } from '../factory.js'
+import { isScalingUnit } from './unit.js'
 
 export const numToLetterMap = {
   '-6': 'U',
@@ -49,8 +50,11 @@ const setSequenceValue = (props, sequenceProps) => {
 }
 
 export const setScalingVar = (key, sequenceProps) => {
-  const { type } = sequenceProps
-  if (key === 0) return '1em'
+  const { base, type, unit } = sequenceProps
+
+  const defaultVal = (isScalingUnit(unit) ? 1 : base) + unit
+
+  if (key === 0) return defaultVal
 
   const prefix = '--' + (type && type.replace('.', '-'))
   const ratioVar = `${prefix}-ratio`

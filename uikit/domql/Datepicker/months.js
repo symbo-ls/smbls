@@ -95,7 +95,6 @@ export const DatePickerMonthsSlider = {
         update: (el, state) => {
           const { props } = el
           const { isSelected } = props
-          console.log(isSelected)
           if (isSelected) {
             window.requestAnimationFrame(() => {
               el.parent.parent.node.scrollTo({

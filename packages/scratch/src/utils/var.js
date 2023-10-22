@@ -3,6 +3,7 @@
 import { isObjectLike } from '@domql/utils'
 import { getActiveConfig } from '../factory.js'
 import { getSubratio } from './sequence.js'
+import { isScalingUnit } from './unit.js'
 
 export const setVariables = (result, key) => {
   const CONFIG = getActiveConfig()
@@ -68,7 +69,7 @@ export const applySequenceVars = (FACTORY, options = {}) => {
 
 export const applyMediaSequenceVars = (FACTORY, media, options = {}) => {
   const CONFIG = getActiveConfig()
-  const { UNIT, MEDIA, TIMING, CSS_VARS } = CONFIG
+  const { UNIT, MEDIA, CSS_VARS } = CONFIG
 
   const mediaName = media.slice(1)
 
@@ -91,9 +92,9 @@ export const applyMediaSequenceVars = (FACTORY, media, options = {}) => {
   for (const key in sequence) {
     const item = sequence[key]
 
-    const value = (FACTORY.type === TIMING.type
-      ? sequence[key].val
-      : scales[key]
+    const value = (isScalingUnit(unit)
+      ? scales[key]
+      : sequence[key].val
     ) + unit
 
     if (!query && CONFIG.verbose) console.warn('Can\'t find query ', query)
@@ -104,6 +105,4 @@ export const applyMediaSequenceVars = (FACTORY, media, options = {}) => {
     underMediaQuery[item.variable] = `var(${item.variable + '_' + mediaName})`
     CSS_VARS[item.variable + '_' + mediaName] = value
   }
-
-  console.log(CSS_VARS)
 }

@@ -1,5 +1,6 @@
 'use strict'
 
+export * from './unit.js'
 export * from './color.js'
 export * from './theme.js'
 export * from './font.js'
