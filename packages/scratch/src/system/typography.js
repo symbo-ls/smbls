@@ -40,11 +40,7 @@ export const runThroughMedia = FACTORY => {
       range,
       subSequence,
       h1Matches,
-      unit,
-      sequence: {},
-      scales: {},
-      templates: {},
-      vars: {}
+      unit
     })
 
     const query = MEDIA[mediaName]
@@ -56,6 +52,13 @@ export const runThroughMedia = FACTORY => {
       applyMediaSequenceVars(FACTORY, prop)
       continue
     }
+
+    merge(mediaValue, {
+      sequence: {},
+      scales: {},
+      templates: {},
+      vars: {}
+    })
 
     generateSequence(mediaValue)
 

@@ -140,5 +140,6 @@ export const getSpacingBasedOnRatio = (props, propertyName, val) => {
 
     return getSpacingByKey(value, propertyName, sequenceProps)
   }
+
   return getSpacingByKey(value, propertyName)
 }
