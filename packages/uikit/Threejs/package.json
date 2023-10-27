@@ -1,0 +1,11 @@
+{
+  "name": "@symbo.ls/threejs",
+  "author": "symbo.ls",
+  "version": "2.11.221",
+  "repository": "https://github.com/symbo-ls/smbls",
+  "main": "index.js",
+  "dependencies": {
+    "three": "^0.150.1"
+  },
+  "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90"
+}

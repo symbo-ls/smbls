@@ -1,0 +1,13 @@
+{
+  "name": "@symbo.ls/range",
+  "version": "2.11.226",
+  "main": "index.js",
+  "license": "MIT",
+  "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
+  "dependencies": {
+    "@domql/utils": "latest",
+    "@symbo.ls/button": "latest",
+    "@symbo.ls/scratch": "latest"
+  },
+  "source": "src/index.js"
+}
