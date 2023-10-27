@@ -47,6 +47,8 @@ export const Strong = {
 export const Underline = { tag: 'u' }
 export const Italic = { tag: 'i' }
 
+export const Title = { tag: 'h5' }
+
 export const Headline = {
   tag: 'h6',
   props: { fontSize: 'B', fontWeight: 500 }
@@ -61,3 +63,5 @@ export const Footnote = {
   tag: 'span',
   props: { fontSize: 'Z' }
 }
+
+// export const Paragraph = { tag: 'p' }

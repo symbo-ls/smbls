@@ -11,8 +11,8 @@ export const StepCard = {
     round: 'A2',
     backgroundColor: '#FF3CAC',
     background: 'linear-gradient(225deg, #FF3CAC 0%, #784BA0 50%, #2B86C5 100%)'
-
   },
+
   Icon: {
     extend: Icon,
     props: {
@@ -20,6 +20,7 @@ export const StepCard = {
       boxSize: 'E'
     }
   },
+
   LineStepsWithTitleParagraph: {
     position: 'absolute',
     left: '0',
@@ -28,5 +29,4 @@ export const StepCard = {
     round: '0',
     background: 'black .2'
   }
-
 }

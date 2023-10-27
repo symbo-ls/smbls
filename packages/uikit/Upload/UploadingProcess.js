@@ -1,39 +1,57 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
+import { Dialog } from '@symbo.ls/dialog'
+import { Button } from '@symbo.ls/button'
+import { TitleParagraph } from '@symbo.ls/titleparagraph'
 import { UploadImage } from './UploadImage'
+
 export const UploadingProcess = {
-  extend: Flex,
+  extend: Dialog,
   props: {
-    background: '#141416',
-    boxSize: 'fit-content fit-content',
-    padding: 'Z A Z Z',
-    round: 'Z+X',
-    gap: 'Z'
+    boxSize: 'fit-content',
+    padding: 'Y2 Z2 Y2 Y2',
+    round: 'A',
+    gap: 'Y2',
+    position: 'relative'
   },
 
   Image: { extend: UploadImage },
-
   Flex: {
+    extend: TitleParagraph,
     props: {
-      flex: '1',
-      flow: 'column',
-      boxSizing: 'border-box',
-      justifyContent: 'center',
-      gap: 'Y2'
+      justifyContent: 'space-between',
+      padding: 'W2 -'
     },
 
-    TitleParagraph: {
-      extend: TitleParagraphWithButton,
-      props: { gap: 'Y2' },
-      Title: { h5: { text: 'Image.jpg' } },
-      Paragraph: {
-        p: null,
-        DoubleUnitValue: {}
+    Title: {
+      props: { justifyContent: 'space-between' },
+      caption: {
+        props: {
+          text: 'Image.jpg',
+          fontSize: 'Z2'
+        }
+      },
+      x: {
+        extend: Button,
+        props: {
+          icon: 'x',
+          fontSize: 'B',
+          boxSize: 'fit-content',
+          padding: '0',
+          theme: 'transparent',
+          margin: '- -V1 - -'
+        }
       }
     },
-    ProgressLine: {}
+
+    Paragraph: {
+      props: {
+        flow: 'column',
+        gap: 'Y2'
+      },
+      DoubleUnitValue: { fontSize: 'Y' },
+      ProgressLine: {}
+    }
   }
 }
 
@@ -41,16 +59,22 @@ export const UploadedProcess = {
   extend: UploadingProcess,
   Image: {},
   Flex: {
-    TitleParagraph: {
-      Title: {},
-      Paragraph: {
-        p: { props: { text: 'Done' } },
-        DoubleUnitValue: null
+    Title: {},
+    Paragraph: {
+      DoubleUnitValue: null,
+      span: {
+        props: {
+          text: 'Done',
+          fontSize: 'Y',
+          lineHeight: '1em',
+          color: 'gray2',
+          display: 'block'
+        }
+      },
+      ProgressLine: {
+        value: '1',
+        style: { '&::-webkit-progress-value': { background: '#04F214' } }
       }
-    },
-    ProgressLine: {
-      value: '1',
-      style: { '&::-webkit-progress-value': { background: '#04F214' } }
     }
   }
 }
@@ -58,36 +82,42 @@ export const UploadedProcess = {
 export const UploadingProcess2 = {
   extend: UploadingProcess,
   props: {
-    border: '1px solid #3F3F43'
+    border: 'solid, gray3',
+    borderWidth: '1px'
   },
 
-  Image: { props: { padding: 'Z+Y' } },
+  Image: {
+    props: { padding: 'Z2' },
+    Icon: { fontSize: 'D' }
+  },
+
   Flex: {
-    props: {
-      justifyContent: 'center',
-      padding: '0 0 0 0',
-      gap: 'Y2',
-      position: 'relative'
-    },
-    TitleParagraph: {
-      Title: {},
-      Paragraph: null
-    },
-    ProgressLine: null,
-    ProgressLineWithUnitValue: {}
+    Title: { caption: { props: { fontSize: 'A1' } } },
+    Paragraph: {
+      ProgressLineWithUnitValue: {
+        ProgressLine: {},
+        UnitValue: { fontSize: 'Y1' }
+      },
+      DoubleUnitValue: null,
+      ProgressLine: null
+    }
   }
 }
+
 export const UploadedProcess2 = {
   extend: UploadingProcess2,
   Image: {},
   Flex: {
-    TitleParagraph: {},
-    ProgressLineWithUnitValue: {
-      ProgressLine: {
-        value: 1,
-        style: { '&::-webkit-progress-value': { background: '#04F214' } }
-      },
-      UnitValue: { Value: { text: '100' } }
+    props: { margin: '- - -V2 -' },
+    Title: {},
+    Paragraph: {
+      ProgressLineWithUnitValue: {
+        ProgressLine: {
+          value: 1,
+          style: { '&::-webkit-progress-value': { background: '#04F214' } }
+        },
+        UnitValue: { Value: { text: '100' } }
+      }
     }
   }
 }
@@ -95,28 +125,37 @@ export const UploadedProcess2 = {
 export const UploadingProcess3 = {
   extend: UploadingProcess2,
   props: {
-    minWidth: 'G+E'
+    minWidth: 'G+C2',
+    gap: 'Z'
   },
+
   Image: {},
   Flex: {
-    TitleParagraph: {
-      Title: {
-        h5: {},
-        Button: {
-          props: {
-            padding: 'Y',
-            background: '#252527',
-            position: 'absolute',
-            top: '50%',
-            right: '0',
-            transform: 'translate(0%, -50%)'
-          }
-        }
-      },
-      Paragraph: null
+    props: {
+      padding: '0',
+      justifyContent: 'center',
+      gap: 'Z'
     },
-    ProgressLineWithUnitValue: null,
-    ProgressCircleWithSideUnitValue: {}
+    Title: {
+      caption: {
+        props: { fontSize: 'Z2' }
+      },
+      x: {
+        props: {
+          position: 'absolute',
+          top: '50%',
+          right: 'B+W1',
+          transform: 'translate(50%, -50%)',
+          padding: 'Y',
+          fontSize: 'A1',
+          theme: 'tertiary'
+        }
+      }
+    },
+    Paragraph: {
+      ProgressLineWithUnitValue: null,
+      ProgressCircleWithSideUnitValue: {}
+    }
   }
 }
 
@@ -124,72 +163,70 @@ export const UploadedProcess3 = {
   extend: UploadingProcess3,
   Image: {},
   Flex: {
-    TitleParagraph: {},
-    ProgressCircleWithSideUnitValue: {
-      ProgressCircle: {
-        Progress: {
-          value: 1,
-          style: { '&::-webkit-progress-value': { background: '#04F214' } }
+    Title: {},
+    Paragraph: {
+      ProgressCircleWithSideUnitValue: {
+        ProgressCircle: {
+          Progress: {
+            value: 1,
+            style: { '&::-webkit-progress-value': { background: '#04F214' } }
+          }
+        },
+        UnitValue: {
+          Value: { text: 'Done' },
+          Unit: { display: 'none' }
         }
-      },
-      UnitValue: {
-        Value: { text: 'Done' },
-        Unit: { display: 'none' }
       }
     }
   }
 }
 
 export const UploadingProcess4 = {
-  extend: UploadingProcess,
+  extend: UploadingProcess3,
   props: {
-    minWidth: 'G+E',
-    background: 'transparent',
-    border: '1px solid #3F3F43',
-    gap: 'A',
-    padding: 'A',
-    round: 'Z+X'
+    alignItems: 'center',
+    padding: 'Y2 Y2 Y2 Z',
+    gap: 'Z1'
   },
+
   Image: null,
-  ProgressCircleWithUnitValue: {},
+  ProgressCircleWithIcon: {
+    boxSize: 'C+X1',
+    Icon: { fontSize: 'C' }
+  },
 
   Flex: {
     props: {
-      justifyContent: 'center',
-      position: 'relative'
+      gap: 'Y1',
+      padding: 'W2 - - -'
     },
-    TitleParagraph: {
-      props: { justifyContent: 'center' },
-      Title: {
-        h5: {},
-        Button: {
-          props: {
-            position: 'absolute',
-            top: '50%',
-            right: '0',
-            transform: 'translate(0%, -50%)',
-            padding: '0'
-          }
-        }
+    Title: {},
+    Paragraph: {
+      tag: 'p',
+      props: {
+        text: 'Uploading . . .',
+        margin: '0',
+        padding: '0',
+        fontSize: 'Y1',
+        color: 'gray2'
       },
-      Paragraph: {
-        p: { text: 'Uploading...' },
-        DoubleUnitValue: { display: 'none' }
-      }
-    },
-    ProgressLine: null
+      ProgressCircleWithSideUnitValue: null
+    }
   }
 }
 
 export const UploadedProcess4 = {
   extend: UploadingProcess4,
 
-  ProgressCircleWithUnitValue: null,
   ProgressCircleWithIcon: {
+    ':after': {
+      width: 'calc(100% - 3px)',
+      height: 'calc(100% - 3px)'
+    },
     Icon: {
       name: 'check',
       color: '#04F214',
-      fontSize: 'H'
+      fontSize: 'E1'
     },
     Progress: {
       value: 1,
@@ -198,10 +235,9 @@ export const UploadedProcess4 = {
       }
     }
   },
+
   Flex: {
-    TitleParagraph: {
-      Title: {},
-      Paragraph: { p: { text: 'Uploaded' } }
-    }
+    Title: {},
+    Paragraph: { text: 'Uploaded' }
   }
 }

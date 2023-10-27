@@ -6,24 +6,26 @@ import { GroupList } from './GroupList'
 
 export const GroupListWithSearch = {
   extend: GroupList,
-  props: { maxWidth: 'G1' },
+  props: {
+    maxWidth: 'G1'
+  },
 
   Header: {},
+
   SearchContainer: {
     extend: Flex,
     props: {
-      padding: 'X Y'
+      padding: '0 Z1 Y2 Z1',
+      background: 'transparent'
     },
     Search: {
       extend: Search,
       props: {
         maxWidth: '100%',
         minWidth: '100%',
-        minHeight: 'C+Y',
-        round: 'C',
-        fontSize: 'Z2',
-        border: 'none',
-        background: 'black .25'
+        minHeight: 'C',
+        theme: 'transparent',
+        round: 'Z1'
       },
       Icon: {
         props: {
@@ -34,6 +36,7 @@ export const GroupListWithSearch = {
       Input: { fontSize: 'Z' }
     }
   },
+
   Groups: {
     Flex: {
       childExtend: {
@@ -57,16 +60,6 @@ export const GroupListWithSearchTemplate = {
   SearchContainer: {},
   Groups: {
     Flex: {
-      props: {
-        childProps: {
-          Title: { padding: 'A A A A2' },
-          List: {
-            Flex: {
-              childProps: { padding: 'Z1 A1 Z1 B' }
-            }
-          }
-        }
-      },
       ...[
         {
           Title: null,

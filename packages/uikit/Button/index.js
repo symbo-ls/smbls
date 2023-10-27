@@ -70,18 +70,20 @@ export const CommonButton = {
   props: {
     theme: 'primary',
     boxSize: 'fit-content',
-    padding: 'A A2',
-    round: 'Z2',
-    gap: 'Y2',
+    padding: 'Z2 A2',
+    round: 'Z1',
+    gap: 'X1',
     position: 'relative'
   },
   Icon: {
-    props: { fontSize: 'C' }
+    props: { fontSize: 'B1' }
   },
-  Caption: {
+  caption: {
     props: {
       text: 'Button',
-      lineHeight: '1em'
+      line_height: '1em',
+      fontSize: 'Z2',
+      letterSpacing: '.005em'
     }
   }
 }
@@ -91,10 +93,10 @@ export const IconCommonButton = {
   props: {
     Icon: { name: 'smile' },
     boxSize: 'fit-content fit-content',
-    padding: 'A',
-    background: 'gray3'
+    padding: 'Z2',
+    theme: 'tertiary'
   },
-  Caption: null
+  caption: null
 }
 
 export const ButtonSet = {
@@ -105,35 +107,31 @@ export const ButtonSet = {
 
 export const CancelConfirmButtons = {
   extend: Flex,
+  props: {
+    gap: 'Z2',
+    maxWidth: 'fit-content'
+  },
   childExtend: {
     extend: CommonButton,
     props: {
-      minWidth: 'D2',
       ':first-child': {
-        background: 'transparent',
-        border: '1px solid #20202B'
-      },
-      ':last-child': {
+        theme: 'transparent',
+        padding: '- Y1'
       }
     }
   },
   ...[
-    { Caption: { text: 'No' } },
-    { Caption: { text: 'Yes' } }
-  ],
-
-  props: {
-    gap: 'Z',
-    maxWidth: 'fit-content'
-  }
+    { caption: { props: { text: 'No' } } },
+    { caption: { props: { text: 'Yes' } } }
+  ]
 }
 
 export const IcontextButton = {
   extend: CommonButton,
   props: {
-    padding: 'A A1',
     position: 'relative',
-    background: 'gray3',
+    theme: 'tertiary',
+    padding: 'Z2 A',
     Icon: { name: 'smile' }
   }
 }
@@ -143,34 +141,35 @@ export const DropDownButton = {
   props: {
     gap: 'X2',
     boxSize: 'fit-content fit-content',
-    padding: 'Z2 B Z2 A',
-    round: 'Z',
-    background: '#141416',
+    padding: 'Z1 A1 Z Z1',
+    theme: 'dialog',
     color: 'white',
     Icon: {
       name: 'chevronDown',
       fontSize: 'D'
     },
-    Caption: { text: 'All' }
+    caption: { text: 'All' }
   }
 }
 
 export const DropDownButtonWithAvatar = {
   extend: DropDownButton,
   props: {
-    gap: 'Z',
-    padding: 'Y1 Z',
-    round: 'Y2',
-    background: 'gray3'
+    gap: 'Y',
+    padding: 'Y',
+    round: 'Z1',
+    theme: 'dialog',
+    Icon: { fontSize: 'B1' }
   },
 
   Avatar: {
-    boxSize: 'A1 A1'
+    boxSize: 'A2+V1'
   },
-  Caption: {
+  caption: {
     text: 'ETH',
     props: {
-      fontSize: 'Z1'
+      fontSize: 'Y1',
+      fontWeight: '400'
     }
   }
 }

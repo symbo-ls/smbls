@@ -70,15 +70,15 @@ export const ProgressCircleWithSideUnitValue = {
   props: {
     align: 'center flex-start',
     boxSize: 'fit-content fit-content',
-    gap: 'X+V'
+    gap: 'Y'
   },
 
   ProgressCircle: {
-    boxSize: 'A A',
+    boxSize: 'A',
     ':after': {
       width: 'calc(100% - 5px)',
       height: 'calc(100% - 5px)'
     }
   },
-  UnitValue: {}
+  UnitValue: { fontSize: 'Y1' }
 }

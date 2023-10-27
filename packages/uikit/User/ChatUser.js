@@ -1,55 +1,45 @@
 'use strict'
-
-import { User } from './User'
-
+import { Flex } from '@symbo.ls/atoms'
+import { User } from '@symbo.ls/user'
 import { UnitValue } from '@symbo.ls/unitvalue'
+import { CountIndicator } from '@symbo.ls/indicator'
 
 export const ChatUser = {
   extend: User,
-  props: {
-    boxSize: 'fit-content',
-    background: 'gray3',
-    padding: 'A',
-    round: 'Z'
-  },
+  props: { gap: 'Y2' },
 
-  AvatarIndicator: { margin: '0' },
+  Avatar: {},
+
   Notes: {
-    props: { flex: '1' },
+    props: { gap: 'X1' },
     Title: {
-      props: {
-        align: 'center space-between',
-        minWidth: '100%'
-      },
-      h5: {},
+      props: { align: 'center space-between' },
+      caption: { props: { text: 'Maria Kenter' } },
       time: {
         extend: UnitValue,
         props: {
-          gap: 'X1'
+          fontSize: 'X1',
+          gap: 'X2'
         },
-        Value: { text: '2:20' },
-        Unit: { text: 'AM' }
+        Unit: { props: { text: '2:22' } },
+        Value: { props: { text: 'AM' } }
       }
-
     },
 
     Paragraph: {
-      props: {
-        align: 'center space-between',
-        gap: 'C2'
-
-      },
+      props: { gap: 'C1' },
       p: {
+        extend: Flex,
         props: {
           text: 'Hey team, I’ve finished the requirements document',
-          maxWidth: 'F+B1',
+          maxWidth: 'F1',
           overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          fontSize: 'Z'
+          whiteSpace: 'nowrap'
         }
       },
-      CountIndicator: {
-        fontSize: 'Y2'
+      notification: {
+        extend: CountIndicator,
+        props: { fontSize: 'X2' }
       }
     }
   }

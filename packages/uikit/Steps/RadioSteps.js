@@ -8,15 +8,13 @@ export const RadioStep = {
   CheckIndicatorWithLabel: null,
   RadioIndicatorWithLabel: {
     RadioIndicator: {
-      theme: 'transparent',
-      border: '2px solid #3F3F43',
+      theme: 'dialog',
       ':after': {
-        background: 'transparent'
       },
       '.isActive': {
-        theme: 'primary',
+        theme: 'dialog',
         border: 'none',
-        ':after': { background: 'white' }
+        ':after': { theme: 'primary' }
       }
     }
   },
@@ -28,7 +26,7 @@ export const RadioSteps = {
   props: {
     boxSize: 'fit-content fit-content',
     align: 'center flex-start',
-    gap: 'Y+V',
+    gap: 'Z',
     childProps: {
       ':last-child > progress': { display: 'none' }
     }

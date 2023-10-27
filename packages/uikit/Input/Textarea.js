@@ -9,12 +9,15 @@ export const Textarea = {
 
   props: {
     variant: 'outlined',
-    round: 'Z2',
-    width: 'H',
+    fontfamily: 'Avenir',
+    round: 'Z1',
+    maxWidth: 'H',
     minHeight: 'E',
     placeholder: 'Leave us a message...',
     padding: 'A',
+    theme: 'transparent',
     color: 'white',
+    border: 'none',
     style: { resize: 'none' }
   },
 
@@ -30,9 +33,7 @@ export const Textarea = {
 
   '.outlined': {
     props: {
-      border: '1px solid #3F3F43',
       background: 'transparent',
-      round: 'Y+W', //
       width: 'G1',
       height: 'D2+W',
       lineHeight: 1.4,
@@ -42,25 +43,6 @@ export const Textarea = {
       resize: 'none'
     }
   }
-}
-
-export const TextareaWithTitle = {
-  extend: Flex,
-  props: {
-    flow: 'column',
-    boxSize: 'fit-content fit-content',
-    gap: 'Y+W'
-  },
-  Title: {
-    props: {
-      text: 'Label',
-      fontSize: 'Z',
-      lineHeight: '1em',
-      padding: '- - - Z',
-      color: 'gray4'
-    }
-  },
-  Textarea: {}
 }
 
 export const TextareaWithButton = {

@@ -4,13 +4,13 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const RadioIndicator = {
   props: {
-    padding: 'Z',
-    theme: 'primary',
+    padding: 'Z+V',
+    theme: 'tertiary',
     boxSize: 'fit-content',
     round: '100%',
     ':after': {
       content: '""',
-      boxSize: 'Z1',
+      boxSize: 'Z',
       background: 'white',
       display: 'block',
       round: '100%'
@@ -22,12 +22,13 @@ export const RadioIndicatorWithLabel = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    gap: 'Z1'
+    gap: 'Z'
   },
 
   RadioIndicator: {},
   Caption: {
-    text: 'Label',
-    fontSize: 'B'
+    text: 'Step',
+    fontWeight: '500',
+    fontSize: 'Z2'
   }
 }

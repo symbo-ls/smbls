@@ -3,6 +3,7 @@
 import { create } from '@symbo.ls/create'
 import { Flex } from '@symbo.ls/atoms'
 import { SearchWithButton } from '@symbo.ls/field'
+import { Avatar } from '@symbo.ls/uikit'
 
 create({
   extend: Flex,
@@ -50,7 +51,10 @@ create({
     StatusIndicator: {},
     Avatar: {},
     AvatarIndicator: {},
-    AvatarBundle: {},
+    AvatarBundle: {
+      childExtend: Avatar,
+      ...[{}, {}, {}]
+    },
     AvatarChooser: {
       options: [{
         text: 'Kevin'
@@ -58,13 +62,23 @@ create({
         text: 'John'
       }]
     },
-    TitleParagraph: {},
-    User: {},
+    TitleParagraph: {
+      Title: { text: 'Title' },
+      Paragraph: { text: 'Paragraph' }
+    },
+    User: {
+      Avatar: {},
+      Notes: {
+        Title: { text: 'Erin Schleifer' },
+        Paragraph: { text: 'email@symbols.com' }
+      }
+    },
     Label: {},
     UserWithLabel: {},
     CountIndicator: {},
     ChatUser: {},
     UserButtonSet: {},
+    UserButtonSetCircle: {},
     UserMessage: {},
     UserWithButton: {},
 
@@ -75,26 +89,26 @@ create({
 
     Tab: {},
     IconTab: {},
-    TitleParagraphWithButton: {},
     Modal: {},
     Message: {},
     SuccessIndicator: {},
     CompleteProcess: {},
-    UploadButtonWithIcon: {},
-    UploadLabel2: {},
-    UploadModal: {},
-    UploadModal3: {},
     UploadButton: {},
     UploadLabel: {},
+    UploadFooter: {},
+    UploadModal: {},
+    UploadButtonWithBackground: {},
+    UploadLabel2: {},
     UploadModal2: {},
+    UploadModal3: {},
     UploadImage: {},
     DoubleUnitValue: {},
     ProgressLine: {},
     UploadingProcess: {},
     UploadedProcess: {},
     UnitValue: {
-      Value: { text: '2:20' },
-      Unit: { text: 'AM' }
+      Value: { text: '72' },
+      Unit: { text: '%' }
     },
     ProgressLineWithUnitValue: {},
     UploadingProcess2: {},
@@ -112,17 +126,14 @@ create({
     Checkbox: {},
     Radio: {},
     Toggle: {},
-    CheckboxTitleParagraph: {},
-    RadioTitleParagraph: {},
-    ToggleTitleParagraph: {},
+    Number: {},
 
     Field: {},
     FieldTemplate: {},
-    CommonField: {},
-    CommonFieldTemplate: {},
-    Textarea: {},
-    TextareaWithButton: {},
-    NumberField: {},
+    FieldWithTitle: {},
+    FieldWithTitleTemplate: {},
+    TextAreaField: {},
+
     ParagraphButton: {},
     VerificationCode: {},
     ResetPassword: {},
@@ -132,7 +143,6 @@ create({
     DoubleHr: {},
     SocialLink: {},
     LogIn: {},
-    SlideTabs: {},
 
     Search: {},
     SearchWithButton: {},

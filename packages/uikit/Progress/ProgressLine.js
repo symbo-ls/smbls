@@ -6,9 +6,9 @@ export const ProgressLine = {
   tag: 'progress',
   props: {
     value: 0.7,
-    height: 'Y+V',
-    minWidth: 'G+C',
-    round: 'W',
+    height: 'X1',
+    minWidth: 'F2+B1',
+    round: '2px',
     overflow: 'hidden',
     theme: 'primary @dark .inactive',
     '::-webkit-progress-bar': {
@@ -30,9 +30,11 @@ export const ProgressLineWithUnitValue = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    gap: 'A'
+    gap: 'Z1'
   },
 
-  ProgressLine: {},
+  ProgressLine: {
+    minWidth: 'F2+B1'
+  },
   UnitValue: {}
 }

@@ -6,20 +6,17 @@ export const Tab = {
   extend: IcontextButton,
   props: {
     boxSize: 'fit-content fit-content',
-    theme: 'secondary',
     align: 'center flex-start',
-    gap: 'Z',
-    position: 'relative'
+    position: 'relative',
+    padding: 'Z Z1'
   },
 
   Icon: {},
-
-  Caption: {},
-
+  caption: {},
   CountIndicator: {
-    fontSize: 'Y2',
-    margin: '- -X - X',
-    text: '19'
+    fontSize: 'Y1',
+    text: '19',
+    margin: '- - - X1'
   }
 }
 
@@ -31,11 +28,9 @@ export const IconTab = {
   Span: null,
   CountIndicator: {
     position: 'absolute',
-    top: '-Y1',
-    right: '-Y1',
-    fontSize: 'Y',
-    fontWeight: '500',
-    padding: 'X1',
+    top: '-Y2',
+    right: '-Y2',
+    fontSize: 'X',
     text: '19'
   }
 }

@@ -8,44 +8,49 @@ export const UploadLabel = {
     flow: 'column',
     align: 'center flex-start',
     boxSize: 'fit-content fit-content',
-    gap: 'C',
-    background: 'gray',
-    padding: 'C D+Z',
-    round: 'Z+X',
-    border: '1px dashed #57575C'
+    gap: 'B2',
+    padding: 'C D1',
+    round: 'A',
+    border: 'solid, gray2 .05',
+    borderWidth: '1px',
+    theme: 'dialog'
   },
 
   Icon: {
-    name: 'upload',
-    fontSize: 'I',
+    name: 'file',
+    fontSize: 'I1',
     color: '#818186'
   },
 
   TitleParagraph: {
     props: {
       align: 'center flex-start',
-      gap: 'Y'
+      gap: 'Z',
+      fontWeight: '400'
     },
 
     Title: {
       props: {
-        gap: 'Y',
-        h5: {
-          text: 'Drag & drop your files here or',
-          fontSize: 'A',
-          fontWeight: '400'
-        }
+        text: 'Drag & drop your files here or',
+        flow: 'row-reverse',
+        fontWeight: '400',
+        gap: 'Y2',
+        align: 'center flex-start',
+        fontSize: 'Z1',
+        color: 'gray2'
       },
-      h5: {},
-      UploadButton: {}
+      UploadButton: {
+        caption: {
+          fontSize: 'A1',
+          fontWeight: '500'
+        }
+      }
     },
 
     Paragraph: {
       props: {
-        p: {
-          text: '50 MB max file size',
-          fontSize: 'Z'
-        }
+        text: '50 MB max file size',
+        fontSize: 'Z'
       }
     }
   }
@@ -54,21 +59,14 @@ export const UploadLabel = {
 export const UploadLabel2 = {
   extend: UploadLabel,
   props: {
-    gap: 'B',
-    padding: 'C E+A'
+    padding: 'B2 E1',
+    gap: 'B'
   },
-
-  Icon: { name: 'file' },
-
-  TitleParagraph: {
-    Title: {
-      h5: { text: 'Drag & drop your files here' },
-      UploadButton: { display: 'none' }
-    },
-    Paragraph: {
-      p: { text: '50 MB max file size' }
-    }
-  },
-
-  UploadButtonWithIcon: {}
+  Icon: {},
+  TitleParagraph: { Title: { UploadButton: null } },
+  UploadButtonWithBackground: {
+    padding: 'A C',
+    margin: 'Z - - -',
+    caption: { fontWeight: '500' }
+  }
 }

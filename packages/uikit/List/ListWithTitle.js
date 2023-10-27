@@ -7,9 +7,8 @@ export const ListWithTitle = {
   extend: Flex,
   props: {
     flow: 'column',
-    background: 'gray',
     overflow: 'hidden',
-    round: 'Z1',
+    round: 'A',
     maxWidth: 'F1'
   },
 
@@ -32,8 +31,8 @@ export const ListWithTitle = {
     extend: List,
     props: {
       round: '0',
-      background: 'transparent',
       minWidth: '100%'
+      // theme: 'tertiary'
     }
   }
 }

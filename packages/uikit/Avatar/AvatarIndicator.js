@@ -10,6 +10,6 @@ export const AvatarIndicator = {
   StatusIndicator: {
     position: 'absolute',
     bottom: 'V',
-    right: '0'
+    right: '-V'
   }
 }

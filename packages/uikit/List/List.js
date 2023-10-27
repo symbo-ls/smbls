@@ -4,7 +4,7 @@ export const List = {
   props: {
     position: 'relative',
     overflow: 'hidden',
-    round: 'Z1',
+    round: 'A',
     minWidth: 'F1',
     theme: 'dialog',
     ':before, &:after': {
@@ -38,8 +38,10 @@ export const List = {
         padding: 'Z1 A1',
         position: 'relative',
         cursor: 'pointer',
+        fontSize: 'A1',
+        color: 'gray4',
         ':hover': {
-          background: 'gray .92 +8'
+          background: 'gray .92 +4'
         },
         childProps: { position: 'relative' }
       }

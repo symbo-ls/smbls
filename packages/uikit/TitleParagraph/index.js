@@ -4,43 +4,64 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const TitleParagraph = {
   extend: Flex,
-  props: {
-    flow: 'column',
-    gap: 'Y'
-  },
+  props: { flow: 'column', gap: 'Y' },
 
   Title: {
     extend: Flex,
-    props: { align: 'center space-between' },
-    h5: {
-      props: {
-        fontSize: 'A',
-        text: 'Title',
-        lineHeight: '1em'
-      }
+    props: {
+      lineHeight: '1em',
+      fontWeight: '700',
+      alignItems: 'center'
     }
   },
 
   Paragraph: {
     extend: Flex,
-    p: {
-      props: {
-        text: 'Paragraph',
-        fontSize: 'Z',
-        lineHeight: '1em',
-        margin: '0',
-        color: 'gray2'
-      }
+    props: {
+      margin: '0',
+      fontWeight: '400',
+      color: 'gray4',
+      '> p': { margin: '0' }
     }
   }
+
+  // Title: {
+  //   extend: Flex,
+  //   props: ({ scope, parent }) => ({
+  //     text: parent.props.title,
+  //     lineHeight: '1em'
+  //   })
+  // },
+
+  // Paragraph: {
+  //   extend: Flex,
+  //   props: ({ scope, parent }) => ({
+  //     text: parent.props.paragraph,
+  //     margin: '0'
+  //   })
+  // }
 }
 
-export const TitleParagraphWithButton = {
+export const TitleParagraphRows = {
   extend: TitleParagraph,
 
   Title: {
+    extend: Flex,
+    props: { align: 'center space-between' }
+  },
+
+  Paragraph: {
+    extend: Flex
+  }
+}
+
+export const TitleParagraphButton = {
+  extend: TitleParagraphRows,
+
+  Title: {
     props: { justifyContent: 'space-between' },
-    h5: {},
+
+    Span: {},
     Button: {
       props: {
         background: 'transparent',
@@ -53,5 +74,6 @@ export const TitleParagraphWithButton = {
       }
     }
   },
+
   Paragraph: {}
 }

@@ -7,27 +7,27 @@ export const CheckStep = {
   props: {
     boxSize: 'fit-content',
     align: 'center flex-start',
-    gap: 'Y2'
+    gap: 'Z1'
   },
 
   CheckIndicatorWithLabel: {
     CheckIndicator: {
       theme: 'transparent',
-      border: '2px solid #1C1C1F',
+      border: '1.5px solid #1C1C1F',
       '.isActive': {
         theme: 'primary',
         border: 'none'
       }
     }
   },
+
   ProgressLine: {
     value: 0,
-    height: 'W',
+    height: 'V2',
     minWidth: 'E',
     maxWidth: 'E',
-    '.isActive': {
-      value: 1
-    }
+    round: 'D',
+    '.isActive': { value: 1 }
   }
 }
 
@@ -36,7 +36,7 @@ export const CheckSteps = {
   props: {
     boxSize: 'fit-content fit-content',
     align: 'center flex-start',
-    gap: 'Y+V',
+    gap: 'Z1',
     childProps: {
       ':last-child > progress': { display: 'none' }
     }

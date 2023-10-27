@@ -2,7 +2,6 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { ListWithTitle } from './ListWithTitle'
-import { List } from './List'
 
 export const GroupList = {
   extend: Flex,
@@ -11,30 +10,40 @@ export const GroupList = {
     overflow: 'hidden',
     theme: 'dialog',
     maxHeight: 'H',
-    round: 'Z1',
+    round: 'A',
     maxWidth: 'G'
   },
 
   Header: {
     extend: Flex,
     props: {
-      padding: 'Z - Z A'
-    },
-    h4: {
-      props: {
-        text: 'Header',
-        fontSize: 'A',
-        fontWeight: '500',
-        color: 'gray4'
-      }
+      text: 'Header',
+      padding: 'Z2 A',
+      fontSize: 'A2',
+      fontWeight: '500',
+      color: 'white'
     }
   },
 
   Groups: {
     props: {
-      ...List.props,
-      theme: null,
-      round: '0'
+      position: 'relative',
+      ':before, &:after': {
+        content: '""',
+        position: 'absolute',
+        boxSize: 'A2 100%',
+        zIndex: '2',
+        left: '0',
+        pointerEvents: 'none'
+      },
+      ':before': {
+        top: '0',
+        background: 'linear-gradient(to bottom, var(--theme-dialog-dark-background) 0%, transparent 100%)'
+      },
+      ':after': {
+        bottom: '0',
+        background: 'linear-gradient(to top, var(--theme-dialog-dark-background) 0%, transparent 100%)'
+      }
     },
 
     Flex: {
@@ -53,10 +62,11 @@ export const GroupList = {
           overflow: 'visible',
           background: 'transparent'
         },
-        Title: {},
+        Title: { props: { theme: 'transparent' } },
         List: {
           props: {
             overflow: 'visible',
+            theme: 'transparent',
             ':before': { display: 'none' },
             ':after': { display: 'none' }
           },

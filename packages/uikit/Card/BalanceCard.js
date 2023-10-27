@@ -1,45 +1,90 @@
 'use strict'
 
-import { TitleParagraphWithButton } from '@symbo.ls/titleparagraph'
+import { Card } from './Card'
+import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Button } from '@symbo.ls/button'
 
 export const BalanceCard = {
-  extend: TitleParagraphWithButton,
+  extend: [Card, TitleParagraph],
   props: {
-    boxSize: 'fit-content',
-    padding: 'Z2 A',
-    round: 'Z',
-    gap: 'Z1',
-    background: 'linear-gradient(to right, #0474F2, #003067)'
+    theme: 'card .secondary',
+    gap: 'Z2',
+    padding: 'A A'
   },
 
   Title: {
-    props: { gap: 'E1' },
-    h5: { props: { text: 'Total crypto assets' } },
-    Button: { props: { Icon: { name: 'arrowUpRight' } } }
+    props: {
+      justifyContent: 'space-between',
+      gap: 'E'
+    },
+    caption: {
+      props: {
+        text: 'Total crypto assets',
+        fontSize: 'Z2',
+        fontWeight: '500'
+      }
+    },
+    arrowBtn: {
+      extend: Button,
+      props: {
+        padding: '0',
+        theme: 'transparent',
+        fontSize: 'D',
+        color: 'gray4',
+        margin: '-X -W2 - -',
+        Icon: { name: 'arrowUpRight' }
+      }
+    }
   },
 
   Paragraph: {
     props: {
       flow: 'column',
-      gap: 'Z1'
+      align: 'flex-start flex-start',
+      gap: 'A'
     },
     UnitValueWithLabel: {
       UnitValue: {},
-      UnitValue2: {
-        background: 'black .35',
-        color: 'white'
-      }
+      UnitValue2: { theme: 'card .secondary .child' }
     },
     UnitValue: {
-      color: 'gray4',
       flow: 'row-reverse',
-      justifyContent: 'flex-end',
-      gap: 'X',
-      fontSize: 'Z',
+      color: 'white .75',
       fontWeight: '400',
-      Unit: { text: 'Last update:' },
-      Value: { text: 'an hour ago' }
-    },
-    p: null
+      fontSize: 'Z',
+      gap: 'Y',
+      Value: { text: 'an hour ago' },
+      Unit: { text: 'Last update:' }
+    }
   }
+
+  // Title: {
+  //   props: { gap: 'E1' },
+  //   h5: { props: { text: 'Total crypto assets' } },
+  //   Button: { props: { Icon: { name: 'arrowUpRight' } } }
+  // },
+
+  // Paragraph: {
+  //   props: {
+  //     flow: 'column',
+  //     gap: 'Z1'
+  //   },
+  //   UnitValueWithLabel: {
+  //     UnitValue: {},
+  //     UnitValue2: {
+  //       theme: 'card .secondary .child'
+  //     }
+  //   },
+  //   UnitValue: {
+  //     color: 'gray4',
+  //     flow: 'row-reverse',
+  //     justifyContent: 'flex-end',
+  //     gap: 'X',
+  //     fontSize: 'Z',
+  //     fontWeight: '400',
+  //     Unit: { text: 'Last update:' },
+  //     Value: { text: 'an hour ago' }
+  //   },
+  //   p: null
+  // }
 }

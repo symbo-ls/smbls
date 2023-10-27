@@ -1,42 +1,55 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { ButtonSet } from '@symbo.ls/button'
 
 export const UserButtonSet = {
   extend: Flex,
   props: {
-    gap: 'E2',
-    background: 'gray',
     boxSize: 'fit-content',
-    padding: 'A',
-    round: 'Z2'
+    theme: 'dialog',
+    padding: 'Z1 Z1 Z Z',
+    round: 'A',
+    alignItems: 'center',
+    gap: 'E'
   },
 
   User: {
-    AvatarIndicator: { fontSize: 'A2' },
+    padding: '0',
+    gap: 'Y2',
+    Avatar: { fontSize: 'A1' },
     Notes: {
+      margin: 'W - - -',
+      gap: 'X2',
       Title: {
-        h5: {
-          fontSize: 'C',
-          fontWeight: '700'
-        }
+        text: 'Group',
+        fontSize: 'C1'
       },
       Paragraph: {
-        p: {
-          text: 'Active now',
-          fontSize: 'Y2'
-        }
+        text: 'Active now',
+        fontSize: 'Y',
+        padding: '- - - W1'
       }
     }
   },
+
   ButtonSet: {
-    extend: ButtonSet,
     props: { gap: 'Y2' },
     ...[
       { props: { Icon: { name: 'phone' } } },
       { props: { Icon: { name: 'video' } } },
       { props: { Icon: { name: 'moreHorizontal' } } }
     ]
+  }
+}
+
+export const UserButtonSetCircle = {
+  extend: UserButtonSet,
+  User: {},
+  ButtonSet: {
+    childExtend: {
+      props: {
+        round: '100%'
+      }
+    }
   }
 }

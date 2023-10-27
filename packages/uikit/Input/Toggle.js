@@ -1,6 +1,7 @@
 'use strict'
 
 import { Checkbox, CheckboxTitleParagraph } from './Checkbox'
+
 /**
  * A Toggle component
  * The `Toggle` component represents a customizable checkbox input with a switch-like appearance.
@@ -48,7 +49,7 @@ export const Toggle = {
       padding: '- W',
       round: 'D',
       align: 'center flex-start',
-      background: 'gray .8 +68',
+      background: 'gray',
       border: 'none',
       transition: 'opacity .15s ease',
       ':after': {

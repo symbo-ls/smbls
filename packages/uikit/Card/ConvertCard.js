@@ -1,43 +1,82 @@
 'use strict'
 
+import { Card } from './Card'
 import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { UnitValueWithTitle } from '@symbo.ls/unitvalue'
+import { DropDownButtonWithAvatar } from '@symbo.ls/button'
 
 export const ConvertCard = {
-  extend: TitleParagraph,
+  extend: [Card, TitleParagraph],
   props: {
-    boxSize: 'fit-content',
-    gap: 'A',
-    background: 'gray',
-    padding: 'Z2 A',
-    round: 'Z'
+    minWidth: 'G1',
+    theme: 'dialog',
+    round: 'Z2',
+    padding: 'A Z2+V Y1 Z2+V',
+    gap: 'A1'
   },
   Title: {
-    props: { gap: 'F' },
-    h5: {
+    props: {
+      justifyContent: 'space-between',
+      fontWeight: '400',
+      color: 'gray4'
+    },
+    caption: {
       props: {
-        text: 'From',
-        fontSize: 'Z1',
-        color: 'gray4',
-        fontWeight: '400'
+        text: 'From'
       }
     },
-    UnitValueWithTitle: {}
+    balance: {
+      extend: UnitValueWithTitle,
+      props: {
+        // border: '1px sol'
+      }
+    }
+
   },
   Paragraph: {
-    p: null,
-    UnitValue: {
+    props: {
+      align: 'center space-between',
+      margin: '0',
+      padding: '0'
+    },
+    value: {
       props: {
-        justifyContent: 'space-between',
-        flex: '1'
-      },
-      Value: {
-        props: {
-          text: '0.00',
-          fontSize: 'F'
-        }
-      },
-      Unit: null,
-      DropDownButtonWithAvatar: {}
+        text: '0.00',
+        fontSize: 'E2'
+      }
+    },
+    dropDownButton: {
+      extend: DropDownButtonWithAvatar,
+      props: {
+        theme: 'tertiary',
+        margin: '- -V'
+      }
     }
   }
+  // props: {
+  //   boxSize: 'fit-content',
+  //   gap: 'A',
+  //   padding: 'Z2'
+  // },
+  // Title: {
+  //   props: { gap: 'F' },
+  //   caption: {
+  //     props: {
+  //       text: 'From',
+  //       fontSize: 'Z1',
+  //       fontWeight: '400'
+  //     }
+  //   },
+  //   UnitValueWithTitle: { props: { fontWeight: '400' } }
+  // },
+  // Paragraph: {
+  //   props: { align: 'center space-between' },
+  //   Value: {
+  //     props: {
+  //       text: '0.00',
+  //       fontSize: 'E2'
+  //     }
+  //   },
+  //   DropDownButtonWithAvatar: { theme: 'card .child' }
+  // }
 }

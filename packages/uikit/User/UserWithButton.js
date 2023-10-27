@@ -1,55 +1,55 @@
 'use strict'
 
+import { Flex } from '@symbo.ls/atoms'
 import { User } from './User'
 
 export const UserWithButton = {
-  extend: User,
+  extend: Flex,
   props: {
-    background: 'gray',
     boxSize: 'fit-content',
-    padding: 'X X2',
-    round: 'Z',
+    theme: 'dialog',
     border: '1px, solid, gray3',
-    gap: 'Y2'
+    padding: 'Y Z2 Y Y',
+    alignItems: 'center',
+    gap: 'B',
+    round: 'A'
   },
 
-  AvatarIndicator: {
+  User: {
+    extend: User,
+    props: { padding: '0' },
     Avatar: {
-      round: 'Y'
+      Avatar: {
+        props: { fontSize: 'Z2', round: 'Z1' }
+      },
+      StatusIndicator: null
     },
-    StatusIndicator: null
-  },
-  Notes: {
-    Title: {
-      h5: {
+
+    Notes: {
+      props: { gap: 'X' },
+      Title: {
         props: {
           text: 'Wallet ID',
-          fontSize: 'Y2'
+          fontSize: 'Y1'
         }
-      }
-    },
-    Paragraph: {
-      p: {
+      },
+      Paragraph: {
         props: {
           text: '0xfb59...d862',
-          fontSize: 'Y2'
+          fontSize: 'Y1'
         }
       }
     }
   },
+
   IconCommonButton: {
-    round: 'Y1',
     background: 'transparent',
     theme: null,
     color: 'currentColor',
     opacity: '0.5',
     transition: 'A defaultBezier',
     transitionProperty: 'opacity, background',
-    ':hover': {
-      opacity: '1',
-      theme: 'secondary'
-    },
-    margin: '- - - Z2',
+    padding: '0',
     Icon: {
       name: 'copy',
       fontSize: 'C'

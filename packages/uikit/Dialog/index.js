@@ -7,8 +7,7 @@ export const Dialog = {
   extend: Flex,
   props: {
     theme: 'dialog',
-    round: 'Z2',
-    padding: '- Z - -'
+    round: 'Z2'
   }
 }
 

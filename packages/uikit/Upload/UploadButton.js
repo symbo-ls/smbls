@@ -11,15 +11,18 @@ export const UploadButton = {
     color: '#0474F2',
     boxSize: 'fit-content fit-content',
     overflow: 'hidden',
-    fontWeight: '500',
-    cursor: 'pointer',
-    Caption: { text: 'Choose file' }
+    cursor: 'pointer'
+  },
+
+  caption: {
+    props: {
+      text: 'Choose file'
+    }
   },
 
   Input: {
     type: 'file',
     inset: '0 0 0 0',
-    border: '2px solid red',
     position: 'absolute',
     boxSize: '100% 100%',
     top: '0',
@@ -29,21 +32,13 @@ export const UploadButton = {
   }
 }
 
-export const UploadButtonWithIcon = {
+export const UploadButtonWithBackground = {
   extend: UploadButton,
   props: {
-    gap: 'Z',
+    fontFamily: 'Avenir',
     theme: 'primary',
-    padding: 'A B',
-    round: 'A',
-    color: 'white'
+    color: 'white',
+    padding: 'Z2 A1'
   },
-
-  Icon: {
-    props: {
-      name: 'upload',
-      fontSize: 'B'
-    }
-  },
-  Caption: { text: 'Browse files' }
+  caption: { props: { text: 'Browse files' } }
 }
