@@ -4,12 +4,10 @@
     "start": "yarn clean:dist; yarn clean:package-modules; parcel example/index.html --no-cache",
     "build": "yarn clean:dist; yarn clean:package-modules; parcel build example/index.html --no-cache",
     "postinstall": "npx lerna link --force-local && npx lerna run build && npx lerna run copy:package:cjs",
-    "prepublish": "yarn update-linkable-list",
-    "preversion": "yarn update-linkable-list",
     "update-linkable-list": "npx smbls link-packages -c",
     "test:lint": "npx standard \"packages/**/*.js\" \"uikit/**/*.js\"",
     "test": "echo running all tests is not supported, maybe run: \"yarn test:lint\"",
-    "clean": "yarn clean:dist; yarn clean:packages; yarn clean:modules",
+    "clean": "yarn clean:dist; yarn clean:packages; yarn clean:modules; yarn clean:package-modules",
     "clean:dist": "rm -rf ./dist ./.cache ./.parcel-cache",
     "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
     "clean:packages": "lerna exec -- rm -rf dist yarn.lock yarn-error.log package-lock.json",
@@ -40,10 +38,8 @@
     ]
   },
   "workspaces": [
-    "icons/*",
-    "uikit/*",
-    "uikit/*/*",
-    "packages/*"
+    "packages/*",
+    "packages/*/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead"
 }
