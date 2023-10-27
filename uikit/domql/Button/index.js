@@ -71,8 +71,8 @@ export const CommonButton = {
     theme: 'primary',
     boxSize: 'fit-content',
     padding: 'Z2 A2',
-    round: 'Y2',
-    gap: 'Y',
+    round: 'Z1',
+    gap: 'X1',
     position: 'relative'
   },
   Icon: {
@@ -94,7 +94,7 @@ export const IconCommonButton = {
     Icon: { name: 'smile' },
     boxSize: 'fit-content fit-content',
     padding: 'Z2',
-    background: 'gray3'
+    theme: 'tertiary'
   },
   caption: null
 }
@@ -130,7 +130,8 @@ export const IcontextButton = {
   extend: CommonButton,
   props: {
     position: 'relative',
-    background: 'gray3',
+    theme: 'tertiary',
+    padding: 'Z2 A',
     Icon: { name: 'smile' }
   }
 }
@@ -140,9 +141,8 @@ export const DropDownButton = {
   props: {
     gap: 'X2',
     boxSize: 'fit-content fit-content',
-    padding: 'Z2 B Z2 A',
-    round: 'Z',
-    background: '#141416',
+    padding: 'Z1 A1 Z Z1',
+    theme: 'dialog',
     color: 'white',
     Icon: {
       name: 'chevronDown',
@@ -155,19 +155,21 @@ export const DropDownButton = {
 export const DropDownButtonWithAvatar = {
   extend: DropDownButton,
   props: {
-    gap: 'Z',
-    padding: 'Y1 Z',
-    round: 'Y2',
-    theme: 'label'
+    gap: 'Y',
+    padding: 'Y',
+    round: 'Z1',
+    theme: 'dialog',
+    Icon: { fontSize: 'B1' }
   },
 
   Avatar: {
-    boxSize: 'A1 A1'
+    boxSize: 'A2+V1'
   },
   caption: {
     text: 'ETH',
     props: {
-      fontSize: 'Z1'
+      fontSize: 'Y1',
+      fontWeight: '400'
     }
   }
 }

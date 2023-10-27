@@ -7,7 +7,7 @@ export const UploadImage = {
     padding: 'A+V',
     theme: 'tertiary',
     boxSize: 'fit-content',
-    round: 'Z'
+    round: 'Z2'
   },
   Icon: {
     name: 'file',

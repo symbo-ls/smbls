@@ -61,8 +61,8 @@ export const UnitValueWithLabel = {
     props: {
       background: 'purple',
       padding: 'Z',
-      round: 'Y',
-      fontSize: 'Z',
+      round: 'Y1',
+      fontSize: 'Y2',
       gap: '0',
       color: 'white'
     },
@@ -76,22 +76,22 @@ export const UnitValueWithTitle = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    gap: 'Y'
+    gap: 'Y',
+    fontSize: 'Z1'
   },
 
   Title: {
     tag: 'caption',
     props: {
-      text: 'balance:',
-      fontSize: 'Z1',
-      textTransform: 'capitalize',
-      color: 'gray4'
+      text: 'balance :',
+      textTransform: 'capitalize'
     }
   },
 
   UnitValue: {
     textTransform: 'uppercase',
     gap: 'Y',
+    color: 'currentColor',
     Value: { text: '0' },
     Unit: { text: 'bnb' }
   }

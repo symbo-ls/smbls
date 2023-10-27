@@ -7,29 +7,35 @@ import { TitleParagraph } from '@symbo.ls/titleparagraph'
 export const User = {
   extend: Flex,
   props: {
-    align: 'center flex-start',
-    gap: 'Z+V',
-    boxSize: 'fit-content'
+    boxSize: 'fit-content',
+    theme: 'dialog',
+    padding: 'Z A Z Z',
+    round: 'A',
+    gap: 'Y1',
+    align: 'center flex-start'
   },
 
   Avatar: {
     extend: AvatarIndicator,
-    Avatar: { props: { boxSize: 'C' } }
+    Avatar: { props: { boxSize: 'C+V' } }
   },
   Notes: {
     extend: TitleParagraph,
     props: {
       justifyContent: 'center',
-      margin: 'X1 - - -',
-      gap: 'X1'
+      gap: 'W2',
+      margin: 'X2 - - -'
     },
     Title: {
-      props: { fontWeight: '500' }
+      props: {
+        fontSize: 'A1',
+        fontWeight: '500'
+      }
     },
     Paragraph: {
       props: {
-        fontSize: 'Z1',
-        color: 'gray2'
+        fontSize: 'Z',
+        alignItems: 'center'
       }
     }
   }

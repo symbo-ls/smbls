@@ -8,7 +8,7 @@ export const ContactForm = {
   extend: CommonForm,
 
   Header: {
-    Title: { props: { text: 'We’d love to help' } },
+    Title: { caption: { props: { text: 'We’d love to help' } } },
     Paragraph: { props: { text: 'Reach out and we’ll get in touch within 24 hours.' } }
   },
 
@@ -40,7 +40,7 @@ export const ContactForm = {
         }
       ]
     },
-    ParagraphButtonWithCheckbox: {},
+    ParagraphButtonWithCheckbox: { padding: 'Z1 Z - Z' },
     Submit: {
       extend: CommonButton,
       caption: { props: { text: 'Send message' } }

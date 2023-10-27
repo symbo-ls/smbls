@@ -10,7 +10,7 @@ export const LogIn = {
   props: { minWidth: 'G3+C1' },
 
   Header: {
-    Title: { props: { text: 'Log in to your account' } },
+    Title: { caption: { props: { text: 'Log in to your account' } } },
     Paragraph: { props: { text: 'Enter your email address and password to log in.' } }
   },
 

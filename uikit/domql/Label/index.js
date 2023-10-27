@@ -7,12 +7,12 @@ export const Label = {
   extend: Flex,
   props: {
     text: '-2.902x',
-    fontSize: 'Y',
+    fontSize: 'X2',
     boxSize: 'fit-content fit-content',
     background: '#F4454E',
-    padding: 'W2 Y1',
-    round: 'Y',
-    fontWeight: '500'
+    padding: 'W2 Y2',
+    round: 'Y1',
+    fontWeight: '400'
   }
 }
 

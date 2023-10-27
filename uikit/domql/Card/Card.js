@@ -8,7 +8,7 @@ export const Card = {
     boxSize: 'fit-content',
     padding: 'Z2 A',
     gap: 'Z1',
-    round: 'Z',
+    round: 'Z2',
     theme: 'card'
   }
 }

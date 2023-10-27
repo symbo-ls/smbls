@@ -11,7 +11,7 @@ export const Number = {
     boxSize: 'C+X',
     align: 'center center',
     textAlign: 'center',
-    round: 'Y',
+    round: 'Y1',
     theme: 'transparent',
     border: 'solid, gray3',
     borderWidth: '1px',

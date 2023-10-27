@@ -6,20 +6,22 @@ import { User } from './User'
 export const UserWithButton = {
   extend: Flex,
   props: {
-    background: 'gray',
     boxSize: 'fit-content',
-    padding: 'X Z2 X X2',
-    round: 'Z',
+    theme: 'dialog',
     border: '1px, solid, gray3',
+    padding: 'Y Z2 Y Y',
     alignItems: 'center',
-    gap: 'Z1'
+    gap: 'B',
+    round: 'A'
   },
 
   User: {
     extend: User,
-    props: { gap: 'Y2' },
+    props: { padding: '0' },
     Avatar: {
-      Avatar: { props: { round: 'Y1' } },
+      Avatar: {
+        props: { fontSize: 'Z2', round: 'Z1' }
+      },
       StatusIndicator: null
     },
 
@@ -48,7 +50,6 @@ export const UserWithButton = {
     transition: 'A defaultBezier',
     transitionProperty: 'opacity, background',
     padding: '0',
-    margin: '- - - Y2',
     Icon: {
       name: 'copy',
       fontSize: 'C'

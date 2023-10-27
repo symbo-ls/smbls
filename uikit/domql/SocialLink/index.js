@@ -8,12 +8,12 @@ export const SocialLink = {
   props: {
     fontWeight: '500',
     text: 'Continue with Twitch',
-    fontSize: 'Z2',
+    fontSize: 'Z1',
     gap: 'Z',
     boxSize: 'fit-content',
     padding: 'A A2',
     background: 'gray3',
-    round: 'Y+W',
+    round: 'Z1',
     maxHeight: `${48 / 16}em`,
     cursor: 'pointer',
     Icon: {

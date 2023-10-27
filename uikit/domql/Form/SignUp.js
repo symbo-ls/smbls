@@ -9,7 +9,7 @@ export const SignUp = {
   props: { minWidth: 'H' },
 
   Header: {
-    Title: { props: { text: 'Create your account' } },
+    Title: { caption: { props: { text: 'Create your account' } } },
     Paragraph: { props: { text: 'Let’s get started with your 30 days free trial' } }
   },
 
@@ -49,7 +49,7 @@ export const SignUp = {
       ]
     },
     ParagraphButtonWithCheckbox: {
-      padding: '0 Z1 - 0',
+      padding: 'Z2 Z1 - Z1',
       justifyContent: 'flex-end'
     },
     Submit: {

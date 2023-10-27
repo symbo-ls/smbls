@@ -5,28 +5,29 @@ import { Flex } from '@symbo.ls/atoms'
 export const UserButtonSet = {
   extend: Flex,
   props: {
-    gap: 'E2',
-    background: 'gray',
     boxSize: 'fit-content',
-    padding: 'Z1 Z2 Z1 Z1',
-    round: 'Z1',
-    alignItems: 'center'
+    theme: 'dialog',
+    padding: 'Z1 Z1 Z Z',
+    round: 'A',
+    alignItems: 'center',
+    gap: 'E'
   },
 
   User: {
-    gap: 'Z1',
+    padding: '0',
+    gap: 'Y2',
     Avatar: { fontSize: 'A1' },
     Notes: {
-      gap: 'Y',
       margin: 'W - - -',
+      gap: 'X2',
       Title: {
-        text: 'Group chat',
-        fontSize: 'B2',
-        fontWeight: '700'
+        text: 'Group',
+        fontSize: 'C1'
       },
       Paragraph: {
         text: 'Active now',
-        fontSize: 'X2'
+        fontSize: 'Y',
+        padding: '- - - W1'
       }
     }
   },
@@ -38,5 +39,17 @@ export const UserButtonSet = {
       { props: { Icon: { name: 'video' } } },
       { props: { Icon: { name: 'moreHorizontal' } } }
     ]
+  }
+}
+
+export const UserButtonSetCircle = {
+  extend: UserButtonSet,
+  User: {},
+  ButtonSet: {
+    childExtend: {
+      props: {
+        round: '100%'
+      }
+    }
   }
 }

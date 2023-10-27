@@ -6,14 +6,19 @@ export const CompleteProcess = {
   extend: Modal,
   props: {
     alignItems: 'center',
-    gap: 'B'
+    gap: 'B',
+    padding: 'A A A+V A'
   },
 
-  Header: null,
-  SuccessIndicator: {
-    fontSize: 'F2',
-    margin: 'B - - -'
+  Header: {
+    Title: {
+      caption: null,
+      x: { props: { margin: '- - - auto' } }
+    },
+    Paragraph: null
   },
+
+  SuccessIndicator: { fontSize: 'F2' },
 
   TitleParagraph: {
     alignItems: 'center',
@@ -30,11 +35,11 @@ export const CompleteProcess = {
   },
 
   CommonButton: {
-    fontWeight: '500',
     minWidth: '100%',
-    padding: 'A -',
-    margin: 'Y1 - - -',
-    round: 'Z1',
-    caption: { text: 'Done' }
+    margin: 'Y - - -',
+    caption: {
+      text: 'Done',
+      fontWeight: '500'
+    }
   }
 }

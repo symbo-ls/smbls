@@ -7,7 +7,7 @@ export const ParagraphButton = {
   props: {
     alignItems: 'center',
     gap: 'Y2',
-    fontSize: 'Y2'
+    fontSize: 'Y1'
   },
   P: {
     props: {

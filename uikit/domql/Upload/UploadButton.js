@@ -38,8 +38,7 @@ export const UploadButtonWithBackground = {
     fontFamily: 'Avenir',
     theme: 'primary',
     color: 'white',
-    padding: 'Z2 A2'
-
+    padding: 'Z2 A1'
   },
   caption: { props: { text: 'Browse files' } }
 }

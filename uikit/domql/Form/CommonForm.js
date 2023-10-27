@@ -9,33 +9,36 @@ export const CommonForm = {
   props: {
     gap: 'B',
     boxSizing: 'border-box',
-    padding: 'A1 A A A'
+    padding: 'A+V A'
   },
 
-  X: {
-    props: {
-      top: 'Y2',
-      right: 'Y2'
+  Header: {
+    props: { gap: 'Z' },
+    Title: {
+      caption: { props: { padding: 'Y W2 - W2' } },
+      x: {
+        props: {
+          margin: '-Y+V - - -',
+          fontSize: 'C'
+        }
+      }
     }
   },
-
-  Header: { props: { gap: 'Y' } },
 
   Form: {
     extend: Flex,
     props: {
       flow: 'column',
-      ParagraphButton: { margin: 'Z2 - - Z2' },
-      ParagraphButtonWithCheckbox: { margin: 'Z1 - - Z' },
-      '> div ~ div > button': { padding: 'Z2+V1 B1' },
-      '> div ~ button': { padding: 'Z2+V1 B1' }
+      '> div ~ button': { padding: 'Z2+V1 -' },
+      '> div ~ div:last-child > button': { padding: 'Z2+V1 B' },
+      '> div ~ div:last-child > button:first-child': { padding: 'Z2+V Z' }
     },
 
     Fields: {
       extend: Grid,
       props: {
         columnGap: 'A',
-        rowGap: 'A2'
+        rowGap: 'A1'
       },
       childExtend: {
         extend: FieldWithTitle,
@@ -49,10 +52,7 @@ export const CommonForm = {
     Submit: {
       props: {
         minWidth: '100%',
-        margin: 'C1 - - -',
-        childProps: {
-          fontWeight: '500'
-        }
+        margin: 'C - - -'
       }
     }
   }

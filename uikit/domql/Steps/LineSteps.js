@@ -14,7 +14,7 @@ export const LineSteps = {
     extend: ProgressLine,
     props: {
       value: 1,
-      height: 'Y',
+      height: 'X2',
       minWidth: 'F',
       round: 'X'
     }
@@ -27,30 +27,27 @@ export const LineSteps = {
   ]
 }
 
-export const LineStepsWithTitleParagraphRows = {
+export const LineStepsWithTitleParagraph = {
   extend: Flex,
   props: {
     flow: 'column',
-    padding: 'A1 B B',
-    background: 'gray',
-    round: 'A',
+    padding: 'A A1',
+    theme: 'dialog',
+    round: 'A1',
     boxSize: 'fit-content',
-    gap: 'B'
+    gap: 'A1'
   },
 
-  TitleParagraphRows: {
-    gap: 'Z1',
+  TitleParagraph: {
+    gap: 'Y1',
     Title: {
-      h5: {
-        text: 'Symbols',
-        fontSize: 'B'
-      }
+      text: 'Symbols',
+      fontSize: 'D1'
     },
     Paragraph: {
-      p: {
-        text: 'The easiest way to build your own website.',
-        fontSIze: 'A'
-      }
+      text: 'The easiest way to build your own website.',
+      fontSize: 'Z1',
+      color: 'gray4'
     }
   },
   LineSteps: {

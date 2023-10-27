@@ -5,35 +5,40 @@ import { Field } from './Field'
 export const Search = {
   extend: Field,
   props: {
-    maxWidth: 'H',
-    gap: 'Y2',
-    padding: 'Z2 A1',
-    background: 'gray .92 +8'
-  },
-
-  Icon: {
-    props: {
-      opacity: '.65',
+    maxWidth: 'G3',
+    gap: 'Z',
+    theme: 'dialog',
+    padding: 'Z+V Z+V2',
+    Icon: {
       name: 'search',
-      fontSize: 'B',
-      margin: '0 - - -'
+      fontSize: 'C',
+      color: 'gray2',
+      margin: 'V - - -'
     }
   },
 
+  Icon: {},
+
   Input: {
-    props: { placeholder: 'Type a command or search' }
+    props: {
+      placeholder: 'type a command or search',
+      fontSize: 'Z',
+      '::placeholder': { color: 'gray 1 +68' }
+    }
   }
 }
 
 export const SearchWithButton = {
   extend: Search,
+  props: {
+    Button: { fontSize: 'B' }
+  },
   Icon: {},
   Input: { props: { ':focus ~ button': { opacity: '1' } } },
 
   Button: {
     props: {
       opacity: '0',
-      fontSize: 'D',
       icon: 'x'
     },
     Icon: {
@@ -47,15 +52,13 @@ export const SearchWithButton = {
 export const SearchWithDropDownButton = {
   extend: SearchWithButton,
   props: {
-    padding: '- A - 0',
     theme: 'tertiary',
-    maxWidth: 'H+C'
+    maxWidth: 'G3+C',
+    padding: '0 A 0 0',
+    gap: 'Z'
   },
-  DropDownButton: {
-    background: 'gray',
-    margin: '- Z - -'
-  },
-  Icon: {},
-  Input: {},
-  Button: {}
+  DropDownButton: {},
+  Input: { props: { padding: '- - - X' } },
+  Button: {},
+  Icon: {}
 }

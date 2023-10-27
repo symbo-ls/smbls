@@ -7,9 +7,9 @@ export const AvatarChooser = {
   tag: 'label',
 
   props: {
-    round: 'C',
+    round: 'A2',
     width: 'fit-content',
-    padding: 'W2 - W2 X',
+    padding: 'X2 Y2+V X2 X2',
     theme: 'tertiary',
     position: 'relative',
     cursor: 'pointer'
@@ -31,11 +31,12 @@ export const AvatarChooser = {
       height: '100%',
       background: 'none',
       color: 'currentColor',
-      fontSize: 'A',
+      fontSize: 'Z2',
       lineHeight: 1,
-      padding: '- B2 - Y1',
+      padding: '- B - Y1',
       zIndex: '2',
       flex: '1',
+      fontWeight: '500',
       ':focus-visible': {
         outline: 'none'
       }
@@ -61,8 +62,8 @@ export const AvatarChooser = {
   Icon: {
     props: {
       icon: 'chevronDown',
-      fontSize: 'B2',
-      margin: 'V1 - - -',
+      fontSize: 'C',
+      margin: 'V - - -',
       position: 'absolute',
       right: 'Y1',
       pointerEvents: 'none'

@@ -9,47 +9,45 @@ export const Modal = {
   props: {
     flow: 'column',
     boxSize: 'fit-content',
-    padding: 'A',
     minWidth: 'G3',
-    round: 'Z2',
-    position: 'relative'
-  },
-
-  X: {
-    extend: Button,
-    props: {
-      icon: 'x',
-      fontSize: 'C',
-      boxSize: 'fit-content',
-      padding: '0',
-      theme: 'transparent',
-      position: 'absolute',
-      // top: 'Z',
-      // right: 'Z'
-      top: 'Y2',
-      right: 'Y2'
-    }
+    position: 'relative',
+    padding: 'Z1 Z2',
+    round: 'A1'
   },
 
   Header: {
     extend: TitleParagraph,
     props: {
-      gap: 'Z',
-      padding: '- - - V1'
+      minWidth: '100%',
+      gap: 'A'
     },
 
     Title: {
-      props: {
-        fontSize: 'D',
-        text: 'Title'
+      props: { align: 'center space-between' },
+      caption: {
+        props: {
+          text: 'Title',
+          fontSize: 'D',
+          padding: 'W2 W2 - W2'
+        }
+      },
+      x: {
+        extend: Button,
+        props: {
+          icon: 'x',
+          fontSize: 'B2',
+          boxSize: 'fit-content',
+          theme: 'transparent',
+          padding: '0'
+        }
       }
     },
 
     Paragraph: {
       props: {
         fontSize: 'Z',
-        padding: '- - - V1',
-        color: 'gray4'
+        color: 'gray4',
+        padding: '- Y'
       }
     }
   }

@@ -9,24 +9,10 @@ export const UploadingProcess = {
   extend: Dialog,
   props: {
     boxSize: 'fit-content',
-    padding: 'Y1',
-    round: 'Z1',
+    padding: 'Y2 Z2 Y2 Y2',
+    round: 'A',
     gap: 'Y2',
     position: 'relative'
-  },
-
-  X: {
-    extend: Button,
-    props: {
-      icon: 'x',
-      fontSize: 'B',
-      boxSize: 'fit-content',
-      padding: '0',
-      theme: 'transparent',
-      position: 'absolute',
-      top: 'Y1',
-      right: 'Y1'
-    }
   },
 
   Image: { extend: UploadImage },
@@ -34,13 +20,27 @@ export const UploadingProcess = {
     extend: TitleParagraph,
     props: {
       justifyContent: 'space-between',
-      padding: 'X -'
+      padding: 'W2 -'
     },
 
     Title: {
-      props: {
-        text: 'Image.jpg',
-        fontSize: 'Z2'
+      props: { justifyContent: 'space-between' },
+      caption: {
+        props: {
+          text: 'Image.jpg',
+          fontSize: 'Z2'
+        }
+      },
+      x: {
+        extend: Button,
+        props: {
+          icon: 'x',
+          fontSize: 'B',
+          boxSize: 'fit-content',
+          padding: '0',
+          theme: 'transparent',
+          margin: '- -V1 - -'
+        }
       }
     },
 
@@ -50,7 +50,7 @@ export const UploadingProcess = {
         gap: 'Y2'
       },
       DoubleUnitValue: { fontSize: 'Y' },
-      ProgressLine: { margin: '- X - -' }
+      ProgressLine: {}
     }
   }
 }
@@ -67,7 +67,8 @@ export const UploadedProcess = {
           text: 'Done',
           fontSize: 'Y',
           lineHeight: '1em',
-          color: 'gray2'
+          color: 'gray2',
+          display: 'block'
         }
       },
       ProgressLine: {
@@ -89,24 +90,25 @@ export const UploadingProcess2 = {
     props: { padding: 'Z2' },
     Icon: { fontSize: 'D' }
   },
+
   Flex: {
-    props: { padding: 'Y - W -' },
-    Title: { props: { fontSize: 'A2' } },
+    Title: { caption: { props: { fontSize: 'A1' } } },
     Paragraph: {
       ProgressLineWithUnitValue: {
-        margin: '- X - -',
         ProgressLine: {},
-        UnitValue: { fontSize: 'Y2' }
+        UnitValue: { fontSize: 'Y1' }
       },
       DoubleUnitValue: null,
       ProgressLine: null
     }
   }
 }
+
 export const UploadedProcess2 = {
   extend: UploadingProcess2,
   Image: {},
   Flex: {
+    props: { margin: '- - -V2 -' },
     Title: {},
     Paragraph: {
       ProgressLineWithUnitValue: {
@@ -127,17 +129,6 @@ export const UploadingProcess3 = {
     gap: 'Z'
   },
 
-  X: {
-    props: {
-      top: '50%',
-      right: 'B',
-      transform: 'translate(50%, -50%)',
-      padding: 'Y',
-      fontSize: 'A1',
-      theme: 'tertiary'
-    }
-  },
-
   Image: {},
   Flex: {
     props: {
@@ -145,7 +136,22 @@ export const UploadingProcess3 = {
       justifyContent: 'center',
       gap: 'Z'
     },
-    Title: { props: { fontSize: 'Z2' } },
+    Title: {
+      caption: {
+        props: { fontSize: 'Z2' }
+      },
+      x: {
+        props: {
+          position: 'absolute',
+          top: '50%',
+          right: 'B+W1',
+          transform: 'translate(50%, -50%)',
+          padding: 'Y',
+          fontSize: 'A1',
+          theme: 'tertiary'
+        }
+      }
+    },
     Paragraph: {
       ProgressLineWithUnitValue: null,
       ProgressCircleWithSideUnitValue: {}

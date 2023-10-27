@@ -7,9 +7,11 @@ export const CountIndicator = {
   props: {
     text: '2',
     theme: 'primary',
-    boxSize: 'fit-content',
+    boxSize: 'A1',
+    minWidth: 'fit-content',
+    boxSizing: 'content-box',
     lineHeight: '1em',
-    padding: 'X Y1',
+    padding: 'X',
     round: '100%',
     align: 'center center',
     aspectRatio: '1 / 1',

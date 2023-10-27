@@ -1,76 +1,54 @@
 'use strict'
 
-import { Card, ConvertCard } from './'
+import { Flex } from '@symbo.ls/atoms'
+import { ConvertCard } from './ConvertCard'
 
 export const CurrencyConvert = {
-  extend: Card,
+  extend: Flex,
 
   props: {
     boxSize: 'fit-content',
-    minWidth: 'fit-content',
-    gap: 'A',
-    padding: 'A'
+    gap: 'Z',
+    padding: 'Z A A A',
+    flow: 'column',
+    theme: 'dialog',
+    round: 'A1'
   },
 
-  Header: {
-    Title: {
-      h5: {
-        props: {
-          text: 'Convert',
-          fontSize: 'Z1'
-        }
-      },
-      Button: null
-    },
-    Paragraph: null
-  },
-
-  Content: {
+  Title: {
     props: {
-      margin: '- -X2',
+      text: 'convert',
+      textTransform: 'capitalize',
+      fontSize: 'A2',
+      padding: '- W',
+      fontWeight: '500'
+    }
+  },
+
+  Cards: {
+    extend: Flex,
+    props: {
       flow: 'column',
-      gap: 'Z'
+      gap: 'A'
     },
     childExtend: {
       extend: ConvertCard,
       props: {
-        theme: 'dialog @dark .helper'
+        theme: 'tertiary',
+        Paragraph: {
+          dropDownButton: { theme: 'secondary' }
+        }
       }
     },
     ...[{}, {}]
   },
 
-  Footer: {
-    props: {
-      margin: '- -X2 -X2'
-    },
-    CommonButton: {
-      extend: {
-        extend: 'Button',
-        props: {
-          theme: 'primary',
-          boxSize: 'fit-content',
-          padding: 'A A2',
-          round: 'Z2',
-          gap: 'Y2',
-          position: 'relative'
-        },
-        Icon: {
-          props: { fontSize: 'C' }
-        },
-        Caption: {
-          props: {
-            text: 'Button',
-            line_height: '1em'
-          }
-        }
-      },
-      props: {
-        flex: '1',
-        padding: 'Z1 -',
-        round: 'Z',
-        Caption: { text: 'Convert', fontWeight: '500' }
-      }
+  CommonButton: {
+    minWidth: '100%',
+    margin: 'Z - - -',
+    caption: {
+      text: 'convert',
+      textTransform: 'capitalize'
     }
   }
 }

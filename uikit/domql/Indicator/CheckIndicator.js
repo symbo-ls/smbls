@@ -5,15 +5,17 @@ import { Icon } from '@symbo.ls/icon'
 
 export const CheckIndicator = {
   props: {
-    padding: 'X',
+    padding: 'Y1',
     boxSize: 'fit-content fit-content',
     round: '100%',
-    theme: 'primary',
-    fontSize: 'X'
+    theme: 'primary'
   },
   Icon: {
     extend: Icon,
-    props: { name: 'check' }
+    props: {
+      name: 'check',
+      fontSize: 'B1'
+    }
   }
 }
 
@@ -21,15 +23,13 @@ export const CheckIndicatorWithLabel = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    gap: 'Z1'
+    gap: 'Z'
   },
 
-  CheckIndicator: {
-    fontSize: 'D2',
-    padding: 'W'
-  },
+  CheckIndicator: {},
   Caption: {
-    text: 'Label',
-    fontSize: 'B'
+    text: 'Step',
+    fontWeight: '400',
+    fontSize: 'Z2'
   }
 }

@@ -6,25 +6,20 @@ import { CountIndicator } from '@symbo.ls/indicator'
 
 export const ChatUser = {
   extend: User,
-  props: {
-    boxSize: 'fit-content',
-    background: 'gray3',
-    padding: 'Z1 A Z1 Z1',
-    round: 'Z1'
-  },
+  props: { gap: 'Y2' },
 
   Avatar: {},
 
   Notes: {
-    props: { gap: 'Y' },
+    props: { gap: 'X1' },
     Title: {
       props: { align: 'center space-between' },
       caption: { props: { text: 'Maria Kenter' } },
       time: {
         extend: UnitValue,
         props: {
-          gap: 'X2',
-          fontSize: 'X2'
+          fontSize: 'X1',
+          gap: 'X2'
         },
         Unit: { props: { text: '2:22' } },
         Value: { props: { text: 'AM' } }
@@ -32,15 +27,14 @@ export const ChatUser = {
     },
 
     Paragraph: {
-      props: { gap: 'D' },
+      props: { gap: 'C1' },
       p: {
         extend: Flex,
         props: {
-          fontSize: 'Z',
-          whiteSpace: 'nowrap',
+          text: 'Hey team, I’ve finished the requirements document',
           maxWidth: 'F1',
           overflow: 'hidden',
-          text: 'Hey team, I’ve finished the requirements document'
+          whiteSpace: 'nowrap'
         }
       },
       notification: {

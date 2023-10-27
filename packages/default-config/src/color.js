@@ -27,7 +27,7 @@ export const GRADIENT = {
     rgba(4, 116, 242, 1),
     rgba(0, 48, 103, 1)
   )`,
-  'gradient-blue-dark': `linear-gradient(to right, 
+  'gradient-blue-dark': `linear-gradient(to right,
     #0474F2,
     #003067
   )`,

@@ -9,7 +9,7 @@ export const ResetPassword = {
   props: { minWidth: 'G3+D' },
 
   Header: {
-    Title: { props: { text: 'Choose new password' } },
+    Title: { caption: { props: { text: 'Choose new password' } } },
     Paragraph: { props: { text: 'Almost done. Enter your new password and you’re all set' } }
   },
 

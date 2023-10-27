@@ -6,19 +6,19 @@ export const TextAreaField = {
   extend: Focusable,
   props: {
     boxSize: 'fit-content',
-    border: 'solid, gray .45 +65',
+    border: 'solid, gray .45 +80',
     borderWidth: '.8px',
     overflow: 'hidden',
-    round: 'Y2',
+    round: 'Z1',
     ':focus-within': { outline: '1px solid #0474F2' }
   },
   TextArea: {
     tag: 'textarea',
     attr: { placeholder: 'Leave us a message...' },
     props: {
+      fontSize: 'Z',
       minWidth: 'H',
       minHeight: 'D2+Y1',
-      fontSize: 'Z',
       padding: 'A',
       fontFamily: 'avenir',
       theme: 'transparent',

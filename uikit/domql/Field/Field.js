@@ -13,9 +13,9 @@ export const Field = {
     align: 'center flex-start',
     gap: 'Y',
     boxSizing: 'border-box',
-    padding: '- Z2 - Z1',
-    round: 'Y2',
-    border: 'solid, gray .45 +65',
+    padding: '- A - Z2',
+    round: 'Z1',
+    border: 'solid, gray .45 +80',
     borderWidth: '.8px',
     position: 'relative',
     ':focus-within': { outline: '1px solid #0474F2' },
@@ -65,12 +65,13 @@ export const FieldWithTitle = {
     flow: 'column',
     boxSize: 'fit-content fit-content',
     gap: 'Y1',
+    // border: '.05px solid red',
     Hint: {
       color: 'gray 1 +64',
       align: 'center flex-start',
       fontSize: 'Y',
       gap: 'Y',
-      padding: 'W - - Z'
+      padding: 'W Y2 - Y2'
     }
   },
 
@@ -80,8 +81,8 @@ export const FieldWithTitle = {
       fontSize: 'Z',
       lineHeight: '1em',
       color: 'gray2',
-      padding: '- - - Y2',
-      fontWeight: '400'
+      fontWeight: '400',
+      padding: '- Y1'
     }
   },
 

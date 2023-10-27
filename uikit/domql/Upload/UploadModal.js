@@ -11,7 +11,6 @@ export const UploadFooter = {
   props: {
     gap: 'E',
     align: 'center space-between',
-    padding: '- - - A',
     boxSize: 'fit-content'
   },
 
@@ -22,7 +21,7 @@ export const UploadFooter = {
       text: 'Support',
       gap: 'Y',
       fontSize: 'Z',
-      fontWeight: '500'
+      fontWeight: '400'
     }
   },
 
@@ -30,18 +29,20 @@ export const UploadFooter = {
     extend: CancelConfirmButtons,
     props: {
       childProps: {
-        padding: 'Z2+V B',
+        padding: 'Z2 A1',
         ':first-child': {
           theme: 'tertiary',
-          padding: '- B'
+          padding: '- A1'
         },
-        caption: { fontWeight: '500' }
+        caption: {
+          fontSize: 'Z2',
+          fontWeight: '400',
+          letterSpacing: '.3px'
+        }
       }
     },
     ...[
-      {
-        caption: { props: { text: 'Cancel' } }
-      },
+      { caption: { props: { text: 'Cancel' } } },
       {
         extend: UploadButtonWithBackground,
         caption: { props: { text: 'Attach file' } }
@@ -53,34 +54,31 @@ export const UploadFooter = {
 export const UploadModal = {
   extend: Modal,
   props: {
-    gap: 'Z2'
-  },
-
-  X: {
-    props: {
-      top: 'Z',
-      right: 'Z'
-    }
+    gap: 'A',
+    round: 'A1',
+    padding: 'A'
   },
 
   Header: {
-    props: { padding: '- - - W' },
     Title: {
-      props: {
-        text: 'File Upload',
-        fontSize: 'C'
+      caption: {
+        props: {
+          text: 'File Upload',
+          fontSize: 'C'
+        }
+      },
+      x: {
+        props: { margin: '-V2 - - -' }
       }
     },
     Paragraph: null
   },
 
   UploadLabel: {},
-
   UploadFooter: {
-    props: {
-      gap: '0',
-      minWidth: '100%'
-    }
+    props: { minWidth: '100%', margin: '-W - - -' },
+    IconText: { props: { padding: '- Z' } },
+    Buttons: { props: { gap: 'Z2' } }
   }
 }
 
@@ -108,7 +106,6 @@ export const UploadModal3 = {
         childProps: { flex: '1' }
       }
     }
-
   }
 }
 

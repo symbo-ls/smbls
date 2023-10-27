@@ -11,17 +11,21 @@ export const VerificationCode = {
   // state: { value: NUMBERS },
 
   Header: {
-    props: { gap: 'Z' },
-    Title: { props: { text: 'Verify your email' } },
+    props: { gap: 'A' },
+    Title: { caption: { props: { text: 'Verify your email' } } },
     Paragraph: {
       props: {
         text: 'Verification code has been sent to you. Enter the code below.',
-        maxWidth: 'G1'
+        maxWidth: 'G1+Y'
       }
     }
   },
 
   Form: {
+    props: {
+      '> div ~ div:last-child > button': { padding: 'Z1+V1 B+V' },
+      '> div ~ div:last-child > button:first-child': { padding: 'Z1+V1 Y1' }
+    },
     Fields: {
       props: {
         display: 'flex',
@@ -31,8 +35,7 @@ export const VerificationCode = {
       childExtend: Number,
       ...[{}, {}, {}, {}]
     },
-    // not good solution
-    ParagraphButton: { style: { '> button': { padding: '0 !important' } } },
+    ParagraphButton: { padding: 'Z1 Z2 - Z2' },
     Submit: {
       extend: CancelConfirmButtons,
       props: { justifyContent: 'flex-end' },

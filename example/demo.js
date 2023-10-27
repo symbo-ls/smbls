@@ -78,6 +78,7 @@ create({
     CountIndicator: {},
     ChatUser: {},
     UserButtonSet: {},
+    UserButtonSetCircle: {},
     UserMessage: {},
     UserWithButton: {},
 
@@ -132,9 +133,6 @@ create({
     FieldWithTitle: {},
     FieldWithTitleTemplate: {},
     TextAreaField: {},
-    // Textarea: {},
-    // TextareaWithButton: {},
-    // NumberField: {},
 
     ParagraphButton: {},
     VerificationCode: {},
@@ -145,7 +143,6 @@ create({
     DoubleHr: {},
     SocialLink: {},
     LogIn: {},
-    SlideTabs: {},
 
     Search: {},
     SearchWithButton: {},
@@ -165,7 +162,7 @@ create({
     RadioStep: {},
     RadioSteps: {},
     LineSteps: {},
-    LineStepsWithTitleParagraphRows: {},
+    LineStepsWithTitleParagraph: {},
 
     StepCard: {},
     UnitValueWithLabel: {},
