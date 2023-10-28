@@ -28,7 +28,7 @@
   resolved "https://registry.npmjs.org/@babel/compat-data/-/compat-data-7.23.2.tgz#6a12ced93455827037bfb5ed8492820d60fc32cc"
   integrity sha512-0S9TQMmDHlqAZ2ITT95irXKfxN9bncq8ZCoJhun3nHL/lLUxd2NKBJYoNGWH7S0hz6fRQwWlAWn/ILM0C70KZQ==
 
-"@babel/core@^7.12.0", "@babel/core@^7.18.10", "@babel/core@^7.4.4":
+"@babel/core@^7.12.0", "@babel/core@^7.18.10", "@babel/core@^7.22.8", "@babel/core@^7.4.4":
   version "7.23.2"
   resolved "https://registry.npmjs.org/@babel/core/-/core-7.23.2.tgz#ed10df0d580fff67c5f3ee70fd22e2e4c90a9f94"
   integrity sha512-n7s51eWdaWZ3vGT2tD4T7J6eJs3QoBXydv7vkUM06Bf1cbVD2Kc2UrkzhiQwobfV7NwOnQXYL7UBJ5VPU+RGoQ==
@@ -266,7 +266,7 @@
     chalk "^2.4.2"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.22.15", "@babel/parser@^7.23.0", "@babel/parser@^7.4.4":
+"@babel/parser@^7.22.15", "@babel/parser@^7.22.7", "@babel/parser@^7.23.0", "@babel/parser@^7.4.4":
   version "7.23.0"
   resolved "https://registry.npmjs.org/@babel/parser/-/parser-7.23.0.tgz#da950e622420bf96ca0d0f2909cdddac3acd8719"
   integrity sha512-vvPKKdMemU85V9WE/l5wZEmImpCtLqbnTvqDS2U1fJ96KrxoW7KrXhNsNCblQlg8Ck4b85yxdTyelsMUgFUXiw==
@@ -990,7 +990,7 @@
     "@babel/parser" "^7.22.15"
     "@babel/types" "^7.22.15"
 
-"@babel/traverse@^7.23.2", "@babel/traverse@^7.4.4":
+"@babel/traverse@^7.22.8", "@babel/traverse@^7.23.2", "@babel/traverse@^7.4.4":
   version "7.23.2"
   resolved "https://registry.npmjs.org/@babel/traverse/-/traverse-7.23.2.tgz#329c7a06735e144a506bdb2cad0268b7f46f4ad8"
   integrity sha512-azpe59SQ48qG6nu2CzcMLbxUudtN+dOM9kDbUqGq3HXUJRlo7i8fvPoxQUzYgLZ4cMVmuZgm8vvBpNeRhd6XSw==
@@ -6222,6 +6222,17 @@ globby@11.1.0, globby@^11.0.1:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
+globusa@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.npmjs.org/globusa/-/globusa-1.1.4.tgz#fdb25cbf37dd831d649d03d0ab7fd97c461cf2e0"
+  integrity sha512-6x0hAoSC33AUYo/K6AOJa7Qp9PMLNMvvd5q9C/CFCWbsIV9krt6zpTSdhL1ySlaAunXRWxYhy1IbiGUIx2LDcg==
+  dependencies:
+    "@babel/core" "^7.22.8"
+    "@babel/parser" "^7.22.7"
+    "@babel/traverse" "^7.22.8"
+    "@babel/types" "^7.22.5"
+    stringify-object-extract-functions "^2.4.1"
+
 gopd@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/gopd/-/gopd-1.0.1.tgz#29ff76de69dac7489b7c0918a5788e56477c332c"
@@ -7068,6 +7079,11 @@ is-regex@^1.1.4:
   dependencies:
     call-bind "^1.0.2"
     has-tostringtag "^1.0.0"
+
+is-regexp@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/is-regexp/-/is-regexp-1.0.0.tgz#fd2d883545c46bac5a633e7b9a09e87fa2cb5069"
+  integrity sha512-7zjFAPO4/gwyQAAgRRmqeEeyIICSdmCqa3tsVHMdBzaXXRiqopZL4Cyghg/XulGWrtABTpbnYYzzIRffLkP4oA==
 
 is-resolvable@^1.0.0:
   version "1.1.0"
@@ -11510,6 +11526,14 @@ string_decoder@~1.1.1:
   integrity sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==
   dependencies:
     safe-buffer "~5.1.0"
+
+stringify-object-extract-functions@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.npmjs.org/stringify-object-extract-functions/-/stringify-object-extract-functions-2.4.1.tgz#f267a0725d3aab0e315bc41f21625d2a908f45b2"
+  integrity sha512-tGobwSSInn99hbtOJm1ne8LPzNCXwVgJSHQF0sQyPo7wdXfqRp5KrgzXX66Wpb29LVFoecc/n0hFejuWoxXvmg==
+  dependencies:
+    is-plain-obj "^1.0.0"
+    is-regexp "^1.0.0"
 
 "strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"

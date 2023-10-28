@@ -2,12 +2,26 @@
 
 import fs from 'fs'
 import path from 'path'
-import { parse } from 'globusa'
-import { convert, generateImports, dedupMitosisImports } from 'kalduna'
 import * as esbuild from 'esbuild'
 
 // Set up jsdom
 import { JSDOM } from 'jsdom'
+// import { parse } from 'globusa'
+// import { convert, generateImports, dedupMitosisImports } from 'kalduna'
+
+let parse, convert, generateImports, dedupMitosisImports
+try {
+  const { parse: globusaParse } = require('globusa')
+  parse = globusaParse
+  const {
+    convert: kConvert,
+    generateImports: kGenerateImports,
+    dedupMitosisImports: kDedupMitosisImports
+  } = require('kalduna')
+  convert = kConvert
+  generateImports = kGenerateImports
+  dedupMitosisImports = kDedupMitosisImports
+} catch {}
 
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window

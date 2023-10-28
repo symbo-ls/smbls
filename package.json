@@ -23,6 +23,7 @@
     "@babel/preset-react": "^7.18.6",
     "commander": "^11.0.0",
     "esbuild": "^0.19.2",
+    "globusa": "^1.1.4",
     "lerna": "^6.5.1",
     "parcel-bundler": "^1.5.1",
     "parcel-plugin-inlinesvg": "^0.1.1",
