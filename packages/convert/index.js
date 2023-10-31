@@ -11,17 +11,16 @@ import { JSDOM } from 'jsdom'
 
 let parse, convert, generateImports, dedupMitosisImports
 try {
-  const { parse: globusaParse } = require('globusa')
-  parse = globusaParse
-  const {
-    convert: kConvert,
-    generateImports: kGenerateImports,
-    dedupMitosisImports: kDedupMitosisImports
-  } = require('kalduna')
-  convert = kConvert
-  generateImports = kGenerateImports
-  dedupMitosisImports = kDedupMitosisImports
-} catch {}
+  const kalduna = await import('kalduna')
+  convert = kalduna.convert
+  generateImports = kalduna.generateImports
+  dedupMitosisImports = kalduna.dedupMitosisImports
+
+  const globusa = await import('globusa')
+  parse = globusa.parse
+} catch (e) {
+  console.error(e)
+}
 
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
 global.window = jsdom.window

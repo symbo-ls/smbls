@@ -30,6 +30,8 @@ const capture = (opts) => {
       console.error('Error writing to file:')
       console.error(e)
     }
+
+    execSync(`yarn link ${packages.join(' ')} --force`, { stdio: 'inherit' })
   })
 }
 
