@@ -7,7 +7,7 @@ export const UserWithLabel = {
   extend: User,
   props: { gap: 'Y2' },
 
-  AvatarIndicator: {
+  Avatar: {
     StatusIndicator: null,
     Avatar: { props: { boxSize: 'B2+W' } }
   },
