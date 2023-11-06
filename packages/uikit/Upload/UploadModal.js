@@ -87,6 +87,7 @@ export const UploadModal2 = {
   Header: {},
   UploadLabel: null,
   UploadLabel2: {
+    width: '100%',
     Icon: {},
     TitleParagraph: {},
     UploadButtonWithBackground: { theme: 'tertiary' }
