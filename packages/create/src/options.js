@@ -8,7 +8,8 @@ export const DESIGN_SYSTEM_OPTIONS = {
   useIconSprite: true,
   useSvgSprite: true,
   useDocumentTheme: true,
-  useFontImport: true
+  useFontImport: true,
+  useDefaultConfig: true
 }
 
 export const CREATE_OPTIONS = {

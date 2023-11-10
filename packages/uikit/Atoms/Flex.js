@@ -6,7 +6,7 @@ export const Flex = {
   },
 
   class: {
-    flow: ({ props }) => props.flow && ({ flexFlow: props.flow }),
+    flow: ({ props }) => props.flow && ({ flexFlow: props.flow + (props.reverse ? '-reverse' : '') }),
     wrap: ({ props }) => props.wrap && ({ flexWrap: props.wrap }),
     align: ({ props }) => {
       if (typeof props.align !== 'string') return

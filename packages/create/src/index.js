@@ -2,6 +2,7 @@
 
 import DOM from 'domql'
 import { deepMerge, isObject, isString } from '@domql/utils'
+import { checkIfKeyIsComponent } from '@domql/element/utils/component'
 
 import * as utils from './utilImports'
 import * as uikit from '@symbo.ls/uikit'
@@ -20,6 +21,21 @@ const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 const mergeWithLocalFile = (options, optionsExternalFile) => {
   const rcfile = isObject(optionsExternalFile) ? optionsExternalFile : DYNAMIC_JSON || {}
   return deepMerge(options, rcfile)
+}
+
+const UIkitWithPrefix = () => {
+  const newObj = {}
+  for (const key in uikit) {
+    if (Object.prototype.hasOwnProperty.call(uikit, key)) {
+      if (checkIfKeyIsComponent(key)) {
+        newObj[`smbls.${key}`] = uikit[key]
+      } else {
+        newObj[key] = uikit[key]
+      }
+    }
+  }
+  console.log(newObj, uikit)
+  return newObj
 }
 
 export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
@@ -44,6 +60,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   if (App && App.state) deepMerge(state, App.state)
 
   const pages = options.pages || {}
+  // const components = options.components ? { ...UIkitWithPrefix(), ...options.components } : UIkitWithPrefix()
   const components = options.components ? { ...uikit, ...options.components } : uikit
   const designSystem = scratcDesignhSystem || {}
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
