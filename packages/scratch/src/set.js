@@ -90,6 +90,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     useIconSprite,
     globalTheme,
     useDocumentTheme,
+    useDefaultConfig,
     ...config
   } = recivedConfig
 

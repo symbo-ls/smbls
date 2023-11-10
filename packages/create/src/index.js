@@ -23,20 +23,20 @@ const mergeWithLocalFile = (options, optionsExternalFile) => {
   return deepMerge(options, rcfile)
 }
 
-const UIkitWithPrefix = () => {
-  const newObj = {}
-  for (const key in uikit) {
-    if (Object.prototype.hasOwnProperty.call(uikit, key)) {
-      if (checkIfKeyIsComponent(key)) {
-        newObj[`smbls.${key}`] = uikit[key]
-      } else {
-        newObj[key] = uikit[key]
-      }
-    }
-  }
-  console.log(newObj, uikit)
-  return newObj
-}
+// const UIkitWithPrefix = () => {
+//   const newObj = {}
+//   for (const key in uikit) {
+//     if (Object.prototype.hasOwnProperty.call(uikit, key)) {
+//       if (checkIfKeyIsComponent(key)) {
+//         newObj[`smbls.${key}`] = uikit[key]
+//       } else {
+//         newObj[key] = uikit[key]
+//       }
+//     }
+//   }
+//   console.log(newObj, uikit)
+//   return newObj
+// }
 
 export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
   const appIsKey = isString(App)
