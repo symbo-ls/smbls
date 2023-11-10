@@ -2,7 +2,7 @@
 
 import DOM from 'domql'
 import { deepMerge, isObject, isString } from '@domql/utils'
-import { checkIfKeyIsComponent } from '@domql/element/utils/component'
+// import { checkIfKeyIsComponent } from '@domql/element/dist/cjs/component'
 
 import * as utils from './utilImports'
 import * as uikit from '@symbo.ls/uikit'
