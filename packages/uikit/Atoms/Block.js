@@ -121,7 +121,7 @@ export const Block = {
     }),
     flexFlow: ({ props }) => props.flexFlow && ({
       display: 'flex',
-      flexFlow: props.flexFlow
+      flexFlow: props.flexFlow + (props.reverse ? '-reverse' : '')
     }),
     flexAlign: ({ props }) => {
       if (typeof props.flexAlign !== 'string') return
