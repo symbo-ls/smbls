@@ -47,7 +47,7 @@ export const Strong = {
 export const Underline = { tag: 'u' }
 export const Italic = { tag: 'i' }
 
-export const Title = { tag: 'h5' }
+export const Title = {}
 
 export const Headline = {
   tag: 'h6',

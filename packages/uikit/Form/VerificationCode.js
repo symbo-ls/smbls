@@ -1,6 +1,6 @@
 'use strict'
 
-import { Number } from '@symbo.ls/input'
+import { NumberInput } from '@symbo.ls/input'
 import { CancelConfirmButtons } from '@symbo.ls/button'
 import { CommonForm } from './CommonForm'
 
@@ -32,7 +32,7 @@ export const VerificationCode = {
         columnGap: 'A',
         childProps: { flex: '1' }
       },
-      childExtend: Number,
+      childExtend: NumberInput,
       ...[{}, {}, {}, {}]
     },
     ParagraphButton: { padding: 'Z1 Z2 - Z2' },

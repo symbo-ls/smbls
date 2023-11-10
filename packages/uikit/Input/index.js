@@ -1,7 +1,7 @@
 'use strict'
 
 export * from './Input'
-export * from './Number'
+export * from './NumberInput'
 export * from './Checkbox'
 export * from './Radio'
 export * from './Toggle'

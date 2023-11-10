@@ -3,8 +3,9 @@
 import { Flex } from '@symbo.ls/atoms'
 import { Input } from './Input'
 
-export const Number = {
+export const NumberInput = {
   extend: [Input, Flex],
+
   props: {
     type: 'number',
     fontSize: 'E',
@@ -17,12 +18,11 @@ export const Number = {
     borderWidth: '1px',
     placeholder: '0',
     fontWeight: '400',
-    style: {
-      '&::-webkit-inner-spin-button': {
-        '-webkit-appearance': 'none'
-      }
+    '::-webkit-inner-spin-button': {
+      appearance: 'none'
     }
   },
+
   attr: {
     step: ({ props }) => props.step,
     min: ({ props }) => props.min,

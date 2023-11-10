@@ -126,7 +126,7 @@ create({
     Checkbox: {},
     Radio: {},
     Toggle: {},
-    Number: {},
+    NumberInput: {},
 
     Field: {},
     FieldTemplate: {},

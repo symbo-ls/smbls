@@ -27,6 +27,7 @@ export const Notification = {
       gap: 'X2'
     },
     Title: {
+      tag: 'h6',
       props: {
         fontWeight: '600',
         lineHeight: '1em',
