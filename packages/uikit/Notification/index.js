@@ -29,6 +29,7 @@ export const Notification = {
     Title: {
       tag: 'h6',
       props: {
+        margin: '0',
         fontWeight: '600',
         lineHeight: '1em',
         text: 'Notification'
