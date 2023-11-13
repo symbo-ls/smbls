@@ -21,14 +21,12 @@ export const Field = {
     ':focus-within': { outline: '1px solid #0474F2' },
 
     Icon: {
-      color: 'gray2',
       fontSize: 'Z2'
     },
 
     Button: {
       padding: '0',
       background: 'transparent',
-      color: 'gray2',
       margin: '- - - auto',
       fontSize: 'Z2'
     }
@@ -41,7 +39,7 @@ export const Field = {
       padding: '0',
       background: 'rgba(0, 0, 0, 0)',
       round: '0',
-      color: 'gray2',
+      color: 'title',
       fontFamily: 'avenir',
       placeholder: 'Placeholder',
       flex: '1',
@@ -80,7 +78,7 @@ export const FieldWithTitle = {
       text: 'Label',
       fontSize: 'Z',
       lineHeight: '1em',
-      color: 'gray2',
+      color: 'title',
       fontWeight: '400',
       padding: '- Y1'
     }

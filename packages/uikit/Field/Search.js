@@ -12,7 +12,7 @@ export const Search = {
     Icon: {
       name: 'search',
       fontSize: 'C',
-      color: 'gray2',
+      color: 'title',
       margin: 'V - - -'
     }
   },

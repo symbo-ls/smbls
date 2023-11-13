@@ -37,7 +37,7 @@ export const UploadLabel = {
         gap: 'Y2',
         align: 'center flex-start',
         fontSize: 'Z1',
-        color: 'gray2'
+        color: 'title'
       },
       UploadButton: {
         caption: {

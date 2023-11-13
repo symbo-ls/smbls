@@ -5,7 +5,7 @@ import { Flex } from '@symbo.ls/atoms'
 export const UnitValue = {
   extend: Flex,
   props: {
-    color: 'gray2',
+    color: 'title',
     align: 'center flex-start',
     gap: 'V',
     fontWeight: '400',
