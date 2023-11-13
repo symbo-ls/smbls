@@ -25,7 +25,7 @@ export const DemoPages = {
       flex: '1',
       background: 'black',
       flow: 'column',
-      // gap: 'E1+X',
+      gap: 'E1+X',
       style: {
         overflowY: 'auto',
         scrollBehavior: 'smooth',
@@ -35,9 +35,6 @@ export const DemoPages = {
       '> section': {
         minWidth: '100%'
 
-      },
-      '> section:not(:first-child)': {
-        padding: 'E2 -'
       }
     },
 

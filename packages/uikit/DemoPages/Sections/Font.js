@@ -40,7 +40,7 @@ export const Font = {
         fontWeight: '400',
         letterSpacing: '.1px',
         fontSize: 'A',
-        padding: 'C - - -',
+        padding: 'Y - - -',
         color: 'white .5'
       }
     },

@@ -68,10 +68,10 @@ export const Icons = {
       props: {
         columns: 'repeat(8, 1fr)',
         height: '1500px',
-        gap: 'Z',
+        gap: 'Y1',
         childProps: {
           theme: 'dialog',
-          round: 'Z'
+          round: 'Y1'
         }
       },
 
