@@ -30,7 +30,7 @@ export const CompleteProcess = {
     Paragraph: {
       text: 'Your request has been approved!',
       fontSize: 'Z',
-      color: 'gray2'
+      color: 'title'
     }
   },
 

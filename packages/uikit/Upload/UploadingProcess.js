@@ -67,7 +67,7 @@ export const UploadedProcess = {
           text: 'Done',
           fontSize: 'Y',
           lineHeight: '1em',
-          color: 'gray2',
+          color: 'title',
           display: 'block'
         }
       },
@@ -208,7 +208,7 @@ export const UploadingProcess4 = {
         margin: '0',
         padding: '0',
         fontSize: 'Y1',
-        color: 'gray2'
+        color: 'title'
       },
       ProgressCircleWithSideUnitValue: null
     }

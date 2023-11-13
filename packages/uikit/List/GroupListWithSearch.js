@@ -30,7 +30,7 @@ export const GroupListWithSearch = {
       Icon: {
         props: {
           fontSize: 'C',
-          color: 'gray2'
+          color: 'title'
         }
       },
       Input: { fontSize: 'Z' }
