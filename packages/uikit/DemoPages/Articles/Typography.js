@@ -1,7 +1,6 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-
 import { Font } from '../Sections'
 
 export const Typography = {

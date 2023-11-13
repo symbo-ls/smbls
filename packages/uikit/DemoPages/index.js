@@ -7,6 +7,10 @@ import { Typography, Colors, Icons, Shapes } from './Articles'
 export const DemoPages = {
   extend: Flex,
   props: {
+    theme: 'document',
+    position: 'relative',
+    gap: 'A1',
+    overflow: 'hidden auto',
     height: '100%',
     width: '100%'
   },
@@ -14,21 +18,17 @@ export const DemoPages = {
   Flex: {
     props: {
       flex: '1',
-      background: 'black',
       flow: 'column',
-      // gap: 'E1+X',
-      style: {
-        overflowY: 'auto',
-        scrollBehavior: 'smooth',
-        '&::-webkit-scrollbar': { display: 'none' }
-      },
+      overflowY: 'auto',
+      scrollBehavior: 'smooth',
       maxHeight: '100%',
+      gap: 'E1+X',
+
+      '::-webkit-scrollbar': { display: 'none' },
+
       '> section': {
         minWidth: '100%'
 
-      },
-      '> section:not(:first-child)': {
-        padding: 'E2 -'
       }
     },
 
