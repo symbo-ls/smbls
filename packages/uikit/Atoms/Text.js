@@ -23,6 +23,7 @@ export const Text = {
     textDecoration: ({ props }) => props.textDecoration && ({ textDecoration: props.textDecoration }),
     textTransform: ({ props }) => props.textTransform && ({ textTransform: props.textTransform }),
     whiteSpace: ({ props }) => props.whiteSpace && ({ whiteSpace: props.whiteSpace }),
+    wordWrap: ({ props }) => props.wordWrap && ({ wordWrap: props.wordWrap }),
     letterSpacing: ({ props }) => props.letterSpacing && ({ letterSpacing: props.letterSpacing }),
     textAlign: ({ props }) => props.textAlign && ({ textAlign: props.textAlign }),
     fontWeight: ({ props }) => props.fontWeight && ({

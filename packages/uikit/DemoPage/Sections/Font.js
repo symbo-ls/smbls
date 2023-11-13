@@ -5,7 +5,10 @@ import { TitleParagraph } from '@symbo.ls/titleparagraph'
 export const Font = {
   tag: 'section',
   extend: TitleParagraph,
-  props: { gap: 'B2+Z' },
+  props: {
+    widthRange: '100%',
+    gap: 'B2+Z'
+  },
 
   Title: {
     props: {
@@ -29,18 +32,20 @@ export const Font = {
     props: {
       width: '100%',
       round: '0 C C 0',
-      gap: 'C2'
+      gap: 'C2',
+      childProps: { flex: 1 }
     },
 
     p: {
       props: {
         maxWidth: 'G3+B',
+        flex: 3,
         flow: 'column',
         gap: 'A',
         fontWeight: '400',
         letterSpacing: '.1px',
         fontSize: 'A',
-        padding: 'C - - -',
+        padding: 'X2 C C -',
         color: 'white .5'
       }
     },
@@ -48,28 +53,10 @@ export const Font = {
     letters: {
       props: {
         theme: 'dialog',
-        padding: 'C2',
-        round: 'Z',
-        flex: '1',
-        lineHeight: '3.8em',
-        childProps: {
-          ':first-child': {
-            fontSize: 'L1',
-            fontWeight: '900'
-          },
-          ':nth-child(2)': {
-            fontSize: 'K2',
-            fontWeight: '700'
-          },
-          ':nth-child(3)': {
-            fontSize: 'J1',
-            fontWeight: '500'
-          },
-          ':last-child': {
-            fontSize: 'I',
-            fontWeight: '100'
-          }
-        }
+        padding: 'B2 C2',
+        wordWrap: 'break-word',
+        flex: 5,
+        overflow: 'hidden'
       }
     }
   }

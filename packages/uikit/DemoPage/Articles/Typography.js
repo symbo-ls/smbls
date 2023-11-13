@@ -30,10 +30,11 @@ export const Typography = {
     props: {
       gap: 'C',
       flow: 'column',
-      padding: 'D2+Z - - C1'
+      padding: 'C1 - - C1'
     },
 
     childExtend: { extend: Font },
+
     ...[
       {
         Title: {
@@ -51,12 +52,9 @@ export const Typography = {
           },
 
           letters: {
-            ...[
-              { text: 'ABCDEFGHIJKLMN' },
-              { text: 'OPQRSTUVWXYZ' },
-              { text: 'abcdefghijklmop' },
-              { text: 'qrstuvwxyz' }
-            ]
+            H1: { text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
+            H3: { text: 'abcdefghijklmopqrstuvwxyz' },
+            P: { text: 'Quick brown fox jumps over lazy frog' }
           }
         }
       },
@@ -69,13 +67,11 @@ export const Typography = {
           p: {
             text: 'Our custom brand font, Headliner, calls back to the strong typography used in vintage concert posters and marquees. It should only be used in brand marketing headlines.'
           },
+
           letters: {
-            ...[
-              { text: 'ABCDEFGHIJKLMN' },
-              { text: 'OPQRSTUVWXYZ' },
-              { text: 'abcdefghijklmopqrs' },
-              { text: 'tuvwxyz' }
-            ]
+            H1: { text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
+            H3: { text: 'abcdefghijklmopqrstuvwxyz' },
+            P: { text: 'Quick brown fox jumps over lazy frog' }
           }
         }
       }

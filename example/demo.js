@@ -1,10 +1,10 @@
 'use strict'
 
 import { create } from '@symbo.ls/create'
-import { DemoPages } from '@symbo.ls/demo-page'
+import { DemoPage } from '@symbo.ls/demo-page'
 
 create({
-  extend: DemoPages,
+  extend: DemoPage,
 
   state: {
     globalTheme: 'dark',
