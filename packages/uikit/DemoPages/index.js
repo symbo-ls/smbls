@@ -8,16 +8,7 @@ export const DemoPages = {
   extend: Flex,
   props: {
     height: '100%',
-    width: '100%',
-    background: 'black',
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    zIndex: '10',
-    // padding: 'E E',
-    style: {
-      fontFamily: 'Avenir'
-    }
+    width: '100%'
   },
 
   Flex: {

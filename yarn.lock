@@ -2175,6 +2175,14 @@
     "@symbo.ls/button" latest
     "@symbo.ls/indicator" latest
 
+"@symbo.ls/banner@latest":
+  version "2.10.230"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/banner/-/banner-2.10.230.tgz#11ed09eef3e197723efe7dd0f629c672136fd76c"
+  integrity sha512-S8H34py2cR4rlfIOi73DGOiKupMLPFGsF5MHAy2bIp4+WKHkniZPZr09Ul1F3ZkYrlhd3XL1ao8XTptex1rSbA==
+  dependencies:
+    "@symbo.ls/avatar" latest
+    "@symbo.ls/icon" latest
+
 "@symbo.ls/box@latest":
   version "2.11.231"
   resolved "https://registry.yarnpkg.com/@symbo.ls/box/-/box-2.11.231.tgz#c1cbdd78c41e58e85a7ac6738911c8f8dbba398a"
