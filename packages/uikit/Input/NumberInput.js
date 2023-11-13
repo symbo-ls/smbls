@@ -8,7 +8,6 @@ export const NumberInput = {
 
   props: {
     type: 'number',
-    fontSize: 'E',
     boxSize: 'C+X',
     align: 'center center',
     textAlign: 'center',

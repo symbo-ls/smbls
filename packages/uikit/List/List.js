@@ -1,5 +1,7 @@
 'use strict'
 
+import { Flex } from '@symbo.ls/atoms'
+
 export const List = {
   props: {
     position: 'relative',
@@ -69,4 +71,27 @@ export const ListTemplate = {
       { span: { text: 'Item' } }
     ]
   }
+}
+
+export const DotList = {
+  extend: Flex,
+  props: {
+    flow: 'column',
+    gap: 'Y'
+  },
+  childExtend: {
+    extend: Flex,
+    props: {
+      align: 'center flex-start',
+      gap: 'Z',
+      ':before': {
+        content: '""',
+        boxSize: 'W',
+        background: 'white',
+        display: 'block',
+        zIndex: '20'
+      }
+    }
+  },
+  ...[{ props: { text: 'Brat font' } }]
 }

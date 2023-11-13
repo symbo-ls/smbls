@@ -2,7 +2,6 @@
 
 import DOM from 'domql'
 import { deepMerge, isObject, isString } from '@domql/utils'
-// import { checkIfKeyIsComponent } from '@domql/element/dist/cjs/component'
 
 import * as utils from './utilImports'
 import * as uikit from '@symbo.ls/uikit'
@@ -12,6 +11,7 @@ import { initRouter, popStateRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
 import { initEmotion } from './initEmotion'
 import { applyInspectListener, applySyncDebug } from './syncExtend'
+import { prepareComponents, prepareDesignSystem, prepareDocument, preparePages, prepareState, prepareUtils } from './prepare'
 
 import DEFAULT_CREATE_OPTIONS from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
@@ -23,21 +23,6 @@ const mergeWithLocalFile = (options, optionsExternalFile) => {
   return deepMerge(options, rcfile)
 }
 
-// const UIkitWithPrefix = () => {
-//   const newObj = {}
-//   for (const key in uikit) {
-//     if (Object.prototype.hasOwnProperty.call(uikit, key)) {
-//       if (checkIfKeyIsComponent(key)) {
-//         newObj[`smbls.${key}`] = uikit[key]
-//       } else {
-//         newObj[key] = uikit[key]
-//       }
-//     }
-//   }
-//   console.log(newObj, uikit)
-//   return newObj
-// }
-
 export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
   const appIsKey = isString(App)
   options = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
@@ -47,23 +32,16 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   if (appIsKey) App = {}
   await fetchSync(key, options)
 
-  if (typeof (document) === 'undefined') {
-    if (typeof (window) === 'undefined') window = {} // eslint-disable-line
-    if (!window.document) window.document = { body: {} }
-    document = window.document // eslint-disable-line
-  }
-  const doc = options.parent || options.document || document
-  const [scratcDesignhSystem, emotion, registry] = initEmotion(key, options)
+  const doc = prepareDocument(options)
 
-  const state = {}
-  if (options.state) deepMerge(state, options.state)
-  if (App && App.state) deepMerge(state, App.state)
+  const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(options, key)
 
-  const pages = options.pages || {}
-  // const components = options.components ? { ...UIkitWithPrefix(), ...options.components } : UIkitWithPrefix()
-  const components = options.components ? { ...uikit, ...options.components } : uikit
-  const designSystem = scratcDesignhSystem || {}
-  const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
+  const state = prepareState(options, App)
+  const pages = preparePages(options)
+  const components = prepareComponents(options)
+  const designSystem = scratcDesignSystem
+  const snippets = prepareUtils(options)
+
   const define = options.define || defaultDefine
 
   const routerOptions = initRouter(App, options) // eslint-disable-line
@@ -96,6 +74,7 @@ export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExter
   applyInspectListener(domqlApp, options)
   popStateRouter(domqlApp, options)
   if (options.on && options.on.create) options.on.create(domqlApp, options)
+
   fetchAsync(domqlApp, key, {
     utils,
     ...options
@@ -135,7 +114,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
   //   })
   // }
 
-  const [scratcDesignhSystem, emotion, registry] = initEmotion(key, options)
+  const [scratcDesignSystem, emotion, registry] = initEmotion(key, options)
 
   let state
   if (options.state) state = options.state
@@ -144,7 +123,7 @@ export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExterna
 
   const pages = options.pages || {}
   const components = options.components ? { ...uikit, ...options.components } : uikit
-  const designSystem = scratcDesignhSystem || {}
+  const designSystem = scratcDesignSystem || {}
   const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
   const define = options.define || defaultDefine
 

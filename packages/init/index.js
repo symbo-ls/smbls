@@ -45,6 +45,7 @@ export const init = (config, options = SET_OPTIONS) => {
     useSvgSprite: options.useSvgSprite,
     useDocumentTheme: options.useDocumentTheme,
     useIconSprite: options.useIconSprite,
+    useDefaultConfig: options.useDefaultConfig,
     ...resultConfig
   }, { newConfig: options.newConfig })
 

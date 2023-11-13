@@ -5,6 +5,7 @@ export * from '@symbo.ls/box'
 export * from '@symbo.ls/icon'
 export * from '@symbo.ls/indicator'
 export * from '@symbo.ls/titleparagraph'
+export * from '@symbo.ls/banner'
 export * from '@symbo.ls/unitvalue'
 export * from '@symbo.ls/link'
 export * from '@symbo.ls/video'
@@ -39,3 +40,5 @@ export * from '@symbo.ls/user'
 
 export * from '@symbo.ls/table'
 export * from '@symbo.ls/card'
+
+export * from '@symbo.ls/demopages'

@@ -30,7 +30,7 @@ export const VerificationCode = {
       props: {
         display: 'flex',
         columnGap: 'A',
-        childProps: { flex: '1' }
+        childProps: { flex: '1', fontSize: 'E' }
       },
       childExtend: NumberInput,
       ...[{}, {}, {}, {}]

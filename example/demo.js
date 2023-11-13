@@ -12,14 +12,20 @@ create({
     globalTheme: 'dark',
     value: ''
   },
-
-  header: {
-    extend: Flex,
-    title: {
-      tag: 'h1',
-      props: { text: 'components' }
-    }
+  props: {
   },
+
+  // header: {
+  //   extend: Flex,
+  //   title: {
+  //     tag: 'h1',
+  //     props: {
+  //       text: 'components',
+  //       display: 'none',
+  //       background: 'green'
+  //     }
+  //   }
+  // },
 
   cnt: {
     extend: Flex,
@@ -175,51 +181,53 @@ create({
     Pricing: {},
 
     DatePicker: {},
-    TimePicker: {}
+    TimePicker: {},
+
+    DemoPages: {}
   },
 
-  footer: {
-    extend: Flex,
-    Search: {
-      extend: SearchWithButton,
-      props: {
-        minWidth: 'G+C',
-        minHeight: 'C+X',
-        maxHeight: 'C+Z',
-        round: 'C',
-        padding: '- A+W - A+Y',
-        border: '1px solid #3F3F43',
-        background: 'transparent'
-      },
-      Input: {
-        props: {
-          fontSize: 'Z1',
-          placeholder: 'Find component ...',
-          ':focus ~ svg': { opacity: '0' }
-        },
-        on: {
-          keyup: (event, el, s) => {
-            const value = el.node.value.toLowerCase()
-            s.update({ value })
-          }
-        }
-      },
-      Icon: {
-        props: {
-          fontSize: 'C',
-          color: '#3F3F43'
-        }
-      },
-      Button: {
-        props: {
-          position: 'absolute',
-          margin: 'auto',
-          right: 'Z',
-          color: '#3F3F43'
-        }
-      }
-    }
-  },
+  // footer: {
+  //   extend: Flex,
+  //   Search: {
+  //     extend: SearchWithButton,
+  //     props: {
+  //       minWidth: 'G+C',
+  //       minHeight: 'C+X',
+  //       maxHeight: 'C+Z',
+  //       round: 'C',
+  //       padding: '- A+W - A+Y',
+  //       border: '1px solid #3F3F43',
+  //       background: 'transparent'
+  //     },
+  //     Input: {
+  //       props: {
+  //         fontSize: 'Z1',
+  //         placeholder: 'Find component ...',
+  //         ':focus ~ svg': { opacity: '0' }
+  //       },
+  //       on: {
+  //         keyup: (event, el, s) => {
+  //           const value = el.node.value.toLowerCase()
+  //           s.update({ value })
+  //         }
+  //       }
+  //     },
+  //     Icon: {
+  //       props: {
+  //         fontSize: 'C',
+  //         color: '#3F3F43'
+  //       }
+  //     },
+  //     Button: {
+  //       props: {
+  //         position: 'absolute',
+  //         margin: 'auto',
+  //         right: 'Z',
+  //         color: '#3F3F43'
+  //       }
+  //     }
+  //   }
+  // },
 
   props: {
     fontFamily: 'avenir',
