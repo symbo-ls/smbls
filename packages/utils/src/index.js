@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString, isObject, isArray } from '@domql/utils'
+import { isString, isObject, isArray, isNumber } from '@domql/utils'
 
 export * from './scaling'
 export * from './date'
@@ -44,5 +44,6 @@ export const toDescriptionCase = str => {
 export const arrayzeValue = val => {
   if (isString(val)) return val.split(' ')
   if (isObject(val)) return Object.keys(val).map(v => val[v])
+  if (isNumber(val)) return [val]
   if (isArray(val)) return val
 }
