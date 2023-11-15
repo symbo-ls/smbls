@@ -65,7 +65,7 @@ export const TitleParagraphButton = {
     Button: {
       props: {
         background: 'transparent',
-        color: 'white',
+        color: 'currentColor',
         padding: '0',
         Icon: {
           name: 'x',

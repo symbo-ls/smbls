@@ -36,11 +36,12 @@ export const Color = {
 
   Grid: {
     props: {
-      columns: 'repeat(3, 1fr)',
-      minHeight: '650px',
+      columns: 'repeat(6, 1fr)',
       gap: 'Z',
       childProps: {
         theme: 'dialog',
+        border: '1px, solid, gray',
+        aspectRatio: '3 / 2',
         round: 'Z'
       }
     }

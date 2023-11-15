@@ -36,7 +36,7 @@ export const Icons = {
   Flex: {
     props: {
       flow: 'column',
-      padding: 'E - - C1',
+      padding: 'E C1 - C1',
       gap: 'A1'
     },
 
@@ -66,24 +66,30 @@ export const Icons = {
 
     Grid: {
       props: {
-        columns: 'repeat(8, 1fr)',
-        height: '1500px',
-        gap: 'Y1',
-        childProps: {
+        columns: 'repeat(12, 1fr)',
+        gap: 'Z'
+      },
+
+      childExtend: {
+        extend: 'Flex',
+        props: {
+          align: 'center',
+          aspectRatio: '1/1',
           theme: 'dialog',
-          round: 'Y1'
+          round: 'Z'
+        },
+        Icon: {
+          margin: 'auto',
+          fontSize: 'D'
         }
       },
 
-      ...[
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
-      ]
+      $collection: ({ context }) => {
+        const { ICONS } = context.designSystem
+        return Object.keys(ICONS).map(name => ({
+          Icon: { name }
+        }))
+      }
     }
   }
 }

@@ -1,6 +1,10 @@
 'use strict'
 
-export const FONT = {}
+export const FONT = {
+  SourceSans: [{
+    url: ''
+  }]
+}
 
 export const FONT_FAMILY = {
   system: {

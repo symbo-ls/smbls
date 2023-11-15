@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "2.11.238",
+  "version": "2.11.241",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -16,6 +16,7 @@
     "@domql/utils": "latest",
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/avatar": "latest",
+    "@symbo.ls/banner": "latest",
     "@symbo.ls/box": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/card": "latest",
@@ -46,15 +47,11 @@
     "@symbo.ls/table": "latest",
     "@symbo.ls/timepicker": "latest",
     "@symbo.ls/titleparagraph": "latest",
-    "@symbo.ls/banner": "latest",
     "@symbo.ls/tooltip": "latest",
     "@symbo.ls/unitvalue": "latest",
     "@symbo.ls/upload": "latest",
     "@symbo.ls/user": "latest",
-    "@symbo.ls/video": "latest",
-
-    "@symbo.ls/demopages": "latest"
-
+    "@symbo.ls/video": "latest"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --bundle --sourcemap=external --outfile=dist/index.cjs.js"

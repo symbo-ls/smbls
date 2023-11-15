@@ -159,6 +159,14 @@ export const Theme = {
       columnRule: deps.transformBorder(props.columnRule)
     }),
 
+    filter: ({ props, deps }) => !isUndefined(props.filter) && ({
+      filter: props.filter
+    }),
+
+    mixBlendMode: ({ props, deps }) => !isUndefined(props.mixBlendMode) && ({
+      mixBlendMode: props.mixBlendMode
+    }),
+
     appearance: ({ props }) => !isUndefined(props.appearance) && ({
       appearance: props.appearance
     })

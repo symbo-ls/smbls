@@ -40,5 +40,3 @@ export * from '@symbo.ls/user'
 
 export * from '@symbo.ls/table'
 export * from '@symbo.ls/card'
-
-export * from '@symbo.ls/demopages'

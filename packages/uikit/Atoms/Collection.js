@@ -5,6 +5,49 @@ import { isString, isNot, isArray, isObject, isObjectLike, deepDiff, deepClone }
 
 export const Collection = {
   define: {
+    $collection: (param, el, state) => {
+      if (!param) return
+
+      if (isString(param)) {
+        if (param === 'state') param = state.parse()
+        else param = getChildStateInKey(param, state)
+      }
+      if (isState(param)) param = param.parse()
+      if (isNot(param)('array', 'object')) return
+
+      const { __ref: ref } = el
+
+      if (ref.__stateCollectionCache) {
+        const d = deepDiff(param, ref.__stateCollectionCache) // eslint-disable-line
+        if (Object.keys(d).length) {
+          ref.__stateCollectionCache = deepClone(param)
+          delete ref.__noCollectionDifference
+        } else {
+          ref.__noCollectionDifference = true
+          return
+        }
+      } else {
+        ref.__stateCollectionCache = deepClone(param)
+      }
+
+      const obj = {
+        tag: 'fragment',
+        props: {
+          childProps: el.props && el.props.childProps
+        }
+      }
+
+      for (const key in param) {
+        const value = param[key]
+        obj[key] = isObjectLike(value) ? value : { value }
+      }
+
+      el.removeContent()
+      el.content = obj
+
+      return obj
+    },
+
     $setCollection: (param, el, state) => {
       if (!param) return
 

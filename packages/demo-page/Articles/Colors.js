@@ -8,8 +8,7 @@ export const Colors = {
   extend: Flex,
   attr: { id: 'colors' },
   props: {
-    flow: 'column',
-    margin: '- - - -'
+    flow: 'column'
   },
 
   Banner: {
@@ -43,7 +42,7 @@ export const Colors = {
   Flex: {
     props: {
       flow: 'column',
-      padding: 'E - - C1',
+      padding: 'E C1 - C1',
       gap: 'E'
     },
     childExtend: Color,
@@ -53,7 +52,15 @@ export const Colors = {
           Title: { props: { text: 'Primary Colors' } }
         },
         Grid: {
-          ...[{}, {}, {}, {}, {}, {}]
+          $collection: ({ context }) => {
+            const { COLOR } = context.designSystem
+            console.log(COLOR)
+            return Object.keys(COLOR).map(v => ({
+              props: {
+                background: v
+              }
+            }))
+          }
         }
       },
       {
@@ -62,36 +69,6 @@ export const Colors = {
         },
         Grid: {
           ...[{}, {}, {}, {}, {}, {}]
-        }
-      },
-      {
-        TitleParagraph: {
-          Title: { props: { text: 'Greyscale' } }
-        },
-        Grid: {
-          props: { columns: 'repeat(4, 1fr)' },
-          ...[{}, {}, {}, {}, {}, {}, {}, {}]
-        }
-      },
-      {
-        TitleParagraph: {
-          Title: { props: { text: 'System Colors' } }
-        },
-        Grid: {
-          props: { columns: 'repeat(4, 1fr)' },
-          ...[{}, {}, {}, {}, {}, {}, {}, {}]
-        }
-      },
-      {
-        TitleParagraph: {
-          Title: { props: { text: 'Background Colors' } }
-        },
-        Grid: {
-          props: {
-            columns: 'repeat(2, 1fr)',
-            minHeight: '350px'
-          },
-          ...[{}, {}]
         }
       }
     ]

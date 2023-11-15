@@ -1,6 +1,6 @@
 'use strict'
 
-import { Label } from '../Label'
+import { Label } from '@symbo.ls/label'
 import { User } from './User'
 
 export const UserWithLabel = {

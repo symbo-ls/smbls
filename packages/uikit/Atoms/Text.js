@@ -1,5 +1,6 @@
 'use strict'
 
+import { isUndefined } from '@domql/utils'
 import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
 export const Text = {
@@ -15,17 +16,19 @@ export const Text = {
       const { props, deps } = el
       return props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null
     },
-    fontFamily: ({ props, deps }) => props.fontFamily && ({
+    font: ({ props }) => !isUndefined(props.font) && ({ font: props.font }),
+    fontFamily: ({ props, deps }) => !isUndefined(props.fontFamily) && ({
       fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily
     }),
-    lineHeight: ({ props }) => props.lineHeight && ({ lineHeight: props.lineHeight }),
-    // lineHeight: ({ props }) => props.lineHeight && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
-    textDecoration: ({ props }) => props.textDecoration && ({ textDecoration: props.textDecoration }),
-    textTransform: ({ props }) => props.textTransform && ({ textTransform: props.textTransform }),
-    whiteSpace: ({ props }) => props.whiteSpace && ({ whiteSpace: props.whiteSpace }),
-    letterSpacing: ({ props }) => props.letterSpacing && ({ letterSpacing: props.letterSpacing }),
-    textAlign: ({ props }) => props.textAlign && ({ textAlign: props.textAlign }),
-    fontWeight: ({ props }) => props.fontWeight && ({
+    lineHeight: ({ props }) => !isUndefined(props.lineHeight) && ({ lineHeight: props.lineHeight }),
+    // lineHeight: ({ props }) => !isUndefined(props.lineHeight) && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
+    textDecoration: ({ props }) => !isUndefined(props.textDecoration) && ({ textDecoration: props.textDecoration }),
+    textTransform: ({ props }) => !isUndefined(props.textTransform) && ({ textTransform: props.textTransform }),
+    whiteSpace: ({ props }) => !isUndefined(props.whiteSpace) && ({ whiteSpace: props.whiteSpace }),
+    wordWrap: ({ props }) => !isUndefined(props.wordWrap) && ({ wordWrap: props.wordWrap }),
+    letterSpacing: ({ props }) => !isUndefined(props.letterSpacing) && ({ letterSpacing: props.letterSpacing }),
+    textAlign: ({ props }) => !isUndefined(props.textAlign) && ({ textAlign: props.textAlign }),
+    fontWeight: ({ props }) => !isUndefined(props.fontWeight) && ({
       fontWeight: props.fontWeight,
       fontVariationSettings: '"wght" ' + props.fontWeight
     })
@@ -63,5 +66,9 @@ export const Footnote = {
   tag: 'span',
   props: { fontSize: 'Z' }
 }
+
+export const B = { tag: 'b' }
+
+export const I = { tag: 'i' }
 
 // export const Paragraph = { tag: 'p' }

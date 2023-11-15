@@ -33,7 +33,7 @@ export const Banner = {
         content: '""',
         position: 'absolute',
         boxSize: 'V 100%',
-        background: 'white .1',
+        theme: 'dialog',
         top: '0',
         round: 'C'
       }
@@ -56,8 +56,7 @@ export const Banner = {
       Title: {
         tag: 'h6',
         props: {
-          fontSize: 'B',
-          color: 'white .85'
+          fontSize: 'B'
         }
       },
 
@@ -73,9 +72,7 @@ export const Banner = {
       letterSpacing: '.1px',
       padding: 'B - - Y',
       fontSize: 'Z2',
-      color: 'white .5',
       lineHeight: '1.6em'
-      // fontWeight: '100'
     }
   }
 }
