@@ -16,6 +16,7 @@ export const Text = {
       const { props, deps } = el
       return props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null
     },
+    font: ({ props }) => !isUndefined(props.font) && ({ font: props.font }),
     fontFamily: ({ props, deps }) => !isUndefined(props.fontFamily) && ({
       fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily
     }),
