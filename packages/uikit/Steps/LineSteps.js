@@ -47,7 +47,7 @@ export const LineStepsWithTitleParagraph = {
     Paragraph: {
       text: 'The easiest way to build your own website.',
       fontSize: 'Z1',
-      color: 'gray4'
+      color: 'caption'
     }
   },
   LineSteps: {

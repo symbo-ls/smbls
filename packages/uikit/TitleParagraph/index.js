@@ -20,7 +20,7 @@ export const TitleParagraph = {
     props: {
       margin: '0',
       fontWeight: '400',
-      color: 'gray4',
+      color: 'caption',
       '> p': { margin: '0' }
     }
   }

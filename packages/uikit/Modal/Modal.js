@@ -46,7 +46,7 @@ export const Modal = {
     Paragraph: {
       props: {
         fontSize: 'Z',
-        color: 'gray4',
+        color: 'caption',
         padding: '- Y'
       }
     }

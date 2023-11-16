@@ -67,7 +67,7 @@ export const LogIn = {
       extend: SocialLink,
       props: {
         minWidth: '100%',
-        color: 'gray4'
+        color: 'caption'
       }
     },
     ...[{}, {}]

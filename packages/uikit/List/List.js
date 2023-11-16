@@ -41,7 +41,7 @@ export const List = {
         position: 'relative',
         cursor: 'pointer',
         fontSize: 'A1',
-        color: 'gray4',
+        color: 'caption',
         ':hover': {
           background: 'gray .92 +4'
         },

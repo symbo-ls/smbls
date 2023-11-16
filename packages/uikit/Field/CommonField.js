@@ -17,7 +17,7 @@ export const CommonField = {
       text: 'Label',
       lineHeight: '1em',
       padding: '- - - V2',
-      color: 'gray4'
+      color: 'caption'
     }
   },
 
@@ -27,7 +27,7 @@ export const CommonField = {
   Hint: {
     extend: IconText,
     props: {
-      color: 'gray4',
+      color: 'caption',
       align: 'center flex-start',
       text: '',
       fontSize: 'Z1',

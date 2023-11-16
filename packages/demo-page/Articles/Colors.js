@@ -54,7 +54,6 @@ export const Colors = {
         Grid: {
           $collection: ({ context }) => {
             const { COLOR } = context.designSystem
-            console.log(COLOR)
             return Object.keys(COLOR).map(v => ({
               props: {
                 background: v

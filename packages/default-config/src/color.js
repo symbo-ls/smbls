@@ -21,7 +21,9 @@ export const COLOR = {
   gray3: '#1C1C1F',
   gray4: '#BDBDC1',
 
-  title: ['--gray2', '--gray4']
+  title: ['--black', '--white'],
+  caption: ['--gray2', '--gray4'],
+  paragraph: ['--gray2', '--white']
 }
 
 export const GRADIENT = {

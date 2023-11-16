@@ -12,7 +12,7 @@ export const ParagraphButton = {
   P: {
     props: {
       text: 'Didn\'t get the code?',
-      color: 'gray4',
+      color: 'caption',
       margin: '0'
     }
   },

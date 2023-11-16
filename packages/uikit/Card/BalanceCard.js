@@ -30,7 +30,7 @@ export const BalanceCard = {
         padding: '0',
         theme: 'transparent',
         fontSize: 'D',
-        color: 'gray4',
+        color: 'caption',
         margin: '-X -W2 - -',
         Icon: { name: 'arrowUpRight' }
       }
@@ -49,7 +49,7 @@ export const BalanceCard = {
     },
     UnitValue: {
       flow: 'row-reverse',
-      color: 'white .75',
+      color: 'paragraph',
       fontWeight: '400',
       fontSize: 'Z',
       gap: 'Y',

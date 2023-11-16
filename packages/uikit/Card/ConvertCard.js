@@ -18,7 +18,7 @@ export const ConvertCard = {
     props: {
       justifyContent: 'space-between',
       fontWeight: '400',
-      color: 'gray4'
+      color: 'caption'
     },
     caption: {
       props: {
