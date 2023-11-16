@@ -5,10 +5,8 @@ import { Flex } from '@symbo.ls/atoms'
 export const Icons = {
   tag: 'section',
   extend: Flex,
-  attr: { id: 'icons' },
   props: {
-    flow: 'column',
-    margin: '- - G -'
+    flow: 'column'
   },
 
   Banner: {

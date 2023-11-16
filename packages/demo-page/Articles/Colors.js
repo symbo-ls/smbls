@@ -6,7 +6,6 @@ import { Color } from '../Sections'
 export const Colors = {
   tag: 'section',
   extend: Flex,
-  attr: { id: 'colors' },
   props: {
     flow: 'column'
   },

@@ -6,7 +6,6 @@ import { Font } from '../Sections'
 export const Typography = {
   tag: 'article',
   extend: Flex,
-  attr: { id: 'typography' },
   props: {
     flow: 'column'
   },
