@@ -1,39 +1,33 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Color } from '../Sections'
+import { Banner } from '@symbo.ls/banner'
+import { color } from '../Sections'
 
 export const Colors = {
-  tag: 'section',
+  tag: 'article',
   extend: Flex,
   props: {
-    flow: 'column'
+    margin: 'auto',
+    minWidth: '100%'
   },
 
-  Banner: {
-    props: { round: '0 Z Z 0' },
-    Title: {
-      props: {
-        text: 'Colors',
-        padding: '- - W1 -'
-      }
-    },
+  Header: {
+    tag: 'header',
+    extend: Banner,
+
+    Title: { text: 'Colors' },
     Paragraph: {
-      props: { alignItems: 'flex-end' },
-      list: {
-        Title: { text: 'What you’ll find' },
+      P: {},
+      Flex: {
+        Title: {},
         Paragraph: {
-          ...[
-            { text: 'Primary colors' },
-            { text: 'Secondary colors' },
-            { text: 'Greyscale' },
-            { text: 'System colors' },
-            { text: 'Background colors' }
-          ]
+          ...[{
+            props: { text: 'Brant font' }
+          }, {
+            props: { text: 'Functional font' }
+          }]
         }
-      },
-      P: {
-        text: 'Our color palette is led by a bold, distinct primary color and rounded out by a select set of secondary colors that give depth and diversity to our designs.'
       }
     }
   },
@@ -41,16 +35,22 @@ export const Colors = {
   Flex: {
     props: {
       flow: 'column',
-      padding: 'E C1 - C1',
-      gap: 'E'
+      theme: 'secondary',
+      padding: 'D D1 E1 D1',
+      gap: 'D1',
+      childProps: {
+        theme: 'transparent',
+        padding: '0',
+        ':not(:last-child)': {
+          // background: 'red'
+        }
+      }
     },
-    childExtend: Color,
+    childExtend: color,
     ...[
       {
-        TitleParagraph: {
-          Title: { props: { text: 'Primary Colors' } }
-        },
-        Grid: {
+        Title: { props: { text: 'Primary' } },
+        Paragraph: {
           $collection: ({ context }) => {
             const { COLOR } = context.designSystem
             return Object.keys(COLOR).map(v => ({
@@ -62,13 +62,53 @@ export const Colors = {
         }
       },
       {
-        TitleParagraph: {
-          Title: { props: { text: 'Secondary Colors' } }
-        },
-        Grid: {
-          ...[{}, {}, {}, {}, {}, {}]
+        Title: { props: { text: 'Secondary' } },
+        Paragraph: {
+          props: {
+            childProps: { theme: 'dialog' }
+          },
+          ...[
+            {}, {}, {},
+            {}, {}
+          ]
+        }
+      },
+
+      {
+        Title: { props: { text: 'Themes' } },
+        Paragraph: {
+          props: {
+            childProps: { theme: 'dialog' }
+          },
+          ...[
+            {}, {}, {}, {}, {}, {}, {}, {}
+          ]
         }
       }
     ]
   }
+
+  // Flex: {
+  //   childExtend: Color,
+  //   ...[
+  //     {
+  //       TitleParagraph: { Title: { props: { text: 'Primary Colors' } } },
+  //       Grid: {
+  // $collection: ({ context }) => {
+  //   const { COLOR } = context.designSystem
+  //   return Object.keys(COLOR).map(v => ({
+  //     props: {
+  //       background: v
+  //     }
+  //   }))
+  // }
+  //       }
+  //     },
+
+  //     {
+  //       TitleParagraph: { Title: { props: { text: 'Secondary Colors' } } },
+  //       Grid: { ...[{}, {}, {}, {}, {}, {}] }
+  //     }
+  //   ]
+  // }
 }

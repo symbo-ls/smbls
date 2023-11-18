@@ -77,21 +77,28 @@ export const DotList = {
   extend: Flex,
   props: {
     flow: 'column',
-    gap: 'Y'
+    gap: 'Z'
   },
   childExtend: {
+    tag: 'caption',
     extend: Flex,
     props: {
       align: 'center flex-start',
+      lineHeight: '1em',
+      color: 'white',
+      fontWeight: '700',
+      fontSize: 'A2',
       gap: 'Z',
+      // letterSpacing: '-0.01em',
       ':before': {
         content: '""',
         boxSize: 'W',
         background: 'white',
-        display: 'block',
+        // display: 'block',
         zIndex: '20'
+        // display: 'none'
       }
     }
   },
-  ...[{ props: { text: 'Brat font' } }]
+  ...[{ props: { text: 'brand font' } }]
 }

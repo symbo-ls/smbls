@@ -1,66 +1,79 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Font } from '../Sections'
+// import { font } from '../Sections'
+import { Banner } from '@symbo.ls/banner'
+import { font } from '../Sections'
 
 export const Typography = {
   tag: 'article',
   extend: Flex,
-  props: {
-    flow: 'column'
-  },
 
-  Banner: {
-    Title: { text: 'typography' },
+  Header: {
+    tag: 'header',
+    extend: Banner,
+    Title: {
+      props: {
+        text: 'type',
+        lineHeight: '1.15em'
+      }
+    },
     Paragraph: {
-      list: {
-        Title: { text: 'What you’ll find' },
+      P: {},
+      Flex: {
+        Title: {},
         Paragraph: {
-          ...[
-            { text: 'Brand font' },
-            { text: 'Functional font' }
-          ]
+          ...[{
+            props: { text: 'Brant font' }
+          }, {
+            props: { text: 'Functional font' }
+          }]
         }
       }
     }
   },
 
-  Flex: {
-    props: {
-      gap: 'C',
-      flow: 'column',
-      padding: 'E C1 - C1'
-    },
+  Section: {
+    extend: font
 
-    childExtend: {
-      extend: Font,
-      Title: {
-        props: { text: '{{ name }}' }
-      },
-      Paragraph: {
-        p: {
-          extend: Flex,
-          ...[
-            { text: 'A dependable, universal font offering functionality and personality across various applications. Whether it\'s team collaboration, marketing endeavors, or product design for iOS, Android, or web, Helvetica Neue delivers consistency and legibility at every size and weight' },
-            {
-              text: ' When an alternative font, like DM Sans, is needed, Helvetica Neue ensures seamless transitions. Choose this timeless, reliable typeface for a polished, professional look in all your materials.'
-            }
-          ]
-        },
-
-        letters: {
-          H1: { text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
-          H3: { text: 'abcdefghijklmopqrstuvwxyz' },
-          P: { text: 'Quick brown fox jumps over lazy frog' }
-        }
-      }
-    },
-
-    $setStateCollection: ({ context }) => {
-      const { FONT } = context.designSystem
-      return Object.keys(FONT).map(v => ({
-        name: v
-      }))
-    }
+    // Title: {},
+    // Paragraph: {
+    //   props: ({ state }) => ({
+    //     font: `"${state.name}", sans-serif`,
+    //     theme: 'dialog',
+    //     padding: 'B2 -',
+    //     wordWrap: 'break-word',
+    //     flex: 5,
+    //     overflow: 'hidden',
+    //     color: 'white',
+    //     flow: 'column',
+    //     text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+    //     fontSize: 'G2',
+    //     fontWeight: '900',
+    //     lineHeight: '1em',
+    //     maxWidth: 'F2'
+    //   })
+    // }
   }
+
+  // Section: {
+  //   extend: font,
+  //   Title: {
+  //     props: { text: 'Sans Serif' }
+  //   },
+  //   Paragraph: {
+  //     letters: {
+  //       H1: { text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
+  //       H3: { text: 'abcdefghijklmopqrstuvwxyz' },
+  //       P: { text: 'Quick brown fox jumps over lazy frog' }
+  //     }
+  //   }
+  // },
+
+  // $setStateCollection: ({ context }) => {
+  //   const { FONT } = context.designSystem
+  //   return Object.keys(FONT).map(v => ({
+  //     name: v
+  //   }))
+  // }
 }

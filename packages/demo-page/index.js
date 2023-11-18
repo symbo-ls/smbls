@@ -2,39 +2,40 @@
 
 import { Flex } from '@symbo.ls/atoms'
 
-import { Typography, Colors, Icons, Themes, Shadows } from './Articles'
+import { Colors, Typography, Shadows, Icons, Spacing, Shapes } from './Articles'
 
 export const DemoPage = {
   extend: Flex,
+  tag: 'main',
   props: {
     theme: 'document',
     position: 'relative',
-    gap: 'A1',
+    flow: 'column',
+    // gap: 'Z',
     overflow: 'hidden auto',
     height: '100%',
-    width: '100%'
+    width: '100%',
+    // border: '1px solid red',
+    '> article': {
+      // border: '1px solid orange',
+      flow: 'column',
+      '> header': {
+        // border: '1px solid green'
+      },
+      '> section': {
+        // border: '1px solid blue'
+      },
+      // '> div': { border: '1px solid white' },
+      '> div > section': {
+        // border: '1px solid blue'
+      }
+    }
   },
 
-  Flex: {
-    props: {
-      flex: '1',
-      flow: 'column',
-      overflowY: 'auto',
-      scrollBehavior: 'smooth',
-      maxHeight: '100%',
-      gap: 'E1+X',
-
-      '::-webkit-scrollbar': { display: 'none' },
-
-      '> section': {
-        minWidth: '100%'
-      }
-    },
-
-    Typography,
-    Colors,
-    Icons,
-    Themes,
-    Shadows
-  }
+  Colors,
+  Typography,
+  Shadows,
+  Shapes,
+  Icons,
+  Spacing
 }
