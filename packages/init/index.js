@@ -75,7 +75,7 @@ export const init = (config, options = SET_OPTIONS) => {
 const UPDATE_OPTIONS = {
   emotion: defaultEmotion
 }
-export const updateReset = (config, RC_FILE, options = UPDATE_OPTIONS) => {
+export const reInit = (config, RC_FILE, options = UPDATE_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
   const resultConfig = mergeWithLocalFile(config || {}, RC_FILE)
   const conf = set({
@@ -84,6 +84,11 @@ export const updateReset = (config, RC_FILE, options = UPDATE_OPTIONS) => {
   })
   emotion.injectGlobal({ ':root': conf.CSS_VARS })
   emotion.injectGlobal(conf.RESET)
+}
+
+export const updateVars = (config, options = UPDATE_OPTIONS) => {
+  const emotion = options.emotion || defaultEmotion
+  emotion.injectGlobal({ ':root': config.CSS_VARS })
 }
 
 export const setClass = (props, options = UPDATE_OPTIONS) => {}// setClassname(props, options.emotion.css)
