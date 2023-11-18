@@ -1,7 +1,5 @@
 'use strict'
 
-import { Section } from './Section'
-
 import { shadow } from './Shadow'
 
 export const shape = {

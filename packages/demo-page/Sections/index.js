@@ -1,7 +1,7 @@
 'use strict'
 
-export * from './font'
-export * from './color'
-export * from './shadow'
-export * from './icon'
-export * from './shape'
+export * from './Font'
+export * from './Color'
+export * from './Shadow'
+export * from './Icon'
+export * from './Shape'
