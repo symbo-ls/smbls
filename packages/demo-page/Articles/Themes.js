@@ -7,19 +7,11 @@ import { Icon } from '@symbo.ls/icon'
 import { Color } from '../Sections'
 
 export const Themes = {
+  tag: 'article',
   extend: Flex,
-  props: {
-    flow: 'column'
-  },
 
   Banner: {
-    props: { round: '0 Z Z 0' },
-    Title: {
-      props: {
-        text: 'Themes',
-        padding: '- - W1 -'
-      }
-    },
+    Title: { props: { text: 'Themes' } },
     Paragraph: {
       props: { alignItems: 'flex-end' },
       list: {

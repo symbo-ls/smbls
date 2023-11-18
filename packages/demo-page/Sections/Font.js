@@ -1,61 +1,40 @@
 'use stric'
 
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Section } from './Section'
 
-export const Font = {
-  tag: 'section',
-  extend: TitleParagraph,
-  props: {
-    widthRange: '100%',
-    gap: 'B2+Z'
-  },
+export const font = {
+  extend: Section,
+  props: { padding: 'D2 D1 E1 D1' },
 
   Title: {
-    props: {
-      fontSize: 'C1',
-      fontWeight: '900',
-      gap: 'Z2',
-      ':after': {
-        content: '""',
-        height: '1px',
-        flex: '1',
-        display: 'block',
-        theme: 'dialog',
-        round: 'C'
-      }
-    }
+    props: { text: 'Sans-Serif' }
   },
-
   Paragraph: {
+    tag: 'p',
     props: {
-      width: '100%',
-      round: '0 C C 0',
-      gap: 'C2',
-      childProps: { flex: 1 }
-    },
-
-    p: {
-      props: {
-        maxWidth: 'G3+B',
-        flex: 3,
-        flow: 'column',
-        gap: 'A',
-        fontWeight: '400',
-        letterSpacing: '.1px',
-        fontSize: 'A',
-        padding: 'X2 C C -'
+      theme: 'dialog',
+      fontSize: 'G2',
+      maxWidth: '100%',
+      boxSizing: 'border-box',
+      padding: 'A1 - A1 A',
+      flow: 'column',
+      round: 'V2',
+      lineHeight: '1.1em',
+      // fontWeight: '900',
+      childProps: {
+        ':first-child': { fontWeight: '900' },
+        ':nth-child(2)': { fontWeight: '700' },
+        ':nth-child(3)': { fontWeight: '500' },
+        ':nth-child(4)': { fontWeight: '400' },
+        ':last-child': { fontWeight: '100' }
       }
     },
-
-    letters: {
-      props: ({ state }) => ({
-        font: `1em "${state.name}", sans-serif`,
-        theme: 'dialog',
-        padding: 'B2 C2',
-        wordWrap: 'break-word',
-        flex: 5,
-        overflow: 'hidden'
-      })
-    }
+    ...[
+      { text: 'ABCDEFGHIJKLMN' },
+      { text: 'OPQRSTUVWXYZ' },
+      { text: 'abcdefghijklm' },
+      { text: 'nopqrstuv' },
+      { text: 'wxyz' }
+    ]
   }
 }
