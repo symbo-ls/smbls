@@ -23,7 +23,7 @@ export const shadow = {
       gap: 'D',
       childProps: {
         theme: 'dialog',
-        padding: 'E',
+        padding: '0',
         aspectRatio: '1 / 1',
         round: 'Z'
       }

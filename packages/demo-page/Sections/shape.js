@@ -7,7 +7,7 @@ import { shadow } from './Shadow'
 export const shape = {
   extend: shadow,
   props: {
-    padding: 'F D1 F C2'
+    padding: 'F D F C'
   },
   // props: { padding: 'G2 D2 F1 D1' },
   Title: {
