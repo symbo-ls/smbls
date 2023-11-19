@@ -6,6 +6,9 @@ import { Grid } from '@symbo.ls/atoms'
 
 export const icon = {
   extend: Section,
+  props: {
+    padding: 'E D1 E C1'
+  },
 
   Title: {
     props: { text: '' }

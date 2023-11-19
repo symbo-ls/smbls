@@ -36,12 +36,17 @@ export const Colors = {
     props: {
       flow: 'column',
       theme: 'secondary',
-      padding: 'D D1 E1 D1',
-      gap: 'D1',
+      overflow: 'auto',
+      // padding: 'D2 D E1 A1',
+      // gap: 'D1',
       childProps: {
         theme: 'transparent',
-        padding: '0',
+        // padding: '0',
+        padding: 'D1 D E1 A',
         ':not(:last-child)': {
+          // border: 'solid, white',
+          // borderWidth: '0 0 1px 0'
+          // margin: '- -B'
           // background: 'red'
         }
       }
@@ -66,6 +71,14 @@ export const Colors = {
         Paragraph: {
           props: {
             childProps: { theme: 'dialog' }
+          },
+          $collection: ({ context }) => {
+            const { COLOR } = context.designSystem
+            return Object.keys(COLOR).map(v => ({
+              props: {
+                background: v
+              }
+            }))
           },
           ...[
             {}, {}, {},

@@ -7,18 +7,18 @@ export const Banner = {
   extend: TitleParagraph,
   props: {
     height: 'fit-content',
-    padding: 'D2+X1 D1+X D2 D',
+    padding: 'D2+X1 D1+Y D2 C2',
     width: '100%',
     theme: 'dialog',
     align: 'flex-start',
-    gap: 'B'
+    gap: 'B1'
   },
 
   Title: {
     tag: 'h1',
     props: {
       textTransform: 'capitalize',
-      fontSize: `${150 / 16}em`,
+      fontSize: `${170 / 16}em`,
       fontWeight: '900',
       letterSpacing: '-0.035em',
       color: 'white',
@@ -53,7 +53,7 @@ export const Banner = {
         letterSpacing: '.2px',
         lineHeight: '1.6em',
         margin: '0',
-        padding: '- - - Z1',
+        padding: '- - - Z2',
         color: 'grey'
       }
     },

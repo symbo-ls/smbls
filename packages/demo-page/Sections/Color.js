@@ -14,11 +14,12 @@ export const color = {
     extend: Grid,
     props: {
       columns: 'repeat(5, 1fr)',
-      gap: 'Z',
+      gap: 'B',
       childProps: {
         // border: '2px solid red',
+        aspectRatio: '1 / 1',
         theme: 'dialog',
-        padding: 'E -',
+        padding: '100px 100px',
         round: 'Z'
       }
     }
