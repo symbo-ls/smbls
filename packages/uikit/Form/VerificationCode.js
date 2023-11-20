@@ -16,7 +16,7 @@ export const VerificationCode = {
     Paragraph: {
       props: {
         text: 'Verification code has been sent to you. Enter the code below.',
-        maxWidth: 'G1+Y'
+        maxWidth: 'G1_default'
       }
     }
   },

@@ -24,7 +24,7 @@ export const Typography = {
         Title: {},
         Paragraph: {
           ...[{
-            props: { text: 'Brant font' }
+            props: { text: 'Brand font' }
           }, {
             props: { text: 'Functional font' }
           }]
@@ -33,28 +33,44 @@ export const Typography = {
     }
   },
 
-  Section: {
-    extend: font
-
-    // Title: {},
-    // Paragraph: {
-    //   props: ({ state }) => ({
-    //     font: `"${state.name}", sans-serif`,
-    //     theme: 'dialog',
-    //     padding: 'B2 -',
-    //     wordWrap: 'break-word',
-    //     flex: 5,
-    //     overflow: 'hidden',
-    //     color: 'white',
-    //     flow: 'column',
-    //     text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-    //     fontSize: 'G2',
-    //     fontWeight: '900',
-    //     lineHeight: '1em',
-    //     maxWidth: 'F2'
-    //   })
-    // }
+  Flex: {
+    props: {
+      flow: 'column',
+      padding: 'B - C -',
+      childProps: {
+        ':not(:last-child)': {
+          border: 'solid, white .15',
+          borderWidth: '0 0 1px 0'
+        }
+      }
+    },
+    childExtend: font,
+    ...[
+      {},
+      {}
+    ]
   }
+  // Section: {
+
+  //   // Title: {},
+  //   // Paragraph: {
+  //   //   props: ({ state }) => ({
+  //   //     font: `"${state.name}", sans-serif`,
+  //   //     theme: 'dialog',
+  //   //     padding: 'B2 -',
+  //   //     wordWrap: 'break-word',
+  //   //     flex: 5,
+  //   //     overflow: 'hidden',
+  //   //     color: 'white',
+  //   //     flow: 'column',
+  //   //     text: 'ABCDEFGHIJKLMNToday is a big day for our tribe. The year ends.abcdefghijklmnopqrstuvwxyz',
+  //   //     fontSize: 'G2',
+  //   //     fontWeight: '900',
+  //   //     lineHeight: '1em',
+  //   //     maxWidth: 'F2'
+  //   //   })
+  //   // }
+  // }
 
   // Section: {
   //   extend: font,
@@ -63,7 +79,7 @@ export const Typography = {
   //   },
   //   Paragraph: {
   //     letters: {
-  //       H1: { text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
+  //       H1: { text: 'ABCDEFGHIJKLMNToday is a big day for our tribe. The year ends.' },
   //       H3: { text: 'abcdefghijklmopqrstuvwxyz' },
   //       P: { text: 'Quick brown fox jumps over lazy frog' }
   //     }

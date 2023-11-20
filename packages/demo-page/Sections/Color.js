@@ -1,25 +1,29 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/atoms'
-
 import { Section } from './Section'
 
 export const color = {
   extend: Section,
 
   Title: {
-    props: { text: 'Primary color' }
+    props: {
+      text: 'Primary color',
+      padding: 'C1 - B1 -'
+    }
   },
   Paragraph: {
-    extend: Grid,
+    extend: 'Flex',
     props: {
-      columns: 'repeat(5, 1fr)',
-      gap: 'Z',
+      flow: 'row wrap',
+      gap: 'D1',
+      '@tabletM': {
+      },
       childProps: {
         // border: '2px solid red',
+        minWidth: 'G',
+        aspectRatio: '1 / 1',
         theme: 'dialog',
-        padding: 'E -',
-        round: 'Z'
+        round: 'W'
       }
     }
   }

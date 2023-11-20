@@ -9,7 +9,6 @@ const props = {
   '> button': {
     padding: '0',
     background: 'transparent',
-    color: 'white',
     fontSize: 'Z',
     display: 'none'
   }

@@ -143,7 +143,6 @@ export const DropDownButton = {
     boxSize: 'fit-content fit-content',
     padding: 'Z1 A1 Z Z1',
     theme: 'dialog',
-    color: 'white',
     Icon: {
       name: 'chevronDown',
       fontSize: 'D'

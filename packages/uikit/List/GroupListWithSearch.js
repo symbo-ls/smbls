@@ -7,7 +7,7 @@ import { GroupList } from './GroupList'
 export const GroupListWithSearch = {
   extend: GroupList,
   props: {
-    maxWidth: 'G1'
+    maxWidth: 'G1_default'
   },
 
   Header: {},

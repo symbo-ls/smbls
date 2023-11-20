@@ -27,6 +27,7 @@ export const Text = {
     whiteSpace: ({ props }) => !isUndefined(props.whiteSpace) && ({ whiteSpace: props.whiteSpace }),
     wordWrap: ({ props }) => !isUndefined(props.wordWrap) && ({ wordWrap: props.wordWrap }),
     letterSpacing: ({ props }) => !isUndefined(props.letterSpacing) && ({ letterSpacing: props.letterSpacing }),
+    textOverflow: ({ props }) => !isUndefined(props.textOverflow) && ({ textOverflow: props.textOverflow }),
     textAlign: ({ props }) => !isUndefined(props.textAlign) && ({ textAlign: props.textAlign }),
     fontWeight: ({ props }) => !isUndefined(props.fontWeight) && ({
       fontWeight: props.fontWeight,

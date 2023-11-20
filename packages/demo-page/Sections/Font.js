@@ -4,7 +4,11 @@ import { Section } from './Section'
 
 export const font = {
   extend: Section,
-  props: { padding: 'D2 D1 E1 D1' },
+  props: {
+    flex: '1',
+    padding: 'D D D1 D'
+    // padding: 'D2 D D2 A'
+  },
 
   Title: {
     props: { text: 'Sans-Serif' }
@@ -16,12 +20,18 @@ export const font = {
       fontSize: 'G2',
       maxWidth: '100%',
       boxSizing: 'border-box',
-      padding: 'A1 - A1 A',
+      padding: 'A',
       flow: 'column',
+      gap: '0',
       round: 'V2',
       lineHeight: '1.1em',
-      // fontWeight: '900',
       childProps: {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        maxWidth: '100%',
+        whiteSpace: 'nowrap',
+        minWidth: '0',
+        text: 'Today is a big day for our tribe. The year ends.',
         ':first-child': { fontWeight: '900' },
         ':nth-child(2)': { fontWeight: '700' },
         ':nth-child(3)': { fontWeight: '500' },
@@ -30,11 +40,11 @@ export const font = {
       }
     },
     ...[
-      { text: 'ABCDEFGHIJKLMN' },
-      { text: 'OPQRSTUVWXYZ' },
-      { text: 'abcdefghijklm' },
-      { text: 'nopqrstuv' },
-      { text: 'wxyz' }
+      { },
+      {},
+      {},
+      {},
+      {}
     ]
   }
 }

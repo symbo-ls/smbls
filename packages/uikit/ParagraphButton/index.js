@@ -20,7 +20,6 @@ export const ParagraphButton = {
     text: 'Click to resend',
     padding: '0',
     background: 'transparent',
-    color: 'white',
     textDecoration: 'underline',
     fontWeight: '500',
     Icon: { display: 'none' }

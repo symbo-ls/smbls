@@ -7,23 +7,25 @@ export const Banner = {
   extend: TitleParagraph,
   props: {
     height: 'fit-content',
-    padding: 'D2+X1 D1+X D2 D',
+    padding: 'D2+Z D+Y2 D D',
     width: '100%',
     theme: 'dialog',
     align: 'flex-start',
     gap: 'B'
+
   },
 
   Title: {
     tag: 'h1',
     props: {
       textTransform: 'capitalize',
-      fontSize: `${150 / 16}em`,
+      fontSize: 'K3',
       fontWeight: '900',
       letterSpacing: '-0.035em',
-      color: 'white',
       lineHeight: '.8em',
-      gap: '0'
+      gap: '0',
+      // border: '2px solid red',
+      maxWidth: 'fit-content'
     }
   },
 
@@ -35,6 +37,7 @@ export const Banner = {
       minWidth: '100%',
       position: 'relative',
       gap: 'A',
+      // border: '2px solid red',
       ':before': {
         content: '""',
         position: 'absolute',
@@ -49,11 +52,9 @@ export const Banner = {
     P: {
       props: {
         text: 'Our typography system ranges from impactful brand type used in marketing applications to functional type used in product.',
-        maxWidth: 'G1+B',
-        letterSpacing: '.2px',
+        // maxWidth: 'G2_default',
+        maxWidth: 'G1_default',
         lineHeight: '1.6em',
-        margin: '0',
-        padding: '- - - Z1',
         color: 'grey'
       }
     },
@@ -62,7 +63,8 @@ export const Banner = {
       extend: TitleParagraph,
       props: {
         gap: 'A2',
-        alignSelf: 'flex-end'
+        '@mobileL<': { alignSelf: 'flex-end' },
+        '@mobileL': { margin: 'C1 - -' }
       },
 
       Title: {

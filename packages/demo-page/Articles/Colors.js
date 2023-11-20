@@ -15,7 +15,6 @@ export const Colors = {
   Header: {
     tag: 'header',
     extend: Banner,
-
     Title: { text: 'Colors' },
     Paragraph: {
       P: {},
@@ -23,7 +22,7 @@ export const Colors = {
         Title: {},
         Paragraph: {
           ...[{
-            props: { text: 'Brant font' }
+            props: { text: 'Brand font' }
           }, {
             props: { text: 'Functional font' }
           }]
@@ -35,16 +34,17 @@ export const Colors = {
   Flex: {
     props: {
       flow: 'column',
-      theme: 'secondary',
-      padding: 'D D1 E1 D1',
-      gap: 'D1',
+      overflow: 'auto',
+      padding: '- D E D',
       childProps: {
-        theme: 'transparent',
-        padding: '0',
-        ':not(:last-child)': {
-          // background: 'red'
-        }
+        // padding: 'D',
+        // ':not(:last-child)': {
+        //   border: 'solid, white .1',
+        //   borderWidth: '0 0 1px 0'
+        // }
       }
+      // padding: 'D1 C2+X E1 A2',
+      // gap: 'D1'
     },
     childExtend: color,
     ...[
@@ -66,6 +66,14 @@ export const Colors = {
         Paragraph: {
           props: {
             childProps: { theme: 'dialog' }
+          },
+          $collection: ({ context }) => {
+            const { COLOR } = context.designSystem
+            return Object.keys(COLOR).map(v => ({
+              props: {
+                background: v
+              }
+            }))
           },
           ...[
             {}, {}, {},
