@@ -6,18 +6,15 @@ import { Grid } from '@symbo.ls/atoms'
 
 export const icon = {
   extend: Section,
-  props: {
-    padding: 'E D1 E C1'
-  },
+  props: { padding: 'E D E1 D' },
 
-  Title: {
-    props: { text: '' }
-  },
+  Title: null,
   Paragraph: {
     extend: Grid,
     props: {
       columns: 'repeat(7, 1fr)',
       gap: 'Y'
+      // padding: 'E D E2 D'
     },
     childExtend: {
       extend: 'Flex',

@@ -4,7 +4,11 @@ import { Section } from './Section'
 
 export const font = {
   extend: Section,
-  props: { padding: 'D2 0 D2 A', flex: '1' },
+  props: {
+    flex: '1',
+    padding: 'D D D1 D'
+    // padding: 'D2 D D2 A'
+  },
 
   Title: {
     props: { text: 'Sans-Serif' }
@@ -16,7 +20,9 @@ export const font = {
       fontSize: 'G2',
       maxWidth: '100%',
       boxSizing: 'border-box',
-      padding: 'A1',
+      padding: 'A',
+      // padding: 'A1',
+      // padding: 'D',
       // padding: 'A1 - A1 A1',
       flow: 'column',
       round: 'V2',

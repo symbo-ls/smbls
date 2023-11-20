@@ -15,7 +15,6 @@ export const Colors = {
   Header: {
     tag: 'header',
     extend: Banner,
-
     Title: { text: 'Colors' },
     Paragraph: {
       P: {},
@@ -35,21 +34,17 @@ export const Colors = {
   Flex: {
     props: {
       flow: 'column',
-      theme: 'secondary',
       overflow: 'auto',
-      // padding: 'D2 D E1 A1',
-      // gap: 'D1',
+      padding: '- - E -',
       childProps: {
-        theme: 'transparent',
-        // padding: '0',
-        padding: 'D1 D E1 A',
+        padding: 'D',
         ':not(:last-child)': {
-          // border: 'solid, white',
-          // borderWidth: '0 0 1px 0'
-          // margin: '- -B'
-          // background: 'red'
+          border: 'solid, white .1',
+          borderWidth: '0 0 1px 0'
         }
       }
+      // padding: 'D1 C2+X E1 A2',
+      // gap: 'D1'
     },
     childExtend: color,
     ...[

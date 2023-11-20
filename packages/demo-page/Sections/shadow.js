@@ -7,20 +7,17 @@ export const shadow = {
   extend: Section,
   props: {
     theme: 'secondary',
-    padding: 'F D1 F C1'
+    padding: 'D2 D'
   },
 
-  Title: {
-    props: {
-      text: ''
-    }
-  },
+  Title: null,
 
   Paragraph: {
     extend: Grid,
     props: {
       columns: 'repeat(4, 1fr)',
-      gap: 'D',
+      gap: 'E',
+      padding: 'D2 C1',
       childProps: {
         theme: 'dialog',
         padding: '0',
@@ -32,14 +29,14 @@ export const shadow = {
       {
         props: {
           style: {
-            boxShadow: 'rgba(38, 57, 77, 0.56) 0px 22px 70px 4px'
+            boxShadow: 'rgb(38, 57, 77) 0px 20px 30px -10px'
           }
         }
       },
       {
         props: {
           style: {
-            boxShadow: 'rgb(38, 57, 77) 0px 20px 30px -10px'
+            boxShadow: 'rgba(38, 57, 77, 0.56) 0px 22px 70px 4px'
           }
         }
       },
@@ -53,20 +50,6 @@ export const shadow = {
       {
         props: {
           style: {
-            boxShadow: 'rgba(38, 57, 77, 0.09) 0px 2px 1px, rgba(38, 57, 77, 0.09) 0px 4px 2px, rgba(38, 57, 77, 0.09)0px 8px 4px, rgba(38, 57, 77, 0.09) 0px 16px 8px, rgba(38, 57, 77, 0.09) 0px 32px 16px'
-          }
-        }
-      },
-      {
-        props: {
-          style: {
-            boxShadow: 'rgba(38, 57, 77, 0.15) 0px 15px 25px, rgba(38, 57, 77, 0.05) 0px 5px 10px'
-          }
-        }
-      },
-      {
-        props: {
-          style: {
             boxShadow: 'rgba(38, 57, 77, 0.12) 0px 2px 4px 0px, rgba(38, 57, 77, 0.32) 0px 2px 16px 0px'
           }
         }
@@ -74,7 +57,21 @@ export const shadow = {
       {
         props: {
           style: {
-            boxShadow: 'rgba(38, 57, 77, 0.25) 0px 25px 50px -12px'
+            boxShadow: 'rgba(38, 57, 77, 0.3) 0px 19px 38px, rgba(38, 57, 77, 0.22) 0px 15px 12px'
+          }
+        }
+      },
+      {
+        props: {
+          style: {
+            boxShadow: 'rgba(38, 57, 77, 0.35) 0px 5px 15px'
+          }
+        }
+      },
+      {
+        props: {
+          style: {
+            boxShadow: 'rgba(38, 57, 77, 0.25) 0px 13px 27px -5px, rgba(38, 57, 77, 0.35) 0px 8px 16px -8px'
           }
         }
       },

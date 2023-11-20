@@ -1,23 +1,20 @@
 'use strict'
 
-import { Section } from './Section'
-
-import { shadow } from './Shadow'
+import { shadow } from './shadow'
 
 export const shape = {
   extend: shadow,
-  props: {
-    padding: 'F D F C'
-  },
-  // props: { padding: 'G2 D2 F1 D1' },
-  Title: {
-    props: { text: '' }
-  },
+  Title: null,
   Paragraph: {
     props: {
-      gap: 'D',
+      gap: 'E',
       columns: 'repeat(4, 1fr)',
       childProps: {
+        // border: 'solid, white .1',
+        // borderWidth: '1px',
+        style: {
+          boxShadow: 'rgba(38, 57, 77, 0.12) 0px 2px 4px 0px, rgba(38, 57, 77, 0.32) 0px 2px 16px 0px'
+        },
         ':first-child': { round: 'A 0 0 0' },
         ':nth-child(2)': { round: 'E A 0 0' },
         ':nth-child(3)': {
