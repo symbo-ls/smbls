@@ -22,7 +22,7 @@ export const Colors = {
         Title: {},
         Paragraph: {
           ...[{
-            props: { text: 'Brant font' }
+            props: { text: 'Brand font' }
           }, {
             props: { text: 'Functional font' }
           }]

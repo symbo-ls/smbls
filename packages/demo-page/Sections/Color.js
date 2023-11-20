@@ -1,7 +1,5 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/atoms'
-
 import { Section } from './Section'
 
 export const color = {
