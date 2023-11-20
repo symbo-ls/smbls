@@ -35,13 +35,13 @@ export const Colors = {
     props: {
       flow: 'column',
       overflow: 'auto',
-      padding: '- - E -',
+      padding: '- D E D',
       childProps: {
-        padding: 'D',
-        ':not(:last-child)': {
-          border: 'solid, white .1',
-          borderWidth: '0 0 1px 0'
-        }
+        // padding: 'D',
+        // ':not(:last-child)': {
+        //   border: 'solid, white .1',
+        //   borderWidth: '0 0 1px 0'
+        // }
       }
       // padding: 'D1 C2+X E1 A2',
       // gap: 'D1'

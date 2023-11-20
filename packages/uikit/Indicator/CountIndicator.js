@@ -14,7 +14,6 @@ export const CountIndicator = {
     padding: 'X',
     round: '100%',
     align: 'center center',
-    aspectRatio: '1 / 1',
-    color: 'white'
+    aspectRatio: '1 / 1'
   }
 }

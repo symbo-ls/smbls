@@ -20,8 +20,7 @@ export const GroupList = {
       text: 'Header',
       padding: 'Z2 A',
       fontSize: 'A2',
-      fontWeight: '500',
-      color: 'white'
+      fontWeight: '500'
     }
   },
 

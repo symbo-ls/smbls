@@ -7,21 +7,25 @@ import { Section } from './Section'
 export const color = {
   extend: Section,
 
-  Title: { props: { text: 'Primary color' } },
-  Paragraph: {
-    extend: Grid,
+  Title: {
     props: {
-      columns: 'repeat(5, 1fr)',
-      gap: 'A',
+      text: 'Primary color',
+      padding: 'C1 - B1 -'
+    }
+  },
+  Paragraph: {
+    extend: 'Flex',
+    props: {
+      flow: 'row wrap',
+      gap: 'D1',
       '@tabletM': {
-        columns: 'repeat(4, 1fr)'
       },
       childProps: {
         // border: '2px solid red',
+        minWidth: 'F1',
         aspectRatio: '1 / 1',
         theme: 'dialog',
-        padding: '100px 100px',
-        round: 'Z'
+        round: 'W'
       }
     }
   }

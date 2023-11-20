@@ -23,8 +23,7 @@ export const Pricing = {
       extend: UnitValue,
       props: {
         justifyContent: 'space-between',
-        textTransform: 'capitalize',
-        color: 'white'
+        textTransform: 'capitalize'
       }
     },
     ...[

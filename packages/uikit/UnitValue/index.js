@@ -52,19 +52,17 @@ export const UnitValueWithLabel = {
     flow: 'row-reverse',
     fontSize: 'D1',
     fontWeight: '700',
-    color: 'white',
     Value: { text: '12,759' },
     Unit: { text: '$' }
   },
   dot: null,
   UnitValue2: {
     props: {
-      background: 'purple',
+      theme: 'secondary',
       padding: 'Z',
       round: 'Y1',
       fontSize: 'Y2',
-      gap: '0',
-      color: 'white'
+      gap: '0'
     },
     Value: { text: '+8.8' },
     Unit: { text: '%' }

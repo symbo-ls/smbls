@@ -8,7 +8,7 @@ import { DropDownButtonWithAvatar } from '@symbo.ls/button'
 export const ConvertCard = {
   extend: [Card, TitleParagraph],
   props: {
-    minWidth: 'G1',
+    minWidth: 'G1_default',
     theme: 'dialog',
     round: 'Z2',
     padding: 'A Z2+V Y1 Z2+V',

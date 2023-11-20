@@ -19,7 +19,6 @@ export const NumberField = {
       boxSize: '100% 100%',
       textAlign: 'center',
       round: 'Y',
-      color: 'white',
       background: 'rgba(0, 0, 0, 0)',
       outline: 'none !important',
       style: {

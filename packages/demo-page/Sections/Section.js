@@ -14,7 +14,7 @@ export const Section = {
     props: {
       fontSize: 'A',
       fontWeight: '500',
-      alignSelf: 'flex-start',
+      '@tabletS<': { alignItems: 'flex-end' },
       letterSpacing: '.2em',
       margin: '- - - A1',
       textTransform: 'uppercase',

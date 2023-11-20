@@ -8,7 +8,7 @@ export const shape = {
   Paragraph: {
     props: {
       gap: 'E',
-      columns: 'repeat(4, 1fr)',
+      columns: 'repeat(8, 1fr)',
       childProps: {
         // border: 'solid, white .1',
         // borderWidth: '1px',

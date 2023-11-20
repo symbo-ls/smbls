@@ -14,8 +14,7 @@ export const UserMessage = {
         text: 'Can you please review the latest design?',
         padding: 'Z1 Z2',
         round: 'Z2',
-        theme: 'dialog',
-        color: 'white'
+        theme: 'dialog'
       }
     }
   }

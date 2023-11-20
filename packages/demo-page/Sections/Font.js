@@ -21,14 +21,17 @@ export const font = {
       maxWidth: '100%',
       boxSizing: 'border-box',
       padding: 'A',
-      // padding: 'A1',
-      // padding: 'D',
-      // padding: 'A1 - A1 A1',
       flow: 'column',
+      gap: '0',
       round: 'V2',
       lineHeight: '1.1em',
-      // fontWeight: '900',
       childProps: {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        maxWidth: '100%',
+        whiteSpace: 'nowrap',
+        minWidth: '0',
+        text: 'Today is a big day for our tribe. The year ends.',
         ':first-child': { fontWeight: '900' },
         ':nth-child(2)': { fontWeight: '700' },
         ':nth-child(3)': { fontWeight: '500' },
@@ -37,11 +40,11 @@ export const font = {
       }
     },
     ...[
-      { text: 'ABCDEFGHIJKLMN' },
-      { text: 'OPQRSTUVWXYZ' },
-      { text: 'abcdefghijklm' },
-      { text: 'nopqrstuv' },
-      { text: 'wxyz' }
+      { },
+      {},
+      {},
+      {},
+      {}
     ]
   }
 }

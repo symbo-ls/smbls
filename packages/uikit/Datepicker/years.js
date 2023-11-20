@@ -49,7 +49,6 @@ export const DatePickerYears = {
       extend: Button,
       props: ({ state, text }) => ({
         fontSize: 'Y1',
-        color: 'white',
         opacity: '.4',
         background: 'transparent',
         transition: 'opacity .25s ease',

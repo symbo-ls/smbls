@@ -6,7 +6,6 @@ import { Section } from './Section'
 export const shadow = {
   extend: Section,
   props: {
-    theme: 'secondary',
     padding: 'D2 D'
   },
 
@@ -15,7 +14,7 @@ export const shadow = {
   Paragraph: {
     extend: Grid,
     props: {
-      columns: 'repeat(4, 1fr)',
+      columns: 'repeat(8, 1fr)',
       gap: 'E',
       padding: 'D2 C1',
       childProps: {

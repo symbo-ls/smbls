@@ -22,7 +22,7 @@ export const COLOR = {
   gray4: '#BDBDC1',
 
   title: ['--black 1', '--white 1'],
-  caption: ['--gray2 1', '--gray4 1'],
+  caption: ['--gray 1 +16', '--gray4 1'],
   paragraph: ['--gray2 1', '--white 1']
 }
 

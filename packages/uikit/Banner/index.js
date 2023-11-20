@@ -19,10 +19,9 @@ export const Banner = {
     tag: 'h1',
     props: {
       textTransform: 'capitalize',
-      fontSize: 'M',
+      fontSize: 'K3',
       fontWeight: '900',
       letterSpacing: '-0.035em',
-      color: 'white',
       lineHeight: '.8em',
       gap: '0',
       // border: '2px solid red',
@@ -53,9 +52,9 @@ export const Banner = {
     P: {
       props: {
         text: 'Our typography system ranges from impactful brand type used in marketing applications to functional type used in product.',
-        maxWidth: 'G2_default',
+        // maxWidth: 'G2_default',
+        maxWidth: 'G1_default',
         lineHeight: '1.6em',
-        margin: '0',
         color: 'grey'
       }
     },
@@ -64,7 +63,8 @@ export const Banner = {
       extend: TitleParagraph,
       props: {
         gap: 'A2',
-        alignSelf: 'flex-end'
+        '@mobileL<': { alignSelf: 'flex-end' },
+        '@mobileL': { margin: 'C1 - -' }
       },
 
       Title: {

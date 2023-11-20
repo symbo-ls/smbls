@@ -54,7 +54,6 @@ export const NotificationIndicator = {
     background: '#0474F2',
     boxSize: 'fit-content fit-content',
     padding: 'X+W',
-    round: 'Y+X',
-    color: 'white'
+    round: 'Y+X'
   }
 }

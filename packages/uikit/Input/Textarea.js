@@ -16,7 +16,6 @@ export const Textarea = {
     placeholder: 'Leave us a message...',
     padding: 'A',
     theme: 'transparent',
-    color: 'white',
     border: 'none',
     style: { resize: 'none' }
   },
@@ -25,7 +24,7 @@ export const Textarea = {
     props: {
       theme: 'field',
       round: 'Z2',
-      width: 'G1',
+      width: 'G1_default',
       height: 'E1',
       lineHeight: 1.4
     }
@@ -34,12 +33,11 @@ export const Textarea = {
   '.outlined': {
     props: {
       background: 'transparent',
-      width: 'G1',
+      width: 'G1_default',
       height: 'D2+W',
       lineHeight: 1.4,
       placeholder: 'Leave us a message...',
       outline: 'none !important',
-      color: 'white',
       resize: 'none'
     }
   }
@@ -53,7 +51,6 @@ export const TextareaWithButton = {
     minWidth: 'H',
     padding: 'A',
     fontSize: 'Z1',
-    color: 'white',
     round: 'Z2',
     minHeight: 'dit-content'
 

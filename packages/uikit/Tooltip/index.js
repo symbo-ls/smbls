@@ -7,7 +7,6 @@ export const Tooltip = {
   extend: Flex,
   props: {
     background: 'black',
-    color: 'white',
     flow: 'column',
     shape: 'tooltip',
     shapeDirection: 'left',

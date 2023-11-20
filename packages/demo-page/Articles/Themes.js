@@ -13,7 +13,9 @@ export const Themes = {
   Banner: {
     Title: { props: { text: 'Themes' } },
     Paragraph: {
-      props: { alignItems: 'flex-end' },
+      props: {
+        alignItems: 'flex-end'
+      },
       list: {
         Title: { text: 'What you’ll find' },
         Paragraph: {
