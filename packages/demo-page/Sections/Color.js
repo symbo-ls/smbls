@@ -22,7 +22,7 @@ export const color = {
       },
       childProps: {
         // border: '2px solid red',
-        minWidth: 'F1',
+        minWidth: 'G',
         aspectRatio: '1 / 1',
         theme: 'dialog',
         round: 'W'

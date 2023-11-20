@@ -1,10 +1,9 @@
 'use strict'
 
-import { create } from '@symbo.ls/create'
 import { Flex } from '@symbo.ls/atoms'
 import { Avatar, SearchWithButton } from '@symbo.ls/uikit'
 
-create({
+export const ComponentsView = {
   extend: Flex,
 
   state: {
@@ -326,4 +325,4 @@ create({
       }
     }
   }
-})
+}

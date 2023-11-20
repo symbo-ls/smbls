@@ -1,20 +1,13 @@
 'use strict'
 
 import { create } from '@symbo.ls/create'
+import { ComponentsView } from './components' // eslint-disable-line
 import { DemoPage } from '@symbo.ls/demo-page'
 
 create({
   extend: DemoPage,
 
   state: {
-    globalTheme: 'dark',
-    value: ''
-  },
-
-  props: {
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    zIndex: '10'
+    globalTheme: 'dark'
   }
 })
