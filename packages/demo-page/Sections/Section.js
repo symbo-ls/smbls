@@ -2,7 +2,7 @@
 
 import { TitleParagraph } from '@symbo.ls/titleparagraph'
 
-export const Section = {
+export const DemoSection = {
   tag: 'section',
   extend: TitleParagraph,
   props: {

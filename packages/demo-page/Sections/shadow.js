@@ -1,10 +1,10 @@
 'use strict'
 
 import { Grid } from '@symbo.ls/atoms'
-import { Section } from './Section'
+import { DemoSection } from './Section'
 
 export const shadow = {
-  extend: Section,
+  extend: DemoSection,
   props: {
     padding: 'D2 D'
   },

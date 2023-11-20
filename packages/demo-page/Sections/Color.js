@@ -1,9 +1,9 @@
 'use strict'
 
-import { Section } from './Section'
+import { DemoSection } from './Section'
 
 export const color = {
-  extend: Section,
+  extend: DemoSection,
 
   Title: {
     props: {

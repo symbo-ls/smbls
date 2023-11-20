@@ -1,9 +1,9 @@
 'use stric'
 
-import { Section } from './Section'
+import { DemoSection } from './Section'
 
 export const font = {
-  extend: Section,
+  extend: DemoSection,
   props: {
     flex: '1',
     padding: 'D D D1 D'

@@ -1,11 +1,11 @@
 'use strict'
 
-import { Section } from './Section'
+import { DemoSection } from './Section'
 
 import { Grid } from '@symbo.ls/atoms'
 
 export const icon = {
-  extend: Section,
+  extend: DemoSection,
   props: { padding: 'E D E1 D' },
 
   Title: null,
