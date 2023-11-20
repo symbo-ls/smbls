@@ -77,7 +77,7 @@ export const DotList = {
   extend: Flex,
   props: {
     flow: 'column',
-    gap: 'Z'
+    gap: 'Z2'
   },
   childExtend: {
     tag: 'caption',
@@ -87,7 +87,7 @@ export const DotList = {
       lineHeight: '1em',
       color: 'white',
       fontWeight: '700',
-      fontSize: 'A2',
+      fontSize: 'B',
       gap: 'Z',
       // letterSpacing: '-0.01em',
       ':before': {
