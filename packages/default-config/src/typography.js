@@ -6,9 +6,10 @@ export const TYPOGRAPHY = {
   subSequence: true,
   templates: {},
   '@tabletS': {
-    ratio: 1.175
-  },
-  '@mobileM': {
-    ratio: 1.125
+    base: 15,
+    ratio: 1.23
   }
+  // '@mobileM': {
+  //   ratio: 1.125
+  // }
 }

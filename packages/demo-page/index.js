@@ -11,29 +11,21 @@ export const DemoPage = {
     theme: 'document',
     position: 'relative',
     flow: 'column',
-    // gap: 'Z',
     overflow: 'hidden auto',
     height: '100%',
     width: '100%',
-    // border: '1px solid red',
-    // '> *:not(:nth-child(1))': { display: 'none' },
+    '@tabletM': {
+      fontSize: 'Z1'
+    },
     '> article': {
-      // border: '1px solid orange',
       flow: 'column',
       '> header': {
         border: 'solid, white .15',
         borderWidth: '.5px 0 .5px 0'
       },
       '> section': {
-        // border: 'solid, white .15',
-        // borderWidth: '0 0 .5px 0'
-        // display: 'none'
       },
-      // '> div': { border: '1px solid white' },
       '> div > section': {
-        // border: 'solid, white .15',
-        // borderWidth: '0 0 .5px 0'
-        // display: 'none'
       }
     }
   },

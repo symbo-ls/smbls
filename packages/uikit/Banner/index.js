@@ -11,7 +11,9 @@ export const Banner = {
     width: '100%',
     theme: 'dialog',
     align: 'flex-start',
-    gap: 'B'
+    gap: 'B',
+    '@mobileL': { padding: 'C1 C' },
+    '@mobileS': { padding: 'C1 B' }
 
   },
 
@@ -19,12 +21,14 @@ export const Banner = {
     tag: 'h1',
     props: {
       textTransform: 'capitalize',
-      fontSize: 'K3',
+      fontSize: 'L',
       fontWeight: '900',
       letterSpacing: '-0.035em',
       lineHeight: '.8em',
       gap: '0',
-      // border: '2px solid red',
+      '@mobileL': { fontSize: 'J2' },
+      '@mobileM': { fontSize: 'J' },
+      '@mobileS': { fontSize: 'I' },
       maxWidth: 'fit-content'
     }
   },
@@ -37,7 +41,10 @@ export const Banner = {
       minWidth: '100%',
       position: 'relative',
       gap: 'A',
-      // border: '2px solid red',
+      '@mobileL': {
+        display: 'none'
+      },
+      // '@tabletS': { display: 'none' },
       ':before': {
         content: '""',
         position: 'absolute',
@@ -55,7 +62,11 @@ export const Banner = {
         // maxWidth: 'G2_default',
         maxWidth: 'G1_default',
         lineHeight: '1.6em',
-        color: 'grey'
+        color: 'grey',
+        padding: '- Z',
+        '@mobileL': {
+          display: 'none'
+        }
       }
     },
 
@@ -63,8 +74,14 @@ export const Banner = {
       extend: TitleParagraph,
       props: {
         gap: 'A2',
-        '@mobileL<': { alignSelf: 'flex-end' },
-        '@mobileL': { margin: 'C1 - -' }
+        alignSelf: 'flex-end',
+        '@mobileL': {
+          alignSelf: 'flex-start',
+          padding: '- A2'
+        }
+        // '@tabletS': { alignSelf: 'flex-start', padding: '- - - Z2' }
+        // '@mobileL<': { alignSelf: 'flex-end' },
+        // '@mobileL': { margin: 'C1 - -' }
       },
 
       Title: {

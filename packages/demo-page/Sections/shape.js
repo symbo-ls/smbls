@@ -7,11 +7,11 @@ export const shape = {
   Title: null,
   Paragraph: {
     props: {
-      gap: 'E',
+      // gap: 'E',
       columns: 'repeat(8, 1fr)',
       childProps: {
-        // border: 'solid, white .1',
-        // borderWidth: '1px',
+        border: 'solid, white .05',
+        borderWidth: '2px',
         style: {
           boxShadow: 'rgba(38, 57, 77, 0.12) 0px 2px 4px 0px, rgba(38, 57, 77, 0.32) 0px 2px 16px 0px'
         },
