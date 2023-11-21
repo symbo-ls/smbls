@@ -16,7 +16,7 @@ export const setVariables = (result, key) => {
   }
 }
 
-export const applyGlobalVars = (vars, obj, options) => {
+export const applySequenceGlobalVars = (vars, obj, options) => {
   const CONFIG = getActiveConfig()
   const { UNIT } = CONFIG
   const unit = obj.unit || UNIT.default
@@ -44,7 +44,7 @@ export const applySequenceVars = (FACTORY, options = {}) => {
   const { mediaRegenerate, sequence, scales } = FACTORY
 
   if (!mediaRegenerate) {
-    applyGlobalVars(CSS_VARS, FACTORY, options)
+    applySequenceGlobalVars(CSS_VARS, FACTORY, options)
   }
 
   for (const key in sequence) {
@@ -88,7 +88,7 @@ export const applyMediaSequenceVars = (FACTORY, media, options = {}) => {
   if (!mediaRegenerate) {
     let underMediaQuery = CSS_VARS[`@media ${query}`]
     if (!underMediaQuery) underMediaQuery = CSS_VARS[`@media ${query}`] = {}
-    applyGlobalVars(underMediaQuery, FACTORY[media], options)
+    applySequenceGlobalVars(underMediaQuery, FACTORY[media], options)
     return
   }
 

@@ -11,12 +11,14 @@ export const Textarea = {
     variant: 'outlined',
     fontfamily: 'Avenir',
     round: 'Z1',
-    maxWidth: 'H',
-    minHeight: 'E',
     placeholder: 'Leave us a message...',
     padding: 'A',
     theme: 'transparent',
     border: 'none',
+    maxWidth: 'G1_default',
+    minHeight: 'E_default',
+    width: '100%',
+    height: 'E1_default',
     style: { resize: 'none' }
   },
 
@@ -24,8 +26,6 @@ export const Textarea = {
     props: {
       theme: 'field',
       round: 'Z2',
-      width: 'G1_default',
-      height: 'E1',
       lineHeight: 1.4
     }
   },
@@ -33,8 +33,6 @@ export const Textarea = {
   '.outlined': {
     props: {
       background: 'transparent',
-      width: 'G1_default',
-      height: 'D2+W',
       lineHeight: 1.4,
       placeholder: 'Leave us a message...',
       outline: 'none !important',
@@ -52,8 +50,7 @@ export const TextareaWithButton = {
     padding: 'A',
     fontSize: 'Z1',
     round: 'Z2',
-    minHeight: 'dit-content'
-
+    minHeight: 'fit-content'
   },
   IconCommonButton: {
     props: {
