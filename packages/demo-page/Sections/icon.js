@@ -1,7 +1,7 @@
 'use strict'
 
-import { DemoSection } from './Section'
 import { Grid } from '@symbo.ls/atoms'
+import { DemoSection } from './section'
 
 export const icon = {
   extend: DemoSection,
