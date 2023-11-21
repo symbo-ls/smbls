@@ -1,6 +1,6 @@
 'use stric'
 
-import { DemoSection } from './_section'
+import { DemoSection } from './section'
 
 export const font = {
   extend: DemoSection,
