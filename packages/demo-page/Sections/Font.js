@@ -6,8 +6,9 @@ export const font = {
   extend: DemoSection,
   props: {
     flex: '1',
-    padding: 'D D D1 D'
-    // padding: 'D2 D D2 A'
+    padding: 'D D D1 D',
+    '@mobileL': { padding: 'C C' },
+    '@mobileS': { padding: 'C B' }
   },
 
   Title: {
@@ -25,6 +26,15 @@ export const font = {
       gap: '0',
       round: 'V2',
       lineHeight: '1.1em',
+      '@mobileL': {
+        fontSize: 'G',
+        padding: 'Z1 Z1'
+      },
+      '@mobileS': {
+        fontSize: 'F2',
+        padding: 'Z1 Z'
+      },
+
       childProps: {
         textOverflow: 'ellipsis',
         overflow: 'hidden',

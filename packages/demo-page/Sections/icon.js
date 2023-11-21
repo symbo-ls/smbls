@@ -1,33 +1,45 @@
 'use strict'
 
 import { DemoSection } from './Section'
-
 import { Grid } from '@symbo.ls/atoms'
 
 export const icon = {
   extend: DemoSection,
-  props: { padding: 'E D E1 D' },
+  props: {
+    padding: 'E D E1 D',
+    '@mobileL': { padding: 'D C' },
+    '@mobileS': { padding: 'D B' }
+  },
 
   Title: null,
   Paragraph: {
     extend: Grid,
     props: {
       columns: 'repeat(7, 1fr)',
-      gap: 'Y'
+      gap: 'C',
+      '@tabletS': { gap: 'B1' },
+      '@mobileL': { gap: 'A2' },
+      '@mobileM': { gap: 'A' },
+      '@mobileS': { gap: 'Z' }
       // padding: 'E D E2 D'
     },
     childExtend: {
       extend: 'Flex',
       props: {
         align: 'center',
-        // aspectRatio: '1/1',
+        aspectRatio: '1/1',
         theme: 'dialog',
-        round: 'Z',
-        padding: 'D B'
+        round: 'Z'
+        // padding: 'D B'
       },
       Icon: {
         margin: 'auto',
-        fontSize: 'D'
+        fontSize: 'D',
+        '@mobileM': { fontSize: 'C' },
+        '@mobileS': {
+          fontSize: 'B1',
+          round: 'X'
+        }
       }
     },
 

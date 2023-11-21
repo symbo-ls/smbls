@@ -16,7 +16,7 @@ export const DemoSection = {
       fontWeight: '500',
       '@tabletS<': { alignItems: 'flex-end' },
       letterSpacing: '.2em',
-      margin: '- - - A1',
+      padding: '- Z1',
       textTransform: 'uppercase',
       style: {
         // writingMode: 'vertical-rl',
@@ -25,5 +25,10 @@ export const DemoSection = {
       }
     }
   },
-  Paragraph: { props: { flex: '1' } }
+  Paragraph: {
+    props: {
+      // flex: '1',
+
+    }
+  }
 }

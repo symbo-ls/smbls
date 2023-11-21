@@ -16,7 +16,7 @@ export const Shadows = {
     tag: 'header',
     extend: Banner,
 
-    Title: { text: 'Shadows' },
+    Title: { text: 'Shadow' },
     Paragraph: {
       P: {},
       Flex: {

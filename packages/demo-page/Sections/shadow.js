@@ -6,7 +6,9 @@ import { DemoSection } from './Section'
 export const shadow = {
   extend: DemoSection,
   props: {
-    padding: 'D2 D'
+    padding: 'D2 D',
+    '@mobileL': { padding: 'E C' },
+    '@mobileS': { padding: 'E B' }
   },
 
   Title: null,
@@ -15,11 +17,14 @@ export const shadow = {
     extend: Grid,
     props: {
       columns: 'repeat(8, 1fr)',
-      gap: 'E',
-      padding: 'D2 C1',
+      gap: 'C2',
+      '@tabletM': { gap: 'B2' },
+      '@tabletS': { columns: 'repeat(4, 1fr)' },
+      '@mobileL': { gap: 'B1' },
+      '@mobileS': { gap: 'B' },
+      '@mobileXS': { gap: 'A1' },
       childProps: {
         theme: 'dialog',
-        padding: '0',
         aspectRatio: '1 / 1',
         round: 'Z'
       }

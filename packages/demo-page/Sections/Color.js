@@ -1,5 +1,6 @@
 'use strict'
 
+import { Grid } from '@symbo.ls/atoms'
 import { DemoSection } from './Section'
 
 export const color = {
@@ -11,16 +12,18 @@ export const color = {
       padding: 'C1 - B1 -'
     }
   },
+
   Paragraph: {
-    extend: 'Flex',
+    extend: Grid,
     props: {
-      flow: 'row wrap',
-      gap: 'D1',
-      '@tabletM': {
-      },
+      columns: 'repeat(4, 1fr)',
+      gap: 'D',
+      '@tabletS': { gap: 'C2' },
+      '@mobileL': { gap: 'C1' },
+      '@mobileM': { gap: 'B1' },
+      '@mobileXS': { gap: 'A2' },
+
       childProps: {
-        // border: '2px solid red',
-        minWidth: 'G',
         aspectRatio: '1 / 1',
         theme: 'dialog',
         round: 'W'
