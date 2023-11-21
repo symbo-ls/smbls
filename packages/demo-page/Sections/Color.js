@@ -1,7 +1,7 @@
 'use strict'
 
 import { Grid } from '@symbo.ls/atoms'
-import { DemoSection } from './_section'
+import { DemoSection } from './section'
 
 export const color = {
   extend: DemoSection,
