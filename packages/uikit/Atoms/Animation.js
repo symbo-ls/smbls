@@ -28,7 +28,6 @@ export const Animation = {
     animationName: (el) => el.props.animationName && {
       animationName: el.deps.applyAnimationProps(el.props.animationName, el)
     },
-
     animationDuration: ({ props, deps }) => props.animationDuration && ({
       animationDuration: deps.getTimingByKey(props.animationDuration).timing
     }),
