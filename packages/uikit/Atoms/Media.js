@@ -45,9 +45,8 @@ const execClass = (key, props, result, element) => {
     state: element.state,
     deps: element.deps
   })
-  if (isArray(classExec)) {
-    classExec = classExec.reduce((a, c) => merge(a, c), {})
-  }
+
+  if (isArray(classExec)) classExec = classExec.reduce((a, c) => merge(a, c), {})
 
   for (const finalProp in classExec) {
     result[finalProp] = classExec[finalProp]
@@ -160,6 +159,13 @@ const beforeClassAssign = (element, s) => {
       } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
     }
     if (setter) setter(key, props[key], CLASS_NAMES, element)
+  }
+
+  // override props
+  if (props['-']) {
+    for (const key in props['-']) {
+      execClass(key, props, CLASS_NAMES, element)
+    }
   }
 
   const parentProps = element.parent && element.parent.props

@@ -18,6 +18,7 @@ export const setFont = (val, key) => {
   const fontFace = val[0]
     ? getFontFaceEach(key, val)
     : setCustomFontMedia(key, val.url)
+
   return { var: CSSvar, value: val, fontFace }
 }
 

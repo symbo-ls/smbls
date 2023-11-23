@@ -42,8 +42,8 @@ export const toDescriptionCase = str => {
 }
 
 export const arrayzeValue = val => {
-  if (isString(val)) return val.split(' ')
-  if (isObject(val)) return Object.keys(val).map(v => val[v])
-  if (isNumber(val)) return [val]
   if (isArray(val)) return val
+  if (isString(val)) return val.split(' ')
+  if (isObject(val)) return Object.values(val)
+  return [val]
 }
