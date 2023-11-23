@@ -1,7 +1,7 @@
 'use strict'
 
 import { arrayzeValue } from '@symbo.ls/utils'
-import { isString, merge } from '@domql/utils'
+import { isArray, isString, merge } from '@domql/utils'
 
 import { getActiveConfig } from '../factory.js'
 import {
@@ -71,7 +71,7 @@ export const getSpacingByKey = (
   const sequence = getSequence(sequenceProps)
 
   const stack = arrayzeValue(value)
-  if (!stack) return
+  if (!isArray(stack)) return
 
   if (isString(value) && value.includes('calc')) {
     return { [propertyName]: value }

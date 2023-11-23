@@ -45,5 +45,5 @@ export const arrayzeValue = val => {
   if (isArray(val)) return val
   if (isString(val)) return val.split(' ')
   if (isObject(val)) return Object.values(val)
-  return [val]
+  if (isNumber(val)) return [val]
 }
