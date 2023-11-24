@@ -1,20 +1,16 @@
 'use strict'
 
-import DOM from 'domql'
-import { deepMerge, isObject, isString } from '@domql/utils'
+import { deepMerge, isObject } from '@domql/utils'
 
 import * as utils from './utilImports'
-import * as uikit from '@symbo.ls/uikit'
 
-import { defaultDefine } from './define'
-import { initRouter, popStateRouter } from './router'
+import { popStateRouter } from './router'
 import { fetchAsync, fetchSync } from './ferchOnCreate'
-import { initEmotion } from './initEmotion'
-import { applyInspectListener, applySyncDebug } from './syncExtend'
-import { prepareComponents, prepareDesignSystem, prepareDocument, preparePages, prepareState, prepareUtils } from './prepare'
+import { applyInspectListener } from './syncExtend'
 
 import DEFAULT_CREATE_OPTIONS from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
+import { createDomqlElement } from './createDomql'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
@@ -23,136 +19,42 @@ const mergeWithLocalFile = (options, optionsExternalFile) => {
   return deepMerge(options, rcfile)
 }
 
-export const create = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
-  const appIsKey = isString(App)
-  options = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
+export const create = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
+  const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
 
-  const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
+  const domqlApp = createDomqlElement(App, redefinedOptions)
 
-  if (appIsKey) App = {}
-  await fetchSync(key, options)
+  applyInspectListener(domqlApp, redefinedOptions)
+  popStateRouter(domqlApp, redefinedOptions)
 
-  const doc = prepareDocument(options)
-
-  const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(options, key)
-
-  const state = prepareState(options, App)
-  const pages = preparePages(options)
-  const components = prepareComponents(options)
-  const designSystem = scratcDesignSystem
-  const snippets = prepareUtils(options)
-
-  const define = options.define || defaultDefine
-
-  const routerOptions = initRouter(App, options) // eslint-disable-line
-  const extend = applySyncDebug([App], options)
-
-  const domqlApp = ((DOM.default && DOM.default.create) || DOM.create)({
-    extend,
-    routes: options.pages,
-    state,
-    context: {
-      key,
-      components,
-      state,
-      pages,
-      designSystem,
-      snippets,
-      utils: snippets,
-      define,
-      registry,
-      emotion,
-      routerOptions,
-      document: doc
-    }
-  }, doc.body, key, {
-    extend: [uikit.Box],
-    verbose: options.verbose,
-    ...options.domqlOptions
-  })
-
-  applyInspectListener(domqlApp, options)
-  popStateRouter(domqlApp, options)
-  if (options.on && options.on.create) options.on.create(domqlApp, options)
-
-  fetchAsync(domqlApp, key, {
-    utils,
-    ...options
-  })
+  if (redefinedOptions.on && redefinedOptions.on.create) redefinedOptions.on.create(domqlApp, redefinedOptions)
 
   return domqlApp
 }
 
-export const createSync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
-  const appIsKey = isString(App)
-  options = mergeWithLocalFile(options, optionsExternalFile)
+export const createAsync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
+  const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
 
-  const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
+  const domqlApp = createDomqlElement(App, redefinedOptions)
 
-  if (appIsKey) App = {}
+  applyInspectListener(domqlApp, redefinedOptions)
+  popStateRouter(domqlApp, redefinedOptions)
+  if (redefinedOptions.on && redefinedOptions.on.create) redefinedOptions.on.create(domqlApp, redefinedOptions)
 
-  // Set parent
-  if (typeof (document) === 'undefined') {
-    if (typeof (window) === 'undefined') window = {} // eslint-disable-line
-    if (!window.document) window.document = { body: {} }
-    document = window.document // eslint-disable-line
-  }
-  let parent
-  if (options.parent) parent = options.parent
-  else if (options.document) parent = options.document
-  else parent = document.body
+  const key = options.key || SYMBOLS_KEY
+  fetchAsync(domqlApp, key, { utils, ...redefinedOptions })
 
-  // if (options.domqlOptions && options.domqlOptions.onlyResolveExtends) {
-  //   return DOM.create({
-  //     context: {
-  //       document
-  //     }
-  //   }, parent, key, {
-  //     extend: [uikit.Box],
-  //     verbose: options.verbose,
-  //     ...options.domqlOptions
-  //   })
-  // }
+  return domqlApp
+}
 
-  const [scratcDesignSystem, emotion, registry] = initEmotion(key, options)
+export const createSync = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
+  const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
 
-  let state
-  if (options.state) state = options.state
-  else if (App && App.state) state = App.state
-  else state = {}
+  const key = options.key || SYMBOLS_KEY
+  await fetchSync(key, redefinedOptions)
 
-  const pages = options.pages || {}
-  const components = options.components ? { ...uikit, ...options.components } : uikit
-  const designSystem = scratcDesignSystem || {}
-  const snippets = { ...utils, ...utils.scratchUtils, ...(options.snippets || {}) }
-  const define = options.define || defaultDefine
-
-  // const routerOptions = initRouter(App, options) // eslint-disable-line
-  const extend = applySyncDebug([App], options)
-
-  const domqlApp = DOM.create({
-    extend,
-    // routes: options.pages,
-    state,
-    context: {
-      key,
-      components,
-      state,
-      pages,
-      designSystem,
-      snippets,
-      utils: snippets,
-      define,
-      registry,
-      emotion,
-      // routerOptions,
-      document
-    }
-  }, parent, key, {
-    extend: [uikit.Box],
-    verbose: options.verbose,
-    ...options.domqlOptions
-  })
+  const domqlApp = createDomqlElement(App, redefinedOptions)
+  if (redefinedOptions.on && redefinedOptions.on.create) redefinedOptions.on.create(domqlApp, redefinedOptions)
 
   return domqlApp
 }
