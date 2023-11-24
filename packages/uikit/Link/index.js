@@ -31,7 +31,6 @@ export const RouterLink = {
       const { props, context: ctx } = el
       const { href } = props
       if (!href) return
-      debugger
       const { utils, snippets, routerOptions } = ctx
       const root = el.__ref.__root
       const linkIsExternal = href.includes('http://') ||

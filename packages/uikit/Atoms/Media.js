@@ -13,6 +13,15 @@ export const keySetters = {
   '[': (key, props, result, element, isSubtree) => applySelectorProps(
     key, props, isSubtree ? result : (result && result.selector), element
   ),
+  '*': (key, props, result, element, isSubtree) => applySelectorProps(
+    key, props, isSubtree ? result : (result && result.selector), element
+  ),
+  '+': (key, props, result, element, isSubtree) => applySelectorProps(
+    key, props, isSubtree ? result : (result && result.selector), element
+  ),
+  '~': (key, props, result, element, isSubtree) => applySelectorProps(
+    key, props, isSubtree ? result : (result && result.selector), element
+  ),
   '&': (key, props, result, element, isSubtree) => applyAndProps(
     key, props, isSubtree ? result : (result && result.selector), element
   ),
@@ -162,10 +171,11 @@ const beforeClassAssign = (element, s) => {
   }
 
   // override props
-  if (props['-']) {
-    for (const key in props['-']) {
+  if (props['^']) {
+    for (const key in props['^']) {
       execClass(key, props, CLASS_NAMES, element)
     }
+    console.log(CLASS_NAMES)
   }
 
   const parentProps = element.parent && element.parent.props

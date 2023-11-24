@@ -91,7 +91,7 @@ export const CommonButton = {
 export const IconCommonButton = {
   extend: CommonButton,
   props: {
-    Icon: { name: 'smile' },
+    icon: 'smile',
     boxSize: 'fit-content fit-content',
     padding: 'Z2',
     theme: 'tertiary'
@@ -132,7 +132,7 @@ export const IcontextButton = {
     position: 'relative',
     theme: 'tertiary',
     padding: 'Z2 A',
-    Icon: { name: 'smile' }
+    icon: 'smile'
   }
 }
 
@@ -143,8 +143,8 @@ export const DropDownButton = {
     boxSize: 'fit-content fit-content',
     padding: 'Z1 A1 Z Z1',
     theme: 'dialog',
+    icon: 'chevronDown',
     Icon: {
-      name: 'chevronDown',
       fontSize: 'D'
     },
     caption: { text: 'All' }
@@ -181,11 +181,11 @@ export const PlusMinusButtons = {
   },
   Minus: {
     extend: IconCommonButton,
-    props: { Icon: { name: 'minus' } }
+    props: { icon: 'minus' }
   },
   Value: { props: { text: '1' } },
   Plus: {
     extend: IconCommonButton,
-    props: { Icon: { name: 'plus' } }
+    props: { icon: 'plus' }
   }
 }
