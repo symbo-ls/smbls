@@ -13,11 +13,9 @@ import { prepareComponents, prepareDesignSystem, prepareDocument, preparePages, 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
 export const createDomqlElement = (App, options) => {
-  const appIsKey = isString(App)
-
-  const key = options.key || SYMBOLS_KEY || (appIsKey ? App : '')
+  const key = options.key || SYMBOLS_KEY || (isString(App) ? App : '')
   const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(options, key)
-  if (appIsKey) App = {}
+  if (isString(App)) App = {}
 
   const doc = prepareDocument(options)
   const state = prepareState(options, App)

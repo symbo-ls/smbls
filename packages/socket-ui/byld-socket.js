@@ -6,6 +6,7 @@ import { set } from '@symbo.ls/scratch'
 import { connect } from '@symbo.ls/socket/client'
 import { Notification } from '@symbo.ls/notification'
 import { window } from '@domql/globals'
+import { overwriteDeep } from '@domql/utils'
 
 const isLocalhost = window && window.location && window.location.host.includes('local')
 
@@ -91,24 +92,43 @@ const onDisconnect = (element, state) => {
   return () => {}
 }
 
-const onChange = (element, state, context) => {
+const onChange = (el, s, ctx) => {
   return (event, data) => {
     if (event === 'change') {
       const obj = JSON.parse(data)
-      const { PROJECT_STATE, PROJECT_DESIGN_SYSTEM } = obj
-      const { utils } = context
+      const { state, designSystem, pages, components, snippets } = obj.DATA
+      const { utils } = ctx
 
-      if (PROJECT_STATE) {
-        const route = PROJECT_STATE.route
-        if (route) (utils.router || router)(route.replace('/state', '') || '/', element, {}, true, false)
-        else state.update(PROJECT_STATE)
+      if (pages) {
+        // overwriteShallow(ctx.pages, pages)
+        overwriteDeep(ctx.pages, pages)
       }
 
-      if (PROJECT_DESIGN_SYSTEM) init(PROJECT_DESIGN_SYSTEM)
+      if (components) {
+        overwriteDeep(ctx.components, components)
+      }
+
+      if (snippets) {
+        overwriteDeep(ctx.snippets, snippets)
+      }
+
+      if (state) {
+        const route = state.route
+        if (route) (utils.router || router)(route.replace('/state', '') || '/', el, {})
+        else if (!(snippets && components && pages)) s.update(state)
+      }
+
+      if (snippets || components || pages) {
+        console.log(pages)
+        console.log(window.location.pathname)
+        ;(utils.router || router)(window.location.pathname, el, {})
+      }
+
+      if (designSystem) init(designSystem)
     }
 
     if (event === 'clients') {
-      connectedToSymbols(data, element, state)
+      connectedToSymbols(data, el, s)
     }
   }
 }
