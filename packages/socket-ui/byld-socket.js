@@ -154,8 +154,14 @@ const Notifications = {
       background: NOTIF_COLORS[state.type || 'success'],
       icon: null,
       article: {
-        title: { text: state.title },
-        p: { text: state.message }
+        Flex: {
+          Title: {
+            text: state.title
+          },
+          P: {
+            text: state.message
+          }
+        }
       }
     }),
     on: { click: (e, el) => el.setProps({ animation: 'fadeOutDown' }) }
