@@ -30,6 +30,7 @@ export const createDomqlElement = (App, options) => {
 
   const routerOptions = initRouter(App, options) // eslint-disable-line
   const extend = applySyncDebug([App], options)
+
   return ((DOM.default && DOM.default.create) || DOM.create)({
     extend,
     routes: options.pages,

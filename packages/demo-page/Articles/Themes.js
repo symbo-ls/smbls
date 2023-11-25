@@ -4,7 +4,7 @@ import { Flex } from '@symbo.ls/atoms'
 
 import { Icon } from '@symbo.ls/icon'
 
-import { Color } from '../Sections'
+import { color } from '../Sections'
 
 export const Themes = {
   tag: 'article',
@@ -38,7 +38,7 @@ export const Themes = {
       gap: 'E'
     },
     childExtend: {
-      extend: Color,
+      extend: color,
       TitleParagraph: {},
       Grid: {
         props: {
