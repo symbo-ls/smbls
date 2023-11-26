@@ -52,11 +52,9 @@ export const Pricing = {
       round: 'Y2',
       theme: 'secondary',
       margin: '- -X -X',
-      Caption: {
-        text: 'Add promo code',
-        fontSize: 'Z',
-        fontWeight: '500'
-      }
+      text: 'Add promo code',
+      fontSize: 'Z',
+      fontWeight: '500'
     }
   }
 }

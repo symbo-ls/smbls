@@ -134,7 +134,16 @@ const STATES = {
 }
 
 const UI = {
-  field: '--tertiary',
+  field: {
+    '@light': {
+      color: 'white',
+      background: 'gradient-light'
+    },
+    '@dark': {
+      color: 'white',
+      background: 'gradient-dark-active'
+    }
+  },
 
   label: {
     '@dark': {

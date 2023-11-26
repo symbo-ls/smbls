@@ -22,8 +22,6 @@ export const Tab = {
 
 export const IconTab = {
   extend: IconCommonButton,
-  props: {
-  },
 
   Span: null,
   CountIndicator: {

@@ -37,9 +37,7 @@ export const CompleteProcess = {
   CommonButton: {
     minWidth: '100%',
     margin: 'Y - - -',
-    caption: {
-      text: 'Done',
-      fontWeight: '500'
-    }
+    text: 'Done',
+    fontWeight: '500'
   }
 }

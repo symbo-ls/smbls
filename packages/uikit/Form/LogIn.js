@@ -52,7 +52,7 @@ export const LogIn = {
     Submit: {
       extend: CommonButton,
       props: { margin: 'A - - -' },
-      caption: { props: { text: 'Sign in' } }
+      text: 'Sign in'
     }
   },
 

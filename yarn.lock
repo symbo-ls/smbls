@@ -1049,9 +1049,9 @@
     "@domql/report" latest
 
 "@domql/element@latest":
-  version "2.5.43"
-  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.5.43.tgz#bb37bf41d9abedfbb9c2b11b2d62075f3048d089"
-  integrity sha512-Q1WE1LYt/CmPApuN7yjau1Qg+6db10LA/FfVJdr3zlSaD0UHYbc1Z3WCmtrUOTXGQvO5kSpXrWET98Cvlamg1Q==
+  version "2.5.44"
+  resolved "https://registry.yarnpkg.com/@domql/element/-/element-2.5.44.tgz#8d0041f61f6ef3d1318798164f3422c8f244283a"
+  integrity sha512-tvE9nni80goPwcpglkAxbFEJGMB6nQj2x2PCCffEegIA6BuhFv05UYZtLd1zGfuqB+ru1vW3S8jT5fkMCJC9EQ==
   dependencies:
     "@domql/event" latest
     "@domql/node" latest
@@ -2989,9 +2989,9 @@
     v8-compile-cache "^2.3.0"
 
 "@symbo.ls/create@latest":
-  version "2.11.258"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.11.258.tgz#9b239ebf9e9ab44752f49b169841a26adf2a50d2"
-  integrity sha512-JoChVCtUszfwJqW1Lp9LneYhrwb9hO/x8EMEZuiDIvLABwzUFZhb/48NkqoDAQz6rdwKt+xfTg9+m13ExJyjAQ==
+  version "2.11.259"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/create/-/create-2.11.259.tgz#8decc6fbc9150cc0091aa0263a22853037b7f63c"
+  integrity sha512-5NmrVfOLfiKDbXSpn803bTUR+g8oIID3PLG5Aw4dxIWf1Y312LmuykBIy/Gl7QuHNIj7tan8MTAUWPP2JMql+g==
   dependencies:
     "@domql/emotion" latest
     "@domql/report" latest
@@ -3224,9 +3224,9 @@
     "@symbo.ls/link" latest
 
 "@symbo.ls/socket-ui@latest":
-  version "2.11.241"
-  resolved "https://registry.yarnpkg.com/@symbo.ls/socket-ui/-/socket-ui-2.11.241.tgz#c8cefd64f92b7be1a84ddc7d1e207dba347a48a1"
-  integrity sha512-xbECRYgGikNpW8azDBAPt4m+Qk3T7eY7S46ReAHjwYdXnLO9tahShF8uDIVUUgP5rJlbULZoGaJzy/nTEA9UGQ==
+  version "2.11.260"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/socket-ui/-/socket-ui-2.11.260.tgz#992f1a9509feef7a5ba984a4ad3276ae8db7a517"
+  integrity sha512-9v0YATSKGP+G7tE6FmJp+IxB6JGX/RUECKZ+7tKmVrfdFyJ4HE74msVbS5toAf+cAdzG3maUNctenpJIXIvtoA==
   dependencies:
     "@domql/router" latest
     "@domql/utils" latest
@@ -5273,7 +5273,7 @@ eslint-visitor-keys@^3.3.0, eslint-visitor-keys@^3.4.1, eslint-visitor-keys@^3.4
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.3.tgz#0cd72fe8550e3c2eae156a96a4dddcd1c8ac5800"
   integrity sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag==
 
-eslint@^8.41.0:
+eslint@^8.41.0, eslint@^8.54.0:
   version "8.54.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.54.0.tgz#588e0dd4388af91a2e8fa37ea64924074c783537"
   integrity sha512-NY0DfAkM8BIZDVl6PgSa1ttZbx3xHgJzSNJKYcQglem6CppHyMhRIQkBVSSMaSRnLhig3jsDbEzOjwCVt4AmmA==
@@ -9765,7 +9765,7 @@ standard-engine@^15.0.0:
     pkg-conf "^3.1.0"
     xdg-basedir "^4.0.0"
 
-standard@^17.0.0:
+standard@^17.1.0:
   version "17.1.0"
   resolved "https://registry.yarnpkg.com/standard/-/standard-17.1.0.tgz#829eeeb3139ad50714294d3531592d60ad1286af"
   integrity sha512-jaDqlNSzLtWYW4lvQmU0EnxWMUGQiwHasZl5ZEIwx3S/ijZDjZOzs1y1QqKwKs5vqnFpGtizo4NOYX2s0Voq/g==

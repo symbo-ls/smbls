@@ -43,7 +43,7 @@ export const ContactForm = {
     ParagraphButtonWithCheckbox: { padding: 'Z1 Z - Z' },
     Submit: {
       extend: CommonButton,
-      caption: { props: { text: 'Send message' } }
+      text: 'Send message'
     }
   }
 }

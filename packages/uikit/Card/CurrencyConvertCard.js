@@ -46,9 +46,7 @@ export const CurrencyConvert = {
   CommonButton: {
     minWidth: '100%',
     margin: 'Z - - -',
-    caption: {
-      text: 'convert',
-      textTransform: 'capitalize'
-    }
+    text: 'convert',
+    textTransform: 'capitalize'
   }
 }

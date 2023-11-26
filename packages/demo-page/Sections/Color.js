@@ -3,6 +3,18 @@
 import { Grid } from '@symbo.ls/atoms'
 import { DemoSection } from './section'
 
+const ColorTemplate = {
+  extend: 'Flex',
+
+  Color: {
+    aspectRatio: '1 / 1',
+    theme: 'dialog',
+    round: 'W'
+  },
+
+  Description: {}
+}
+
 export const color = {
   extend: DemoSection,
 
@@ -21,13 +33,9 @@ export const color = {
       '@tabletS': { gap: 'C2' },
       '@mobileL': { gap: 'C1' },
       '@mobileM': { gap: 'B1' },
-      '@mobileXS': { gap: 'A2' },
+      '@mobileXS': { gap: 'A2' }
+    },
 
-      childProps: {
-        aspectRatio: '1 / 1',
-        theme: 'dialog',
-        round: 'W'
-      }
-    }
+    childExtend: ColorTemplate
   }
 }

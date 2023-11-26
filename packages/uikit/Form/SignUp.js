@@ -54,7 +54,7 @@ export const SignUp = {
     },
     Submit: {
       extend: CommonButton,
-      caption: { props: { text: 'Create an account' } }
+      text: 'Create an account'
     }
   }
 }

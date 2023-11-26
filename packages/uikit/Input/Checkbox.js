@@ -23,7 +23,9 @@ export const Checkbox = {
         opacity: '1'
       }
     },
-    attr: { checked: ({ parent }) => parent.props.checked }
+    attr: {
+      checked: ({ parent }) => parent.props.checked
+    }
   },
 
   Flex: {

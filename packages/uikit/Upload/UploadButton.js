@@ -11,13 +11,8 @@ export const UploadButton = {
     color: '#0474F2',
     boxSize: 'fit-content fit-content',
     overflow: 'hidden',
-    cursor: 'pointer'
-  },
-
-  caption: {
-    props: {
-      text: 'Choose file'
-    }
+    cursor: 'pointer',
+    text: 'Choose file'
   },
 
   Input: {

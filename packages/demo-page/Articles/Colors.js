@@ -42,36 +42,16 @@ export const Colors = {
     childExtend: color,
     ...[
       {
-        Title: { props: { text: 'Primary' } },
+        Title: { props: { text: 'Color pallete' } },
         Paragraph: {
           $collection: ({ context }) => {
             const { COLOR } = context.designSystem
             return Object.keys(COLOR).map(v => ({
               props: {
-                background: v
+                Color: { background: v }
               }
             }))
           }
-        }
-      },
-      {
-        Title: { props: { text: 'Secondary' } },
-        Paragraph: {
-          props: {
-            childProps: { theme: 'dialog' }
-          },
-          $collection: ({ context }) => {
-            const { COLOR } = context.designSystem
-            return Object.keys(COLOR).map(v => ({
-              props: {
-                background: v
-              }
-            }))
-          },
-          ...[
-            {}, {}, {},
-            {}, {}
-          ]
         }
       },
 
