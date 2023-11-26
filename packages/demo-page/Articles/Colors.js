@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 import { Banner } from '@symbo.ls/banner'
-import { color } from '../Sections'
+import { ColorSection } from '../Sections'
 
 export const Colors = {
   tag: 'article',
@@ -20,13 +20,13 @@ export const Colors = {
       P: {},
       Flex: {
         Title: {},
-        Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
-        }
+        Paragraph: [{
+          props: { text: 'Brand color pallete' }
+        }, {
+          props: { text: 'Semantic colors' }
+        }, {
+          props: { text: 'Theming' }
+        }]
       }
     }
   },
@@ -39,57 +39,38 @@ export const Colors = {
       '@mobileM': { padding: '- C' },
       '@mobileS': { padding: '- B' }
     },
-    childExtend: color,
-    ...[
-      {
-        Title: { props: { text: 'Color pallete' } },
-        Paragraph: {
-          $collection: ({ context }) => {
-            const { COLOR } = context.designSystem
-            return Object.keys(COLOR).map(v => ({
-              props: {
-                Color: { background: v }
+
+    childExtend: ColorSection,
+
+    pallete: {
+      Title: { text: 'Color pallete' },
+      Paragraph: {
+        $collection: ({ context }) => {
+          const { COLOR } = context.designSystem
+          console.log(COLOR)
+          return Object.keys(COLOR).filter(v => COLOR[v].value)
+            .map(v => ({
+              Color: { background: v },
+              Description: {
+                Title: { text: v },
+                Value: { text: COLOR[v].value },
+                Var: { text: COLOR[v].var }
               }
             }))
-          }
-        }
-      },
-
-      {
-        Title: { props: { text: 'Themes' } },
-        Paragraph: {
-          props: {
-            childProps: { theme: 'dialog' }
-          },
-          ...[
-            {}, {}, {}, {}, {}, {}, {}, {}
-          ]
         }
       }
-    ]
+    },
+
+    semantics: {
+      Title: { props: { text: 'Themes' } },
+      Paragraph: {
+        props: {
+          childProps: { theme: 'dialog' }
+        },
+        ...[
+          {}, {}, {}, {}, {}, {}, {}, {}
+        ]
+      }
+    }
   }
-
-  // Flex: {
-  //   childExtend: Color,
-  //   ...[
-  //     {
-  //       TitleParagraph: { Title: { props: { text: 'Primary Colors' } } },
-  //       Grid: {
-  // $collection: ({ context }) => {
-  //   const { COLOR } = context.designSystem
-  //   return Object.keys(COLOR).map(v => ({
-  //     props: {
-  //       background: v
-  //     }
-  //   }))
-  // }
-  //       }
-  //     },
-
-  //     {
-  //       TitleParagraph: { Title: { props: { text: 'Secondary Colors' } } },
-  //       Grid: { ...[{}, {}, {}, {}, {}, {}] }
-  //     }
-  //   ]
-  // }
 }

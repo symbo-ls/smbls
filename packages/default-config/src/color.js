@@ -23,7 +23,7 @@ export const COLOR = {
 
   title: ['--black 1', '--white 1'],
   caption: ['--gray 1 +16', '--gray4 1'],
-  paragraph: ['--gray2 1', '--white 1']
+  paragraph: ['--gray2 1', '--gray 1 +65']
 }
 
 export const GRADIENT = {

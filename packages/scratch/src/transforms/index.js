@@ -8,7 +8,8 @@ import {
   getShadow,
   getMediaColor,
   getTimingByKey,
-  getTimingFunction
+  getTimingFunction,
+  getSpacingBasedOnRatio
 } from '../system'
 
 const isBorderStyle = str => [
@@ -103,4 +104,39 @@ export const splitTransition = transition => {
   const arr = transition.split(',')
   if (!arr.length) return
   return arr.map(transformTransition).join(',')
+}
+
+export const checkIfBoxSize = propertyName => {
+  const prop = propertyName.toLowerCase()
+  return (prop.includes('width') || prop.includes('height')) && !prop.includes('border')
+}
+
+export const transformSize = (propertyName, val, props = {}, opts = {}) => {
+  let value = val !== undefined ? val : props[propertyName]
+
+  if (value === undefined) return
+
+  const shouldScaleBoxSize = props.scaleBoxSize
+  const isBoxSize = checkIfBoxSize(propertyName)
+
+  if (!shouldScaleBoxSize && isBoxSize && isString(value)) {
+    value = value.split(' ').map(v => {
+      const isSingleLetter = v.length < 3 && /[A-Z]/.test(v)
+      const hasUnits = ['%', 'vw', 'vh', 'ch'].some(unit => value.includes(unit))
+      if (isSingleLetter && !hasUnits) return v + '_default'
+      return v
+    }).join(' ')
+  }
+
+  if (opts.ratio) {
+    return getSpacingBasedOnRatio(props, propertyName, value)
+  } else {
+    return getSpacingByKey(value, propertyName)
+  }
+}
+
+export const transformSizeRatio = (propertyName, props) => {
+  return transformSize(propertyName, null, props, {
+    ratio: true
+  })
 }

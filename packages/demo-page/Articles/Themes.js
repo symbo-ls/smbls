@@ -1,10 +1,8 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-
 import { Icon } from '@symbo.ls/icon'
-
-import { color } from '../Sections'
+import { ColorSection } from '../Sections'
 
 export const Themes = {
   tag: 'article',
@@ -38,7 +36,7 @@ export const Themes = {
       gap: 'E'
     },
     childExtend: {
-      extend: color,
+      extend: ColorSection,
       TitleParagraph: {},
       Grid: {
         props: {
@@ -91,15 +89,6 @@ export const Themes = {
           Title: { props: { text: 'Dark Theme' } }
         },
         Grid: {
-          // $collection: ({ context }) => {
-          //   const { THEME } = context.designSystem
-          //   console.log(THEME)
-          //   return Object.keys(THEME).map(v => ({
-          //     props: {
-          //       background: v
-          //     }
-          //   }))
-          // }
         }
       }
     ]

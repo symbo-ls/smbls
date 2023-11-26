@@ -194,6 +194,7 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
     value === 'min-content' ||
     value === 'max-content' ||
     value.includes('calc') ||
+    value.includes('var') ||
     !startsWithDashOrLetter
   ) return value
 

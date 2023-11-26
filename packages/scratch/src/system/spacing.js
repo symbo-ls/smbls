@@ -70,12 +70,12 @@ export const getSpacingByKey = (
 ) => {
   const sequence = getSequence(sequenceProps)
 
-  const stack = arrayzeValue(value)
-  if (!isArray(stack)) return
-
-  if (isString(value) && value.includes('calc')) {
+  if (isString(value) && (value.includes('calc') || value.includes('var'))) {
     return { [propertyName]: value }
   }
+
+  const stack = arrayzeValue(value)
+  if (!isArray(stack)) return
 
   if (stack.length > 1) {
     let suffix = ''
