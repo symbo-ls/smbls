@@ -58,8 +58,8 @@ export const Block = {
     minHeight: ({ props, deps }) => deps.transformSizeRatio('minHeight', props),
     maxHeight: ({ props, deps }) => deps.transformSizeRatio('maxHeight', props),
     heightRange: ({ props, deps }) => {
-      if (typeof props.widthRange !== 'string') return
-      const [minHeight, maxHeight] = props.widthRange.split(' ')
+      if (typeof props.heightRange !== 'string') return
+      const [minHeight, maxHeight] = props.heightRange.split(' ')
       return {
         ...deps.transformSize('minHeight', minHeight),
         ...deps.transformSize('maxHeight', maxHeight || minHeight)

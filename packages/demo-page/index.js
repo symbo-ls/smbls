@@ -22,10 +22,6 @@ export const DemoPage = {
       '> header': {
         border: 'solid, white .15',
         borderWidth: '.5px 0 .5px 0'
-      },
-      '> section': {
-      },
-      '> div > section': {
       }
     }
   },
