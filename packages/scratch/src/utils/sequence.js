@@ -249,7 +249,7 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
 export const getSequenceValuePropertyPair = (value, propertyName, sequenceProps) => {
   if (typeof value !== 'string') {
     console.warn(propertyName, value, 'is not a string')
-    return ({})
+    return ({ [propertyName]: value })
   }
   if (value === '-' || value === '') return ({})
   return { [propertyName]: getSequenceValue(value, sequenceProps) }

@@ -8,10 +8,10 @@ export const AvatarBundle = {
   props: {
     childProps: {
       '@light': {
-        border: 'X, var(--theme-document-light-background), solid'
+        border: '2px, var(--theme-document-light-background), solid'
       },
       '@dark': {
-        border: 'X, var(--theme-document-dark-background), solid'
+        border: '2px, var(--theme-document-dark-background), solid'
       },
       ':not(:last-child)': {
         margin: '0 -Y2 0 0'

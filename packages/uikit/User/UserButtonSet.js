@@ -35,9 +35,9 @@ export const UserButtonSet = {
   ButtonSet: {
     props: { gap: 'Y2' },
     ...[
-      { props: { Icon: { name: 'phone' } } },
-      { props: { Icon: { name: 'video' } } },
-      { props: { Icon: { name: 'moreHorizontal' } } }
+      { props: { icon: 'phone' } },
+      { props: { icon: 'video' } },
+      { props: { icon: 'moreHorizontal' } }
     ]
   }
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString } from '@domql/utils'
+import { isNull, isString, isUndefined } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 import {
   getSpacingByKey,
@@ -112,9 +112,9 @@ export const checkIfBoxSize = propertyName => {
 }
 
 export const transformSize = (propertyName, val, props = {}, opts = {}) => {
-  let value = val !== undefined ? val : props[propertyName]
+  let value = val || props[propertyName]
 
-  if (value === undefined) return
+  if (isUndefined(value) && isNull(value)) return
 
   const shouldScaleBoxSize = props.scaleBoxSize
   const isBoxSize = checkIfBoxSize(propertyName)

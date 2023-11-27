@@ -2,9 +2,10 @@
 
 export const StatusIndicator = {
   props: {
-    boxSize: 'Z+V',
-    background: 'green2',
+    widthRange: 'Z+V',
+    theme: 'secondary',
     round: '100%',
+    aspectRatio: '1/1',
     border: 'solid, gray',
     borderWidth: '2px'
   }

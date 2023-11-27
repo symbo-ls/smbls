@@ -11,20 +11,85 @@ export const ComponentsView = {
     value: ''
   },
 
-  header: {
-    extend: Flex,
-    title: {
-      tag: 'h1',
-      props: {
-        text: 'components',
-        display: 'none',
-        background: 'green'
+  props: {
+    fontFamily: 'avenir',
+    ':before': {
+      content: '""',
+      boxSize: 'E 100%',
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      zIndex: '10',
+      background: ' linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+      pointerEvents: 'none'
+    },
+    ':after': {
+      content: '""',
+      boxSize: 'E 100%',
+      position: 'fixed',
+      bottom: '0',
+      left: '0',
+      zIndex: '10',
+      background: ' linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
+      pointerEvents: 'none'
+    },
+
+    footer: {
+      position: 'fixed',
+      width: 'calc(100% - 70px)',
+      zIndex: '100',
+      bottom: '0',
+      right: '0',
+      align: 'center flex-end',
+      padding: '- B B -',
+      '@media only screen and (max-width: 480px)': {
+        justifyContent: 'center',
+        padding: '- 20px 30px 20px'
+      },
+      search: {
+        fontFamily: 'avenir',
+        fontWeight: '400',
+        round: 'D',
+        flow: 'row',
+        border: 'solid, #252527',
+        borderWidth: '1px',
+        width: 'G+D',
+        padding: 'Z A Z B',
+        position: 'relative',
+        Icon: {
+          boxSize: 'A+V A+V',
+          color: '#3F3F43'
+        },
+        input: {
+          fontFamily: 'avenir',
+          placeholder: 'find component . . .',
+          fontSize: 'A',
+          ':focus ~ svg': { opacity: '0' }
+        },
+        x: {
+          color: 'white',
+          position: 'absolute',
+          right: 'A'
+        }
       }
     }
   },
 
   cnt: {
     extend: Flex,
+
+    props: {
+      flow: 'column',
+      padding: 'F E E D',
+      gap: 'E+C',
+      minWidth: 'calc(100% - 70px)',
+      height: '100dvh',
+      margin: '- - - auto',
+      style: {
+        overflowY: 'auto',
+        scrollBehavior: 'smooth'
+      }
+    },
 
     childExtend: {
       props: ({ key, state }) => ({
@@ -218,109 +283,6 @@ export const ComponentsView = {
           margin: 'auto',
           right: 'Z',
           color: '#3F3F43'
-        }
-      }
-    }
-  },
-
-  props: {
-    fontFamily: 'avenir',
-    ':before': {
-      content: '""',
-      boxSize: 'E 100%',
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      zIndex: '10',
-      background: ' linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-      pointerEvents: 'none'
-    },
-    ':after': {
-      content: '""',
-      boxSize: 'E 100%',
-      position: 'fixed',
-      bottom: '0',
-      left: '0',
-      zIndex: '10',
-      background: ' linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-      pointerEvents: 'none'
-    },
-
-    header: {
-      zIndex: '51',
-      background: 'transparent',
-      height: '100%',
-      minWidth: 'D',
-      align: 'flex-end flex-end',
-      border: 'solid, #252527',
-      borderWidth: '0 1.5px 0 0',
-      padding: '- Z C -',
-      position: 'fixed',
-      flow: 'column',
-      title: {
-        transform: 'rotate(180deg)',
-        textTransform: 'capitalize',
-        fontSize: 'C',
-        color: 'white',
-        margin: '0',
-        padding: '0',
-        letterSpacing: '1px',
-        style: {
-          writingMode: 'vertical-rl',
-          textOrientation: 'mixed'
-        }
-      }
-    },
-
-    cnt: {
-      flow: 'column',
-      padding: 'F E E D',
-      gap: 'E+C',
-      minWidth: 'calc(100% - 70px)',
-      height: '100%',
-      margin: '- - - auto',
-      style: {
-        overflowY: 'auto',
-        scrollBehavior: 'smooth'
-      }
-    },
-
-    footer: {
-      position: 'fixed',
-      width: 'calc(100% - 70px)',
-      zIndex: '100',
-      bottom: '0',
-      right: '0',
-      align: 'center flex-end',
-      padding: '- B B -',
-      '@media only screen and (max-width: 480px)': {
-        justifyContent: 'center',
-        padding: '- 20px 30px 20px'
-      },
-      search: {
-        fontFamily: 'avenir',
-        fontWeight: '400',
-        round: 'D',
-        flow: 'row',
-        border: 'solid, #252527',
-        borderWidth: '1px',
-        width: 'G+D',
-        padding: 'Z A Z B',
-        position: 'relative',
-        Icon: {
-          boxSize: 'A+V A+V',
-          color: '#3F3F43'
-        },
-        input: {
-          fontFamily: 'avenir',
-          placeholder: 'find component . . .',
-          fontSize: 'A',
-          ':focus ~ svg': { opacity: '0' }
-        },
-        x: {
-          color: 'white',
-          position: 'absolute',
-          right: 'A'
         }
       }
     }

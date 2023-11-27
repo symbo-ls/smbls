@@ -88,9 +88,9 @@ export const IconCommonButton = {
     icon: 'smile',
     boxSize: 'fit-content fit-content',
     padding: 'Z2',
-    theme: 'tertiary'
+    theme: 'field'
   },
-  caption: null
+  text: null
 }
 
 export const ButtonSet = {

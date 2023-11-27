@@ -4,6 +4,11 @@ import { Modal } from './Modal'
 
 export const Message = {
   extend: Modal,
+
+  on: {
+    // init: () => { debugger }
+  },
+
   props: {
     maxWidth: 'G3',
     padding: 'Z1 Z2 Z2 Z2'

@@ -32,11 +32,11 @@ const PRIORITIES = {
   secondary: {
     '@dark': {
       color: 'white',
-      background: 'white .1'
+      background: 'green'
     },
     '@light': {
       color: 'white',
-      background: 'blue'
+      background: 'green'
     },
 
     '.child': '--primary'
