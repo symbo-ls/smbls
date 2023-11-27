@@ -1,14 +1,14 @@
 'use strict'
 
-import { CommonButton } from '@symbo.ls/button'
+import { FlexButton } from '@symbo.ls/button'
 import { TextAreaField } from '@symbo.ls/field'
 import { CommonForm } from './CommonForm'
 
 export const ContactForm = {
   extend: CommonForm,
 
-  Header: {
-    Title: { caption: { props: { text: 'We’d love to help' } } },
+  ModalHeader: {
+    Title: { Text: { text: 'We’d love to help' } },
     Paragraph: { props: { text: 'Reach out and we’ll get in touch within 24 hours.' } }
   },
 
@@ -42,7 +42,7 @@ export const ContactForm = {
     },
     ParagraphButtonWithCheckbox: { padding: 'Z1 Z - Z' },
     Submit: {
-      extend: CommonButton,
+      extend: FlexButton,
       text: 'Send message'
     }
   }

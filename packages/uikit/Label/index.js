@@ -7,7 +7,8 @@ export const Label = {
   extend: Flex,
   props: {
     text: '-2.902x',
-    fontSize: 'X2',
+    fontSize: 'Z',
+    theme: 'tertiary',
     boxSize: 'fit-content fit-content',
     padding: 'W2 Y2',
     round: 'Y1',
@@ -36,7 +37,7 @@ export const LabelButton = {
 export const CardLabel = {
   props: {
     text: '-2.902x',
-    fontSize: 'Y',
+    fontSize: 'Z',
     background: '#F4454E',
     boxSize: 'fit-content fit-content',
     padding: 'W Y',

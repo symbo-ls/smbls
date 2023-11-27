@@ -1,6 +1,6 @@
 'use strict'
 
-import { CommonButton } from '@symbo.ls/button'
+import { FlexButton } from '@symbo.ls/button'
 import { IconText } from '@symbo.ls/icon'
 import { CommonForm } from './CommonForm'
 
@@ -8,7 +8,7 @@ export const SignUp = {
   extend: CommonForm,
   props: { minWidth: 'H' },
 
-  Header: {
+  ModalHeader: {
     Title: { caption: { props: { text: 'Create your account' } } },
     Paragraph: { props: { text: 'Let’s get started with your 30 days free trial' } }
   },
@@ -53,7 +53,7 @@ export const SignUp = {
       justifyContent: 'flex-end'
     },
     Submit: {
-      extend: CommonButton,
+      extend: FlexButton,
       text: 'Create an account'
     }
   }

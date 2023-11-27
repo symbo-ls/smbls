@@ -1,7 +1,7 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { CommonButton } from '@symbo.ls/button'
+import { FlexButton } from '@symbo.ls/button'
 import { SocialLink } from '@symbo.ls/sociallink'
 import { CommonForm } from './CommonForm'
 
@@ -9,7 +9,7 @@ export const LogIn = {
   extend: CommonForm,
   props: { minWidth: 'G3+C1' },
 
-  Header: {
+  ModalHeader: {
     Title: { caption: { props: { text: 'Log in to your account' } } },
     Paragraph: { props: { text: 'Enter your email address and password to log in.' } }
   },
@@ -50,14 +50,15 @@ export const LogIn = {
       }
     },
     Submit: {
-      extend: CommonButton,
+      extend: FlexButton,
       props: { margin: 'A - - -' },
       text: 'Sign in'
     }
   },
 
   DoubleHr: {},
-  Footer: {
+
+  ModalFooter: {
     extend: Flex,
     props: {
       flow: 'column',

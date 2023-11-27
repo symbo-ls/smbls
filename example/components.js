@@ -149,9 +149,9 @@ export const ComponentsView = {
     UserMessage: {},
     UserWithButton: {},
 
-    CommonButton: {},
+    FlexButton: {},
     CancelConfirmButtons: {},
-    IconCommonButton: {},
+    IconFlexButton: {},
     IcontextButton: {},
 
     Tab: {},

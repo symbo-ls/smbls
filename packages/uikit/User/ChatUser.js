@@ -3,7 +3,6 @@
 import { Flex } from '@symbo.ls/atoms'
 import { User } from '@symbo.ls/user'
 import { UnitValue } from '@symbo.ls/unitvalue'
-import { CountIndicator } from '@symbo.ls/indicator'
 
 export const ChatUser = {
   extend: User,
@@ -19,7 +18,8 @@ export const ChatUser = {
       time: {
         extend: UnitValue,
         props: {
-          fontSize: 'X1',
+          fontSize: 'Z1',
+          color: 'paragraph',
           gap: 'X2'
         },
         Unit: { props: { text: '2:22' } },
@@ -38,10 +38,7 @@ export const ChatUser = {
           whiteSpace: 'nowrap'
         }
       },
-      notification: {
-        extend: CountIndicator,
-        props: { fontSize: 'X2' }
-      }
+      CountIndicator: {}
     }
   }
 }

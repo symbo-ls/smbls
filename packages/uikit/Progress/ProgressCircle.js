@@ -4,7 +4,8 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const ProgressCircle = {
   props: {
-    boxSize: 'D D',
+    widthRange: 'D',
+    aspectRatio: '1 / 1',
     position: 'relative',
     ':after': {
       content: '""',
@@ -69,7 +70,7 @@ export const ProgressCircleWithSideUnitValue = {
   extend: Flex,
   props: {
     align: 'center flex-start',
-    boxSize: 'fit-content fit-content',
+    boxSize: 'fit-content',
     gap: 'Y'
   },
 
@@ -80,5 +81,5 @@ export const ProgressCircleWithSideUnitValue = {
       height: 'calc(100% - 5px)'
     }
   },
-  UnitValue: { fontSize: 'Y1' }
+  UnitValue: {}
 }

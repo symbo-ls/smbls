@@ -1,7 +1,6 @@
 'use strict'
 
 import { Dialog } from '@symbo.ls/dialog'
-import { Button } from '@symbo.ls/button'
 import { TitleParagraph } from '@symbo.ls/titleparagraph'
 import { UploadImage } from './UploadImage'
 
@@ -25,22 +24,17 @@ export const UploadingProcess = {
 
     Title: {
       props: { justifyContent: 'space-between' },
-      caption: {
-        props: {
-          text: 'Image.jpg',
-          fontSize: 'Z2'
-        }
+      Text: {
+        text: 'Image.jpg',
+        fontSize: 'Z2'
       },
-      x: {
-        extend: Button,
-        props: {
-          icon: 'x',
-          fontSize: 'B',
-          boxSize: 'fit-content',
-          padding: '0',
-          theme: 'transparent',
-          margin: '- -V1 - -'
-        }
+      SquareButton_x: {
+        icon: 'x',
+        fontSize: 'B',
+        boxSize: 'fit-content',
+        padding: '0',
+        theme: 'transparent',
+        margin: '- -V1 - -'
       }
     },
 
@@ -49,7 +43,7 @@ export const UploadingProcess = {
         flow: 'column',
         gap: 'Y2'
       },
-      DoubleUnitValue: { fontSize: 'Y' },
+      DoubleUnitValue: { fontSize: 'Z2' },
       ProgressLine: {}
     }
   }
@@ -65,7 +59,6 @@ export const UploadedProcess = {
       span: {
         props: {
           text: 'Done',
-          fontSize: 'Y',
           lineHeight: '1em',
           color: 'title',
           display: 'block'
@@ -96,7 +89,7 @@ export const UploadingProcess2 = {
     Paragraph: {
       ProgressLineWithUnitValue: {
         ProgressLine: {},
-        UnitValue: { fontSize: 'Y1' }
+        UnitValue: { fontSize: 'Z1' }
       },
       DoubleUnitValue: null,
       ProgressLine: null
@@ -137,19 +130,17 @@ export const UploadingProcess3 = {
       gap: 'Z'
     },
     Title: {
-      caption: {
-        props: { fontSize: 'Z2' }
+      Text: {
+        fontSize: 'Z2'
       },
-      x: {
-        props: {
-          position: 'absolute',
-          top: '50%',
-          right: 'B+W1',
-          transform: 'translate(50%, -50%)',
-          padding: 'Y',
-          fontSize: 'A1',
-          theme: 'tertiary'
-        }
+      SquareButton_x: {
+        position: 'absolute',
+        top: '50%',
+        right: 'B+W1',
+        transform: 'translate(50%, -50%)',
+        padding: 'Y',
+        fontSize: 'A1',
+        theme: 'tertiary'
       }
     },
     Paragraph: {
@@ -207,7 +198,6 @@ export const UploadingProcess4 = {
         text: 'Uploading . . .',
         margin: '0',
         padding: '0',
-        fontSize: 'Y1',
         color: 'title'
       },
       ProgressCircleWithSideUnitValue: null

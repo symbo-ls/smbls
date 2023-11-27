@@ -47,11 +47,12 @@ export const TitleParagraphRows = {
 
   Title: {
     extend: Flex,
-    props: { align: 'center space-between' }
+    props: { color: 'title', align: 'center space-between' }
   },
 
   Paragraph: {
-    extend: Flex
+    extend: Flex,
+    props: { color: 'paragraph', align: 'center space-between' }
   }
 }
 

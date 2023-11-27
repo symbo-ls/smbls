@@ -1,6 +1,6 @@
 'use strict'
+
 import { TitleParagraph } from '@symbo.ls/titleparagraph'
-import { Button } from '@symbo.ls/button'
 import { Dialog } from '@symbo.ls/dialog'
 
 export const Modal = {
@@ -9,13 +9,14 @@ export const Modal = {
   props: {
     flow: 'column',
     boxSize: 'fit-content',
+    align: 'stretch flex-start',
     minWidth: 'G3',
     position: 'relative',
-    padding: 'Z1 Z2',
+    padding: 'Z2 A2',
     round: 'A1'
   },
 
-  Header: {
+  ModalHeader: {
     extend: TitleParagraph,
     props: {
       minWidth: '100%',
@@ -24,30 +25,18 @@ export const Modal = {
 
     Title: {
       props: { align: 'center space-between' },
-      caption: {
-        props: {
-          text: 'Title',
-          fontSize: 'D',
-          padding: 'W2 W2 - W2'
-        }
+      Text: {
+        text: 'Title'
       },
-      x: {
-        extend: Button,
-        props: {
-          icon: 'x',
-          fontSize: 'B2',
-          boxSize: 'fit-content',
-          theme: 'transparent',
-          padding: '0'
-        }
+      SquareButton_x: {
+        icon: 'x',
+        theme: 'transparent'
       }
     },
 
     Paragraph: {
       props: {
-        fontSize: 'Z',
-        color: 'caption',
-        padding: '- Y'
+        color: 'caption'
       }
     }
   }

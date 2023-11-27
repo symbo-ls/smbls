@@ -43,7 +43,7 @@ export const CurrencyConvert = {
     ...[{}, {}]
   },
 
-  CommonButton: {
+  FlexButton: {
     minWidth: '100%',
     margin: 'Z - - -',
     text: 'convert',

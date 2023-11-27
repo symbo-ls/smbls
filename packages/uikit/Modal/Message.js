@@ -5,22 +5,17 @@ import { Modal } from './Modal'
 export const Message = {
   extend: Modal,
 
-  on: {
-    // init: () => { debugger }
-  },
-
   props: {
-    maxWidth: 'G3',
-    padding: 'Z1 Z2 Z2 Z2'
+    maxWidth: 'G3'
   },
 
-  Header: {
+  ModalHeader: {
     Title: {
-      caption: {
-        props: { text: 'Message', fontSize: 'C2' }
+      Text: {
+        text: 'Message'
       },
-      x: {
-        props: { padding: 'V2' }
+      SquareButton_x: {
+        padding: 'V2'
       }
     },
     Paragraph: {

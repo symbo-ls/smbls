@@ -65,7 +65,7 @@ export const KangorooButton = {
   childExtend: IconText
 }
 
-export const CommonButton = {
+export const FlexButton = {
   extend: Button,
   props: {
     theme: 'primary',
@@ -75,28 +75,29 @@ export const CommonButton = {
     gap: 'X1',
     position: 'relative'
   },
+
   Icon: {
     props: { fontSize: 'B1' }
   },
 
-  text: 'Button'
+  Text: { text: 'Button' }
 }
 
-export const IconCommonButton = {
-  extend: CommonButton,
+export const IconFlexButton = {
+  extend: FlexButton,
   props: {
     icon: 'smile',
     boxSize: 'fit-content fit-content',
     padding: 'Z2',
-    theme: 'field'
+    theme: 'tertiary'
   },
-  text: null
+  Text: null
 }
 
 export const ButtonSet = {
   tag: 'nav',
   extend: Flex,
-  childExtend: IconCommonButton
+  childExtend: IconFlexButton
 }
 
 export const CancelConfirmButtons = {
@@ -106,7 +107,7 @@ export const CancelConfirmButtons = {
     maxWidth: 'fit-content'
   },
   childExtend: {
-    extend: CommonButton,
+    extend: FlexButton,
     props: {
       ':first-child': {
         theme: 'transparent',
@@ -115,13 +116,13 @@ export const CancelConfirmButtons = {
     }
   },
   ...[
-    { caption: { props: { text: 'No' } } },
-    { caption: { props: { text: 'Yes' } } }
+    { Text: 'No' },
+    { Text: 'Yes' }
   ]
 }
 
 export const IcontextButton = {
-  extend: CommonButton,
+  extend: FlexButton,
   props: {
     position: 'relative',
     theme: 'tertiary',
@@ -131,7 +132,7 @@ export const IcontextButton = {
 }
 
 export const DropDownButton = {
-  extend: CommonButton,
+  extend: FlexButton,
   props: {
     gap: 'X2',
     boxSize: 'fit-content fit-content',
@@ -141,7 +142,7 @@ export const DropDownButton = {
     Icon: {
       fontSize: 'D'
     },
-    caption: { text: 'All' }
+    Text: { text: 'All' }
   }
 }
 
@@ -174,12 +175,12 @@ export const PlusMinusButtons = {
     gap: 'A'
   },
   Minus: {
-    extend: IconCommonButton,
+    extend: IconFlexButton,
     props: { icon: 'minus' }
   },
   Value: { props: { text: '1' } },
   Plus: {
-    extend: IconCommonButton,
+    extend: IconFlexButton,
     props: { icon: 'plus' }
   }
 }

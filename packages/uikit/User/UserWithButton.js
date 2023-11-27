@@ -29,20 +29,18 @@ export const UserWithButton = {
       props: { gap: 'X' },
       Title: {
         props: {
-          text: 'Wallet ID',
-          fontSize: 'Y1'
+          text: 'Wallet ID'
         }
       },
       Paragraph: {
         props: {
-          text: '0xfb59...d862',
-          fontSize: 'Y1'
+          text: '0xfb59...d862'
         }
       }
     }
   },
 
-  IconCommonButton: {
+  IconFlexButton: {
     background: 'transparent',
     theme: null,
     color: 'currentColor',

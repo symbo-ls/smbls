@@ -20,7 +20,6 @@ export const UploadFooter = {
       icon: 'info',
       text: 'Support',
       gap: 'Y',
-      fontSize: 'Z',
       fontWeight: '400'
     }
   },
@@ -33,19 +32,14 @@ export const UploadFooter = {
         ':first-child': {
           theme: 'tertiary',
           padding: '- A1'
-        },
-        caption: {
-          fontSize: 'Z2',
-          fontWeight: '400',
-          letterSpacing: '.3px'
         }
       }
     },
     ...[
-      { caption: { props: { text: 'Cancel' } } },
+      { Text: 'Cancel' },
       {
         extend: UploadButtonWithBackground,
-        caption: { props: { text: 'Attach file' } }
+        Text: 'Attach file'
       }
     ]
   }
@@ -59,16 +53,13 @@ export const UploadModal = {
     padding: 'A'
   },
 
-  Header: {
+  ModalHeader: {
     Title: {
-      caption: {
-        props: {
-          text: 'File Upload',
-          fontSize: 'C'
-        }
+      Text: {
+        text: 'File Upload'
       },
-      x: {
-        props: { margin: '-V2 - - -' }
+      SquareButton_x: {
+        margin: '-V2 - - -'
       }
     },
     Paragraph: null
@@ -84,7 +75,7 @@ export const UploadModal = {
 
 export const UploadModal2 = {
   extend: UploadModal,
-  Header: {},
+  ModalHeader: {},
   UploadLabel: null,
   UploadLabel2: {
     width: '100%',
@@ -96,7 +87,7 @@ export const UploadModal2 = {
 
 export const UploadModal3 = {
   extend: UploadModal2,
-  Header: {},
+  ModalHeader: {},
   UploadLabel2: {},
   UploadFooter: {
     props: { padding: '0' },
@@ -112,7 +103,7 @@ export const UploadModal3 = {
 
 export const UploadModal4 = {
   extend: UploadModal3,
-  Header: {},
+  ModalHeader: {},
   UploadLabel2: {},
   UploadingProcess4: {
     minWidth: '100%'

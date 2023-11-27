@@ -221,21 +221,27 @@ const checkForReference = (val, callback) => {
 
 const checkThemeReference = (val) => checkForReference(val, checkThemeReference) // eslint-disable-line
 
-export const getMediaTheme = (val, mod) => {
-  const CONFIG = getActiveConfig()
-  if (isString(val) && val.slice(0, 2) === '--') val = getMediaTheme(val.slice(2))
+export const getMediaTheme = (value, modifier) => {
+  const activeConfig = getActiveConfig()
 
-  if (!val || !isString(val)) {
-    if (CONFIG.verbose) console.warn(val, '- theme is not string')
+  if (isString(value) && value.slice(0, 2) === '--') {
+    value = getMediaTheme(value.slice(2))
+  }
+
+  if (!value || !isString(value)) {
+    if (activeConfig.verbose) {
+      console.warn(`${value} - Theme is not a string`)
+    }
     return
   }
 
-  const [name, ...modifier] = isArray(val) ? val : val.split(' ')
-  let value = CONFIG.THEME[name]
-  if (value && (modifier || mod)) {
-    value = findModifier(value, modifier.length ? modifier : mod)
+  const [themeName, ...themeModifiers] = isArray(value) ? value : value.split(' ')
+  let themeValue = activeConfig.THEME[themeName]
+
+  if (themeValue && (themeModifiers || modifier)) {
+    themeValue = findModifier(themeValue, themeModifiers.length ? themeModifiers : modifier)
   }
 
-  const r = recursiveTheme(value)
-  return r
+  const resolvedTheme = recursiveTheme(themeValue)
+  return resolvedTheme
 }

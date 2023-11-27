@@ -67,7 +67,7 @@ export const FieldWithTitle = {
     Hint: {
       color: 'gray 1 +64',
       align: 'center flex-start',
-      fontSize: 'Y',
+      fontSize: 'Z',
       gap: 'Y',
       padding: 'W Y2 - Y2'
     }

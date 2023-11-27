@@ -14,6 +14,7 @@ export const ConvertCard = {
     padding: 'A Z2+V Y1 Z2+V',
     gap: 'A1'
   },
+
   Title: {
     props: {
       justifyContent: 'space-between',
@@ -25,32 +26,26 @@ export const ConvertCard = {
         text: 'From'
       }
     },
-    balance: {
-      extend: UnitValueWithTitle,
-      props: {
-        // border: '1px sol'
-      }
-    }
-
+    UnitValueWithTitle: {}
   },
+
   Paragraph: {
     props: {
       align: 'center space-between',
       margin: '0',
       padding: '0'
     },
+
     value: {
       props: {
         text: '0.00',
-        fontSize: 'E2'
+        fontSize: 'C1'
       }
     },
-    dropDownButton: {
-      extend: DropDownButtonWithAvatar,
-      props: {
-        theme: 'tertiary',
-        margin: '- -V'
-      }
+
+    DropDownButtonWithAvatar: {
+      theme: 'tertiary',
+      margin: '- -V'
     }
   }
   // props: {

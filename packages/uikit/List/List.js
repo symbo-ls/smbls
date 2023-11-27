@@ -40,7 +40,6 @@ export const List = {
         padding: 'Z1 A1',
         position: 'relative',
         cursor: 'pointer',
-        fontSize: 'A1',
         color: 'caption',
         ':hover': {
           background: 'gray .92 +4'

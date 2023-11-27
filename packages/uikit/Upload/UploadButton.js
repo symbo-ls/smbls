@@ -1,18 +1,16 @@
 'use strict'
 
-import { CommonButton } from '@symbo.ls/button'
+import { FlexButton } from '@symbo.ls/button'
 
 export const UploadButton = {
-  extend: CommonButton,
+  extend: FlexButton,
+
   props: {
     position: 'relative',
-    theme: 'transparent',
     padding: '0',
-    color: '#0474F2',
+    theme: 'secondary @{globalTheme} .color-only',
     boxSize: 'fit-content fit-content',
-    overflow: 'hidden',
-    cursor: 'pointer',
-    text: 'Choose file'
+    cursor: 'pointer'
   },
 
   Input: {
@@ -24,15 +22,15 @@ export const UploadButton = {
     left: '0',
     opacity: '0',
     cursor: 'pointer'
-  }
+  },
+  Text: 'Browse files'
 }
 
 export const UploadButtonWithBackground = {
   extend: UploadButton,
   props: {
-    fontFamily: 'Avenir',
-    theme: 'primary',
+    theme: 'secondary',
     padding: 'Z2 A1'
   },
-  caption: { props: { text: 'Browse files' } }
+  Text: 'Browse files'
 }

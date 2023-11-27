@@ -12,15 +12,13 @@ export const CommonForm = {
     padding: 'A+V A'
   },
 
-  Header: {
+  ModalHeader: {
     props: { gap: 'Z' },
     Title: {
-      caption: { props: { padding: 'Y W2 - W2' } },
-      x: {
-        props: {
-          margin: '-Y+V - - -',
-          fontSize: 'C'
-        }
+      Text: {},
+      SquareButton_x: {
+        margin: '-Y+V - - -',
+        fontSize: 'C'
       }
     }
   },

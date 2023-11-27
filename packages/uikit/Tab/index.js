@@ -1,6 +1,6 @@
 'use strict'
 
-import { IconCommonButton, IcontextButton } from '@symbo.ls/button'
+import { IconFlexButton, IcontextButton } from '@symbo.ls/button'
 
 export const Tab = {
   extend: IcontextButton,
@@ -12,23 +12,25 @@ export const Tab = {
   },
 
   Icon: {},
-  caption: {},
+
+  Text: 'Caption',
+
   CountIndicator: {
-    fontSize: 'Y1',
+    fontSize: 'Z1',
     text: '19',
     margin: '- - - X1'
   }
 }
 
 export const IconTab = {
-  extend: IconCommonButton,
+  extend: IconFlexButton,
 
   Span: null,
   CountIndicator: {
+    fontSize: 'Z',
     position: 'absolute',
     top: '-Y2',
     right: '-Y2',
-    fontSize: 'X',
     text: '19'
   }
 }

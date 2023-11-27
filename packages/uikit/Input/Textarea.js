@@ -52,7 +52,7 @@ export const TextareaWithButton = {
     round: 'Z2',
     minHeight: 'fit-content'
   },
-  IconCommonButton: {
+  IconFlexButton: {
     props: {
       background: 'blue',
       Icon: { name: 'send' }

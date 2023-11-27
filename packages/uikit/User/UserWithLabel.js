@@ -26,7 +26,7 @@ export const UserWithLabel = {
       tag: 'p',
       props: {
         text: 'Short ETH with up to 4x Leverage',
-        fontSize: 'Y1'
+        fontSize: 'Z1'
       }
     }
   }

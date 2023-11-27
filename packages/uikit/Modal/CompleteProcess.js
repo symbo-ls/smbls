@@ -4,40 +4,37 @@ import { Modal } from './Modal'
 
 export const CompleteProcess = {
   extend: Modal,
+
   props: {
-    alignItems: 'center',
-    gap: 'B',
-    padding: 'A A A+V A'
+    align: 'center',
+    gap: 'B'
   },
 
-  Header: {
+  ModalHeader: {
     Title: {
-      caption: null,
-      x: { props: { margin: '- - - auto' } }
+      Text: null,
+      SquareButton_x: { margin: '- - - auto' }
     },
     Paragraph: null
   },
 
-  SuccessIndicator: { fontSize: 'F2' },
+  SuccessIndicator: { fontSize: 'D' },
 
   TitleParagraph: {
     alignItems: 'center',
     gap: 'Y',
     Title: {
-      text: 'Reset complete!',
-      fontSize: 'D1'
+      text: 'Reset complete!'
     },
     Paragraph: {
-      text: 'Your request has been approved!',
-      fontSize: 'Z',
-      color: 'title'
+      text: 'Your request has been approved!'
     }
   },
 
-  CommonButton: {
+  FlexButton: {
     minWidth: '100%',
     margin: 'Y - - -',
-    text: 'Done',
-    fontWeight: '500'
+    fontWeight: '500',
+    Text: { text: 'Done' }
   }
 }

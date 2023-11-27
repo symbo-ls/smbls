@@ -28,13 +28,12 @@ export const User = {
     },
     Title: {
       props: {
-        fontSize: 'A1',
         fontWeight: '500'
       }
     },
     Paragraph: {
       props: {
-        fontSize: 'Z',
+        fontSize: 'Z1',
         alignItems: 'center'
       }
     }

@@ -5,6 +5,7 @@ import { UnitValue } from '@symbo.ls/unitvalue'
 
 export const Pricing = {
   extend: Modal,
+
   props: {
     background: 'gray3',
     gap: 'B',
@@ -13,7 +14,8 @@ export const Pricing = {
     padding: 'A1'
   },
 
-  Header: null,
+  ModalHeader: null,
+
   Content: {
     props: {
       flow: 'column',
@@ -42,11 +44,11 @@ export const Pricing = {
     ]
   },
 
-  Footer: {
+  ModalFooter: {
     props: {
       margin: '- -X -X'
     },
-    CommonButton: {
+    FlexButton: {
       flex: '1',
       padding: 'Z2 -',
       round: 'Y2',

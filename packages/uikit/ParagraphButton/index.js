@@ -6,8 +6,7 @@ export const ParagraphButton = {
   extend: Flex,
   props: {
     alignItems: 'center',
-    gap: 'Y2',
-    fontSize: 'Y1'
+    gap: 'Y2'
   },
   P: {
     props: {

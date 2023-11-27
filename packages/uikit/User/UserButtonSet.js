@@ -16,18 +16,15 @@ export const UserButtonSet = {
   User: {
     padding: '0',
     gap: 'Y2',
-    Avatar: { fontSize: 'A1' },
+    Avatar: { fontSize: 'A' },
     Notes: {
       margin: 'W - - -',
       gap: 'X2',
       Title: {
-        text: 'Group',
-        fontSize: 'C1'
+        text: 'Group'
       },
       Paragraph: {
-        text: 'Active now',
-        fontSize: 'Y',
-        padding: '- - - W1'
+        text: 'Active now'
       }
     }
   },

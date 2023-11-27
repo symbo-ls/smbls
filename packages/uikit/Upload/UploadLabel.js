@@ -18,8 +18,8 @@ export const UploadLabel = {
 
   Icon: {
     name: 'file',
-    fontSize: 'I1',
-    color: '#818186'
+    fontSize: 'D',
+    theme: 'secondary .color-only'
   },
 
   TitleParagraph: {
@@ -36,12 +36,10 @@ export const UploadLabel = {
         fontWeight: '400',
         gap: 'Y2',
         align: 'center flex-start',
-        fontSize: 'Z1',
         color: 'title'
       },
       UploadButton: {
         caption: {
-          fontSize: 'A1',
           fontWeight: '500'
         }
       }

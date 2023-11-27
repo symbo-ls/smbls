@@ -38,8 +38,15 @@ export const Theme = {
       const { props, deps } = element
       const globalTheme = deps.getSystemTheme(element)
       if (!props.theme) return
-      const getMediaTheme = deps.getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
-      return getMediaTheme
+      const hasSubtheme = props.theme.includes(' ') && !props.theme.includes('@')
+      const globalThemeForced = `@${props.themeModifier || globalTheme}`
+      if (hasSubtheme) {
+        const themeAppliedInVal = props.theme.split(' ')
+        themeAppliedInVal.splice(1, 0, globalThemeForced)
+        console.log(themeAppliedInVal)
+        return deps.getMediaTheme(themeAppliedInVal)
+      } else if (props.theme.includes('@{globalTheme}')) props.theme.replace('@{globalTheme}', globalThemeForced)
+      return deps.getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
     },
 
     color: (element) => {

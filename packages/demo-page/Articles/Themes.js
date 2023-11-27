@@ -60,10 +60,7 @@ export const Themes = {
               align: 'center space-between',
               minWidth: '100%'
             },
-            childExtend: {
-              extend: Icon,
-              props: { fontSize: 'A1' }
-            },
+            childExtend: Icon,
             ...[
               { props: { icon: 'sun' } },
               { props: { icon: 'moon' } }
@@ -72,7 +69,6 @@ export const Themes = {
           title: {
             tag: 'h6',
             props: {
-              fontSize: 'A1',
               text: 'primary',
               textTransform: 'capitalize',
               fontWeight: '500'

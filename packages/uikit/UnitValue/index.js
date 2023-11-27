@@ -20,6 +20,7 @@ export const DoubleUnitValue = {
   extend: Flex,
   props: {
     align: 'center flex-start',
+    color: 'caption',
     gap: 'Y'
   },
 
@@ -32,12 +33,11 @@ export const DoubleUnitValue = {
     props: {
       boxSize: 'W W',
       round: '100%',
-      background: '#A3A3A8'
+      background: 'currentColor'
     }
   },
 
-  UnitValue2: {
-    extend: UnitValue,
+  UnitValue_2: {
     props: { gap: 'X+W' },
     Value: { text: '2' },
     Unit: { text: 'Second left' }
@@ -50,24 +50,21 @@ export const UnitValueWithLabel = {
 
   UnitValue: {
     flow: 'row-reverse',
-    fontSize: 'D1',
     fontWeight: '700',
     Value: { text: '12,759' },
     Unit: { text: '$' }
   },
   dot: null,
-  UnitValue2: {
+  UnitValue_2: {
     props: {
       theme: 'secondary',
       padding: 'Z',
       round: 'Y1',
-      fontSize: 'Y2',
       gap: '0'
     },
     Value: { text: '+8.8' },
     Unit: { text: '%' }
   }
-
 }
 
 export const UnitValueWithTitle = {
