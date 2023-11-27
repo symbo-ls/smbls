@@ -28,7 +28,7 @@ export const Block = {
       display: props.display
     }),
 
-    hide: ({ props }) => !isUndefined(props.hide) && ({
+    hide: ({ props }) => props.hide && ({
       display: 'none !important'
     }),
 
@@ -125,7 +125,7 @@ export const Block = {
     }),
     gridArea: ({ props, deps }) => props.gridArea && ({ gridArea: props.gridArea }),
 
-    flex: ({ props }) => !isUndefined(props.flex) && ({
+    flex: ({ props }) => props.flex && ({
       flex: props.flex
     }),
     flexDirection: ({ props }) => !isUndefined(props.flexDirection) && ({
@@ -146,7 +146,7 @@ export const Block = {
     alignSelf: ({ props }) => !isUndefined(props.alignSelf) && ({
       alignSelf: props.alignSelf
     }),
-    order: ({ props }) => !isUndefined(props.order) && ({
+    order: ({ props }) => props.order && ({
       order: props.order
     }),
 
