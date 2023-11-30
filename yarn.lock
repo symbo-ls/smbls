@@ -2389,14 +2389,6 @@
     globals "^13.2.0"
     nullthrows "^1.1.1"
 
-"@parcel/packager-raw-url@2.10.3":
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/@parcel/packager-raw-url/-/packager-raw-url-2.10.3.tgz#08d37125b0f635685b2d03d2d6e214082a0af5c5"
-  integrity sha512-N/8UeOw7ByqdIRqEPA9qtKMA7w2vJ7GOo7kFAUgcYTSLPzCjS7ilwvE7efwobB1jQoFP1pg1VCIZo9n82EGhMQ==
-  dependencies:
-    "@parcel/plugin" "2.10.3"
-    "@parcel/utils" "2.10.3"
-
 "@parcel/packager-raw@2.10.3":
   version "2.10.3"
   resolved "https://registry.yarnpkg.com/@parcel/packager-raw/-/packager-raw-2.10.3.tgz#96c92170b49f306e015540dc85794b90c4e3174f"
@@ -2656,16 +2648,6 @@
     posthtml-parser "^0.10.1"
     posthtml-render "^3.0.0"
     semver "^7.5.2"
-
-"@parcel/transformer-webmanifest@2.10.3":
-  version "2.10.3"
-  resolved "https://registry.yarnpkg.com/@parcel/transformer-webmanifest/-/transformer-webmanifest-2.10.3.tgz#6a674004fb53de89073164b76c8892e86b0824ba"
-  integrity sha512-1AGEl0TeiC0vXJR9YYUBprtgLDnf4KMKMwQPAyiJUHdu7MWh97KyLZChNEAIvtzHj7Weatn3OZbqnuRj6FJloQ==
-  dependencies:
-    "@mischnic/json-sourcemap" "^0.1.0"
-    "@parcel/diagnostic" "2.10.3"
-    "@parcel/plugin" "2.10.3"
-    "@parcel/utils" "2.10.3"
 
 "@parcel/types@2.10.3":
   version "2.10.3"
@@ -3075,6 +3057,13 @@
     "@symbo.ls/link" latest
     "@symbo.ls/modal" latest
     "@symbo.ls/textarea" latest
+
+"@symbo.ls/hgroup@latest":
+  version "2.11.242"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/hgroup/-/hgroup-2.11.242.tgz#71746408e7e07a083371d35c8addea69893fcb91"
+  integrity sha512-AQB67bYiBKQrfYRkq5MYsfntyHRDMQBhrODw6htiYJ7KwOsn8IHBPQi5gG/ZycKXRLLGFe6qa+TAdWiZ+tU4HA==
+  dependencies:
+    "@symbo.ls/atoms" latest
 
 "@symbo.ls/icon@latest":
   version "2.11.231"
