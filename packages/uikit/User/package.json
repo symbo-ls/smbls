@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/user",
-  "version": "2.11.247",
+  "version": "2.11.264",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
@@ -9,8 +9,8 @@
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/avatar": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/indicator": "latest",
     "@symbo.ls/hgroup": "latest",
+    "@symbo.ls/indicator": "latest",
     "@symbo.ls/unitvalue": "latest"
   }
 }

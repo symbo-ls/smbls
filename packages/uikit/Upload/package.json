@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/upload",
-  "version": "2.11.261",
+  "version": "2.11.264",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
@@ -8,7 +8,7 @@
   "dependencies": {
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/button": "latest",
-    "@symbo.ls/modal": "latest",
-    "@symbo.ls/hgroup": "latest"
+    "@symbo.ls/hgroup": "latest",
+    "@symbo.ls/modal": "latest"
   }
 }
