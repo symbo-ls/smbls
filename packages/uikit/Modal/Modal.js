@@ -1,6 +1,6 @@
 'use strict'
 
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Hgroup } from '@symbo.ls/hgroup'
 import { Dialog } from '@symbo.ls/dialog'
 
 export const Modal = {
@@ -17,7 +17,7 @@ export const Modal = {
   },
 
   ModalHeader: {
-    extend: TitleParagraph,
+    extend: Hgroup,
     props: {
       minWidth: '100%',
       gap: 'A'

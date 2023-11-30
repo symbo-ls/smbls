@@ -40,7 +40,7 @@ export const Icons = {
   //     gap: 'A1'
   //   },
 
-  //   TitleParagraph: {
+  //   Hgroup: {
   //     props: {
   //       flow: 'row'
   //     },

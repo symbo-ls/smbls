@@ -80,7 +80,7 @@ export const UploadModal2 = {
   UploadLabel2: {
     width: '100%',
     Icon: {},
-    TitleParagraph: {},
+    Hgroup: {},
     UploadButtonWithBackground: { theme: 'tertiary' }
   }
 }

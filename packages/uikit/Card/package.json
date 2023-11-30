@@ -7,7 +7,7 @@
   "dependencies": {
     "@symbo.ls/icon": "latest",
     "@symbo.ls/modal": "latest",
-    "@symbo.ls/titleparagraph": "latest"
+    "@symbo.ls/hgroup": "latest"
   },
   "source": "index.js"
 }

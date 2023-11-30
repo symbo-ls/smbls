@@ -20,7 +20,7 @@ export const CompleteProcess = {
 
   SuccessIndicator: { fontSize: 'D' },
 
-  TitleParagraph: {
+  Hgroup: {
     alignItems: 'center',
     gap: 'Y',
     Title: {

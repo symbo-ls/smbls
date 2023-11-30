@@ -21,7 +21,7 @@ export const StepCard = {
     }
   },
 
-  LineStepsWithTitleParagraph: {
+  LineStepsWithHgroup: {
     position: 'absolute',
     left: '0',
     bottom: '0',

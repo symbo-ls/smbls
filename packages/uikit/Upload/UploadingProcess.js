@@ -1,7 +1,7 @@
 'use strict'
 
 import { Dialog } from '@symbo.ls/dialog'
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Hgroup } from '@symbo.ls/hgroup'
 import { UploadImage } from './UploadImage'
 
 export const UploadingProcess = {
@@ -16,7 +16,7 @@ export const UploadingProcess = {
 
   Image: { extend: UploadImage },
   Flex: {
-    extend: TitleParagraph,
+    extend: Hgroup,
     props: {
       justifyContent: 'space-between',
       padding: 'W2 -'

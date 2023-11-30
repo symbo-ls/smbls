@@ -47,7 +47,6 @@ export const Colors = {
       Paragraph: {
         $collection: ({ context }) => {
           const { COLOR } = context.designSystem
-          console.log(COLOR)
           return Object.keys(COLOR).filter(v => COLOR[v].value)
             .map(v => ({
               Color: { background: v },

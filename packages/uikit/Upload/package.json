@@ -9,6 +9,6 @@
     "@symbo.ls/atoms": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/modal": "latest",
-    "@symbo.ls/titleparagraph": "latest"
+    "@symbo.ls/hgroup": "latest"
   }
 }

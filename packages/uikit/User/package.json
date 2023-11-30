@@ -10,7 +10,7 @@
     "@symbo.ls/avatar": "latest",
     "@symbo.ls/button": "latest",
     "@symbo.ls/indicator": "latest",
-    "@symbo.ls/titleparagraph": "latest",
+    "@symbo.ls/hgroup": "latest",
     "@symbo.ls/unitvalue": "latest"
   }
 }

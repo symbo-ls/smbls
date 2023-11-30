@@ -57,7 +57,7 @@ export default [
   '@symbo.ls/threejs',
   '@symbo.ls/timepicker',
   '@symbo.ls/tooltip',
-  '@symbo.ls/titleparagraph',
+  '@symbo.ls/hgroup',
   '@symbo.ls/unitvalue',
   '@symbo.ls/upload',
   '@symbo.ls/user',

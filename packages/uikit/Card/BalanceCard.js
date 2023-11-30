@@ -1,11 +1,11 @@
 'use strict'
 
 import { Card } from './Card'
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Hgroup } from '@symbo.ls/hgroup'
 import { Button } from '@symbo.ls/button'
 
 export const BalanceCard = {
-  extend: [Card, TitleParagraph],
+  extend: [Card, Hgroup],
   props: {
     theme: 'card .secondary',
     gap: 'Z2',

@@ -1,7 +1,7 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Hgroup } from '@symbo.ls/hgroup'
 import { AvatarIndicator } from '@symbo.ls/avatar'
 
 export const User = {
@@ -20,7 +20,7 @@ export const User = {
     Avatar: { props: { boxSize: 'C+V' } }
   },
   Notes: {
-    extend: TitleParagraph,
+    extend: Hgroup,
     props: {
       justifyContent: 'center',
       gap: 'W2',

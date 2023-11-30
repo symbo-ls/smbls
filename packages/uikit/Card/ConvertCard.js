@@ -1,12 +1,10 @@
 'use strict'
 
 import { Card } from './Card'
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
-import { UnitValueWithTitle } from '@symbo.ls/unitvalue'
-import { DropDownButtonWithAvatar } from '@symbo.ls/button'
+import { Hgroup } from '@symbo.ls/hgroup'
 
 export const ConvertCard = {
-  extend: [Card, TitleParagraph],
+  extend: [Card, Hgroup],
   props: {
     minWidth: 'G1_default',
     theme: 'dialog',
@@ -48,30 +46,4 @@ export const ConvertCard = {
       margin: '- -V'
     }
   }
-  // props: {
-  //   boxSize: 'fit-content',
-  //   gap: 'A',
-  //   padding: 'Z2'
-  // },
-  // Title: {
-  //   props: { gap: 'F' },
-  //   caption: {
-  //     props: {
-  //       text: 'From',
-  //       fontSize: 'Z1',
-  //       fontWeight: '400'
-  //     }
-  //   },
-  //   UnitValueWithTitle: { props: { fontWeight: '400' } }
-  // },
-  // Paragraph: {
-  //   props: { align: 'center space-between' },
-  //   Value: {
-  //     props: {
-  //       text: '0.00',
-  //       fontSize: 'E2'
-  //     }
-  //   },
-  //   DropDownButtonWithAvatar: { theme: 'card .child' }
-  // }
 }

@@ -71,5 +71,3 @@ export const Footnote = {
 export const B = { tag: 'b' }
 
 export const I = { tag: 'i' }
-
-// export const Paragraph = { tag: 'p' }

@@ -1,10 +1,10 @@
 'use strict'
 
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Hgroup } from '@symbo.ls/hgroup'
 import { DotList } from '@symbo.ls/list'
 
 export const Banner = {
-  extend: TitleParagraph,
+  extend: Hgroup,
   props: {
     height: 'fit-content',
     padding: 'D2+Z D+Y2 D D',
@@ -71,7 +71,7 @@ export const Banner = {
     },
 
     Flex: {
-      extend: TitleParagraph,
+      extend: Hgroup,
       props: {
         gap: 'A2',
         alignSelf: 'flex-end',

@@ -7,6 +7,7 @@ import { TYPOGRAPHY } from './typography'
 import { SPACING } from './spacing'
 import { FONT, FONT_FAMILY } from './font'
 import { MEDIA } from './media'
+import { TIMING } from './timing'
 
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
@@ -17,7 +18,7 @@ export const DEFAULT_CONFIG = {
   SPACING,
   FONT,
   FONT_FAMILY,
-  TIMING: {},
+  TIMING,
   ICONS,
   MEDIA,
   DEVICES: {},

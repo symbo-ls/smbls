@@ -22,7 +22,7 @@ export const UploadLabel = {
     theme: 'secondary .color-only'
   },
 
-  TitleParagraph: {
+  Hgroup: {
     props: {
       align: 'center flex-start',
       gap: 'Z',
@@ -61,7 +61,7 @@ export const UploadLabel2 = {
     gap: 'B'
   },
   Icon: {},
-  TitleParagraph: { Title: { UploadButton: null } },
+  Hgroup: { Title: { UploadButton: null } },
   UploadButtonWithBackground: {
     padding: 'A C',
     margin: 'Z - - -',

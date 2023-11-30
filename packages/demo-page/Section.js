@@ -1,10 +1,10 @@
 'use strict'
 
-import { TitleParagraph } from '@symbo.ls/titleparagraph'
+import { Hgroup } from '@symbo.ls/hgroup'
 
 export const DemoSection = {
   tag: 'section',
-  extend: TitleParagraph,
+  extend: Hgroup,
   props: {
     flow: 'row',
     boxSizing: 'border-box',

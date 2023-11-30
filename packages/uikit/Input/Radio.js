@@ -1,7 +1,7 @@
 'use strict'
 
 import { Pseudo } from '@symbo.ls/atoms'
-import { Checkbox, CheckboxTitleParagraph } from './Checkbox'
+import { Checkbox, CheckboxHgroup } from './Checkbox'
 
 export const Radio = {
   extend: Checkbox,
@@ -30,8 +30,8 @@ export const Radio = {
   }
 }
 
-export const RadioTitleParagraph = {
-  extend: CheckboxTitleParagraph,
+export const RadioHgroup = {
+  extend: CheckboxHgroup,
   Checkbox: null,
   Radio: {}
 }

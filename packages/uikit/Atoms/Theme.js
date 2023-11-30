@@ -43,7 +43,6 @@ export const Theme = {
       if (hasSubtheme) {
         const themeAppliedInVal = props.theme.split(' ')
         themeAppliedInVal.splice(1, 0, globalThemeForced)
-        console.log(themeAppliedInVal)
         return deps.getMediaTheme(themeAppliedInVal)
       } else if (props.theme.includes('@{globalTheme}')) props.theme.replace('@{globalTheme}', globalThemeForced)
       return deps.getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)

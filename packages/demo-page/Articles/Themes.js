@@ -37,7 +37,7 @@ export const Themes = {
     },
     childExtend: {
       extend: ColorSection,
-      TitleParagraph: {},
+      Hgroup: {},
       Grid: {
         props: {
           columns: 'repeat(5, 1fr)',
@@ -81,7 +81,7 @@ export const Themes = {
     },
     ...[
       {
-        TitleParagraph: {
+        Hgroup: {
           Title: { props: { text: 'Dark Theme' } }
         },
         Grid: {

@@ -48,7 +48,7 @@ export const Checkbox = {
   }
 }
 
-export const CheckboxTitleParagraph = {
+export const CheckboxHgroup = {
   extend: Flex,
   tag: 'label',
 
@@ -59,7 +59,7 @@ export const CheckboxTitleParagraph = {
   },
 
   Checkbox: { tag: 'div' },
-  TitleParagraphRows: {
+  HgroupRows: {
     gap: 'Z1',
     margin: 'Y - - -'
   }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { Checkbox, CheckboxTitleParagraph } from './Checkbox'
+import { Checkbox, CheckboxHgroup } from './Checkbox'
 
 export const Toggle = {
   extend: Checkbox,
@@ -35,8 +35,8 @@ export const Toggle = {
   }
 }
 
-export const ToggleTitleParagraph = {
-  extend: CheckboxTitleParagraph,
+export const ToggleHgroup = {
+  extend: CheckboxHgroup,
   Checkbox: null,
   Toggle: {}
 }

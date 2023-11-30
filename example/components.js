@@ -129,7 +129,7 @@ export const ComponentsView = {
         text: 'John'
       }]
     },
-    TitleParagraph: {
+    Hgroup: {
       Title: { text: 'Title' },
       Paragraph: { text: 'Paragraph' }
     },
@@ -229,7 +229,7 @@ export const ComponentsView = {
     RadioStep: {},
     RadioSteps: {},
     LineSteps: {},
-    LineStepsWithTitleParagraph: {},
+    LineStepsWithHgroup: {},
 
     StepCard: {},
     UnitValueWithLabel: {},

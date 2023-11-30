@@ -27,7 +27,7 @@ export const LineSteps = {
   ]
 }
 
-export const LineStepsWithTitleParagraph = {
+export const LineStepsWithHgroup = {
   extend: Flex,
   props: {
     flow: 'column',
@@ -38,7 +38,7 @@ export const LineStepsWithTitleParagraph = {
     gap: 'A1'
   },
 
-  TitleParagraph: {
+  Hgroup: {
     gap: 'Y1',
     Title: {
       text: 'Symbols',
