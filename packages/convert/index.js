@@ -4,10 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import * as esbuild from 'esbuild'
 
-// Set up jsdom
 import { JSDOM } from 'jsdom'
-// import { parse } from 'globusa'
-// import { convert, generateImports, dedupMitosisImports } from 'kalduna'
 
 let parse, convert, generateImports, dedupMitosisImports
 try {
@@ -18,8 +15,12 @@ try {
 
   const globusa = await import('globusa')
   parse = globusa.parse
-} catch (e) {
-  console.error(e)
+} catch (error) {
+  if (error.code === 'MODULE_NOT_FOUND') {
+    console.error('The required module "kalduna" is not installed. Please install it.')
+  } else {
+    console.error('An unexpected error occurred:', error.message)
+  }
 }
 
 const jsdom = new JSDOM('<html><head></head><body></body></html>')
