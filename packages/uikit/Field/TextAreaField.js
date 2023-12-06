@@ -16,7 +16,6 @@ export const TextAreaField = {
     tag: 'textarea',
     attr: { placeholder: 'Leave us a message...' },
     props: {
-      fontSize: 'Z',
       minWidth: 'H',
       minHeight: 'D2+Y1',
       padding: 'A',

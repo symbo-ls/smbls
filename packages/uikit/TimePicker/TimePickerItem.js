@@ -29,7 +29,7 @@ export const TimePickerItem = {
     max: 24,
     placeholder: '00',
     appearance: 'textfield',
-    theme: 'secondary',
+    theme: 'field',
 
     '::-webkit-inner-spin-button': {
       style: { appearance: 'none' },

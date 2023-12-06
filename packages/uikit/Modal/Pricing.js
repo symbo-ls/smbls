@@ -52,10 +52,9 @@ export const Pricing = {
       flex: '1',
       padding: 'Z2 -',
       round: 'Y2',
-      theme: 'secondary',
+      theme: 'field',
       margin: '- -X -X',
       text: 'Add promo code',
-      fontSize: 'Z',
       fontWeight: '500'
     }
   }

@@ -36,7 +36,7 @@ export const CurrencyConvert = {
       props: {
         theme: 'tertiary',
         Paragraph: {
-          dropDownButton: { theme: 'secondary' }
+          dropDownButton: { theme: 'field' }
         }
       }
     },

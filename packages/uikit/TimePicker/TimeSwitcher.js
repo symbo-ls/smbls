@@ -8,7 +8,7 @@ const props = {
   flow: 'column',
   overflow: 'hidden',
   round: 'Z',
-  theme: 'secondary'
+  theme: 'field'
 }
 
 export const TimeSwitcher = {

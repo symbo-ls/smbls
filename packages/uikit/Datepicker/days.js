@@ -28,7 +28,7 @@ export const DatePickerDay = {
       aspectRatio: '1/1',
       lineHeight: '.9',
       background: 'transparent',
-      theme: 'secondary @dark .color',
+      theme: 'field @dark .color',
       text: parseInt(key) + 1,
       ':first-child': {
         style: { gridColumnStart }
@@ -36,7 +36,7 @@ export const DatePickerDay = {
       '.isSelected': { theme: 'primary' },
       '!isSelected': {
         '.isWeekend': { opacity: '.5' },
-        ':hover': { theme: 'secondary' }
+        ':hover': { theme: 'field' }
       }
     }
   },

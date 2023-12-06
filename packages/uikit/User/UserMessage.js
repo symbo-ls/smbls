@@ -5,10 +5,12 @@ import { User } from './User'
 export const UserMessage = {
   extend: User,
   props: { gap: 'Z', theme: 'transparent' },
-  Avatar: {},
-  Notes: {
-    Title: null,
+
+  AvatarIndicator: {},
+
+  Hgroup: {
     props: { margin: '0' },
+    Title: null,
     Paragraph: {
       props: {
         text: 'Can you please review the latest design?',

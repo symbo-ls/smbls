@@ -19,7 +19,6 @@ export const ListWithTitle = {
       top: '0',
       zIndex: '3',
       text: 'Group name',
-      fontSize: 'Z',
       color: 'gray .92 +68',
       fontWeight: '400',
       theme: 'dialog',

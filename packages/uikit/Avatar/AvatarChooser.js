@@ -33,7 +33,6 @@ export const AvatarChooser = {
       height: '100%',
       background: 'none',
       color: 'currentColor',
-      fontSize: 'Z2',
       lineHeight: 1,
       padding: '- B - Y1',
       zIndex: '2',

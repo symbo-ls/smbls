@@ -16,8 +16,8 @@ export const Toggle = {
 
   Flex: {
     props: {
-      boxSize: 'A+X B+Z',
-      padding: '- W',
+      boxSize: 'A1 B1',
+      padding: '- W_default',
       round: 'D',
       align: 'center flex-start',
       theme: 'field',

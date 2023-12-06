@@ -6,10 +6,13 @@ export const AvatarIndicator = {
     position: 'relative',
     round: '100%'
   },
+
   Avatar: {},
+
   StatusIndicator: {
+    theme: 'success',
     position: 'absolute',
-    bottom: 'V',
-    right: '-V'
+    bottom: '0',
+    right: '0'
   }
 }

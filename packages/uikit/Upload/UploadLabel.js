@@ -19,7 +19,7 @@ export const UploadLabel = {
   Icon: {
     name: 'file',
     fontSize: 'D',
-    theme: 'secondary .color-only'
+    theme: 'field .color-only'
   },
 
   Hgroup: {

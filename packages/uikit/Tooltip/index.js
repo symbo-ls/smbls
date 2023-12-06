@@ -6,6 +6,7 @@ import { Flex } from '@symbo.ls/atoms'
 export const Tooltip = {
   extend: Flex,
   props: {
+    theme: 'dialog',
     background: 'black',
     flow: 'column',
     shape: 'tooltip',

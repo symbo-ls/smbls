@@ -1,11 +1,10 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Hgroup } from '@symbo.ls/hgroup'
-import { AvatarIndicator } from '@symbo.ls/avatar'
 
 export const User = {
   extend: Flex,
+
   props: {
     boxSize: 'fit-content',
     theme: 'dialog',
@@ -15,12 +14,11 @@ export const User = {
     align: 'center flex-start'
   },
 
-  Avatar: {
-    extend: AvatarIndicator,
-    Avatar: { props: { boxSize: 'C+V' } }
+  AvatarIndicator: {
+    Avatar: { boxSize: 'C+V' }
   },
-  Notes: {
-    extend: Hgroup,
+
+  Hgroup: {
     props: {
       justifyContent: 'center',
       gap: 'W2',

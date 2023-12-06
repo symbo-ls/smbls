@@ -8,7 +8,7 @@ export const UploadButton = {
   props: {
     position: 'relative',
     padding: '0',
-    theme: 'secondary @{globalTheme} .color-only',
+    theme: 'field @{globalTheme} .color-only',
     boxSize: 'fit-content fit-content',
     cursor: 'pointer'
   },
@@ -29,7 +29,7 @@ export const UploadButton = {
 export const UploadButtonWithBackground = {
   extend: UploadButton,
   props: {
-    theme: 'secondary',
+    theme: 'field',
     padding: 'Z2 A1'
   },
   Text: 'Browse files'

@@ -133,9 +133,10 @@ const STATES = {
   },
 
   success: {
-    background: 'transparent',
-    color: 'green2',
-    border: '2.8px solid #04F214'
+    '@dark': {
+      color: 'black',
+      background: 'green'
+    }
   }
 }
 

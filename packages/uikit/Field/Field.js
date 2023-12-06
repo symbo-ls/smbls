@@ -34,7 +34,6 @@ export const Field = {
 
   Input: {
     props: {
-      fontSize: 'Z',
       fontWeight: '400',
       padding: '0',
       background: 'rgba(0, 0, 0, 0)',
@@ -67,7 +66,7 @@ export const FieldWithTitle = {
     Hint: {
       color: 'gray 1 +64',
       align: 'center flex-start',
-      fontSize: 'Z',
+      fontSize: 'Z2',
       gap: 'Y',
       padding: 'W Y2 - Y2'
     }
@@ -76,7 +75,6 @@ export const FieldWithTitle = {
   Title: {
     props: {
       text: 'Label',
-      fontSize: 'Z',
       lineHeight: '1em',
       color: 'title',
       fontWeight: '400',

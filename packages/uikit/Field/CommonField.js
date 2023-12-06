@@ -6,6 +6,7 @@ import { IconText } from '@symbo.ls/icon'
 export const CommonField = {
   extend: Flex,
   tag: 'label',
+
   props: {
     flow: 'column',
     boxSize: 'fit-content fit-content',
@@ -24,6 +25,7 @@ export const CommonField = {
   Field: {
     tag: 'div'
   },
+
   Hint: {
     extend: IconText,
     props: {

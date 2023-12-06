@@ -57,7 +57,7 @@ export const UnitValueWithLabel = {
   dot: null,
   UnitValue_2: {
     props: {
-      theme: 'secondary',
+      theme: 'field',
       padding: 'Z',
       round: 'Y1',
       gap: '0'

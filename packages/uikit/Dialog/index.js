@@ -23,7 +23,6 @@ export const DialogFooter = {
   childExtend: {
     extend: Button,
     props: {
-      fontSize: 'Z',
       textTransform: 'uppercase',
       background: 'transparent',
       '@dark': {
