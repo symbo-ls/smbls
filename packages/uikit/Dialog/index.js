@@ -1,18 +1,43 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
-
 export const Dialog = {
-  extend: Flex,
+  extend: 'Flex',
+  tag: 'dialog',
+
   props: {
+    flow: 'column',
+    border: '0',
     theme: 'dialog',
     round: 'Z2'
   }
 }
 
+export const DialogHeader = {
+  extend: 'Hgroup',
+
+  props: {
+    minWidth: '100%',
+    gap: 'A'
+  },
+
+  Title: {
+    props: { align: 'center space-between' },
+
+    Text: { text: 'Title' },
+
+    SquareButton: {
+      icon: 'x',
+      theme: 'transparent'
+    }
+  },
+
+  Paragraph: {
+    props: { color: 'caption' }
+  }
+}
+
 export const DialogFooter = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     align: 'center flex-end',
     gap: 'X2',
@@ -21,7 +46,7 @@ export const DialogFooter = {
   },
 
   childExtend: {
-    extend: Button,
+    extend: 'Button',
     props: {
       textTransform: 'uppercase',
       background: 'transparent',
