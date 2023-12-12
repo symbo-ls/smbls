@@ -144,7 +144,7 @@ const UI = {
   field: {
     '@light': {
       color: 'white',
-      background: 'gradient-light'
+      background: '--gradient-light'
     },
     '@dark': {
       color: 'white',

@@ -1,22 +1,17 @@
 'use strict'
 
 import { Flex } from '@symbo.ls/atoms'
-import { Icon } from '@symbo.ls/icon'
 
 export const CheckIndicator = {
   extend: Flex,
   props: {
     padding: 'Y1',
-    boxSize: 'fit-content fit-content',
     round: '100%',
-    theme: 'primary'
+    theme: 'success'
   },
   Icon: {
-    extend: Icon,
-    props: {
-      name: 'check',
-      fontSize: 'B1'
-    }
+    name: 'check',
+    fontSize: 'A'
   }
 }
 
@@ -30,7 +25,6 @@ export const CheckIndicatorWithLabel = {
   CheckIndicator: {},
   Caption: {
     text: 'Step',
-    fontWeight: '400',
-    fontSize: 'Z2'
+    fontWeight: '400'
   }
 }

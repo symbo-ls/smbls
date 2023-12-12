@@ -151,8 +151,7 @@ export const ComponentsView = {
 
     FlexButton: {},
     CancelConfirmButtons: {},
-    IconFlexButton: {},
-    IcontextButton: {},
+    SquareButton: {},
 
     Tab: {},
     IconTab: {},

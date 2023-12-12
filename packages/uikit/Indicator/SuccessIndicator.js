@@ -7,6 +7,6 @@ export const SuccessIndicator = {
   props: {
     theme: 'success',
     padding: 'X+V2',
-    fontSize: 'G2'
+    fontSize: 'F'
   }
 }

@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex, Focusable } from '@symbo.ls/atoms'
-
 export const Checkbox = {
-  extend: Focusable,
+  extend: 'Focusable',
 
   tag: 'label',
 
@@ -33,7 +31,7 @@ export const Checkbox = {
       align: 'center center',
       fontSize: 'B1',
       padding: 'V',
-      theme: 'tertiary .outline',
+      theme: 'field',
       round: 'X2',
       transition: 'background A defaultBezier'
     },
@@ -49,7 +47,7 @@ export const Checkbox = {
 }
 
 export const CheckboxHgroup = {
-  extend: Flex,
+  extend: 'Flex',
   tag: 'label',
 
   props: {

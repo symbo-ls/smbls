@@ -1,11 +1,11 @@
 'use strict'
 
 import { isString, replaceLiteralsWithObjectFields } from '@domql/utils'
-import { Focusable } from '@symbo.ls/atoms'
 
 export const Input = {
+  extend: ['Focusable'],
+
   tag: 'input',
-  extend: [Focusable],
 
   deps: { isString, replaceLiteralsWithObjectFields },
 

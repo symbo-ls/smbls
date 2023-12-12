@@ -3,7 +3,7 @@
 export const StatusIndicator = {
   props: {
     widthRange: 'Z+V',
-    theme: 'field',
+    theme: 'primary',
     round: '100%',
     aspectRatio: '1/1',
     border: 'solid, gray',

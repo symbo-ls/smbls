@@ -10,8 +10,7 @@ export const UploadImage = {
     round: 'Z2'
   },
   Icon: {
-    name: 'file',
-    fontSize: 'C2'
+    name: 'upload'
   }
 }
 

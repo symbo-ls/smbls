@@ -1,10 +1,9 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { Input } from './Input'
 
 export const NumberInput = {
-  extend: [Input, Flex],
+  extend: ['Flex', Input],
 
   props: {
     type: 'number',

@@ -11,12 +11,8 @@ export const Message = {
 
   ModalHeader: {
     Title: {
-      Text: {
-        text: 'Message'
-      },
-      SquareButton_x: {
-        padding: 'V2'
-      }
+      Text: { text: 'Message' },
+      SquareButton: { padding: 'V2' }
     },
     Paragraph: {
       props: {

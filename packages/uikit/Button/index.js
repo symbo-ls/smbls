@@ -37,6 +37,7 @@ export const Button = {
     fontFamily: 'inherit',
     round: 'C2'
   },
+
   attr: {
     type: ({ props }) => props.type
   }
@@ -49,6 +50,8 @@ export const SquareButton = {
     width: 'A',
     padding: 'Z',
     aspectRatio: '1 / 1',
+    icon: 'smile',
+    boxSize: 'fit-content fit-content',
     justifyContent: 'center',
     round: 'Z',
     boxSizing: 'content-box'
@@ -67,8 +70,8 @@ export const KangorooButton = {
 
 export const FlexButton = {
   extend: Button,
+
   props: {
-    theme: 'primary',
     boxSize: 'fit-content',
     padding: 'Z2 A2',
     round: 'Z1',
@@ -83,21 +86,10 @@ export const FlexButton = {
   Text: { text: 'Button' }
 }
 
-export const IconFlexButton = {
-  extend: FlexButton,
-  props: {
-    icon: 'smile',
-    boxSize: 'fit-content fit-content',
-    padding: 'Z2',
-    theme: 'tertiary'
-  },
-  Text: null
-}
-
 export const ButtonSet = {
   tag: 'nav',
   extend: Flex,
-  childExtend: IconFlexButton
+  childExtend: SquareButton
 }
 
 export const CancelConfirmButtons = {
@@ -175,12 +167,12 @@ export const PlusMinusButtons = {
     gap: 'A'
   },
   Minus: {
-    extend: IconFlexButton,
+    extend: SquareButton,
     props: { icon: 'minus' }
   },
   Value: { props: { text: '1' } },
   Plus: {
-    extend: IconFlexButton,
+    extend: SquareButton,
     props: { icon: 'plus' }
   }
 }

@@ -1,19 +1,20 @@
 'use strict'
 
-import { IconFlexButton, IcontextButton } from '@symbo.ls/button'
+import { SquareButton, FlexButton } from '@symbo.ls/button'
 
 export const Tab = {
-  extend: IcontextButton,
+  extend: FlexButton,
   props: {
     boxSize: 'fit-content fit-content',
     align: 'center flex-start',
     position: 'relative',
-    padding: 'Z Z1'
+    padding: 'Z Z1',
+    icon: 'smile'
   },
 
   Icon: {},
 
-  Text: 'Caption',
+  Text: { text: 'Caption' },
 
   CountIndicator: {
     fontSize: 'Z1',
@@ -23,7 +24,7 @@ export const Tab = {
 }
 
 export const IconTab = {
-  extend: IconFlexButton,
+  extend: SquareButton,
 
   Span: null,
   CountIndicator: {

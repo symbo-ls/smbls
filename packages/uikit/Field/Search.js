@@ -14,7 +14,7 @@ export const Search = {
   },
 
   Form: {
-    IconButton: {
+    SquareButton: {
       name: 'search',
       color: 'title',
       margin: 'V - - -'

@@ -40,7 +40,7 @@ export const UserWithButton = {
     }
   },
 
-  IconFlexButton: {
+  SquareButton: {
     background: 'transparent',
     theme: null,
     color: 'currentColor',
