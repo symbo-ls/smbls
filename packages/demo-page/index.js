@@ -2,7 +2,7 @@
 
 import { Flex } from '@symbo.ls/atoms'
 
-import { Colors, Typography, Shadows, Icons, Spacing, Shapes } from './Articles'
+import { Colors, Typography, Shadows, Icons, Spacing, Shapes } from './articles'
 
 export const DemoPage = {
   extend: Flex,
