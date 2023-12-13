@@ -31,6 +31,7 @@ export const applySequenceGlobalVars = (vars, obj, options) => {
   vars[`${prefix}-sub-ratio-1`] = `calc(var(${prefix}-ratio) * ${first / ratio})`
   vars[`${prefix}-sub-ratio-2`] = `calc(var(${prefix}-ratio) * ${middle / ratio})`
   vars[`${prefix}-sub-ratio-3`] = `calc(var(${prefix}-ratio) * ${second / ratio})`
+
   // vars[`${prefix}-sub-ratio-1`] = first
   // vars[`${prefix}-sub-ratio-2`] = middle
   // vars[`${prefix}-sub-ratio-3`] = second

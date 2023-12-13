@@ -80,6 +80,7 @@ const SET_OPTIONS = {}
 
 export const set = (recivedConfig, options = SET_OPTIONS) => {
   let CONFIG = getActiveConfig()
+
   const {
     version,
     verbose,
