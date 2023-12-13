@@ -4,21 +4,21 @@ import { Flex } from '@symbo.ls/atoms'
 
 export const Pills = {
   extend: Flex,
+
   props: {
-    gap: 'Y2',
-    childProps: {
-      boxSize: 'Y2',
-      round: 'A',
-      theme: 'tertiary',
-      '!active': { theme: 'tertiary' },
-      '.active': { theme: 'primary' }
-    }
+    gap: 'Y2'
   },
 
   childExtend: {
-    props: ({ key, state, parent }) => ({
-      active: parseInt(key) === parseInt(state.active || parent.props.active)
-    }),
+    extend: {
+      props: ({ key, state, parent }) => ({
+        boxSize: 'Y2',
+        round: 'A',
+        background: 'currentColor',
+        active: parseInt(key) === parseInt(state.active || parent.props.active),
+        '!active': { opacity: 0.35 }
+      })
+    },
     on: {
       click: (e, el) => {
         el.state.update({ active: parseInt(el.key) })

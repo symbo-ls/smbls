@@ -24,6 +24,7 @@ export const Text = {
     // lineHeight: ({ props }) => !isUndefined(props.lineHeight) && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
     textDecoration: ({ props }) => !isUndefined(props.textDecoration) && ({ textDecoration: props.textDecoration }),
     textTransform: ({ props }) => !isUndefined(props.textTransform) && ({ textTransform: props.textTransform }),
+    wordBreak: ({ props }) => !isUndefined(props.wordBreak) && ({ wordBreak: props.wordBreak }),
     whiteSpace: ({ props }) => !isUndefined(props.whiteSpace) && ({ whiteSpace: props.whiteSpace }),
     wordWrap: ({ props }) => !isUndefined(props.wordWrap) && ({ wordWrap: props.wordWrap }),
     letterSpacing: ({ props }) => !isUndefined(props.letterSpacing) && ({ letterSpacing: props.letterSpacing }),
