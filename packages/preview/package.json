@@ -1,0 +1,12 @@
+{
+  "name": "@symbo.ls/preview",
+  "version": "2.11.265",
+  "main": "index.js",
+  "license": "MIT",
+  "gitHead": "e256f5a24de103ca563abb7cf95fdc8723a2b1ab",
+  "dependencies": {
+    "@symbo.ls/atoms": "latest",
+    "@symbo.ls/button": "latest"
+  },
+  "source": "src/index.js"
+}
