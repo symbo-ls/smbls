@@ -217,6 +217,7 @@ export const Hr = {
   props: { margin: 'C1 0' }
 }
 export const Br = { tag: 'br' }
+export const Div = { tag: 'div' }
 export const Span = { tag: 'span' }
 export const Ul = {
   tag: 'ul',

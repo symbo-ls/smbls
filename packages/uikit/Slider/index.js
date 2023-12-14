@@ -7,30 +7,30 @@ import { isFunction } from '@domql/utils'
 
 import { SquareButton } from '@symbo.ls/button'
 
-set({
-  theme: {
-    sliderThumb: {
-      background: 'white 0.2',
+// set({
+//   theme: {
+//     sliderThumb: {
+//       background: 'white 0.2',
 
-      '&::-webkit-slider-thumb': {
-        background: '#232526',
-        borderColor: opacify('#454646', 0.75)
-      },
+//       '&::-webkit-slider-thumb': {
+//         background: '#232526',
+//         borderColor: opacify('#454646', 0.75)
+//       },
 
-      '&:hover': {
-        '&::-webkit-slider-thumb': {
-          borderColor: opacify('#fff', 0.35)
-        }
-      },
+//       '&:hover': {
+//         '&::-webkit-slider-thumb': {
+//           borderColor: opacify('#fff', 0.35)
+//         }
+//       },
 
-      '&:focus, &:active': {
-        '&::-webkit-slider-thumb': {
-          borderColor: '#3C6AC0'
-        }
-      }
-    }
-  }
-})
+//       '&:focus, &:active': {
+//         '&::-webkit-slider-thumb': {
+//           borderColor: '#3C6AC0'
+//         }
+//       }
+//     }
+//   }
+// })
 
 export const RangeSlider = {
   style,

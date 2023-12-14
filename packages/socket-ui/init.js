@@ -29,7 +29,7 @@ const COLOR = {
   blue: '#3686F7'
 }
 
-init({
-  COLOR,
-  ANIMATION
-})
+// init({
+//   COLOR,
+//   ANIMATION
+// })
