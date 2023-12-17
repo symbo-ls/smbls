@@ -10,73 +10,7 @@ export const ComponentsPage = {
     value: ''
   },
 
-  props: {
-    fontFamily: 'avenir',
-    ':before': {
-      content: '""',
-      boxSize: 'E 100%',
-      position: 'fixed',
-      top: '0',
-      left: '0',
-      zIndex: '10',
-      background: ' linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-      pointerEvents: 'none'
-    },
-    ':after': {
-      content: '""',
-      boxSize: 'E 100%',
-      position: 'fixed',
-      bottom: '0',
-      left: '0',
-      zIndex: '10',
-      background: ' linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
-      pointerEvents: 'none'
-    },
-
-    footer: {
-      position: 'fixed',
-      width: 'calc(100% - 70px)',
-      zIndex: '100',
-      bottom: '0',
-      right: '0',
-      align: 'center flex-end',
-      padding: '- B B -',
-      '@media only screen and (max-width: 480px)': {
-        justifyContent: 'center',
-        padding: '- 20px 30px 20px'
-      },
-      search: {
-        fontFamily: 'avenir',
-        fontWeight: '400',
-        round: 'D',
-        flow: 'row',
-        border: 'solid, #252527',
-        borderWidth: '1px',
-        width: 'G+D',
-        padding: 'Z A Z B',
-        position: 'relative',
-        Icon: {
-          boxSize: 'A+V A+V',
-          color: '#3F3F43'
-        },
-        input: {
-          fontFamily: 'avenir',
-          placeholder: 'find component . . .',
-          fontSize: 'A',
-          ':focus ~ svg': { opacity: '0' }
-        },
-        x: {
-          color: 'white',
-          position: 'absolute',
-          right: 'A'
-        }
-      }
-    }
-  },
-
-  cnt: {
-    extend: 'Flex',
-
+  Flex: {
     props: {
       flow: 'column',
       padding: 'F E E D',
@@ -243,8 +177,46 @@ export const ComponentsPage = {
     TimePicker: {}
   },
 
-  footer: {
-    extend: 'Flex',
+  Flex_footer: {
+    props: {
+      position: 'fixed',
+      width: 'calc(100% - 70px)',
+      zIndex: '100',
+      bottom: '0',
+      right: '0',
+      align: 'center flex-end',
+      padding: '- B B -',
+      '@mobile': {
+        justifyContent: 'center',
+        padding: '- 20px 30px 20px'
+      },
+      search: {
+        fontFamily: 'avenir',
+        fontWeight: '400',
+        round: 'D',
+        flow: 'row',
+        border: 'solid, #252527',
+        borderWidth: '1px',
+        width: 'G+D',
+        padding: 'Z A Z B',
+        position: 'relative',
+        Icon: {
+          boxSize: 'A+V A+V',
+          color: '#3F3F43'
+        },
+        input: {
+          fontFamily: 'avenir',
+          placeholder: 'find component . . .',
+          fontSize: 'A',
+          ':focus ~ svg': { opacity: '0' }
+        },
+        x: {
+          color: 'white',
+          position: 'absolute',
+          right: 'A'
+        }
+      }
+    },
     Search: {
       extend: SearchWithButton,
       props: {

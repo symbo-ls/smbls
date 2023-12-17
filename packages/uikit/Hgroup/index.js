@@ -6,40 +6,39 @@ export const Hgroup = {
   extend: Flex,
   tag: 'hgroup',
 
-  props: { flow: 'column', gap: 'Y' },
+  props: {
+    flow: 'column',
+    gap: 'Y',
 
-  Title: {
-    extend: Flex,
-    props: {
+    Title: {
       fontWeight: '700',
       alignItems: 'center'
-    }
-  },
+    },
 
-  Paragraph: {
-    extend: Flex,
-    props: {
+    Paragraph: {
       margin: '0',
       color: 'caption',
       '> p': { margin: '0' }
     }
+  },
+
+  Title: {
+    extend: Flex,
+    if: ({ parent }) => parent.props.title,
+    props: ({ scope, parent }) => ({
+      text: parent.props.title,
+      lineHeight: '1em'
+    })
+  },
+
+  Paragraph: {
+    extend: Flex,
+    if: ({ parent }) => parent.props.paragraph,
+    props: ({ scope, parent }) => ({
+      text: parent.props.paragraph,
+      margin: '0'
+    })
   }
-
-  // Title: {
-  //   extend: Flex,
-  //   props: ({ scope, parent }) => ({
-  //     text: parent.props.title,
-  //     lineHeight: '1em'
-  //   })
-  // },
-
-  // Paragraph: {
-  //   extend: Flex,
-  //   props: ({ scope, parent }) => ({
-  //     text: parent.props.paragraph,
-  //     margin: '0'
-  //   })
-  // }
 }
 
 export const HgroupRows = {

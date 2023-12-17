@@ -1,6 +1,7 @@
 'use strict'
 
 import { router as defaultRouter } from '@domql/router'
+import { isDefined } from '@domql/utils'
 import { Focusable } from '@symbo.ls/atoms'
 
 export const Link = {
@@ -29,7 +30,7 @@ export const RouterLink = {
   on: {
     click: (event, el) => {
       const { props, context: ctx } = el
-      const { href } = props
+      const { href, scrollToTop } = props
       if (!href) return
       const { utils, snippets, routerOptions } = ctx
       const root = el.__ref.__root
@@ -37,11 +38,13 @@ export const RouterLink = {
         href.includes('https://') ||
         href.includes('mailto:') ||
         href.includes('tel:')
-      const options = props.routerOptions || routerOptions || {
-        scrollToOptions: { behaviour: 'instant' }
-      }
       if (href && !linkIsExternal) {
-        (snippets.router || utils.router || defaultRouter)(href, root, {}, options)
+        (snippets.router || utils.router || defaultRouter)(href, root, {}, {
+          scrollToOptions: { behaviour: 'instant' },
+          scrollToTop: isDefined(scrollToTop) ? scrollToTop : true,
+          ...routerOptions,
+          ...props.routerOptions
+        })
         event.preventDefault()
       }
     }
