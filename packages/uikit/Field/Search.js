@@ -1,30 +1,41 @@
 'use strict'
 
-import { Field } from './Field'
-
 export const Search = {
-  extend: Field,
   tag: 'search',
 
   props: {
     maxWidth: 'G3',
     gap: 'Z',
-    theme: 'dialog',
-    padding: 'Z+V Z+V2'
+    onSubmit: (ev, el, s) => {}
   },
 
   Form: {
-    SquareButton: {
-      name: 'search',
-      color: 'title',
-      margin: 'V - - -'
+    extend: 'Field',
+    props: {
+      flow: 'row-reverse',
+
+      Input: {
+        padding: 'Z2 B Z2 C'
+      },
+
+      Icon: {
+        margin: '- -C - Z1',
+        name: 'search'
+      }
     },
 
     Input: {
       props: {
-        placeholder: 'type a command or search',
+        type: 'search',
+        placeholder: 'Search',
         '::placeholder': { color: 'paragraph' }
       }
+    },
+
+    Icon: {},
+
+    on: {
+      submit: (ev, el, s) => el.parent.props.onSubmit(ev, el, s)
     }
   }
 }
