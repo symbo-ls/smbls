@@ -40,6 +40,7 @@ export const createDomqlElement = (App, options) => {
       pages,
       designSystem,
       snippets,
+      functions: options.functions,
       utils: snippets,
       define,
       registry,

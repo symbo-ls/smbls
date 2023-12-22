@@ -13,12 +13,13 @@ export const Textarea = {
     round: 'Z1',
     placeholder: 'Leave us a message...',
     padding: 'A',
-    theme: 'transparent',
+    theme: 'field',
     border: 'none',
     maxWidth: 'G1_default',
     minHeight: 'E_default',
     width: '100%',
     height: 'E1_default',
+    fontFamily: 'inherit',
     style: { resize: 'none' }
   },
 
@@ -32,10 +33,11 @@ export const Textarea = {
 
   '.outlined': {
     props: {
-      background: 'transparent',
+      theme: 'field',
+      borderWidth: '1px',
+      borderStyle: 'solid',
       lineHeight: 1.4,
       placeholder: 'Leave us a message...',
-      outline: 'none !important',
       resize: 'none'
     }
   }

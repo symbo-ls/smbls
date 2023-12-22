@@ -15,9 +15,8 @@ export const Input = {
     theme: 'field',
     fontSize: 'A',
     round: 'C',
-    lineHeight: 1,
-    fontFamily: 'smbls',
-    padding: 'Z A'
+    lineHeight: '1',
+    padding: 'Z2 B'
   },
 
   attr: {

@@ -33,7 +33,8 @@ export const Button = {
     textDecoration: 'none',
     lineHeight: '1',
     whiteSpace: 'nowrap',
-    padding: 'Z A1',
+    padding: 'Z B2',
+    fontWeight: '500',
     fontFamily: 'inherit',
     round: 'C2'
   },
@@ -75,14 +76,13 @@ export const FlexButton = {
     boxSize: 'fit-content',
     padding: 'Z2 A2',
     round: 'Z1',
-    gap: 'X1',
-    position: 'relative'
+    gap: 'Z',
+    position: 'relative',
+
+    Icon: { fontSize: 'B1' }
   },
 
-  Icon: {
-    props: { fontSize: 'B1' }
-  },
-
+  Icon: {},
   Text: { text: 'Button' }
 }
 

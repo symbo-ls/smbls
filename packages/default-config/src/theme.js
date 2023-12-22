@@ -143,12 +143,16 @@ const STATES = {
 const UI = {
   field: {
     '@light': {
-      color: 'white',
-      background: '--gradient-light'
+      color: 'black',
+      background: 'gray .975 +144',
+      borderColor: 'gray .975 +144',
+      '::placeholder': { color: 'gray 1 -68' }
     },
     '@dark': {
       color: 'white',
-      background: 'gradient-dark-active'
+      background: 'gray .975 -52',
+      borderColor: 'gray .975 -52',
+      '::placeholder': { color: 'gray 1 +68' }
     }
   },
 
@@ -174,13 +178,13 @@ const UI = {
   },
 
   card: {
-    '@dark': {
-      color: 'white',
-      background: 'gray .92 +8'
+    '@light': {
+      background: 'gray .975 +150'
     },
 
-    '@light': {
-      background: 'gray .1'
+    '@dark': {
+      color: 'white',
+      background: 'gray .975 -56'
     },
 
     '.child': {

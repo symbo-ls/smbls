@@ -78,17 +78,42 @@ const props = {
   }
 }
 
-export const Range = {
-  props,
-
-  tag: 'input',
-  attr: { type: 'range' }
-}
-
 const returnPropertyValue = (el, property, def) => {
   const val = el.props && el.props[property]
-  const r = (isFunction(val) ? val(el, el.state) : val !== undefined ? val : def !== undefined ? def : 50)
+  const r = (isFunction(val) ? val(el, el.state) : val !== undefined ? val : def !== undefined ? def : 0)
   return r + ''
+}
+
+export const Range = {
+  props,
+  tag: 'input',
+
+  attr: {
+    type: 'range',
+    value: (el, s) => parseFloat(el.state.value || el.props.value || el.props.defaultValue),
+    min: (el, s) => returnPropertyValue(el, 'min', 0),
+    max: (el, s) => returnPropertyValue(el, 'max', 100),
+    step: (el, s) => returnPropertyValue(el, 'step', 1)
+  },
+
+  on: {
+    input: (ev, el, s) => {
+      const props = el.props
+      if (isFunction(props.onInput)) {
+        props.onInput(ev, el, s)
+      } else {
+        s.update({ value: parseFloat(el.node.value) })
+      }
+    },
+    change: (ev, el, s) => {
+      const props = el.props
+      if (isFunction(props.onChange)) {
+        props.onChange(ev, el, s)
+      } else {
+        s.update({ value: parseFloat(el.node.value) })
+      }
+    }
+  }
 }
 
 export const RangeWithButtons = {
@@ -116,13 +141,13 @@ export const RangeWithButtons = {
     tag: 'span',
     text: ({ state, parent }) => {
       const unit = returnPropertyValue(parent, 'unit', '')
-      return '' + (state.value || 50) + unit
+      return '' + (state.value || state.defaultValue || 0) + unit
     }
   },
   input: {
     extend: Range,
     attr: {
-      value: (el, s) => parseFloat(el.state.value),
+      value: (el, s) => parseFloat(s.value || s.defaultValue),
       min: (el, s) => returnPropertyValue(el.parent, 'min', 0),
       max: (el, s) => returnPropertyValue(el.parent, 'max', 100),
       step: (el, s) => returnPropertyValue(el.parent, 'step', 1)

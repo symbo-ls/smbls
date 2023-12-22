@@ -1,11 +1,11 @@
 'use strict'
 
-import { Flex, Focusable } from '@symbo.ls/atoms'
+import { Flex } from '@symbo.ls/atoms'
 import { IconText } from '@symbo.ls/icon'
 
 export const Field = {
+  extend: 'Flex',
   tag: 'label',
-  extend: [Focusable, IconText],
   props: {
     minWidth: 'F2+Z2',
     maxWidth: 'F2+Z2',
@@ -13,15 +13,11 @@ export const Field = {
     align: 'center flex-start',
     gap: 'Y',
     boxSizing: 'border-box',
-    padding: '- A - Z2',
-    round: 'Z1',
-    border: 'solid, gray .45 +80',
-    borderWidth: '.8px',
     position: 'relative',
-    ':focus-within': { outline: '1px solid #0474F2' },
 
-    Icon: {
-      fontSize: 'Z2'
+    Input: {
+      padding: 'Z2 B2 Z2 B',
+      flex: '1'
     },
 
     Button: {
@@ -33,19 +29,16 @@ export const Field = {
   },
 
   Input: {
-    props: {
-      fontWeight: '400',
-      padding: '0',
-      background: 'rgba(0, 0, 0, 0)',
-      round: '0',
-      color: 'title',
-      fontFamily: 'avenir',
-      placeholder: 'Placeholder',
-      flex: '1',
-      minHeight: '100%',
-      outline: 'none !important',
-      '::placeholder': { color: 'gray 1 +64' }
-    }
+    placeholder: 'Placeholder'
+  },
+
+  Icon: {
+    props: ({ parent }) => ({
+      name: parent.props.icon,
+      minWidth: 'A',
+      margin: '- Z1 - -C',
+      position: 'relative'
+    })
   }
 }
 

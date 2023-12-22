@@ -4,11 +4,14 @@ import { SquareButton, FlexButton } from '@symbo.ls/button'
 
 export const Tab = {
   extend: FlexButton,
+
   props: {
     boxSize: 'fit-content fit-content',
     align: 'center flex-start',
     position: 'relative',
     padding: 'Z Z1',
+    theme: 'field',
+    borderRadius: 'A A X2 X2',
     icon: 'smile'
   },
 

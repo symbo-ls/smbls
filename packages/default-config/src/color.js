@@ -3,7 +3,7 @@
 export const COLOR = {
   transparent: 'rgba(0, 0, 0, 0)',
   black: 'black',
-  gray: '#141416',
+  gray: '#4e4e50',
   blue: '#0e80fd',
   indigo: '#50E1FF',
   green: '#59AC56',
@@ -23,7 +23,7 @@ export const COLOR = {
 
   title: ['--black 1', '--white 1'],
   caption: ['--gray 1 +16', '--gray4 1'],
-  paragraph: ['--gray2 1', '--gray 1 +65']
+  paragraph: ['--gray 1', '--gray 1 +65']
 }
 
 export const GRADIENT = {
