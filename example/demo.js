@@ -7,7 +7,7 @@ import { StyleguidePage } from '@symbo.ls/preview' // eslint-disable-line
 // import designSystem from '@symbo.ls/config' // eslint-disable-line
 
 create({
-  extend: ComponentsView,
+  extend: StyleguidePage,
 
   state: {
     globalTheme: 'dark'
