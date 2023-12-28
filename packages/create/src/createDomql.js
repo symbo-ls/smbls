@@ -41,6 +41,7 @@ export const createDomqlElement = (App, options) => {
       designSystem,
       snippets,
       functions: options.functions,
+      files: options.files,
       utils: snippets,
       define,
       registry,
