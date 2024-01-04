@@ -102,7 +102,7 @@ const font = {
 
 Icons receive pure SVG objects as follows:
 
-```javascipt
+```javascript
 const icons = {
   arrow: '<svg viewbox="...'
 }
