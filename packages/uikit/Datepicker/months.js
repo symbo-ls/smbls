@@ -108,7 +108,7 @@ export const DatePickerMonthsSlider = {
       }
     },
 
-    $setPropsCollection: ({ state, parent }) => {
+    $propsCollection: ({ state, parent }) => {
       return [
         { text: 'January' },
         { text: 'February' },

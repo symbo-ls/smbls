@@ -71,7 +71,7 @@ export const DatePickerYears = {
       }
     },
 
-    $setPropsCollection: (element) => {
+    $propsCollection: (element) => {
       const { yearRange } = element.state
       if (!yearRange) return
 

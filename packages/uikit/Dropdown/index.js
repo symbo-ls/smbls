@@ -50,7 +50,7 @@ export const DropdownList = {
     })
   },
 
-  $setPropsCollection: ({ props }) => props.options
+  $propsCollection: ({ props }) => props.options
 }
 
 export const DropdownParent = {

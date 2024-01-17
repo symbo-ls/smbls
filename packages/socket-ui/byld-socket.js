@@ -166,7 +166,7 @@ const Notifications = {
     }),
     on: { click: (e, el) => el.setProps({ animation: 'fadeOutDown' }) }
   },
-  $setStateCollection: ({ state }) => state.notifications
+  $stateCollection: ({ state }) => state.notifications
 }
 
 export const Sync = {

@@ -44,7 +44,7 @@ export const AvatarChooser = {
     },
 
     childExtend: { tag: 'option' },
-    $setPropsCollection: ({ parent, state }) => {
+    $propsCollection: ({ parent, state }) => {
       if (!parent.props.options) return []
       return parent.props.options.map(v => {
         if (v.text === state.key) return { ...v, selected: true }

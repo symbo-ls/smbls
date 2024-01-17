@@ -32,7 +32,7 @@ export const DatePickerGrid = {
   },
 
   childExtend: DatePickerDay,
-  $setStateCollection: ({ state }) => state.days
+  $stateCollection: ({ state }) => state.days
 }
 
 export const DatePickerGridContainer = {
@@ -103,6 +103,6 @@ export const DatePickerGridContainer = {
         }
       }
     },
-    $setStateCollection: ({ state }) => state.parse()
+    $stateCollection: ({ state }) => state.parse()
   }
 }

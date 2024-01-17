@@ -24,6 +24,6 @@ export const defaultDefine = {
 
   $collection: Collection.define.$collection,
   $setCollection: Collection.define.$setCollection,
-  $setStateCollection: Collection.define.$setStateCollection,
-  $setPropsCollection: Collection.define.$setPropsCollection
+  $stateCollection: Collection.define.$stateCollection,
+  $propsCollection: Collection.define.$propsCollection
 }

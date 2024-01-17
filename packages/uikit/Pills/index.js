@@ -26,5 +26,5 @@ export const Pills = {
     }
   },
 
-  $setPropsCollection: ({ props, state }) => new Array(props.qty).fill({})
+  $propsCollection: ({ props, state }) => new Array(props.qty).fill({})
 }

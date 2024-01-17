@@ -71,7 +71,7 @@ export const Collection = {
       return data
     },
 
-    $setStateCollection: (param, el, state) => {
+    $stateCollection: (param, el, state) => {
       if (!param) return
 
       if (isString(param)) {
@@ -114,7 +114,7 @@ export const Collection = {
       return obj
     },
 
-    $setPropsCollection: (param, el, state) => {
+    $propsCollection: (param, el, state) => {
       if (!param) return
 
       if (isString(param)) {
@@ -155,7 +155,7 @@ export const Collection = {
       el.content = obj
 
       // const set = () => {
-      //   el.set(obj, { preventDefineUpdate: '$setPropsCollection' })
+      //   el.set(obj, { preventDefineUpdate: '$propsCollection' })
       // }
 
       // if (el.props && el.props.lazyLoad) {

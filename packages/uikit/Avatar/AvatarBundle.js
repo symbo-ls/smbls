@@ -20,5 +20,5 @@ export const AvatarBundle = {
   },
 
   childExtend: Avatar,
-  $setPropsCollection: ({ props }) => props.options
+  $propsCollection: ({ props }) => props.options
 }
