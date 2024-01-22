@@ -60,7 +60,6 @@ export const DevFocus = {
       init: ({ context }) => {
         const { components } = context
 
-        console.log(components)
         if (isObject(components)) {
           const { Content, ...rest } = components
           for (const key in rest) {

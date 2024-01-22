@@ -103,16 +103,16 @@ export const Block = {
       if (typeof props.marginInline !== 'string') return
       const [marginInlineStart, marginInlineEnd] = props.marginInline.split(' ')
       return {
-        ...deps.getSpacingByKey('marginInlineStart', marginInlineStart),
-        ...deps.getSpacingByKey('marginInlineEnd', marginInlineEnd || marginInlineStart)
+        ...deps.transformSize('marginInlineStart', marginInlineStart),
+        ...deps.transformSize('marginInlineEnd', marginInlineEnd || marginInlineStart)
       }
     },
     marginBlock: ({ props, deps }) => {
       if (typeof props.marginBlock !== 'string') return
       const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
       return {
-        ...deps.getSpacingByKey('marginBlockStart', marginBlockStart),
-        ...deps.getSpacingByKey('marginBlockEnd', marginBlockEnd || marginBlockStart)
+        ...deps.transformSize('marginBlockStart', marginBlockStart),
+        ...deps.transformSize('marginBlockEnd', marginBlockEnd || marginBlockStart)
       }
     },
     marginInlineStart: ({ props, deps }) => deps.transformSizeRatio('marginInlineStart', props),
