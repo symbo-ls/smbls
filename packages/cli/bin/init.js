@@ -5,7 +5,7 @@ import { initRepo } from './init-helpers/init-repo.js'
 
 program
   .command('init')
-  .description('Initialize a project')
+  .description('Initialize within the project')
   .argument('[dest]', 'Project directory. By default, it is "."')
   .option('--domql', 'Use Domql in the project', true)
   .option('--react', 'Use React in the project (default)')

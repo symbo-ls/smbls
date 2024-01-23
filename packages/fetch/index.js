@@ -51,9 +51,6 @@ export const fetchProject = async (key, options) => {
       : deepDestringify(data.releases[0])
 
     if (editor.serviceRoute) {
-      console.log(editor.serviceRoute)
-      console.log(evalData)
-      console.log(options)
       if (utils.isArray(editor.serviceRoute)) {
         editor.serviceRoute.forEach(route => {
           overwriteDeep(options[route], evalData[route.toLowerCase()])
@@ -62,7 +59,7 @@ export const fetchProject = async (key, options) => {
         overwriteDeep(options[editor.serviceRoute], evalData)
       }
     } else {
-      ['state', 'designSystem', 'components', 'snippets', 'pages'].forEach(key => {
+      ['state', 'designSystem', 'components', 'snippets', 'pages', 'utils', 'functions'].forEach(key => {
         overwriteDeep(options[key], evalData[key.toLowerCase()])
       })
     }

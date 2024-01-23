@@ -12,7 +12,7 @@ try {
 
 program
   .command('socket-server')
-  .description('Sync with Symbols')
+  .description('Realtime sync with Symbols')
   .option('-l, --live', 'Bypass the local build')
   .action(async (options) => {
     rc.then(data => {

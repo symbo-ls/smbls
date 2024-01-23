@@ -22,7 +22,7 @@ try {
 
 program
   .command('sync')
-  .description('Sync with Symbols')
+  .description('Realtime sync with Symbols')
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('-k, --key', 'Bypass the symbols.json key, overriding the key manually')

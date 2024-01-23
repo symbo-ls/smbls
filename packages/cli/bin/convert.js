@@ -18,7 +18,7 @@ export function convertFromCli (data, opts) {
 
 program
   .command('convert')
-  .description('Convert and copy all DomQL components under a directory')
+  .description('Convert and copy all DOMQL components under a directory')
   .argument('[src]', 'Source directory/file. By default, it is "src/"')
   .argument('[dest]',
     'Destination directory/file. Will be overwritten. By ' +

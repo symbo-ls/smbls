@@ -110,7 +110,7 @@ export const fetchFromCli = async (opts) => {
 
 program
   .command('fetch')
-  .description('Fetch symbols')
+  .description('Fetch Symbols')
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('--convert', 'Verbose errors and warnings', true)

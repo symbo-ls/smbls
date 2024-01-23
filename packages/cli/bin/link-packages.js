@@ -37,7 +37,7 @@ const capture = (opts) => {
 
 program
   .command('link-packages')
-  .description('Run "yarn link" on specified packages')
+  .description('Links all smbls packages into the project')
   .option('-c, --capture', 'Capture and write all package names.')
   .option('-j, --join', 'Join all links into one command.', true)
   .action((opts) => {
