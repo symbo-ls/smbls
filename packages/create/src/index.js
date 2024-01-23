@@ -14,10 +14,10 @@ import { createDomqlElement } from './createDomql'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
-const mergeWithLocalFile = (options, optionsExternalFile) => {
-  const rcfile = isObject(optionsExternalFile) ? optionsExternalFile : DYNAMIC_JSON || {}
-  return deepMerge(options, rcfile)
-}
+const mergeWithLocalFile = (options, optionsExternalFile) => deepMerge(
+  options,
+  isObject(optionsExternalFile) ? optionsExternalFile : DYNAMIC_JSON || {}
+)
 
 export const create = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
   const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
