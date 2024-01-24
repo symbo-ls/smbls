@@ -30,13 +30,11 @@ export const UploadIcon = {
   },
 
   Input: {
-    props: {
-      type: 'file',
-      position: 'absolute',
-      inset: '0 0 0 0',
-      opacity: '0',
-      visibility: 'hidden'
-    }
+    type: 'file',
+    position: 'absolute',
+    inset: '0 0 0 0',
+    opacity: '0',
+    visibility: 'hidden'
   },
 
   Icon: {
