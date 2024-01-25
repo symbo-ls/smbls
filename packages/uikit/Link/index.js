@@ -30,7 +30,8 @@ export const RouterLink = {
   on: {
     click: (event, el) => {
       const { props, context: ctx } = el
-      const { href, scrollToTop } = props
+      const { href, scrollToTop, stopPropagation } = props
+      if (stopPropagation) event.stopPropagation()
       if (!href) return
       const { utils, snippets, routerOptions } = ctx
       const root = el.__ref.__root
