@@ -1,7 +1,7 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, deepDiff, deepClone } from '@domql/utils'
+import { isString, isNot, isArray, isObject, isObjectLike, deepClone } from '@domql/utils'
 
 export const Collection = {
   define: {
@@ -19,12 +19,12 @@ export const Collection = {
 
       if (ref.__collectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
-        if (!equals) {
-          ref.__collectionCache = deepClone(param)
-          delete ref.__noCollectionDifference
-        } else {
+        if (equals) {
           ref.__noCollectionDifference = true
           return
+        } else {
+          ref.__collectionCache = deepClone(param)
+          delete ref.__noCollectionDifference
         }
       } else {
         ref.__collectionCache = deepClone(param)
@@ -85,12 +85,12 @@ export const Collection = {
 
       if (ref.__stateCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
-        if (!equals) {
-          ref.__stateCollectionCache = deepClone(param)
-          delete ref.__noCollectionDifference
-        } else {
+        if (equals) {
           ref.__noCollectionDifference = true
           return
+        } else {
+          ref.__stateCollectionCache = deepClone(param)
+          delete ref.__noCollectionDifference
         }
       } else {
         ref.__stateCollectionCache = deepClone(param)
@@ -128,12 +128,12 @@ export const Collection = {
 
       if (ref.__propsCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
-        if (!equals) {
-          ref.__propsCollectionCache = deepClone(param)
-          delete ref.__noCollectionDifference
-        } else {
+        if (equals) {
           ref.__noCollectionDifference = true
           return
+        } else {
+          ref.__propsCollectionCache = deepClone(param)
+          delete ref.__noCollectionDifference
         }
       } else {
         ref.__propsCollectionCache = deepClone(param)
