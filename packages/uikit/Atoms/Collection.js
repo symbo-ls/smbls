@@ -17,17 +17,17 @@ export const Collection = {
 
       const { __ref: ref } = el
 
-      if (ref.__stateCollectionCache) {
-        const d = deepDiff(param, ref.__stateCollectionCache) // eslint-disable-line
+      if (ref.__collectionCache) {
+        const d = deepDiff(param, ref.__collectionCache) // eslint-disable-line
         if (Object.keys(d).length) {
-          ref.__stateCollectionCache = deepClone(param)
+          ref.__collectionCache = deepClone(param)
           delete ref.__noCollectionDifference
         } else {
           ref.__noCollectionDifference = true
           return
         }
       } else {
-        ref.__stateCollectionCache = deepClone(param)
+        ref.__collectionCache = deepClone(param)
       }
 
       const obj = {

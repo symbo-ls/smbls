@@ -161,6 +161,7 @@ const beforeClassAssign = (element, s) => {
         props.update({
           themeModifier: globalTheme
         }, {
+          preventUpdateListener: true,
           preventRecursive: true,
           isForced: true,
           preventDefineUpdate: true
