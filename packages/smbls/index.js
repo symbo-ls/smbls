@@ -1,5 +1,6 @@
 'use strict'
 
+export * from '@domql/utils'
 export * from '@symbo.ls/default-config'
 export * from '@symbo.ls/scratch'
 export * from '@symbo.ls/emotion'

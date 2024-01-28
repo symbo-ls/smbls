@@ -1,6 +1,6 @@
 'use strict'
 
-import chalk from 'chalk'
+// import chalk from 'chalk'
 import { program } from './program.js'
 import convert, { convertDomqlModule } from '@symbo.ls/convert'
 
@@ -8,11 +8,8 @@ const TMP_DIR_NAME = '.smbls_convert_tmp'
 
 export function convertFromCli (data, opts) {
   const { framework, verbose, verboseCode } = opts
-  console.log(chalk.dim('\n----------------\n'))
-  console.log('Converting components to', chalk.bold(framework))
   const convertedStrings = convertDomqlModule(data, null, framework)
   if (verboseCode) console.log(convertedStrings)
-  console.log(chalk.bold.green('\nSuccessfully converted'))
   return verbose
 }
 
