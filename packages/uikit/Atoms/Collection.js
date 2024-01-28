@@ -18,8 +18,8 @@ export const Collection = {
       const { __ref: ref } = el
 
       if (ref.__collectionCache) {
-        const d = deepDiff(param, ref.__collectionCache) // eslint-disable-line
-        if (Object.keys(d).length) {
+        const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
+        if (!equals) {
           ref.__collectionCache = deepClone(param)
           delete ref.__noCollectionDifference
         } else {
@@ -84,8 +84,8 @@ export const Collection = {
       const { __ref: ref } = el
 
       if (ref.__stateCollectionCache) {
-        const d = deepDiff(param, ref.__stateCollectionCache) // eslint-disable-line
-        if (Object.keys(d).length) {
+        const equals = JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
+        if (!equals) {
           ref.__stateCollectionCache = deepClone(param)
           delete ref.__noCollectionDifference
         } else {
@@ -127,8 +127,8 @@ export const Collection = {
       const { __ref: ref } = el
 
       if (ref.__propsCollectionCache) {
-        const d = deepDiff(param, ref.__propsCollectionCache) // eslint-disable-line
-        if (Object.keys(d).length) {
+        const equals = JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
+        if (!equals) {
           ref.__propsCollectionCache = deepClone(param)
           delete ref.__noCollectionDifference
         } else {
