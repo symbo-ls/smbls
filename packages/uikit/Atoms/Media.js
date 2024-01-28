@@ -161,7 +161,7 @@ const beforeClassAssign = (element, s) => {
         props.update({
           themeModifier: globalTheme
         }, {
-          preventUpdateListener: true,
+          preventListeners: true,
           preventRecursive: true,
           isForced: true,
           preventDefineUpdate: true
@@ -185,6 +185,7 @@ const beforeClassAssign = (element, s) => {
       spacingRatio: parentProps.spacingRatio,
       inheritSpacingRatio: true
     }, {
+      preventListeners: true,
       preventRecursive: true,
       isForced: true,
       preventDefineUpdate: true
