@@ -22,6 +22,7 @@
     "@symbo.ls/utils": "latest",
     "attrs-in-props": "latest",
     "css-in-props": "latest",
+    "@domql/utils": "latest",
     "domql": "latest"
   }
 }
