@@ -30,6 +30,8 @@ export const Text = {
     letterSpacing: ({ props }) => !isUndefined(props.letterSpacing) && ({ letterSpacing: props.letterSpacing }),
     textOverflow: ({ props }) => !isUndefined(props.textOverflow) && ({ textOverflow: props.textOverflow }),
     textAlign: ({ props }) => !isUndefined(props.textAlign) && ({ textAlign: props.textAlign }),
+    writingMode: ({ props }) => !isUndefined(props.writingMode) && ({ writingMode: props.writingMode }),
+    textOrientation: ({ props }) => !isUndefined(props.textOrientation) && ({ textOrientation: props.textOrientation }),
     fontWeight: ({ props }) => !isUndefined(props.fontWeight) && ({
       fontWeight: props.fontWeight,
       fontVariationSettings: '"wght" ' + props.fontWeight
