@@ -47,6 +47,7 @@ export const fetchFromCli = async (opts) => {
         else console.log(debugMsg)
       }
     })
+
     if (!body) return
 
     const { version, ...config } = body
@@ -84,21 +85,27 @@ export const fetchFromCli = async (opts) => {
       delete body.designsystem
     }
 
-    const bodyString = JSON.stringify(body, null, prettify ?? 2)
+    const monetized = false
+    if (!monetized) {
+      const bodyString = JSON.stringify(body, null, prettify ?? 2)
 
-    try {
-      await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
+      try {
+        await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
 
-      if (verbose) {
-        console.log(chalk.dim('\ndynamic.json has been updated:'))
-        console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
+        if (verbose) {
+          console.log(chalk.dim('\ndynamic.json has been updated:'))
+          console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
+        }
+
+        console.log(chalk.bold.green('\nSuccessfully wrote file'))
+      } catch (e) {
+        console.log(chalk.bold.red('\nError writing file'))
+        if (verbose) console.error(e)
+        else console.log(debugMsg)
       }
-
-      console.log(chalk.bold.green('\nSuccessfully wrote file'))
-    } catch (e) {
-      console.log(chalk.bold.red('\nError writing file'))
-      if (verbose) console.error(e)
-      else console.log(debugMsg)
+    } else {
+      // tokos magic here
+      console.log(body)
     }
 
     console.log(convertOpt)
