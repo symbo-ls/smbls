@@ -1240,6 +1240,17 @@
     "@emotion/weak-memoize" "^0.3.1"
     stylis "4.2.0"
 
+"@emotion/css@11.11.0":
+  version "11.11.0"
+  resolved "https://registry.yarnpkg.com/@emotion/css/-/css-11.11.0.tgz#dad6a27a77d5e5cbb0287674c3ace76d762563ca"
+  integrity sha512-m4g6nKzZyiKyJ3WOfdwrBdcujVcpaScIWHAnyNKPm/A/xJKwfXPfQAbEVi1kgexWTDakmg+r2aDj0KvnMTo4oQ==
+  dependencies:
+    "@emotion/babel-plugin" "^11.11.0"
+    "@emotion/cache" "^11.11.0"
+    "@emotion/serialize" "^1.1.2"
+    "@emotion/sheet" "^1.2.2"
+    "@emotion/utils" "^1.2.1"
+
 "@emotion/css@^11.10.0":
   version "11.11.2"
   resolved "https://registry.yarnpkg.com/@emotion/css/-/css-11.11.2.tgz#e5fa081d0c6e335352e1bc2b05953b61832dca5a"
@@ -4789,6 +4800,17 @@ domhandler@^4.2.0, domhandler@^4.2.2, domhandler@^4.3.1:
   dependencies:
     domelementtype "^2.2.0"
 
+domql@2.4.4:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/domql/-/domql-2.4.4.tgz#386395cfaac839e3fdc644a31fd3a4a2c4480430"
+  integrity sha512-+yBjRnMAvdOa10e9QkXv2HxSA5AOzPvek+8XDePBRTqNUQ8kBhwKoQqcSBg30Nm51H1lxpO5Tme5w6t0rHma7g==
+  dependencies:
+    "@domql/element" latest
+    "@domql/event" latest
+    "@domql/render" latest
+    "@domql/state" latest
+    "@domql/utils" latest
+
 domql@latest:
   version "2.5.48"
   resolved "https://registry.yarnpkg.com/domql/-/domql-2.5.48.tgz#f7407cda3b3f569e2f9893ba7c5e4728cc5f361c"
@@ -6834,6 +6856,19 @@ just-diff@^6.0.0:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/just-diff/-/just-diff-6.0.2.tgz#03b65908543ac0521caf6d8eb85035f7d27ea285"
   integrity sha512-S59eriX5u3/QhMNq3v/gm8Kd0w8OS6Tz2FS1NG4blv+z0MuQcBRJyFWjdovM0Rad4/P4aUPFtnkNjMjyMlMSYA==
+
+kalduna@^1.5.20:
+  version "1.5.20"
+  resolved "https://registry.yarnpkg.com/kalduna/-/kalduna-1.5.20.tgz#cc583bf830ec084afe680f29ee94f08100446d5d"
+  integrity sha512-U57X1489aLVU8jdFXhv7xVGXv6oLh7x7Fnuyb1N0j8/Z6Wv+V9unjqpjBrs7psZCbOn2NslSj5XPss41rAGc8g==
+  dependencies:
+    "@emotion/css" "11.11.0"
+    "@symbo.ls/create" latest
+    "@symbo.ls/default-config" latest
+    "@symbo.ls/uikit" latest
+    "@symbo.ls/utils" latest
+    css-in-props latest
+    domql "2.4.4"
 
 keyv@^4.5.3:
   version "4.5.4"
