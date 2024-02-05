@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-const keys = ["components", "pages", "snippets"];
-const singleFileKeys = ["designSystem", "state"];
+const keys = ["components", "snippets"];
+const singleFileKeys = ["designSystem", "state", "pages"];
 
 export function createDirs(body, distDir) {
   if (!body) {
