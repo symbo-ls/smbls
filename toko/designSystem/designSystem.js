@@ -139,6 +139,10 @@ export default {
     "@mobileXS": {
       "base": 16,
       "ratio": 1.618
+    },
+    "@screenL": {
+      "base": 16,
+      "ratio": 1.618
     }
   },
   "RESET": {
