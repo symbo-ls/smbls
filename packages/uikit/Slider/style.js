@@ -6,7 +6,7 @@ export default {
   height: '2px',
   outline: 'none',
   flex: 1,
-  '&::-webkit-slider-thumb': {
+  '::-webkit-slider-thumb': {
     boxSizing: 'content-box',
     appearance: 'none',
     width: '8px',
