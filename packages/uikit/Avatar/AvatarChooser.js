@@ -54,7 +54,6 @@ export const AvatarChooser = {
 
     on: {
       change: (ev, { state }) => {
-        console.log(state.key)
         state.update({ key: ev.target.value })
       }
     }
