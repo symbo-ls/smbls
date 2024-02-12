@@ -173,14 +173,14 @@
       "all": "All ",
       "data": [
         {
-          "title": "Anchor",
-          "description": "Y Combinator",
-          "url": "https://getanchor.co/"
-        },
-        {
           "title": "Apata",
           "description": "Global Founders Capital",
           "url": "https://linkedin.com/company/apata-ltd/"
+        },
+        {
+          "title": "Anchor",
+          "description": "Y Combinator",
+          "url": "https://getanchor.co/"
         },
         {
           "title": "Ceviant",
@@ -188,14 +188,14 @@
           "url": "https://ceviant.finance/"
         },
         {
-          "title": "Cleargrid",
-          "description": "Raed Ventures",
-          "url": "https://www.linkedin.com/in/alzaben/"
-        },
-        {
           "title": "Thepeer",
           "description": "Raba Partnership",
           "url": "https://thepeer.co/"
+        },
+        {
+          "title": "Cleargrid",
+          "description": "Raed Ventures",
+          "url": "https://www.linkedin.com/in/alzaben/"
         },
         {
           "title": "Waza",
@@ -924,7 +924,8 @@
         }
       },
       "$stateCollection": "({\n        state\n      }) => {\n        return state.__root.main.address\n      }"
-    }
+    },
+    "LogoCopy": {}
   },
   "pages": {
     "/": {
@@ -1229,10 +1230,22 @@
         "body": {}
       },
       "@screenL": {
+        "base": "23",
+        "ratio": "1.359"
+      },
+      "@mobileXS": {
         "base": 16,
         "ratio": 1.125
       },
-      "@mobileXS": {
+      "@screenM": {
+        "base": 16,
+        "ratio": 1.125
+      },
+      "@tabletL": {
+        "base": 16,
+        "ratio": 1.125
+      },
+      "@tabletS": {
         "base": 16,
         "ratio": 1.125
       }

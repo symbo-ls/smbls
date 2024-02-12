@@ -1,5 +1,7 @@
 import fs from "fs";
 import path from "path";
+import utils from "@domql/utils";
+const { deepDestringify, objectToString } = utils;
 
 const keys = ["components", "snippets", "pages"];
 const singleFileKeys = ["designSystem", "state"];
@@ -39,12 +41,15 @@ function createKeyDirectoryAndFiles(key, body, distDir) {
 
 function createOrUpdateFile(dirPath, childKey, value) {
   const filePath = path.join(dirPath, `${childKey}.js`);
-  const content = `export default ${JSON.stringify(value, null, 2)};`;
+
+  const content = deepDestringify(value);
+  const stringifiedContent = `export default ${objectToString(content)}`;
+
   const fileExists = fs.existsSync(filePath);
 
   console.log(`${fileExists ? "Updating" : "Creating new"} file: ${filePath}`);
   (fileExists && fs.readFileSync(filePath, "utf8") === content) ||
-    fs.writeFileSync(filePath, content);
+    fs.writeFileSync(filePath, stringifiedContent);
 }
 
 function createSingleFileFolderAndFile(key, data, distDir) {
@@ -55,10 +60,11 @@ function createSingleFileFolderAndFile(key, data, distDir) {
   );
 
   const filePath = path.join(dirPath, `${key}.js`);
-  const content = `export default ${JSON.stringify(data, null, 2)};`;
+  const content = deepDestringify(data);
+  const stringifiedContent = `export default ${objectToString(content)}`;
   const fileExists = fs.existsSync(filePath);
 
   console.log(`${fileExists ? "Updating" : "Creating new"} file: ${filePath}`);
   (fileExists && fs.readFileSync(filePath, "utf8") === content) ||
-    fs.writeFileSync(filePath, content);
+    fs.writeFileSync(filePath, stringifiedContent);
 }
