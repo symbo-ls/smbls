@@ -11,6 +11,7 @@ export const Label = {
     theme: 'tertiary',
     boxSize: 'fit-content fit-content',
     padding: 'W2 Y2',
+    lineHeight: '1',
     round: 'Y1',
     fontWeight: '400'
   }

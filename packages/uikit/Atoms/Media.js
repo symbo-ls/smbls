@@ -176,7 +176,6 @@ const beforeClassAssign = (element, s) => {
     for (const key in props['^']) {
       execClass(key, props, CLASS_NAMES, element)
     }
-    console.log(CLASS_NAMES)
   }
 
   const parentProps = element.parent && element.parent.props

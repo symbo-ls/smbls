@@ -53,6 +53,7 @@ export const fetchFromCli = async (opts) => {
         else console.log(debugMsg)
       }
     })
+
     if (!body) return
 
     const { version, ...config } = body
@@ -104,7 +105,7 @@ export const fetchFromCli = async (opts) => {
         console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
       }
 
-      // console.log(chalk.bold.green("\nSuccessfully wrote file"));
+      console.log(chalk.bold.green('\nSuccessfully wrote file'))
     } catch (e) {
       console.log(chalk.bold.red('\nError writing file'))
       if (verbose) console.error(e)

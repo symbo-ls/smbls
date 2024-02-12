@@ -106,9 +106,11 @@ export const TooltipHidden = {
 }
 
 export const TooltipParent = {
-  props: ({ Tooltip, TooltipHidden }) => {
+  props: (el) => {
+    const { Tooltip, TooltipHidden } = el
     const TooltipElem = (Tooltip || TooltipHidden)
-    const TooltipActive = TooltipElem && TooltipElem.props['.active']
+    if (!TooltipElem || TooltipElem) return console.warn('Tooltip was not found in', el.__ref.path)
+    const TooltipActive = TooltipElem.props && TooltipElem.props['.active']
     return {
       position: 'relative',
       zIndex: 999,

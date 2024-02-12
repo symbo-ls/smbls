@@ -93,6 +93,11 @@ export const Theme = {
           backgroundPosition: props.backgroundPosition
         })
       : null,
+    backgroundRepeat: ({ props }) => !isUndefined(props.backgroundRepeat)
+      ? ({
+          backgroundRepeat: props.backgroundRepeat
+        })
+      : null,
 
     textStroke: ({ props, deps }) => !isUndefined(props.textStroke)
       ? ({

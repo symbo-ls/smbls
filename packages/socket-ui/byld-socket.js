@@ -119,8 +119,6 @@ const onChange = (el, s, ctx) => {
       }
 
       if (snippets || components || pages) {
-        console.log(pages)
-        console.log(window.location.pathname)
         ;(utils.router || router)(window.location.pathname, el, {})
       }
 
