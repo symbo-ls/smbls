@@ -48,14 +48,13 @@ export const prepareState = (options, App) => {
 }
 
 export const preparePages = options => {
-  const pages = options.pages || {}
-  Object.keys(pages)
+  const pages = {}
+  Object.keys(options.pages)
     .filter(v => !v.startsWith('/'))
     .forEach(v => {
       if (v === 'main') pages['/'] = pages.main
       else {
         pages['/' + v] = pages[v]
-        delete pages[v]
       }
     })
   return pages
