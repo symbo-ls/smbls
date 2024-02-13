@@ -26,12 +26,23 @@ export function createDirs (body, distDir) {
     }
   })
 
-  generateIndexjsFile(joinArrays(keys, singleFileKeys), distDir)
+  generateRootIndexjsFile(joinArrays(keys, singleFileKeys), distDir)
 }
 
 async function generateIndexjsFile (dirs, dirPath) {
-  // Generate index.js file
   const indexContent = dirs.map(d => `export * from './${d}'`).join('\n') + '\n'
+  const indexFilePath = path.join(dirPath, 'index.js')
+  const fh = await fs.promises.open(indexFilePath, 'w')
+  await fh.writeFile(indexContent, 'utf8')
+  await fh.close()
+}
+
+async function generateRootIndexjsFile (dirs, dirPath) {
+  const indexContent = dirs.map(d => {
+    const isSingleFile = singleFileKeys.includes(d)
+    if (isSingleFile) return `export { default as ${d} } from './${d}'`
+    return `export * as ${d} from './${d}'`
+  }).join('\n') + '\n'
   const indexFilePath = path.join(dirPath, 'index.js')
   const fh = await fs.promises.open(indexFilePath, 'w')
   await fh.writeFile(indexContent, 'utf8')
@@ -58,7 +69,7 @@ async function createKeyDirectoryAndFiles (key, body, distDir) {
     })
   }
 
-  generateIndexjsFile(dirs, dirPath)
+  generateIndexjsFile(dirs, dirPath, key)
 }
 
 function createOrUpdateFile (dirPath, childKey, value) {

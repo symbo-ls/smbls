@@ -1,1 +1,622 @@
-{}
+{
+  "key": "rosi.symbo.ls",
+  "name": "Rosi Studios",
+  "files": {
+    "app.js": {
+      "content": {},
+      "code": "{ LayoutNav: {} }",
+      "key": "app.js",
+      "type": "code",
+      "format": "js"
+    }
+  },
+  "state": {},
+  "components": {
+    "Layout": {
+      "content": {
+        "props": {
+          "ignoreChildExtend": true,
+          "position": "absolute",
+          "inset": "3.75vw 3.75vw 3.75vw 3.75vw",
+          "overflow": "hidden"
+        }
+      }
+    },
+    "Logo": {
+      "extend": [
+        "Link"
+      ],
+      "props": {
+        "href": "/"
+      },
+      "Icon": {
+        "name": "logo",
+        "fontSize": "I"
+      }
+    },
+    "FrameLine": {
+      "extend": [
+        "Flex"
+      ],
+      "tag": "nav",
+      "props": {
+        "whiteSpace": "nowrap",
+        "align": "center",
+        "gap": "0",
+        ":nth-child(even)": {
+          "> a": {
+            ":before": {
+              "left": "W",
+              "right": "auto",
+              "bottom": "100%",
+              "top": "Z",
+              "transition": "A bottom ease",
+              "borderWidth": "0 0 3px 0"
+            },
+            ":hover:before": {
+              "bottom": "Z"
+            }
+          }
+        },
+        "childProps": {
+          "gap": "X",
+          "padding": "X 1ch"
+        }
+      },
+      "childExtend": {
+        "extend": "Navlink",
+        "Span": {}
+      },
+      "$propsCollection": [
+        {
+          "href": "/",
+          "class": "logo",
+          "position": "absolute",
+          "left": "0",
+          "background": "black",
+          "padding": "",
+          "margin": "- -Y1 - 0",
+          "style": {
+            "padding": "0 !important"
+          },
+          "zIndex": 2,
+          "$href": null,
+          ":after": {
+            "hide": true
+          },
+          ":before": {
+            "hide": true
+          },
+          "Icon": {
+            "name": "logo",
+            "fontSize": "1.5em"
+          }
+        },
+        {
+          "text": "Rosi Studios",
+          "href": "/"
+        },
+        {
+          "text": "Archive",
+          "href": "/archive"
+        },
+        {
+          "text": "Services",
+          "href": "/services"
+        },
+        {
+          "text": "About",
+          "href": "/about"
+        },
+        {
+          "text": "hello@rosistudios.com",
+          "href": "/about"
+        },
+        {
+          "text": "Working hours",
+          "href": "/about"
+        },
+        {
+          "text": "10am - 6pm",
+          "href": "/about"
+        },
+        {
+          "text": "Monday - Friday",
+          "href": "/about",
+          "@widescreen": {
+            "hide": true
+          },
+          "@square": {
+            "show": true
+          }
+        },
+        {
+          "text": "Contact",
+          "href": "/about",
+          "@ultrawidescreen": {
+            "hide": true
+          }
+        },
+        {
+          "text": "29 Tabukashvili Street",
+          "href": "/about"
+        },
+        {
+          "text": "0108",
+          "href": "/about"
+        },
+        {
+          "text": "Tbilisi",
+          "href": "/about"
+        },
+        {
+          "text": "Georgia",
+          "href": "/about"
+        },
+        {
+          "text": "+995 555 025 252",
+          "href": "/about"
+        },
+        {
+          "Span": {
+            "text": "Follow on ",
+            "@ultrawidescreen": {
+              "hide": true
+            }
+          },
+          "text": "Instagram",
+          "target": "_blank",
+          "href": "/"
+        },
+        {
+          "flexFlow": "row",
+          "text": "Copyright © 2024",
+          "Span": {
+            "order": 2,
+            "text": " All rights reserved",
+            "@widescreen": {
+              "hide": true
+            }
+          }
+        }
+      ]
+    },
+    "Navlink": {
+      "extend": "Link",
+      "props": {
+        "lineHeight": "1",
+        "position": "relative",
+        "$href": {
+          ":after": {
+            "content": "''",
+            "position": "absolute",
+            "bottom": "W",
+            "left": "Z",
+            "right": "Z",
+            "borderWidth": "0 0 3px",
+            "borderStyle": "solid",
+            "borderColor": "primary",
+            "opacity": 0
+          },
+          ":hover:after": {
+            "opacity": 1
+          }
+        },
+        ":before": {
+          "content": "\"•\"",
+          "position": "absolute",
+          "top": "50%",
+          "left": "100%",
+          "transform": "translate3d(-50%, -50%, 1px)"
+        }
+      },
+      "Icon": {
+        "if": "({\n          props\n        }) => props.src"
+      }
+    },
+    "LayoutNav": {
+      "props": "() => ({\n        position: 'absolute',\n        top: '3.75vw',\n        left: '3.75vw',\n        right: '3.75vw',\n        bottom: '3.75vw',\n        '--vertical-offset': '2.5vw',\n        '--type-tail': 'calc(-1 * var(--spacing-Z))',\n\n        '@tabletS': {\n          '--vertical-offset': '4.5vw',\n          top: '6.5vw',\n          left: '6.5vw',\n          right: '6.5vw',\n          bottom: '6.5vw',\n        },\n        '!loaded': {\n          '& nav': {\n            opacity: '0',\n            margin: '- - - 1.5em',\n            transition: 'E all ease',\n          }\n        },\n        onRender: (el, s) => {\n          if (s.loaded) return\n          const t = setTimeout(() => {\n            el.setProps({\n              '& nav': {\n                margin: '0',\n                opacity: '1',\n              },\n            })\n            s.loaded = true\n            clearTimeout(t)\n          }, 250)\n        },\n      })",
+      "childExtend": {
+        "props": {
+          "fontSize": "2.755vw",
+          "position": "absolute",
+          "overflow": "hidden",
+          "lineHeight": "1",
+          "@wideportrait": {
+            "fontSize": "3.96vw"
+          },
+          "@ultrawideportrait": {
+            "fontSize": "5.75vw"
+          },
+          ":nth-child(odd)": {
+            "> nav": {
+              "> a:before": {
+                "top": "100%",
+                "left": "50%",
+                "transform": "translate3d(-50%, -50%, 1px)"
+              },
+              "> a:after": {
+                "top": "Z",
+                "bottom": "Z",
+                "right": "auto",
+                "left": "W"
+              }
+            }
+          }
+        }
+      },
+      "content": {
+        "props": {
+          "ignoreChildExtend": true,
+          "position": "absolute",
+          "inset": "3.75vw 3.75vw 3.75vw 3.75vw",
+          "overflow": "hidden"
+        }
+      },
+      "Top": {
+        "props": {
+          "top": "--type-tail",
+          "left": "-Z",
+          "right": "0"
+        },
+        "FrameLine": {
+          "padding": "- - - 1.35em",
+          "content": {
+            "childProps": {
+              "@ultrawideportrait": {
+                ":nth-child(2)": {
+                  "hide": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "Right": {
+        "props": {
+          "right": "--type-tail",
+          "top": "--vertical-offset",
+          "bottom": "--vertical-offset",
+          "style": {
+            "writingMode": "tb"
+          },
+          "@landscape": {
+            "letterSpacing": "0.185vmin"
+          },
+          "@ultrawidescreen": {
+            "letterSpacing": "0.0375vmin"
+          },
+          "@narrowscreen": {
+            "letterSpacing": "0.5375vmin"
+          },
+          "@square": {
+            "letterSpacing": "0.0375em"
+          },
+          "@wideportrait": {
+            "letterSpacing": "0.035em"
+          }
+        },
+        "FrameLine": {
+          "align": "center center",
+          "transform": "translate3d(0, 0, 0)",
+          "content": {
+            "childProps": {
+              "@landscape": {
+                ":nth-child(-n + 6)": {
+                  "hide": true
+                },
+                ":nth-child(n + 10)": {
+                  ":before": {
+                    "hide": true
+                  }
+                },
+                ":nth-child(n + 11)": {
+                  "hide": true
+                }
+              },
+              "@wideportrait": {
+                ":nth-child(-n + 5)": {
+                  "hide": true
+                },
+                ":nth-child(n + 8)": {
+                  ":before": {
+                    "hide": true
+                  }
+                },
+                ":nth-child(n + 9)": {
+                  "hide": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "Bottom": {
+        "props": {
+          "transform": "scale(-1)",
+          "top": "initial",
+          "bottom": "--type-tail",
+          "left": "0",
+          "right": "0",
+          "@wideportrait": {
+            "letterSpacing": "0.02em"
+          }
+        },
+        "FrameLine": {
+          ":before": {
+            "content": "\"•\"",
+            "margin": "- -.2em 0 0"
+          },
+          "childProps": {
+            "@landscape": {
+              ":nth-child(-n + 10)": {
+                "hide": true
+              }
+            },
+            "@wideportrait": {
+              "order": 3,
+              ":nth-child(-n + 10)": {
+                "hide": true
+              },
+              ":nth-child(12)": {
+                "hide": true
+              },
+              ":nth-child(13)": {
+                "hide": true
+              },
+              ":nth-child(14)": {
+                "hide": true
+              },
+              ":nth-child(15)": {
+                "order": 1
+              },
+              ":nth-child(11)": {
+                "order": 2
+              }
+            },
+            "@ultrawideportrait": {
+              ":nth-child(12)": {
+                "hide": false,
+                "show": true,
+                "display": "block !important"
+              },
+              ":nth-child(15)": {
+                "hide": true
+              },
+              ":nth-child(16)": {
+                "hide": true
+              },
+              ":nth-child(17)": {
+                "hide": true
+              }
+            }
+          }
+        }
+      },
+      "Left": {
+        "props": {
+          "left": "--type-tail",
+          "top": "--vertical-offset",
+          "bottom": "--vertical-offset",
+          "transform": "scale(-1) translate3d(0,-.125em,0)",
+          "letterSpacing": "-0.035em",
+          "style": {
+            "writingMode": "tb"
+          },
+          "@landscape": {
+            "letterSpacing": "0.035vmin"
+          },
+          "@ultrawidescreen": {
+            "letterSpacing": "-0.025em"
+          },
+          "@narrowscreen": {
+            "letterSpacing": "0.37vmin"
+          },
+          "@square": {
+            "letterSpacing": "0.025em"
+          },
+          "@wideportrait": {
+            "letterSpacing": "-0.025em"
+          }
+        },
+        "FrameLine": {
+          "align": "center center",
+          "content": {
+            "childProps": {
+              "@landscape": {
+                ":nth-child(-n + 15)": {
+                  "hide": true
+                },
+                ":last-child:before": {
+                  "hide": true
+                }
+              },
+              "@portrait": {
+                "& span": {
+                  "hide": true
+                },
+                ":nth-child(15)": {
+                  "hide": true
+                },
+                ":nth-child(-n + 11)": {
+                  "hide": true
+                },
+                ":last-child:before": {
+                  "hide": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "pages": {
+    "/": {
+      "extend": "LayoutNav"
+    },
+    "/archive": {
+      "props": {},
+      "extend": "LayoutNav",
+      "content": {
+        "props": {
+          "flexAlign": "center center"
+        },
+        "H1": {
+          "textAlign": "center",
+          "text": "archive"
+        }
+      }
+    },
+    "/services": {
+      "props": {},
+      "extend": "LayoutNav",
+      "content": {
+        "props": {
+          "flexAlign": "center center"
+        },
+        "H1": {
+          "textAlign": "center",
+          "text": "services"
+        }
+      }
+    },
+    "/about": {
+      "props": {},
+      "extend": "LayoutNav",
+      "content": {
+        "props": {
+          "flexAlign": "center center"
+        },
+        "H1": {
+          "textAlign": "center",
+          "text": "about"
+        }
+      }
+    }
+  },
+  "snippets": {},
+  "id": "102bd4c6f0",
+  "designSystem": {
+    "COLOR": {
+      "light": "#ffffff",
+      "gray": "#6e6e72",
+      "dark": "#000000",
+      "primary": [
+        "--dark",
+        "--light"
+      ]
+    },
+    "GRADIENT": {},
+    "THEME": {
+      "document": {
+        "@dark": {
+          "background": "dark",
+          "color": "light"
+        },
+        "@light": {
+          "background": "light",
+          "color": "dark"
+        }
+      },
+      "primary": {}
+    },
+    "FONT": {
+      "RS-Professional": [
+        {
+          "url": "https://based-files-production.based.dev/enD5U3P7x0/fia5bde6eb/a2d2cc96-6d17-4199-8922-dbff01ea0d5c-08873076-1679-4df8-a403-30478e4a23ec-ea1c9be0-00e8-4450-a2d0-be00190d7bee.woff",
+          "fontStyle": "normal",
+          "fontWeight": "600",
+          "fontDisplay": "swap",
+          "isVariable": true
+        }
+      ],
+      "Figtree": [
+        {
+          "url": "https://based-files-production.based.dev/enD5U3P7x0/fi98a58619/37999dcc-71ab-4bbb-b72f-3d82b415a5d7-68517462-18eb-4b0a-93c9-7159ccf6e251-621a5448-8e66-49db-96cb-51fe9ec1acdd.woff",
+          "fontStyle": "normal",
+          "fontWeight": "600",
+          "fontDisplay": "swap",
+          "isVariable": true
+        }
+      ]
+    },
+    "FONT_FAMILY": {
+      "def": {
+        "type": "serif",
+        "value": [
+          "RS-Professional",
+          "Figtree"
+        ]
+      }
+    },
+    "TYPOGRAPHY": {
+      "base": 16,
+      "ratio": 1.25,
+      "subSequence": true,
+      "templates": {
+        "h1": {},
+        "h2": {},
+        "h3": {},
+        "h4": {},
+        "h5": {},
+        "h6": {},
+        "body": {}
+      },
+      "@custom": {
+        "base": 16,
+        "ratio": 1.25
+      },
+      "@mobileXS": {
+        "base": 16,
+        "ratio": 1.25
+      },
+      "@tabletS": {
+        "base": 16,
+        "ratio": 1.25
+      },
+      "@tabletL": {
+        "base": 16,
+        "ratio": 1.25
+      },
+      "@screenM": {
+        "base": 16,
+        "ratio": 1.25
+      }
+    },
+    "SPACING": {
+      "base": 16,
+      "ratio": 1.618,
+      "subSequence": true
+    },
+    "TIMING": {
+      "base": 150,
+      "ratio": 1.333,
+      "subSequence": true
+    },
+    "MEDIA": {
+      "landscape": "(orientation: landscape)",
+      "portrait": "(orientation: portrait)",
+      "ultrawidescreen": "(min-aspect-ratio: 5/3)",
+      "widescreen": "(min-aspect-ratio: 5/4)",
+      "narrowscreen": "(max-aspect-ratio: 4/3) and (min-aspect-ratio: 1/1)",
+      "square": "(min-aspect-ratio: 4/5) and (max-aspect-ratio: 5/4)",
+      "narrowportrait": "(max-aspect-ratio: 3/4) and (min-aspect-ratio: 1/1)",
+      "wideportrait": "(max-aspect-ratio: 4/5)",
+      "ultrawideportrait": "(max-aspect-ratio: 3/5)"
+    },
+    "RESET": {},
+    "ANIMATION": {},
+    "useReset": true,
+    "useVariable": true,
+    "useFontImport": true,
+    "useIconSprite": true,
+    "useSvgSprite": true,
+    "useDefaultConfig": true,
+    "useDocumentTheme": true,
+    "verbose": false,
+    "ICONS": {
+      "logo": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M9.11861199,11.0779445 C10.867171,10.3593456 11.8798375,8.84811038 11.9015452,6.98193084 C11.9123991,6.02452485 11.9142081,5.01812348 11.9069721,3.96272673 C11.9067982,3.93113012 11.9245599,3.9024403 11.953285,3.88791931 C11.9820101,3.87339832 12.0171138,3.87536388 12.0448163,3.89304441 L23.3740897,11.2869914 C23.4532043,11.3393059 23.5005787,11.4282063 23.5,11.5232581 C23.4956531,12.3296857 23.4913116,13.1611554 23.48697,14.0176672 C23.4833521,14.6498891 23.3643212,15.2472698 23.1298776,15.8098093 C22.5336381,17.2412002 21.4916662,18.2022355 20.0039619,18.6929151 C19.6457841,18.8112299 19.293395,18.8707502 18.9467946,18.8714761 C16.93521,18.8780088 14.6790515,18.8798234 12.178319,18.87692 C11.9699246,18.87692 11.77962,18.8188514 11.6074052,18.7027142 C11.2781711,18.4813277 10.9464043,18.2624817 10.612105,18.0461761 C8.96448698,16.982795 7.38380118,15.9546179 5.87004759,14.9616449 C4.23834857,13.891731 2.55889251,12.8011301 0.83167941,11.6898423 C0.726035039,11.6216117 0.625455809,11.5548329 0.529941721,11.4895057 C0.500998057,11.4691817 0.49303855,11.4430508 0.506063198,11.4111131 C0.517337731,11.3814997 0.545435619,11.3619864 0.576613378,11.3621177 C2.93913989,11.355585 5.23473418,11.3552221 7.46339625,11.3610289 C8.10160402,11.3632065 8.6533426,11.268845 9.11861199,11.0779445 Z\"/></svg>"
+    }
+  }
+}
