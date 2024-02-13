@@ -52,9 +52,9 @@ export const preparePages = options => {
   Object.keys(options.pages)
     .filter(v => !v.startsWith('/'))
     .forEach(v => {
-      if (v === 'main') pages['/'] = pages.main
+      if (v === 'main') pages['/'] = options.pages.main
       else {
-        pages['/' + v] = pages[v]
+        pages['/' + v] = options.pages[v]
       }
     })
   return pages
