@@ -57,6 +57,7 @@ export const preparePages = options => {
         pages['/' + v] = options.pages[v]
       }
     })
+  options.pages = pages
   return pages
 }
 
