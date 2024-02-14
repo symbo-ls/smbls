@@ -5,6 +5,7 @@ import {
   splitTransition,
   transformDuration
 } from '@symbo.ls/scratch'
+import { isUndefined } from 'smbls'
 
 export const Timing = {
   deps: {
@@ -14,22 +15,22 @@ export const Timing = {
   },
 
   class: {
-    transition: ({ props, deps }) => props.transition && ({
+    transition: ({ props, deps }) => !isUndefined(props.transition) && ({
       transition: deps.splitTransition(props.transition)
     }),
-    willChange: ({ props }) => props.willChange && ({
+    willChange: ({ props }) => !isUndefined(props.willChange) && ({
       willChange: props.willChange
     }),
-    transitionDuration: ({ props, deps }) => props.transitionDuration && ({
+    transitionDuration: ({ props, deps }) => !isUndefined(props.transitionDuration) && ({
       transitionDuration: deps.transformDuration(props.transitionDuration)
     }),
-    transitionDelay: ({ props, deps }) => props.transitionDelay && ({
+    transitionDelay: ({ props, deps }) => !isUndefined(props.transitionDelay) && ({
       transitionDelay: deps.transformDuration(props.transitionDelay)
     }),
-    transitionTimingFunction: ({ props, deps }) => props.transitionTimingFunction && ({
+    transitionTimingFunction: ({ props, deps }) => !isUndefined(props.transitionTimingFunction) && ({
       transitionTimingFunction: deps.getTimingFunction(props.transitionTimingFunction)
     }),
-    transitionProperty: ({ props }) => props.transitionProperty && ({
+    transitionProperty: ({ props }) => !isUndefined(props.transitionProperty) && ({
       transitionProperty: props.transitionProperty,
       willChange: props.transitionProperty
     })
