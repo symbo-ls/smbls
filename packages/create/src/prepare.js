@@ -48,7 +48,7 @@ export const prepareState = (options, App) => {
 }
 
 export const preparePages = options => {
-  const pages = {}
+  const pages = options.pages
   Object.keys(options.pages)
     .filter(v => !v.startsWith('/'))
     .forEach(v => {
