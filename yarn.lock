@@ -9673,6 +9673,24 @@ smart-buffer@^4.2.0:
   resolved "https://registry.yarnpkg.com/smart-buffer/-/smart-buffer-4.2.0.tgz#6e1d71fa4f18c05f7d0ff216dd16a481d0e8d9ae"
   integrity sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==
 
+smbls@latest:
+  version "2.11.285"
+  resolved "https://registry.yarnpkg.com/smbls/-/smbls-2.11.285.tgz#71044a2ddcdde49228be0cf20e4b40aa53eb87c4"
+  integrity sha512-ZGAr5ycuZoWSdodaX0K4aeM278/tU9ABqiZ/IPnGocxyV3P8/MyC9ddQZplKJIdL8vjwnwAng+25v9ONpF7v1A==
+  dependencies:
+    "@domql/utils" latest
+    "@symbo.ls/cli" latest
+    "@symbo.ls/create" latest
+    "@symbo.ls/default-config" latest
+    "@symbo.ls/init" latest
+    "@symbo.ls/scratch" latest
+    "@symbo.ls/socket-ui" latest
+    "@symbo.ls/uikit" latest
+    "@symbo.ls/utils" latest
+    attrs-in-props latest
+    css-in-props latest
+    domql latest
+
 socket.io-adapter@~2.5.2:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/socket.io-adapter/-/socket.io-adapter-2.5.2.tgz#5de9477c9182fdc171cd8c8364b9a8894ec75d12"

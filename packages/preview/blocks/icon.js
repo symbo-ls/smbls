@@ -1,6 +1,6 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/atoms'
+import { Grid } from '@symbo.ls/uikit'
 import { DefaultBlock } from './section'
 
 export const icon = {

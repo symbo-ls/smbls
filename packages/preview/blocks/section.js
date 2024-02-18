@@ -1,6 +1,6 @@
 'use strict'
 
-import { Hgroup } from '@symbo.ls/hgroup'
+import { Hgroup } from '@symbo.ls/uikit'
 
 export const DefaultBlock = {
   tag: 'section',

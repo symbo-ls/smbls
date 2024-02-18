@@ -1,12 +1,11 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 import { Colors, Typography, Shadows, Icons, Spacing, Shapes } from '../articles'
 
 export const StyleguidePage = {
-  extend: Flex,
+  extend: 'Flex',
   tag: 'main',
+
   props: {
     theme: 'document',
     position: 'relative',

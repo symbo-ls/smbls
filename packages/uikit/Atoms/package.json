@@ -3,12 +3,11 @@
   "version": "2.11.302",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "a4f4cfad0861985138e464ef205f0f2cc9ad82b7",
+  "gitHead": "49f3777cce4b6a99459883295b2a09db262062bc",
   "dependencies": {
     "@domql/state": "latest",
     "@domql/utils": "latest",
     "@symbo.ls/emotion": "latest",
-    "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest"
   },
   "source": "src/index.js",

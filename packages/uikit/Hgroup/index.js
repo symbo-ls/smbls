@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const Hgroup = {
-  extend: Flex,
+  extend: 'Flex',
   tag: 'hgroup',
 
   props: {
@@ -23,18 +21,16 @@ export const Hgroup = {
   },
 
   Title: {
-    extend: Flex,
-    if: ({ parent }) => parent.props.title,
-    props: ({ scope, parent }) => ({
+    extend: 'Flex',
+    props: ({ parent }) => ({
       text: parent.props.title,
       lineHeight: '1em'
     })
   },
 
   Paragraph: {
-    extend: Flex,
-    if: ({ parent }) => parent.props.paragraph,
-    props: ({ scope, parent }) => ({
+    extend: 'Flex',
+    props: ({ parent }) => ({
       text: parent.props.paragraph,
       margin: '0'
     })
@@ -45,12 +41,12 @@ export const HgroupRows = {
   extend: Hgroup,
 
   Title: {
-    extend: Flex,
+    extend: 'Flex',
     props: { color: 'title', align: 'center space-between' }
   },
 
   Paragraph: {
-    extend: Flex,
+    extend: 'Flex',
     props: { color: 'paragraph', align: 'center space-between' }
   }
 }

@@ -1,6 +1,5 @@
 'use strict'
 
-// import { font } from '../Sections'
 import { FontsBlock } from '../blocks'
 
 export const Typography = {

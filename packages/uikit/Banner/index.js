@@ -1,10 +1,10 @@
 'use strict'
 
-import { Hgroup } from '@symbo.ls/hgroup'
 import { DotList } from '@symbo.ls/list'
 
 export const Banner = {
-  extend: Hgroup,
+  extend: 'Hgroup',
+
   props: {
     height: 'fit-content',
     padding: 'D2+Z D+Y2 D D',
@@ -71,7 +71,7 @@ export const Banner = {
     },
 
     Flex: {
-      extend: Hgroup,
+      extend: 'Hgroup',
       props: {
         gap: 'A2',
         alignSelf: 'flex-end',

@@ -1,24 +1,27 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Banner } from '@symbo.ls/banner'
 import { ColorBlock } from '../blocks'
 
 export const Colors = {
   tag: 'article',
-  extend: Flex,
+  extend: 'Flex',
+
   props: {
     margin: 'auto',
     minWidth: '100%'
   },
 
-  Header: {
+  Banner: {
     tag: 'header',
-    extend: Banner,
+    props: {},
+
     Title: { text: 'Colors' },
+
     Paragraph: {
+      props: {},
       P: {},
       Flex: {
+        props: {},
         Title: {},
         Paragraph: [{
           props: { text: 'Brand color pallete' }
