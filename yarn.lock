@@ -8732,7 +8732,7 @@ pacote@^15.0.0, pacote@^15.0.8:
     ssri "^10.0.0"
     tar "^6.1.11"
 
-parcel@^2.10.3:
+parcel@^2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/parcel/-/parcel-2.11.0.tgz#9448269b677d7ba251c92a2a5ce4539fcf0dbf5c"
   integrity sha512-H/RI1/DmuOkL8RuG/EpNPvtzrbF+7jA/R56ydEEm+lqFbYktKB4COR7JXdHkZXRgbSJyimrFB8d0r9+SaRnj0Q==
