@@ -15,13 +15,17 @@ export const StyleguidePage = {
     width: '100%',
     '@tabletM': {
       fontSize: 'Z1'
-    },
-    '> article': {
+    }
+  },
+
+  childExtend: {
+    props: {
       flow: 'column',
       '> header': {
         border: 'solid, white .15',
         borderWidth: '.5px 0 .5px 0'
-      }
+      },
+      theme: null
     }
   },
 
