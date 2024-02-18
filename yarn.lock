@@ -2118,7 +2118,7 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@parcel/babel-preset-env@^2.0.1":
+"@parcel/babel-preset-env@^2.11.0":
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/@parcel/babel-preset-env/-/babel-preset-env-2.11.0.tgz#d56b1cb20e1239aece46ddcd2e35cee7d84c6508"
   integrity sha512-o33Cdi9ceVmSVzI689j4YNOl6PDyuxDm2fS7dwcbwetubz10lAz9kF0u1OBCVgZ9XyQFITxilD+f3mYZLjIVuQ==
@@ -2636,7 +2636,7 @@
     posthtml-render "^3.0.0"
     semver "^7.5.2"
 
-"@parcel/transformer-raw@2.11.0", "@parcel/transformer-raw@^2.8.3":
+"@parcel/transformer-raw@2.11.0", "@parcel/transformer-raw@^2.11.0":
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/@parcel/transformer-raw/-/transformer-raw-2.11.0.tgz#76e2d83e96b46c2b243d7d43a45a18fe86dd5986"
   integrity sha512-2ltp3TgS+cxEqSM1vk5gDtJrYx4KMuRRtbSgSvkdldyOgPhflnLU3/HRz72hXSNGqYOV0/JN0+ocsfPnqR00ug==
