@@ -17,17 +17,19 @@ export const Collection = {
 
       const { __ref: ref } = el
 
+      if (isObjectLike(param)) param = deepClone(param)
+
       if (ref.__collectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
         if (equals) {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__collectionCache = deepClone(param)
+          ref.__collectionCache = param
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__collectionCache = deepClone(param)
+        ref.__collectionCache = param
       }
 
       const obj = {
