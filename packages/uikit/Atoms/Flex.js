@@ -9,9 +9,9 @@ export const Flex = {
 
   class: {
     flow: ({ props }) => {
-      const { flow } = props
-      if (isUndefined(flow)) return
-      let [direction, wrap] = flow.split(' ')
+      const { flow, reverse } = props
+      if (isUndefined(flow) && isUndefined(reverse)) return
+      let [direction, wrap] = (flow || 'row').split(' ')
       if (flow.startsWith('x') || flow.startsWith('row')) direction = 'row'
       if (flow.startsWith('y') || flow.startsWith('column')) direction = 'column'
       return {
