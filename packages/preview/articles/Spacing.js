@@ -1,8 +1,6 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
-import { Banner } from '@symbo.ls/banner'
+import { Flex, Banner } from '@symbo.ls/uikit'
 
 export const Spacing = {
   tag: 'article',

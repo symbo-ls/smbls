@@ -48,7 +48,17 @@ export const prepareState = (options, App) => {
 }
 
 export const preparePages = options => {
-  return options.pages || {}
+  const pages = options.pages
+  Object.keys(options.pages)
+    .filter(v => !v.startsWith('/'))
+    .forEach(v => {
+      if (v === 'main') pages['/'] = options.pages.main
+      else {
+        pages['/' + v] = options.pages[v]
+      }
+    })
+  options.pages = pages
+  return pages
 }
 
 export const prepareDocument = options => {

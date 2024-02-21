@@ -1,6 +1,5 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/atoms'
 import { DefaultBlock } from './section'
 
 const ColorTemplate = {
@@ -36,7 +35,7 @@ export const ColorBlock = {
   },
 
   Paragraph: {
-    extend: Grid,
+    extend: 'Grid',
 
     props: {
       columns: 'repeat(4, 1fr)',

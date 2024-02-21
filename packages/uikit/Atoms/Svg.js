@@ -1,11 +1,8 @@
 'use strict'
 
-import { init } from '@symbo.ls/init'
-
 // create SVG symbol
 export const Svg = {
   tag: 'svg',
-  deps: { init },
   props: {
     style: { '*': { fill: 'currentColor' } }
   },
@@ -13,8 +10,8 @@ export const Svg = {
     xmlns: 'http://www.w3.org/2000/svg',
     'xmlns:xlink': 'http://www.w3.org/1999/xlink'
   },
-  html: ({ key, props, context, deps, ...el }) => {
-    const { designSystem } = context
+  html: ({ key, props, context, ...el }) => {
+    const { designSystem, utils } = context
     const SVG = designSystem && designSystem.SVG
     const useSvgSprite = props.spriteId || (context.designSystem && context.designSystem.useSvgSprite)
 
@@ -31,7 +28,7 @@ export const Svg = {
 
     SVGKey = SVG[symbolId] = Math.random()
     if (props.src) {
-      deps.init({
+      utils.init({
         svg: { [SVGKey]: props.src }
       }, {
         document: context.document,

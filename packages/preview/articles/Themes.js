@@ -1,7 +1,6 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Icon } from '@symbo.ls/icon'
+import { Flex, Icon } from '@symbo.ls/uikit'
 import { ColorBlock } from '../blocks'
 
 export const Themes = {

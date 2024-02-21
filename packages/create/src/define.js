@@ -1,6 +1,6 @@
 'use strict'
 
-import { Collection } from '@symbo.ls/uikit'
+import { Collection } from '@symbo.ls/atoms'
 
 export const defaultDefine = {
   routes: param => param,

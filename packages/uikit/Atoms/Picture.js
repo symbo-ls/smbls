@@ -26,6 +26,7 @@ export const Picture = {
 
   Img: ({ props }) => ({
     width: 'inherit',
+    ignoreChildExtend: true,
     height: 'inherit',
     src: props.src
   })

@@ -1,7 +1,9 @@
 'use strict'
 
+import { isUndefined } from 'smbls'
+
 export const XYZ = {
   class: {
-    zIndex: ({ props }) => props.zIndex && ({ zIndex: props.zIndex })
+    zIndex: ({ props }) => !isUndefined(props.zIndex) && ({ zIndex: props.zIndex })
   }
 }
