@@ -1,7 +1,7 @@
 'use strict'
 
 import { router as defaultRouter } from '@domql/router'
-import { isDefined } from '@domql/utils'
+import { exec, isDefined } from '@domql/utils'
 import { Focusable } from '@symbo.ls/atoms'
 
 export const Link = {
@@ -28,9 +28,10 @@ export const Link = {
 
 export const RouterLink = {
   on: {
-    click: (event, el) => {
+    click: (event, el, s) => {
       const { props, context: ctx } = el
-      const { href, scrollToTop, stopPropagation } = props
+      const { href: h, scrollToTop, stopPropagation } = props
+      const href = exec(h, el, s)
       if (stopPropagation) event.stopPropagation()
       if (!href) return
       const { utils, snippets, routerOptions } = ctx
