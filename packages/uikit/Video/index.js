@@ -7,6 +7,7 @@ export const Video = {
     tag: 'source',
     attr: {
       src: ({ props }) => props.src,
+      type: ({ props }) => props.type,
       controls: ({ props }) => props.controls
     }
   },
@@ -17,6 +18,7 @@ export const Video = {
 
   attr: {
     src: ({ props }) => props.src,
+    playsinline: ({ props }) => props.playsinline,
     autoplay: ({ props }) => props.autoplay,
     loop: ({ props }) => props.loop,
     poster: ({ props }) => props.poster,

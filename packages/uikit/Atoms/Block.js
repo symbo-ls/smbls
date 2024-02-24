@@ -77,6 +77,7 @@ export const Block = {
     borderWidth: ({ props, deps }) => deps.transformSizeRatio('borderWidth', props),
 
     padding: ({ props, deps }) => deps.transformSizeRatio('padding', props),
+    scrollPadding: ({ props, deps }) => deps.transformSizeRatio('scrollPadding', props),
     paddingInline: ({ props, deps }) => {
       if (typeof props.paddingInline !== 'string') return
       const [paddingInlineStart, paddingInlineEnd] = props.paddingInline.split(' ')
