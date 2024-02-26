@@ -16,6 +16,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
+      param = deepClone(param)
 
       if (ref.__collectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
@@ -23,11 +24,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__collectionCache = deepClone(param)
+          ref.__collectionCache = param
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__collectionCache = deepClone(param)
+        ref.__collectionCache = param
       }
 
       const obj = {
@@ -82,6 +83,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
+      param = deepClone(param)
 
       if (ref.__stateCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
@@ -89,11 +91,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__stateCollectionCache = deepClone(param)
+          ref.__stateCollectionCache = param
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__stateCollectionCache = deepClone(param)
+        ref.__stateCollectionCache = param
       }
 
       const obj = {
@@ -125,6 +127,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
+      param = deepClone(param)
 
       if (ref.__propsCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
@@ -132,11 +135,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__propsCollectionCache = deepClone(param)
+          ref.__propsCollectionCache = param
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__propsCollectionCache = deepClone(param)
+        ref.__propsCollectionCache = param
       }
 
       const obj = {

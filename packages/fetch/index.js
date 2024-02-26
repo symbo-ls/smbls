@@ -7,8 +7,7 @@ const { window } = globals
 
 const IS_DEVELOPMENT =
   window && window.location
-    ? window.location.host.includes('dev.') ||
-      window.location.host.includes('symbo.ls')
+    ? window.location.host.includes('dev.')
     : process.env.NODE_ENV === 'development'
 
 const SERVER_URL = IS_DEVELOPMENT

@@ -41,13 +41,17 @@ export const RouterLink = {
         href.includes('mailto:') ||
         href.includes('tel:')
       if (href && !linkIsExternal) {
-        (snippets.router || utils.router || defaultRouter)(href, root, {}, {
-          scrollToOptions: { behaviour: 'instant' },
-          scrollToTop: isDefined(scrollToTop) ? scrollToTop : true,
-          ...routerOptions,
-          ...props.routerOptions
-        })
-        event.preventDefault()
+        try {
+          (snippets.router || utils.router || defaultRouter)(href, root, {}, {
+            scrollToOptions: { behaviour: 'instant' },
+            scrollToTop: isDefined(scrollToTop) ? scrollToTop : true,
+            ...routerOptions,
+            ...props.routerOptions
+          })
+          event.preventDefault()
+        } catch (e) {
+          console.warn(e)
+        }
       }
     }
   }

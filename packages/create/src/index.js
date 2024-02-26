@@ -33,15 +33,10 @@ export const create = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFil
 }
 
 export const createAsync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
+  const domqlApp = create(App, options, optionsExternalFile)
+
   const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
-
-  const domqlApp = createDomqlElement(App, redefinedOptions)
-
-  applyInspectListener(domqlApp, redefinedOptions)
-  popStateRouter(domqlApp, redefinedOptions)
-  if (redefinedOptions.on && redefinedOptions.on.create) redefinedOptions.on.create(domqlApp, redefinedOptions)
-
-  const key = options.key || SYMBOLS_KEY
+  const key = redefinedOptions.key || SYMBOLS_KEY
   fetchAsync(domqlApp, key, { utils, ...redefinedOptions })
 
   return domqlApp
