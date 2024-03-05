@@ -7,8 +7,7 @@ import { program } from "./program.js";
 import * as fetch from "@symbo.ls/fetch";
 import * as utils from "@domql/utils";
 import { convertFromCli } from "./convert.js";
-import { createDirs } from "./fs.js";
-import { create } from "domain";
+import { createFs } from "./fs.js";
 
 const { isObjectLike } = utils.default;
 const { fetchRemote } = fetch.default;
@@ -36,8 +35,8 @@ try {
   console.error("Please include symbols.json to your root of respository");
 }
 
-export const fetchFromCli = async (opts, cache) => {
-  const { dev, verbose, prettify, convert: convertOpt, update, cache } = opts;
+export const fetchFromCli = async (opts) => {
+  const { dev, verbose, prettify, convert: convertOpt, update } = opts;
 
   await rc.then(async (data) => {
     const { key, framework, distDir } = data;
@@ -119,9 +118,12 @@ export const fetchFromCli = async (opts, cache) => {
     }
 
     console.log(Object.keys(body));
-    if (!cache) {
-      createDirs(body, distDir, noUpdate);
-    } else createDirs(body, distDir);
+
+    if (update) {
+      createFs(body, distDir, update);
+    } else {
+      createFs(body, distDir);
+    }
   });
 };
 
@@ -138,5 +140,4 @@ program
 program
   .command("push")
   .description("Push changes to platform")
-  .options("")
   .action(fetchFromCli({ cache: true }));
