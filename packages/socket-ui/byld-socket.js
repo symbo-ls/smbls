@@ -65,7 +65,6 @@ const connectedToSymbols = (clients, element, state) => {
     if (state.connected) {
       state.notifications.connected = {
         title: 'Disconnected',
-        message: 'from the Symbols live server',
         type: 'error'
       }
 
@@ -151,14 +150,12 @@ const Notifications = {
       animationDuration: 'C',
       background: NOTIF_COLORS[state.type || 'success'],
       icon: null,
-      article: {
-        Flex: {
-          Title: {
-            text: state.title
-          },
-          P: {
-            text: state.message
-          }
+      Flex: {
+        Title: {
+          text: state.title
+        },
+        P: {
+          text: state.message
         }
       }
     }),

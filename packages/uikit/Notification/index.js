@@ -37,6 +37,7 @@ export const Notification = {
     },
     P: {
       props: {
+        ':empty': { hide: true },
         fontSize: 'Z',
         margin: '0',
         text: 'is not always a distraction'
