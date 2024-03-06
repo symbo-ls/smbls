@@ -66,6 +66,24 @@ export const Block = {
       }
     },
 
+    min: ({ props, deps }) => {
+      if (typeof props.heightRange !== 'string') return
+      const [minHeight, minWidth] = props.heightRange.split(' ')
+      return {
+        ...deps.transformSize('minHeight', minHeight),
+        ...deps.transformSize('minHeight', minWidth || minHeight)
+      }
+    },
+
+    max: ({ props, deps }) => {
+      if (typeof props.heightRange !== 'string') return
+      const [maxHeight, maxWidth] = props.heightRange.split(' ')
+      return {
+        ...deps.transformSize('maxHeight', maxHeight),
+        ...deps.transformSize('maxHeight', maxWidth || maxHeight)
+      }
+    },
+
     direction: ({ props }) => !isUndefined(props.direction) && ({
       direction: props.direction
     }),
