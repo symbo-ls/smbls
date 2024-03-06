@@ -192,6 +192,10 @@ async function findDiff(targetDir, distDir) {
 
     const targetFiles = await fs.promises.readdir(targetDirPath);
     for (const file of targetFiles) {
+      if (file === "index.js") {
+        continue; // Skip comparing index.js files
+      }
+
       const targetFilePath = path.join(targetDirPath, file);
       const distFilePath = path.join(distDirPath, file);
 
