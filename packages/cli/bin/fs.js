@@ -9,6 +9,7 @@ const { deepDestringify, objectToString, joinArrays, isString } = utils
 
 const keys = ['components', 'snippets', 'pages']
 const singleFileKeys = ['designSystem', 'state']
+const defaultExports = ['pages', 'designSystem', 'state']
 
 export async function createFs (
   body,
@@ -44,7 +45,7 @@ export async function createFs (
     ]
 
     await Promise.all(promises)
-    await generateIndexjsFile(joinArrays(keys, singleFileKeys), targetDir)
+    await generateIndexjsFile(joinArrays(keys, singleFileKeys), targetDir, 'root')
   }
 
   if (filesExist) {
@@ -63,7 +64,7 @@ export async function createFs (
     ]
 
     await Promise.all(cachePromises)
-    await generateIndexjsFile(joinArrays(keys, singleFileKeys), cacheDir)
+    await generateIndexjsFile(joinArrays(keys, singleFileKeys), cacheDir, 'root')
 
     const diffs = await findDiff(cacheDir, targetDir)
     if (diffs.length > 0) {
@@ -235,6 +236,12 @@ async function generateIndexjsFile (dirs, dirPath, key) {
     `export default {
       ${dirs.map((d) => `'/${d === 'main' ? '' : d}': ${d},`).join('\n') + '\n'}
     }`
+  } else if (key === 'root') {
+    indexContent =
+    dirs.map((d) => {
+      if (defaultExports.includes(d)) return `export { default as ${d} } from './${d}';`
+      else return `export * as ${d} from './${d}';`
+    }).join('\n') + '\n'
   } else {
     indexContent =
     dirs.map((d) => `export * from './${d}';`).join('\n') + '\n'
