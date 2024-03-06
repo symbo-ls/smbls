@@ -37,7 +37,6 @@ try {
 
 export const fetchFromCli = async (opts) => {
   const { dev, verbose, prettify, convert: convertOpt, update } = opts;
-
   await rc.then(async (data) => {
     const { key, framework, distDir } = data;
 
@@ -135,7 +134,7 @@ program
   .option("--verbose-code", "Verbose errors and warnings")
   .action(fetchFromCli);
 
-program
-  .command("push")
-  .description("Push changes to platform")
-  .action(fetchFromCli({ cache: true }));
+// program
+//   .command("push")
+//   .description("Push changes to platform")
+//   .action(fetchFromCli({ cache: true }));
