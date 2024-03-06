@@ -1,4 +1,5 @@
 import fs from "fs";
+import chalk from "chalk";
 import path from "path";
 import utils from "@domql/utils";
 import inquirer from "inquirer";
@@ -68,9 +69,9 @@ export async function createFs(
     if (diffs.length > 0) {
       console.log("Differences found:");
       diffs.forEach((diff) => {
-        console.log(`File: ${diff.file}`);
-        console.log("Diff:");
-        console.log(diff.diff);
+        console.log(chalk.green(`File: ${diff.file}`));
+        console.log(chalk.yellow("Diff:"));
+        console.log(chalk.yellow(diff.diff));
         console.log("---");
       });
 
@@ -84,7 +85,9 @@ export async function createFs(
         }
       } else {
         console.log(
-          "Files not updated. Use the --update flag to override files."
+          chalk.red(
+            "Files changes detected. Use the --update flag to  override changes."
+          )
         );
       }
     } else {
