@@ -14,7 +14,6 @@ export const fetchSync = async (key, options) => {
 }
 
 export const fetchAsync = (app, key, options, callback) => {
-  console.log(key, options)
   if (key && options.editor) {
     try {
       if (options.editor.async) {
@@ -23,7 +22,6 @@ export const fetchAsync = (app, key, options, callback) => {
             options.utils.init(data.designsystem)
           }
           if (isObject(data.state)) {
-            console.log(app)
             app.state.set(data.state)
           }
         }))

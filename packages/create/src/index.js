@@ -37,7 +37,6 @@ export const createAsync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExtern
 
   const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
   const key = redefinedOptions.key || SYMBOLS_KEY
-  console.log(redefinedOptions)
   fetchAsync(domqlApp, key, { utils, ...redefinedOptions })
 
   return domqlApp
