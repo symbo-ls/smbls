@@ -66,7 +66,7 @@ export const Block = {
       }
     },
 
-    min: ({ props, deps }) => {
+    minSize: ({ props, deps }) => {
       if (typeof props.heightRange !== 'string') return
       const [minHeight, minWidth] = props.heightRange.split(' ')
       return {
@@ -75,7 +75,7 @@ export const Block = {
       }
     },
 
-    max: ({ props, deps }) => {
+    maxSize: ({ props, deps }) => {
       if (typeof props.heightRange !== 'string') return
       const [maxHeight, maxWidth] = props.heightRange.split(' ')
       return {
