@@ -117,8 +117,6 @@ export const fetchFromCli = async (opts) => {
       convertFromCli(body.components, { ...opts, framework });
     }
 
-    console.log(Object.keys(body));
-
     if (update) {
       createFs(body, distDir, update);
     } else {

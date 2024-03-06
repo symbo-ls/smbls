@@ -1,106 +1,253 @@
-"use strict";
-
 import fs from "fs";
 import path from "path";
 import utils from "@domql/utils";
-import { exit } from "process";
+import inquirer from "inquirer";
+import { createPatch } from "diff";
+
 const { deepDestringify, objectToString, joinArrays } = utils;
 
 const keys = ["components", "snippets", "pages"];
 const singleFileKeys = ["designSystem", "state"];
 
-export function createFs(body, distDir, update) {
+export async function createFs(
+  body,
+  distDir = path.join(process.cwd(), "dist"),
+  update = false
+) {
   if (!body) {
     console.error("No JSON object provided. Exiting.");
     return;
   }
 
-  distDir = distDir || path.join(process.cwd(), "dist");
-
   const targetDir = update ? path.join(distDir, ".cache") : distDir;
-  if (update && !fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir, { recursive: true });
-  }
+  await fs.promises.mkdir(targetDir, { recursive: true });
 
-  keys.forEach((key) => {
-    createKeyDirectoryAndFiles(key, body, targetDir, update);
-  });
+  const promises = [
+    ...keys.map((key) =>
+      createKeyDirectoryAndFiles(key, body, targetDir, update)
+    ),
+    ...singleFileKeys.map((key) => {
+      if (body[key] && typeof body[key] === "object") {
+        return createSingleFileFolderAndFile(key, body[key], targetDir, update);
+      }
+    }),
+  ];
 
-  singleFileKeys.forEach((key) => {
-    if (body[key] && typeof body[key] === "object") {
-      createSingleFileFolderAndFile(key, body[key], targetDir, update);
+  await Promise.all(promises);
+  await generateIndexjsFile(joinArrays(keys, singleFileKeys), targetDir);
+
+  if (!update) {
+    const diffs = await findDiff(targetDir, distDir);
+    if (diffs.length > 0) {
+      console.log("Differences found:");
+      diffs.forEach((diff) => {
+        console.log(`File: ${diff.file}`);
+        console.log("Diff:");
+        console.log(diff.diff);
+        console.log("---");
+      });
+
+      const { consent } = await askForConsent();
+      if (consent) {
+        await overrideFiles(targetDir, distDir);
+        console.log("Files overridden successfully.");
+      } else {
+        console.log("Files not overridden.");
+      }
+    } else {
+      console.log("No differences found.");
     }
-  });
-
-  generateIndexjsFile(joinArrays(keys, singleFileKeys), targetDir);
-}
-
-async function generateIndexjsFile(dirs, dirPath) {
-  const indexContent =
-    dirs.map((d) => `export * from './${d}'`).join("\n") + "\n";
-  const indexFilePath = path.join(dirPath, "index.js");
-  const fh = await fs.promises.open(indexFilePath, "w");
-  await fh.writeFile(indexContent, "utf8");
-  await fh.close();
+  }
 }
 
 async function createKeyDirectoryAndFiles(key, body, distDir, update) {
   const dirPath = path.join(distDir, key);
-  if (update || !fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-    console.log(
-      `${fs.existsSync(dirPath) ? "Found" : "Created"} directory: ${dirPath}`
-    );
-  }
+  await fs.promises.mkdir(dirPath, { recursive: true });
 
   const dirs = [];
+  const mainContent = {};
+
+  const specialPrefixes = ["**", "//", "__", "..", "*", "/"];
+
   if (body[key] && typeof body[key] === "object") {
-    for (const [entryKey, value] of Object.entries(body[key])) {
-      let childKey = entryKey;
-      if (["/", "//", "*", ".", "**", "_"].includes(childKey.charAt(0))) {
-        childKey = childKey.slice(1);
-        if (!childKey.length) childKey = "main";
+    const promises = Object.entries(body[key]).map(
+      async ([entryKey, value]) => {
+        if (
+          key === "pages" &&
+          specialPrefixes.some((prefix) => entryKey.startsWith(prefix))
+        ) {
+          mainContent[entryKey] = value;
+        } else {
+          let childKey = entryKey;
+          if (["*", ".", "_"].includes(childKey.charAt(0))) {
+            childKey = childKey.slice(1);
+            if (!childKey.length) childKey = "index";
+          }
+          await createOrUpdateFile(dirPath, childKey, value, update);
+          dirs.push(childKey);
+        }
       }
-      createOrUpdateFile(dirPath, childKey, value, update);
-      dirs.push(childKey);
-    }
+    );
+
+    await Promise.all(promises);
   }
 
-  generateIndexjsFile(dirs, dirPath);
+  if (key === "pages" && Object.keys(mainContent).length > 0) {
+    const mainContentString = Object.entries(mainContent)
+      .map(([entryKey, value]) => {
+        const exportName = specialPrefixes.some((prefix) =>
+          entryKey.startsWith(prefix)
+        )
+          ? "main"
+          : entryKey.replace(/^[*/_.]+/, "").replace(/\W/g, "_");
+        return `export const ${exportName} = ${JSON.stringify(
+          value,
+          null,
+          2
+        )};`;
+      })
+      .join("\n");
+    await createOrUpdateFile(dirPath, "main", mainContentString, update);
+    dirs.push("main");
+  }
+
+  await generateIndexjsFile(dirs, dirPath);
 }
 
-function createOrUpdateFile(dirPath, childKey, value, update) {
+async function createOrUpdateFile(dirPath, childKey, value, update) {
   const filePath = path.join(dirPath, `${childKey}.js`);
 
   if (!update && fs.existsSync(filePath)) {
-    console.log(
-      `File ${filePath} exists. Skipping creation due to lack of update flag.`
-    );
     return;
   }
 
   const content = deepDestringify(value);
   const stringifiedContent = `export const ${childKey} = ${objectToString(
     content
-  )}`;
+  )};`;
 
-  console.log(
-    `${fs.existsSync(filePath) ? "Updating" : "Creating new"} file: ${filePath}`
-  );
-  fs.writeFileSync(filePath, stringifiedContent);
+  await fs.promises.writeFile(filePath, stringifiedContent, "utf8");
 }
 
-function createSingleFileFolderAndFile(key, data, distDir, update) {
+async function createSingleFileFolderAndFile(key, data, distDir, update) {
   const filePath = path.join(distDir, `${key}.js`);
 
   if (!update && fs.existsSync(filePath)) {
-    console.log(
-      `File ${filePath} exists. Skipping creation due to lack of update flag.`
-    );
+    return;
   }
 
   const content = deepDestringify(data);
-  const stringifiedContent = `export default ${objectToString(content)}`;
-  console.log(`Creating new file: ${filePath}`);
-  fs.writeFileSync(filePath, stringifiedContent);
+  const stringifiedContent = `export default ${objectToString(content)};`;
+
+  await fs.promises.writeFile(filePath, stringifiedContent, "utf8");
+}
+
+async function generateIndexjsFile(dirs, dirPath) {
+  const indexContent =
+    dirs.map((d) => `export * from './${d}';`).join("\n") + "\n";
+  const indexFilePath = path.join(dirPath, "index.js");
+  await fs.promises.writeFile(indexFilePath, indexContent, "utf8");
+}
+
+async function findDiff(targetDir, distDir) {
+  const diffs = [];
+
+  for (const key of keys) {
+    const targetDirPath = path.join(targetDir, key);
+    const distDirPath = path.join(distDir, key);
+
+    if (!fs.existsSync(targetDirPath)) {
+      continue;
+    }
+
+    const targetFiles = await fs.promises.readdir(targetDirPath);
+    for (const file of targetFiles) {
+      const targetFilePath = path.join(targetDirPath, file);
+      const distFilePath = path.join(distDirPath, file);
+
+      if (!fs.existsSync(distFilePath)) {
+        continue;
+      }
+
+      const targetContent = await fs.promises.readFile(targetFilePath, "utf8");
+      const distContent = await fs.promises.readFile(distFilePath, "utf8");
+
+      if (targetContent !== distContent) {
+        const diff = createPatch(file, targetContent, distContent);
+        diffs.push({
+          file: path.join(key, file),
+          diff,
+        });
+      }
+    }
+  }
+
+  for (const key of singleFileKeys) {
+    const targetFilePath = path.join(targetDir, `${key}.js`);
+    const distFilePath = path.join(distDir, `${key}.js`);
+
+    if (!fs.existsSync(targetFilePath) || !fs.existsSync(distFilePath)) {
+      continue;
+    }
+
+    const targetContent = await fs.promises.readFile(targetFilePath, "utf8");
+    const distContent = await fs.promises.readFile(distFilePath, "utf8");
+
+    if (targetContent !== distContent) {
+      const diff = createPatch(key, targetContent, distContent);
+      diffs.push({
+        file: `${key}.js`,
+        diff,
+      });
+    }
+  }
+
+  return diffs;
+}
+
+async function askForConsent() {
+  const questions = [
+    {
+      type: "confirm",
+      name: "consent",
+      message: "Do you want to override the files?",
+      default: false,
+    },
+  ];
+
+  return inquirer.prompt(questions);
+}
+
+async function overrideFiles(targetDir, distDir) {
+  for (const key of keys) {
+    const targetDirPath = path.join(targetDir, key);
+    const distDirPath = path.join(distDir, key);
+
+    if (!fs.existsSync(targetDirPath)) {
+      continue;
+    }
+
+    const targetFiles = await fs.promises.readdir(targetDirPath);
+    for (const file of targetFiles) {
+      const targetFilePath = path.join(targetDirPath, file);
+      const distFilePath = path.join(distDirPath, file);
+
+      if (!fs.existsSync(distFilePath)) {
+        continue;
+      }
+
+      await fs.promises.copyFile(targetFilePath, distFilePath);
+    }
+  }
+
+  for (const key of singleFileKeys) {
+    const targetFilePath = path.join(targetDir, `${key}.js`);
+    const distFilePath = path.join(distDir, `${key}.js`);
+
+    if (!fs.existsSync(targetFilePath) || !fs.existsSync(distFilePath)) {
+      continue;
+    }
+
+    await fs.promises.copyFile(targetFilePath, distFilePath);
+  }
 }
