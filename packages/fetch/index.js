@@ -45,8 +45,10 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 export const fetchProject = async (key, options) => {
   const { editor } = options
 
+  console.log(editor)
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
+    console.log(data)
     const evalData = IS_DEVELOPMENT
       ? deepDestringify(data)
       : deepDestringify(data.releases[0])
@@ -82,7 +84,8 @@ export const fetchProjectAsync = async (key, options, callback) => {
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-    const evalData = IS_DEVELOPMENT
+    console.log(data)
+    const evalData = (IS_DEVELOPMENT || options.isDevelopment)
       ? deepDestringify(data)
       : deepDestringify(data.releases[0])
     callback(evalData)

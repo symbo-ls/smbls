@@ -14,17 +14,20 @@ export const fetchSync = async (key, options) => {
 }
 
 export const fetchAsync = (app, key, options, callback) => {
+  console.log(key, options)
   if (key && options.editor) {
     try {
-      const defaultCallback = (data) => {
-        if (isObject(data.designsystem)) {
-          options.utils.init(data.designsystem)
-        }
-        if (isObject(data.state)) {
-          app.state.set(data.state)
-        }
+      if (options.editor.async) {
+        fetchProjectAsync(key, options, callback || ((data) => {
+          if (isObject(data.designsystem)) {
+            options.utils.init(data.designsystem)
+          }
+          if (isObject(data.state)) {
+            console.log(app)
+            app.state.set(data.state)
+          }
+        }))
       }
-      if (options.editor.async) fetchProjectAsync(key, options, callback || defaultCallback)
     } catch (e) {
       console.error(e)
     }
