@@ -66,6 +66,24 @@ export const Block = {
       }
     },
 
+    minSize: ({ props, deps }) => {
+      if (typeof props.heightRange !== 'string') return
+      const [minHeight, minWidth] = props.heightRange.split(' ')
+      return {
+        ...deps.transformSize('minHeight', minHeight),
+        ...deps.transformSize('minHeight', minWidth || minHeight)
+      }
+    },
+
+    maxSize: ({ props, deps }) => {
+      if (typeof props.heightRange !== 'string') return
+      const [maxHeight, maxWidth] = props.heightRange.split(' ')
+      return {
+        ...deps.transformSize('maxHeight', maxHeight),
+        ...deps.transformSize('maxHeight', maxWidth || maxHeight)
+      }
+    },
+
     direction: ({ props }) => !isUndefined(props.direction) && ({
       direction: props.direction
     }),
@@ -77,6 +95,7 @@ export const Block = {
     borderWidth: ({ props, deps }) => deps.transformSizeRatio('borderWidth', props),
 
     padding: ({ props, deps }) => deps.transformSizeRatio('padding', props),
+    scrollPadding: ({ props, deps }) => deps.transformSizeRatio('scrollPadding', props),
     paddingInline: ({ props, deps }) => {
       if (typeof props.paddingInline !== 'string') return
       const [paddingInlineStart, paddingInlineEnd] = props.paddingInline.split(' ')
