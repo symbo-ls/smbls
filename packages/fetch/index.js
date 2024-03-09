@@ -45,9 +45,6 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 export const fetchProject = async (key, options) => {
   const { editor } = options
 
-  console.log('proj')
-  console.log(options)
-
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
     const evalData = (IS_DEVELOPMENT || options.isDevelopment)
