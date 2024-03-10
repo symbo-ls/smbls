@@ -13,7 +13,6 @@ export const DESIGN_SYSTEM_OPTIONS = {
 }
 
 export const CREATE_OPTIONS = {
-  defaultConfig: true,
   state: {},
   pages: {},
   components: {},
