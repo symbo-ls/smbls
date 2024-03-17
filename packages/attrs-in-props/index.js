@@ -1034,6 +1034,7 @@ export const checkAttributeByTagName = (tag, attribute) => {
     return defaultAttributes.includes(attribute)
   }
 }
+
 export const checkEventFunctions = (key) => {
   if (!isString(key)) return false
   const normalizedKey = key.toLowerCase()
@@ -1054,4 +1055,14 @@ export const filterAttributesByTagName = (tag, props) => {
   }
 
   return filteredObject
+}
+
+export const exetuteAttrPerComponent = (component, element) => {
+  const attrObj = {}
+  if (component.attr) {
+    for (const attrProp in component.attr) {
+      attrObj[attrProp] = component.attr[attrProp](element)
+    }
+  }
+  return attrObj
 }
