@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString, deepMerge, deepCloneWithExtnd } from '@domql/utils'
+import { isString, deepMerge, deepCloneWithExtend } from '@domql/utils'
 import { initEmotion } from './initEmotion'
 
 import * as uikit from '@symbo.ls/uikit'
@@ -44,7 +44,7 @@ export const prepareState = (options, App) => {
   const state = {}
   if (options.state) utils.deepMerge(state, options.state)
   if (App && App.state) deepMerge(state, App.state)
-  return deepCloneWithExtnd(state)
+  return deepCloneWithExtend(state)
 }
 
 export const preparePages = options => {
