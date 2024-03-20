@@ -14,7 +14,7 @@ import { depth } from './Shape/style'
 import { isUndefined, isString } from '@domql/utils'
 
 export const getSystemTheme = ({ context, state }) => {
-  const rootState = state && state.__root
+  const rootState = state && state.root
   return rootState && rootState.globalTheme ? rootState.globalTheme : context.designSystem && context.designSystem.globalTheme
 }
 

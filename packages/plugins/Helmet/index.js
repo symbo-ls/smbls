@@ -82,7 +82,7 @@ export const Helmet = {
         const domElement = el.querySelector(metaQuery) || createMetaElement(key, param[key])
         if (!domElement) continue
 
-        if (isObject(state.__root)) state.__root.$helmet = param
+        if (isObject(state.root)) state.root.$helmet = param
 
         if (key === 'title') {
           domElement.textContent = param[key]

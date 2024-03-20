@@ -36,7 +36,7 @@ export const toDashCase = val => val
   .replace(/-+/g, '-') // Replace consecutive dashes with a single dash
   .replace(/^-|-$/g, '') // Remove leading and trailing dashes
 
-export const toDescriptionCase = str => {
+export const toDescriptionCase = (str = '') => {
   const result = str.replace(/([A-Z])/g, ' $1')
   return result.charAt(0).toUpperCase() + result.slice(1)
 }

@@ -35,7 +35,7 @@ export const RouterLink = {
       if (stopPropagation) event.stopPropagation()
       if (!href) return
       const { utils, snippets, routerOptions } = ctx
-      const root = el.__ref.__root
+      const root = el.__ref.root
       const linkIsExternal = href.includes('http://') ||
         href.includes('https://') ||
         href.includes('mailto:') ||
