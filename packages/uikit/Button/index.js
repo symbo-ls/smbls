@@ -27,7 +27,7 @@ export const Button = {
   props: {
     fontSize: 'A',
     type: 'button',
-    border: 'none',
+    borderStyle: 'none',
     display: 'inline-flex',
     align: 'center center',
     textDecoration: 'none',
