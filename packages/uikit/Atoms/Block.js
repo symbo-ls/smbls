@@ -165,7 +165,7 @@ export const Block = {
     alignSelf: ({ props }) => !isUndefined(props.alignSelf) && ({
       alignSelf: props.alignSelf
     }),
-    order: ({ props }) => props.order && ({
+    order: ({ props }) => !isUndefined(props.order) && ({
       order: props.order
     }),
 
