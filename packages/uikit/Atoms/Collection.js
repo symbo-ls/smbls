@@ -24,11 +24,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__collectionCache = deepClone(param)
+          ref.__collectionCache = param
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__collectionCache = deepClone(param)
+        ref.__collectionCache = param
       }
 
       const obj = {
