@@ -1,10 +1,8 @@
 'use strict'
 
-import { Hgroup } from 'smbls'
-
 export const DefaultBlock = {
   tag: 'section',
-  extend: Hgroup,
+  extend: 'Hgroup',
   props: {
     flow: 'row',
     boxSizing: 'border-box',

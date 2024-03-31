@@ -1,7 +1,7 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, deepClone } from '@domql/utils'
+import { isString, isNot, isArray, isObject, isObjectLike, deepClone, deepCloneWithExtend } from '@domql/utils'
 
 export const Collection = {
   define: {
@@ -40,7 +40,7 @@ export const Collection = {
 
       for (const key in param) {
         const value = param[key]
-        obj[key] = isObjectLike(value) ? value : { value }
+        if (value) obj[key] = isObjectLike(value) ? value : { value }
       }
 
       el.removeContent()
@@ -83,7 +83,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
-      param = deepClone(param)
+      param = deepCloneWithExtend(param)
 
       if (ref.__stateCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
@@ -107,7 +107,7 @@ export const Collection = {
 
       for (const key in param) {
         const value = param[key]
-        obj[key] = { state: isObjectLike(value) ? value : { value } }
+        if (value) obj[key] = { state: isObjectLike(value) ? value : { value } }
       }
 
       el.removeContent()
@@ -151,7 +151,7 @@ export const Collection = {
 
       for (const key in param) {
         const value = param[key]
-        obj[key] = { props: isObjectLike(value) ? value : { value } }
+        if (value) obj[key] = { props: isObjectLike(value) ? value : { value } }
       }
 
       el.removeContent()

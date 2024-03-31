@@ -1,11 +1,10 @@
 'use strict'
 
-import { Flex, Icon } from '@symbo.ls/uikit'
 import { ColorBlock } from '../blocks'
 
 export const Themes = {
   tag: 'article',
-  extend: Flex,
+  extend: 'Flex',
 
   Banner: {
     Title: { props: { text: 'Themes' } },
@@ -46,23 +45,23 @@ export const Themes = {
           }
         },
         childExtend: {
-          extend: Flex,
+          extend: 'Flex',
           props: {
             flow: 'column',
             align: 'flex-start space-between',
             padding: 'Z1 Z2'
           },
           icons: {
-            extend: Flex,
+            extend: 'Flex',
             props: {
               gap: 'B',
               align: 'center space-between',
               minWidth: '100%'
             },
-            childExtend: Icon,
-            ...[
-              { props: { icon: 'sun' } },
-              { props: { icon: 'moon' } }
+            childExtend: 'Icon',
+            $propsCollection: [
+              { name: 'sun' },
+              { name: 'moon' }
             ]
           },
           title: {

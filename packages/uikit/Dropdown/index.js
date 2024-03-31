@@ -1,10 +1,11 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
-
 export const DropdownList = {
-  extend: Flex,
+  extend: 'Flex',
+
+  attr: {
+    dropdown: true
+  },
 
   props: {
     padding: '0 Y',
@@ -12,11 +13,19 @@ export const DropdownList = {
     flow: 'column',
     theme: 'quaternary',
     overflow: 'hidden auto',
-    style: { listStyleType: 'none' }
+    style: { listStyleType: 'none' },
+    transition: 'B defaultBezier',
+    transitionProperty: 'transform, opacity, visibility',
+
+    '.hidden': {
+      transform: 'translate3d(0,10%,0)',
+      opacity: 0,
+      visibility: 'hidden'
+    }
   },
 
   childExtend: {
-    extend: Button,
+    extend: 'Button',
     state: {},
     props: ({ key, state }) => ({
       active: state.active === key,

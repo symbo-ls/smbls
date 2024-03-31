@@ -1,15 +1,14 @@
 'use strict'
 
-import { Flex, Banner } from '@symbo.ls/uikit'
 import { shape } from '../blocks'
 
 export const Shapes = {
   tag: 'article',
-  extend: Flex,
+  extend: 'Flex',
 
   Header: {
     tag: 'header',
-    extend: Banner,
+    extend: 'Banner',
 
     Title: {
       props: {

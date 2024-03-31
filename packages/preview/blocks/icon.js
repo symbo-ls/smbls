@@ -1,6 +1,5 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/uikit'
 import { DefaultBlock } from './section'
 
 export const icon = {
@@ -13,7 +12,7 @@ export const icon = {
 
   Title: null,
   Paragraph: {
-    extend: Grid,
+    extend: 'Grid',
     props: {
       columns: 'repeat(7, 1fr)',
       gap: 'C',

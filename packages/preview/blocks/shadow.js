@@ -1,6 +1,5 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/uikit'
 import { DefaultBlock } from './section'
 
 export const shadow = {
@@ -14,7 +13,7 @@ export const shadow = {
   Title: null,
 
   Paragraph: {
-    extend: Grid,
+    extend: 'Grid',
     props: {
       columns: 'repeat(8, 1fr)',
       gap: 'C2',
