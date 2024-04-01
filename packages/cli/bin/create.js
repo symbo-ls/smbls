@@ -28,11 +28,13 @@ program
   .command('create')
   .description('Create and initialize a new project')
   .argument('dest', 'Project directory')
+  .option('--remote', 'Fetch from platform', true)
   .option('--domql', 'Use DOMQL in the project', true)
   .option('--react', 'Use React in the project (default)')
   .option('--angular', 'Use Angular in the project')
   .option('--vue2', 'Use Vue2 in the project')
   .option('--vue3', 'Use Vue3 in the project')
+  .option('--yarn', 'Install via yarn', true)
   .action(async (dest = 'symbols-starter-kit', options) => {
     // Determine framework
     let framework = 'domql'
@@ -53,16 +55,17 @@ program
     }
 
     console.log(`Cloning ${cloneUrl} into '${dest}'...`)
-    execSync(`git clone ${cloneUrl} ${dest}`)
+    execSync(`git clone ${cloneUrl} ${dest}` + options.remote ? ' -b feature/remote' : '')
 
     process.chdir(dest)
 
     const SYMBOLS_FILE_PATH = path.join(process.cwd(), 'symbols.json')
     addToJson(SYMBOLS_FILE_PATH, 'key', `${dest}.symbo.ls`)
+    addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${options.yarn ? 'yarn' : 'npm'}`)
 
     console.log('Installing Dependencies...')
     console.log()
-    execSync('npm i')
+    execSync('yarn')
     console.log()
     console.log(chalk.green.bold(dest), 'successfuly created!')
     console.log(`Done! run \`${chalk.bold('npm start')}\` to start the development server.`)
