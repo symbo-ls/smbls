@@ -3,7 +3,7 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
-import { execSync, spawnSync } from 'child_process'
+import { exec, execSync } from 'child_process'
 import { program } from './program.js'
 import { addToJson } from './init-helpers/addToJson.js'
 
@@ -28,13 +28,14 @@ program
   .command('create')
   .description('Create and initialize a new project')
   .argument('dest', 'Project directory')
+  .option('--verbose', 'Verbose output')
   .option('--remote', 'Fetch from platform', true)
   .option('--domql', 'Use DOMQL in the project', true)
   .option('--react', 'Use React in the project (default)')
   .option('--angular', 'Use Angular in the project')
   .option('--vue2', 'Use Vue2 in the project')
   .option('--vue3', 'Use Vue3 in the project')
-  .option('--yarn', 'Install via yarn', true)
+  .option('--package-manager <manager>', 'Choose the package manager (e.g., npm, yarn)', 'npm')
   .option('--clean-from-git', 'remove starter-kit git repository', true)
   .action(async (dest = 'symbols-starter-kit', options) => {
     // Determine framework
@@ -49,6 +50,7 @@ program
       framework = 'vue3'
     }
     const cloneUrl = REPO_URLS[framework]
+    const packageManager = options.packageManager || 'yarn'
 
     if (folderExists(dest)) {
       console.error(`Folder ${dest} already exists!`)
@@ -62,14 +64,30 @@ program
 
     const SYMBOLS_FILE_PATH = path.join(process.cwd(), 'symbols.json')
     addToJson(SYMBOLS_FILE_PATH, 'key', `${dest}.symbo.ls`)
-    addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${options.yarn ? 'yarn' : 'npm'}`)
+    addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${packageManager}`)
 
-    console.log('Installing Dependencies...')
+    console.log(`Installing dependencies using ${packageManager}...`)
+
+    const exc = exec(packageManager === 'yarn' ? 'yarn' : 'npm i')
+
+    if (options.verbose) {
+      exc.stdout.on('data', (data) => {
+        console.log(data)
+      })
+      exc.stderr.on('data', (data) => {
+        console.error(data)
+      })
+    } else {
+      console.log(chalk.dim('Use --verbose to print the output'))
+    }
+
     console.log()
-    spawnSync('yarn')
-    console.log()
-    console.log(chalk.green.bold(dest), 'successfuly created!')
-    console.log(`Done! run \`${chalk.bold('npm start')}\` to start the development server.`)
+
+    exc.on('close', (code) => {
+      console.log()
+      console.log(chalk.green.bold(dest), 'successfuly created!')
+      console.log(`Done! run \`${chalk.bold('cd ' + dest + '; ' + packageManager + ' start')}\` to start the development server.`)
+    })
 
     if (options.cleanFromGit) {
       fs.rmSync('.git', {
