@@ -35,6 +35,7 @@ program
   .option('--vue2', 'Use Vue2 in the project')
   .option('--vue3', 'Use Vue3 in the project')
   .option('--yarn', 'Install via yarn', true)
+  .option('--clean-from-git', 'remove starter-kit git repository', true)
   .action(async (dest = 'symbols-starter-kit', options) => {
     // Determine framework
     let framework = 'domql'
@@ -69,4 +70,11 @@ program
     console.log()
     console.log(chalk.green.bold(dest), 'successfuly created!')
     console.log(`Done! run \`${chalk.bold('npm start')}\` to start the development server.`)
+
+    if (options.cleanFromGit) {
+      fs.rmSync('.git', {
+        recursive: true,
+        force: true
+      })
+    }
   })

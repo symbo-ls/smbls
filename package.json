@@ -47,8 +47,6 @@
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "dependencies": {
-    "diff": "^5.2.0",
-    "inquirer": "^9.2.15",
     "kalduna": "^1.5.20"
   }
 }
