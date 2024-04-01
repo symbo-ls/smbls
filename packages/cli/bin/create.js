@@ -3,7 +3,7 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
-import { execSync } from 'child_process'
+import { execSync, spawnSync } from 'child_process'
 import { program } from './program.js'
 import { addToJson } from './init-helpers/addToJson.js'
 
@@ -55,7 +55,7 @@ program
     }
 
     console.log(`Cloning ${cloneUrl} into '${dest}'...`)
-    execSync(`git clone ${cloneUrl} ${dest}` + options.remote ? ' -b feature/remote' : '')
+    execSync(`git clone ${options.remote ? ' -b feature/remote' : ''} ${cloneUrl} ${dest}`)
 
     process.chdir(dest)
 
@@ -65,7 +65,7 @@ program
 
     console.log('Installing Dependencies...')
     console.log()
-    execSync('yarn')
+    spawnSync('yarn')
     console.log()
     console.log(chalk.green.bold(dest), 'successfuly created!')
     console.log(`Done! run \`${chalk.bold('npm start')}\` to start the development server.`)
