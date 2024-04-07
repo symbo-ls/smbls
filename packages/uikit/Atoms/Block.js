@@ -36,7 +36,7 @@ export const Block = {
     height: ({ props, deps }) => deps.transformSizeRatio('height', props),
 
     boxSize: ({ props, deps }) => {
-      if (typeof props.boxSize !== 'string') return
+      if (!isString(props.boxSize)) return
       const [height, width] = props.boxSize.split(' ')
       return {
         ...deps.transformSize('height', height),
@@ -47,7 +47,7 @@ export const Block = {
     minWidth: ({ props, deps }) => deps.transformSizeRatio('minWidth', props),
     maxWidth: ({ props, deps }) => deps.transformSizeRatio('maxWidth', props),
     widthRange: ({ props, deps }) => {
-      if (typeof props.widthRange !== 'string') return
+      if (!isString(props.widthRange)) return
       const [minWidth, maxWidth] = props.widthRange.split(' ')
       return {
         ...deps.transformSize('minWidth', minWidth),
@@ -58,7 +58,7 @@ export const Block = {
     minHeight: ({ props, deps }) => deps.transformSizeRatio('minHeight', props),
     maxHeight: ({ props, deps }) => deps.transformSizeRatio('maxHeight', props),
     heightRange: ({ props, deps }) => {
-      if (typeof props.heightRange !== 'string') return
+      if (!isString(props.heightRange)) return
       const [minHeight, maxHeight] = props.heightRange.split(' ')
       return {
         ...deps.transformSize('minHeight', minHeight),
@@ -67,8 +67,8 @@ export const Block = {
     },
 
     minSize: ({ props, deps }) => {
-      if (typeof props.heightRange !== 'string') return
-      const [minHeight, minWidth] = props.heightRange.split(' ')
+      if (!isString(props.minSize)) return
+      const [minHeight, minWidth] = props.minSize.split(' ')
       return {
         ...deps.transformSize('minHeight', minHeight),
         ...deps.transformSize('minWidth', minWidth || minHeight)
@@ -76,8 +76,8 @@ export const Block = {
     },
 
     maxSize: ({ props, deps }) => {
-      if (typeof props.heightRange !== 'string') return
-      const [maxHeight, maxWidth] = props.heightRange.split(' ')
+      if (!isString(props.maxSize)) return
+      const [maxHeight, maxWidth] = props.maxSize.split(' ')
       return {
         ...deps.transformSize('maxHeight', maxHeight),
         ...deps.transformSize('maxWidth', maxWidth || maxHeight)
@@ -97,7 +97,7 @@ export const Block = {
     padding: ({ props, deps }) => deps.transformSizeRatio('padding', props),
     scrollPadding: ({ props, deps }) => deps.transformSizeRatio('scrollPadding', props),
     paddingInline: ({ props, deps }) => {
-      if (typeof props.paddingInline !== 'string') return
+      if (!isString(props.paddingInline)) return
       const [paddingInlineStart, paddingInlineEnd] = props.paddingInline.split(' ')
       return {
         ...deps.transformSize('paddingInlineStart', paddingInlineStart),
@@ -119,7 +119,7 @@ export const Block = {
 
     margin: ({ props, deps }) => deps.transformSizeRatio('margin', props),
     marginInline: ({ props, deps }) => {
-      if (typeof props.marginInline !== 'string') return
+      if (!isString(props.marginInline)) return
       const [marginInlineStart, marginInlineEnd] = props.marginInline.split(' ')
       return {
         ...deps.transformSize('marginInlineStart', marginInlineStart),
@@ -127,7 +127,7 @@ export const Block = {
       }
     },
     marginBlock: ({ props, deps }) => {
-      if (typeof props.marginBlock !== 'string') return
+      if (!isString(props.marginBlock)) return
       const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
       return {
         ...deps.transformSize('marginBlockStart', marginBlockStart),
@@ -178,7 +178,7 @@ export const Block = {
       flexFlow: props.flexFlow + (props.reverse ? '-reverse' : '')
     }),
     flexAlign: ({ props }) => {
-      if (typeof props.flexAlign !== 'string') return
+      if (!isString(props.flexAlign)) return
       const [alignItems, justifyContent] = props.flexAlign.split(' ')
       return {
         display: 'flex',
@@ -201,7 +201,7 @@ export const Block = {
     }),
 
     size: ({ props, deps }) => {
-      if (typeof props.heightRange !== 'string') return
+      if (!isString(props.heightRange)) return
       const [minHeight, maxHeight] = props.heightRange.split(' ')
       return {
         ...deps.transformSizeRatio('minHeight', minHeight),
@@ -251,7 +251,7 @@ export const Gutter = {
   },
   class: {
     size: ({ props, deps }) => {
-      if (typeof props.size !== 'string') return
+      if (!isString(props.size)) return
       const [height, width] = props.size.split(' ')
       return {
         ...deps.getSpacingByKey('height', height),
