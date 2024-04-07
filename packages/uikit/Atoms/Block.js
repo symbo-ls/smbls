@@ -105,7 +105,7 @@ export const Block = {
       }
     },
     paddingBlock: ({ props, deps }) => {
-      if (isString(props.paddingBlock)) return
+      if (!isString(props.paddingBlock)) return
       const [paddingBlockStart, paddingBlockEnd] = props.paddingBlock.split(' ')
       return {
         ...deps.transformSize('paddingBlockStart', paddingBlockStart),
