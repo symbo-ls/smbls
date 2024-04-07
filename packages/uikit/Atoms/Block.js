@@ -1,6 +1,6 @@
 'use strict'
 
-import { isUndefined } from '@domql/utils'
+import { isUndefined, isString } from '@domql/utils'
 
 import {
   getSpacingBasedOnRatio,
@@ -71,7 +71,7 @@ export const Block = {
       const [minHeight, minWidth] = props.heightRange.split(' ')
       return {
         ...deps.transformSize('minHeight', minHeight),
-        ...deps.transformSize('minHeight', minWidth || minHeight)
+        ...deps.transformSize('minWidth', minWidth || minHeight)
       }
     },
 
@@ -80,7 +80,7 @@ export const Block = {
       const [maxHeight, maxWidth] = props.heightRange.split(' ')
       return {
         ...deps.transformSize('maxHeight', maxHeight),
-        ...deps.transformSize('maxHeight', maxWidth || maxHeight)
+        ...deps.transformSize('maxWidth', maxWidth || maxHeight)
       }
     },
 
@@ -105,7 +105,7 @@ export const Block = {
       }
     },
     paddingBlock: ({ props, deps }) => {
-      if (typeof props.paddingBlock !== 'string') return
+      if (isString(props.paddingBlock)) return
       const [paddingBlockStart, paddingBlockEnd] = props.paddingBlock.split(' ')
       return {
         ...deps.transformSize('paddingBlockStart', paddingBlockStart),

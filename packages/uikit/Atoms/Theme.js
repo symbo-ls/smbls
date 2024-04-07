@@ -143,7 +143,7 @@ export const Theme = {
       const globalTheme = deps.getSystemTheme(element)
       if (!props.backgroundImage) return
       return ({
-        boxShadow: deps.transformShadow(props.backgroundImage, globalTheme)
+        boxShadow: deps.transformShadow(props.shadow, globalTheme)
       })
     },
 

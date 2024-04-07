@@ -5,6 +5,7 @@ import {
   splitTransition,
   transformDuration
 } from '@symbo.ls/scratch'
+
 import { isUndefined } from 'smbls'
 
 export const Timing = {

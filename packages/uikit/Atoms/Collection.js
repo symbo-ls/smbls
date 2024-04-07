@@ -6,7 +6,11 @@ import { isString, isNot, isArray, isObject, isObjectLike, deepClone, deepCloneW
 export const Collection = {
   define: {
     $collection: (param, el, state) => {
-      if (!param) return
+      const { __ref: ref } = el
+      const children = isArray(el.props?.children)
+
+      if (children) param = children
+      else if (!param) return
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()
@@ -15,7 +19,6 @@ export const Collection = {
       if (isState(param)) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
-      const { __ref: ref } = el
       param = deepClone(param)
 
       if (ref.__collectionCache) {
