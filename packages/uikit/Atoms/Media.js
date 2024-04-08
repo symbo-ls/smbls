@@ -1,6 +1,6 @@
 'use strict'
 
-import { merge, isArray, overwriteShallow } from '@domql/utils'
+import { merge, isArray, overwriteDeep, overwriteShallow } from '@domql/utils'
 import { getSystemTheme } from './Theme'
 
 export const keySetters = {
@@ -130,13 +130,13 @@ const applyConditionalCaseProps = (key, props, result, element) => {
   const caseKey = key.slice(1)
   const isPropTrue = element.props[caseKey] || element.state[caseKey]
   if (!isPropTrue) return // remove classname if not here
-  return merge(result, convertPropsToClass(props, result, element))
+  return overwriteDeep(result, convertPropsToClass(props, result, element))
 }
 
 const applyConditionalFalsyProps = (key, props, result, element) => {
   const caseKey = key.slice(1)
   const isPropTrue = element.props[caseKey] || element.state[caseKey] === true
-  if (!isPropTrue) return merge(result, convertPropsToClass(props, result, element))
+  if (!isPropTrue) return overwriteDeep(result, convertPropsToClass(props, result, element))
 }
 
 const applyTrueProps = (props, result, element) => merge(result, convertPropsToClass(props, result, element))
@@ -166,9 +166,10 @@ const beforeClassAssign = (element, s) => {
           isForced: true,
           preventDefineUpdate: true
         })
-      } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
+      }
     }
     if (setter) setter(key, props[key], CLASS_NAMES, element)
+    else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
   }
 
   // override props
