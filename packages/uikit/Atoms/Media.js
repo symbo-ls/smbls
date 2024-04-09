@@ -173,11 +173,11 @@ const beforeClassAssign = (element, s) => {
   }
 
   // override props
-  if (props['^']) {
-    for (const key in props['^']) {
-      execClass(key, props, CLASS_NAMES, element)
-    }
-  }
+  // if (props['^']) {
+  //   for (const key in props['^']) {
+  //     execClass(key, props, CLASS_NAMES, element)
+  //   }
+  // }
 
   const parentProps = element.parent && element.parent.props
   if (parentProps && parentProps.spacingRatio && parentProps.inheritSpacingRatio) {
