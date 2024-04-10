@@ -5,7 +5,7 @@ import { isString, isNumber } from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const colorStringToRgbaArray = color => {
-  if (color === '') return
+  if (color === '') return [0, 0, 0, 0]
   if (color.toLowerCase() === 'transparent') return [0, 0, 0, 0]
 
   // convert #RGB and #RGBA to #RRGGBB and #RRGGBBAA
@@ -29,7 +29,7 @@ export const colorStringToRgbaArray = color => {
       // color set failed - some monstrous css rule is probably taking over the color of our object
       if (elem.style.color !== flag) return
       elem.style.color = color
-      if (elem.style.color === flag || elem.style.color === '') return // color parse failed
+      if (elem.style.color === flag || elem.style.color === '') return [0, 0, 0, 0] // color parse failed
       color = window.getComputedStyle(elem).color
       document.body.removeChild(elem)
     }
@@ -41,8 +41,7 @@ export const colorStringToRgbaArray = color => {
     return color.match(/[\.\d]+/g).map(a => +a) // eslint-disable-line
   }
 
-  // TODO: fix this
-  return []
+  return [0, 0, 0, 0]
 }
 
 export const mixTwoColors = (colorA, colorB, range = 0.5) => {

@@ -87,9 +87,21 @@ export const getMediaColor = (value, globalTheme, config) => {
 export const setColor = (val, key, suffix) => {
   const CONFIG = getActiveConfig()
 
-  if (isString(val) && val.slice(0, 2) === '--') val = getColor(val.slice(2))
+  if (isString(val) && val.slice(0, 2) === '--') {
+    val = getColor(val.slice(2))
+    if (!(
+      val.includes('rgb') ||
+      val.includes('var') ||
+      val.includes('#')
+    )) {
+      if (CONFIG.verbose) console.warn(val, '- referred but does not exist')
+      val = val.split(' ')[0]
+    }
+    console.log(val)
+  }
 
   if (isArray(val)) {
+    console.log(val)
     return {
       '@light': setColor(val[0], key, 'light'),
       '@dark': setColor(val[1], key, 'dark')
@@ -109,7 +121,9 @@ export const setColor = (val, key, suffix) => {
   }
 
   const CSSVar = `--color-${key}` + (suffix ? `-${suffix}` : '')
-  const [r, g, b, a = 1] = colorStringToRgbaArray(val.value || val)
+  console.log(CONFIG, val.value, val)
+  const colorArr = colorStringToRgbaArray(val.value || val)
+  const [r, g, b, a = 1] = colorArr
   const alpha = parseFloat(a.toFixed(2))
   const rgb = `${r}, ${g}, ${b}`
   const value = `rgba(${rgb}, ${alpha})`

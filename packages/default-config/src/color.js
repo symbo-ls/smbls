@@ -15,14 +15,8 @@ export const COLOR = {
   purple: '#7345AF',
   white: 'white',
 
-  green2: '#04F214',
-  blue2: '#0474F2',
-  gray2: '#A3A3A8',
-  gray3: '#1C1C1F',
-  gray4: '#BDBDC1',
-
   title: ['--black 1', '--white 1'],
-  caption: ['--gray 1 +16', '--gray4 1'],
+  caption: ['--gray 1', '--gray4 1'],
   paragraph: ['--gray 1', '--gray 1 +65']
 }
 
