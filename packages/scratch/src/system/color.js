@@ -97,11 +97,9 @@ export const setColor = (val, key, suffix) => {
       if (CONFIG.verbose) console.warn(val, '- referred but does not exist')
       val = val.split(' ')[0]
     }
-    console.log(val)
   }
 
   if (isArray(val)) {
-    console.log(val)
     return {
       '@light': setColor(val[0], key, 'light'),
       '@dark': setColor(val[1], key, 'dark')
@@ -121,7 +119,6 @@ export const setColor = (val, key, suffix) => {
   }
 
   const CSSVar = `--color-${key}` + (suffix ? `-${suffix}` : '')
-  console.log(CONFIG, val.value, val)
   const colorArr = colorStringToRgbaArray(val.value || val)
   const [r, g, b, a = 1] = colorArr
   const alpha = parseFloat(a.toFixed(2))
