@@ -27,9 +27,15 @@ export const colorStringToRgbaArray = color => {
       const flag = 'rgb(1, 2, 3)'
       elem.style.color = flag
       // color set failed - some monstrous css rule is probably taking over the color of our object
-      if (elem.style.color !== flag) return
+      if (elem.style.color !== flag) {
+        document.body.removeChild(elem)
+        return
+      }
       elem.style.color = color
-      if (elem.style.color === flag || elem.style.color === '') return [0, 0, 0, 0] // color parse failed
+      if (elem.style.color === flag || elem.style.color === '') {
+        document.body.removeChild(elem)
+        return [0, 0, 0, 0] // color parse failed
+      }
       color = window.getComputedStyle(elem).color
       document.body.removeChild(elem)
     }
