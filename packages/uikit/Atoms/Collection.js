@@ -1,7 +1,7 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, deepClone, deepCloneWithExtend } from '@domql/utils'
+import { isString, isNot, isArray, isObject, isObjectLike, deepCloneWithExtend } from '@domql/utils'
 
 export const Collection = {
   define: {
