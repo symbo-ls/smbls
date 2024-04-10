@@ -19,7 +19,7 @@ export const Collection = {
       if (isState(param)) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
-      param = deepClone(param)
+      param = deepCloneWithExtend(param)
 
       if (ref.__collectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
@@ -27,11 +27,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__collectionCache = param
+          ref.__collectionCache = deepCloneWithExtend(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__collectionCache = param
+        ref.__collectionCache = deepCloneWithExtend(param)
       }
 
       const obj = {
@@ -49,7 +49,7 @@ export const Collection = {
       el.removeContent()
       el.content = obj
 
-      return obj
+      // return deepClone(param)
     },
 
     $setCollection: (param, el, state) => {
@@ -94,11 +94,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__stateCollectionCache = param
+          ref.__stateCollectionCache = deepCloneWithExtend(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__stateCollectionCache = param
+        ref.__stateCollectionCache = deepCloneWithExtend(param)
       }
 
       const obj = {
@@ -116,7 +116,7 @@ export const Collection = {
       el.removeContent()
       el.content = obj
 
-      return obj
+      // return deepClone(param)
     },
 
     $propsCollection: (param, el, state) => {
@@ -130,7 +130,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
-      param = deepClone(param)
+      param = deepCloneWithExtend(param)
 
       if (ref.__propsCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
@@ -138,11 +138,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__propsCollectionCache = param
+          ref.__propsCollectionCache = deepCloneWithExtend(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__propsCollectionCache = param
+        ref.__propsCollectionCache = deepCloneWithExtend(param)
       }
 
       const obj = {
@@ -168,7 +168,7 @@ export const Collection = {
       //   window.requestAnimationFrame(set)
       // } else set()
 
-      return obj
+      // return deepClone(param)
     }
   }
 }
