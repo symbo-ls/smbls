@@ -209,6 +209,10 @@ export const Block = {
       }
     },
 
+    resize: ({ props }) => !isUndefined(props.resize) && ({
+      resize: props.resize
+    }),
+
     columns: ({ props }) => !isUndefined(props.columns) && ({
       columns: props.columns
     }),

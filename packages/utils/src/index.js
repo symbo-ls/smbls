@@ -2,6 +2,7 @@
 
 import { isString, isObject, isArray, isNumber } from '@domql/utils'
 
+export * from './browser'
 export * from './scaling'
 export * from './date'
 
