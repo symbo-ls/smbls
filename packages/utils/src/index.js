@@ -5,6 +5,7 @@ import { isString, isObject, isArray, isNumber } from '@domql/utils'
 export * from './browser'
 export * from './scaling'
 export * from './date'
+export * from './fibonacci'
 
 export const copyStringToClipboard = str => {
   const el = document.createElement('textarea')
