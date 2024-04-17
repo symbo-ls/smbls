@@ -157,7 +157,7 @@ const beforeClassAssign = (element, s) => {
   for (const key in props) {
     const setter = keySetters[key.slice(0, 1)]
     if (globalTheme) {
-      if (key === 'theme') {
+      if (key === 'theme' && !props.themeModifier) {
         props.update({
           themeModifier: globalTheme
         }, {
