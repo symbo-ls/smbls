@@ -7,6 +7,7 @@
   "dependencies": {
     "@domql/router": "latest",
     "@domql/utils": "latest",
+    "@domql/globals": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest",
     "@symbo.ls/socket": "latest",

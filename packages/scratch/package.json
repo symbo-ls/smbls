@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@domql/utils": "latest",
+    "@domql/globals": "latest",
     "@symbo.ls/utils": "latest",
     "color-contrast-checker": "^1.5.0"
   },

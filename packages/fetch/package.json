@@ -13,7 +13,8 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "latest"
+    "@domql/utils": "latest",
+    "@domql/globals": "latest"
   },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",

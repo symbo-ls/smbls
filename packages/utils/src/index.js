@@ -6,6 +6,7 @@ export * from './browser'
 export * from './scaling'
 export * from './date'
 export * from './fibonacci'
+export * from './load'
 
 export const copyStringToClipboard = str => {
   const el = document.createElement('textarea')
