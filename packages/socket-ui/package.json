@@ -1,13 +1,13 @@
 {
   "name": "@symbo.ls/socket-ui",
-  "version": "2.11.315",
+  "version": "2.11.342",
   "main": "byld-socket.js",
   "module": "byld-socket.js",
   "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
   "dependencies": {
+    "@domql/globals": "latest",
     "@domql/router": "latest",
     "@domql/utils": "latest",
-    "@domql/globals": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest",
     "@symbo.ls/socket": "latest",

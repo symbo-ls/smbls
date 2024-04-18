@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/fetch",
-  "version": "2.11.318",
+  "version": "2.11.342",
   "license": "MIT",
   "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
   "type": "module",
@@ -13,8 +13,8 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "latest",
-    "@domql/globals": "latest"
+    "@domql/globals": "latest",
+    "@domql/utils": "latest"
   },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",

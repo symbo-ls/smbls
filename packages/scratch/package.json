@@ -2,7 +2,7 @@
   "name": "@symbo.ls/scratch",
   "description": "Φ / CSS framework and methodology.",
   "author": "symbo.ls",
-  "version": "2.11.338",
+  "version": "2.11.342",
   "files": [
     "src",
     "dist"
@@ -25,8 +25,8 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/utils": "latest",
     "@domql/globals": "latest",
+    "@domql/utils": "latest",
     "@symbo.ls/utils": "latest",
     "color-contrast-checker": "^1.5.0"
   },
