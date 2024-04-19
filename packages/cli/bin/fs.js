@@ -7,6 +7,9 @@ import { createPatch } from 'diff'
 
 const { deepDestringify, objectToString, joinArrays, isString } = utils
 
+const LOCAL_CONFIG_PATH =
+  process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
+
 const keys = ['components', 'snippets', 'pages']
 const singleFileKeys = ['designSystem', 'state']
 const defaultExports = ['pages', 'designSystem', 'state']
@@ -148,6 +151,8 @@ export async function createFs (
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
   }
+
+  await fs.writeFileSync(LOCAL_CONFIG_PATH, '{}')
 }
 
 async function findDiff (targetDir, distDir) {
