@@ -7,9 +7,9 @@ export const Collection = {
   define: {
     $collection: (param, el, state) => {
       const { __ref: ref } = el
-      const children = isArray(el.props?.children)
+      const hasChildren = isArray(el.props?.children)
 
-      if (children) param = children
+      if (hasChildren) param = el.props?.children
       else if (!param) return
 
       if (isString(param)) {
