@@ -9,8 +9,11 @@ export const Collection = {
       const { __ref: ref } = el
       const hasChildren = isArray(el.props?.children)
 
-      if (hasChildren) param = el.props?.children
-      else if (!param) return
+      if (hasChildren) {
+        param = el.props?.children
+        const childrenAs = el.props?.childrenAs
+        if (childrenAs) param = param.map(v => ({ [childrenAs]: v }))
+      } else if (!param) return
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()
