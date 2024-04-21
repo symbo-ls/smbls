@@ -15,10 +15,10 @@ export const loadJavascriptFile = (FILE_URL, async = true, doc = document, type 
       })
 
       scriptEle.addEventListener('error', (ev) => {
-        reject(new Error({
+        reject({
           status: false,
           message: `Failed to load the script ${FILE_URL}`
-        }))
+        })
       })
 
       doc.body.appendChild(scriptEle)
