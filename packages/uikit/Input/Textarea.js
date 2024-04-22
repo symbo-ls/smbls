@@ -40,7 +40,9 @@ export const Textarea = {
       placeholder: 'Leave us a message...',
       resize: 'none'
     }
-  }
+  },
+
+  html: (el, s) => el.props.value
 }
 
 export const TextareaWithButton = {
