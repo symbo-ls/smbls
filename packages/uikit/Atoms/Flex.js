@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString, isUndefined } from '@domql/utils'
+import { isString } from '@domql/utils'
 
 export const Flex = {
   props: {
@@ -18,8 +18,6 @@ export const Flex = {
         flexFlow: (direction || '') + (!direction.includes('-reverse') && reverse ? '-reverse' : '') + ' ' + (wrap || '')
       }
     },
-
-    verticalAlign: ({ props }) => !isUndefined(props.verticalAlign) && ({ flexWrap: props.verticalAlign }),
 
     wrap: ({ props }) => props.wrap && ({ flexWrap: props.wrap }),
     align: ({ props }) => {
