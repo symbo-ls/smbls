@@ -213,7 +213,7 @@ export const Block = {
       resize: props.resize
     }),
 
-    verticalAlign: ({ props }) => !isUndefined(props.verticalAlign) && ({ flexWrap: props.verticalAlign }),
+    verticalAlign: ({ props }) => !isUndefined(props.verticalAlign) && ({ verticalAlign: props.verticalAlign }),
 
     columns: ({ props }) => !isUndefined(props.columns) && ({
       columns: props.columns
