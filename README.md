@@ -13,10 +13,10 @@ For more in-depth exmplanation check out the official [documentation page](https
 
 
 ## Installation
-Install Symbols globally
+Install the CLI
 
 ```bash
-npm i smbls -g
+npm i @symbo.ls/cli -g
 ```
 
 or inside the project of your frontend
