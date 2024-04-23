@@ -22,7 +22,7 @@ npm i @symbo.ls/cli -g
 or inside the project of your frontend
 
 ```bash
-npm i smbls
+npm i smbls --save
 ```
 
 ## Initialization
