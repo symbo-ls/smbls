@@ -8,7 +8,7 @@ import * as uikit from '@symbo.ls/uikit'
 import { defaultDefine } from './define'
 import { initRouter } from './router'
 import { applySyncDebug } from './syncExtend'
-import { prepareComponents, prepareDesignSystem, prepareDocument, preparePages, prepareState, prepareUtils } from './prepare'
+import { prepareComponents, prepareDesignSystem, prepareDocument, preparePackages, preparePages, prepareState, prepareUtils } from './prepare'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
@@ -23,6 +23,7 @@ export const createDomqlElement = (App, options) => {
   const components = prepareComponents(options)
   const designSystem = scratcDesignSystem
   const snippets = prepareUtils(options)
+  preparePackages({ functions: snippets, ...options.files })
 
   const define = options.define || defaultDefine
 

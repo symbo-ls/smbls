@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString, deepMerge, deepCloneWithExtend } from '@domql/utils'
+import { isString, deepMerge, deepCloneWithExtend, merge } from '@domql/utils'
 import { initEmotion } from './initEmotion'
 
 import * as uikit from '@symbo.ls/uikit'
@@ -33,6 +33,15 @@ export const prepareComponents = options => {
 
 export const prepareUtils = options => {
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || {}) }
+}
+
+export const preparePackages = options => {
+  if (window.packages) {
+    window.packages = merge(window.packages, options)
+  } else {
+    window.packages = options
+    window.require = (key) => window.packages[key]
+  }
 }
 
 export const prepareDesignSystem = (options, key) => {
