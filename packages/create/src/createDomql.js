@@ -23,7 +23,7 @@ export const createDomqlElement = (App, options) => {
   const components = prepareComponents(options)
   const designSystem = scratcDesignSystem
   const snippets = prepareUtils(options)
-  preparePackages({ functions: snippets, ...options.files })
+  preparePackages({ functions: snippets, utils: snippets, ...options.files })
 
   const define = options.define || defaultDefine
 
