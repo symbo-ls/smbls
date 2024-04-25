@@ -8,7 +8,7 @@ import * as fetch from "@symbo.ls/fetch";
 import * as utils from "@domql/utils";
 import { convertFromCli } from "./convert.js";
 import { createFs } from "./fs.js";
-
+import { fs2js } from "./fs2.js";
 const { isObjectLike } = utils.default;
 const { fetchRemote } = fetch.default;
 
@@ -134,7 +134,4 @@ program
   .option("--verbose-code", "Verbose errors and warnings")
   .action(fetchFromCli);
 
-// program
-//   .command("push")
-//   .description("Push changes to platform")
-//   .action(fetchFromCli({ cache: true }));
+program.command("push").description("Push changes to platform").action(fs2js);
