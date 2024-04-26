@@ -1,17 +1,19 @@
 'use strict'
 
-import { isArray, isObject, deepClone } from '@domql/utils'
 import domqlConverterLib, { editorJsToDOMQL, initMutiny } from '@domql/converter'
 
 import { DomValueInterceptor } from './data/DomValueInterceptor'
+
+export { initMutiny, DomValueInterceptor, editorJsToDOMQL, domqlConverterLib }
 
 export const Editorjs = {
   on: {
     init: () => initMutiny()
   },
   define: {
-    $editorjs: (param, el, state) => {
+    $editorjs: (param, el, state, ctx) => {
       if (!param) return
+      const { isArray, isObject, deepClone } = ctx.utils
 
       if (isObject(param) && param.blocks) param = param.blocks
       if (!isArray(param)) return
@@ -29,3 +31,5 @@ export const Editorjs = {
     }
   }
 }
+
+export default Editorjs
