@@ -1,7 +1,5 @@
 'use strict'
 
-import { Flex, Focusable } from '@symbo.ls/atoms'
-
 export const UploadImage = {
   props: {
     padding: 'A+V',
@@ -15,7 +13,7 @@ export const UploadImage = {
 }
 
 export const UploadIcon = {
-  extend: [Focusable, Flex],
+  extend: ['Focusable', 'Flex'],
   tag: 'label',
 
   props: {

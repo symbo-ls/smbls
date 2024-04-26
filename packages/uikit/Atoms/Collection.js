@@ -12,7 +12,8 @@ export const Collection = {
       if (hasChildren) {
         param = el.props?.children
         const childrenAs = el.props?.childrenAs
-        if (childrenAs) param = param.map(v => ({ [childrenAs]: v }))
+        const extend = el.props?.childrenExtend
+        if (childrenAs) param = param.map(v => ({ extend, [childrenAs]: v }))
       } else if (!param) return
 
       if (isString(param)) {

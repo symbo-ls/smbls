@@ -4,8 +4,15 @@ export const Img = {
   tag: 'img',
 
   attr: {
-    src: ({ props, context }) => {
-      const src = props.src
+    src: (el) => {
+      const { props, context } = el
+      const { exec, isString, replaceLiteralsWithObjectFields } = context.utils
+      let src = exec(props.src, el)
+
+      if (isString(src) && src.includes('{{')) {
+        src = replaceLiteralsWithObjectFields(src, el.state)
+      }
+
       let isUrl
       try { isUrl = new URL(src) } catch (e) {}
       if (isUrl) return src
