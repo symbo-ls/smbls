@@ -23,7 +23,7 @@ export const createDomqlElement = (App, options) => {
   const components = prepareComponents(options)
   const designSystem = scratcDesignSystem
   const snippets = prepareUtils(options)
-  preparePackages({ functions: snippets, utils: snippets, ...options.files })
+  preparePackages({ functions: snippets, utils: snippets, ...options.files }, options)
 
   const define = options.define || defaultDefine
 
@@ -34,6 +34,7 @@ export const createDomqlElement = (App, options) => {
     extend,
     routes: options.pages,
     state,
+    data: {},
     context: {
       key,
       components,
@@ -48,6 +49,7 @@ export const createDomqlElement = (App, options) => {
       registry,
       emotion,
       routerOptions,
+      editor: options.editor,
       document: doc
     }
   }, doc.body, key, {

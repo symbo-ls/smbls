@@ -35,11 +35,11 @@ export const prepareUtils = options => {
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || {}) }
 }
 
-export const preparePackages = options => {
+export const preparePackages = (packages, options) => {
   if (window.packages) {
-    window.packages = merge(window.packages, options)
+    window.packages = merge(window.packages, packages)
   } else {
-    window.packages = options
+    window.packages = packages
     window.require = (key) => window.packages[key]
   }
 }

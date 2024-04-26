@@ -20,6 +20,7 @@ export const Hgroup = {
     },
 
     H: {
+      color: 'title',
       tag: 'h3',
       text: 'Heading',
       lineHeight: '1em',
@@ -31,6 +32,9 @@ export const Hgroup = {
       color: 'paragraph'
     }
   },
+
+  H: {},
+  P: {},
 
   Title: {
     extend: 'Flex',

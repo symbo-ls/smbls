@@ -89,9 +89,13 @@ export async function createFs (
       } else {
         await overrideFiles(cacheDir, targetDir)
         console.log('Files overridden successfully.')
+        console.log()
+        console.log(chalk.dim('\n----------------\n'))
       }
     } else {
       console.log('No differences found.')
+      console.log()
+      console.log(chalk.dim('\n----------------\n'))
     }
   }
 

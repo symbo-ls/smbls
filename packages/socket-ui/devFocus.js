@@ -2,7 +2,6 @@
 
 import * as smblsUI from '@symbo.ls/uikit'
 import { isObject } from '@domql/utils'
-// import { getColor } from '@symbo.ls/scratch' // TODO: add in pkg.json
 import { send } from '@symbo.ls/socket/client'
 
 export const DevFocus = {
@@ -106,7 +105,9 @@ export const DevFocus = {
       const el = ev.target.ref
       const component = findComponent(el)
       if (!component || !component.__ref.__componentKey || !state.debugging) return
-      send('route', `/export/${component.__ref.__componentKey}`)
+      send.call(el.__ref.root.data.socket, 'route', JSON.stringify({
+        componentKey: `${component.__ref.__componentKey}`
+      }))
       return false
     }
   }
@@ -114,7 +115,12 @@ export const DevFocus = {
 
 function findComponent (el) {
   if (!el || !el.__ref) return
-  if (el.__ref.__componentKey) return el
+  const components = el.context.components
+  const __componentKey = el.__ref.__componentKey || ''
+  const componentKey = __componentKey.split('_')[0].split('.')[0].split('+')[0]
+  if (componentKey && components[componentKey]) {
+    return el
+  }
   return findComponent(el.parent)
 }
 
