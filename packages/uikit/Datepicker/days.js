@@ -1,9 +1,7 @@
 'use strict'
 
-import { Button } from '@symbo.ls/button'
-
 export const DatePickerDay = {
-  extend: Button,
+  extend: 'Button',
   state: true,
 
   props: ({ state, key }) => {

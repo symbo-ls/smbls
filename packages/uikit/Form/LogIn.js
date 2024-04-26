@@ -1,6 +1,5 @@
 'use strict'
 
-import { FlexButton } from '@symbo.ls/button'
 import { SocialLink } from '@symbo.ls/sociallink'
 import { CommonForm } from './CommonForm'
 
@@ -49,7 +48,7 @@ export const LogIn = {
       }
     },
     Submit: {
-      extend: FlexButton,
+      extend: '',
       props: { margin: 'A - - -' },
       text: 'Sign in'
     }

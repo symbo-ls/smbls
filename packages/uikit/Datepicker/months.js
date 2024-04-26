@@ -1,7 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const DatePickerMonthsSlider = {
   extend: 'Flex',
   props: {

@@ -1,6 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { Avatar } from './Avatar'
 
 export const AvatarBundle = {

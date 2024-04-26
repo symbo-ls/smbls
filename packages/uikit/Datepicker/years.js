@@ -1,7 +1,5 @@
 'use strict'
 
-import { Button } from '@symbo.ls/button'
-
 export const DatePickerYears = {
   tag: 'aside',
   props: {
@@ -46,7 +44,7 @@ export const DatePickerYears = {
     },
 
     childExtend: {
-      extend: Button,
+      extend: 'Button',
       props: ({ state, text }) => ({
         fontSize: 'Y1',
         opacity: '.4',
