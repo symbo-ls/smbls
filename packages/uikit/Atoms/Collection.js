@@ -7,13 +7,12 @@ export const Collection = {
   define: {
     $collection: (param, el, state) => {
       const { __ref: ref } = el
-      const hasChildren = isArray(el.props?.children)
+      const { children, childrenAs, childrenExtend } = (el.props || {})
+      const hasChildren = isArray()
 
       if (hasChildren) {
-        param = el.props?.children
-        const childrenAs = el.props?.childrenAs
-        const extend = el.props?.childrenExtend
-        if (childrenAs) param = param.map(v => ({ extend, [childrenAs]: v }))
+        param = children
+        if (childrenAs) param = param.map(v => ({ extend: childrenExtend, [childrenAs]: v }))
       } else if (!param) return
 
       if (isString(param)) {
