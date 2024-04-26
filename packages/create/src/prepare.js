@@ -35,12 +35,13 @@ export const prepareUtils = options => {
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || {}) }
 }
 
-export const preparePackages = (packages, options) => {
-  if (window.packages) {
-    window.packages = merge(window.packages, packages)
+export const preparePackages = (packages, opts) => {
+  const windowOpts = opts.window || window
+  if (windowOpts.packages) {
+    windowOpts.packages = merge(windowOpts.packages, packages)
   } else {
-    window.packages = packages
-    window.require = (key) => window.packages[key]
+    windowOpts.packages = packages
+    windowOpts.require = (key) => windowOpts.packages[key]
   }
 }
 
@@ -76,5 +77,7 @@ export const prepareDocument = options => {
     if (!window.document) window.document = { body: {} }
     document = window.document // eslint-disable-line
   }
+  if (!options.window) options.window = window
+  if (!options.document) options.document = document
   return options.parent || options.document || document
 }

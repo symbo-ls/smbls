@@ -172,7 +172,7 @@ export const Sync = {
 
   on: {
     render: (el, s, ctx) => {
-      el.data.socket = connect(ctx.key, {
+      ctx.socket = connect(ctx.key, {
         source: isLocalhost ? 'localhost' : 'client',
         socketUrl: isLocalhost ? 'localhost:13336' : 'socket.symbols.app',
         location: window.location.host,

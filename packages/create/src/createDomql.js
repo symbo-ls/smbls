@@ -49,6 +49,7 @@ export const createDomqlElement = (App, options) => {
       registry,
       emotion,
       routerOptions,
+      socket: options.socket,
       editor: options.editor,
       document: doc
     }
