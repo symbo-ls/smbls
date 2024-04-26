@@ -9,7 +9,8 @@ const returnStringExtend = (extend) => {
 }
 
 const getComponentKey = (el) => {
-  const __componentKey = el?.__ref.__componentKey
+  if (!el) return
+  const __componentKey = el.__ref.__componentKey
   const extendStr = el.extend && returnStringExtend(el.extend)
   const parentChildExtendStr = el.parent?.childExtend && returnStringExtend(el.parent?.childExtend)
   return (__componentKey || extendStr || parentChildExtendStr || '').split('_')[0].split('.')[0].split('+')[0]
