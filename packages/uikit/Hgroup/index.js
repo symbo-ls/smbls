@@ -5,8 +5,8 @@ export const Hgroup = {
   tag: 'hgroup',
 
   props: {
-    flow: 'column',
-    gap: 'Y',
+    flow: 'y',
+    gap: 'Y2',
 
     Title: {
       fontWeight: '700',
@@ -17,11 +17,24 @@ export const Hgroup = {
       margin: '0',
       color: 'caption',
       '> p': { margin: '0' }
+    },
+
+    H: {
+      tag: 'h3',
+      text: 'Heading',
+      lineHeight: '1em',
+      margin: '0'
+    },
+    P: {
+      text: 'Paragraph',
+      margin: '0',
+      color: 'paragraph'
     }
   },
 
   Title: {
     extend: 'Flex',
+    if: ({ parent }) => parent.props.title,
     props: ({ parent }) => ({
       text: parent.props.title,
       lineHeight: '1em'
@@ -30,6 +43,7 @@ export const Hgroup = {
 
   Paragraph: {
     extend: 'Flex',
+    if: ({ parent }) => parent.props.paragraph,
     props: ({ parent }) => ({
       text: parent.props.paragraph,
       margin: '0'

@@ -54,7 +54,7 @@
     "@symbo.ls/video": "latest"
   },
   "scripts": {
-    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2020 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
+    "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "gitHead": "d3f5eef98ea97df29f4f8fbacd30f30110881eb6",

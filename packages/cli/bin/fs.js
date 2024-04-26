@@ -152,6 +152,24 @@ export async function createFs (
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
   }
 
+  // Generate final package.json string
+  // function createPackageJson (key, data, distDir, update) {
+  // const genStr = JSON.stringify({
+  //   name: `@symbo.ls/${desiredFormat}-${packageName}`,
+  //   version: packageStruct.version ?? '1.0.0',
+  //   license: packageStruct.license ?? 'UNLICENSED',
+  //   dependencies: deps,
+  //   peerDependencies: {
+  //     smbls: '^18.2.0',
+  //     'react-dom': '^18.2.0'
+  //   },
+  //   main: 'index.js',
+  //   source: 'index.js'
+  // }, undefined, 2)
+
+  // fs.writeFileSync(destPath, genStr)
+  // }
+
   await fs.writeFileSync(LOCAL_CONFIG_PATH, '{}')
 }
 
