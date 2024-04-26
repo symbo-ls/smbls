@@ -74,8 +74,6 @@ program
             return
           }
 
-          console.log(event)
-          console.log(data)
           const parseData = JSON.parse(data)
           const d = parseData && parseData.DATA
 
