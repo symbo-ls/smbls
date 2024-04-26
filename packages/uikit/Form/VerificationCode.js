@@ -47,7 +47,7 @@ export const VerificationCode = {
   }
 
   // Form: {
-  //   extend: Flex,
+  //   extend: 'Flex',
   //   props: { flow: 'column' },
   //   NumberFields: {
   //     justifyContent: 'space-between',
@@ -94,7 +94,7 @@ export const VerificationCode = {
   //     gap: 'A2'
   //   },
   //   Fields: {
-  //     extend: Flex,
+  //     extend: 'Flex',
   //     props: {
   //       justifyContent: 'space-between',
   //       flex: '1'

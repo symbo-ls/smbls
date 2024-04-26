@@ -4,7 +4,7 @@ import { Flex } from '@symbo.ls/atoms'
 import { Avatar, SearchWithButton } from '@symbo.ls/uikit'
 
 export const ComponentsView = {
-  extend: Flex,
+  extend: 'Flex',
 
   state: {
     globalTheme: 'dark',
@@ -76,7 +76,7 @@ export const ComponentsView = {
   },
 
   cnt: {
-    extend: Flex,
+    extend: 'Flex',
 
     props: {
       flow: 'column',
@@ -245,7 +245,7 @@ export const ComponentsView = {
   },
 
   footer: {
-    extend: Flex,
+    extend: 'Flex',
     Search: {
       extend: SearchWithButton,
       props: {

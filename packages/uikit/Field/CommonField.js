@@ -1,10 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { IconText } from '@symbo.ls/icon'
-
 export const CommonField = {
-  extend: Flex,
+  extend: 'Flex',
   tag: 'label',
 
   props: {
@@ -27,7 +24,7 @@ export const CommonField = {
   },
 
   Hint: {
-    extend: IconText,
+    extend: 'IconText',
     props: {
       color: 'caption',
       align: 'center flex-start',
@@ -40,7 +37,7 @@ export const CommonField = {
 }
 
 export const CommonFieldTemplate = {
-  extend: CommonField,
+  extend: 'CommonField',
   Title: {},
   Field: {
     Icon: { props: { name: 'info' } },

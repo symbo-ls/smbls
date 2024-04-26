@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const Notification = {
-  extend: Flex,
+  extend: 'Flex',
 
   props: {
     theme: 'alert',
@@ -47,7 +45,7 @@ export const Notification = {
 }
 
 export const NotificationIndicator = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     text: '2',
     fontSize: 'Z',

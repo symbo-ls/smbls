@@ -4,7 +4,7 @@ import { Flex } from '@symbo.ls/atoms'
 import { List } from './List'
 
 export const ListWithTitle = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     flow: 'column',
     overflow: 'hidden',

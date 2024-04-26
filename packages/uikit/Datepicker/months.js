@@ -3,7 +3,7 @@
 import { Flex } from '@symbo.ls/atoms'
 
 export const DatePickerMonthsSlider = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     position: 'relative',
     overflow: 'hidden',

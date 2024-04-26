@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const User = {
-  extend: Flex,
+  extend: 'Flex',
 
   props: {
     boxSize: 'fit-content',

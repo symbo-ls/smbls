@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const Pills = {
-  extend: Flex,
+  extend: 'Flex',
 
   props: {
     gap: 'Y2'

@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const CheckIndicator = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     padding: 'Y1',
     round: '100%',
@@ -16,7 +14,7 @@ export const CheckIndicator = {
 }
 
 export const CheckIndicatorWithLabel = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     align: 'center flex-start',
     gap: 'Z'

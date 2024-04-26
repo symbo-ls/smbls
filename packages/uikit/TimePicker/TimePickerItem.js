@@ -1,7 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 const props = {
   align: 'center center',
   flow: 'column',
@@ -16,7 +14,7 @@ const props = {
 
 export const TimePickerItem = {
   tag: 'label',
-  extend: Flex,
+  extend: 'Flex',
   props,
   Button_plus: { icon: 'plus' },
   NumberInput: {

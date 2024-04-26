@@ -1,10 +1,9 @@
 'use strict'
 
 import { isDefined } from '@domql/utils'
-import { Flex } from '@symbo.ls/atoms'
 
 export const Tooltip = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     theme: 'dialog',
     background: 'black',

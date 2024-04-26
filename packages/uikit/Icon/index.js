@@ -1,10 +1,9 @@
 'use strict'
 
-import { Flex, Svg } from '@symbo.ls/atoms'
 import { isString } from '@domql/utils'
 
 export const Icon = {
-  extend: Svg,
+  extend: 'Svg',
   deps: { isString },
   props: ({ key, props, parent, context, deps }) => {
     const { ICONS, useIconSprite, verbose } = context && context.designSystem
@@ -53,7 +52,7 @@ export const Icon = {
 }
 
 export const IconText = {
-  extend: Flex,
+  extend: 'Flex',
 
   props: {
     align: 'center center',
@@ -80,7 +79,7 @@ export const IconText = {
 }
 
 export const FileIcon = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     theme: 'tertiary',
     boxSize: 'C1',

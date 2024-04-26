@@ -73,14 +73,14 @@ export const ListTemplate = {
 }
 
 export const DotList = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     flow: 'column',
     gap: 'Z2'
   },
   childExtend: {
     tag: 'caption',
-    extend: Flex,
+    extend: 'Flex',
     props: {
       align: 'center flex-start',
       lineHeight: '1em',

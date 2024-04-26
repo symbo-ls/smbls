@@ -1,6 +1,5 @@
 'use strict'
 
-import { Flex, Grid } from '@symbo.ls/atoms'
 import { Modal } from '@symbo.ls/modal'
 import { FieldWithTitle } from '@symbo.ls/field'
 
@@ -24,7 +23,7 @@ export const CommonForm = {
   },
 
   Form: {
-    extend: Flex,
+    extend: 'Flex',
     props: {
       flow: 'column',
       '> div ~ button': { padding: 'Z2+V1 -' },
@@ -33,7 +32,7 @@ export const CommonForm = {
     },
 
     Fields: {
-      extend: Grid,
+      extend: 'Grid',
       props: {
         columnGap: 'A',
         rowGap: 'A1'

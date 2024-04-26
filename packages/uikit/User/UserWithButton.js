@@ -1,10 +1,9 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { User } from './User'
 
 export const UserWithButton = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     boxSize: 'fit-content',
     theme: 'dialog',

@@ -1,11 +1,9 @@
 'use strict'
 
 import { router as defaultRouter } from '@domql/router'
-import { exec, isDefined } from '@domql/utils'
-import { Focusable } from '@symbo.ls/atoms'
 
 export const Link = {
-  extend: Focusable,
+  extend: 'Focusable',
   tag: 'a',
   props: {
     aria: {},
@@ -31,7 +29,13 @@ export const RouterLink = {
     click: (event, el, s) => {
       const { props, context: ctx } = el
       const { href: h, scrollToTop, stopPropagation } = props
-      const href = exec(h, el, s)
+      const { exec, isString, replaceLiteralsWithObjectFields, isDefined } = ctx.utils
+      let href = exec(h, el, s)
+
+      if (isString(href) && href.includes('{{')) {
+        href = replaceLiteralsWithObjectFields(href, s)
+      }
+
       if (stopPropagation) event.stopPropagation()
       if (!href) return
       const { utils, snippets, routerOptions } = ctx

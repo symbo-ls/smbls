@@ -1,6 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { FlexButton } from '@symbo.ls/button'
 import { SocialLink } from '@symbo.ls/sociallink'
 import { CommonForm } from './CommonForm'
@@ -59,7 +58,7 @@ export const LogIn = {
   DoubleHr: {},
 
   ModalFooter: {
-    extend: Flex,
+    extend: 'Flex',
     props: {
       flow: 'column',
       gap: 'Z2'

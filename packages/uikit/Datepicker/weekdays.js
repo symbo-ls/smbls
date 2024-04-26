@@ -18,7 +18,7 @@ export const DatePickerWeekDays = {
   },
   childExtend: {
     tag: 'span',
-    extend: Flex,
+    extend: 'Flex',
     props: {
       fontSize: 'Y1',
       textTransform: 'capitalize',

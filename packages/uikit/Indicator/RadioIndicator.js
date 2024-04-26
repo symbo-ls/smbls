@@ -1,7 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const RadioIndicator = {
   props: {
     padding: 'Z+V',
@@ -19,7 +17,7 @@ export const RadioIndicator = {
 }
 
 export const RadioIndicatorWithLabel = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     align: 'center flex-start',
     gap: 'Z'

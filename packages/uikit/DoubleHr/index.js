@@ -3,7 +3,7 @@
 import { Flex } from '@symbo.ls/atoms'
 
 export const DoubleHr = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     gap: 'B',
     fontSize: 'Z1',

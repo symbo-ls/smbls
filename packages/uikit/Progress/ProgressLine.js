@@ -1,7 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const ProgressLine = {
   tag: 'progress',
   props: {
@@ -27,7 +25,7 @@ export const ProgressLine = {
 }
 
 export const ProgressLineWithUnitValue = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     align: 'center flex-start',
     gap: 'Z1'

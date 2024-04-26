@@ -4,7 +4,7 @@ import { Flex } from '@symbo.ls/atoms'
 import { ListWithTitle } from './ListWithTitle'
 
 export const GroupList = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     flow: 'column',
     overflow: 'hidden',
@@ -15,7 +15,7 @@ export const GroupList = {
   },
 
   Header: {
-    extend: Flex,
+    extend: 'Flex',
     props: {
       text: 'Header',
       padding: 'Z2 A',
@@ -46,7 +46,7 @@ export const GroupList = {
     },
 
     Flex: {
-      extend: Flex,
+      extend: 'Flex',
       props: {
         flow: 'column',
         maxHeight: 'G2',

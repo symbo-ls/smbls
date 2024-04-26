@@ -1,6 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
 
 const props = {
@@ -13,7 +12,7 @@ const props = {
 
 export const TimeSwitcher = {
   props,
-  extend: Flex,
+  extend: 'Flex',
 
   childExtend: {
     extend: Button,
