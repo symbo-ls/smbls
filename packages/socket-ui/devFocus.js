@@ -72,7 +72,7 @@ export const DevFocus = {
           }
         }
       },
-      initUpdate: (ch, el, s) => {
+      beforeUpdate: (ch, el, s) => {
         const { area } = s
         const isDebugging = s.area && s.parent.debugging
 
