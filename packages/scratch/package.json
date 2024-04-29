@@ -7,7 +7,7 @@
     "src",
     "dist"
   ],
-  "repository": "https://github.com/symbo-ls/scratch",
+  "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
   "module": "src/index.js",
   "unpkg": "dist/iife/index.js",

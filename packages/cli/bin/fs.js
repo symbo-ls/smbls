@@ -2,9 +2,11 @@ import fs from 'fs'
 import chalk from 'chalk'
 import path from 'path'
 import utils from '@domql/utils'
+import * as smblsUtils from '@symbo.ls/utils'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 
+const { removeChars, toCamelCase } = smblsUtils.default
 const { deepDestringify, objectToString, joinArrays, isString } = utils
 
 const LOCAL_CONFIG_PATH =
@@ -125,7 +127,8 @@ export async function createFs (
   }
 
   async function createOrUpdateFile (dirPath, childKey, value, update) {
-    const filePath = path.join(dirPath, `${childKey}.js`)
+    const cleanKey = childKey.includes('-') || childKey.includes('/') ? removeChars(toCamelCase(childKey)) : childKey
+    const filePath = path.join(dirPath, `${childKey.replace('/', '-')}.js`)
 
     if (!update && fs.existsSync(filePath)) {
       return
@@ -133,10 +136,10 @@ export async function createFs (
 
     let stringifiedContent
     if (isString(value)) {
-      stringifiedContent = `export const ${childKey} = ${value}`
+      stringifiedContent = `export const ${cleanKey} = ${value}`
     } else {
       const content = deepDestringify(value)
-      stringifiedContent = `export const ${childKey} = ${objectToString(content)};`
+      stringifiedContent = `export const ${cleanKey} = ${objectToString(content)};`
     }
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
@@ -259,9 +262,9 @@ async function generateIndexjsFile (dirs, dirPath, key) {
   let indexContent
   if (key === 'pages') {
     indexContent =
-    dirs.map((d) => `import { ${d} } from './${d}';`).join('\n') + '\n' +
+    dirs.map((d) => `import { ${d.includes('-') || d.includes('/') ? removeChars(toCamelCase(d)) : d} } from './${d.replace('/', '-')}';`).join('\n') + '\n' +
     `export default {
-      ${dirs.map((d) => `'/${d === 'main' ? '' : d}': ${d},`).join('\n') + '\n'}
+      ${dirs.map((d) => `'/${d === 'main' ? '' : d}': ${d.includes('-') || d.includes('/') ? removeChars(toCamelCase(d)) : d},`).join('\n') + '\n'}
     }`
   } else if (key === 'root') {
     indexContent =

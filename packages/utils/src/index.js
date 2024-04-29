@@ -19,6 +19,10 @@ export const copyStringToClipboard = str => {
   document.body.removeChild(el)
 }
 
+export const removeChars = str => {
+  return str.replace(/[^a-zA-Z0-9_]/g, '')
+}
+
 export const toCamelCase = str => {
   return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
     return index === 0 ? word.toLowerCase() : word.toUpperCase()
