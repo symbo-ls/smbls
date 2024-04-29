@@ -111,7 +111,6 @@ export const fetchFromCli = async (opts) => {
       else console.log(debugMsg)
     }
 
-    console.log(convertOpt)
     if (body.components && convertOpt && framework) {
       convertFromCli(body.components, { ...opts, framework })
     }
