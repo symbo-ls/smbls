@@ -22,12 +22,10 @@ export const Hgroup = {
     H: {
       color: 'title',
       tag: 'h3',
-      text: 'Heading',
       lineHeight: '1em',
       margin: '0'
     },
     P: {
-      text: 'Paragraph',
       margin: '0',
       color: 'paragraph'
     }
@@ -56,7 +54,7 @@ export const Hgroup = {
 }
 
 export const HgroupRows = {
-  extend: Hgroup,
+  extend: 'Hgroup',
 
   Title: {
     extend: 'Flex',
@@ -70,7 +68,7 @@ export const HgroupRows = {
 }
 
 export const HgroupButton = {
-  extend: HgroupRows,
+  extend: 'HgroupRows',
 
   Title: {
     props: { justifyContent: 'space-between' },
