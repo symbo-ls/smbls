@@ -17,7 +17,7 @@ export const Img = {
       try { isUrl = new URL(src) } catch (e) {}
       if (isUrl) return src
       const file = context.files && context.files[src]
-      if (src.startsWith('/') && file) {
+      if (src?.startsWith('/') && file) {
         return file.content.src
       }
     },
