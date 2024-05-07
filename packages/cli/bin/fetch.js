@@ -44,8 +44,6 @@ export const fetchFromCli = async (opts) => {
 
     console.log('\nFetching from:', chalk.bold(endpoint), '\n')
 
-    console.log('metadata')
-    console.log(metadata, metadataOpt)
     const body = await fetchRemote(key, {
       endpoint,
       metadata: metadata || metadataOpt,

@@ -185,8 +185,6 @@ export async function createFs (
   // fs.writeFileSync(destPath, genStr)
   // }
 
-  console.log(LOCAL_CONFIG_PATH)
-  console.log(LOCAL_CONFIG_PATH2)
   await fs.writeFileSync(LOCAL_CONFIG_PATH, '{}')
 }
 
