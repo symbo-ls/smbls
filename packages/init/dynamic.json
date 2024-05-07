@@ -76,6 +76,229 @@
     "name": "",
     "email": "",
     "loading": true,
+    "TUTORIALS": {
+      "default": {
+        "title": "How to create Kangooroo Button",
+        "key": "default",
+        "data": [
+          {
+            "component": {
+              "extend": [
+                "Flex"
+              ],
+              "tag": "dialog",
+              "props": {
+                "align": "stretch flex-start",
+                "minWidth": "G",
+                "minHeight": "D",
+                "position": "relative",
+                "round": "A",
+                "gap": "A",
+                "theme": "dialog",
+                "flow": "y",
+                "padding": "A2",
+                "borderStyle": "none"
+              }
+            },
+            "key": "StepOne",
+            "title": "1. Creating Dialog component",
+            "description": "Let's create a box using dialog tag. Let's also add styles in properties to make it look-alike modal.",
+            "category": "",
+            "code": "",
+            "extends": [],
+            "tags": [
+              "Card"
+            ],
+            "state": "",
+            "props": {},
+            "settings": {
+              "gridOptions": {
+                "colspan": 4,
+                "rowspan": 1
+              }
+            },
+            "interactivity": [],
+            "dataTypes": []
+          },
+          {
+            "component": {
+              "extend": [
+                "Flex"
+              ],
+              "tag": "dialog",
+              "props": {
+                "boxSize": "fit-content",
+                "align": "stretch flex-start",
+                "minWidth": "G",
+                "minHeight": "D",
+                "position": "relative",
+                "round": "A",
+                "gap": "A",
+                "theme": "dialog",
+                "flow": "y",
+                "padding": "A2",
+                "borderStyle": "none"
+              },
+              "SquareButton": {
+                "theme": "transparent",
+                "position": "absolute",
+                "icon": "x",
+                "right": "A",
+                "top": "A",
+                "round": "100%"
+              }
+            },
+            "key": "StepTwo",
+            "title": "2. Adding an Icon",
+            "description": "Let's add a cross icon to the right left corner. Let's give it icon name from Design System Icons page and transparent theme.",
+            "category": "",
+            "code": "",
+            "extends": [],
+            "tags": [
+              "Card"
+            ],
+            "state": "",
+            "props": {},
+            "settings": {
+              "gridOptions": {
+                "colspan": 4,
+                "rowspan": 1
+              }
+            },
+            "interactivity": [],
+            "dataTypes": [],
+            "draft": false
+          },
+          {
+            "component": {
+              "extend": [
+                "Flex"
+              ],
+              "tag": "dialog",
+              "props": {
+                "boxSize": "fit-content",
+                "align": "stretch flex-start",
+                "minWidth": "G",
+                "minHeight": "D",
+                "position": "relative",
+                "round": "A",
+                "gap": "A",
+                "theme": "dialog",
+                "flow": "y",
+                "padding": "A2",
+                "borderStyle": "none"
+              },
+              "Hgroup": {
+                "H": {
+                  "tag": "h6"
+                }
+              },
+              "SquareButton": {
+                "theme": "transparent",
+                "position": "absolute",
+                "icon": "x",
+                "right": "A",
+                "top": "A",
+                "round": "100%"
+              }
+            },
+            "key": "StepThree",
+            "title": "3. Adding Hgroup",
+            "description": "Let's add builtin Hgroup component to display title and paragraph for the card",
+            "category": "",
+            "code": "",
+            "extends": [],
+            "tags": [
+              "Card"
+            ],
+            "state": "",
+            "props": {},
+            "settings": {
+              "gridOptions": {
+                "colspan": 4,
+                "rowspan": 1
+              }
+            },
+            "interactivity": [],
+            "dataTypes": [],
+            "draft": false
+          },
+          {
+            "component": {
+              "extend": [
+                "Flex"
+              ],
+              "tag": "dialog",
+              "props": {
+                "boxSize": "fit-content",
+                "align": "stretch flex-start",
+                "minWidth": "G",
+                "minHeight": "D",
+                "position": "relative",
+                "round": "A",
+                "gap": "A",
+                "theme": "dialog",
+                "flow": "y",
+                "padding": "A2",
+                "borderStyle": "none"
+              },
+              "Hgroup": {
+                "H": {
+                  "tag": "h6"
+                }
+              },
+              "SquareButton": {
+                "theme": "transparent",
+                "position": "absolute",
+                "icon": "x",
+                "right": "A",
+                "top": "A",
+                "round": "100%"
+              },
+              "Footer1": {
+                "extend": "Flex",
+                "childExtend": "Button",
+                "props": {
+                  "gap": "Z2",
+                  "margin": "- -V2",
+                  "children": [
+                    {
+                      "text": "Cancel"
+                    },
+                    {
+                      "text": "Attach file",
+                      "props": {
+                        "theme": "primary"
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "key": "StepFour",
+            "title": "4. Adding a Footer",
+            "description": "Let's add Footer section for \"Call to action\" buttons",
+            "category": "",
+            "code": "",
+            "extends": [],
+            "tags": [
+              "Card"
+            ],
+            "state": "",
+            "props": {},
+            "settings": {
+              "gridOptions": {
+                "colspan": 4,
+                "rowspan": 1
+              }
+            },
+            "interactivity": [],
+            "dataTypes": [],
+            "draft": false
+          }
+        ]
+      }
+    },
     "DEFAULT_TUTORIALS": {
       "default": {
         "title": "How to create Kangooroo Button",
@@ -3423,19 +3646,20 @@
     "CreatingNew": {
       "extend": "CommonFieldLike",
       "props": {
-        "gap": "A",
-        "title": {
+        "gap": "A"
+      },
+      "title": {
+        "props": {
           "text": "Creating a new",
           "padding": "- - - Y2"
-        },
-        "element": {
-          "gap": "A",
-          "columns": "repeat(4, 1fr)"
         }
       },
-      "title": {},
       "element": {
         "extend": "Grid",
+        "props": {
+          "gap": "A",
+          "columns": "repeat(4, 1fr)"
+        },
         "childExtend": {
           "extend": "ArticleMedium",
           "props": {
@@ -3456,7 +3680,7 @@
             }
           }
         },
-        "$stateCollection": "() => [{\n      title: 'property',\n      p: 'Welcome to the Symbols documentation page.'\n    }, {\n      title: 'component',\n      p: 'Welcome to the Symbols documentation page.'\n    }, {\n      title: 'layout',\n      p: 'Welcome to the Symbols documentation page.'\n    }, {\n      title: 'state',\n      p: 'Welcome to the Symbols documentation page.'\n    }]"
+        "$stateCollection": "() => [{\n          title: 'property',\n          p: 'Welcome to the Symbols documentation page.'\n        }, {\n          title: 'component',\n          p: 'Welcome to the Symbols documentation page.'\n        }, {\n          title: 'layout',\n          p: 'Welcome to the Symbols documentation page.'\n        }, {\n          title: 'state',\n          p: 'Welcome to the Symbols documentation page.'\n        }]"
       }
     },
     "TheDesignSystem": {
@@ -3986,7 +4210,7 @@
           "color": "white 0.35"
         }
       },
-      "$propsCollection": "(el, s, ctx) => {\n    const routeArr = (s.root.route || window.location.pathname).split('/').slice(1)\n    return routeArr\n      .map((text, i) => text === 'page' ? ({\n        href: '/pages',\n        text: 'Page'\n      }) : s.root.DATA.pages['/' + text] ? ({\n        href: '/' + routeArr.slice(0, i + 1).join('/'),\n        text: '/' + text\n      }) : ({\n        href: '/' + routeArr.slice(0, i + 1).join('/'),\n        text: i === 0 ? ctx.utils.toTitleCase(text) : text\n      }))\n      .filter((_, k) => {\n        const v = routeArr[k]\n        return !v.includes('-') && !v.includes('editor') && !v.includes('preview')\n      })\n  }"
+      "$propsCollection": "(el, s, ctx) => {\n        const routeArr = (s.root.route || window.location.pathname).split('/').slice(1)\n        return routeArr\n          .map((text, i) => text === 'page' ? ({\n            href: '/pages',\n            text: 'Page'\n          }) : s.root.DATA.pages['/' + text] ? ({\n            href: '/' + routeArr.slice(0, i + 1).join('/'),\n            text: '/' + text\n          }) : ({\n            href: '/' + routeArr.slice(0, i + 1).join('/'),\n            text: i === 0 ? ctx.utils.toTitleCase(text) : text\n          }))\n          .filter((_, k) => {\n            const v = routeArr[k]\n            return !v.includes('-') && !v.includes('editor') && !v.includes('preview')\n          })\n      }"
     },
     "PremiumBadge": {
       "extend": "Button",
@@ -4057,17 +4281,17 @@
             "extend": "ListInDropdown",
             "childExtend": {
               "extend": "KeyValueColumnFields",
-              "key": "({ state }) => state.key",
+              "key": "({\n                state\n              }) => state.key",
               "props": {
                 "Icon": {}
               },
               "Icon": {},
-              "text": "({ state }) => state.text"
+              "text": "({\n                state\n              }) => state.text"
             },
-            "$stateCollection": "() => [\n          { key: 'symbols', text: 'Platform' },\n          { key: 'domql', text: 'DOMQL' },\n          { key: 'react', text: 'React' }\n          // { key: 'iframe', text: 'Iframe' }\n        ]"
+            "$stateCollection": "() => [{\n                key: 'symbols',\n                text: 'Platform'\n              },\n              {\n                key: 'domql',\n                text: 'DOMQL'\n              },\n              {\n                key: 'react',\n                text: 'React'\n              }\n              // { key: 'iframe', text: 'Iframe' }\n            ]"
           },
           "on": {
-            "choose": "(ev, el, state, ctx) => {\n          const globalState = state.root\n          ctx.utils.setCookie('framework', ctx.state.key, 31)\n          globalState.update({ framework: ctx.state.key }, {\n            preventModalUpdate: true\n          })\n        }"
+            "choose": "(ev, el, state, ctx) => {\n              const globalState = state.root\n              ctx.utils.setCookie('framework', ctx.state.key, 31)\n              globalState.update({\n                framework: ctx.state.key\n              }, {\n                preventModalUpdate: true\n              })\n            }"
           }
         }
       }
@@ -4121,11 +4345,11 @@
         },
         "attr": {
           "type": "search",
-          "placeholder": "({ parent }) => parent.props.placeholder || 'Search properties'",
-          "autofocus": "({ parent }) => parent.props.autofocus || 'autofocus'"
+          "placeholder": "({\n            parent\n          }) => parent.props.placeholder || 'Search properties'",
+          "autofocus": "({\n            parent\n          }) => parent.props.autofocus || 'autofocus'"
         },
         "on": {
-          "input": "(event, { node, state }, ctx) => {\n        ctx.utils.debounceOnContext(state, state.update, 150)({ searched: node.value })\n      }"
+          "input": "(event, {\n            node,\n            state\n          }, ctx) => {\n            ctx.utils.debounceOnContext(state, state.update, 150)({\n              searched: node.value\n            })\n          }"
         }
       }
     },
@@ -4156,14 +4380,14 @@
         "gap": "B1"
       },
       "childExtend": "TutorialBanner",
-      "$stateCollection": "({ state }) => [{\n    title: 'Setting up global themes',\n    p: '15 sec tutorial',\n    theme: 'theme',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'Adding more colors',\n    p: '3 mins tutorial',\n    theme: 'color',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'How typography works',\n    p: '3 mins tutorial',\n    theme: 'typography',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'How to get spacing units',\n    p: '45 sec tutorial',\n    theme: 'space',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'Adding and using icons',\n    p: '45 sec tutorial',\n    theme: 'icons',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }]"
+      "$stateCollection": "({\n        state\n      }) => [{\n        title: 'Setting up global themes',\n        p: '15 sec tutorial',\n        theme: 'theme',\n        href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n      }, {\n        title: 'Adding more colors',\n        p: '3 mins tutorial',\n        theme: 'color',\n        href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n      }, {\n        title: 'How typography works',\n        p: '3 mins tutorial',\n        theme: 'typography',\n        href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n      }, {\n        title: 'How to get spacing units',\n        p: '45 sec tutorial',\n        theme: 'space',\n        href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n      }, {\n        title: 'Adding and using icons',\n        p: '45 sec tutorial',\n        theme: 'icons',\n        href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n      }]"
     },
     "Logo": {
       "extend": [
         "Link",
         "SquareButton"
       ],
-      "props": "() => ({\n    icon: 'logo',\n    active: window.location.pathname === '/dashboard',\n    fontSize: 'C',\n    href: '/',\n    position: 'relative',\n    color: 'gray13',\n    transition: 'B defaultBezier',\n    transitionProperty: 'background, color',\n    background: 'transparent 0',\n    '@dark': { color: 'white' },\n    '@light': { color: 'black' },\n    margin: 'W',\n    padding: 'Y',\n    round: '100%',\n    ':hover': {\n      '@dark': {\n        color: 'gray15',\n        background: 'gray3'\n      },\n      '@light': {\n        color: 'black',\n        background: 'white'\n      }\n    },\n    '.active': {\n      '@dark': {\n        color: 'gray15',\n        background: 'gray3'\n      },\n      '@light': {\n        color: 'black',\n        background: 'white'\n      }\n    }\n  })",
+      "props": "() => ({\n        icon: 'logo',\n        active: window.location.pathname === '/dashboard',\n        fontSize: 'C',\n        href: '/',\n        position: 'relative',\n        color: 'gray13',\n        transition: 'B defaultBezier',\n        transitionProperty: 'background, color',\n        background: 'transparent 0',\n        '@dark': {\n          color: 'white'\n        },\n        '@light': {\n          color: 'black'\n        },\n        margin: 'W',\n        padding: 'Y',\n        round: '100%',\n        ':hover': {\n          '@dark': {\n            color: 'gray15',\n            background: 'gray3'\n          },\n          '@light': {\n            color: 'black',\n            background: 'white'\n          }\n        },\n        '.active': {\n          '@dark': {\n            color: 'gray15',\n            background: 'gray3'\n          },\n          '@light': {\n            color: 'black',\n            background: 'white'\n          }\n        }\n      })",
       "Span": {
         "animation": "slideInOut",
         "animationDelay": "B",
@@ -4556,7 +4780,7 @@
       "Tabs": {},
       "DocsNavbar": {},
       "Grid": {
-        "state": "DEFAULT_TUTORIALS",
+        "state": "TUTORIALS",
         "childExtend": "TutorialItem",
         "props": {
           "columns": "repeat(2, 1fr)",
@@ -4569,7 +4793,7 @@
             "minWidth": "100%"
           }
         },
-        "$stateCollection": "(el, s, ctx) => {\n          const {\n            stringToObject\n          } = ctx.utils\n          return Object.values(s).map(v => ({\n            ...v,\n            component: stringToObject(v.data[v.data.length - 1].code)\n          }))\n        }"
+        "$stateCollection": "(el, s, ctx) => {\n      const {\n        stringToObject\n      } = ctx.utils\n      return Object.values(s).map(v => ({\n        ...v,\n        component: stringToObject(v.data[v.data.length - 1].code)\n      }))\n    }"
       }
     },
     "/docs/intro": {
