@@ -61,7 +61,7 @@
     "syncSchema": true,
     "isSidebarSticky": false,
     "showFileSidebar": false,
-    "componentShowFilter": "all",
+    "componentShowFilter": "recents",
     "layoutDirection": "right",
     "syncRouteNavigation": false,
     "previewSize": "unset",
@@ -3419,6 +3419,802 @@
         "bottom": "A1",
         "text": "Click and fill the required fields"
       }
+    },
+    "CreatingNew": {
+      "extend": "CommonFieldLike",
+      "props": {
+        "gap": "A",
+        "title": {
+          "text": "Creating a new",
+          "padding": "- - - Y2"
+        },
+        "element": {
+          "gap": "A",
+          "columns": "repeat(4, 1fr)"
+        }
+      },
+      "title": {},
+      "element": {
+        "extend": "Grid",
+        "childExtend": {
+          "extend": "ArticleMedium",
+          "props": {
+            "gap": "Y",
+            "round": "A",
+            "flex": "1",
+            "background": "rgba(104, 153, 209, .1)",
+            "padding": "A2 C D1 B",
+            "width": "100%",
+            "title": {
+              "text": "{{ title }}",
+              "fontSize": "B1",
+              "textTransform": "capitalize"
+            },
+            "p": {
+              "text": "{{ p }}",
+              "maxWidth": "F2"
+            }
+          }
+        },
+        "$stateCollection": "() => [{\n      title: 'property',\n      p: 'Welcome to the Symbols documentation page.'\n    }, {\n      title: 'component',\n      p: 'Welcome to the Symbols documentation page.'\n    }, {\n      title: 'layout',\n      p: 'Welcome to the Symbols documentation page.'\n    }, {\n      title: 'state',\n      p: 'Welcome to the Symbols documentation page.'\n    }]"
+      }
+    },
+    "TheDesignSystem": {
+      "extend": "CommonFieldLike",
+      "props": {
+        "gap": "A",
+        "title": {
+          "text": "The Design System",
+          "padding": "- - - Y2"
+        },
+        "element": {
+          "columns": "repeat(6, 1fr)",
+          "gap": "A",
+          "justifyItems": "stretch"
+        }
+      },
+      "title": {},
+      "element": {
+        "extend": "Grid",
+        "childExtend": {
+          "extend": "ArticleMedium",
+          "props": "({\n            state\n          }) => ({\n            gap: 'X2',\n            round: 'A',\n            flex: '1',\n            padding: 'B C E B1',\n            gridColumn: state.column,\n            gridRow: state.row,\n            background: state.background || 'rgba(104, 153, 209, .1)',\n            boxSizing: 'border-box',\n            justifySelf: 'stretch',\n            title: {\n              text: state.title,\n              fontSize: 'B1',\n              textTransform: 'capitalize'\n            },\n            p: {\n              text: state.p,\n              maxWidth: state.maxWidth\n            }\n          })"
+        },
+        "$stateCollection": "() => [{\n          title: 'Setup wizard',\n          p: 'Create a project configuration',\n          column: '1 / span 3',\n          background: 'rgba(186, 206, 171, .08)'\n        }, {\n          title: 'Timeline',\n          p: 'Record a snapshot of every patch change on the component, and learn the process of making.',\n          background: 'rgba(186, 206, 171, .08)',\n          column: '4 / span 3'\n        }, {\n          title: 'Lego like',\n          p: `Welcome to the Symbols documentation page. Here you'll learn everything to get your page up and running starting from the initial setup to the end production.`,\n          column: '1 / span 4',\n          background: 'rgba(12, 12, 13, 1)'\n        }, {\n          title: 'Accessibility',\n          p: `Welcome to the Symbols documentation page. Here you'll learn everything to get your page up and running starting from the initial setup to the end production.`,\n          maxWidth: 'G+A',\n          column: '5 / span 2',\n          background: 'rgba(12, 12, 13, 1)'\n        }]"
+      }
+    },
+    "DesignSystem": {
+      "extend": "CommonFieldLike",
+      "tag": "section",
+      "props": {
+        "gap": "A",
+        "title": {
+          "width": "100%",
+          "flex": "1",
+          "align": "center space-between",
+          "text": "All Properties",
+          "padding": "- Y2",
+          "color": "caption",
+          "caption": {
+            "text": "Design System",
+            "color": "paragraph"
+          }
+        },
+        "element": {
+          "columns": "repeat(8, 1fr)",
+          "gap": "Z"
+        },
+        "@mobileL": {
+          "margin": "0 -Y2"
+        }
+      },
+      "title": {
+        "extend": "Flex",
+        "caption": {}
+      },
+      "element": {
+        "extend": "Grid",
+        "props": {
+          "columns": "repeat(8, 1fr)",
+          "@screenM": {
+            "columns": "repeat(6, 1fr)"
+          },
+          "@tabletL": {
+            "columns": "repeat(4, 1fr)"
+          },
+          "@mobileL": {
+            "columns": "repeat(2, 1fr)"
+          }
+        },
+        "childExtend": {
+          "extend": "DesignElement",
+          "props": "({\n            state\n          }) => ({\n            theme: 'common-card-interactive',\n            padding: 'Z2 Y2 Z2 Z2',\n            justifyContent: 'space-between',\n            flex: '1',\n            round: 'A',\n            minHeight: 'F+A',\n            width: '100%',\n            href: state.href,\n            '@tabletL': {\n              maxWidth: 'none'\n            },\n\n            ':nth-child(2)': {\n              '> div > p': {\n                maxWidth: 'E3'\n              }\n            },\n\n            button: {\n              icon: state.icon,\n              padding: 'Y2',\n              background: state.background,\n              theme: state.theme\n            },\n            heading: {\n              gap: 'X2',\n              title: {\n                text: state.title,\n                fontSize: 'A'\n              },\n              p: {\n                text: state.p,\n                fontSize: 'Z',\n                maxWidth: state.maxWidth,\n                '@tabletL': {\n                  maxWidth: 'E3+A1'\n                }\n              }\n            }\n          })"
+        },
+        "$stateCollection": "() => [{\n          title: 'Colors',\n          href: '/docs/color',\n          p: 'Colorize styles manually',\n          icon: 'color',\n          theme: 'theme',\n          maxWidth: 'E'\n        }, {\n          title: 'Typography',\n          href: '/docs/typography',\n          p: 'Style a typed material',\n          icon: 'typography',\n          theme: 'typography',\n          maxWidth: 'E'\n        }, {\n          title: 'Spacing',\n          href: '/docs/space',\n          p: `Manage properties of a size`,\n          maxWidth: 'E2',\n          icon: 'space',\n          theme: 'space'\n        }, {\n          title: 'Shapes',\n          href: '/docs/shapes',\n          p: `Design an outline\n      to a chosen component`,\n          icon: 'shape',\n          theme: 'shape'\n        }, {\n          title: 'Icons',\n          href: '/docs/icons',\n          p: `Label a role of subject\n      with glyphs`,\n          icon: 'icons',\n          theme: 'icons'\n        }, {\n          title: 'Breakpoints',\n          href: '/docs/media',\n          p: `The devices and the breakpoints`,\n          icon: 'deviceMobileOutline'\n        }, {\n          title: 'Sequence',\n          href: '/docs/sequence',\n          p: `The mapping system of\n      generative sizing units`,\n          icon: 'stateColored'\n        }, {\n          title: 'Timing',\n          href: '/docs/timing',\n          p: `Tokens for transitions and animations`,\n          icon: 'clock'\n        }]"
+      }
+    },
+    "FrameworkCardsSwitcher": {
+      "extend": "CommonFieldLike",
+      "tag": "section",
+      "props": {
+        "gap": "A",
+        "@tabletL": {
+          "wrap": "wrap"
+        },
+        "title": {
+          "width": "100%",
+          "flex": "1",
+          "align": "center space-between",
+          "text": "Your Framework",
+          "padding": "- Y2",
+          "color": "caption"
+        },
+        "element": {
+          "gap": "A",
+          "columns": "repeat(8, 1fr)"
+        }
+      },
+      "title": {
+        "extend": "Flex",
+        "caption": null
+      },
+      "element": {
+        "extend": "Grid",
+        "props": {
+          "columns": "repeat(8, 1fr)",
+          "@tabletL": {
+            "columns": "repeat(4, 1fr)"
+          },
+          "@mobileL": {
+            "columns": "repeat(2, 1fr)"
+          }
+        },
+        "childExtend": {
+          "extend": "DesignElement",
+          "props": "({\n            state\n          }) => ({\n            active: state.root.framework === state.icon,\n            disabled: !!state.disabled,\n            href: null,\n            gap: 'A1',\n            padding: 'Z2 A Z',\n            justifyContent: 'space-between',\n            round: 'A',\n            flex: '1',\n            maxWidth: 'none',\n            fontWeight: '400',\n            width: '100%',\n            theme: 'common-card-outline-interactive',\n            borderWidth: '1px',\n            borderStyle: 'solid',\n\n            '.active': {\n              '@dark': {\n                borderWidth: '2px',\n                borderColor: 'indigo .1',\n                background: 'indigo .035',\n                ':hover': {\n                  background: 'indigo .045'\n                }\n              },\n              '@light': {\n                background: 'indigo .15',\n                borderColor: 'indigo .45'\n              }\n            },\n\n            '.disabled': {\n              pointerEvents: 'none',\n              opacity: 0.35\n            }\n          })",
+          "button": null,
+          "Flex": {
+            "props": {
+              "gap": "Y2",
+              "align": "center flex-start"
+            },
+            "Icon": "({\n              state\n            }) => ({\n              fontSize: 'B',\n              icon: state.icon\n            })",
+            "Label": {
+              "if": "({\n                state\n              }) => state.disabled",
+              "emoji": null,
+              "props": "({\n                state\n              }) => ({\n                fontSize: 'Z',\n                text: state.disabled,\n                theme: 'secondary'\n              })"
+            }
+          },
+          "heading": "({\n            state\n          }) => state.text",
+          "on": {
+            "click": "(ev, el, s, ctx) => {\n              if (s.disabled) return\n              const globalState = s.root\n              globalState.update({\n                framework: s.icon\n              })\n              ctx.utils.setCookie('framework', s.root.framework, 31)\n            }"
+          }
+        },
+        "$stateCollection": "() => [{\n          icon: 'domql',\n          text: 'DOMQL'\n        }, {\n          icon: 'react',\n          text: 'React'\n        }, {\n          icon: 'html',\n          text: 'HTML',\n          disabled: 'Soon'\n        }, {\n          icon: 'angular',\n          text: 'Angular',\n          disabled: 'Soon'\n        }, {\n          icon: 'svelte',\n          text: 'Svelte',\n          disabled: 'Soon'\n        }, {\n          icon: 'vue',\n          text: 'Vue',\n          disabled: 'Soon'\n        }, {\n          icon: 'figma',\n          text: 'Figma',\n          disabled: 'Soon'\n        }, {\n          icon: 'sketch',\n          text: 'Sketch',\n          disabled: 'Soon'\n        }]"
+      }
+    },
+    "Configuration": {
+      "attr": {
+        "id": "configuration"
+      },
+      "ArticleMedium": {
+        "padding": "0 0 B 0",
+        "title": {
+          "text": "Configuration"
+        },
+        "p": {
+          "text": "Symbols use your configuration to create the Design System. Then the properties will be matching to your components attributes. How you configure main settings will define how global document and component styles will work and look like."
+        }
+      },
+      "Paragraph": {
+        "margin": "0",
+        "children": [
+          "Create ",
+          {
+            "extend": "Labeled",
+            "text": "designSystem.js"
+          },
+          " file and insert the following code to check whether it's working: "
+        ]
+      },
+      "Code_2": {
+        "title": null,
+        "props": {
+          "margin": "Z1 0 0"
+        },
+        "code": {
+          "text": {
+            "symbols": "{ \n  color: {\n    oceanblue: '#112233'\n  },\n  theme: {\n    primary: {\n      text: 'white',\n      background: 'oceanblue 0.9',\n      ':hover': {\n        background: 'oceanblue'\n      }\n    }\n  }\n}"
+          }
+        }
+      },
+      "Paragraph_config": {
+        "display": "flex",
+        "margin": "A 0",
+        "flowFlow": "row",
+        "children": [
+          {
+            "props": {
+              "color": "orange .65"
+            },
+            "text": "Note:"
+          },
+          {
+            "text": "If configuration is not presented, Symbols will load ",
+            "props": {
+              "padding": "0 V1"
+            }
+          },
+          {
+            "extend": [
+              "DocsLink",
+              "IconCaption"
+            ],
+            "props": {
+              "href": "https://github.com/symbo-ls/smbls/tree/main/packages/default-config",
+              "target": "_blank",
+              "gap": "W1",
+              "name": {
+                "text": "default-config"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "Initialization": {
+      "attr": {
+        "id": "initialization"
+      },
+      "ArticleMedium": {
+        "padding": "0 0 B 0",
+        "title": {
+          "text": "Initialization"
+        },
+        "p": {
+          "text": "Depending on your configuration, Symbols will design a system that will produce properties matching the features of your components."
+        }
+      },
+      "content": {
+        "props": {
+          "flexFlow": "column",
+          "gap": "B2"
+        },
+        "initializeSymbols": {
+          "NumbCaptionArticleSmall": {
+            "title": {
+              "numb": {
+                "text": "1."
+              },
+              "name": {
+                "text": "Initialize Symbols"
+              }
+            },
+            "p": {
+              "text": "First, let's initialize Symbols by the following snippet:",
+              "padding": "0 0 0 A2"
+            }
+          },
+          "Code": {
+            "props": {
+              "margin": "- - 0 B"
+            },
+            "title": null,
+            "code": {
+              "text": {
+                "domql": "import { create } from 'smbls'\nimport designSystem from './designSystem'\n\ncreate({\n  tag: 'h1',\n  text: 'Hello!' \n}, {\n  designSystem\n  })",
+                "react": "import React from 'react'\nimport ReactDOM from 'react-dom'\nimport { SymbolsProvider } from '@symbo.ls/react'\nimport designSystem from './designSystem'\n\nfunction App () {\n  return (\n    <SymbolsProvider designSystem={designSystem}>\n      <h1>Hello!</h1>\n    </SymbolsProvider>\n  )\n}\n\nconst rootElement = document.getElementById(\"root\")\nReactDOM.render(<App />, rootElement)"
+              }
+            }
+          }
+        },
+        "testComponent": {
+          "NumbCaptionArticleSmall": {
+            "title": {
+              "numb": {
+                "text": "2."
+              },
+              "name": {
+                "text": "Test it out on component"
+              }
+            },
+            "p": {
+              "text": "Now we can import our first component and check if our color is working out"
+            }
+          },
+          "code": {
+            "extend": "Code",
+            "props": {
+              "margin": "- - 0 B"
+            },
+            "title": null,
+            "code": {
+              "text": {
+                "symbols": "{\n  props: {\n    theme: 'primary',\n    padding: 'X A1'\n  }\n}",
+                "domql": "const MyLabel = {\n  props: {\n    theme: 'primary',\n    padding: 'X A1'\n  }\n}",
+                "react": "import { Box } from '@symbo.ls/react'\n    \nconst MyLabel = () => {\n  return <Box theme=\"primary\" padding=\"X A1\">Label</Box>\n}"
+              }
+            }
+          }
+        },
+        "setProperties": {
+          "props": {
+            "flexFlow": "column",
+            "gap": "A2"
+          },
+          "NumbCaptionArticleSmall": {
+            "title": {
+              "props": {
+                "numb": {
+                  "text": "3."
+                },
+                "name": {
+                  "text": "Get to know to Fundamentals"
+                }
+              }
+            },
+            "p": {
+              "0": {
+                "text": "Learn deeper about the initialization process and see examples at ",
+                "props": {
+                  "padding": "0 V1"
+                }
+              },
+              "1": {
+                "extend": [
+                  "DocsLink"
+                ],
+                "props": {
+                  "href": "/docs/fundamentals",
+                  "text": "Fundamentals"
+                }
+              },
+              "extend": "Paragraph",
+              "props": {
+                "margin": "X2 0 0",
+                "padding": "0 0 0 A2"
+              }
+            }
+          }
+        }
+      },
+      "Paragraph": {
+        "display": "flex",
+        "margin": "B2 0 A",
+        "flowFlow": "row",
+        "children": [
+          {
+            "props": {
+              "color": "orange .65"
+            },
+            "text": "Note:"
+          },
+          "Head over to the ",
+          {
+            "extend": "DocsLink",
+            "props": {
+              "href": "/docs/design-system",
+              "text": "Design System"
+            }
+          },
+          " page and read more how to configure each system property."
+        ]
+      }
+    },
+    "Usage": {
+      "attr": {
+        "id": "usage"
+      },
+      "props": {
+        "flexFlow": "column",
+        "gap": "A"
+      },
+      "ArticleMedium": {
+        "title": {
+          "text": "Usage"
+        },
+        "p": {
+          "text": "Since we set everything, we can go and configure our design system and use Symbols components in our codebase."
+        }
+      },
+      "Flex": {
+        "props": {
+          "flow": "column",
+          "gap": "A1",
+          "children": [
+            {
+              "title": {
+                "href": "/docs/fundamentals",
+                "name": {
+                  "text": "Learn fundamentals"
+                }
+              }
+            },
+            {
+              "title": {
+                "href": "/docs/design-system",
+                "name": {
+                  "text": "Configure Design System properties"
+                }
+              }
+            },
+            {
+              "title": {
+                "href": "/components",
+                "name": {
+                  "text": "Check out components"
+                }
+              }
+            },
+            {
+              "title": {
+                "href": "/docs/atoms",
+                "name": {
+                  "text": "Learn using Atoms"
+                }
+              }
+            },
+            {
+              "title": {
+                "href": "/docs/components",
+                "name": {
+                  "text": "Learn how to create a component"
+                }
+              }
+            }
+          ],
+          "childrenAs": "props"
+        },
+        "childExtend": "DotCaptionArticle"
+      }
+    },
+    "DotCaptionArticle": {
+      "extend": "Article",
+      "props": {
+        "gap": "W1",
+        "p": {
+          "padding": "0 0 0 A1"
+        }
+      },
+      "title": {
+        "extend": [
+          "Link",
+          "DotCaption"
+        ]
+      }
+    },
+    "NumbCaptionArticleBig": {
+      "extend": "Article",
+      "props": {
+        "gap": "X2",
+        "p": {
+          "padding": "0 0 0 A2"
+        }
+      },
+      "title": {
+        "extend": "NumbCaption"
+      }
+    },
+    "NumbCaptionArticleSmall": {
+      "extend": "Article",
+      "props": {
+        "gap": "X",
+        "P": {
+          "margin": "- - - A2"
+        }
+      },
+      "title": {
+        "extend": "NumbCaption",
+        "props": {
+          "gap": "0"
+        }
+      }
+    },
+    "StarterKit": {
+      "attr": {
+        "id": "starter-kit"
+      },
+      "props": {
+        "flexFlow": "column",
+        "gap": "B"
+      },
+      "ArticleMedium": {
+        "title": {
+          "text": "Starter kit"
+        },
+        "p": {
+          "text": "To kick start your project, you can use one of these templates:"
+        }
+      },
+      "Flex": {
+        "props": {
+          "flexFlow": "column",
+          "gap": "B",
+          "children": [
+            {
+              "href": "https://github.com/symbo-ls/starter-kit",
+              "title": "starter-kit",
+              "description": "Example setup using Symbols"
+            },
+            {
+              "href": "https://github.com/symbo-ls/create-react-app",
+              "title": "create-react-app",
+              "description": "Example React setup using Symbols"
+            }
+          ],
+          "childrenAs": "state"
+        },
+        "childExtend": "IconLinkWithPath"
+      }
+    },
+    "Breadcrumb": {
+      "tag": "nav",
+      "props": {
+        "display": "flex",
+        "align": "center",
+        "childProps": {
+          "fontWeight": "400",
+          "textDecoration": "none",
+          "&[href]": {
+            "color": "title",
+            "&:hover": {
+              "textDecoration": "underline"
+            }
+          },
+          "&:not([href])": {
+            "cursor": "default"
+          },
+          "&:not(:first-child):before": {
+            "content": "\"\"",
+            "display": "inline-block",
+            "width": "2px",
+            "height": "2px",
+            "borderRadius": "100%",
+            "background": "white",
+            "verticalAlign": "0.2em",
+            "marginInline": ".65em",
+            "opacity": ".5"
+          }
+        }
+      },
+      "childExtend": {
+        "extend": [
+          "Link"
+        ],
+        "props": {
+          "scrollToTop": false,
+          "color": "white 0.35"
+        }
+      },
+      "$propsCollection": "(el, s, ctx) => {\n    const routeArr = (s.root.route || window.location.pathname).split('/').slice(1)\n    return routeArr\n      .map((text, i) => text === 'page' ? ({\n        href: '/pages',\n        text: 'Page'\n      }) : s.root.DATA.pages['/' + text] ? ({\n        href: '/' + routeArr.slice(0, i + 1).join('/'),\n        text: '/' + text\n      }) : ({\n        href: '/' + routeArr.slice(0, i + 1).join('/'),\n        text: i === 0 ? ctx.utils.toTitleCase(text) : text\n      }))\n      .filter((_, k) => {\n        const v = routeArr[k]\n        return !v.includes('-') && !v.includes('editor') && !v.includes('preview')\n      })\n  }"
+    },
+    "PremiumBadge": {
+      "extend": "Button",
+      "props": {
+        "theme": "secondary",
+        "padding": "X Z",
+        "fontSize": "Z",
+        "borderRadius": "Z2",
+        "fontWeight": "regular",
+        "background": "britishBlue"
+      },
+      "attr": {
+        "tabIndex": "-1"
+      },
+      "text": "Premium"
+    },
+    "FrameworkSwitcher": {
+      "extend": "DropdownParent",
+      "props": {
+        ":hover section": {
+          "transform": "translate3d(0, 0, 0)",
+          "visibility": "visible",
+          "opacity": "1"
+        },
+        "tooltip": {
+          "shape": "tooltip",
+          "shapeDirection": "bottom",
+          "shapeDirectionColor": "gray4",
+          "round": "Z2",
+          "position": "absolute",
+          "right": "0",
+          "bottom": "125%",
+          "transform": "translate3d(0, 10px, 0)",
+          "transition": "A",
+          "transitionProperty": "visibility, transform, opacity",
+          "opacity": "0",
+          "visibility": "hidden",
+          "fontFamily": "smbls",
+          "@dark": {
+            "background": "gray3"
+          },
+          "@light": {
+            "background": "white"
+          },
+          ":before": {
+            "left": "87.5%"
+          }
+        }
+      },
+      "tooltip": {
+        "tag": "section",
+        "dropdown": {
+          "extend": "Dropdown",
+          "props": {
+            "position": "relative",
+            "transform": "translate3d(0, 0, 0)",
+            "opacity": "1",
+            "left": "0",
+            "top": "0",
+            "theme": null,
+            "visibility": "auto",
+            "header": {
+              "text": "Choose Framework"
+            }
+          },
+          "header": {},
+          "list": {
+            "extend": "ListInDropdown",
+            "childExtend": {
+              "extend": "KeyValueColumnFields",
+              "key": "({ state }) => state.key",
+              "props": {
+                "Icon": {}
+              },
+              "Icon": {},
+              "text": "({ state }) => state.text"
+            },
+            "$stateCollection": "() => [\n          { key: 'symbols', text: 'Platform' },\n          { key: 'domql', text: 'DOMQL' },\n          { key: 'react', text: 'React' }\n          // { key: 'iframe', text: 'Iframe' }\n        ]"
+          },
+          "on": {
+            "choose": "(ev, el, state, ctx) => {\n          const globalState = state.root\n          ctx.utils.setCookie('framework', ctx.state.key, 31)\n          globalState.update({ framework: ctx.state.key }, {\n            preventModalUpdate: true\n          })\n        }"
+          }
+        }
+      }
+    },
+    "PropsSearch": {
+      "props": {
+        "width": "G",
+        "fontSize": "A",
+        "gap": "Y",
+        "flexAlign": "center flex-start",
+        "round": "B",
+        "@dark": {
+          "background": "gray3"
+        },
+        "@light": {
+          "background": "gray15"
+        }
+      },
+      "tag": "label",
+      "Icon": {
+        "icon": "search outline",
+        "color": "gray7",
+        "margin": "0 -B 0 B",
+        "zIndex": "1"
+      },
+      "Input": {
+        "props": {
+          "flex": "1",
+          "margin": "0 0 0 -A2",
+          "padding": "Z1 B Z1 C1",
+          "fontSize": "A",
+          "transition": "color 250ms ease",
+          "theme": null,
+          "background": "transparent 0",
+          "color": "title",
+          "@dark": {
+            ":placeholder": {
+              "color": "gray8"
+            }
+          },
+          "@light": {
+            ":placeholder": {
+              "color": "gray6"
+            }
+          },
+          "border": "none",
+          "outline": "none",
+          ":focus::placeholder": {
+            "color": "transparent"
+          }
+        },
+        "attr": {
+          "type": "search",
+          "placeholder": "({ parent }) => parent.props.placeholder || 'Search properties'",
+          "autofocus": "({ parent }) => parent.props.autofocus || 'autofocus'"
+        },
+        "on": {
+          "input": "(event, { node, state }, ctx) => {\n        ctx.utils.debounceOnContext(state, state.update, 150)({ searched: node.value })\n      }"
+        }
+      }
+    },
+    "ColorText": {
+      "extend": "Flex",
+      "props": {
+        "fontSize": "Z",
+        "alignItems": "center",
+        "gap": "Y1",
+        "whiteSpace": "nowrap",
+        "color": {
+          "boxSize": "B B",
+          "background": "red",
+          "round": "Y2"
+        },
+        "value": {
+          "text": "Background",
+          "color": "white"
+        }
+      },
+      "color": {},
+      "value": {}
+    },
+    "DesignSystemBanners": {
+      "extend": "Flex",
+      "props": {
+        "align": "stretch space-between",
+        "gap": "B1"
+      },
+      "childExtend": "TutorialBanner",
+      "$stateCollection": "({ state }) => [{\n    title: 'Setting up global themes',\n    p: '15 sec tutorial',\n    theme: 'theme',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'Adding more colors',\n    p: '3 mins tutorial',\n    theme: 'color',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'How typography works',\n    p: '3 mins tutorial',\n    theme: 'typography',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'How to get spacing units',\n    p: '45 sec tutorial',\n    theme: 'space',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }, {\n    title: 'Adding and using icons',\n    p: '45 sec tutorial',\n    theme: 'icons',\n    href: (window.location.pathname.includes('dashboard') ? '/dashboard' : '/design-system') + '/watch/colors'\n  }]"
+    },
+    "Logo": {
+      "extend": [
+        "Link",
+        "SquareButton"
+      ],
+      "props": "() => ({\n    icon: 'logo',\n    active: window.location.pathname === '/dashboard',\n    fontSize: 'C',\n    href: '/',\n    position: 'relative',\n    color: 'gray13',\n    transition: 'B defaultBezier',\n    transitionProperty: 'background, color',\n    background: 'transparent 0',\n    '@dark': { color: 'white' },\n    '@light': { color: 'black' },\n    margin: 'W',\n    padding: 'Y',\n    round: '100%',\n    ':hover': {\n      '@dark': {\n        color: 'gray15',\n        background: 'gray3'\n      },\n      '@light': {\n        color: 'black',\n        background: 'white'\n      }\n    },\n    '.active': {\n      '@dark': {\n        color: 'gray15',\n        background: 'gray3'\n      },\n      '@light': {\n        color: 'black',\n        background: 'white'\n      }\n    }\n  })",
+      "Span": {
+        "animation": "slideInOut",
+        "animationDelay": "B",
+        "animationDuration": "K",
+        "animationTimingFunction": "defaultBezier",
+        "position": "absolute",
+        "top": "50%",
+        "left": "85%",
+        "color": "orange",
+        "fontSize": ".45em",
+        "fontWeight": "500",
+        "text": "BETA",
+        "transform": "translate3d(0, 50%, 0)",
+        "opacity": "0"
+      }
+    },
+    "RequestAccessButtons": {
+      "extend": "SectionHeader",
+      "props": {
+        "flow": "column",
+        "align": "flex-start flex-start",
+        "gap": "B2",
+        "padding": "0 A2 0 C2",
+        "width": "G2",
+        "borderColor": "line",
+        "borderStyle": "solid",
+        "borderWidth": "0 0 0 1px",
+        "margin": "0"
+      },
+      "heading": {
+        "title": {
+          "text": "Get early access"
+        },
+        "p": {
+          "text": "We're kicking off invite-only. Get early signup to make it to the top."
+        }
+      },
+      "button": {
+        "extend": [
+          "Link",
+          "Button"
+        ],
+        "props": {
+          "margin": "0 0 0 -X",
+          "theme": "quaternary",
+          "fontWeight": "500",
+          "text": "Join up",
+          "href": "/signup"
+        }
+      },
+      "nav": null
     }
   },
   "pages": {
@@ -3682,9 +4478,9 @@
           "text": "Frontend functions can be called within the browser when you want to execute some browser related functionality on your users browser. It can be perfectly used on events such as onClick, onLoad and etc. Most often frontend functions are used to reuse some functionality or wrap API requests in one place."
         }
       },
-      "SuggestionAction_frontend": {
-        "extend": "Link",
-        "props": "() => ({\n          padding: 'D1',\n          textAlign: 'center',\n          fontWeight: 'regular',\n          round: 'B1',\n          maxWidth: 'I',\n          border: 'gray2 1 +4, 1px, solid',\n          ':hover': {\n            border: 'gray2 1 +4, 1px, solid',\n            background: 'gray2 .1',\n          },\n          text: 'Add frontend function',\n          href: window.location.pathname + '/add-function',\n        })"
+      "SuggestionAction": {
+        "text": "Add frontend function",
+        "href": "/page/docs/functions/add-function"
       },
       "Section": {
         "props": {
@@ -3775,6 +4571,27 @@
         },
         "$stateCollection": "(el, s, ctx) => {\n          const {\n            stringToObject\n          } = ctx.utils\n          return Object.values(s).map(v => ({\n            ...v,\n            component: stringToObject(v.data[v.data.length - 1].code)\n          }))\n        }"
       }
+    },
+    "/docs/intro": {
+      "tag": "article",
+      "props": {
+        "flexFlow": "column",
+        "gap": "C2"
+      },
+      "Hgroup": {
+        "H": {
+          "text": "Intro"
+        },
+        "P": {
+          "text": "Symbols is a Design System framework with an advanced toolchain that allows you to create flexible, accessible, and scalable user interfaces. We designed it in JavaScript for the node ecosystem that also can be used via cjs or require statements."
+        }
+      },
+      "GettingStarted": {},
+      "Installation": {},
+      "Configuration": {},
+      "Initialization": {},
+      "Usage": {},
+      "StarterKit": {}
     }
   },
   "snippets": {},
