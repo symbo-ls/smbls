@@ -10,7 +10,6 @@ export const Icon = {
     const { toCamelCase } = context && context.utils
     let iconName = props.name || props.icon || key
 
-    console.log(iconName)
     if (isString(iconName) && iconName.includes('{{')) {
       iconName = deps.replaceLiteralsWithObjectFields(iconName, state)
     }
