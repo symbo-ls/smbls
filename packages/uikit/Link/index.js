@@ -13,10 +13,14 @@ export const Link = {
     draggable: false
   },
   attr: {
-    href: (el) => {
+    href: (el, s) => {
       const { context: ctx } = el
-      const { exec } = ctx.utils
-      return exec(el.props.href, el) || exec(el.props, el).href
+      const { isString, exec, replaceLiteralsWithObjectFields } = ctx.utils
+      const href = exec(el.props.href, el) || exec(el.props, el).href
+      if (isString(href) && href.includes('{{')) {
+        return replaceLiteralsWithObjectFields(href, s)
+      }
+      return href
     },
     target: ({ props }) => props.target,
     'aria-label': ({ props }) => props.aria ? props.aria.label : props.text,

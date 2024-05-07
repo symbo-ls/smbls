@@ -11,8 +11,8 @@ const IS_DEVELOPMENT =
     : process.env.NODE_ENV === 'development'
 
 const SERVER_URL = IS_DEVELOPMENT
-  ? 'http://localhost:13335/get/'
-  : 'https://api.symbols.app/get/'
+  ? 'http://localhost:13335/get'
+  : 'https://api.symbols.app/get'
 
 const defaultOptions = {
   endpoint: SERVER_URL
@@ -30,9 +30,9 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 
   let response
   try {
-    response = await fetch(baseUrl + route, {
+    response = await fetch(baseUrl + '/' + route, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
+      headers: { 'Content-Type': 'application/json', 'X-AppKey': key, 'X-Metadata': options.metadata }
     })
 
     return await response.json()

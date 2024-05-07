@@ -18,8 +18,8 @@ const LOCAL_CONFIG_PATH =
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
 const DEFAULT_REMOTE_CONFIG_PATH = "https://api.symbols.app/"; // eslint-disable-line
 
-const API_URL_LOCAL = 'http://localhost:13335/get/'
-const API_URL = 'https://api.symbols.app/get/'
+const API_URL_LOCAL = 'http://localhost:13335/get'
+const API_URL = 'https://api.symbols.app/get'
 
 const rcFile = loadModule(RC_PATH); // eslint-disable-line
 const localConfig = loadModule(LOCAL_CONFIG_PATH); // eslint-disable-line
@@ -36,16 +36,19 @@ try {
 }
 
 export const fetchFromCli = async (opts) => {
-  const { dev, verbose, prettify, convert: convertOpt, update } = opts
+  const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update } = opts
   await rc.then(async (data) => {
-    const { key, framework, distDir } = data
+    const { key, framework, distDir, metadata } = data
 
     const endpoint = dev ? API_URL_LOCAL : API_URL
 
     console.log('\nFetching from:', chalk.bold(endpoint), '\n')
 
+    console.log('metadata')
+    console.log(metadata, metadataOpt)
     const body = await fetchRemote(key, {
       endpoint,
+      metadata: metadata || metadataOpt,
       onError: (e) => {
         console.log(chalk.red('Failed to fetch:'), key)
         if (verbose) console.error(e)
@@ -116,9 +119,9 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (update) {
-      createFs(body, distDir, update)
+      createFs(body, distDir, { update: true, metadata })
     } else {
-      createFs(body, distDir)
+      createFs(body, distDir, { metadata })
     }
   })
 }
@@ -129,6 +132,7 @@ program
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('--convert', 'Verbose errors and warnings', true)
+  .option('--metadata', 'Include metadata', false)
   .option('--update', 'overriding changes from platform')
   .option('--verbose-code', 'Verbose errors and warnings')
   .action(fetchFromCli)

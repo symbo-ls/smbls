@@ -5,26 +5,34 @@ import utils from '@domql/utils'
 import * as smblsUtils from '@symbo.ls/utils'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const { removeChars, toCamelCase } = smblsUtils.default
-const { deepDestringify, objectToString, joinArrays, isString } = utils
+const { deepDestringify, objectToString, joinArrays, isString, removeValueFromArray } = utils
 
-const LOCAL_CONFIG_PATH =
-  process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
+const LOCAL_CONFIG_PATH = path.resolve(__dirname, '/node_modules/@symbo.ls/init/dynamic.json')
+const LOCAL_CONFIG_PATH2 = process.cwd() + '/symbols.json'
 
+let singleFileKeys = ['designSystem', 'state']
 const keys = ['components', 'snippets', 'pages']
-const singleFileKeys = ['designSystem', 'state']
-const defaultExports = ['pages', 'designSystem', 'state']
+const defaultExports = ['pages', 'designSystem', 'state', 'schema']
 
 export async function createFs (
   body,
-  distDir = path.join(process.cwd(), 'dist'),
-  update = false
+  distDir = path.join(process.cwd(), 'smbls'),
+  opts = {}
 ) {
   if (!body) {
     console.error('No JSON object provided. Exiting.')
     return
   }
+
+  const { update, metadata } = opts
+
+  singleFileKeys = removeValueFromArray(singleFileKeys, 'schema')
+  if (metadata) singleFileKeys.push('schema')
 
   const targetDir = distDir
 
@@ -177,6 +185,8 @@ export async function createFs (
   // fs.writeFileSync(destPath, genStr)
   // }
 
+  console.log(LOCAL_CONFIG_PATH)
+  console.log(LOCAL_CONFIG_PATH2)
   await fs.writeFileSync(LOCAL_CONFIG_PATH, '{}')
 }
 

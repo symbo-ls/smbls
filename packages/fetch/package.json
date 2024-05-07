@@ -22,6 +22,6 @@
     "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build:iife": "npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "yarn build:cjs && yarn copy:package:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "prepublish": "rimraf -I dist && yarn build"
   }
 }
