@@ -12,12 +12,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const { removeChars, toCamelCase } = smblsUtils.default
 const { deepDestringify, objectToString, joinArrays, isString, removeValueFromArray } = utils
 
-const LOCAL_CONFIG_PATH = path.resolve(__dirname, '/node_modules/@symbo.ls/init/dynamic.json')
-const LOCAL_CONFIG_PATH2 = process.cwd() + '/symbols.json'
+const LOCAL_CONFIG_PATH = __dirname + '/symbols.json'
 
-let singleFileKeys = ['designSystem', 'state']
+let singleFileKeys = ['designSystem', 'state', 'files']
 const keys = ['components', 'snippets', 'pages']
-const defaultExports = ['pages', 'designSystem', 'state', 'schema']
+const defaultExports = ['pages', 'designSystem', 'state', 'files', 'schema']
 
 export async function createFs (
   body,

@@ -207,7 +207,7 @@
         }
       }
     },
-    "Layer": {
+    "LayerSimple": {
       "extend": "CommonFieldLike",
       "props": {
         "padding": "Z A A A",
@@ -2582,7 +2582,7 @@
       }
     },
     "Code": {
-      "props": "({\n        props\n      }) => ({\n        tag: 'pre',\n        display: 'block',\n        round: 'A',\n        padding: 'A B',\n        width: '100%',\n        maxWidth: 'H',\n        minHeight: 'E',\n        border: 'gray8, dashed, 1px',\n        text: 'Code: ' + (props?.code?.text?.domql || props?.code?.text || ''),\n      })",
+      "props": "({\n        props\n      }) => ({\n        tag: 'pre',\n        display: 'block',\n        round: 'A',\n        padding: 'A B',\n        width: '100%',\n        maxWidth: 'H',\n        minHeight: 'E',\n        border: 'gray8, dashed, 1px',\n        overflow: 'auto',\n        text: 'Code: ' + (props?.code?.text?.symbols || props?.code?.text?.domql || props?.code?.text || ''),\n      })",
       "title": null,
       "code": null,
       "buttons": null
@@ -2791,25 +2791,12 @@
           "id": "add-page"
         },
         "p": {
-          "text": "This modal helps you to add the page with metadata."
+          "text": "Creating pages allow you apply routing to pages you create and add more SEO and other metadata properties."
         }
       },
       "SuggestionAction": {
-        "extend": "Link",
-        "props": {
-          "padding": "D1",
-          "textAlign": "center",
-          "fontWeight": "regular",
-          "round": "B1",
-          "maxWidth": "I",
-          "border": "gray2 1 +4, 1px, solid",
-          ":hover": {
-            "border": "gray2 1 +4, 1px, solid",
-            "background": "gray2 .1"
-          },
-          "text": "Add a page",
-          "href": "/docs/pages/add-component/add-page"
-        }
+        "text": "Add a page",
+        "href": "/docs/pages/add-page"
       },
       "Section": {
         "attr": {
@@ -2825,7 +2812,8 @@
           "title": null,
           "code": {
             "text": {
-              "domql": "{\n  extend: 'Layout',\n  props: {\n    padding: 'C2 A',\n    background: 'gray',\n    borderRadius: 'C'\n  },\n  H1: {\n    text: 'Hello Symbols'\n  }\n}",
+              "symbols": "{\n  extend: 'Layout',\n  props: {\n    padding: 'C2 A',\n    background: 'gray',\n    borderRadius: 'C'\n  },\n  H1: {\n    text: 'Hello Symbols'\n  }\n}",
+              "domql": "{\n  '/': {\n    extend: 'Layout',\n    props: {\n      padding: 'C2 A',\n      background: 'gray',\n      borderRadius: 'C'\n    },\n    H1: {\n      text: 'Hello Symbols'\n    }\n  }\n}",
               "react": ""
             }
           }
@@ -3149,7 +3137,7 @@
       ],
       "props": {
         "round": "A",
-        "padding": "- - C1",
+        "padding": "- - C3",
         "borderWidth": "1px",
         "borderStyle": "solid",
         "borderColor": "line",
@@ -3180,6 +3168,256 @@
             "Icon": null
           }
         }
+      }
+    },
+    "Item": {
+      "extend": [
+        "ArticleMedium",
+        "Link"
+      ],
+      "state": {
+        "icon": "tree outline",
+        "title": "Design System",
+        "href": "/docs/design-system",
+        "p": "Organized brand tokens into design and code"
+      },
+      "props": {
+        "gap": "Y",
+        "round": "A",
+        "flex": "1",
+        "padding": "A2 C D1 B",
+        "width": "100%",
+        "href": "{{ href }}",
+        "Icon": {
+          "name": "{{ icon }}",
+          "fontSize": "B",
+          "margin": "- - C1"
+        },
+        "title": {
+          "text": "{{ title }}"
+        },
+        "p": {
+          "text": "{{ p }}",
+          "maxWidth": "F2"
+        }
+      }
+    },
+    "ItemOutline": {
+      "extend": [
+        "Item",
+        "ClickableItem"
+      ],
+      "props": "({\n        state\n      }) => ({\n        hasHref: !!state.href,\n        padding: 'A B',\n        theme: 'common-card-outline-interactive',\n        borderWidth: '1px',\n        borderStyle: 'solid',\n        '!hasHref': {\n          pointerEvents: 'none',\n          opacity: 0.35\n        }\n      })",
+      "Icon": {}
+    },
+    "Guidebook": {
+      "extend": "CommonFieldLike",
+      "props": {
+        "gap": "A",
+        "@mobileL": {
+          "margin": "0 -Y2"
+        },
+        "title": {
+          "text": "The Guidebook",
+          "padding": "- - - Y2"
+        },
+        "element": {
+          "gap": "A",
+          "columns": "repeat(5, 1fr)",
+          "overflow": "auto hidden",
+          "@screenM": {
+            "columns": "repeat(4, 1fr)"
+          },
+          "@tabletM": {
+            "columns": "repeat(3, 1fr)"
+          },
+          "@mobileL": {
+            "width": "calc(100% + var(--spacing-B) * 2)",
+            "margin": "0 -B",
+            "padding": "0 A2"
+          }
+        }
+      },
+      "title": {},
+      "element": {
+        "extend": "Grid",
+        "childExtend": "ItemOutline",
+        "$stateCollection": "() => [{\n          icon: 'tree outline',\n          title: 'Design System',\n          href: '/docs/design-system',\n          p: 'Organized brand tokens into design and code'\n        }, {\n          icon: 'grid outline',\n          title: 'Components',\n          href: '/docs/components',\n          p: 'Component templates can be adjusted to your styles'\n        }, {\n          icon: 'pages outline',\n          title: 'Pages',\n          href: '/docs/pages',\n          p: 'Your app, driven by a realtime data structures'\n        }, {\n          icon: 'code outline',\n          title: 'Content',\n          href: '/docs/content',\n          p: 'Add state and CMS to your components and pages'\n        }, {\n          icon: 'fn outline',\n          title: 'Functions',\n          href: '/docs/functions',\n          p: 'Create browser and node functions'\n        }, {\n          icon: 'folder outline',\n          title: 'Files',\n          href: '/docs/files',\n          p: 'Manage files and user our global CDN delivery'\n        }, {\n          icon: 'npm outline',\n          title: 'Dependencies',\n          href: '/docs/dependencies',\n          p: 'Using NPM depdendencies'\n        }, {\n          icon: 'noIcon',\n          title: 'Secrets',\n          href: '/docs/secrets',\n          p: 'Securely store secret keys'\n        }, {\n          icon: 'fuse outline',\n          title: 'Integrations',\n          href: '/docs/integrations',\n          p: 'Integration 3rd party libraries'\n        }, {\n          icon: 'upload outline',\n          title: 'Deployment',\n          href: '/docs/deployment',\n          p: 'Learn about publishing and deployment options'\n        }]"
+      }
+    },
+    "Contributors": {
+      "extend": "Flex",
+      "if": "({\n        state\n      }) => !state.userToken",
+      "props": {
+        "flow": "column",
+        "align": "center flex-start",
+        "padding": "- A D",
+        "gap": "B2",
+        "position": "relative"
+      },
+      "ArticleBig": {
+        "gap": "0",
+        "textAlign": "center",
+        "width": "fit-content",
+        "color": "white",
+        "title": {
+          "text": "Contributors",
+          "fontWeight": "700",
+          "@mobileL": {
+            "lineHeight": 1,
+            "margin": "- - W"
+          }
+        },
+        "p": {
+          "color": "gray9",
+          "text": "Thanks to these folks for the Github contribution"
+        }
+      },
+      "Flex": {
+        "props": {
+          "gap": "A2",
+          "align": "center center"
+        },
+        "childExtend": {
+          "extend": "Avatar",
+          "props": {
+            "boxSize": "C",
+            "cursor": "default",
+            "opacity": ".65",
+            "transition": "opacity defaultBezier A",
+            ":hover": {
+              "opacity": "1"
+            }
+          }
+        },
+        "$propsCollection": [
+          {
+            "alt": "nikoloza",
+            "src": "https://avatars.githubusercontent.com/u/962224?s=120&v=4"
+          },
+          {
+            "alt": "svinchy",
+            "src": "https://avatars.githubusercontent.com/u/36074573?s=120&v=4"
+          },
+          {
+            "alt": "gugakatsi",
+            "src": "https://avatars.githubusercontent.com/u/9134169?s=120&v=4"
+          },
+          {
+            "alt": "nikaoto",
+            "src": "https://avatars.githubusercontent.com/u/21026339?s=120&v=4"
+          },
+          {
+            "alt": "tokoyoung",
+            "src": "https://avatars.githubusercontent.com/u/33081308?s=120&v=4"
+          },
+          {
+            "alt": "AlexTogonidze",
+            "src": "https://avatars.githubusercontent.com/u/15612347?s=120&v=4"
+          },
+          {
+            "alt": "denismemphis",
+            "src": "https://avatars.githubusercontent.com/u/126146345?v=4"
+          },
+          {
+            "alt": "MariamZedginidze",
+            "src": "https://avatars.githubusercontent.com/u/66626385?v=4"
+          },
+          {
+            "alt": "rezicosta",
+            "src": "https://avatars.githubusercontent.com/u/26996528?v=4"
+          },
+          {
+            "alt": "lberia",
+            "src": "https://avatars.githubusercontent.com/u/17147261?v=4"
+          },
+          {
+            "alt": "irakliberidze",
+            "src": "https://avatars.githubusercontent.com/u/60253579?v=4"
+          },
+          {
+            "alt": "burdulixda",
+            "src": "https://avatars.githubusercontent.com/u/46271505?v=4"
+          },
+          {
+            "alt": "julianbraha",
+            "src": "https://avatars.githubusercontent.com/u/11775551?v=4"
+          },
+          {
+            "alt": "iviixii",
+            "src": "https://avatars.githubusercontent.com/u/6956643?v=4"
+          }
+        ]
+      }
+    },
+    "CreatingComponent": {
+      "extend": "Flex",
+      "props": {
+        "flow": "column",
+        "gap": "C1"
+      },
+      "ArticleMedium": {
+        "attr": {
+          "id": "create-component"
+        },
+        "title": {
+          "text": "Creating a component"
+        },
+        "p": {
+          "text": "This page will help you to start with components."
+        }
+      },
+      "SuggestionAction": {
+        "text": "Add a component",
+        "href": "/docs/components/add-component"
+      },
+      "Section": {
+        "props": {},
+        "ArticleMedium": {
+          "margin": "- - Z2",
+          "p": {
+            "text": "Example code:"
+          }
+        },
+        "Code": {
+          "title": null,
+          "code": {
+            "text": {
+              "domql": "{\n  props: {\n    padding: 'C2 A',\n    background: 'gray',\n    borderRadius: 'C'\n  },\n  H1: {\n    text: 'Hello Symbols'\n  }\n}",
+              "react": ""
+            }
+          }
+        }
+      }
+    },
+    "SuggestionAction": {
+      "extend": "Link",
+      "props": {
+        "position": "relative",
+        "padding": "D E3 D3",
+        "textAlign": "center",
+        "fontWeight": "regular",
+        "round": "B1",
+        "scrollToTop": false,
+        "maxWidth": "I",
+        "border": "gray2 1 +4, 1px, solid",
+        ":hover": {
+          "border": "gray2 1 +4, 1px, solid",
+          "background": "gray2 .1"
+        },
+        "text": "Add a page",
+        "href": "/docs/pages/add-page"
+      },
+      "IconText": {
+        "left": "0",
+        "textAlign": "center",
+        "width": "100%",
+        "gap": "X2",
+        "icon": "click outline",
+        "position": "absolute",
+        "color": "dim",
+        "bottom": "A1",
+        "text": "Click and fill the required fields"
       }
     }
   },
@@ -3266,35 +3504,74 @@
       },
       "ArticleMedium": {
         "title": {
-          "text": "Adding a page",
-          "id": "add-page"
+          "text": "Adding a dependency",
+          "id": "creating-dependencies"
         },
         "p": {
-          "text": "This modal helps you to add the page with metadata."
+          "text": "You can add NPM dependencies matching its pattern, where pacakge is the name of the package and version"
         }
       },
       "SuggestionAction": {
-        "extend": "Link",
-        "props": {
-          "padding": "D1",
-          "textAlign": "center",
-          "fontWeight": "regular",
-          "round": "B1",
-          "maxWidth": "I",
-          "border": "gray2 1 +4, 1px, solid",
-          ":hover": {
-            "border": "gray2 1 +4, 1px, solid",
-            "background": "gray2 .1"
-          },
-          "text": "Add a dependency",
-          "href": "/page/dependencies/add-dependency"
+        "text": "Add a dependency",
+        "href": "/page/dependencies/add-dependency"
+      },
+      "Example": {
+        "props": {},
+        "ArticleMedium_example": {
+          "margin": "- - Z2",
+          "p": {
+            "text": "This is example of package.json:"
+          }
+        },
+        "Code": {
+          "title": null,
+          "code": {
+            "text": {
+              "domql": "{\n  \"dependencies\": {\n    \"smbls\": \"^2.0.0\",\n    \"packageName\": \"packageVersion\"\n  }\n}",
+              "react": ""
+            }
+          }
         }
       },
       "Section": {
         "attr": {
-          "id": "create"
+          "id": "using-dependencies"
         },
         "ArticleMedium": {
+          "margin": "- - Z2",
+          "title": {
+            "text": "Using a dependency"
+          },
+          "p": {
+            "childProps": {
+              "display": "inline"
+            },
+            "children": [
+              "Using dependencies are achieved with invoking ",
+              {
+                "extend": "Labeled",
+                "text": "require()"
+              },
+              " function. ",
+              {
+                "extend": "Labeled",
+                "text": "require"
+              },
+              " function takes package as the first argument such as ",
+              {
+                "extend": "Labeled",
+                "text": "lodash"
+              },
+              ", ",
+              {
+                "extend": "Labeled",
+                "text": "@fontsource/montserrat"
+              },
+              " etc."
+            ]
+          }
+        },
+        "ArticleMedium_example": {
           "margin": "- - Z2",
           "p": {
             "text": "Example code:"
@@ -3334,8 +3611,8 @@
         }
       },
       "SuggestionAction": {
-        "extend": "Link",
-        "props": "() => ({\n          padding: 'D1',\n          textAlign: 'center',\n          fontWeight: 'regular',\n          round: 'B1',\n          maxWidth: 'I',\n          border: 'gray2 1 +4, 1px, solid',\n          ':hover': {\n            border: 'gray2 1 +4, 1px, solid',\n            background: 'gray2 .1',\n          },\n          text: 'Add a file',\n          href: window.location.pathname + '/add-file',\n        })"
+        "text": "Add a file",
+        "href": "/docs/files/add-file"
       },
       "Section": {
         "attr": {
@@ -3407,7 +3684,7 @@
       },
       "SuggestionAction_frontend": {
         "extend": "Link",
-        "props": "() => ({\n          padding: 'D1',\n          textAlign: 'center',\n          fontWeight: 'regular',\n          round: 'B1',\n          maxWidth: 'I',\n          border: 'gray2 1 +4, 1px, solid',\n          ':hover': {\n            border: 'gray2 1 +4, 1px, solid',\n            background: 'gray2 .1',\n          },\n          text: 'Add backend function',\n          href: window.location.pathname + '/add-backend-function',\n        })"
+        "props": "() => ({\n          padding: 'D1',\n          textAlign: 'center',\n          fontWeight: 'regular',\n          round: 'B1',\n          maxWidth: 'I',\n          border: 'gray2 1 +4, 1px, solid',\n          ':hover': {\n            border: 'gray2 1 +4, 1px, solid',\n            background: 'gray2 .1',\n          },\n          text: 'Add frontend function',\n          href: window.location.pathname + '/add-function',\n        })"
       },
       "Section": {
         "props": {
@@ -3427,8 +3704,8 @@
           }
         },
         "SuggestionAction": {
-          "extend": "Link",
-          "props": "() => ({\n            padding: 'D1',\n            textAlign: 'center',\n            fontWeight: 'regular',\n            round: 'B1',\n            maxWidth: 'I',\n            border: 'gray2 1 +4, 1px, solid',\n            ':hover': {\n              border: 'gray2 1 +4, 1px, solid',\n              background: 'gray2 .1',\n            },\n            text: 'Add frontend function',\n            href: window.location.pathname + '/add-function',\n          })"
+          "text": "Add backend function",
+          "href": "/settings/add-backend-function"
         },
         "ArticleSmall_accessibility": {
           "attr": {
@@ -3496,7 +3773,7 @@
             "minWidth": "100%"
           }
         },
-        "$stateCollection": "(el, s, ctx) => {\n      const { stringToObject }= ctx.utils\n      return Object.values(s).map(v => ({\n        ...v,\n        component: stringToObject(v.data[v.data.length - 1].code)\n      }))\n    }"
+        "$stateCollection": "(el, s, ctx) => {\n          const {\n            stringToObject\n          } = ctx.utils\n          return Object.values(s).map(v => ({\n            ...v,\n            component: stringToObject(v.data[v.data.length - 1].code)\n          }))\n        }"
       }
     }
   },
