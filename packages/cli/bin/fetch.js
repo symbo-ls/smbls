@@ -97,19 +97,21 @@ export const fetchFromCli = async (opts) => {
 
     const bodyString = JSON.stringify(body, null, prettify ?? 2)
 
-    try {
-      await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
+    if (!distDir) {
+      try {
+        await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
 
-      if (verbose) {
-        console.log(chalk.dim('\ndynamic.json has been updated:'))
-        console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
+        if (verbose) {
+          console.log(chalk.dim('\ndynamic.json has been updated:'))
+          console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
+        }
+
+        console.log(chalk.bold.green('\nSuccessfully wrote file'))
+      } catch (e) {
+        console.log(chalk.bold.red('\nError writing file'))
+        if (verbose) console.error(e)
+        else console.log(debugMsg)
       }
-
-      console.log(chalk.bold.green('\nSuccessfully wrote file'))
-    } catch (e) {
-      console.log(chalk.bold.red('\nError writing file'))
-      if (verbose) console.error(e)
-      else console.log(debugMsg)
     }
 
     if (body.components && convertOpt && framework) {
