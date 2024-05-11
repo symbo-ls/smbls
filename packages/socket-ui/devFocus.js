@@ -4,23 +4,10 @@ import * as smblsUI from '@symbo.ls/uikit'
 import { isObject, isString, isArray } from '@domql/utils'
 import { send } from '@symbo.ls/socket/client'
 
-const returnStringExtend = (extend) => {
-  return isString(extend) ? extend : isArray(extend) ? extend.find(extItem => isString(extItem)) : ''
-}
-
-const getComponentKey = (el) => {
-  if (!el) return
-  const __componentKey = el.__ref.__componentKey
-  const extendStr = el.extend && returnStringExtend(el.extend)
-  const parentChildExtendStr = el.parent && el.parent.childExtend && returnStringExtend(el.parent.childExtend)
-  return (__componentKey || extendStr || parentChildExtendStr || '').split('_')[0].split('.')[0].split('+')[0]
-}
-
 export const DevFocus = {
   props: {
-    '.preventSelect': {
-      userSelect: 'none'
-    }
+    '.preventSelect': { userSelect: 'none' },
+    '!preventSelect': { userSelect: 'auto' }
   },
 
   focus: {
@@ -134,7 +121,7 @@ export const DevFocus = {
         window.requestAnimationFrame(update)
       })
     },
-    click: (ev, elem, state) => {
+    mousedown: (ev, elem, state) => {
       const el = ev.target.ref
       const component = findComponent(el)
       const componentKey = getComponentKey(component)
@@ -146,20 +133,34 @@ export const DevFocus = {
       send.call(el.context.socket, 'route', JSON.stringify({
         componentKey: `${componentKey}`
       }))
+
+      ev.stopPropagation()
       return false
     }
   }
 }
 
+function returnStringExtend (extend) {
+  return isString(extend) ? extend : isArray(extend) ? extend.find(extItem => isString(extItem)) : ''
+}
+
+function getComponentKey (el) {
+  if (!el) return
+  const __componentKey = el.__ref.__componentKey
+  const extendStr = el.extend && returnStringExtend(el.extend)
+  const parentChildExtendStr = el.parent && el.parent.childExtend && returnStringExtend(el.parent.childExtend)
+  return (__componentKey || extendStr || parentChildExtendStr || '').split('_')[0].split('.')[0].split('+')[0]
+}
+
 function findComponent (el) {
   if (!el || !el.__ref) return
-  const { components, editor } = el.context
+  const { components, pages, editor } = el.context
   const componentKey = getComponentKey(el)
   if (editor && editor.onInitInspect) {
     const initInspectReturns = editor.onInitInspect(componentKey, el, el.state)
     if (!initInspectReturns) return findComponent(el.parent)
   }
-  if (componentKey && components[componentKey]) {
+  if (componentKey && (components[componentKey] || pages[componentKey])) {
     return el
   }
   return findComponent(el.parent)
@@ -177,14 +178,13 @@ export const inspectOnKey = (app, opts) => {
     }
   }
   windowOpts.onkeyup = (ev) => {
-    if ((!ev.altKey || !ev.shiftKey) && app.state.debugging) {
-      app.focus.state.update({ area: false })
-      app.state.update({ debugging: false, preventSelect: false }, { // TODO: does not update false
+    if ((!ev.altKey || !ev.shiftKey) && app.state.preventSelect) {
+      app.state.replace({ debugging: false, preventSelect: false }, {
         preventUpdate: true,
         preventContentUpdate: true,
-        preventRecursive: true,
-        preventPropsUpdate: true
+        preventRecursive: true
       })
+      app.focus.state.update({ area: false })
     }
   }
 }
