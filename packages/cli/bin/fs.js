@@ -5,17 +5,13 @@ import utils from '@domql/utils'
 import * as smblsUtils from '@symbo.ls/utils'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
-import { fileURLToPath } from 'url'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const { removeChars, toCamelCase } = smblsUtils.default
-const { deepDestringify, objectToString, joinArrays, isString, removeValueFromArray } = utils
-
-const LOCAL_CONFIG_PATH = __dirname + '/symbols.json'
+const { deepDestringify, objectToString, joinArrays, isString, isObject, removeValueFromArray } = utils
 
 let singleFileKeys = ['designSystem', 'state', 'files']
-const keys = ['components', 'snippets', 'pages']
+const directoryKeys = ['components', 'snippets', 'pages']
+
 const defaultExports = ['pages', 'designSystem', 'state', 'files', 'schema']
 
 export async function createFs (
@@ -41,7 +37,7 @@ export async function createFs (
     await fs.promises.mkdir(targetDir, { recursive: true })
 
     const promises = [
-      ...keys.map((key) =>
+      ...directoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, targetDir, update)
       ),
       ...singleFileKeys.map((key) => {
@@ -57,15 +53,13 @@ export async function createFs (
     ]
 
     await Promise.all(promises)
-    await generateIndexjsFile(joinArrays(keys, singleFileKeys), targetDir, 'root')
-  }
-
-  if (filesExist) {
+    await generateIndexjsFile(joinArrays(directoryKeys, singleFileKeys), targetDir, 'root')
+  } else if (filesExist) {
     const cacheDir = path.join(distDir, '.cache')
     await fs.promises.mkdir(cacheDir, { recursive: true })
 
     const cachePromises = [
-      ...keys.map((key) =>
+      ...directoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, cacheDir, true)
       ),
       ...singleFileKeys.map((key) => {
@@ -76,7 +70,7 @@ export async function createFs (
     ]
 
     await Promise.all(cachePromises)
-    await generateIndexjsFile(joinArrays(keys, singleFileKeys), cacheDir, 'root')
+    await generateIndexjsFile(joinArrays(directoryKeys, singleFileKeys), cacheDir, 'root')
 
     const diffs = await findDiff(cacheDir, targetDir)
     if (diffs.length > 0) {
@@ -114,7 +108,7 @@ export async function createFs (
 
     const dirs = []
 
-    if (body[key] && typeof body[key] === 'object') {
+    if (body[key] && isObject(body[key])) {
       const promises = Object.entries(body[key]).map(
         async ([entryKey, value]) => {
           // if pages
@@ -134,7 +128,7 @@ export async function createFs (
   }
 
   async function createOrUpdateFile (dirPath, childKey, value, update) {
-    const cleanKey = childKey.includes('-') || childKey.includes('/') ? removeChars(toCamelCase(childKey)) : childKey
+    const itemKey = childKey.includes('-') || childKey.includes('/') ? removeChars(toCamelCase(childKey)) : childKey
     const filePath = path.join(dirPath, `${childKey.replace('/', '-')}.js`)
 
     if (!update && fs.existsSync(filePath)) {
@@ -143,10 +137,12 @@ export async function createFs (
 
     let stringifiedContent
     if (isString(value)) {
-      stringifiedContent = `export const ${cleanKey} = ${value}`
+      stringifiedContent = `export const ${itemKey} = ${value}`
     } else {
       const content = deepDestringify(value)
-      stringifiedContent = `export const ${cleanKey} = ${objectToString(content)};`
+      // console.log('ON DEEPDESTR:')
+      // console.log(content.components.Configuration)
+      stringifiedContent = `export const ${itemKey} = ${objectToString(content)};`
     }
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
@@ -183,14 +179,12 @@ export async function createFs (
 
   // fs.writeFileSync(destPath, genStr)
   // }
-
-  await fs.writeFileSync(LOCAL_CONFIG_PATH, '{}')
 }
 
 async function findDiff (targetDir, distDir) {
   const diffs = []
 
-  for (const key of keys) {
+  for (const key of directoryKeys) {
     const targetDirPath = path.join(targetDir, key)
     const distDirPath = path.join(distDir, key)
 
@@ -288,7 +282,7 @@ async function generateIndexjsFile (dirs, dirPath, key) {
 }
 
 async function overrideFiles (targetDir, distDir) {
-  for (const key of keys) {
+  for (const key of directoryKeys) {
     const targetDirPath = path.join(targetDir, key)
     const distDirPath = path.join(distDir, key)
 

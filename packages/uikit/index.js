@@ -31,13 +31,4 @@ export * from '@symbo.ls/sociallink'
 export * from '@symbo.ls/dialog'
 export * from '@symbo.ls/modal'
 export * from '@symbo.ls/list'
-export * from '@symbo.ls/timepicker'
 export * from '@symbo.ls/dropdown'
-export * from '@symbo.ls/form'
-export * from '@symbo.ls/upload'
-export * from '@symbo.ls/user'
-
-export * from '@symbo.ls/banner'
-
-export * from '@symbo.ls/table'
-export * from '@symbo.ls/card'

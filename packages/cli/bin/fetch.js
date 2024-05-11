@@ -36,7 +36,7 @@ try {
 }
 
 export const fetchFromCli = async (opts) => {
-  const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update } = opts
+  const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
   await rc.then(async (data) => {
     const { key, framework, distDir, metadata } = data
 
@@ -54,9 +54,17 @@ export const fetchFromCli = async (opts) => {
       }
     })
 
+    // console.log('ON FETCH:')
+    // console.log(body.components.Configuration)
+
     if (!body) return
 
     const { version, ...config } = body
+
+    if (body.designsystem) {
+      body.designSystem = body.designsystem
+      delete body.designsystem
+    }
 
     if (verbose) {
       if (key) {
@@ -90,14 +98,9 @@ export const fetchFromCli = async (opts) => {
       } else console.log(chalk.dim(t + ':'), chalk.bold(type))
     }
 
-    if (body.designsystem) {
-      body.designSystem = body.designsystem
-      delete body.designsystem
-    }
-
-    const bodyString = JSON.stringify(body, null, prettify ?? 2)
-
     if (!distDir) {
+      const bodyString = JSON.stringify(body, null, prettify ?? 2)
+
       try {
         await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
 
@@ -112,13 +115,17 @@ export const fetchFromCli = async (opts) => {
         if (verbose) console.error(e)
         else console.log(debugMsg)
       }
+
+      console.log()
+      console.warn('No --dist-dir option or "distDir" in symbols.json provided. Saving in ./node_modules/@symbo.ls/init/dynamic.json.')
+      return {}
     }
 
     if (body.components && convertOpt && framework) {
       convertFromCli(body.components, { ...opts, framework })
     }
 
-    if (update) {
+    if (update || force) {
       createFs(body, distDir, { update: true, metadata })
     } else {
       createFs(body, distDir, { metadata })
@@ -133,8 +140,10 @@ program
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('--convert', 'Verbose errors and warnings', true)
   .option('--metadata', 'Include metadata', false)
-  .option('--update', 'overriding changes from platform')
+  .option('--force', 'Force overriding changes from platform')
+  .option('--update', 'Overriding changes from platform')
   .option('--verbose-code', 'Verbose errors and warnings')
+  .option('--dist-dir', 'Directory to import files to.')
   .action(fetchFromCli)
 
 // program
