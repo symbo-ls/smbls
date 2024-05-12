@@ -1,10 +1,9 @@
 'use strict'
 
 import { isDefined } from '@domql/utils'
-import { Flex } from '@symbo.ls/atoms'
 
 export const Tooltip = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     theme: 'dialog',
     background: 'black',
@@ -46,7 +45,7 @@ export const Tooltip = {
 }
 
 export const TooltipHidden = {
-  extend: Tooltip,
+  extend: 'Tooltip',
 
   props: ({ props }) => ({
     position: 'absolute',
@@ -109,19 +108,17 @@ export const TooltipParent = {
   props: (el) => {
     const { Tooltip, TooltipHidden } = el
     const TooltipElem = (Tooltip || TooltipHidden)
-    if (!TooltipElem || TooltipElem) return console.warn('Tooltip was not found in', el.__ref.path)
-    const TooltipActive = TooltipElem.props && TooltipElem.props['.active']
+    if (!TooltipElem) return
+    const TooltipActive = TooltipElem && TooltipElem.props && TooltipElem.props['.active']
     return {
       position: 'relative',
       zIndex: 999,
-      style: {
-        '&:hover, &:focus-visible': {
-          zIndex: 1000,
-          '& [tooltip]': TooltipActive || {
-            transform: 'translate3d(-50%,0,0)',
-            opacity: 1,
-            visibility: 'visible'
-          }
+      ':hover, &:focus-visible': {
+        zIndex: 1000,
+        '& [tooltip]': TooltipActive || {
+          transform: 'translate3d(-50%,0,0)',
+          opacity: 1,
+          visibility: 'visible'
         }
       }
     }

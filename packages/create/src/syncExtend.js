@@ -17,5 +17,5 @@ export const applyInspectListener = (root, options) => {
   const { editor } = options
   if (!editor) return
   const inspect = isUndefined(editor.inspect) ? isDevelopment() : editor.inspect
-  if (inspect) inspectOnKey(root)
+  if (inspect) inspectOnKey(root, options)
 }

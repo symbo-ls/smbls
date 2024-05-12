@@ -1,10 +1,8 @@
 'use strict'
 
-import { Hgroup } from '@symbo.ls/uikit'
-
 export const DefaultBlock = {
   tag: 'section',
-  extend: Hgroup,
+  extend: 'Hgroup',
 
   props: { gap: 'A' },
 

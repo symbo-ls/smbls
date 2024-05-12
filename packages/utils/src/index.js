@@ -2,8 +2,11 @@
 
 import { isString, isObject, isArray, isNumber } from '@domql/utils'
 
+export * from './browser'
 export * from './scaling'
 export * from './date'
+export * from './fibonacci'
+export * from './load'
 
 export const copyStringToClipboard = str => {
   const el = document.createElement('textarea')
@@ -14,6 +17,10 @@ export const copyStringToClipboard = str => {
   el.select()
   document.execCommand('copy')
   document.body.removeChild(el)
+}
+
+export const removeChars = str => {
+  return str.replace(/[^a-zA-Z0-9_]/g, '')
 }
 
 export const toCamelCase = str => {
@@ -36,7 +43,7 @@ export const toDashCase = val => val
   .replace(/-+/g, '-') // Replace consecutive dashes with a single dash
   .replace(/^-|-$/g, '') // Remove leading and trailing dashes
 
-export const toDescriptionCase = str => {
+export const toDescriptionCase = (str = '') => {
   const result = str.replace(/([A-Z])/g, ' $1')
   return result.charAt(0).toUpperCase() + result.slice(1)
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-import { isString, deepMerge, deepCloneWithExtnd } from '@domql/utils'
+import { isString, deepMerge, deepCloneWithExtend, merge } from '@domql/utils'
 import { initEmotion } from './initEmotion'
 
 import * as uikit from '@symbo.ls/uikit'
@@ -35,6 +35,16 @@ export const prepareUtils = options => {
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || {}) }
 }
 
+export const preparePackages = (packages, opts) => {
+  const windowOpts = opts.window || window
+  if (windowOpts.packages) {
+    windowOpts.packages = merge(windowOpts.packages, packages)
+  } else {
+    windowOpts.packages = packages
+    windowOpts.require = (key) => windowOpts.packages[key]
+  }
+}
+
 export const prepareDesignSystem = (options, key) => {
   const [scratcDesignhSystem, emotion, registry] = initEmotion(key, options)
   return [scratcDesignhSystem, emotion, registry]
@@ -44,7 +54,7 @@ export const prepareState = (options, App) => {
   const state = {}
   if (options.state) utils.deepMerge(state, options.state)
   if (App && App.state) deepMerge(state, App.state)
-  return deepCloneWithExtnd(state)
+  return deepCloneWithExtend(state)
 }
 
 export const preparePages = options => {
@@ -67,5 +77,7 @@ export const prepareDocument = options => {
     if (!window.document) window.document = { body: {} }
     document = window.document // eslint-disable-line
   }
+  if (!options.window) options.window = window
+  if (!options.document) options.document = document
   return options.parent || options.document || document
 }

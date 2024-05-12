@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const ParagraphButton = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     alignItems: 'center',
     gap: 'Y2'
@@ -26,7 +24,7 @@ export const ParagraphButton = {
 }
 
 export const ParagraphButtonWithCheckbox = {
-  extend: Flex,
+  extend: 'Flex',
   tag: 'label',
   props: {
     gap: '1ch',

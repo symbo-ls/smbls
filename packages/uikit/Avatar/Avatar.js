@@ -1,9 +1,7 @@
 'use strict'
 
-import { Img } from '@symbo.ls/atoms'
-
 export const Avatar = {
-  extend: Img,
+  extend: 'Img',
   props: ({ key, props }) => ({
     display: 'block',
     avatarType: 'adventurer-neutral',

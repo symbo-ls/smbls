@@ -12,10 +12,10 @@ export const Flex = {
       const { flow, reverse } = props
       if (!isString(flow)) return
       let [direction, wrap] = (flow || 'row').split(' ')
-      if (flow.startsWith('x') || flow.startsWith('row')) direction = 'row'
-      if (flow.startsWith('y') || flow.startsWith('column')) direction = 'column'
+      if (flow.startsWith('x') || flow === 'row') direction = 'row'
+      if (flow.startsWith('y') || flow === 'column') direction = 'column'
       return {
-        flexFlow: (direction || '') + (reverse ? '-reverse' : '') + ' ' + (wrap || '')
+        flexFlow: (direction || '') + (!direction.includes('-reverse') && reverse ? '-reverse' : '') + ' ' + (wrap || '')
       }
     },
 

@@ -2,12 +2,12 @@
   "name": "@symbo.ls/scratch",
   "description": "Φ / CSS framework and methodology.",
   "author": "symbo.ls",
-  "version": "2.11.269",
+  "version": "2.11.375",
   "files": [
     "src",
     "dist"
   ],
-  "repository": "https://github.com/symbo-ls/scratch",
+  "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
   "module": "src/index.js",
   "unpkg": "dist/iife/index.js",
@@ -18,13 +18,14 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./src/*.js ./src/**/*.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:esm": "npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
-    "build:iife": "npx esbuild ./src/index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
+    "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
+    "@domql/globals": "latest",
     "@domql/utils": "latest",
     "@symbo.ls/utils": "latest",
     "color-contrast-checker": "^1.5.0"

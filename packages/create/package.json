@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.11.310",
+  "version": "2.11.375",
   "license": "MIT",
-  "gitHead": "8e53543bba9c809c8c3b5a8a3d07208fb98592cb",
+  "gitHead": "d3f5eef98ea97df29f4f8fbacd30f30110881eb6",
   "files": [
     "src",
     "dist"
@@ -23,10 +23,10 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./src/*.js --target=es2020 --format=esm --outdir=dist/esm",
+    "build:esm": "npx esbuild ./src/*.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild ./src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build:cjs:bundle": "npx esbuild ./src/index.js --target=node16 --format=cjs --outdir=dist/cjs/bundle --bundle --loader:.svg=empty",
-    "build:iife": "npx esbuild ./src/index.js --target=es2020 --format=iife --outdir=dist/iife --bundle --minify",
+    "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "yarn build:cjs; yarn build:cjs:bundle",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },

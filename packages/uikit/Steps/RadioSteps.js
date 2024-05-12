@@ -1,6 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { CheckStep } from './CheckSteps'
 
 export const RadioStep = {
@@ -22,7 +21,7 @@ export const RadioStep = {
 }
 
 export const RadioSteps = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     boxSize: 'fit-content fit-content',
     align: 'center flex-start',

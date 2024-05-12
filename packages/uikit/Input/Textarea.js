@@ -40,11 +40,13 @@ export const Textarea = {
       placeholder: 'Leave us a message...',
       resize: 'none'
     }
-  }
+  },
+
+  html: (el, s) => el.props.value
 }
 
 export const TextareaWithButton = {
-  extend: Flex,
+  extend: 'Flex',
   props: { gap: 'Y2' },
   Textarea: {
     height: 'C2+W',

@@ -40,6 +40,8 @@ export const VALUE_TRANSFORMERS = {
   shadow: setShadow,
   spacing: setSameValue,
   media: setSameValue,
+  grid: setSameValue,
+  class: setSameValue,
   timing: setSameValue,
   reset: setSameValue,
   unit: setSameValue,

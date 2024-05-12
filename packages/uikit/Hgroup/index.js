@@ -5,8 +5,8 @@ export const Hgroup = {
   tag: 'hgroup',
 
   props: {
-    flow: 'column',
-    gap: 'Y',
+    flow: 'y',
+    gap: 'Y2',
 
     Title: {
       fontWeight: '700',
@@ -17,11 +17,26 @@ export const Hgroup = {
       margin: '0',
       color: 'caption',
       '> p': { margin: '0' }
+    },
+
+    H: {
+      color: 'title',
+      tag: 'h3',
+      lineHeight: '1em',
+      margin: '0'
+    },
+    P: {
+      margin: '0',
+      color: 'paragraph'
     }
   },
 
+  H: {},
+  P: {},
+
   Title: {
     extend: 'Flex',
+    if: ({ parent }) => parent.props.title,
     props: ({ parent }) => ({
       text: parent.props.title,
       lineHeight: '1em'
@@ -30,6 +45,7 @@ export const Hgroup = {
 
   Paragraph: {
     extend: 'Flex',
+    if: ({ parent }) => parent.props.paragraph,
     props: ({ parent }) => ({
       text: parent.props.paragraph,
       margin: '0'
@@ -38,7 +54,7 @@ export const Hgroup = {
 }
 
 export const HgroupRows = {
-  extend: Hgroup,
+  extend: 'Hgroup',
 
   Title: {
     extend: 'Flex',
@@ -52,7 +68,7 @@ export const HgroupRows = {
 }
 
 export const HgroupButton = {
-  extend: HgroupRows,
+  extend: 'HgroupRows',
 
   Title: {
     props: { justifyContent: 'space-between' },

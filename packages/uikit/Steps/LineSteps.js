@@ -1,10 +1,9 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { ProgressLine } from '@symbo.ls/progress'
 
 export const LineSteps = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     boxSize: 'fit-content',
     gap: 'Y1'
@@ -28,7 +27,7 @@ export const LineSteps = {
 }
 
 export const LineStepsWithHgroup = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     flow: 'column',
     padding: 'A A1',

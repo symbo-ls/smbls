@@ -2,15 +2,15 @@
 
 // import chalk from 'chalk'
 import { program } from './program.js'
-import convert, { convertDomqlModule } from '@symbo.ls/convert'
+// import convert, { convertDomqlModule } from '@symbo.ls/convert'
 
 const TMP_DIR_NAME = '.smbls_convert_tmp'
 
 export function convertFromCli (data, opts) {
-  const { framework, verbose, verboseCode } = opts
-  const convertedStrings = convertDomqlModule(data, null, framework)
-  if (verboseCode) console.log(convertedStrings)
-  return verbose
+  // const { framework, verbose, verboseCode } = opts
+  // // const convertedStrings = convertDomqlModule(data, null, framework)
+  // if (verboseCode) console.log(convertedStrings)
+  // return verbose
 }
 
 program
@@ -36,4 +36,4 @@ program
   .option('--internal-uikit',
     '(For internal use only). ' +
           'Excludes particular components from the conversion')
-  .action(convert)
+  .action(convertFromCli)

@@ -1,8 +1,5 @@
 'use strict'
 
-import { Flex, FocusableComponent } from '@symbo.ls/atoms'
-import { IconText } from '@symbo.ls/icon'
-
 /**
  * A Button component
  * The `Button` component represents a clickable button element with customizable styles and properties.
@@ -21,13 +18,13 @@ import { IconText } from '@symbo.ls/icon'
  */
 
 export const Button = {
-  extend: [IconText, FocusableComponent],
+  extend: ['IconText', 'FocusableComponent'],
   tag: 'button',
 
   props: {
     fontSize: 'A',
     type: 'button',
-    border: 'none',
+    borderStyle: 'none',
     display: 'inline-flex',
     align: 'center center',
     textDecoration: 'none',
@@ -45,7 +42,7 @@ export const Button = {
 }
 
 export const SquareButton = {
-  extend: Button,
+  extend: 'Button',
   props: {
     fontSize: 'A',
     width: 'A',
@@ -60,17 +57,17 @@ export const SquareButton = {
 }
 
 export const CircleButton = {
-  extend: SquareButton,
+  extend: 'SquareButton',
   props: { round: 'C' }
 }
 
 export const KangorooButton = {
-  extend: Button,
-  childExtend: IconText
+  extend: 'Button',
+  childExtend: 'IconText'
 }
 
 export const FlexButton = {
-  extend: Button,
+  extend: 'Button',
 
   props: {
     boxSize: 'fit-content',
@@ -88,18 +85,18 @@ export const FlexButton = {
 
 export const ButtonSet = {
   tag: 'nav',
-  extend: Flex,
-  childExtend: SquareButton
+  extend: 'Flex',
+  childExtend: 'SquareButton'
 }
 
 export const CancelConfirmButtons = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     gap: 'Z2',
     maxWidth: 'fit-content'
   },
   childExtend: {
-    extend: FlexButton,
+    extend: 'FlexButton',
     props: {
       ':first-child': {
         theme: 'transparent',
@@ -114,7 +111,7 @@ export const CancelConfirmButtons = {
 }
 
 export const IcontextButton = {
-  extend: FlexButton,
+  extend: 'FlexButton',
   props: {
     position: 'relative',
     theme: 'tertiary',
@@ -124,7 +121,7 @@ export const IcontextButton = {
 }
 
 export const DropDownButton = {
-  extend: FlexButton,
+  extend: 'FlexButton',
   props: {
     gap: 'X2',
     boxSize: 'fit-content fit-content',
@@ -139,7 +136,7 @@ export const DropDownButton = {
 }
 
 export const DropDownButtonWithAvatar = {
-  extend: DropDownButton,
+  extend: 'DropDownButton',
   props: {
     gap: 'Y',
     padding: 'Y',
@@ -161,18 +158,18 @@ export const DropDownButtonWithAvatar = {
 }
 
 export const PlusMinusButtons = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     alignItems: 'center',
     gap: 'A'
   },
   Minus: {
-    extend: SquareButton,
+    extend: 'SquareButton',
     props: { icon: 'minus' }
   },
   Value: { props: { text: '1' } },
   Plus: {
-    extend: SquareButton,
+    extend: 'SquareButton',
     props: { icon: 'plus' }
   }
 }

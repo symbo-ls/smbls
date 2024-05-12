@@ -7,7 +7,7 @@ import { UploadButtonWithBackground } from './UploadButton'
 import { Modal } from '@symbo.ls/modal'
 
 export const UploadFooter = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     gap: 'E',
     align: 'center space-between',

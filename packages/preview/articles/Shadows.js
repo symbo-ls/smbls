@@ -1,11 +1,11 @@
 'use strict'
 
-import { Flex, Banner } from '@symbo.ls/uikit'
+import { Banner } from '@symbo.ls/uikit'
 import { shadow } from '../blocks'
 
 export const Shadows = {
   tag: 'article',
-  extend: Flex,
+  extend: 'Flex',
 
   Header: {
     tag: 'header',

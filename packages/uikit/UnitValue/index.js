@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const UnitValue = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     color: 'title',
     align: 'center flex-start',
@@ -17,7 +15,7 @@ export const UnitValue = {
 }
 
 export const DoubleUnitValue = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     align: 'center flex-start',
     color: 'caption',
@@ -68,7 +66,7 @@ export const UnitValueWithLabel = {
 }
 
 export const UnitValueWithTitle = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     align: 'center flex-start',
     gap: 'Y',

@@ -1,6 +1,5 @@
 'use strict'
 
-import { Grid } from '@symbo.ls/atoms'
 import { DatePickerDay } from './days'
 import { HeadlessDatepicker } from 'headless-datepicker'
 
@@ -21,7 +20,7 @@ const extractMonthDays = (data) => {
 }
 
 export const DatePickerGrid = {
-  extend: Grid,
+  extend: 'Grid',
 
   props: {
     columns: 'repeat(7, 1fr)',

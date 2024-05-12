@@ -1,9 +1,7 @@
 'use strict'
 
-import { Button } from '@symbo.ls/button'
-
 export const AvatarChooser = {
-  extend: Button,
+  extend: 'Button',
   tag: 'label',
 
   state: { key: 'am' },

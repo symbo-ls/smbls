@@ -18,5 +18,6 @@ export * from './cases.js'
 export * from './animation.js'
 export * from './svg.js'
 export * from './templates.js'
+export * from './grid.js'
 
 export const RESET = {}

@@ -1,7 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const ProgressCircle = {
   props: {
     widthRange: 'D',
@@ -67,7 +65,7 @@ export const ProgressCircleWithUnitValue = {
 }
 
 export const ProgressCircleWithSideUnitValue = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     align: 'center flex-start',
     boxSize: 'fit-content',

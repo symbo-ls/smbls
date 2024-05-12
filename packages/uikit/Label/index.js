@@ -1,10 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Button } from '@symbo.ls/button'
-
 export const Label = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     text: '-2.902x',
     fontSize: 'Z',
@@ -18,7 +15,7 @@ export const Label = {
 }
 
 export const LabelButton = {
-  extend: Button,
+  extend: 'Button',
   props: {
     theme: 'tertiary',
     fontSize: 'Z2',

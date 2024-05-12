@@ -2,41 +2,40 @@
 
 import { router } from '@domql/router'
 import { init } from '@symbo.ls/init'
-import { set } from '@symbo.ls/scratch'
+// import { set } from '@symbo.ls/scratch'
 import { connect } from '@symbo.ls/socket/client'
-import { Notification } from '@symbo.ls/notification'
 import { window } from '@domql/globals'
 import { overwriteDeep } from '@domql/utils'
 
 const isLocalhost = window && window.location && window.location.host.includes('local')
 
-const ANIMATION = {
-  fadeInUp: {
-    from: {
-      transform: 'translate3d(0, 12.5%, 1px)',
-      opacity: 0
-    },
-    to: {
-      transform: 'translate3d(0, 0, 1px)',
-      opacity: 1
-    }
-  },
-  fadeOutDown: {
-    from: {
-      transform: 'translate3d(0, 0, 1px)',
-      opacity: 1
-    },
-    to: {
-      transform: 'translate3d(0, 12.5%, 1px)',
-      opacity: 0
-    }
-  }
-}
+// const ANIMATION = {
+//   fadeInUp: {
+//     from: {
+//       transform: 'translate3d(0, 12.5%, 1px)',
+//       opacity: 0
+//     },
+//     to: {
+//       transform: 'translate3d(0, 0, 1px)',
+//       opacity: 1
+//     }
+//   },
+//   fadeOutDown: {
+//     from: {
+//       transform: 'translate3d(0, 0, 1px)',
+//       opacity: 1
+//     },
+//     to: {
+//       transform: 'translate3d(0, 12.5%, 1px)',
+//       opacity: 0
+//     }
+//   }
+// }
 
-const COLOR = {
-  black: '#000000',
-  blue: '#3686F7'
-}
+// const COLOR = {
+//   black: '#000000',
+//   blue: '#3686F7'
+// }
 
 // set({
 //   COLOR,
@@ -65,7 +64,6 @@ const connectedToSymbols = (clients, element, state) => {
     if (state.connected) {
       state.notifications.connected = {
         title: 'Disconnected',
-        message: 'from the Symbols live server',
         type: 'error'
       }
 
@@ -145,20 +143,18 @@ const Notifications = {
     zIndex: '999'
   },
   childExtend: {
-    extend: [Notification],
+    extend: 'Notification',
     props: ({ state }) => ({
       animation: 'fadeInUp',
       animationDuration: 'C',
       background: NOTIF_COLORS[state.type || 'success'],
       icon: null,
-      article: {
-        Flex: {
-          Title: {
-            text: state.title
-          },
-          P: {
-            text: state.message
-          }
+      Flex: {
+        Title: {
+          text: state.title
+        },
+        P: {
+          text: state.message
         }
       }
     }),
@@ -176,7 +172,7 @@ export const Sync = {
 
   on: {
     render: (el, s, ctx) => {
-      connect(ctx.key, {
+      ctx.socket = connect(ctx.key, {
         source: isLocalhost ? 'localhost' : 'client',
         socketUrl: isLocalhost ? 'localhost:13336' : 'socket.symbols.app',
         location: window.location.host,

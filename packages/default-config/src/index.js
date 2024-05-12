@@ -21,6 +21,16 @@ export const DEFAULT_CONFIG = {
   TIMING,
   ICONS,
   MEDIA,
+  ANIMATIONS: {
+    fadeIn: {
+      from: {
+        opacity: 0
+      },
+      to: {
+        opacity: 1
+      }
+    }
+  },
   DEVICES: {},
   CASES: {},
   SVG: {} // TODO: Check with @nikoloza on this

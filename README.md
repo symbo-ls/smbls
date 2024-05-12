@@ -6,23 +6,23 @@ For more in-depth exmplanation check out the official [documentation page](https
 [![npm version](https://badge.fury.io/js/smbls.svg)](https://badge.fury.io/js/smbls)
 
 ## Index
-- [Installation](https://github.com/symbo-ls/smbls#installation)
-- [Initialization](https://github.com/symbo-ls/smbls#initialization)
-- [Design System](https://github.com/symbo-ls/smbls#design-system)
-- [Components](https://github.com/symbo-ls/smbls#components)
+- [Installation](#installation)
+- [Initialization](#initialization)
+- [Design System](#design-system)
+- [Components](#components)
 
 
 ## Installation
-Install Symbols globally
+Install the CLI
 
 ```bash
-npm i smbls -g
+npm i @symbo.ls/cli -g
 ```
 
 or inside the project of your frontend
 
 ```bash
-npm i smbls
+npm i smbls --save
 ```
 
 ## Initialization

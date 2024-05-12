@@ -1,9 +1,8 @@
 'use strict'
-import { Focusable } from '@symbo.ls/atoms'
 
 export const TextAreaField = {
   tag: 'label',
-  extend: Focusable,
+  extend: 'Focusable',
   props: {
     boxSize: 'fit-content',
     border: 'solid, gray .45 +80',

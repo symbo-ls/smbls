@@ -50,7 +50,7 @@ export const FieldTemplate = {
 }
 
 export const FieldWithTitle = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     flow: 'column',
     boxSize: 'fit-content fit-content',

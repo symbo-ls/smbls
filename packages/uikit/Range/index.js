@@ -2,7 +2,6 @@
 
 import { isFunction } from '@domql/utils'
 import { opacify } from '@symbo.ls/scratch'
-import { SquareButton } from '@symbo.ls/button'
 
 const props = {
   appearance: 'none',
@@ -118,7 +117,7 @@ export const Range = {
 
 export const RangeWithButtons = {
   minus: {
-    extend: SquareButton,
+    extend: 'SquareButton',
     props: { theme: 'field', icon: 'minus' },
     on: {
       click: (ev, el, s) => {
@@ -172,7 +171,7 @@ export const RangeWithButtons = {
     }
   },
   plus: {
-    extend: SquareButton,
+    extend: 'SquareButton',
     props: { theme: 'field', icon: 'plus' },
     on: {
       click: (ev, el, s) => {

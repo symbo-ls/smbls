@@ -1,6 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { User } from '@symbo.ls/user'
 import { UnitValue } from '@symbo.ls/unitvalue'
 
@@ -30,7 +29,7 @@ export const ChatUser = {
     Paragraph: {
       props: { gap: 'C1' },
       p: {
-        extend: Flex,
+        extend: 'Flex',
         props: {
           text: 'Hey team, I’ve finished the requirements document',
           maxWidth: 'F1',

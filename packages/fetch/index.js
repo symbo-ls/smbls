@@ -11,8 +11,8 @@ const IS_DEVELOPMENT =
     : process.env.NODE_ENV === 'development'
 
 const SERVER_URL = IS_DEVELOPMENT
-  ? 'http://localhost:13335/get/'
-  : 'https://api.symbols.app/get/'
+  ? 'http://localhost:13335/get'
+  : 'https://api.symbols.app/get'
 
 const defaultOptions = {
   endpoint: SERVER_URL
@@ -30,9 +30,9 @@ export const fetchRemote = async (key, options = defaultOptions) => {
 
   let response
   try {
-    response = await fetch(baseUrl + route, {
+    response = await fetch(baseUrl + '/' + route, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'X-AppKey': key }
+      headers: { 'Content-Type': 'application/json', 'X-AppKey': key, 'X-Metadata': options.metadata }
     })
 
     return await response.json()
@@ -47,7 +47,7 @@ export const fetchProject = async (key, options) => {
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-    const evalData = IS_DEVELOPMENT
+    const evalData = (IS_DEVELOPMENT || options.isDevelopment)
       ? deepDestringify(data)
       : deepDestringify(data.releases[0])
 
@@ -82,7 +82,7 @@ export const fetchProjectAsync = async (key, options, callback) => {
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-    const evalData = IS_DEVELOPMENT
+    const evalData = (IS_DEVELOPMENT || options.isDevelopment)
       ? deepDestringify(data)
       : deepDestringify(data.releases[0])
     callback(evalData)

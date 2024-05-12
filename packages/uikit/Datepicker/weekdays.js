@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex, Grid } from '@symbo.ls/atoms'
-
 export const DatePickerWeekDays = {
-  extend: Grid,
+  extend: 'Grid',
   props: {
     overflow: 'hidden',
     padding: '- Z A',
@@ -18,7 +16,7 @@ export const DatePickerWeekDays = {
   },
   childExtend: {
     tag: 'span',
-    extend: Flex,
+    extend: 'Flex',
     props: {
       fontSize: 'Y1',
       textTransform: 'capitalize',

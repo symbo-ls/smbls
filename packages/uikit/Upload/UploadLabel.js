@@ -3,7 +3,7 @@
 import { Flex } from '@symbo.ls/atoms'
 
 export const UploadLabel = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     flow: 'column',
     align: 'center flex-start',

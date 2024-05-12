@@ -1,10 +1,9 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { ConvertCard } from './ConvertCard'
 
 export const CurrencyConvert = {
-  extend: Flex,
+  extend: 'Flex',
 
   props: {
     boxSize: 'fit-content',
@@ -26,7 +25,7 @@ export const CurrencyConvert = {
   },
 
   Cards: {
-    extend: Flex,
+    extend: 'Flex',
     props: {
       flow: 'column',
       gap: 'A'

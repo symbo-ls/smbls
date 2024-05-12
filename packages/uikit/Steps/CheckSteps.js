@@ -1,9 +1,7 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const CheckStep = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     boxSize: 'fit-content',
     align: 'center flex-start',
@@ -32,7 +30,7 @@ export const CheckStep = {
 }
 
 export const CheckSteps = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     boxSize: 'fit-content fit-content',
     align: 'center flex-start',

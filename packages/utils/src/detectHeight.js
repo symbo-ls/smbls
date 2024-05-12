@@ -14,17 +14,17 @@ export const detectHeightOnInit = (element, state) => {
       if (props.height === 'auto') return
       element.update({
         props: { height: state.clientHeight }
-      }, { preventInitUpdateListener: true, preventChildrenUpdate: true })
+      }, { preventBeforeUpdateListener: true, preventChildrenUpdate: true })
       const setAutoTimeout = setTimeout(() => {
         element.update({
           props: { height: 'auto' }
-        }, { preventInitUpdateListener: true, preventChildrenUpdate: true })
+        }, { preventBeforeUpdateListener: true, preventChildrenUpdate: true })
         clearTimeout(setAutoTimeout)
       }, 450)
     } else {
       element.update({
         props: { height: '0' }
-      }, { preventInitUpdateListener: true, preventChildrenUpdate: true })
+      }, { preventBeforeUpdateListener: true, preventChildrenUpdate: true })
     }
     clearTimeout(heightTimeout)
   })

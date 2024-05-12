@@ -3,7 +3,7 @@
 import { Flex } from '@symbo.ls/atoms'
 
 export const Card = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     boxSize: 'fit-content',
     padding: 'Z2 A',

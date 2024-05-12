@@ -8,7 +8,7 @@ import * as uikit from '@symbo.ls/uikit'
 import { defaultDefine } from './define'
 import { initRouter } from './router'
 import { applySyncDebug } from './syncExtend'
-import { prepareComponents, prepareDesignSystem, prepareDocument, preparePages, prepareState, prepareUtils } from './prepare'
+import { prepareComponents, prepareDesignSystem, prepareDocument, preparePackages, preparePages, prepareState, prepareUtils } from './prepare'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
@@ -23,6 +23,7 @@ export const createDomqlElement = (App, options) => {
   const components = prepareComponents(options)
   const designSystem = scratcDesignSystem
   const snippets = prepareUtils(options)
+  preparePackages({ functions: snippets, utils: snippets, ...options.files }, options)
 
   const define = options.define || defaultDefine
 
@@ -33,6 +34,7 @@ export const createDomqlElement = (App, options) => {
     extend,
     routes: options.pages,
     state,
+    data: {},
     context: {
       key,
       components,
@@ -47,6 +49,8 @@ export const createDomqlElement = (App, options) => {
       registry,
       emotion,
       routerOptions,
+      socket: options.socket,
+      editor: options.editor,
       document: doc
     }
   }, doc.body, key, {

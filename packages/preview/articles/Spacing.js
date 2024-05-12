@@ -1,14 +1,12 @@
 'use strict'
 
-import { Flex, Banner } from '@symbo.ls/uikit'
-
 export const Spacing = {
   tag: 'article',
-  extend: Flex,
+  extend: 'Flex',
 
   Header: {
     tag: 'header',
-    extend: Banner,
+    extend: 'Banner',
 
     Title: {
       props: {

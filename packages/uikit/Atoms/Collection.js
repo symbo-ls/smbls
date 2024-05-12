@@ -1,12 +1,19 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, deepClone } from '@domql/utils'
+import { isString, isNot, isArray, isObject, isObjectLike, deepCloneWithExtend } from '@domql/utils'
 
 export const Collection = {
   define: {
     $collection: (param, el, state) => {
-      if (!param) return
+      const { __ref: ref } = el
+      const { children, childrenAs, childrenExtend } = (el.props || {})
+      const hasChildren = isArray(children)
+
+      if (hasChildren) {
+        param = children
+        if (childrenAs) param = param.map(v => ({ extend: childrenExtend, [childrenAs]: v }))
+      } else if (!param) return
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()
@@ -15,8 +22,7 @@ export const Collection = {
       if (isState(param)) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
-      const { __ref: ref } = el
-      param = deepClone(param)
+      param = deepCloneWithExtend(param)
 
       if (ref.__collectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
@@ -24,11 +30,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__collectionCache = deepClone(param)
+          ref.__collectionCache = deepCloneWithExtend(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__collectionCache = deepClone(param)
+        ref.__collectionCache = deepCloneWithExtend(param)
       }
 
       const obj = {
@@ -40,13 +46,13 @@ export const Collection = {
 
       for (const key in param) {
         const value = param[key]
-        obj[key] = isObjectLike(value) ? value : { value }
+        if (value) obj[key] = isObjectLike(value) ? value : { value }
       }
 
       el.removeContent()
       el.content = obj
 
-      return obj
+      // return deepClone(param)
     },
 
     $setCollection: (param, el, state) => {
@@ -83,7 +89,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
-      param = deepClone(param)
+      param = deepCloneWithExtend(param)
 
       if (ref.__stateCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
@@ -91,11 +97,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__stateCollectionCache = param
+          ref.__stateCollectionCache = deepCloneWithExtend(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__stateCollectionCache = param
+        ref.__stateCollectionCache = deepCloneWithExtend(param)
       }
 
       const obj = {
@@ -107,13 +113,13 @@ export const Collection = {
 
       for (const key in param) {
         const value = param[key]
-        obj[key] = { state: isObjectLike(value) ? value : { value } }
+        if (value) obj[key] = { state: isObjectLike(value) ? value : { value } }
       }
 
       el.removeContent()
       el.content = obj
 
-      return obj
+      // return deepClone(param)
     },
 
     $propsCollection: (param, el, state) => {
@@ -127,7 +133,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
-      param = deepClone(param)
+      param = deepCloneWithExtend(param)
 
       if (ref.__propsCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
@@ -135,11 +141,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__propsCollectionCache = param
+          ref.__propsCollectionCache = deepCloneWithExtend(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__propsCollectionCache = param
+        ref.__propsCollectionCache = deepCloneWithExtend(param)
       }
 
       const obj = {
@@ -151,7 +157,7 @@ export const Collection = {
 
       for (const key in param) {
         const value = param[key]
-        obj[key] = { props: isObjectLike(value) ? value : { value } }
+        if (value) obj[key] = { props: isObjectLike(value) ? value : { value } }
       }
 
       el.removeContent()
@@ -165,7 +171,7 @@ export const Collection = {
       //   window.requestAnimationFrame(set)
       // } else set()
 
-      return obj
+      // return deepClone(param)
     }
   }
 }

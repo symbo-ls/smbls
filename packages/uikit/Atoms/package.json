@@ -1,9 +1,9 @@
 {
   "name": "@symbo.ls/atoms",
-  "version": "2.11.311",
+  "version": "2.11.376",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "7ce19e9de95a54eb6e4a846892816f7fd16408a1",
+  "gitHead": "d3f5eef98ea97df29f4f8fbacd30f30110881eb6",
   "dependencies": {
     "@domql/state": "latest",
     "@domql/utils": "latest",

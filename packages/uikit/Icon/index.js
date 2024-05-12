@@ -1,15 +1,19 @@
 'use strict'
 
-import { Flex, Svg } from '@symbo.ls/atoms'
-import { isString } from '@domql/utils'
+import { isString, replaceLiteralsWithObjectFields } from '@domql/utils'
 
 export const Icon = {
-  extend: Svg,
-  deps: { isString },
-  props: ({ key, props, parent, context, deps }) => {
+  extend: 'Svg',
+  deps: { isString, replaceLiteralsWithObjectFields },
+  props: ({ key, props, parent, context, deps, state }) => {
     const { ICONS, useIconSprite, verbose } = context && context.designSystem
     const { toCamelCase } = context && context.utils
-    const iconName = props.name || props.icon || key
+    let iconName = props.name || props.icon || key
+
+    if (isString(iconName) && iconName.includes('{{')) {
+      iconName = deps.replaceLiteralsWithObjectFields(iconName, state)
+    }
+
     const camelCase = toCamelCase(deps.isString(iconName) ? iconName : key)
 
     const isArray = camelCase.split(/([a-z])([A-Z])/g)
@@ -26,6 +30,10 @@ export const Icon = {
       parent.props['.active'].icon
     ) {
       activeIconName = parent.props['.active'].icon.name || parent.props['.active'].icon.icon || parent.props['.active'].icon
+    }
+
+    if (isString(activeIconName) && activeIconName.includes('{{')) {
+      activeIconName = deps.replaceLiteralsWithObjectFields(activeIconName, state)
     }
 
     let validIconName
@@ -53,7 +61,7 @@ export const Icon = {
 }
 
 export const IconText = {
-  extend: Flex,
+  extend: 'Flex',
 
   props: {
     align: 'center center',
@@ -80,7 +88,7 @@ export const IconText = {
 }
 
 export const FileIcon = {
-  extend: Flex,
+  extend: 'Flex',
   props: {
     theme: 'tertiary',
     boxSize: 'C1',
