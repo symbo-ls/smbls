@@ -1,6 +1,5 @@
 'use strict'
 
-import { Banner } from '@symbo.ls/uikit'
 import { shadow } from '../blocks'
 
 export const Shadows = {
@@ -9,7 +8,7 @@ export const Shadows = {
 
   Header: {
     tag: 'header',
-    extend: Banner,
+    extend: 'Banner',
 
     Title: { text: 'Shadow' },
     Paragraph: {
