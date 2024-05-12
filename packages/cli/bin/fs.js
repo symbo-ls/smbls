@@ -77,7 +77,7 @@ export async function createFs (
 
     await Promise.all(cachePromises)
     await generateIndexjsFile(
-      joinArrays(keys, singleFileKeys),
+      joinArrays(directoryKeys, singleFileKeys),
       cacheDir,
       'root'
     )
