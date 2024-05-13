@@ -47,7 +47,7 @@ export const INTERNAL_UIKIT_CONF = {
 
     // These are not domql objects
     'keySetters',
-    'getSystemTheme',
+    'getSystemGlobalTheme',
     'splitTransition',
     'transformDuration',
     'transformShadow',

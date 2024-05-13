@@ -1,9 +1,9 @@
 'use strict'
 
-import { getSystemTheme } from './Theme'
+import { getSystemGlobalTheme } from './Theme'
 
 export const Picture = {
-  deps: { getSystemTheme },
+  deps: { getSystemGlobalTheme },
   tag: 'picture',
 
   childExtend: {
@@ -12,7 +12,7 @@ export const Picture = {
       media: (element) => {
         const { props, key, context, deps } = element
         const { MEDIA } = context.designSystem
-        const globalTheme = deps.getSystemTheme(element)
+        const globalTheme = deps.getSystemGlobalTheme(element)
         const mediaName = (props.media || key).slice(1)
 
         if (mediaName === globalTheme) return '(min-width: 0px)'

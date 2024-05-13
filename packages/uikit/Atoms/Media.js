@@ -1,7 +1,7 @@
 'use strict'
 
 import { merge, isArray, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { getSystemTheme } from './Theme'
+import { getSystemGlobalTheme } from './Theme'
 
 export const keySetters = {
   '@': (key, props, result, element, isSubtree) => applyMediaProps(
@@ -83,9 +83,9 @@ const convertPropsToClass = (props, result, element) => {
 const applyMediaProps = (key, props, result, element) => {
   const { context } = element
   if (!context.designSystem || !context.designSystem.MEDIA) return
-  const globalTheme = getSystemTheme(element)
+  const globalTheme = getSystemGlobalTheme(element)
   const { MEDIA } = context.designSystem
-  const mediaName = MEDIA[key.slice(1)]
+  const mediaValue = MEDIA[key.slice(1)]
   const generatedClass = convertPropsToClass(props, result, element)
 
   const name = key.slice(1)
@@ -97,7 +97,7 @@ const applyMediaProps = (key, props, result, element) => {
     return
   }
 
-  const mediaKey = mediaName ? `@media screen and ${mediaName}` : key
+  const mediaKey = mediaValue ? `@media screen and ${mediaValue}` : key
   result[mediaKey] = generatedClass
   return result[mediaKey]
 }

@@ -13,7 +13,7 @@ import {
 import { depth } from './Shape/style'
 import { isUndefined, isString } from '@domql/utils'
 
-export const getSystemTheme = ({ context, state }) => {
+export const getSystemGlobalTheme = ({ context, state }) => {
   const rootState = state && state.root
   return rootState && rootState.globalTheme ? rootState.globalTheme : context.designSystem && context.designSystem.globalTheme
 }
@@ -21,7 +21,7 @@ export const getSystemTheme = ({ context, state }) => {
 export const Theme = {
   deps: {
     depth,
-    getSystemTheme,
+    getSystemGlobalTheme,
     getMediaTheme,
     getMediaColor,
     transformTextStroke,
@@ -36,7 +36,7 @@ export const Theme = {
 
     theme: (element) => {
       const { props, deps } = element
-      const globalTheme = deps.getSystemTheme(element)
+      const globalTheme = deps.getSystemGlobalTheme(element)
       if (!props.theme) return
       const hasSubtheme = props.theme.includes(' ') && !props.theme.includes('@')
       const globalThemeForced = `@${props.themeModifier || globalTheme}`
@@ -50,7 +50,7 @@ export const Theme = {
 
     color: (element) => {
       const { props, deps } = element
-      const globalTheme = deps.getSystemTheme(element)
+      const globalTheme = deps.getSystemGlobalTheme(element)
       if (!props.color) return
       return {
         color: deps.getMediaColor(props.color, globalTheme)
@@ -59,7 +59,7 @@ export const Theme = {
 
     background: (element) => {
       const { props, deps } = element
-      const globalTheme = deps.getSystemTheme(element)
+      const globalTheme = deps.getSystemGlobalTheme(element)
       if (!props.background) return
       return {
         background: deps.getMediaColor(props.background, globalTheme)
@@ -68,7 +68,7 @@ export const Theme = {
 
     backgroundColor: (element) => {
       const { props, deps } = element
-      const globalTheme = deps.getSystemTheme(element)
+      const globalTheme = deps.getSystemGlobalTheme(element)
       if (!props.backgroundColor) return
       return {
         backgroundColor: deps.getMediaColor(props.backgroundColor, globalTheme)
@@ -77,7 +77,7 @@ export const Theme = {
 
     backgroundImage: (element) => {
       const { props, deps } = element
-      const globalTheme = deps.getSystemTheme(element)
+      const globalTheme = deps.getSystemGlobalTheme(element)
       if (!props.backgroundImage) return
       return ({
         backgroundImage: deps.transformBackgroundImage(props.backgroundImage, globalTheme)
@@ -115,7 +115,7 @@ export const Theme = {
 
     borderColor: (element) => {
       const { props, deps } = element
-      const globalTheme = deps.getSystemTheme(element)
+      const globalTheme = deps.getSystemGlobalTheme(element)
       if (!props.borderColor) return
       return {
         borderColor: deps.getMediaColor(props.borderColor, globalTheme)
@@ -140,7 +140,7 @@ export const Theme = {
 
     shadow: (element) => {
       const { props, deps } = element
-      const globalTheme = deps.getSystemTheme(element)
+      const globalTheme = deps.getSystemGlobalTheme(element)
       if (!props.backgroundImage) return
       return ({
         boxShadow: deps.transformShadow(props.shadow, globalTheme)
