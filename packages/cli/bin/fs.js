@@ -61,7 +61,7 @@ export async function createFs(
 
     await Promise.all(promises);
     await generateIndexjsFile(
-      joinArrays(directoryKeys, singleFileKeys),
+      joinArrays(keys, singleFileKeys),
       targetDir,
       "root"
     );
