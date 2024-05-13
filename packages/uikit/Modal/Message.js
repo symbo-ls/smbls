@@ -1,9 +1,7 @@
 'use strict'
 
-import { Modal } from './Modal'
-
 export const Message = {
-  extend: Modal,
+  extend: 'Modal',
 
   props: {
     maxWidth: 'G3'

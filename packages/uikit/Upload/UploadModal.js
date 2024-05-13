@@ -1,11 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { IconText } from '@symbo.ls/icon'
-import { CancelConfirmButtons } from '@symbo.ls/button'
-import { UploadButtonWithBackground } from './UploadButton'
-import { Modal } from '@symbo.ls/modal'
-
 export const UploadFooter = {
   extend: 'Flex',
   props: {
@@ -15,7 +9,6 @@ export const UploadFooter = {
   },
 
   IconText: {
-    extend: IconText,
     props: {
       icon: 'info',
       text: 'Support',
@@ -25,7 +18,7 @@ export const UploadFooter = {
   },
 
   Buttons: {
-    extend: CancelConfirmButtons,
+    extend: 'CancelConfirmButtons',
     props: {
       childProps: {
         padding: 'Z2 A1',
@@ -38,7 +31,7 @@ export const UploadFooter = {
     ...[
       { Text: 'Cancel' },
       {
-        extend: UploadButtonWithBackground,
+        extend: 'UploadButtonWithBackground',
         Text: 'Attach file'
       }
     ]
@@ -46,7 +39,7 @@ export const UploadFooter = {
 }
 
 export const UploadModal = {
-  extend: Modal,
+  extend: 'Modal',
   props: {
     gap: 'A',
     round: 'A1',

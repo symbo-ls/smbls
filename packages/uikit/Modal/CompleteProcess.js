@@ -1,9 +1,7 @@
 'use strict'
 
-import { Modal } from './Modal'
-
 export const CompleteProcess = {
-  extend: Modal,
+  extend: 'Modal',
 
   props: {
     align: 'center',

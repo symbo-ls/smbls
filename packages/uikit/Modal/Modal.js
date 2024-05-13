@@ -1,9 +1,7 @@
 'use strict'
 
-import { Dialog } from '@symbo.ls/dialog'
-
 export const Modal = {
-  extend: Dialog,
+  extend: 'Dialog',
 
   props: {
     boxSize: 'fit-content',

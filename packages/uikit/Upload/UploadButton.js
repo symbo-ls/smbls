@@ -1,9 +1,7 @@
 'use strict'
 
-import { FlexButton } from '@symbo.ls/button'
-
 export const UploadButton = {
-  extend: FlexButton,
+  extend: 'FlexButton',
 
   props: {
     position: 'relative',
@@ -27,7 +25,7 @@ export const UploadButton = {
 }
 
 export const UploadButtonWithBackground = {
-  extend: UploadButton,
+  extend: 'UploadButton',
   props: {
     theme: 'field',
     padding: 'Z2 A1'
