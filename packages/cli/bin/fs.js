@@ -7,7 +7,14 @@ import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 
 const { removeChars, toCamelCase } = smblsUtils.default
-const { deepDestringify, objectToString, joinArrays, isString, isObject, removeValueFromArray } = utils
+const {
+  deepDestringify,
+  objectToString,
+  joinArrays,
+  isString,
+  isObject,
+  removeValueFromArray
+} = utils
 
 let singleFileKeys = ['designSystem', 'state', 'files']
 const directoryKeys = ['components', 'snippets', 'pages']
@@ -49,12 +56,19 @@ export async function createFs (
             update
           )
         }
+        return undefined
       })
     ]
 
     await Promise.all(promises)
-    await generateIndexjsFile(joinArrays(directoryKeys, singleFileKeys), targetDir, 'root')
-  } else if (filesExist) {
+    await generateIndexjsFile(
+      joinArrays(singleFileKeys, directoryKeys),
+      targetDir,
+      'root'
+    )
+  }
+
+  if (filesExist) {
     const cacheDir = path.join(distDir, '.cache')
     await fs.promises.mkdir(cacheDir, { recursive: true })
 
@@ -66,11 +80,16 @@ export async function createFs (
         if (body[key] && typeof body[key] === 'object') {
           return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
         }
+        return undefined
       })
     ]
 
     await Promise.all(cachePromises)
-    await generateIndexjsFile(joinArrays(directoryKeys, singleFileKeys), cacheDir, 'root')
+    await generateIndexjsFile(
+      joinArrays(directoryKeys, singleFileKeys),
+      cacheDir,
+      'root'
+    )
 
     const diffs = await findDiff(cacheDir, targetDir)
     if (diffs.length > 0) {
@@ -128,7 +147,10 @@ export async function createFs (
   }
 
   async function createOrUpdateFile (dirPath, childKey, value, update) {
-    const itemKey = childKey.includes('-') || childKey.includes('/') ? removeChars(toCamelCase(childKey)) : childKey
+    const itemKey =
+      childKey.includes('-') || childKey.includes('/')
+        ? removeChars(toCamelCase(childKey))
+        : childKey
     const filePath = path.join(dirPath, `${childKey.replace('/', '-')}.js`)
 
     if (!update && fs.existsSync(filePath)) {
@@ -142,7 +164,9 @@ export async function createFs (
       const content = deepDestringify(value)
       // console.log('ON DEEPDESTR:')
       // console.log(content.components.Configuration)
-      stringifiedContent = `export const ${itemKey} = ${objectToString(content)};`
+      stringifiedContent = `export const ${itemKey} = ${objectToString(
+        content
+      )};`
     }
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
@@ -212,10 +236,7 @@ async function findDiff (targetDir, distDir) {
         continue
       }
 
-      const targetContent = await fs.promises.readFile(
-        targetFilePath,
-        'utf8'
-      )
+      const targetContent = await fs.promises.readFile(targetFilePath, 'utf8')
       const distContent = await fs.promises.readFile(distFilePath, 'utf8')
 
       if (targetContent !== distContent) {
@@ -263,19 +284,42 @@ async function generateIndexjsFile (dirs, dirPath, key) {
   let indexContent
   if (key === 'pages') {
     indexContent =
-    dirs.map((d) => `import { ${d.includes('-') || d.includes('/') ? removeChars(toCamelCase(d)) : d} } from './${d.replace('/', '-')}';`).join('\n') + '\n' +
-    `export default {
-      ${dirs.map((d) => `'/${d === 'main' ? '' : d}': ${d.includes('-') || d.includes('/') ? removeChars(toCamelCase(d)) : d},`).join('\n') + '\n'}
+      dirs
+        .map(
+          (d) =>
+            `import { ${
+              d.includes('-') || d.includes('/')
+                ? removeChars(toCamelCase(d))
+                : d
+            } } from './${d.replace('/', '-')}';`
+        )
+        .join('\n') +
+      '\n' +
+      `export default {
+      ${
+        dirs
+          .map(
+            (d) =>
+              `'/${d === 'main' ? '' : d}': ${
+                d.includes('-') || d.includes('/')
+                  ? removeChars(toCamelCase(d))
+                  : d
+              },`
+          )
+          .join('\n') + '\n'
+      }
     }`
   } else if (key === 'root') {
     indexContent =
-    dirs.map((d) => {
-      if (defaultExports.includes(d)) return `export { default as ${d} } from './${d}';`
-      else return `export * as ${d} from './${d}';`
-    }).join('\n') + '\n'
+      dirs
+        .map((d) => {
+          if (defaultExports.includes(d)) {
+            return `export { default as ${d} } from './${d}';`
+          } else return `export * as ${d} from './${d}';`
+        })
+        .join('\n') + '\n'
   } else {
-    indexContent =
-    dirs.map((d) => `export * from './${d}';`).join('\n') + '\n'
+    indexContent = dirs.map((d) => `export * from './${d}';`).join('\n') + '\n'
   }
   const indexFilePath = path.join(dirPath, 'index.js')
   await fs.promises.writeFile(indexFilePath, indexContent, 'utf8')
