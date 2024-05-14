@@ -1,23 +1,35 @@
 'use strict'
 
 export const COLOR = {
+  blue: '#213eb0',
+  green: '#389d34',
+  red: '#e15c55',
+  yellow: '#EDCB38',
+  orange: '#e97c16',
   transparent: 'rgba(0, 0, 0, 0)',
   black: 'black',
   gray: '#4e4e50',
-  blue: '#0e80fd',
-  indigo: '#50E1FF',
-  green: '#59AC56',
-  red: '#FE5B47',
-  yellow: '#EDCB38',
-  orange: '#E2862F',
-  brown: '#7D6755',
-  pink: '#FD8ABF',
-  purple: '#7345AF',
   white: 'white',
-
-  title: ['--black 1', '--white 1'],
-  caption: ['--gray 1', '--gray4 1'],
-  paragraph: ['--gray 1', '--gray 1 +65']
+  title: [
+    '--gray 1 -168',
+    '--gray 1 +168'
+  ],
+  caption: [
+    '--gray 1 -68',
+    '--gray 1 +68'
+  ],
+  paragraph: [
+    '--gray 1 -42',
+    '--gray 1 +42'
+  ],
+  disabled: [
+    '--gray 1 -26',
+    '--gray 1 +26'
+  ],
+  line: [
+    '--gray 1 -16',
+    '--gray 1 +16'
+  ]
 }
 
 export const GRADIENT = {
