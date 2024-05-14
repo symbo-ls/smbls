@@ -1,187 +1,189 @@
-import fs from "fs";
-import chalk from "chalk";
-import path from "path";
-import utils from "@domql/utils";
-import * as smblsUtils from "@symbo.ls/utils";
-import inquirer from "inquirer";
-import { createPatch } from "diff";
+import fs from 'fs'
+import chalk from 'chalk'
+import path from 'path'
+import utils from '@domql/utils'
+import * as smblsUtils from '@symbo.ls/utils'
+import inquirer from 'inquirer'
+import { createPatch } from 'diff'
 
-const { removeChars, toCamelCase } = smblsUtils.default;
+const { removeChars, toCamelCase } = smblsUtils.default
 const {
   deepDestringify,
   objectToString,
   joinArrays,
   isString,
   isObject,
-  removeValueFromArray,
-} = utils;
+  removeValueFromArray
+} = utils
 
-let singleFileKeys = ["designSystem", "state", "files"];
-const directoryKeys = ["components", "snippets", "pages"];
+let singleFileKeys = ['designSystem', 'state', 'files']
+const directoryKeys = ['components', 'snippets', 'pages']
 
-const defaultExports = ["pages", "designSystem", "state", "files", "schema"];
+const defaultExports = ['pages', 'designSystem', 'state', 'files', 'schema']
 
-export async function createFs(
+export async function createFs (
   body,
-  distDir = path.join(process.cwd(), "smbls"),
+  distDir = path.join(process.cwd(), 'smbls'),
   opts = {}
 ) {
   if (!body) {
-    console.error("No JSON object provided. Exiting.");
-    return;
+    console.error('No JSON object provided. Exiting.')
+    return
   }
 
-  const { update, metadata } = opts;
+  const { update, metadata } = opts
 
-  singleFileKeys = removeValueFromArray(singleFileKeys, "schema");
-  if (metadata) singleFileKeys.push("schema");
+  singleFileKeys = removeValueFromArray(singleFileKeys, 'schema')
+  if (metadata) singleFileKeys.push('schema')
 
-  const targetDir = distDir;
+  const targetDir = distDir
 
-  const filesExist = fs.existsSync(targetDir);
+  const filesExist = fs.existsSync(targetDir)
 
   if (!filesExist || update) {
-    await fs.promises.mkdir(targetDir, { recursive: true });
+    await fs.promises.mkdir(targetDir, { recursive: true })
 
     const promises = [
       ...directoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, targetDir, update)
       ),
       ...singleFileKeys.map((key) => {
-        if (body[key] && typeof body[key] === "object") {
+        if (body[key] && typeof body[key] === 'object') {
           return createSingleFileFolderAndFile(
             key,
             body[key],
             targetDir,
             update
-          );
+          )
         }
-      }),
-    ];
+        return undefined
+      })
+    ]
 
-    await Promise.all(promises);
+    await Promise.all(promises)
     await generateIndexjsFile(
-      joinArrays(keys, singleFileKeys),
+      joinArrays(singleFileKeys, directoryKeys),
       targetDir,
-      "root"
-    );
+      'root'
+    )
   }
 
   if (filesExist) {
-    const cacheDir = path.join(distDir, ".cache");
-    await fs.promises.mkdir(cacheDir, { recursive: true });
+    const cacheDir = path.join(distDir, '.cache')
+    await fs.promises.mkdir(cacheDir, { recursive: true })
 
     const cachePromises = [
       ...directoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, cacheDir, true)
       ),
       ...singleFileKeys.map((key) => {
-        if (body[key] && typeof body[key] === "object") {
-          return createSingleFileFolderAndFile(key, body[key], cacheDir, true);
+        if (body[key] && typeof body[key] === 'object') {
+          return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
         }
-      }),
-    ];
+        return undefined
+      })
+    ]
 
-    await Promise.all(cachePromises);
+    await Promise.all(cachePromises)
     await generateIndexjsFile(
       joinArrays(directoryKeys, singleFileKeys),
       cacheDir,
-      "root"
-    );
+      'root'
+    )
 
-    const diffs = await findDiff(cacheDir, targetDir);
+    const diffs = await findDiff(cacheDir, targetDir)
     if (diffs.length > 0) {
-      console.log("Differences found:");
+      console.log('Differences found:')
       diffs.forEach((diff) => {
-        console.log(chalk.green(`File: ${diff.file}`));
-        console.log(chalk.yellow("Diff:"));
-        console.log(chalk.yellow(diff.diff));
-        console.log("---");
-      });
+        console.log(chalk.green(`File: ${diff.file}`))
+        console.log(chalk.yellow('Diff:'))
+        console.log(chalk.yellow(diff.diff))
+        console.log('---')
+      })
       if (!update) {
-        const { consent } = await askForConsent();
+        const { consent } = await askForConsent()
         if (consent) {
-          await overrideFiles(cacheDir, targetDir);
-          console.log("Files overridden successfully.");
+          await overrideFiles(cacheDir, targetDir)
+          console.log('Files overridden successfully.')
         } else {
-          console.log("Files not overridden.");
+          console.log('Files not overridden.')
         }
       } else {
-        await overrideFiles(cacheDir, targetDir);
-        console.log("Files overridden successfully.");
-        console.log();
-        console.log(chalk.dim("\n----------------\n"));
+        await overrideFiles(cacheDir, targetDir)
+        console.log('Files overridden successfully.')
+        console.log()
+        console.log(chalk.dim('\n----------------\n'))
       }
     } else {
-      console.log("No differences found.");
-      console.log();
-      console.log(chalk.dim("\n----------------\n"));
+      console.log('No differences found.')
+      console.log()
+      console.log(chalk.dim('\n----------------\n'))
     }
   }
 
-  async function createKeyDirectoryAndFiles(key, body, distDir, update) {
-    const dirPath = path.join(distDir, key);
-    await fs.promises.mkdir(dirPath, { recursive: true });
+  async function createKeyDirectoryAndFiles (key, body, distDir, update) {
+    const dirPath = path.join(distDir, key)
+    await fs.promises.mkdir(dirPath, { recursive: true })
 
-    const dirs = [];
+    const dirs = []
 
     if (body[key] && isObject(body[key])) {
       const promises = Object.entries(body[key]).map(
         async ([entryKey, value]) => {
           // if pages
-          if (entryKey.startsWith("/")) entryKey = entryKey.slice(1);
-          if (entryKey === "") entryKey = "main";
-          if (entryKey.includes("*")) entryKey = "fallback";
+          if (entryKey.startsWith('/')) entryKey = entryKey.slice(1)
+          if (entryKey === '') entryKey = 'main'
+          if (entryKey.includes('*')) entryKey = 'fallback'
 
-          await createOrUpdateFile(dirPath, entryKey, value, update);
-          dirs.push(entryKey);
+          await createOrUpdateFile(dirPath, entryKey, value, update)
+          dirs.push(entryKey)
         }
-      );
+      )
 
-      await Promise.all(promises);
+      await Promise.all(promises)
     }
 
-    await generateIndexjsFile(dirs, dirPath, key);
+    await generateIndexjsFile(dirs, dirPath, key)
   }
 
-  async function createOrUpdateFile(dirPath, childKey, value, update) {
+  async function createOrUpdateFile (dirPath, childKey, value, update) {
     const itemKey =
-      childKey.includes("-") || childKey.includes("/")
+      childKey.includes('-') || childKey.includes('/')
         ? removeChars(toCamelCase(childKey))
-        : childKey;
-    const filePath = path.join(dirPath, `${childKey.replace("/", "-")}.js`);
+        : childKey
+    const filePath = path.join(dirPath, `${childKey.replace('/', '-')}.js`)
 
     if (!update && fs.existsSync(filePath)) {
-      return;
+      return
     }
 
-    let stringifiedContent;
+    let stringifiedContent
     if (isString(value)) {
-      stringifiedContent = `export const ${itemKey} = ${value}`;
+      stringifiedContent = `export const ${itemKey} = ${value}`
     } else {
-      const content = deepDestringify(value);
+      const content = deepDestringify(value)
       // console.log('ON DEEPDESTR:')
       // console.log(content.components.Configuration)
       stringifiedContent = `export const ${itemKey} = ${objectToString(
         content
-      )};`;
+      )};`
     }
 
-    await fs.promises.writeFile(filePath, stringifiedContent, "utf8");
+    await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
   }
 
-  async function createSingleFileFolderAndFile(key, data, distDir, update) {
-    const filePath = path.join(distDir, `${key}.js`);
+  async function createSingleFileFolderAndFile (key, data, distDir, update) {
+    const filePath = path.join(distDir, `${key}.js`)
 
     if (!update && fs.existsSync(filePath)) {
-      return;
+      return
     }
 
-    if (isString(data)) data = { default: data };
-    const content = deepDestringify(data);
-    const stringifiedContent = `export default ${objectToString(content)};`;
+    if (isString(data)) data = { default: data }
+    const content = deepDestringify(data)
+    const stringifiedContent = `export default ${objectToString(content)};`
 
-    await fs.promises.writeFile(filePath, stringifiedContent, "utf8");
+    await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
   }
 
   // Generate final package.json string
@@ -203,25 +205,25 @@ export async function createFs(
   // }
 }
 
-async function findDiff(targetDir, distDir) {
-  const diffs = [];
+async function findDiff (targetDir, distDir) {
+  const diffs = []
 
   for (const key of directoryKeys) {
-    const targetDirPath = path.join(targetDir, key);
-    const distDirPath = path.join(distDir, key);
+    const targetDirPath = path.join(targetDir, key)
+    const distDirPath = path.join(distDir, key)
 
     if (!fs.existsSync(targetDirPath)) {
-      continue;
+      continue
     }
 
-    const targetFiles = await fs.promises.readdir(targetDirPath);
+    const targetFiles = await fs.promises.readdir(targetDirPath)
     for (const file of targetFiles) {
-      if (file === "index.js") {
-        continue; // Skip comparing index.js files
+      if (file === 'index.js') {
+        continue // Skip comparing index.js files
       }
 
-      const targetFilePath = path.join(targetDirPath, file);
-      const distFilePath = path.join(distDirPath, file);
+      const targetFilePath = path.join(targetDirPath, file)
+      const distFilePath = path.join(distDirPath, file)
 
       if (!fs.existsSync(distFilePath)) {
         diffs.push({
@@ -229,139 +231,139 @@ async function findDiff(targetDir, distDir) {
           diff: `File ${path.join(
             key,
             file
-          )} does not exist in the dist directory.`,
-        });
-        continue;
+          )} does not exist in the dist directory.`
+        })
+        continue
       }
 
-      const targetContent = await fs.promises.readFile(targetFilePath, "utf8");
-      const distContent = await fs.promises.readFile(distFilePath, "utf8");
+      const targetContent = await fs.promises.readFile(targetFilePath, 'utf8')
+      const distContent = await fs.promises.readFile(distFilePath, 'utf8')
 
       if (targetContent !== distContent) {
-        const diff = createPatch(file, distContent, targetContent);
+        const diff = createPatch(file, distContent, targetContent)
         diffs.push({
           file: path.join(key, file),
-          diff,
-        });
+          diff
+        })
       }
     }
   }
 
   for (const key of singleFileKeys) {
-    const targetFilePath = path.join(targetDir, `${key}.js`);
-    const distFilePath = path.join(distDir, `${key}.js`);
+    const targetFilePath = path.join(targetDir, `${key}.js`)
+    const distFilePath = path.join(distDir, `${key}.js`)
 
     if (!fs.existsSync(targetFilePath)) {
-      continue;
+      continue
     }
 
     if (!fs.existsSync(distFilePath)) {
       diffs.push({
         file: `${key}.js`,
-        diff: `File ${key}.js does not exist in the dist directory.`,
-      });
-      continue;
+        diff: `File ${key}.js does not exist in the dist directory.`
+      })
+      continue
     }
 
-    const targetContent = await fs.promises.readFile(targetFilePath, "utf8");
-    const distContent = await fs.promises.readFile(distFilePath, "utf8");
+    const targetContent = await fs.promises.readFile(targetFilePath, 'utf8')
+    const distContent = await fs.promises.readFile(distFilePath, 'utf8')
 
     if (targetContent !== distContent) {
-      const diff = createPatch(key, distContent, targetContent);
+      const diff = createPatch(key, distContent, targetContent)
       diffs.push({
         file: `${key}.js`,
-        diff,
-      });
+        diff
+      })
     }
   }
 
-  return diffs;
+  return diffs
 }
 
-async function generateIndexjsFile(dirs, dirPath, key) {
-  let indexContent;
-  if (key === "pages") {
+async function generateIndexjsFile (dirs, dirPath, key) {
+  let indexContent
+  if (key === 'pages') {
     indexContent =
       dirs
         .map(
           (d) =>
             `import { ${
-              d.includes("-") || d.includes("/")
+              d.includes('-') || d.includes('/')
                 ? removeChars(toCamelCase(d))
                 : d
-            } } from './${d.replace("/", "-")}';`
+            } } from './${d.replace('/', '-')}';`
         )
-        .join("\n") +
-      "\n" +
+        .join('\n') +
+      '\n' +
       `export default {
       ${
         dirs
           .map(
             (d) =>
-              `'/${d === "main" ? "" : d}': ${
-                d.includes("-") || d.includes("/")
+              `'/${d === 'main' ? '' : d}': ${
+                d.includes('-') || d.includes('/')
                   ? removeChars(toCamelCase(d))
                   : d
               },`
           )
-          .join("\n") + "\n"
+          .join('\n') + '\n'
       }
-    }`;
-  } else if (key === "root") {
+    }`
+  } else if (key === 'root') {
     indexContent =
       dirs
         .map((d) => {
           if (defaultExports.includes(d)) {
-            return `export { default as ${d} } from './${d}';`;
-          } else return `export * as ${d} from './${d}';`;
+            return `export { default as ${d} } from './${d}';`
+          } else return `export * as ${d} from './${d}';`
         })
-        .join("\n") + "\n";
+        .join('\n') + '\n'
   } else {
-    indexContent = dirs.map((d) => `export * from './${d}';`).join("\n") + "\n";
+    indexContent = dirs.map((d) => `export * from './${d}';`).join('\n') + '\n'
   }
-  const indexFilePath = path.join(dirPath, "index.js");
-  await fs.promises.writeFile(indexFilePath, indexContent, "utf8");
+  const indexFilePath = path.join(dirPath, 'index.js')
+  await fs.promises.writeFile(indexFilePath, indexContent, 'utf8')
 }
 
-async function overrideFiles(targetDir, distDir) {
+async function overrideFiles (targetDir, distDir) {
   for (const key of directoryKeys) {
-    const targetDirPath = path.join(targetDir, key);
-    const distDirPath = path.join(distDir, key);
+    const targetDirPath = path.join(targetDir, key)
+    const distDirPath = path.join(distDir, key)
 
     if (!fs.existsSync(targetDirPath)) {
-      continue;
+      continue
     }
 
-    const targetFiles = await fs.promises.readdir(targetDirPath);
+    const targetFiles = await fs.promises.readdir(targetDirPath)
     for (const file of targetFiles) {
-      const targetFilePath = path.join(targetDirPath, file);
-      const distFilePath = path.join(distDirPath, file);
+      const targetFilePath = path.join(targetDirPath, file)
+      const distFilePath = path.join(distDirPath, file)
 
-      await fs.promises.copyFile(targetFilePath, distFilePath);
+      await fs.promises.copyFile(targetFilePath, distFilePath)
     }
   }
 
   for (const key of singleFileKeys) {
-    const targetFilePath = path.join(targetDir, `${key}.js`);
-    const distFilePath = path.join(distDir, `${key}.js`);
+    const targetFilePath = path.join(targetDir, `${key}.js`)
+    const distFilePath = path.join(distDir, `${key}.js`)
 
     if (!fs.existsSync(targetFilePath)) {
-      continue;
+      continue
     }
 
-    await fs.promises.copyFile(targetFilePath, distFilePath);
+    await fs.promises.copyFile(targetFilePath, distFilePath)
   }
 }
 
-async function askForConsent() {
+async function askForConsent () {
   const questions = [
     {
-      type: "confirm",
-      name: "consent",
-      message: "Do you want to override the files?",
-      default: false,
-    },
-  ];
+      type: 'confirm',
+      name: 'consent',
+      message: 'Do you want to override the files?',
+      default: false
+    }
+  ]
 
-  return inquirer.prompt(questions);
+  return inquirer.prompt(questions)
 }
