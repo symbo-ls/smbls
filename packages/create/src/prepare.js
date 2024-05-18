@@ -32,7 +32,7 @@ export const prepareComponents = options => {
 }
 
 export const prepareUtils = options => {
-  return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || {}) }
+  return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || options.functions || {}) }
 }
 
 export const preparePackages = (packages, opts) => {
