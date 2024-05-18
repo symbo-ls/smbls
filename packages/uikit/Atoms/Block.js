@@ -171,12 +171,19 @@ export const Block = {
 
     flexWrap: ({ props }) => !isUndefined(props.flexWrap) && ({
       display: 'flex',
-      flexFlow: props.flexWrap
+      flexFlow: (props.flexFlow || 'row').split(' ')[0] + ' ' + props.flexWrap
     }),
-    flexFlow: ({ props }) => !isUndefined(props.flexFlow) && ({
-      display: 'flex',
-      flexFlow: props.flexFlow + (props.reverse ? '-reverse' : '')
-    }),
+    flexFlow: ({ props }) => {
+      const { flexFlow, reverse } = props
+      if (!isString(flexFlow)) return
+      let [direction, wrap] = (flexFlow || 'row').split(' ')
+      if (flexFlow.startsWith('x') || flexFlow === 'row') direction = 'row'
+      if (flexFlow.startsWith('y') || flexFlow === 'column') direction = 'column'
+      return {
+        display: 'flex',
+        flexFlow: (direction || '') + (!direction.includes('-reverse') && reverse ? '-reverse' : '') + ' ' + (wrap || '')
+      }
+    },
     flexAlign: ({ props }) => {
       if (!isString(props.flexAlign)) return
       const [alignItems, justifyContent] = props.flexAlign.split(' ')
