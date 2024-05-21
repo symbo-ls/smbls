@@ -11,6 +11,8 @@ export const Svg = {
     'xmlns:xlink': 'http://www.w3.org/1999/xlink'
   },
   html: ({ key, props, context, ...el }) => {
+    if (props.semantic_symbols) return
+
     const { designSystem, utils } = context
     const SVG = designSystem && designSystem.SVG
     const useSvgSprite = props.spriteId || (context.designSystem && context.designSystem.useSvgSprite)

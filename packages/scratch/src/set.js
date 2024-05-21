@@ -7,7 +7,7 @@ import {
   setFont,
   setFontFamily,
   setTheme,
-  setIcon,
+  setSvgIcon,
   setSVG,
   applyTypographySequence,
   applySpacingSequence,
@@ -32,7 +32,8 @@ export const VALUE_TRANSFORMERS = {
   font: setFont,
   font_family: setFontFamily,
   theme: setTheme,
-  icons: setIcon,
+  icons: setSvgIcon,
+  semantic_icons: setSameValue,
   svg: setSVG,
   svg_data: setSameValue,
   typography: setSameValue,
@@ -94,6 +95,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     globalTheme,
     useDocumentTheme,
     useDefaultConfig,
+    SEMANTIC_ICONS,
     ...config
   } = recivedConfig
 
@@ -110,6 +112,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (useDocumentTheme !== undefined) CONFIG.useDocumentTheme = useDocumentTheme
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
   if (useDefaultConfig !== undefined) CONFIG.useDefaultConfig = useDefaultConfig
+  if (SEMANTIC_ICONS !== undefined) CONFIG.SEMANTIC_ICONS = SEMANTIC_ICONS
   if (CONFIG.verbose) console.log(CONFIG)
 
   if (!CONFIG.__svg_cache) CONFIG.__svg_cache = {}
@@ -118,9 +121,9 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   keys.map(key => setEach(key, config[key]))
 
   // apply generic configs
-  applyTypographySequence()
-  applySpacingSequence()
-  applyTimingSequence()
+  if (config.TYPOGRAPHY) applyTypographySequence()
+  if (config.SPACING) applySpacingSequence()
+  if (config.TIMING) applyTimingSequence()
   applyDocument()
   applyReset()
 

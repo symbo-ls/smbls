@@ -10,6 +10,15 @@ export const Editorjs = {
   on: {
     init: () => initMutiny()
   },
+  childExtend: {
+    html: (el, s) => {
+      const text = el.text || el.props.text
+      if (text && text.includes('</')) { return text }
+    },
+    childExtend: {
+      html: (el, s) => el.props.text || el.text
+    }
+  },
   define: {
     $editorjs: (param, el, state, ctx) => {
       if (!param) return

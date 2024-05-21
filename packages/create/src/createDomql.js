@@ -51,6 +51,7 @@ export const createDomqlElement = (App, options) => {
       routerOptions,
       socket: options.socket,
       editor: options.editor,
+      window: options.window || window,
       document: doc
     }
   }, doc.body, key, {

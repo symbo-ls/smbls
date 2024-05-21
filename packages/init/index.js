@@ -5,7 +5,7 @@ import {
   getActiveConfig,
   getFontFaceString,
   appendSVGSprite,
-  appendIconsSprite
+  appendSvgIconsSprite
 } from '@symbo.ls/scratch'
 
 import { isObject, deepMerge, deepClone } from '@domql/utils'
@@ -66,8 +66,8 @@ export const init = (config, options = SET_OPTIONS) => {
   if (hasSvgs) appendSVGSprite(hasSvgs, { document: options.document })
   else if (useSvgSprite) appendSVGSprite(conf.SVG, { document: options.document })
 
-  if (hasIcons) appendIconsSprite(hasIcons, { document: options.document })
-  else if (useIconSprite) appendIconsSprite(conf.ICONS, { document: options.document })
+  if (hasIcons) appendSvgIconsSprite(hasIcons, { document: options.document })
+  else if (useIconSprite) appendSvgIconsSprite(conf.ICONS, { document: options.document })
 
   return conf
 }

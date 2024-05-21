@@ -9,6 +9,9 @@ export const Iframe = {
   },
   attr: {
     src: ({ props }) => props.src,
+    srcdoc: ({ props }) => props.srcdoc,
+    sandbox: ({ props }) => props.sandbox,
+    seamless: ({ props }) => props.seamless,
     loading: ({ props }) => props.loading,
     allowfullscreen: ({ props }) => props.allowfullscreen,
     frameborder: ({ props }) => props.frameborder,

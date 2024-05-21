@@ -28,14 +28,14 @@ export const appendSVGSprite = (LIBRARY, options = DEF_OPTIONS) => {
   appendSVG(lib, options)
 }
 
-export const setIcon = (val, key) => {
+export const setSvgIcon = (val, key) => {
   const CONFIG = getActiveConfig()
-  if (CONFIG.useIconSprite) {
+  if (CONFIG.useIconSprite && !CONFIG.SEMANTIC_ICONS?.[key]) {
     return setSVG(val, key)
   } return val
 }
 
-export const appendIconsSprite = (LIBRARY, options = DEF_OPTIONS) => {
+export const appendSvgIconsSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const CONFIG = getActiveConfig()
 
   const lib = Object.keys(LIBRARY).length ? {} : CONFIG.ICONS

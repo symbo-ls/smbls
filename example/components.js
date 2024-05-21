@@ -1,6 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
 import { Avatar, SearchWithButton } from '@symbo.ls/uikit'
 
 export const ComponentsView = {
