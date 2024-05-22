@@ -257,9 +257,10 @@ export const Hr = {
 export const Br = { tag: 'br' }
 export const Div = { tag: 'div' }
 export const Span = { tag: 'span' }
+export const Li = { tag: 'li' }
 export const Ul = {
   tag: 'ul',
-  childExtend: { tag: 'li' }
+  childExtend: { extend: 'Li' }
 }
 // export const Article = { tag: 'article' }
 
