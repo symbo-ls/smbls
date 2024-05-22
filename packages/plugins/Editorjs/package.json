@@ -4,7 +4,7 @@
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "5b2b1516c2cb42c2ee79892b4180bf5cf884fb90",
+  "gitHead": "a2f9aff09401f5854a690408fd7cc0e938877b5d",
   "dependencies": {
     "@domql/converter": "latest",
     "@domql/utils": "latest"
