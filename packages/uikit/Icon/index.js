@@ -42,7 +42,7 @@ export const Icon = {
           display: 'inline-block',
           style: {
             color: 'currentColor',
-            fontFamily: "'SF Pro Icons', 'SF Pro', 'Segoe UI'"
+            fontFamily: "'SF Pro Icons', 'SF Pro', 'SF Symbols', 'Segoe UI'"
           }
         }
       }
