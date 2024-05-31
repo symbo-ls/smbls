@@ -37,6 +37,6 @@ export const loadJavascript = (body, async = true, doc = document, type = 'text/
 
     doc.body.appendChild(scriptEle)
   } catch (error) {
-    reject(error)
+    console.warn(error)
   }
 }
