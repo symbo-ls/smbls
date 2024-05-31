@@ -57,6 +57,6 @@
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "c7cc61750f867d1512f68ccc9ec338789ee1d3f0",
+  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "source": "src/index.js"
 }
