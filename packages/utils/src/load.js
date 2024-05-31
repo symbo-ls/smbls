@@ -27,3 +27,16 @@ export const loadJavascriptFile = (FILE_URL, async = true, doc = document, type 
     }
   })
 }
+
+export const loadJavascript = (body, async = true, doc = document, type = 'text/javascript') => {
+  try {
+    const scriptEle = doc.createElement('script')
+    scriptEle.type = type
+    scriptEle.async = async
+    scriptEle.innerHTML = body
+
+    doc.body.appendChild(scriptEle)
+  } catch (error) {
+    reject(error)
+  }
+}

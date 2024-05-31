@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepMerge, isObject } from '@domql/utils'
+import { deepMerge, isObject, isUndefined } from '@domql/utils'
 
 import * as utils from './utilImports'
 
@@ -54,9 +54,12 @@ export const createSync = async (App, options = DEFAULT_CREATE_OPTIONS, optionsE
   return domqlApp
 }
 
-export const createSkeleton = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
+export const createSkeleton = (App = {}, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
   return create(
-    App,
+    {
+      deps: { isUndefined },
+      ...App
+    },
     deepMerge({ domqlOptions: { onlyResolveExtends: true } }, options),
     optionsExternalFile
   )

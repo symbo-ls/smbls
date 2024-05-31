@@ -15,7 +15,7 @@ import {
   Animation
 } from '@symbo.ls/atoms'
 
-import { isString } from '@domql/utils'
+import { isString, isUndefined } from '@domql/utils'
 
 const PropsCSS = {
   class: {
@@ -39,7 +39,7 @@ export const Box = {
     XYZ,
     Animation
   ],
-  deps: { isString },
+  deps: { isString, isUndefined },
   attr: {
     id: ({ props, deps }) => deps.isString(props.id) && props.id,
     title: ({ props, deps }) => deps.isString(props.title) && props.title,

@@ -44,6 +44,7 @@ export const toDashCase = val => val
   .replace(/^-|-$/g, '') // Remove leading and trailing dashes
 
 export const toDescriptionCase = (str = '') => {
+  if (typeof str !== 'string') return
   const result = str.replace(/([A-Z])/g, ' $1')
   return result.charAt(0).toUpperCase() + result.slice(1)
 }
