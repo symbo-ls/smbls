@@ -7,7 +7,7 @@ export const Img = {
     src: (el) => {
       const { props, context } = el
       const { exec, isString, replaceLiteralsWithObjectFields } = context.utils
-      let src = exec(props.src, el)
+      let src = (props.preSrc || '') + exec(props.src, el)
 
       if (isString(src) && src.includes('{{')) {
         src = replaceLiteralsWithObjectFields(src, el.state)

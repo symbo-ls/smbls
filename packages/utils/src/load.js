@@ -1,6 +1,6 @@
 'use strict'
 
-export const loadJavascriptFile = (FILE_URL, async = true, doc = document, type = 'text/javascript') => {
+export const loadJavascriptFile = (FILE_URL, async = false, doc = document, type = 'text/javascript') => {
   return new Promise((resolve, reject) => {
     try {
       const scriptEle = doc.createElement('script')
@@ -28,7 +28,7 @@ export const loadJavascriptFile = (FILE_URL, async = true, doc = document, type 
   })
 }
 
-export const loadJavascript = (body, async = true, doc = document, type = 'text/javascript') => {
+export const loadJavascript = (body, async = false, doc = document, type = 'text/javascript') => {
   try {
     const scriptEle = doc.createElement('script')
     scriptEle.type = type

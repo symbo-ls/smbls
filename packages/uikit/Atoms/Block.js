@@ -262,6 +262,10 @@ export const Ul = {
   tag: 'ul',
   childExtend: { extend: 'Li' }
 }
+export const Ol = {
+  tag: 'ol',
+  childExtend: { extend: 'Li' }
+}
 // export const Article = { tag: 'article' }
 
 export const Gutter = {

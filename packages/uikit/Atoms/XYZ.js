@@ -1,6 +1,6 @@
 'use strict'
 
-import { isUndefined } from 'smbls'
+import { isUndefined } from '@domql/utils'
 
 export const XYZ = {
   class: {

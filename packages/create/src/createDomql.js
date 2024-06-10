@@ -54,7 +54,7 @@ export const createDomqlElement = (App, options) => {
       window: options.window || window,
       document: doc
     }
-  }, doc.body, key, {
+  }, options.parent || doc.body, key, {
     extend: [uikit.Box],
     verbose: options.verbose,
     ...options.domqlOptions

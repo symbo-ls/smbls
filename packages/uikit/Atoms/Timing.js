@@ -6,7 +6,7 @@ import {
   transformDuration
 } from '@symbo.ls/scratch'
 
-import { isUndefined } from 'smbls'
+import { isUndefined } from '@domql/utils'
 
 export const Timing = {
   deps: {
