@@ -1,6 +1,6 @@
 {
   "npmClient": "yarn",
-  "version": "2.11.394",
+  "version": "2.11.395",
   "packages": [
     "packages/*",
     "packages/*/*"
