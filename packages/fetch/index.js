@@ -8,7 +8,7 @@ const { window } = globals
 const IS_DEVELOPMENT =
   window && window.location
     ? window.location.host.includes('dev.')
-    : process.env.NODE_ENV === 'development'
+    : process?.env.NODE_ENV === 'development'
 
 const SERVER_URL = IS_DEVELOPMENT
   ? 'http://localhost:13335/get'

@@ -2,7 +2,7 @@
 
 import { document, window } from '@domql/globals'
 import { isString, isNumber } from '@domql/utils'
-const ENV = process.env.NODE_ENV
+const ENV = process?.env.NODE_ENV
 
 export const colorStringToRgbaArray = color => {
   if (color === '') return [0, 0, 0, 0]

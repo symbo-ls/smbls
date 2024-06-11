@@ -1,6 +1,6 @@
 {
   "name": "smbls",
-  "version": "2.11.395",
+  "version": "2.11.394",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
@@ -26,7 +26,6 @@
     "domql": "latest"
   },
   "type": "module",
-  "jsdelivr": "dist/iife/index.js",
   "exports": "./dist/cjs/index.js",
   "publishConfig": {},
   "scripts": {

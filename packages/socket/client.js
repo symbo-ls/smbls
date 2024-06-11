@@ -7,7 +7,7 @@ import io from 'socket.io-client'
 const { isFunction, isArray } = utils.default || utils
 const { window } = globals.default || globals
 
-const ENV = process.env.NODE_ENV
+const ENV = process?.env.NODE_ENV
 
 const defautlOpts = {}
 
