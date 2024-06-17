@@ -1,6 +1,6 @@
 'use strict'
 
-// import ICONS from '@symbo.ls/default-icons'
+import ICONS from '@symbo.ls/default-icons'
 import { COLOR, GRADIENT } from './color'
 import { THEME } from './theme'
 import { TYPOGRAPHY } from './typography'
@@ -19,7 +19,8 @@ export const DEFAULT_CONFIG = {
   FONT,
   FONT_FAMILY,
   TIMING,
-  ICONS: {},
+  // ICONS: {},
+  ICONS,
   MEDIA,
   ANIMATIONS: {
     fadeIn: {
