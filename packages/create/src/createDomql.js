@@ -10,7 +10,7 @@ import { initRouter } from './router'
 import { applySyncDebug } from './syncExtend'
 import { prepareComponents, prepareDesignSystem, prepareDocument, preparePackages, preparePages, prepareState, prepareUtils } from './prepare'
 
-const SYMBOLS_KEY = process?.env.SYMBOLS_KEY
+const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
 export const createDomqlElement = (App, options) => {
   const key = options.key || SYMBOLS_KEY || (isString(App) ? App : '')

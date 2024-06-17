@@ -16,7 +16,7 @@ export const GoogleMaps = {
       const { version, apiKey } = props
       if (data.loader) return
       data.loader = new deps.Loader({
-        apiKey: apiKey || process?.env.GOOGLE_MAPS_API_KEY,
+        apiKey: apiKey || process.env.GOOGLE_MAPS_API_KEY,
         version: version || 'weekly'
       })
     },

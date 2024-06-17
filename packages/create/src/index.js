@@ -12,7 +12,7 @@ import DEFAULT_CREATE_OPTIONS from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
 import { createDomqlElement } from './createDomql'
 
-const SYMBOLS_KEY = process?.env.SYMBOLS_KEY
+const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
 const mergeWithLocalFile = (options, optionsExternalFile) => deepMerge(
   options,
