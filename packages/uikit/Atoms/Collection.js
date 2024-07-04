@@ -78,7 +78,7 @@ export const Collection = {
       return data
     },
 
-    $stateCollection: (param, el, state) => {
+    $stateCollection: (param, el, state, ctx) => {
       if (!param) return
 
       if (isString(param)) {

@@ -173,3 +173,14 @@ export const PlusMinusButtons = {
     props: { icon: 'plus' }
   }
 }
+
+export const IconButton = {
+  extend: [
+    'SquareButton',
+    'ClickableItem'
+  ],
+  props: {
+    round: 'Z'
+  },
+  __hash: '3a7v57sk5rd'
+}

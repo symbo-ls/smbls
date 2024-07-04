@@ -108,6 +108,7 @@ export const Theme = {
     outline: ({ props, deps }) => !isUndefined(props.outline) && ({
       outline: deps.transformBorder(props.outline)
     }),
+    outlineOffset: ({ props, deps }) => deps.transformSizeRatio('outlineOffset', props),
 
     border: ({ props, deps }) => !isUndefined(props.border) && ({
       border: deps.transformBorder(props.border)

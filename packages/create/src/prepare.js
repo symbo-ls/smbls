@@ -32,7 +32,6 @@ export const prepareComponents = options => {
 }
 
 export const prepareUtils = options => {
-  console.log(window.packages)
   if (window.require && window.packages.smbls) return window.packages.smbls
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || options.functions || {}) }
 }
@@ -43,7 +42,11 @@ export const preparePackages = (packages, opts) => {
     windowOpts.packages = merge(windowOpts.packages, packages)
   } else {
     windowOpts.packages = packages
-    windowOpts.require = (key) => windowOpts.packages[key]
+    windowOpts.require = (key) => {
+      const pkg = window.packages[key]
+      if (typeof pkg === 'function') return pkg()
+      else return pkg
+    }
   }
 }
 
