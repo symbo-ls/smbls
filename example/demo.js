@@ -751,5 +751,5 @@
 // })
 
 import * as smbls from 'smbls'
-if (window.packages) window.packages.smbls = smbls
-else window.packages = { smbls }
+if (window.packages) window.packages.smbls = () => smbls
+else window.packages = { smbls: () => smbls }

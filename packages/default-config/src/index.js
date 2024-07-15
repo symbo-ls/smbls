@@ -19,10 +19,15 @@ export const DEFAULT_CONFIG = {
   FONT,
   FONT_FAMILY,
   TIMING,
-  // ICONS: {},
   ICONS,
   MEDIA,
-  ANIMATIONS: {
+  RESET: {
+    body: {
+      position: 'absolute',
+      inset: '0 0 0 0'
+    }
+  },
+  ANIMATION: {
     fadeIn: {
       from: {
         opacity: 0

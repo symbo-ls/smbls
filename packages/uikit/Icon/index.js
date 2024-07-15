@@ -12,6 +12,21 @@ const getIconName = ({ key, props, context, deps, state }) => {
   return deps.isString(iconName) ? iconName : key
 }
 
+export const getSfSymbols = (el, s) => {
+  const { props, parent } = el
+  const sfSymbols = props.sfSymbols || parent.props.sfSymbols
+  if (sfSymbols) {
+    const sf = require('@symbo.ls/sf-symbols')
+    return {
+      width: 'A',
+      height: 'A',
+      display: 'inline-block',
+      src: sf[sfSymbols],
+      style: { fill: 'currentColor' }
+    }
+  }
+}
+
 export const Icon = {
   extend: 'Svg',
   deps: { isString, replaceLiteralsWithObjectFields },
@@ -101,7 +116,7 @@ export const IconText = {
   Icon: {
     props: ({ parent, props }) => ({ icon: parent.props.icon }),
     if: ({ parent, props }) => {
-      const doesExist = parent.props.icon || parent.props.Icon || props.name || props.icon
+      const doesExist = parent.props.icon || parent.props.Icon || props.name || props.icon || props.sfSymbols || parent.props.sfSymbols
       return doesExist
     }
   },
