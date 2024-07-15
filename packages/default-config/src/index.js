@@ -22,9 +22,9 @@ export const DEFAULT_CONFIG = {
   ICONS,
   MEDIA,
   RESET: {
+    html: {
+    },
     body: {
-      position: 'absolute',
-      inset: '0 0 0 0'
     }
   },
   ANIMATION: {
