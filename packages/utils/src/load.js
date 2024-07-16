@@ -28,11 +28,12 @@ export const loadJavascriptFile = (FILE_URL, async = false, doc = document, type
   })
 }
 
-export const loadJavascript = (body, async = false, doc = document, type = 'text/javascript') => {
+export const loadJavascript = (body, async = false, doc = document, type = 'text/javascript', id = 'smbls-script') => {
   try {
     const scriptEle = doc.createElement('script')
     scriptEle.type = type
     scriptEle.async = async
+    scriptEle.id = id
     scriptEle.innerHTML = body
 
     doc.body.appendChild(scriptEle)
