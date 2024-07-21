@@ -90,6 +90,10 @@ export const Block = {
       direction: props.direction
     }),
 
+    objectFit: ({ props, deps }) => !deps.isUndefined(props.objectFit) && ({
+      objectFit: props.objectFit
+    }),
+
     aspectRatio: ({ props, deps }) => !deps.isUndefined(props.aspectRatio) && ({
       aspectRatio: props.aspectRatio
     }),

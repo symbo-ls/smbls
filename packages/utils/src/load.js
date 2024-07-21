@@ -28,6 +28,26 @@ export const loadJavascriptFile = (FILE_URL, async = false, doc = document, type
   })
 }
 
+export const loadCssFile = (FILE_URL, async = false, doc = document, type = 'text/javascript') => {
+  return new Promise((resolve, reject) => {
+    try {
+      const linkElem = doc.createElement('link')
+      linkElem.rel = 'stylesheet'
+      linkElem.href = FILE_URL
+
+      linkElem.addEventListener('load', (ev) => {
+        resolve({
+          status: true
+        })
+      })
+
+      doc.head.appendChild(linkElem)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 export const loadJavascript = (body, async = false, doc = document, type = 'text/javascript', id = 'smbls-script') => {
   try {
     const scriptEle = doc.createElement('script')
