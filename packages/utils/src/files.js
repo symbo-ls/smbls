@@ -1,3 +1,3 @@
 'use strict'
 
-export const isPhoto = format => ['jpeg', 'gif', 'jpg', 'png', 'tiff'].includes(format)
+export const isPhoto = format => ['jpeg', 'gif', 'jpg', 'png', 'tiff', 'woff'].includes(format)
