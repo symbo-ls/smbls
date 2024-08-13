@@ -154,7 +154,7 @@ export const Block = {
       float: props.float
     }),
 
-    flex: ({ props, deps }) => props.flex && ({
+    flex: ({ props, deps }) => !deps.isUndefined(props.flex) && ({
       flex: props.flex
     }),
     flexDirection: ({ props, deps }) => !deps.isUndefined(props.flexDirection) && ({

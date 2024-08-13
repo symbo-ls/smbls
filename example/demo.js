@@ -751,5 +751,13 @@
 // })
 
 import * as smbls from 'smbls'
-if (window.packages) window.packages.smbls = () => smbls
-else window.packages = { smbls: () => smbls }
+if (window.packages) {
+  window.packages.smbls = () => smbls
+} else {
+  window.packages = { smbls: () => smbls }
+}
+window.require = (key) => {
+  const pkg = window.packages[key]
+  if (typeof pkg === 'function') return pkg()
+  else return pkg
+}
