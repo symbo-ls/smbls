@@ -30,8 +30,8 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./index.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
+    "build:esm": "npx esbuild ./index.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
+    "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text --bundle",
     "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   }

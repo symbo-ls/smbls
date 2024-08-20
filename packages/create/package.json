@@ -23,10 +23,10 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./src/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild ./src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:cjs:bundle": "npx esbuild ./src/index.js --target=node16 --format=cjs --outdir=dist/cjs/bundle --bundle --loader:.svg=empty",
-    "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
+    "build:esm": "npx esbuild ./src/*.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
+    "build:cjs": "npx esbuild ./src/*.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
+    "build:cjs:bundle": "npx esbuild ./src/index.js --target=node16 --format=cjs --outdir=dist/cjs/bundle --loader:.svg=text --bundle --loader:.svg=empty",
+    "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
     "build": "yarn build:cjs; yarn build:cjs:bundle",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
