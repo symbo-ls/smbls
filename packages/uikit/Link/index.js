@@ -13,8 +13,7 @@ export const Link = {
     draggable: false
   },
   attr: {
-    href: (el, s) => {
-      const { context: ctx } = el
+    href: (el, s, ctx) => {
       const { isString, exec, replaceLiteralsWithObjectFields } = ctx.utils
       const href = exec(el.props.href, el) || exec(el.props, el).href
       if (isString(href) && href.includes('{{')) {

@@ -32,7 +32,6 @@ export const prepareComponents = options => {
 }
 
 export const prepareUtils = options => {
-  if (window.require && window.packages.smbls) return window.packages.smbls
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || options.functions || {}) }
 }
 
