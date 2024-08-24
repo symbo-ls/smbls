@@ -35,6 +35,30 @@ export const prepareUtils = options => {
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || options.functions || {}) }
 }
 
+export const prepareDependencies = ({ dependencies, document }) => {
+  if (!dependencies || Object.keys(dependencies).length === 0) {
+    return null
+  }
+
+  const ENV = process.env.NODE_ENV
+
+  for (const [dependency, version] of Object.entries(dependencies)) {
+    if (version === 'loading' || version === 'error') {
+      continue
+    }
+
+    const random = ENV === 'development' ? `?${Math.random()}` : ''
+    const url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
+
+    try {
+      utils.loadJavascriptFileSync(url, document)
+    } catch (e) {
+      console.error(`Failed to load ${dependency}:`, e)
+    }
+  }
+  return dependencies
+}
+
 export const preparePackages = (packages, opts) => {
   const windowOpts = opts.window || window
   if (windowOpts.packages) {

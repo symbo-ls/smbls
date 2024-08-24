@@ -15,10 +15,10 @@ export const loadJavascriptFile = (FILE_URL, async = false, doc = document, type
       })
 
       scriptEle.addEventListener('error', (ev) => {
-        reject({
+        reject(new Error({
           status: false,
           message: `Failed to load the script ${FILE_URL}`
-        })
+        }))
       })
 
       doc.body.appendChild(scriptEle)
@@ -26,6 +26,21 @@ export const loadJavascriptFile = (FILE_URL, async = false, doc = document, type
       reject(error)
     }
   })
+}
+
+export const loadJavascriptFileSync = (FILE_URL, doc = document, type = 'text/javascript') => {
+  const xhr = new window.XMLHttpRequest()
+  xhr.open('GET', FILE_URL, false) // false makes the request synchronous
+  xhr.send()
+
+  if (xhr.status === 200) {
+    const scriptEle = doc.createElement('script')
+    scriptEle.type = type
+    scriptEle.text = xhr.responseText
+    doc.body.appendChild(scriptEle)
+  } else {
+    throw new Error(`Failed to load the script ${FILE_URL}`)
+  }
 }
 
 export const loadCssFile = (FILE_URL, async = false, doc = document, type = 'text/javascript') => {

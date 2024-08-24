@@ -10,6 +10,7 @@ import { initRouter } from './router'
 import { applySyncDebug } from './syncExtend'
 import {
   prepareComponents,
+  prepareDependencies,
   prepareDesignSystem,
   prepareDocument,
   preparePackages,
@@ -31,6 +32,7 @@ export const createDomqlElement = (App, options) => {
   const components = prepareComponents(options)
   const designSystem = scratcDesignSystem
   const snippets = prepareUtils(options)
+  const dependencies = prepareDependencies(options)
   preparePackages({ functions: snippets, utils: snippets, ...options.files }, options)
 
   const define = options.define || defaultDefine
@@ -50,6 +52,7 @@ export const createDomqlElement = (App, options) => {
       pages,
       designSystem,
       snippets,
+      dependencies,
       functions: options.functions,
       files: options.files,
       utils: snippets,
