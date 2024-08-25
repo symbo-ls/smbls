@@ -61,14 +61,33 @@ export const prepareDependencies = ({ dependencies, document }) => {
 
 export const preparePackages = (packages, opts) => {
   const windowOpts = opts.window || window
+
   if (windowOpts.packages) {
     windowOpts.packages = merge(windowOpts.packages, packages)
   } else {
     windowOpts.packages = packages
-    windowOpts.require = (key) => {
-      const pkg = window.packages[key]
+  }
+
+  if (!windowOpts.require) {
+    windowOpts.require = key => {
+      const pkg = windowOpts.packages[key]
       if (typeof pkg === 'function') return pkg()
-      else return pkg
+      return pkg
+    }
+  }
+
+  if (!windowOpts.requireOnDemand) {
+    windowOpts.requireOnDemand = key => {
+      const { dependenciesOnDemand, document } = opts
+      if (!windowOpts.packages[key] && dependenciesOnDemand && dependenciesOnDemand[key]) {
+        const version = dependenciesOnDemand[key]
+        console.log(key, version)
+        const url = `https://pkg.symbo.ls/${key}/${version}.js`
+        utils.loadJavascriptFileSync(url, document)
+        console.log('loaded', url)
+        console.log(windowOpts.packages[key])
+      }
+      return windowOpts.require(key)
     }
   }
 }
