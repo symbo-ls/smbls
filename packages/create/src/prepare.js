@@ -81,11 +81,8 @@ export const preparePackages = (packages, opts) => {
       const { dependenciesOnDemand, document } = opts
       if (!windowOpts.packages[key] && dependenciesOnDemand && dependenciesOnDemand[key]) {
         const version = dependenciesOnDemand[key]
-        console.log(key, version)
         const url = `https://pkg.symbo.ls/${key}/${version}.js`
         utils.loadJavascriptFileSync(url, document)
-        console.log('loaded', url)
-        console.log(windowOpts.packages[key])
       }
       return windowOpts.require(key)
     }
