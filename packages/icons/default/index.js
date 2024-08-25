@@ -24,6 +24,7 @@ export default {
   eyeOff: require('./src/eye-off.svg'),
   eye: require('./src/eye.svg'),
   info: require('./src/info.svg'),
+  lock: require('./src/lock.svg'),
   minus: require('./src/minus.svg'),
   sun: require('./src/sun.svg'),
   moon: require('./src/moon.svg'),
