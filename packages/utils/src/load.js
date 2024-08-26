@@ -28,7 +28,7 @@ export const loadJavascriptFile = (FILE_URL, async = false, doc = document, type
   })
 }
 
-export const loadJavascriptFileSync = (FILE_URL, doc = document, type = 'text/javascript') => {
+export const loadJavascriptFileSync = (FILE_URL, doc = document, fallback, type = 'text/javascript') => {
   const xhr = new window.XMLHttpRequest()
   xhr.open('GET', FILE_URL, false) // false makes the request synchronous
   xhr.send()
@@ -38,6 +38,7 @@ export const loadJavascriptFileSync = (FILE_URL, doc = document, type = 'text/ja
     scriptEle.type = type
     scriptEle.text = xhr.responseText
     doc.body.appendChild(scriptEle)
+    if (typeof fallback === 'function') fallback()
   } else {
     throw new Error(`Failed to load the script ${FILE_URL}`)
   }

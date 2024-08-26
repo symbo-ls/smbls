@@ -6,6 +6,8 @@ import { initEmotion } from './initEmotion'
 import * as uikit from '@symbo.ls/uikit'
 import * as utils from './utilImports'
 
+const ENV = process.env.NODE_ENV
+
 const checkIfKeyIsComponent = (key) => {
   const isFirstKeyString = isString(key)
   if (!isFirstKeyString) return
@@ -35,12 +37,10 @@ export const prepareUtils = options => {
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || options.functions || {}) }
 }
 
-export const prepareDependencies = ({ dependencies, document }) => {
+export const prepareDependencies = ({ dependencies, dependenciesOnDemand, document }) => {
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null
   }
-
-  const ENV = process.env.NODE_ENV
 
   for (const [dependency, version] of Object.entries(dependencies)) {
     if (version === 'loading' || version === 'error') {
@@ -50,12 +50,15 @@ export const prepareDependencies = ({ dependencies, document }) => {
     const random = ENV === 'development' ? `?${Math.random()}` : ''
     const url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
 
+    if (dependenciesOnDemand && dependenciesOnDemand[dependency]) continue
+
     try {
       utils.loadJavascriptFileSync(url, document)
     } catch (e) {
       console.error(`Failed to load ${dependency}:`, e)
     }
   }
+
   return dependencies
 }
 
@@ -79,10 +82,18 @@ export const preparePackages = (packages, opts) => {
   if (!windowOpts.requireOnDemand) {
     windowOpts.requireOnDemand = key => {
       const { dependenciesOnDemand, document } = opts
-      if (!windowOpts.packages[key] && dependenciesOnDemand && dependenciesOnDemand[key]) {
-        const version = dependenciesOnDemand[key]
-        const url = `https://pkg.symbo.ls/${key}/${version}.js`
-        utils.loadJavascriptFileSync(url, document)
+      if (!windowOpts.packages[key]) {
+        const random = ENV === 'development' ? `?${Math.random()}` : ''
+        if (dependenciesOnDemand && dependenciesOnDemand[key]) {
+          const version = dependenciesOnDemand[key]
+          const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`
+          utils.loadJavascriptFileSync(url, document)
+        } else {
+          const url = `https://pkg.symbo.ls/${key}${random}`
+          utils.loadJavascriptFileSync(url, document, () => {
+            windowOpts.packages[key] = 'loadedOnDeman'
+          })
+        }
       }
       return windowOpts.require(key)
     }
