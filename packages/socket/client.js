@@ -6,7 +6,6 @@ import io from 'socket.io-client'
 
 const { isFunction, isArray } = utils.default || utils
 const { window } = globals.default || globals
-
 const ENV = process.env.NODE_ENV
 
 const defautlOpts = {}
@@ -14,11 +13,13 @@ const defautlOpts = {}
 let CONNECT_ATTEPT = 0
 const CONNECT_ATTEPT_MAX_ALLOWED = 1
 
-export const connect = (key, options = {}) => {
-  const isDev = options.development ||
+const getIsDev = (options) => {
+  return options.development ||
     (window && window.location && window.location.host.includes('local')) ||
     (ENV === 'test' || ENV === 'development')
+}
 
+const getSocketUrl = (options, isDev) => {
   const SOCKET_BACKEND_URL = isDev
     ? 'http://localhost:13336/'
     : 'https://socket.symbols.app/'
@@ -30,14 +31,24 @@ export const connect = (key, options = {}) => {
   const primaryUrl = socketUrls[0]
   const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
 
-  const socket = io(primaryUrl || SOCKET_BACKEND_URL, {
+  return {
+    primaryUrl: primaryUrl || SOCKET_BACKEND_URL,
+    secondaryUrl
+  }
+}
+
+export const connect = (key, options = {}) => {
+  const isDev = getIsDev(options)
+
+  const { primaryUrl, secondaryUrl } = getSocketUrl(options, isDev)
+  const socket = io(primaryUrl || secondaryUrl, {
     // withCredentials: true
   })
 
   socket.on('connect', () => {
     if (isDev) {
       console.log(
-        `Connected to %c${primaryUrl || SOCKET_BACKEND_URL} %c${key} %c${socket.id}`,
+        `Connected to %c${primaryUrl} %c${key} %c${socket.id}`,
         'font-weight: bold; color: green;',
         'font-weight: bold;',
         ''
