@@ -17,6 +17,7 @@ export const Svg = {
     const SVG = designSystem && designSystem.SVG
     const useSvgSprite = props.spriteId || (context.designSystem && context.designSystem.useSvgSprite)
 
+    if (props.html) return props.html
     if (!useSvgSprite && props.src) return props.src
 
     const useSVGSymbol = icon => `<use xlink:href="#${icon}" />`
