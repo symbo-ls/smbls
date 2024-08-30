@@ -1,17 +1,18 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, deepCloneWithExtend } from '@domql/utils'
+import { isString, isNot, isArray, isObject, isObjectLike, exec, deepCloneWithExtend } from '@domql/utils'
 
 export const Collection = {
   define: {
     $collection: (param, el, state) => {
       const { __ref: ref } = el
       const { children, childrenAs, childrenExtend } = (el.props || {})
-      const hasChildren = isArray(children)
+      const childrenExec = children && exec(children, el, state)
+      const hasChildren = isArray(childrenExec)
 
       if (hasChildren) {
-        param = children
+        param = deepCloneWithExtend(childrenExec)
         if (childrenAs) param = param.map(v => ({ extend: childrenExtend, [childrenAs]: v }))
       } else if (!param) return
 
@@ -79,7 +80,8 @@ export const Collection = {
     },
 
     $stateCollection: (param, el, state, ctx) => {
-      if (!param) return
+      const { children, childrenAs } = (el.props || {})
+      if (!param || children || childrenAs) return
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()
@@ -123,7 +125,8 @@ export const Collection = {
     },
 
     $propsCollection: (param, el, state) => {
-      if (!param) return
+      const { children, childrenAs } = (el.props || {})
+      if (!param || children || childrenAs) return
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()

@@ -1,9 +1,9 @@
 'use strict'
 
 export const toggleFullscreen = async (el) => {
-  if (!document.fullscreenElement && el.node) {
+  if (!document.fullscreenElement) {
     try {
-      await el.node.requestFullscreen()
+      await (el.node || document).requestFullscreen()
     } catch (err) {
       console.warn(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`)
     }

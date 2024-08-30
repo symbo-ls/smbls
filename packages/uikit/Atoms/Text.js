@@ -74,3 +74,5 @@ export const Footnote = {
 export const B = { tag: 'b' }
 
 export const I = { tag: 'i' }
+
+export const Data = { tag: 'data' }
