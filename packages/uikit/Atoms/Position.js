@@ -9,6 +9,7 @@ export const Position = {
     position: ({ props }) => props.position && ({ position: props.position }),
     inset: ({ props, deps }) => {
       const { inset } = props
+      if (typeof inset !== 'number') return ({ inset })
       if (typeof inset !== 'string') return
       return { inset: inset.split(' ').map(v => deps.getSpacingByKey(v, 'k').k).join(' ') }
     },
