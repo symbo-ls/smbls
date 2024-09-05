@@ -32,6 +32,7 @@ export default {
   moreVertical: require('./src/more-vertical.svg'),
   send: require('./src/send.svg'),
   smile: require('./src/smile.svg'),
+  star: require('./src/star.svg'),
   search: require('./src/search.svg'),
   upload: require('./src/upload.svg'),
   video: require('./src/video.svg'),
