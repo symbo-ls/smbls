@@ -30,7 +30,11 @@ export const Block = {
       display: props.display
     }),
 
-    hide: ({ props, deps }) => props.hide && ({
+    show: (el, s, ctx) => (ctx.utils.exec(el.props.show, el, s) === false) && ({
+      display: 'none !important'
+    }),
+
+    hide: (el, s, ctx) => ctx.utils.exec(el.props.hide, el, s) && ({
       display: 'none !important'
     }),
 
