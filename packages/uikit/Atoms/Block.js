@@ -84,6 +84,12 @@ export const Block = {
       }
     },
 
+    minBlockSize: ({ props, deps }) => deps.transformSizeRatio('minBlockSize', props),
+    minInlineSize: ({ props, deps }) => deps.transformSizeRatio('minInlineSize', props),
+
+    maxBlockSize: ({ props, deps }) => deps.transformSizeRatio('maxBlockSize', props),
+    maxInlineSize: ({ props, deps }) => deps.transformSizeRatio('maxInlineSize', props),
+
     minSize: ({ props, deps }) => {
       if (!deps.isString(props.minSize)) return
       const [minInlineSize, minBlockSize] = props.minSize.split(' ')
