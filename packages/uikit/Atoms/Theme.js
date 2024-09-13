@@ -160,6 +160,10 @@ export const Theme = {
       backdropFilter: props.backdropFilter
     }),
 
+    caretColor: ({ props }) => !isUndefined(props.caretColor) && ({
+      caretColor: props.caretColor
+    }),
+
     opacity: ({ props }) => !isUndefined(props.opacity) && ({
       opacity: props.opacity
     }),

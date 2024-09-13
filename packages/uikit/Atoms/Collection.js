@@ -1,6 +1,7 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
+import { addAdditionalExtend } from '@domql/element/utils/component'
 import { isString, isNot, isArray, isObject, isObjectLike, exec, deepCloneWithExtend } from '@domql/utils'
 
 export const Collection = {
@@ -9,12 +10,19 @@ export const Collection = {
       const { __ref: ref } = el
       const { children, childrenAs, childrenExtend } = (el.props || {})
       const childrenExec = children && exec(children, el, state)
-      const hasChildren = isArray(childrenExec)
 
-      if (hasChildren) {
+      if (isArray(childrenExec)) {
         param = deepCloneWithExtend(childrenExec)
         if (childrenAs) param = param.map(v => ({ extend: childrenExtend, [childrenAs]: v }))
-      } else if (!param) return
+      } else if (isObject(childrenExec)) {
+        param = deepCloneWithExtend(childrenExec)
+        param = Object.keys(param).map(v => {
+          const val = param[v]
+          return addAdditionalExtend(v, val)
+        })
+      }
+
+      if (!param) return
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()
@@ -109,6 +117,7 @@ export const Collection = {
       const obj = {
         tag: 'fragment',
         props: {
+          children: el.props && el.props.children,
           childProps: el.props && el.props.childProps
         }
       }

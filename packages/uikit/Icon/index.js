@@ -84,7 +84,7 @@ export const Icon = {
       display: 'inline-block',
       spriteId: useIconSprite && validIconName,
       src: iconFromLibrary || directSrc || ICONS.noIcon,
-      style: { fill: 'currentColor' }
+      style: { fill: 'currentColor', '*': { fill: 'currentColor' } }
     }
   },
   attr: { viewBox: '0 0 24 24' }

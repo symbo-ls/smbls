@@ -38,8 +38,8 @@ export const Block = {
       display: 'none !important'
     }),
 
-    width: ({ props, deps }) => deps.transformSizeRatio('width', props),
     height: ({ props, deps }) => deps.transformSizeRatio('height', props),
+    width: ({ props, deps }) => deps.transformSizeRatio('width', props),
 
     boxSize: ({ props, deps }) => {
       if (!deps.isString(props.boxSize)) return
@@ -49,6 +49,9 @@ export const Block = {
         ...deps.transformSize('width', width || height)
       }
     },
+
+    inlineSize: ({ props, deps }) => deps.transformSizeRatio('inlineSize', props),
+    blockSize: ({ props, deps }) => deps.transformSizeRatio('blockSize', props),
 
     minWidth: ({ props, deps }) => deps.transformSizeRatio('minWidth', props),
     maxWidth: ({ props, deps }) => deps.transformSizeRatio('maxWidth', props),
@@ -72,21 +75,30 @@ export const Block = {
       }
     },
 
+    size: ({ props, deps }) => {
+      if (!deps.isString(props.size)) return
+      const [inlineSize, blockSize] = props.size.split(' ')
+      return {
+        ...deps.transformSizeRatio('inlineSize', inlineSize),
+        ...deps.transformSizeRatio('blockSize', blockSize || inlineSize)
+      }
+    },
+
     minSize: ({ props, deps }) => {
       if (!deps.isString(props.minSize)) return
-      const [minHeight, minWidth] = props.minSize.split(' ')
+      const [minInlineSize, minBlockSize] = props.minSize.split(' ')
       return {
-        ...deps.transformSize('minHeight', minHeight),
-        ...deps.transformSize('minWidth', minWidth || minHeight)
+        ...deps.transformSize('minInlineSize', minInlineSize),
+        ...deps.transformSize('minBlockSize', minBlockSize || minInlineSize)
       }
     },
 
     maxSize: ({ props, deps }) => {
       if (!deps.isString(props.maxSize)) return
-      const [maxHeight, maxWidth] = props.maxSize.split(' ')
+      const [maxInlineSize, maxBlockSize] = props.maxSize.split(' ')
       return {
-        ...deps.transformSize('maxHeight', maxHeight),
-        ...deps.transformSize('maxWidth', maxWidth || maxHeight)
+        ...deps.transformSize('maxInlineSize', maxInlineSize),
+        ...deps.transformSize('maxBlockSize', maxBlockSize || maxInlineSize)
       }
     },
 
@@ -152,6 +164,10 @@ export const Block = {
     gap: ({ props, deps }) => !deps.isUndefined(props.gap) && ({
       gap: transfromGap(props.gap)
     }),
+
+    columnGap: ({ props, deps }) => props.columnGap ? deps.getSpacingBasedOnRatio(props, 'columnGap') : null,
+    rowGap: ({ props, deps }) => props.rowGap ? deps.getSpacingBasedOnRatio(props, 'rowGap') : null,
+
     gridArea: ({ props, deps }) => props.gridArea && ({ gridArea: props.gridArea }),
 
     float: ({ props, deps }) => !deps.isUndefined(props.float) && ({
@@ -221,15 +237,6 @@ export const Block = {
       gridRowStart: props.gridRowStart
     }),
 
-    size: ({ props, deps }) => {
-      if (!deps.isString(props.heightRange)) return
-      const [minHeight, maxHeight] = props.heightRange.split(' ')
-      return {
-        ...deps.transformSizeRatio('minHeight', minHeight),
-        ...deps.transformSizeRatio('maxHeight', maxHeight || minHeight)
-      }
-    },
-
     resize: ({ props, deps }) => !deps.isUndefined(props.resize) && ({
       resize: props.resize
     }),
@@ -245,7 +252,6 @@ export const Block = {
     columnWidth: ({ props, deps }) => !deps.isUndefined(props.columnWidth) && ({
       columnWidth: props.columnWidth
     }),
-    columnGap: ({ props, deps }) => deps.transformSizeRatio('columnGap', props),
     columnSpan: ({ props, deps }) => !deps.isUndefined(props.columnSpan) && ({
       columnSpan: props.columnSpan
     }),

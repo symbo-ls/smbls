@@ -1,7 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-
 export const DoubleHr = {
   extend: 'Flex',
   props: {

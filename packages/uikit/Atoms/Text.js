@@ -32,6 +32,7 @@ export const Text = {
     textAlign: ({ props }) => !isUndefined(props.textAlign) && ({ textAlign: props.textAlign }),
     writingMode: ({ props }) => !isUndefined(props.writingMode) && ({ writingMode: props.writingMode }),
     textOrientation: ({ props }) => !isUndefined(props.textOrientation) && ({ textOrientation: props.textOrientation }),
+    textIndent: ({ props }) => !isUndefined(props.textIndent) && ({ textIndent: props.textIndent }),
     fontWeight: ({ props }) => !isUndefined(props.fontWeight) && ({
       fontWeight: props.fontWeight,
       fontVariationSettings: '"wght" ' + props.fontWeight

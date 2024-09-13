@@ -3,9 +3,7 @@
 // create SVG symbol
 export const Svg = {
   tag: 'svg',
-  props: {
-    style: { '*': { fill: 'currentColor' } }
-  },
+  props: {},
   attr: {
     xmlns: 'http://www.w3.org/2000/svg',
     'xmlns:xlink': 'http://www.w3.org/1999/xlink'

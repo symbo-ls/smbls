@@ -1,8 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { IconText } from '@symbo.ls/icon'
-
 export const Field = {
   extend: 'Flex',
   tag: 'label',
@@ -89,7 +86,7 @@ export const FieldWithTitleTemplate = {
     Button: { icon: 'eye' }
   },
   Hint: {
-    extend: IconText,
+    extend: 'IconText',
     props: {
       icon: 'info',
       text: 'Description'

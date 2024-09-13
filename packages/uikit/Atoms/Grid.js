@@ -24,9 +24,6 @@ export const Grid = {
     autoRows: ({ props }) => props.autoRows ? ({ gridAutoRows: props.autoRows }) : null,
     rowStart: ({ props }) => props.rowStart ? ({ gridRowStart: props.rowStart }) : null,
 
-    autoFlow: ({ props }) => props.autoFlow ? ({ gridAutoFlow: props.autoFlow }) : null,
-
-    columnGap: ({ props, deps }) => props.columnGap ? deps.getSpacingBasedOnRatio(props, 'columnGap') : null,
-    rowGap: ({ props, deps }) => props.rowGap ? deps.getSpacingBasedOnRatio(props, 'rowGap') : null
+    autoFlow: ({ props }) => props.autoFlow ? ({ gridAutoFlow: props.autoFlow }) : null
   }
 }
