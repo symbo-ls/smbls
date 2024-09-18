@@ -248,7 +248,8 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
 
 export const getSequenceValuePropertyPair = (value, propertyName, sequenceProps) => {
   if (typeof value !== 'string') {
-    console.warn(propertyName, value, 'is not a string')
+    const CONFIG = getActiveConfig()
+    if (CONFIG.verbose) console.warn(propertyName, value, 'is not a string')
     return ({ [propertyName]: value })
   }
   if (value === '-' || value === '') return ({})

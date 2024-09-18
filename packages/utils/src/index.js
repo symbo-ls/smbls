@@ -9,15 +9,29 @@ export * from './fibonacci'
 export * from './load'
 export * from './files'
 
-export const copyStringToClipboard = str => {
-  const el = document.createElement('textarea')
-  el.value = str
-  el.setAttribute('readonly', '')
-  el.style = { position: 'absolute', left: '-9999px' }
-  document.body.appendChild(el)
-  el.select()
-  document.execCommand('copy')
-  document.body.removeChild(el)
+export const copyStringToClipboard = async (str) => {
+  try {
+    await navigator.clipboard.writeText(str)
+  } catch (err) {
+    console.warn('Failed to copy text: ', err)
+  }
+}
+
+export const copyJavaScriptToClipboard = async (jsCode) => {
+  try {
+    // Create a Blob for the JavaScript code with the 'text/javascript' MIME type
+    const blob = new Blob([jsCode], { type: 'text/javascript' })
+
+    // Create a ClipboardItem with the 'text/javascript' Blob
+    const clipboardItem = new window.ClipboardItem({ 'text/plain': blob })
+
+    // Copy the ClipboardItem to the clipboard
+    await navigator.clipboard.write([clipboardItem])
+
+    console.log('JavaScript code copied to clipboard as text/javascript')
+  } catch (err) {
+    console.error('Failed to copy JavaScript code: ', err)
+  }
 }
 
 export const removeChars = str => {
