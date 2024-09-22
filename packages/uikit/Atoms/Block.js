@@ -304,3 +304,89 @@ export const Gutter = {
     }
   }
 }
+
+// alt approach
+// blockProps: (el, s, ctx) => {
+//   const { props, deps } = el
+//   const styles = {}
+
+//   // Utility to conditionally add a style
+//   const addStyle = (key, value) => {
+//     if (deps.isObject(value)) deps.merge(styles, value)
+//     else if (value) styles[key] = value
+//   }
+
+//   // Box sizing
+//   addStyle('boxSizing', !deps.isUndefined(props.boxSizing) ? props.boxSizing : 'border-box')
+
+//   // Display
+//   addStyle('display', !deps.isUndefined(props.display) ? props.display : undefined)
+
+//   // Show/Hide
+//   if (ctx.utils.exec(el.props.show, el, s) === false) {
+//     addStyle('display', 'none !important')
+//   }
+//   if (ctx.utils.exec(el.props.hide, el, s)) {
+//     addStyle('display', 'none !important')
+//   }
+
+//   // Size transformations
+//   const sizeKeys = ['height', 'width', 'inlineSize', 'blockSize', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight', 'minBlockSize', 'maxBlockSize', 'minInlineSize', 'maxInlineSize']
+//   sizeKeys.forEach(key => addStyle(key, deps.transformSizeRatio(key, props)))
+
+//   // Box size
+//   if (deps.isString(props.boxSize)) {
+//     const [height, width] = props.boxSize.split(' ')
+//     Object.assign(styles, deps.transformSize('height', height))
+//     Object.assign(styles, deps.transformSize('width', width || height))
+//   }
+
+//   // Size ranges
+//   const rangeKeys = ['widthRange', 'heightRange', 'minSize', 'maxSize']
+//   rangeKeys.forEach(key => {
+//     if (deps.isString(props[key])) {
+//       const [min, max] = props[key].split(' ')
+//       addStyle(`min${key.charAt(0).toUpperCase() + key.slice(1)}`, deps.transformSize('min' + key, min))
+//       addStyle(`max${key.charAt(0).toUpperCase() + key.slice(1)}`, deps.transformSize('max' + key, max || min))
+//     }
+//   })
+
+//   // Direction, objectFit, aspectRatio, etc.
+//   const simpleProps = ['direction', 'objectFit', 'aspectRatio', 'float', 'flex', 'flexDirection', 'alignItems', 'alignContent', 'justifyContent', 'justifyItems', 'alignSelf', 'order', 'resize', 'verticalAlign', 'columns', 'columnRule', 'columnWidth', 'columnSpan', 'columnFill', 'columnCount']
+//   simpleProps.forEach(key => addStyle(key, !deps.isUndefined(props[key]) ? props[key] : undefined))
+
+//   // Flex and grid specific properties
+//   if (props.flexWrap) {
+//     addStyle('flexWrap', props.flexWrap)
+//   }
+//   if (deps.isString(props.flexFlow)) {
+//     let [direction, wrap] = props.flexFlow.split(' ')
+//     direction = direction.startsWith('x') || direction === 'row' ? 'row' : 'column'
+//     addStyle('flexFlow', direction + ' ' + (wrap || ''))
+//   }
+
+//   if (deps.isString(props.flexAlign)) {
+//     const [alignItems, justifyContent] = props.flexAlign.split(' ')
+//     addStyle('alignItems', alignItems)
+//     addStyle('justifyContent', justifyContent)
+//   }
+
+//   // Gap properties
+//   if (!deps.isUndefined(props.gap)) {
+//     addStyle('gap', transfromGap(props.gap))
+//   }
+//   if (props.columnGap) {
+//     addStyle('columnGap', deps.getSpacingBasedOnRatio(props, 'columnGap'))
+//   }
+//   if (props.rowGap) {
+//     addStyle('rowGap', deps.getSpacingBasedOnRatio(props, 'rowGap'))
+//   }
+
+//   // Grid properties
+//   const gridProps = ['gridColumn', 'gridColumnStart', 'gridRow', 'gridRowStart']
+//   gridProps.forEach(key => addStyle(key, !deps.isUndefined(props[key]) ? props[key] : undefined))
+
+//   console.log(styles)
+
+//   return styles
+// }

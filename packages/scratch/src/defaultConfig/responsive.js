@@ -14,9 +14,11 @@ export const BREAKPOINTS = {
 }
 
 export const DEVICES = {
+  screenXXL: [2560, 1440],
+  screenXL: [2240, 1260],
   screenL: [1920, 1024],
   screenM: [1680, 1024],
-  screenS: [1440, 978],
+  screenS: [1440, 720],
   tabletL: [1366, 926],
   tabletM: [1280, 768],
   tabletS: [1024, 768],
