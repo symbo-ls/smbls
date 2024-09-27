@@ -24,13 +24,13 @@ export const fetchRemote = async (key, options = defaultOptions) => {
   const baseUrl = options.endpoint || SERVER_URL
   const route = options.serviceRoute
     ? utils.isArray(options.serviceRoute)
-      ? options.serviceRoute.map((v) => v.toLowerCase()).join(',')
+      ? options.serviceRoute.map((v) => v.toLowerCase() + '=true').join('&')
       : options.serviceRoute
     : ''
 
   let response
   try {
-    response = await fetch(baseUrl + '/' + route, {
+    response = await fetch(baseUrl + '/' + '?' + route, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'X-AppKey': key, 'X-Metadata': options.metadata }
     })
@@ -67,6 +67,8 @@ export const fetchProject = async (key, options) => {
         'snippets',
         'pages',
         'utils',
+        'files',
+        'packages',
         'functions'
       ].forEach((key) => {
         overwriteDeep(options[key], evalData[key.toLowerCase()])
