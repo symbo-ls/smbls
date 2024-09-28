@@ -1,19 +1,12 @@
 'use strict'
 
-import { isString, deepMerge, deepCloneWithExtend, merge } from '@domql/utils'
+import { deepMerge, deepCloneWithExtend, merge, checkIfKeyIsComponent } from '@domql/utils'
 import { initEmotion } from './initEmotion'
 
 import * as uikit from '@symbo.ls/uikit'
 import * as utils from './utilImports'
 
 const ENV = process.env.NODE_ENV
-
-const checkIfKeyIsComponent = (key) => {
-  const isFirstKeyString = isString(key)
-  if (!isFirstKeyString) return
-  const firstCharKey = key.slice(0, 1)
-  return /^[A-Z]*$/.test(firstCharKey)
-}
 
 export const UIkitWithPrefix = () => {
   const newObj = {}
