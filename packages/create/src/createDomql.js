@@ -9,6 +9,7 @@ import { defaultDefine } from './define'
 import { initRouter } from './router'
 import { applySyncDebug } from './syncExtend'
 import {
+  prepareAnimationFrame,
   prepareComponents,
   prepareDependencies,
   prepareDesignSystem,
@@ -35,6 +36,8 @@ export const createDomqlElement = (App, options) => {
   const dependencies = prepareDependencies(options)
   preparePackages({ functions: snippets, utils: snippets, snippets, ...options.files }, options)
 
+  const frameListeners = prepareAnimationFrame(options)
+
   const define = options.define || defaultDefine
 
   const routerOptions = initRouter(App, options) // eslint-disable-line
@@ -44,7 +47,9 @@ export const createDomqlElement = (App, options) => {
     extend,
     routes: options.pages,
     state,
-    data: {},
+    data: {
+      frameListeners
+    },
     context: {
       key,
       components,

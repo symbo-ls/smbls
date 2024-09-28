@@ -53,7 +53,7 @@ export const prepareDependencies = ({ dependencies, dependenciesOnDemand, docume
     if (dependenciesOnDemand && dependenciesOnDemand[dependency]) continue
 
     try {
-      utils.loadJavascriptFileSync(url, document)
+      utils.loadJavascriptFileEmbedSync(url, document)
     } catch (e) {
       console.error(`Failed to load ${dependency}:`, e)
     }
@@ -87,11 +87,12 @@ export const preparePackages = (packages, opts) => {
         if (dependenciesOnDemand && dependenciesOnDemand[key]) {
           const version = dependenciesOnDemand[key]
           const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`
-          utils.loadJavascriptFileSync(url, document)
+          utils.loadJavascriptFileEmbedSync(url, document)
         } else {
           const url = `https://pkg.symbo.ls/${key}${random}`
-          utils.loadJavascriptFileSync(url, document, () => {
+          utils.loadJavascriptFileEmbedSync(url, document, d => {
             windowOpts.packages[key] = 'loadedOnDeman'
+            console.log(d)
           })
         }
       }
@@ -135,4 +136,23 @@ export const prepareDocument = options => {
   if (!options.window) options.window = window
   if (!options.document) options.document = document
   return options.parent || options.document || document
+}
+
+export const prepareAnimationFrame = (opts) => {
+  const frameListeners = new WeakMap()
+
+  function requestFrame () {
+    if (frameListeners.length) {
+      frameListeners.forEach((_, el) => {
+        if (!el.node?.parentNode) frameListeners.delete(el)
+        try {
+          (el.on.frame || el.props.onFrame)(el, el.state, el.context)
+        } catch (e) { console.warn(e) }
+      })
+    }
+    window.requestAnimationFrame(requestFrame)
+  }
+  requestFrame()
+
+  return frameListeners
 }

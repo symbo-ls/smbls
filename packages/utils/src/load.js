@@ -28,7 +28,33 @@ export const loadJavascriptFile = (FILE_URL, async = false, doc = document, type
   })
 }
 
-export const loadJavascriptFileSync = (FILE_URL, doc = document, fallback, type = 'text/javascript') => {
+export const loadJavascriptFileSync = (fileUrl, doc = document, type = 'text/javascript') => {
+  return new Promise((resolve, reject) => {
+    const scriptEle = doc.createElement('script')
+    scriptEle.type = type
+    scriptEle.src = fileUrl
+
+    // Create a blocking overlay
+    const blocker = doc.createElement('div')
+    blocker.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.8);z-index:9999;'
+    doc.body.appendChild(blocker)
+
+    scriptEle.onload = () => {
+      console.log(`Successfully loaded: ${fileUrl}`)
+      doc.body.removeChild(blocker)
+      resolve()
+    }
+
+    scriptEle.onerror = () => {
+      doc.body.removeChild(blocker)
+      reject(new Error(`Failed to load: ${fileUrl}`))
+    }
+
+    doc.body.appendChild(scriptEle)
+  })
+}
+
+export const loadJavascriptFileEmbedSync = (FILE_URL, doc = document, fallback, type = 'text/javascript') => {
   const xhr = new window.XMLHttpRequest()
   xhr.open('GET', FILE_URL, false) // false makes the request synchronous
   xhr.send()

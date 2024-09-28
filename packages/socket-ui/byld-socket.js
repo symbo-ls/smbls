@@ -95,10 +95,13 @@ const onDisconnect = (element, state) => {
 const onChange = (el, s, ctx) => {
   return (event, data) => {
     if (event === 'change') {
+      console.log(data)
       const obj = JSON.parse(data)
       if (!obj?.DATA) return
       const { state, designSystem, pages, components, snippets } = obj.DATA
       const { utils } = ctx
+
+      console.log(obj.DATA)
 
       if (pages) {
         // overwriteShallow(ctx.pages, pages)
