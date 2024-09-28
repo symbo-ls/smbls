@@ -9,7 +9,10 @@ import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
 import { fs2js } from './fs2.js'
-const { isObjectLike } = utils.default
+
+console.log(utils)
+
+const { isObjectLike } = utils
 const { fetchRemote } = fetch.default
 
 const RC_PATH = process.cwd() + '/symbols.json'
