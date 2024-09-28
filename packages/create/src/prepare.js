@@ -139,19 +139,24 @@ export const prepareDocument = options => {
 }
 
 export const prepareAnimationFrame = (opts) => {
-  const frameListeners = new WeakMap()
+  const frameListeners = new Set()
 
   function requestFrame () {
-    if (frameListeners.length) {
-      frameListeners.forEach((_, el) => {
-        if (!el.node?.parentNode) frameListeners.delete(el)
+    // Iterate over frameListeners
+    for (const el of frameListeners) {
+      if (!el.node?.parentNode) {
+        frameListeners.delete(el) // Remove if node has no parent
+      } else {
         try {
           (el.on.frame || el.props.onFrame)(el, el.state, el.context)
-        } catch (e) { console.warn(e) }
-      })
+        } catch (e) {
+          console.warn(e)
+        }
+      }
     }
     window.requestAnimationFrame(requestFrame)
   }
+
   requestFrame()
 
   return frameListeners

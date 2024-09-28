@@ -3,7 +3,7 @@
   "version": "2.11.432",
   "main": "byld-socket.js",
   "module": "byld-socket.js",
-  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
+  "gitHead": "b8048681b249c7fe08804440f5e620de6f06b38d",
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/router": "latest",
