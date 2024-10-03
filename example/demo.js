@@ -761,3 +761,38 @@ window.require = (key) => {
   if (typeof pkg === 'function') return pkg()
   else return pkg
 }
+
+// import init, { js_domql_string_to_react_string, initSync } from './dompiler'
+
+// export async function convertDomqlToReact (domqlString) {
+//   await init() // Ensure the WASM module is initialized
+//   try {
+//     const reactString = js_domql_string_to_react_string(domqlString)
+//     console.log(reactString) // Output the converted React string
+//   } catch (error) {
+//     console.error('Error converting DOMQL to React:', error)
+//   }
+// }
+
+// // Example DOMQL string
+// const domqlString = `export const IconText = {
+//   extend: "Flex",
+
+//   props: {
+//     align: "center center",
+//     lineHeight: 1,
+//   },
+
+//   Icon: {
+//     props: ({ parent }) => ({ icon: parent.props.icon }),
+//     if: ({ parent, props }) => {
+//       const doesExist =
+//         parent.props.icon || parent.props.Icon || props.name || props.icon;
+//       return doesExist;
+//     },
+//   },
+
+//   text: ({ props }) => props.text,
+// };`
+
+// convertDomqlToReact(domqlString)

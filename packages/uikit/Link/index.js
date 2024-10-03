@@ -15,7 +15,7 @@ export const Link = {
   attr: {
     href: (el, s, ctx) => {
       const { isString, exec, replaceLiteralsWithObjectFields } = ctx.utils
-      const href = exec(el.props.href, el) || exec(el.props, el).href
+      const href = exec(el.props.href, el) || exec(exec(el.props, el).href, el)
       if (isString(href) && href.includes('{{')) {
         return replaceLiteralsWithObjectFields(href, s)
       }

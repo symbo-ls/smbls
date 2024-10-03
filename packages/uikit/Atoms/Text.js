@@ -1,14 +1,15 @@
 'use strict'
 
-import { isUndefined } from '@domql/utils'
+import { exec, isUndefined } from '@domql/utils'
 import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
 export const Text = {
-  deps: { getFontSizeByKey, getFontFamily },
+  deps: { exec, getFontSizeByKey, getFontFamily },
 
-  text: ({ key, props, state, deps }) => {
+  text: (el) => {
+    const { key, props, state, deps } = el
     if (props.text === true) return (state && state[key]) || (props && props[key])
-    return props.text
+    return deps.exec(props.text, el)
   },
 
   class: {
