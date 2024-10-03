@@ -61,6 +61,7 @@ export const createDomqlElement = (App, options) => {
       functions: options.functions,
       files: options.files,
       utils: snippets,
+      schema: options.schema,
       define,
       registry,
       emotion,
