@@ -1,6 +1,7 @@
 'use strict'
 
 export default {
+  symbols: require('./src/logo.svg'),
   logo: require('./src/logo.svg'),
   arrowDownCircle: require('./src/arrow-down-circle.svg'),
   arrowDownLeft: require('./src/arrow-down-left.svg'),

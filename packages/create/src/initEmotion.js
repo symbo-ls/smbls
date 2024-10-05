@@ -16,8 +16,9 @@ export const initEmotion = (key, options = {}) => {
   if (!initOptions.emotion) initOptions.emotion = defaultEmotion
 
   const registry = options.registry || transformDOMQLEmotion(initOptions.emotion, options)
-  const defaultDesignSystem = deepClone(DEFAULT_CONFIG)
-  const designSystem = (initOptions.useDefaultConfig || options.useDefaultConfig) ? deepMerge(options.designSystem, defaultDesignSystem) : options.designSystem || defaultDesignSystem
+  const designSystem = (initOptions.useDefaultConfig || options.designSystem?.useDefaultConfig)
+    ? deepMerge(options.designSystem, deepClone(DEFAULT_CONFIG))
+    : options.designSystem || deepClone(DEFAULT_CONFIG)
 
   const scratchSystem = init(designSystem, {
     key,

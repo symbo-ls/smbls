@@ -8,6 +8,7 @@ export const DESIGN_SYSTEM_OPTIONS = {
   useIconSprite: true,
   useSvgSprite: true,
   useDocumentTheme: true,
+  useDefaultIcons: true,
   useFontImport: true,
   useDefaultConfig: true
 }
