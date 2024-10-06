@@ -100,8 +100,6 @@ const onChange = (el, s, ctx) => {
       const { state, designSystem, pages, components, snippets } = obj.DATA
       const { utils } = ctx
 
-      console.log(obj.DATA)
-
       if (pages) {
         // overwriteShallow(ctx.pages, pages)
         overwriteShallow(ctx.pages, pages)
@@ -122,7 +120,8 @@ const onChange = (el, s, ctx) => {
       }
 
       if (snippets || components || pages) {
-        ;(utils.router || router)(window.location.pathname, el, {})
+        const { pathname, search, hash } = window.location
+        ;(utils.router || router)(pathname + search + hash, el, {})
       }
 
       if (designSystem) init(designSystem)
