@@ -97,7 +97,8 @@ const applyMediaProps = (key, props, result, element) => {
     return
   }
 
-  const mediaKey = mediaValue ? `@media screen and ${mediaValue}` : key
+  const printValue = '@media ' + (mediaValue === 'print' ? `${mediaValue}` : `screen and ${mediaValue}`)
+  const mediaKey = mediaValue ? printValue : key
   result[mediaKey] = generatedClass
   return result[mediaKey]
 }

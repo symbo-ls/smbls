@@ -192,7 +192,7 @@ const recursiveTheme = val => {
     if (isObjectLike(val[param])) {
       if (symb === '@') {
         const query = CONFIG.MEDIA[param.slice(1)]
-        const media = `@media screen and ${query}`
+        const media = '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
         obj[media] = recursiveTheme(val[param])
       } else if (symb === ':') {
         obj[`&${param}`] = recursiveTheme(val[param])

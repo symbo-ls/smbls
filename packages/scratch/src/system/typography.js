@@ -44,7 +44,8 @@ export const runThroughMedia = FACTORY => {
     })
 
     const query = MEDIA[mediaName]
-    TYPOGRAPHY.templates[`@media screen and ${query}`] = {
+    const media = '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
+    TYPOGRAPHY.templates[media] = {
       fontSize: mediaValue.base / TYPOGRAPHY.browserDefault + unit
     }
 
