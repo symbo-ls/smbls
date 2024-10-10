@@ -148,12 +148,29 @@ export const Theme = {
       })
     },
 
-    boxShadow: ({ props, deps }) => isString(props.boxShadow) && ({
-      boxShadow: deps.transformBoxShadow(props.boxShadow)
-    }),
+    // boxShadow: ({ props, deps }) => isString(props.boxShadow) && ({
+    //   boxShadow: deps.transformBoxShadow(props.boxShadow)
+    // }),
 
-    textShadow: ({ props, deps }) => !isUndefined(props.textShadow) && ({
-      textShadow: deps.transformBoxShadow(props.textShadow)
+    boxShadow: (element, state, context) => {
+      const { props, deps } = element
+      if (!isString(props.boxShadow)) return
+      const [val, hasImportant] = props.boxShadow.split('!importan')
+      const globalTheme = getSystemGlobalTheme(element)
+      const important = hasImportant ? ' !important' : ''
+      if (important) {
+        console.log(val.trim())
+        console.log(deps.transformBoxShadow(val.trim(), globalTheme))
+        console.log(getMediaColor('canvas-card', globalTheme), globalTheme)
+      }
+
+      return {
+        boxShadow: deps.transformBoxShadow(val.trim(), globalTheme) + important
+      }
+    },
+
+    textShadow: ({ props, deps, context }) => !isUndefined(props.textShadow) && ({
+      textShadow: deps.transformBoxShadow(props.textShadow, context.designSystem.globalTheme)
     }),
 
     backdropFilter: ({ props, deps }) => !isUndefined(props.backdropFilter) && ({

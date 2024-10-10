@@ -1,6 +1,6 @@
 'use strict'
 
-import { isNull, isString, isUndefined } from '@domql/utils'
+import { isNull, isString, isObject, isUndefined } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 import {
   getSpacingByKey,
@@ -49,11 +49,15 @@ export const transformTextStroke = stroke => {
 
 export const transformShadow = (sh, globalTheme) => getShadow(sh, globalTheme)
 
-export const transformBoxShadow = shadows => shadows.split('|').map(shadow => {
-  return shadow.split(', ').map(v => {
+export const transformBoxShadow = (shadows, globalTheme) => shadows.split('|').map(shadow => {
+  return shadow.split(',').map(v => {
     v = v.trim()
     if (v.slice(0, 2) === '--') return `var(${v})`
-    if (getColor(v).length > 2) return getColor(v)
+    if (getColor(v).length > 2) {
+      const color = getMediaColor(v, globalTheme)
+      if (isObject(color)) return Object.values(color).filter(v => v.includes(': ' + globalTheme))[0]
+      return color
+    }
     if (v.includes('px') || v.slice(-2) === 'em') return v
     const arr = v.split(' ')
     if (!arr.length) return v
