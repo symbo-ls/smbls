@@ -19,6 +19,7 @@ export const Collection = {
           const val = param[v]
           return addAdditionalExtend(v, val)
         })
+        if (childrenAs) param = param.map(v => ({ extend: childrenExtend, [childrenAs]: v }))
       }
 
       if (!param) return
