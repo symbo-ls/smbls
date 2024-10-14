@@ -6,7 +6,7 @@ import * as smblsUtils from '@symbo.ls/utils'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 
-const { removeChars, toCamelCase } = smblsUtils.default
+const { removeChars, toCamelCase, toTitleCase } = smblsUtils.default
 const {
   deepDestringify,
   objectToString,
@@ -157,16 +157,25 @@ export async function createFs (
       return
     }
 
+    const itemKeyInvalid = itemKey.includes('.')
+    const validKey = itemKeyInvalid ? `const ${removeChars(toTitleCase(itemKey))}` : `export const ${itemKey}`
+
     let stringifiedContent
     if (isString(value)) {
-      stringifiedContent = `export const ${itemKey} = ${value}`
+      stringifiedContent = `${validKey} = ${value}`
     } else {
       const content = deepDestringify(value)
       // console.log('ON DEEPDESTR:')
       // console.log(content.components.Configuration)
-      stringifiedContent = `export const ${itemKey} = ${objectToString(
+      stringifiedContent = `${validKey} = ${objectToString(
         content
       )};`
+    }
+
+    if (itemKeyInvalid) {
+      stringifiedContent += `
+
+export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
     }
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')

@@ -74,7 +74,7 @@ export const transformBackgroundImage = (backgroundImage, globalTheme) => {
       return {
         backgroundImage: getMediaColor(backgroundImage, globalTheme || CONFIG.globalTheme)
       }
-    } else if (v.includes('/') || v.includes('http')) return `url(${v})`
+    } else if (v.includes('/') || v.startsWith('http') || v.includes('.')) return `url(${v})`
     return v
   }).join(' ')
 }

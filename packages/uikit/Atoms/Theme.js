@@ -75,12 +75,15 @@ export const Theme = {
       }
     },
 
-    backgroundImage: (element) => {
+    backgroundImage: (element, s, context) => {
       const { props, deps } = element
       const globalTheme = deps.getSystemGlobalTheme(element)
-      if (!props.backgroundImage) return
+      let val = props.backgroundImage
+      if (!val) return
+      const file = context.files && context.files[val]
+      if (file && file.content) val = file.content.src
       return ({
-        backgroundImage: deps.transformBackgroundImage(props.backgroundImage, globalTheme)
+        backgroundImage: deps.transformBackgroundImage(val, globalTheme)
       })
     },
     backgroundSize: ({ props }) => !isUndefined(props.backgroundSize)
