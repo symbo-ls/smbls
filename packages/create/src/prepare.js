@@ -10,10 +10,6 @@ function onlyDotsAndNumbers (str) {
   return /^[0-9.]+$/.test(str) && str !== ''
 }
 
-function cutJsExtension (pathname) {
-  return pathname.replace(/\.js(\?.*)?$/, '')
-}
-
 const ENV = process.env.NODE_ENV
 
 export const UIkitWithPrefix = () => {
