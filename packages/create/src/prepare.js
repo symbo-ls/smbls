@@ -6,6 +6,14 @@ import { initEmotion } from './initEmotion'
 import * as uikit from '@symbo.ls/uikit'
 import * as utils from './utilImports'
 
+function onlyDotsAndNumbers (str) {
+  return /^[0-9.]+$/.test(str) && str !== ''
+}
+
+function cutJsExtension (pathname) {
+  return pathname.replace(/\.js(\?.*)?$/, '')
+}
+
 const ENV = process.env.NODE_ENV
 
 export const UIkitWithPrefix = () => {
@@ -41,7 +49,11 @@ export const prepareDependencies = ({ dependencies, dependenciesOnDemand, docume
     }
 
     const random = ENV === 'development' ? `?${Math.random()}` : ''
-    const url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
+    let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
+
+    if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
+      url = `https://pkg.symbo.ls/${dependency}${random}`
+    }
 
     if (dependenciesOnDemand && dependenciesOnDemand[dependency]) continue
 

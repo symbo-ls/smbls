@@ -6,6 +6,7 @@ export const Transform = {
   class: {
     zoom: ({ props }) => !isUndefined(props.zoom) && ({ zoom: props.zoom }),
     transform: ({ props }) => !isUndefined(props.transform) && ({ transform: props.transform }),
-    transformOrigin: ({ props }) => !isUndefined(props.transformOrigin) && ({ transformOrigin: props.transformOrigin })
+    transformOrigin: ({ props }) => !isUndefined(props.transformOrigin) && ({ transformOrigin: props.transformOrigin }),
+    backfaceVisibility: ({ props }) => !isUndefined(props.backfaceVisibility) && ({ backfaceVisibility: props.backfaceVisibility })
   }
 }
