@@ -9,7 +9,7 @@ export const Interaction = {
       if (!val) return
 
       const file = ctx.files && ctx.files[val]
-      if (file && file.content) val = file.content.src
+      if (file && file.content) val = `url(${file.content.src})`
 
       return ({ cursor: val })
     }
