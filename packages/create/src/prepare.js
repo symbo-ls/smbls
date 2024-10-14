@@ -34,7 +34,8 @@ export const prepareUtils = options => {
   return { ...utils, ...utils.scratchUtils, ...(options.snippets || options.utils || options.functions || {}) }
 }
 
-export const prepareDependencies = ({ dependencies, dependenciesOnDemand, document }) => {
+const cachedDeps = {}
+export const prepareDependencies = ({ packages: dependencies, dependenciesOnDemand, document }) => {
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null
   }
@@ -54,6 +55,8 @@ export const prepareDependencies = ({ dependencies, dependenciesOnDemand, docume
     if (dependenciesOnDemand && dependenciesOnDemand[dependency]) continue
 
     try {
+      if (cachedDeps[dependency]) return
+      cachedDeps[dependency] = true
       utils.loadJavascriptFileEmbedSync(url, document)
     } catch (e) {
       console.error(`Failed to load ${dependency}:`, e)
