@@ -23,7 +23,7 @@
     "@symbo.ls/utils": "latest",
     "attrs-in-props": "latest",
     "css-in-props": "latest",
-    "domql": "latest"
+    "domql": "^2.5.0"
   },
   "type": "module",
   "exports": "./dist/cjs/index.js",

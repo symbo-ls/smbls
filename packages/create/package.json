@@ -41,7 +41,7 @@
     "@symbo.ls/socket-ui": "latest",
     "@symbo.ls/uikit": "latest",
     "@symbo.ls/utils": "latest",
-    "domql": "latest"
+    "domql": "^2.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.0"
