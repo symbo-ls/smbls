@@ -161,12 +161,6 @@ export const Theme = {
       const [val, hasImportant] = props.boxShadow.split('!importan')
       const globalTheme = getSystemGlobalTheme(element)
       const important = hasImportant ? ' !important' : ''
-      if (important) {
-        console.log(val.trim())
-        console.log(deps.transformBoxShadow(val.trim(), globalTheme))
-        console.log(getMediaColor('canvas-card', globalTheme), globalTheme)
-      }
-
       return {
         boxShadow: deps.transformBoxShadow(val.trim(), globalTheme) + important
       }
