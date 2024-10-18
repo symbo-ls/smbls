@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/field",
-  "version": "2.11.446",
+  "version": "2.11.447",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.11.446",
-    "@symbo.ls/button": "^2.11.446",
-    "@symbo.ls/icon": "^2.11.446",
-    "@symbo.ls/input": "^2.11.446"
+    "@symbo.ls/atoms": "^2.11.447",
+    "@symbo.ls/button": "^2.11.447",
+    "@symbo.ls/icon": "^2.11.447",
+    "@symbo.ls/input": "^2.11.447"
   },
   "source": "src/index.js"
 }

@@ -1,16 +1,16 @@
 {
   "name": "@symbo.ls/user",
-  "version": "2.11.446",
+  "version": "2.11.447",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "source": "index.js",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.11.446",
-    "@symbo.ls/avatar": "^2.11.446",
-    "@symbo.ls/button": "^2.11.446",
-    "@symbo.ls/hgroup": "^2.11.446",
-    "@symbo.ls/indicator": "^2.11.446",
-    "@symbo.ls/unitvalue": "^2.11.446"
+    "@symbo.ls/atoms": "^2.11.447",
+    "@symbo.ls/avatar": "^2.11.447",
+    "@symbo.ls/button": "^2.11.447",
+    "@symbo.ls/hgroup": "^2.11.447",
+    "@symbo.ls/indicator": "^2.11.447",
+    "@symbo.ls/unitvalue": "^2.11.447"
   }
 }
