@@ -6,11 +6,11 @@
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "source": "index.js",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
-    "@symbo.ls/avatar": "latest",
-    "@symbo.ls/button": "latest",
-    "@symbo.ls/hgroup": "latest",
-    "@symbo.ls/indicator": "latest",
-    "@symbo.ls/unitvalue": "latest"
+    "@symbo.ls/atoms": "^2.11.0",
+    "@symbo.ls/avatar": "^2.11.0",
+    "@symbo.ls/button": "^2.11.0",
+    "@symbo.ls/hgroup": "^2.11.0",
+    "@symbo.ls/indicator": "^2.11.0",
+    "@symbo.ls/unitvalue": "^2.11.0"
   }
 }

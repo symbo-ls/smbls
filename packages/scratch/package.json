@@ -25,9 +25,9 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/globals": "latest",
-    "@domql/utils": "latest",
-    "@symbo.ls/utils": "latest",
+    "@domql/globals": "^2.5.0",
+    "@domql/utils": "^2.5.0",
+    "@symbo.ls/utils": "^2.11.0",
     "color-contrast-checker": "^1.5.0"
   },
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945"

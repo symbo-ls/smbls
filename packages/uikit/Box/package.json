@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/utils": "latest",
-    "@symbo.ls/atoms": "latest"
+    "@domql/utils": "^2.5.0",
+    "@symbo.ls/atoms": "^2.11.0"
   },
   "source": "src/index.js",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",

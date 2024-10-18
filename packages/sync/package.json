@@ -5,12 +5,12 @@
   "module": "index.js",
   "gitHead": "d1b6122e6d2aaca97f342e5e9ebb181797b85e23",
   "dependencies": {
-    "@domql/globals": "latest",
-    "@domql/router": "latest",
-    "@domql/utils": "latest",
-    "@symbo.ls/init": "latest",
-    "@symbo.ls/scratch": "latest",
-    "@symbo.ls/socket": "latest",
-    "@symbo.ls/uikit": "latest"
+    "@domql/globals": "^2.5.0",
+    "@domql/router": "^2.5.0",
+    "@domql/utils": "^2.5.0",
+    "@symbo.ls/init": "^2.11.0",
+    "@symbo.ls/scratch": "^2.11.0",
+    "@symbo.ls/socket": "^2.11.0",
+    "@symbo.ls/uikit": "^2.11.0"
   }
 }

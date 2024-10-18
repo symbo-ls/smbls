@@ -5,10 +5,10 @@
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
-    "@domql/state": "latest",
-    "@domql/utils": "latest",
-    "@symbo.ls/emotion": "latest",
-    "@symbo.ls/scratch": "latest"
+    "@domql/state": "^2.5.0",
+    "@domql/utils": "^2.5.0",
+    "@symbo.ls/emotion": "^2.11.0",
+    "@symbo.ls/scratch": "^2.11.0"
   },
   "source": "src/index.js",
   "devDependencies": {

@@ -6,10 +6,10 @@
   "source": "index.js",
   "main": "index.js",
   "dependencies": {
-    "@domql/utils": "latest",
-    "@symbo.ls/default-config": "latest",
-    "@symbo.ls/emotion": "latest",
-    "@symbo.ls/scratch": "latest"
+    "@domql/utils": "^2.5.0",
+    "@symbo.ls/default-config": "^2.11.0",
+    "@symbo.ls/emotion": "^2.11.0",
+    "@symbo.ls/scratch": "^2.11.0"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "devDependencies": {

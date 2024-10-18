@@ -31,17 +31,16 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/emotion": "latest",
-    "@domql/report": "latest",
-    "@domql/router": "latest",
-    "@domql/utils": "latest",
-    "@symbo.ls/fetch": "latest",
-    "@symbo.ls/init": "latest",
-    "@symbo.ls/scratch": "latest",
-    "@symbo.ls/sync": "latest",
-    "@symbo.ls/uikit": "latest",
-    "@symbo.ls/utils": "latest",
-    "domql": "^2.5.0"
+    "@domql/emotion": "^2.5.0",
+    "@domql/report": "^2.5.0",
+    "@domql/router": "^2.5.0",
+    "domql": "^2.5.0",
+    "@symbo.ls/fetch": "^2.11.0",
+    "@symbo.ls/init": "^2.11.0",
+    "@symbo.ls/scratch": "^2.11.0",
+    "@symbo.ls/sync": "^2.11.0",
+    "@symbo.ls/uikit": "^2.11.0",
+    "@symbo.ls/utils": "^2.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.0"

@@ -5,8 +5,8 @@
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
-    "@symbo.ls/atoms": "latest",
-    "@symbo.ls/dialog": "latest"
+    "@symbo.ls/atoms": "^2.11.0",
+    "@symbo.ls/dialog": "^2.11.0"
   },
   "source": "src/index.js"
 }

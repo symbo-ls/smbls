@@ -1,7 +1,5 @@
 'use strict'
 
-import { Avatar, SearchWithButton } from '@symbo.ls/uikit'
-
 export const ComponentsPage = {
   extend: 'Flex',
 
@@ -52,7 +50,7 @@ export const ComponentsPage = {
     Avatar: {},
     AvatarIndicator: {},
     AvatarBundle: {
-      childExtend: Avatar,
+      childExtend: 'Avatar',
       ...[{}, {}, {}]
     },
     AvatarChooser: {
@@ -218,7 +216,7 @@ export const ComponentsPage = {
       }
     },
     Search: {
-      extend: SearchWithButton,
+      extend: 'SearchWithButton',
       props: {
         minWidth: 'G+C',
         minHeight: 'C+X',
