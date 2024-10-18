@@ -1,16 +1,16 @@
 {
   "name": "@symbo.ls/form",
-  "version": "2.11.410",
+  "version": "2.11.446",
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.11.0",
-    "@symbo.ls/button": "^2.11.0",
-    "@symbo.ls/icon": "^2.11.0",
-    "@symbo.ls/link": "^2.11.0",
-    "@symbo.ls/modal": "^2.11.0",
+    "@symbo.ls/atoms": "^2.11.446",
+    "@symbo.ls/button": "^2.11.446",
+    "@symbo.ls/icon": "^2.11.446",
+    "@symbo.ls/link": "^2.11.446",
+    "@symbo.ls/modal": "^2.11.446",
     "@symbo.ls/textarea": "^2.11.0"
   }
 }

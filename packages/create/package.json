@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.11.444",
+  "version": "2.11.446",
   "license": "MIT",
   "gitHead": "d1b6122e6d2aaca97f342e5e9ebb181797b85e23",
   "files": [
@@ -34,13 +34,13 @@
     "@domql/emotion": "^2.5.0",
     "@domql/report": "^2.5.0",
     "@domql/router": "^2.5.0",
-    "domql": "^2.5.0",
-    "@symbo.ls/fetch": "^2.11.0",
-    "@symbo.ls/init": "^2.11.0",
-    "@symbo.ls/scratch": "^2.11.0",
-    "@symbo.ls/sync": "^2.11.0",
-    "@symbo.ls/uikit": "^2.11.0",
-    "@symbo.ls/utils": "^2.11.0"
+    "@symbo.ls/fetch": "^2.11.446",
+    "@symbo.ls/init": "^2.11.446",
+    "@symbo.ls/scratch": "^2.11.446",
+    "@symbo.ls/sync": "^2.11.446",
+    "@symbo.ls/uikit": "^2.11.446",
+    "@symbo.ls/utils": "^2.11.446",
+    "domql": "^2.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.0"
