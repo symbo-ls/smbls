@@ -129,14 +129,14 @@ const applyVariableProps = (key, props, result, element) => {
 
 const applyConditionalCaseProps = (key, props, result, element) => {
   const caseKey = key.slice(1)
-  const isPropTrue = element.props[caseKey] || element.state[caseKey]
+  const isPropTrue = element.props[caseKey] || element.state[caseKey] || element[caseKey]
   if (!isPropTrue) return // remove classname if not here
   return overwriteDeep(result, convertPropsToClass(props, result, element))
 }
 
 const applyConditionalFalsyProps = (key, props, result, element) => {
   const caseKey = key.slice(1)
-  const isPropTrue = element.props[caseKey] || element.state[caseKey] === true
+  const isPropTrue = element.props[caseKey] || element.state[caseKey] || element[caseKey]
   if (!isPropTrue) return overwriteDeep(result, convertPropsToClass(props, result, element))
 }
 

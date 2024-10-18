@@ -10,13 +10,13 @@ const DEFAULT_ROUTING_OPTIONS = {
   popState: true
 }
 
-export const initRouter = (element, options) => {
-  if (options.router === false) return
-  else if (options.router === true) options.router = DEFAULT_ROUTING_OPTIONS
-  else merge(options.router || {}, DEFAULT_ROUTING_OPTIONS)
+export const initRouter = (element, context) => {
+  if (context.router === false) return
+  else if (context.router === true) context.router = DEFAULT_ROUTING_OPTIONS
+  else merge(context.router || {}, DEFAULT_ROUTING_OPTIONS)
 
-  const routerOptions = options.router
-  const router = (options.snippets && options.snippets.router) ? options.snippets.router : defaultRouter
+  const routerOptions = context.router
+  const router = (context.snippets && context.snippets.router) ? context.snippets.router : defaultRouter
 
   const onRouterRenderDefault = (el, s) => {
     const { pathname, search, hash } = window.location
@@ -41,13 +41,13 @@ export const initRouter = (element, options) => {
 }
 
 let popStateFired
-export const popStateRouter = (element, options) => {
+export const popStateRouter = (element, context) => {
   if (popStateFired) return
   popStateFired = true
-  const routerOptions = options.router || DEFAULT_ROUTING_OPTIONS
+  const routerOptions = context.router || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
-  const router = (options.snippets && options.snippets.router)
-    ? options.snippets.router
+  const router = (context.snippets && context.snippets.router)
+    ? context.snippets.router
     : defaultRouter
   window.onpopstate = e => {
     const { pathname, search, hash } = window.location

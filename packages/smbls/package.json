@@ -18,7 +18,7 @@
     "@symbo.ls/default-config": "latest",
     "@symbo.ls/init": "latest",
     "@symbo.ls/scratch": "latest",
-    "@symbo.ls/socket-ui": "latest",
+    "@symbo.ls/sync": "latest",
     "@symbo.ls/uikit": "latest",
     "@symbo.ls/utils": "latest",
     "attrs-in-props": "latest",

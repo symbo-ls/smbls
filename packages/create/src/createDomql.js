@@ -1,79 +1,89 @@
 'use strict'
 
 import DOM from 'domql'
-import { isString } from '@domql/utils'
-
 import * as uikit from '@symbo.ls/uikit'
 
+import { isString, isNode, isObject } from '@domql/utils'
 import { defaultDefine } from './define'
 import { initRouter } from './router'
-import { applySyncDebug } from './syncExtend'
+import { initializeExtend, initializeInspect, initializeNotifications, initializeSync } from './syncExtend'
+
 import {
-  prepareAnimationFrame,
+  initAnimationFrame,
   prepareComponents,
   prepareDependencies,
   prepareDesignSystem,
-  prepareDocument,
-  preparePackages,
+  prepareWindow,
+  prepareRequire,
   preparePages,
   prepareState,
-  prepareUtils
+  prepareUtils,
+  prepareMethods
 } from './prepare'
 
 const SYMBOLS_KEY = process.env.SYMBOLS_KEY
 
-export const createDomqlElement = (App, options) => {
-  const key = options.key || SYMBOLS_KEY || (isString(App) ? App : '')
-  const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(options, key)
-  if (isString(App)) App = {}
+export const prepareContext = (app, context = {}) => {
+  const key = context.key = context.key || SYMBOLS_KEY || (isString(app) ? app : 'smblsapp')
+  context.define = context.define || defaultDefine
+  context.window = prepareWindow(context)
+  const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(key, context)
+  context.designSystem = scratcDesignSystem
+  context.registry = registry
+  context.emotion = emotion
+  const state = prepareState(app, context)
+  context.state = state
+  context.pages = preparePages(app, context)
+  context.components = prepareComponents(context)
+  context.utils = prepareUtils(context)
+  context.snippets = context.utils
+  context.dependencies = prepareDependencies(context)
+  context.methods = prepareMethods(context)
+  context.routerOptions = initRouter(app, context)
+  context.defaultExtends = [uikit.Box]
+  return context
+}
 
-  const doc = prepareDocument(options)
-  const state = prepareState(options, App)
-  const pages = preparePages(options)
-  const components = prepareComponents(options)
-  const designSystem = scratcDesignSystem
-  const snippets = prepareUtils(options)
-  const dependencies = prepareDependencies(options)
-  preparePackages({ functions: snippets, utils: snippets, snippets, ...options.files }, options)
+export const createDomqlElement = (app, ctx) => {
+  if (!isObject(ctx)) ctx = {}
+  if (isNode(app)) {
+    app = {}
+    ctx.parent = app
+  }
+  if (isString(app)) {
+    app = {}
+    ctx.key = app
+  }
+  if (!isObject(app)) {
+    app = {}
+  }
 
-  const frameListeners = prepareAnimationFrame(options)
+  prepareContext(app, ctx)
 
-  const define = options.define || defaultDefine
+  app.extend = initializeExtend(app, ctx)
+  app.routes = ctx.pages
+  app.state = ctx.state
+  app.context = ctx
+  app.data = app.data || {}
+  app.data.frameListeners = initAnimationFrame()
 
-  const routerOptions = initRouter(App, options) // eslint-disable-line
-  const extend = applySyncDebug([App], options)
+  prepareRequire({
+    functions: ctx.snippets,
+    utils: ctx.snippets,
+    snippets: ctx.snippets,
+    ...ctx.files
+  }, ctx)
 
-  return ((DOM.default && DOM.default.create) || DOM.create)({
-    extend,
-    routes: options.pages,
-    state,
-    data: {
-      frameListeners
-    },
-    context: {
-      key,
-      components,
-      state,
-      pages,
-      designSystem,
-      snippets,
-      dependencies,
-      functions: options.functions,
-      files: options.files,
-      utils: snippets,
-      schema: options.schema,
-      define,
-      registry,
-      emotion,
-      routerOptions,
-      socket: options.socket,
-      editor: options.editor,
-      window: options.window || window,
-      document: doc
-    }
-  }, options.parent || doc.body, key, {
-    extend: [uikit.Box],
-    verbose: options.verbose,
-    ...options.domqlOptions
+  initializeSync(app, ctx)
+  initializeInspect(app, ctx)
+  initializeNotifications(app, ctx)
+
+  const parentNode = ctx.parent || ctx.document.body
+  const domqlCreate = (DOM.default && DOM.default.create) || DOM.create
+  const smblsApp = domqlCreate(app, parentNode, ctx.key, {
+    verbose: ctx.verbose,
+    ...ctx.domqlOptions
   })
+
+  return smblsApp
 }

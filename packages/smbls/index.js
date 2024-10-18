@@ -10,4 +10,4 @@ export * from '@symbo.ls/create'
 export * from '@symbo.ls/utils'
 
 // export * from '@symbo.ls/socket/client' // TODO: Check with @nikoloza
-// export * from '@symbo.ls/socket-ui' // TODO: add it soon
+// export * from '@symbo.ls/sync' // TODO: add it soon

@@ -3007,6 +3007,19 @@
     "@symbo.ls/atoms" latest
     "@symbo.ls/progress" latest
 
+"@symbo.ls/sync@latest":
+  version "2.11.438"
+  resolved "https://registry.yarnpkg.com/@symbo.ls/sync/-/sync-2.11.438.tgz#b1b342e2013671383ba60d3e444a2944043460bc"
+  integrity sha512-2Eqmv8ZtBBAMG/Iu2QXht1VbTY7YwcHEE67RHzB/y5Ytx82Avd746gcDuJai32ROccokYd8SEbf56SPjfGbUxw==
+  dependencies:
+    "@domql/globals" latest
+    "@domql/router" latest
+    "@domql/utils" latest
+    "@symbo.ls/init" latest
+    "@symbo.ls/scratch" latest
+    "@symbo.ls/socket" latest
+    "@symbo.ls/uikit" latest
+
 "@symbo.ls/tab@latest":
   version "2.11.410"
   resolved "https://registry.yarnpkg.com/@symbo.ls/tab/-/tab-2.11.410.tgz#1f94c320c9da90e3ab9097392385c9cbc02b7150"
