@@ -30,7 +30,7 @@ function findComponent (el) {
   return findComponent(el.parent)
 }
 
-export const inspectOnKey = (app, ctx) => {
+const inspectOnKey = (app, state, ctx) => {
   const windowOpts = ctx.window || window
   windowOpts.onkeydown = (ev) => {
     if (ev.altKey && ev.shiftKey) {
@@ -48,7 +48,7 @@ export const inspectOnKey = (app, ctx) => {
         preventContentUpdate: true,
         preventRecursive: true
       })
-      app.focus.state.update({ area: false })
+      app.Inspector.state.update({ area: false })
     }
   }
 }
@@ -59,7 +59,7 @@ export const Inspect = {
     '!preventSelect': { userSelect: 'auto' }
   },
 
-  focus: {
+  Inspector: {
     state: {},
     props: (el, s) => ({
       transition: 'all, defaultBezier, X',
@@ -141,10 +141,11 @@ export const Inspect = {
   },
 
   on: {
+    inspectOnKey,
     mousemove: (ev, e, state) => {
       const el = ev.target.ref
       const component = findComponent(el)
-      const focusState = e.focus.state
+      const focusState = e.Inspector.state
 
       if (!component || !state.debugging || !component.__ref) return focusState.update({ area: false })
 

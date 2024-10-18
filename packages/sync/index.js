@@ -73,6 +73,6 @@ export const connectToSocket = (el, s, ctx) => {
 
 export const SyncComponent = {
   on: {
-    complete: connectToSocket
+    initSync: connectToSocket
   }
 }

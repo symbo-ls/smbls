@@ -2,7 +2,7 @@
 
 import { isObjectLike, isUndefined, isDevelopment } from '@domql/utils'
 import { SyncComponent } from '@symbo.ls/sync'
-import { inspectOnKey, Inspect } from '@symbo.ls/sync/Inspect'
+import { Inspect } from '@symbo.ls/sync/Inspect'
 import { Notifications } from '@symbo.ls/sync/Notifications'
 
 export const initializeExtend = (app, ctx) => {
@@ -28,11 +28,4 @@ export const initializeNotifications = (app, ctx) => {
   if (!editor) return
   const verbose = isUndefined(editor.verbose) ? isDevelopment() || ctx.verbose : editor.verbose
   if (verbose) app.extend.push(Notifications)
-}
-
-export const applyInspectListener = (root, ctx) => {
-  const { editor } = ctx
-  if (!editor) return
-  const inspect = isUndefined(editor.inspect) ? isDevelopment() : editor.inspect
-  if (inspect) inspectOnKey(root, ctx)
 }
