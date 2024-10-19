@@ -56,7 +56,7 @@ export const prepareMethods = (context) => {
     require: context.utils.require,
     requireOnDemand: context.utils.requireOnDemand,
     call: function (fnKey, ...args) {
-      return (context.utils[fnKey] || context.methods[fnKey]).call(this, ...args)
+      return (context.utils[fnKey] || context.methods[fnKey])?.call(this, ...args)
     }
   }
 }
