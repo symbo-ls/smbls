@@ -10,7 +10,7 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
-    "@domql/globals": "^2.5.0",
+    "@domql/globals": "latest",
     "@domql/utils": "^2.5.0",
     "@symbo.ls/init": "^2.11.446",
     "chalk": "^5.0.0",

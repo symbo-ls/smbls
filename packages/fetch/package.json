@@ -13,7 +13,7 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/globals": "^2.5.0",
+    "@domql/globals": "latest",
     "@domql/utils": "^2.5.0"
   },
   "scripts": {
