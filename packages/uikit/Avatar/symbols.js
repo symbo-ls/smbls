@@ -12,7 +12,7 @@ const extend = 'Avatar'
 const state = {}
 const props = {}
 
-const component = {
+const value = {
   extend: Avatar
 }
 
@@ -29,7 +29,7 @@ export default {
   category,
   extend,
 
-  component,
+  value,
   code,
   state,
   props,

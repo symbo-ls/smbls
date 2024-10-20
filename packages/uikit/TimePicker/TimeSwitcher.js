@@ -1,7 +1,5 @@
 'use strict'
 
-import { Button } from '@symbo.ls/button'
-
 const props = {
   boxSize: 'C B2',
   flow: 'column',
@@ -15,9 +13,8 @@ export const TimeSwitcher = {
   extend: 'Flex',
 
   childExtend: {
-    extend: Button,
-    props: ({ state, key }) => ({
-      active: state.activeShift === key,
+    extend: 'Button',
+    props: {
       padding: '0',
       flex: '1',
       width: '100%',
@@ -27,8 +24,9 @@ export const TimeSwitcher = {
       background: 'transparent',
       color: 'currentColor',
       lineHeight: '1',
-      '.active': { theme: 'primary' }
-    }),
+      isActive: ({ state, key }) => state.activeShift === key,
+      '.isActive': { theme: 'primary' }
+    },
     on: {
       click: (ev, { key, state }) => {
         state.update({ activeShift: key })

@@ -2,7 +2,7 @@
 
 import { Colors, Typography, Shadows, Icons, Spacing, Shapes } from '../articles'
 
-export const StyleguidePage = {
+export const Styleguide = {
   extend: 'Flex',
   tag: 'main',
 

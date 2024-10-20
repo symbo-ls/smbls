@@ -16,6 +16,8 @@ export const DropdownList = {
     style: { listStyleType: 'none' },
     transition: 'B defaultBezier',
     transitionProperty: 'transform, opacity, visibility',
+    children: ({ props }) => props.options || [],
+    childrenAs: 'props',
 
     '.hidden': {
       transform: 'translate3d(0,10%,0)',
@@ -27,8 +29,8 @@ export const DropdownList = {
   childExtend: {
     extend: 'Button',
     state: {},
-    props: ({ key, state }) => ({
-      active: state.active === key,
+    props: {
+      isActive: ({ key, state }) => state.active === key,
       position: 'relative',
       round: '0',
       align: 'center flex-end',
@@ -45,7 +47,7 @@ export const DropdownList = {
       },
 
       Icon: {
-        active: state.active === key,
+        isActive: ({ key, state }) => state.active === key,
         name: 'checkmark',
         opacity: '0.1',
         '.active': { opacity: '1' }
@@ -56,10 +58,8 @@ export const DropdownList = {
         '@light': { border: 'gray11, solid' },
         borderWidth: '1px 0 0'
       }
-    })
-  },
-
-  $propsCollection: ({ props }) => props.options
+    }
+  }
 }
 
 export const DropdownParent = {

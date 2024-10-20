@@ -13,8 +13,8 @@ export const Pills = {
         boxSize: 'Y2',
         round: 'A',
         background: 'currentColor',
-        active: parseInt(key) === parseInt(state.active || parent.props.active),
-        '!active': { opacity: 0.35 }
+        isActive: parseInt(key) === parseInt(state.active || parent.props.active),
+        '!isActive': { opacity: 0.35 }
       })
     },
     on: {
