@@ -1,12 +1,13 @@
 'use strict'
 
-import { isString, replaceLiteralsWithObjectFields } from '@domql/utils'
+import { isString, exec, replaceLiteralsWithObjectFields } from '@domql/utils'
 
-const getIconName = ({ key, props, context, deps, state }) => {
-  let iconName = props.name || props.icon || key
+const getIconName = (el, s) => {
+  const { key, props, deps } = el
+  let iconName = exec(props.name || props.icon || key, el)
 
   if (isString(iconName) && iconName.includes('{{')) {
-    iconName = deps.replaceLiteralsWithObjectFields(iconName, state)
+    iconName = deps.replaceLiteralsWithObjectFields(iconName, s)
   }
 
   return deps.isString(iconName) ? iconName : key
@@ -15,11 +16,12 @@ const getIconName = ({ key, props, context, deps, state }) => {
 export const Icon = {
   extend: 'Svg',
   deps: { isString, replaceLiteralsWithObjectFields },
-  props: ({ key, props, parent, context, deps, state }) => {
+  props: (el, s) => {
+    const { props, parent, context, deps, state } = el
     const { ICONS, SEMANTIC_ICONS, useIconSprite, verbose } = context && context.designSystem
     const { toCamelCase } = context && context.utils
 
-    let iconName = getIconName({ key, props, parent, context, deps, state })
+    let iconName = getIconName(el, s)
     const camelCase = toCamelCase(iconName)
     const isArray = camelCase.split(/([a-z])([A-Z])/g)
 
@@ -49,17 +51,19 @@ export const Icon = {
     }
 
     let activeIconName
-    if (props.active) {
-      activeIconName = props['.active'].name || props['.active'].icon
+    if (props.isActive) {
+      activeIconName = props['.isActive'].name || props['.isActive'].icon
     }
     if (
       parent &&
       parent.props &&
-      parent.props.active &&
-      parent.props['.active'] &&
-      parent.props['.active'].icon
+      parent.props.isActive &&
+      parent.props['.isActive'] &&
+      parent.props['.isActive'].icon
     ) {
-      activeIconName = parent.props['.active'].icon.name || parent.props['.active'].icon.icon || parent.props['.active'].icon
+      activeIconName = exec(
+        parent.props['.isActive'].icon.name || parent.props['.isActive'].icon.icon || parent.props['.isActive'].icon
+        , el)
     }
 
     if (isString(activeIconName) && activeIconName.includes('{{')) {
@@ -99,10 +103,9 @@ export const IconText = {
   },
 
   Icon: {
-    props: ({ parent, props }) => ({ icon: parent.props.icon }),
+    props: ({ parent }) => ({ icon: parent.props.icon }),
     if: ({ parent, props }) => {
-      const doesExist = parent.props.icon || parent.props.Icon || props.name || props.icon || props.sfSymbols || parent.props.sfSymbols
-      return doesExist
+      return parent.props.icon || parent.props.Icon || props.name || props.icon || props.sfSymbols || parent.props.sfSymbols
     }
   },
 
