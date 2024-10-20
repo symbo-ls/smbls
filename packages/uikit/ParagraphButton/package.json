@@ -1,13 +1,13 @@
 {
   "name": "@symbo.ls/paragraphbutton",
-  "version": "2.11.450",
+  "version": "2.11.451",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
     "@symbo.ls/atoms": "^2.11.450",
-    "@symbo.ls/button": "^2.11.450",
-    "@symbo.ls/icon": "^2.11.450"
+    "@symbo.ls/button": "^2.11.451",
+    "@symbo.ls/icon": "^2.11.451"
   },
   "source": "src/index.js"
 }
