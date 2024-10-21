@@ -17,8 +17,8 @@ import DYNAMIC_JSON from './dynamic.json'
 
 const CONFIG = getActiveConfig()
 
-const mergeWithLocalFile = (config = CONFIG, RC_FILE) => {
-  const rcfile = isObject(RC_FILE) ? RC_FILE : DYNAMIC_JSON || {}
+const mergeWithLocalFile = (config = CONFIG, options) => {
+  const rcfile = isObject(options.localFile) ? options.localFile : DYNAMIC_JSON || {}
   const clonedFile = deepClone(rcfile.designSystem || {})
   return deepMerge(config, clonedFile)
 }
@@ -35,7 +35,7 @@ const SET_OPTIONS = {
 
 export const init = (config, options = SET_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
-  const resultConfig = mergeWithLocalFile(config || {})
+  const resultConfig = mergeWithLocalFile(config || {}, options)
 
   const conf = set({
     verbose: options.verbose,
@@ -76,15 +76,20 @@ const UPDATE_OPTIONS = {
   emotion: defaultEmotion
 }
 
-export const reInit = (config, RC_FILE, options = UPDATE_OPTIONS) => {
+export const reinit = (config, options = UPDATE_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
-  const resultConfig = mergeWithLocalFile(config || {}, RC_FILE)
+  const resultConfig = mergeWithLocalFile(config || {}, options)
+  const prevStyles = document.querySelector('[data-emotion="smbls"]')
+  console.log(prevStyles)
   const conf = set({
     verbose: false,
     ...resultConfig
   })
-  emotion.injectGlobal({ ':root': conf.CSS_VARS })
-  emotion.injectGlobal(conf.RESET)
+  if (!options.preventInject) {
+    emotion.injectGlobal({ ':root': conf.CSS_VARS })
+    emotion.injectGlobal(conf.RESET)
+  }
+  return conf
 }
 
 export const applyCSS = (styles, options = UPDATE_OPTIONS) => {

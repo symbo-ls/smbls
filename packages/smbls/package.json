@@ -9,6 +9,7 @@
   "module": "index.js",
   "files": [
     "index.js",
+    "package.json",
     "dist"
   ],
   "dependencies": {
