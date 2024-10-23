@@ -2,9 +2,15 @@
 
 import { isString, exec, replaceLiteralsWithObjectFields } from '@domql/utils'
 
+const inheritFromIsActive = (el) => {
+  const { props } = el
+  const propsActive = props['.isActive']
+  return el.call('exec', propsActive.name || propsActive.icon)
+}
+
 const getIconName = (el, s) => {
   const { key, props, deps } = el
-  let iconName = exec(props.name || props.icon || key, el)
+  let iconName = el.call('exec', props.name || props.icon || key, el)
 
   if (isString(iconName) && iconName.includes('{{')) {
     iconName = deps.replaceLiteralsWithObjectFields(iconName, s)
@@ -16,77 +22,55 @@ const getIconName = (el, s) => {
 export const Icon = {
   extend: 'Svg',
   deps: { isString, replaceLiteralsWithObjectFields },
-  props: (el, s) => {
-    const { props, parent, context, deps, state } = el
-    const { ICONS, SEMANTIC_ICONS, useIconSprite, verbose } = context && context.designSystem
-    const { toCamelCase } = context && context.utils
+  props: (el, s, ctx) => {
+    const { props, parent, deps } = el
+    const { ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
+    const { toCamelCase } = ctx && ctx.utils
 
-    let iconName = getIconName(el, s)
+    const iconName = getIconName(el, s)
     const camelCase = toCamelCase(iconName)
     const isArray = camelCase.split(/([a-z])([A-Z])/g)
-
-    const semanticIconRootName = isArray[1] ? isArray[0] : iconName.split('.')[0].split(' ')[0]
-    const semanticIcon = SEMANTIC_ICONS && SEMANTIC_ICONS[semanticIconRootName]
-    if (semanticIcon) {
-      const iconKey = iconName.includes('.') ? 'sfsymbols.' + iconName.split('.').slice(1).join('.') : 'sfsymbols'
-      iconName = semanticIcon[iconKey] || semanticIcon[iconName.split('.')[0].split(' ')[0]]
-      return {
-        tag: 'span',
-        semantic_symbols: true,
-        width: 'A',
-        height: 'A',
-        lineHeight: '1em',
-        ':after': {
-          fontSize: 'Z',
-          fontWeight: '300',
-          content: `"${iconName}"`,
-          textAlign: 'center',
-          display: 'inline-block',
-          style: {
-            color: 'currentColor',
-            fontFamily: "'SF Pro Icons', 'SF Pro', 'SF Symbols', 'Segoe UI'"
-          }
-        }
-      }
-    }
+    const semanticIcon = getSemanticIcon(el, s, ctx)
+    if (semanticIcon) return semanticIcon
 
     let activeIconName
-    if (props.isActive) {
-      activeIconName = props['.isActive'].name || props['.isActive'].icon
-    }
+    if (props.isActive) activeIconName = inheritFromIsActive(el)
+    const parentProps = parent.props
+    const parentPropsActive = parentProps['.isActive']
     if (
       parent &&
-      parent.props &&
-      parent.props.isActive &&
-      parent.props['.isActive'] &&
-      parent.props['.isActive'].icon
+      parentProps &&
+      parentProps.isActive &&
+      parentPropsActive &&
+      parentPropsActive.icon
     ) {
       activeIconName = exec(
-        parent.props['.isActive'].icon.name || parent.props['.isActive'].icon.icon || parent.props['.isActive'].icon
-        , el)
+        parentPropsActive.icon || parentPropsActive.Icon.name || parentPropsActive.Icon.icon,
+        el
+      )
     }
 
     if (isString(activeIconName) && activeIconName.includes('{{')) {
-      activeIconName = deps.replaceLiteralsWithObjectFields(activeIconName, state)
+      activeIconName = deps.replaceLiteralsWithObjectFields(activeIconName, s)
     }
 
-    let validIconName
-    if (ICONS[activeIconName]) validIconName = activeIconName
-    if (ICONS[camelCase]) validIconName = camelCase
-    else if (ICONS[isArray[0] + isArray[1]]) validIconName = isArray[0] + isArray[1]
-    else if (ICONS[isArray[0]]) validIconName = isArray[0]
+    let iconInContext
+    if (ICONS[activeIconName]) iconInContext = activeIconName
+    if (ICONS[camelCase]) iconInContext = camelCase
+    else if (ICONS[isArray[0] + isArray[1]]) iconInContext = isArray[0] + isArray[1]
+    else if (ICONS[isArray[0]]) iconInContext = isArray[0]
     else {
-      if (verbose) console.warn('Can\'t find icon:', iconName, validIconName)
+      if (verbose) el.warn('Can\'t find icon:', iconName, iconInContext)
     }
 
-    const iconFromLibrary = ICONS[validIconName]
+    const iconFromLibrary = ICONS[iconInContext]
     const directSrc = (parent && parent.props && parent.props.src) || props.src
 
     return {
       width: 'A',
       height: 'A',
       display: 'inline-block',
-      spriteId: useIconSprite && validIconName,
+      spriteId: useIconSprite && iconInContext,
       src: iconFromLibrary || directSrc || ICONS.noIcon,
       style: { fill: 'currentColor', '*': { fill: 'currentColor' } }
     }
@@ -103,7 +87,7 @@ export const IconText = {
   },
 
   Icon: {
-    props: ({ parent }) => ({ icon: parent.props.icon }),
+    props: el => ({ icon: el.call('exec', el.parent.props.icon, el.parent) }),
     if: ({ parent, props }) => {
       return parent.props.icon || parent.props.Icon || props.name || props.icon || props.sfSymbols || parent.props.sfSymbols
     }
@@ -132,5 +116,38 @@ export const FileIcon = {
     fontSize: 'B',
     margin: 'auto',
     icon: 'file'
+  }
+}
+
+const getSemanticIcon = (el, s, ctx) => {
+  const { SEMANTIC_ICONS } = ctx && ctx.designSystem
+  const { toCamelCase } = ctx && ctx.utils
+
+  let iconName = getIconName(el, s)
+  const camelCase = toCamelCase(iconName)
+  const isArray = camelCase.split(/([a-z])([A-Z])/g)
+  const semanticIconRootName = isArray[1] ? isArray[0] : iconName.split('.')[0].split(' ')[0]
+  const semanticIcon = SEMANTIC_ICONS && SEMANTIC_ICONS[semanticIconRootName]
+  if (semanticIcon) {
+    const iconKey = iconName.includes('.') ? 'sfsymbols.' + iconName.split('.').slice(1).join('.') : 'sfsymbols'
+    iconName = semanticIcon[iconKey] || semanticIcon[iconName.split('.')[0].split(' ')[0]]
+    return {
+      tag: 'span',
+      semantic_symbols: true,
+      width: 'A',
+      height: 'A',
+      lineHeight: '1em',
+      ':after': {
+        fontSize: 'Z',
+        fontWeight: '300',
+        content: `"${iconName}"`,
+        textAlign: 'center',
+        display: 'inline-block',
+        style: {
+          color: 'currentColor',
+          fontFamily: "'SF Pro Icons', 'SF Pro', 'SF Symbols', 'Segoe UI'"
+        }
+      }
+    }
   }
 }
