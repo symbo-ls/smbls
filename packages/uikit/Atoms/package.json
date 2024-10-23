@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/atoms",
-  "version": "2.11.450",
+  "version": "2.11.453",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
     "@domql/state": "^2.5.0",
     "@domql/utils": "^2.5.0",
-    "@symbo.ls/emotion": "^2.11.0",
-    "@symbo.ls/scratch": "^2.11.450"
+    "@symbo.ls/emotion": "^2.11.453",
+    "@symbo.ls/scratch": "^2.11.453"
   },
   "source": "src/index.js",
   "devDependencies": {
