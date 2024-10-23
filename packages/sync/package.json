@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/sync",
-  "version": "2.11.453",
+  "version": "2.11.454",
   "main": "index.js",
   "module": "index.js",
   "gitHead": "d1b6122e6d2aaca97f342e5e9ebb181797b85e23",
@@ -11,6 +11,6 @@
     "@symbo.ls/init": "^2.11.453",
     "@symbo.ls/scratch": "^2.11.453",
     "@symbo.ls/socket": "^2.11.453",
-    "@symbo.ls/uikit": "^2.11.453"
+    "@symbo.ls/uikit": "^2.11.454"
   }
 }

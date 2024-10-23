@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/field",
-  "version": "2.11.453",
+  "version": "2.11.454",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
@@ -8,7 +8,7 @@
     "@symbo.ls/atoms": "^2.11.453",
     "@symbo.ls/button": "^2.11.453",
     "@symbo.ls/icon": "^2.11.453",
-    "@symbo.ls/input": "^2.11.453"
+    "@symbo.ls/input": "^2.11.454"
   },
   "source": "src/index.js"
 }
