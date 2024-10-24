@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "@symbo.ls/utils",
   "version": "2.11.453",
   "author": "symbo.ls",
@@ -27,4 +28,36 @@
     "@domql/utils": "^2.5.0"
   },
   "gitHead": "d1b6122e6d2aaca97f342e5e9ebb181797b85e23"
+=======
+  "name": "@domql/utils",
+  "version": "2.5.152",
+  "license": "MIT",
+  "type": "module",
+  "module": "index.js",
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "kalduna": "./index.js",
+      "default": "./dist/cjs/index.js",
+      "import": "./index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build": "yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
+  "gitHead": "e5952db705e332f062e2e78113d620bd48ba16d9",
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
+  }
+>>>>>>> domql/main
 }

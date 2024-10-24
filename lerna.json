@@ -1,8 +1,18 @@
 {
+<<<<<<< HEAD
   "npmClient": "yarn",
   "version": "2.11.454",
   "packages": [
     "packages/*",
     "packages/*/*"
   ]
+=======
+  "packages": [
+    "packages/*",
+    "packages/*/*",
+    "plugins/*"
+  ],
+  "npmClient": "yarn",
+  "version": "2.5.152"
+>>>>>>> domql/main
 }

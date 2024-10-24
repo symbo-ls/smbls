@@ -32,6 +32,7 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
+<<<<<<< HEAD
 # Parcel files
 .parcel-cache
 .cache
@@ -43,3 +44,14 @@ dist
 .tmp
 
 .idea
+=======
+.DS_Store
+
+# Parcel files
+.parcel-cache
+.cache
+.parcel-cache
+dist
+.parcel-cache
+.yarn
+>>>>>>> domql/main

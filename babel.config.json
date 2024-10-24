@@ -1,2 +1,9 @@
 {
+<<<<<<< HEAD
 }
+=======
+    "presets": [
+      ["@babel/preset-env"]
+    ]
+  }
+>>>>>>> domql/main
