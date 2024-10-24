@@ -1,34 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "@symbo.ls/utils",
-  "version": "2.11.453",
-  "author": "symbo.ls",
-  "files": [
-    "src",
-    "dist"
-  ],
-  "main": "src/index.js",
-  "type": "module",
-  "module": "src/index.js",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
-  "exports": "./dist/cjs/index.js",
-  "source": "src/index.js",
-  "publishConfig": {},
-  "scripts": {
-    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
-    "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "yarn build:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
-  },
-  "license": "ISC",
-  "dependencies": {
-    "@domql/utils": "^2.5.0"
-  },
-  "gitHead": "d1b6122e6d2aaca97f342e5e9ebb181797b85e23"
-=======
   "name": "@domql/utils",
   "version": "2.5.152",
   "license": "MIT",
@@ -59,5 +29,4 @@
   "devDependencies": {
     "@babel/core": "^7.12.0"
   }
->>>>>>> domql/main
 }

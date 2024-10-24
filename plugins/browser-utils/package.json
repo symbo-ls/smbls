@@ -1,0 +1,30 @@
+{
+  "name": "@symbo.ls/utils",
+  "version": "2.11.453",
+  "author": "symbo.ls",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "main": "index.js",
+  "type": "module",
+  "module": "index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "publishConfig": {},
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild ./*.js ./**/*.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild ./*.js ./**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
+    "build:iife": "npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
+    "build": "yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@domql/utils": "^2.5.0"
+  },
+  "gitHead": "d1b6122e6d2aaca97f342e5e9ebb181797b85e23"
+}

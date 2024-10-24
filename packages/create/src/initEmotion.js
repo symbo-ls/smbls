@@ -1,7 +1,6 @@
 'use strict'
 
-import { transformDOMQLEmotion } from '@domql/emotion'
-import { emotion as defaultEmotion } from '@symbo.ls/emotion'
+import { transformDOMQLEmotion, emotion as defaultEmotion } from '@symbo.ls/emotion'
 import { init } from '@symbo.ls/init'
 import { deepClone, deepMerge } from '@domql/utils'
 

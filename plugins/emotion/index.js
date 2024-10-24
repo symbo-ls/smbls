@@ -1,9 +1,9 @@
 'use strict'
 
 // import DOM from '../../src'
+import createInstance from '@emotion/css/create-instance'
 import { isObjectLike, isString, isNumber, isBoolean, exec, isObject, isEqualDeep, isProduction } from '@domql/utils'
 import { applyClassListOnNode } from '@domql/classlist'
-import createEmotion from '@emotion/css/create-instance'
 
 export const transformEmotionStyle = (emotion) => {
   return (params, element, state) => {
@@ -53,10 +53,17 @@ export const transformEmotionClass = (emotion) => {
 }
 
 export const transformDOMQLEmotion = (emotion, options) => {
-  if (!emotion) emotion = createEmotion(options || { key: 'smbls' })
+  if (!emotion) emotion = createInstance(options || { key: 'smbls' })
 
   return {
     style: transformEmotionStyle(emotion),
     class: transformEmotionClass(emotion)
   }
 }
+
+export const createEmotion = (key = 'smbls', container) => {
+  const cleanKey = key.replaceAll(/\./g, '-')
+  return createInstance({ key: cleanKey, container })
+}
+
+export const emotion = createEmotion()

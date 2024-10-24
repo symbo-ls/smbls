@@ -96,8 +96,12 @@
   },
   "workspaces": [
     "packages/*",
+<<<<<<< Updated upstream
 <<<<<<< HEAD
     "packages/*/*"
+=======
+    "plugins/*"
+>>>>>>> Stashed changes
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "dependencies": {

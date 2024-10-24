@@ -31,7 +31,7 @@
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
   },
   "dependencies": {
-    "@domql/emotion": "^2.5.0",
+    "@symbo.ls/emotion": "^2.5.0",
     "@domql/report": "^2.5.0",
     "@domql/router": "^2.5.0",
     "@symbo.ls/fetch": "^2.11.453",
