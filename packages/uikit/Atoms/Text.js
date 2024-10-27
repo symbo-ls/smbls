@@ -3,24 +3,32 @@
 import { exec, isUndefined } from '@domql/utils'
 import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
+const props = {
+  fontSize: (el) => {
+    const { props, deps } = el
+    return props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null
+  },
+  fontFamily: ({ props, deps }) => ({
+    fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily
+  }),
+  fontWeight: ({ props }) => ({
+    fontWeight: props.fontWeight,
+    fontVariationSettings: '"wght" ' + props.fontWeight
+  })
+}
+
 export const Text = {
   deps: { exec, getFontSizeByKey, getFontFamily },
 
   text: (el) => {
     const { key, props, state, deps } = el
     if (props.text === true) return (state && state[key]) || (props && props[key])
+    // return console.log(el) || deps.exec(props.text, el)
     return deps.exec(props.text, el)
   },
 
   class: {
-    fontSize: (el) => {
-      const { props, deps } = el
-      return props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null
-    },
     font: ({ props }) => !isUndefined(props.font) && ({ font: props.font }),
-    fontFamily: ({ props, deps }) => !isUndefined(props.fontFamily) && ({
-      fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily
-    }),
     lineHeight: ({ props }) => !isUndefined(props.lineHeight) && ({ lineHeight: props.lineHeight }),
     // lineHeight: ({ props }) => !isUndefined(props.lineHeight) && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
     textDecoration: ({ props }) => !isUndefined(props.textDecoration) && ({ textDecoration: props.textDecoration }),
@@ -34,10 +42,7 @@ export const Text = {
     writingMode: ({ props }) => !isUndefined(props.writingMode) && ({ writingMode: props.writingMode }),
     textOrientation: ({ props }) => !isUndefined(props.textOrientation) && ({ textOrientation: props.textOrientation }),
     textIndent: ({ props }) => !isUndefined(props.textIndent) && ({ textIndent: props.textIndent }),
-    fontWeight: ({ props }) => !isUndefined(props.fontWeight) && ({
-      fontWeight: props.fontWeight,
-      fontVariationSettings: '"wght" ' + props.fontWeight
-    })
+    ...props
   }
 }
 

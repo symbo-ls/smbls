@@ -13,33 +13,27 @@ export const Notification = {
   },
 
   IconText: {
-    props: {
-      icon: 'info outline'
-    }
+    icon: 'info outline'
   },
 
   Flex: {
-    props: {
-      flow: 'column',
-      align: 'flex-start',
-      gap: 'X2'
-    },
+    flow: 'column',
+    align: 'flex-start',
+    gap: 'X2',
+
     Title: {
       tag: 'h6',
-      props: {
-        margin: '0',
-        fontWeight: '600',
-        lineHeight: '1em',
-        text: 'Notification'
-      }
+      margin: '0',
+      fontWeight: '600',
+      lineHeight: '1em',
+      text: 'Notification'
     },
+
     P: {
-      props: {
-        ':empty': { hide: true },
-        fontSize: 'Z',
-        margin: '0',
-        text: 'is not always a distraction'
-      }
+      fontSize: 'Z',
+      margin: '0',
+      text: 'is not always a distraction',
+      ':empty': { hide: true }
     }
   }
 }

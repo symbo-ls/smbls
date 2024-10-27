@@ -9,14 +9,14 @@ const inheritFromIsActive = (el) => {
 }
 
 const getIconName = (el, s) => {
-  const { key, props, deps } = el
-  let iconName = el.call('exec', props.name || props.icon || key, el)
+  const { key, props } = el
+  let icon = el.call('exec', props.name || props.icon || key, el)
 
-  if (isString(iconName) && iconName.includes('{{')) {
-    iconName = deps.replaceLiteralsWithObjectFields(iconName, s)
+  if (isString(icon) && icon.includes('{{')) {
+    icon = el.call('replaceLiteralsWithObjectFields', icon, s)
   }
 
-  return deps.isString(iconName) ? iconName : key
+  return el.call('isString', icon) ? icon : key
 }
 
 export const Icon = {
@@ -83,25 +83,32 @@ export const IconText = {
 
   props: {
     align: 'center center',
-    lineHeight: 1
-  },
+    lineHeight: 1,
 
-  Icon: {
-    props: el => ({ icon: el.call('exec', el.parent.props.icon, el.parent) }),
-    if: ({ parent, props }) => {
-      return parent.props.icon || parent.props.Icon || props.name || props.icon || props.sfSymbols || parent.props.sfSymbols
+    '.reversed': {
+      flow: 'row-reverse'
+    },
+
+    '.vertical': {
+      flow: 'column'
     }
   },
 
-  text: ({ props }) => props.text,
-
-  '.reversed': {
-    props: { flow: 'row-reverse' }
+  Icon: {
+    if: (el) => {
+      const { parent, props } = el
+      return el.call('exec', parent.props.icon ||
+        parent.props.Icon ||
+        props.name ||
+        props.icon ||
+        props.sfSymbols ||
+        parent.props.sfSymbols
+      , el)
+    },
+    icon: el => el.call('exec', el.parent.props.icon, el.parent)
   },
 
-  '.vertical': {
-    props: { flow: 'column' }
-  }
+  text: ({ props }) => props.text
 }
 
 export const FileIcon = {

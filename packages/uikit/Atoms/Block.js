@@ -10,6 +10,170 @@ import {
   transfromGap
 } from '@symbo.ls/scratch'
 
+const props = {
+  show: (el, s, ctx) => !!(ctx.utils.exec(el.props.show, el, s) === false) && ({
+    display: 'none !important'
+  }),
+
+  hide: (el, s, ctx) => !!ctx.utils.exec(el.props.hide, el, s) && ({
+    display: 'none !important'
+  }),
+
+  height: ({ props, deps }) => deps.transformSizeRatio('height', props),
+  width: ({ props, deps }) => deps.transformSizeRatio('width', props),
+
+  boxSizing: ({ props, deps }) => !deps.isUndefined(props.boxSizing)
+    ? ({ boxSizing: props.boxSizing })
+    : { boxSizing: 'border-box' },
+
+  boxSize: ({ props, deps }) => {
+    if (!deps.isString(props.boxSize)) return
+    const [height, width] = props.boxSize.split(' ')
+    return {
+      ...deps.transformSize('height', height),
+      ...deps.transformSize('width', width || height)
+    }
+  },
+
+  inlineSize: ({ props, deps }) => deps.transformSizeRatio('inlineSize', props),
+  blockSize: ({ props, deps }) => deps.transformSizeRatio('blockSize', props),
+
+  minWidth: ({ props, deps }) => deps.transformSizeRatio('minWidth', props),
+  maxWidth: ({ props, deps }) => deps.transformSizeRatio('maxWidth', props),
+  widthRange: ({ props, deps }) => {
+    if (!deps.isString(props.widthRange)) return
+    const [minWidth, maxWidth] = props.widthRange.split(' ')
+    return {
+      ...deps.transformSize('minWidth', minWidth),
+      ...deps.transformSize('maxWidth', maxWidth || minWidth)
+    }
+  },
+
+  minHeight: ({ props, deps }) => deps.transformSizeRatio('minHeight', props),
+  maxHeight: ({ props, deps }) => deps.transformSizeRatio('maxHeight', props),
+  heightRange: ({ props, deps }) => {
+    if (!deps.isString(props.heightRange)) return
+    const [minHeight, maxHeight] = props.heightRange.split(' ')
+    return {
+      ...deps.transformSize('minHeight', minHeight),
+      ...deps.transformSize('maxHeight', maxHeight || minHeight)
+    }
+  },
+
+  size: ({ props, deps }) => {
+    if (!deps.isString(props.size)) return
+    const [inlineSize, blockSize] = props.size.split(' ')
+    return {
+      ...deps.transformSizeRatio('inlineSize', inlineSize),
+      ...deps.transformSizeRatio('blockSize', blockSize || inlineSize)
+    }
+  },
+
+  minBlockSize: ({ props, deps }) => deps.transformSizeRatio('minBlockSize', props),
+  minInlineSize: ({ props, deps }) => deps.transformSizeRatio('minInlineSize', props),
+
+  maxBlockSize: ({ props, deps }) => deps.transformSizeRatio('maxBlockSize', props),
+  maxInlineSize: ({ props, deps }) => deps.transformSizeRatio('maxInlineSize', props),
+
+  minSize: ({ props, deps }) => {
+    if (!deps.isString(props.minSize)) return
+    const [minInlineSize, minBlockSize] = props.minSize.split(' ')
+    return {
+      ...deps.transformSize('minInlineSize', minInlineSize),
+      ...deps.transformSize('minBlockSize', minBlockSize || minInlineSize)
+    }
+  },
+
+  maxSize: ({ props, deps }) => {
+    if (!deps.isString(props.maxSize)) return
+    const [maxInlineSize, maxBlockSize] = props.maxSize.split(' ')
+    return {
+      ...deps.transformSize('maxInlineSize', maxInlineSize),
+      ...deps.transformSize('maxBlockSize', maxBlockSize || maxInlineSize)
+    }
+  },
+
+  borderWidth: ({ props, deps }) => deps.transformSizeRatio('borderWidth', props),
+
+  padding: ({ props, deps }) => deps.transformSizeRatio('padding', props),
+  scrollPadding: ({ props, deps }) => deps.transformSizeRatio('scrollPadding', props),
+  paddingInline: ({ props, deps }) => {
+    if (!deps.isString(props.paddingInline)) return
+    const [paddingInlineStart, paddingInlineEnd] = props.paddingInline.split(' ')
+    return {
+      ...deps.transformSize('paddingInlineStart', paddingInlineStart),
+      ...deps.transformSize('paddingInlineEnd', paddingInlineEnd || paddingInlineStart)
+    }
+  },
+  paddingBlock: ({ props, deps }) => {
+    if (!deps.isString(props.paddingBlock)) return
+    const [paddingBlockStart, paddingBlockEnd] = props.paddingBlock.split(' ')
+    return {
+      ...deps.transformSize('paddingBlockStart', paddingBlockStart),
+      ...deps.transformSize('paddingBlockEnd', paddingBlockEnd || paddingBlockStart)
+    }
+  },
+  paddingInlineStart: ({ props, deps }) => deps.transformSizeRatio('paddingInlineStart', props),
+  paddingInlineEnd: ({ props, deps }) => deps.transformSizeRatio('paddingInlineEnd', props),
+  paddingBlockStart: ({ props, deps }) => deps.transformSizeRatio('paddingBlockStart', props),
+  paddingBlockEnd: ({ props, deps }) => deps.transformSizeRatio('paddingBlockEnd', props),
+
+  margin: ({ props, deps }) => deps.transformSizeRatio('margin', props),
+  marginInline: ({ props, deps }) => {
+    if (!deps.isString(props.marginInline)) return
+    const [marginInlineStart, marginInlineEnd] = props.marginInline.split(' ')
+    return {
+      ...deps.transformSize('marginInlineStart', marginInlineStart),
+      ...deps.transformSize('marginInlineEnd', marginInlineEnd || marginInlineStart)
+    }
+  },
+  marginBlock: ({ props, deps }) => {
+    if (!deps.isString(props.marginBlock)) return
+    const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
+    return {
+      ...deps.transformSize('marginBlockStart', marginBlockStart),
+      ...deps.transformSize('marginBlockEnd', marginBlockEnd || marginBlockStart)
+    }
+  },
+  marginInlineStart: ({ props, deps }) => deps.transformSizeRatio('marginInlineStart', props),
+  marginInlineEnd: ({ props, deps }) => deps.transformSizeRatio('marginInlineEnd', props),
+  marginBlockStart: ({ props, deps }) => deps.transformSizeRatio('marginBlockStart', props),
+  marginBlockEnd: ({ props, deps }) => deps.transformSizeRatio('marginBlockEnd', props),
+
+  gap: ({ props, deps }) => !deps.isUndefined(props.gap) && ({
+    gap: transfromGap(props.gap)
+  }),
+
+  columnGap: ({ props, deps }) => !deps.isUndefined(props.columnGap) ? deps.getSpacingBasedOnRatio(props, 'columnGap') : null,
+  rowGap: ({ props, deps }) => !deps.isUndefined(props.rowGap) ? deps.getSpacingBasedOnRatio(props, 'rowGap') : null,
+
+  flexWrap: ({ props, deps }) => !deps.isUndefined(props.flexWrap) && ({
+    display: 'flex',
+    flexFlow: (props.flexFlow || 'row').split(' ')[0] + ' ' + props.flexWrap
+  }),
+  flexFlow: ({ props, deps }) => {
+    const { flexFlow, reverse } = props
+    if (!deps.isString(flexFlow)) return
+    let [direction, wrap] = (flexFlow || 'row').split(' ')
+    if (flexFlow.startsWith('x') || flexFlow === 'row') direction = 'row'
+    if (flexFlow.startsWith('y') || flexFlow === 'column') direction = 'column'
+    return {
+      display: 'flex',
+      flexFlow: (direction || '') + (!direction.includes('-reverse') && reverse ? '-reverse' : '') + ' ' + (wrap || '')
+    }
+  },
+  flexAlign: ({ props, deps }) => {
+    if (!deps.isString(props.flexAlign)) return
+    const [alignItems, justifyContent] = props.flexAlign.split(' ')
+    return {
+      display: 'flex',
+      alignItems,
+      justifyContent
+    }
+  }
+
+}
+
 export const Block = {
   deps: {
     getSpacingBasedOnRatio,
@@ -22,91 +186,11 @@ export const Block = {
   },
 
   class: {
-    boxSizing: ({ props, deps }) => !deps.isUndefined(props.boxSizing)
-      ? ({ boxSizing: props.boxSizing })
-      : { boxSizing: 'border-box' },
+    ...props,
 
     display: ({ props, deps }) => !deps.isUndefined(props.display) && ({
       display: props.display
     }),
-
-    show: (el, s, ctx) => !!(ctx.utils.exec(el.props.show, el, s) === false) && ({
-      display: 'none !important'
-    }),
-
-    hide: (el, s, ctx) => !!ctx.utils.exec(el.props.hide, el, s) && ({
-      display: 'none !important'
-    }),
-
-    height: ({ props, deps }) => deps.transformSizeRatio('height', props),
-    width: ({ props, deps }) => deps.transformSizeRatio('width', props),
-
-    boxSize: ({ props, deps }) => {
-      if (!deps.isString(props.boxSize)) return
-      const [height, width] = props.boxSize.split(' ')
-      return {
-        ...deps.transformSize('height', height),
-        ...deps.transformSize('width', width || height)
-      }
-    },
-
-    inlineSize: ({ props, deps }) => deps.transformSizeRatio('inlineSize', props),
-    blockSize: ({ props, deps }) => deps.transformSizeRatio('blockSize', props),
-
-    minWidth: ({ props, deps }) => deps.transformSizeRatio('minWidth', props),
-    maxWidth: ({ props, deps }) => deps.transformSizeRatio('maxWidth', props),
-    widthRange: ({ props, deps }) => {
-      if (!deps.isString(props.widthRange)) return
-      const [minWidth, maxWidth] = props.widthRange.split(' ')
-      return {
-        ...deps.transformSize('minWidth', minWidth),
-        ...deps.transformSize('maxWidth', maxWidth || minWidth)
-      }
-    },
-
-    minHeight: ({ props, deps }) => deps.transformSizeRatio('minHeight', props),
-    maxHeight: ({ props, deps }) => deps.transformSizeRatio('maxHeight', props),
-    heightRange: ({ props, deps }) => {
-      if (!deps.isString(props.heightRange)) return
-      const [minHeight, maxHeight] = props.heightRange.split(' ')
-      return {
-        ...deps.transformSize('minHeight', minHeight),
-        ...deps.transformSize('maxHeight', maxHeight || minHeight)
-      }
-    },
-
-    size: ({ props, deps }) => {
-      if (!deps.isString(props.size)) return
-      const [inlineSize, blockSize] = props.size.split(' ')
-      return {
-        ...deps.transformSizeRatio('inlineSize', inlineSize),
-        ...deps.transformSizeRatio('blockSize', blockSize || inlineSize)
-      }
-    },
-
-    minBlockSize: ({ props, deps }) => deps.transformSizeRatio('minBlockSize', props),
-    minInlineSize: ({ props, deps }) => deps.transformSizeRatio('minInlineSize', props),
-
-    maxBlockSize: ({ props, deps }) => deps.transformSizeRatio('maxBlockSize', props),
-    maxInlineSize: ({ props, deps }) => deps.transformSizeRatio('maxInlineSize', props),
-
-    minSize: ({ props, deps }) => {
-      if (!deps.isString(props.minSize)) return
-      const [minInlineSize, minBlockSize] = props.minSize.split(' ')
-      return {
-        ...deps.transformSize('minInlineSize', minInlineSize),
-        ...deps.transformSize('minBlockSize', minBlockSize || minInlineSize)
-      }
-    },
-
-    maxSize: ({ props, deps }) => {
-      if (!deps.isString(props.maxSize)) return
-      const [maxInlineSize, maxBlockSize] = props.maxSize.split(' ')
-      return {
-        ...deps.transformSize('maxInlineSize', maxInlineSize),
-        ...deps.transformSize('maxBlockSize', maxBlockSize || maxInlineSize)
-      }
-    },
 
     direction: ({ props, deps }) => !deps.isUndefined(props.direction) && ({
       direction: props.direction
@@ -119,60 +203,6 @@ export const Block = {
     aspectRatio: ({ props, deps }) => !deps.isUndefined(props.aspectRatio) && ({
       aspectRatio: props.aspectRatio
     }),
-
-    borderWidth: ({ props, deps }) => deps.transformSizeRatio('borderWidth', props),
-
-    padding: ({ props, deps }) => deps.transformSizeRatio('padding', props),
-    scrollPadding: ({ props, deps }) => deps.transformSizeRatio('scrollPadding', props),
-    paddingInline: ({ props, deps }) => {
-      if (!deps.isString(props.paddingInline)) return
-      const [paddingInlineStart, paddingInlineEnd] = props.paddingInline.split(' ')
-      return {
-        ...deps.transformSize('paddingInlineStart', paddingInlineStart),
-        ...deps.transformSize('paddingInlineEnd', paddingInlineEnd || paddingInlineStart)
-      }
-    },
-    paddingBlock: ({ props, deps }) => {
-      if (!deps.isString(props.paddingBlock)) return
-      const [paddingBlockStart, paddingBlockEnd] = props.paddingBlock.split(' ')
-      return {
-        ...deps.transformSize('paddingBlockStart', paddingBlockStart),
-        ...deps.transformSize('paddingBlockEnd', paddingBlockEnd || paddingBlockStart)
-      }
-    },
-    paddingInlineStart: ({ props, deps }) => deps.transformSizeRatio('paddingInlineStart', props),
-    paddingInlineEnd: ({ props, deps }) => deps.transformSizeRatio('paddingInlineEnd', props),
-    paddingBlockStart: ({ props, deps }) => deps.transformSizeRatio('paddingBlockStart', props),
-    paddingBlockEnd: ({ props, deps }) => deps.transformSizeRatio('paddingBlockEnd', props),
-
-    margin: ({ props, deps }) => deps.transformSizeRatio('margin', props),
-    marginInline: ({ props, deps }) => {
-      if (!deps.isString(props.marginInline)) return
-      const [marginInlineStart, marginInlineEnd] = props.marginInline.split(' ')
-      return {
-        ...deps.transformSize('marginInlineStart', marginInlineStart),
-        ...deps.transformSize('marginInlineEnd', marginInlineEnd || marginInlineStart)
-      }
-    },
-    marginBlock: ({ props, deps }) => {
-      if (!deps.isString(props.marginBlock)) return
-      const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
-      return {
-        ...deps.transformSize('marginBlockStart', marginBlockStart),
-        ...deps.transformSize('marginBlockEnd', marginBlockEnd || marginBlockStart)
-      }
-    },
-    marginInlineStart: ({ props, deps }) => deps.transformSizeRatio('marginInlineStart', props),
-    marginInlineEnd: ({ props, deps }) => deps.transformSizeRatio('marginInlineEnd', props),
-    marginBlockStart: ({ props, deps }) => deps.transformSizeRatio('marginBlockStart', props),
-    marginBlockEnd: ({ props, deps }) => deps.transformSizeRatio('marginBlockEnd', props),
-
-    gap: ({ props, deps }) => !deps.isUndefined(props.gap) && ({
-      gap: transfromGap(props.gap)
-    }),
-
-    columnGap: ({ props, deps }) => props.columnGap ? deps.getSpacingBasedOnRatio(props, 'columnGap') : null,
-    rowGap: ({ props, deps }) => props.rowGap ? deps.getSpacingBasedOnRatio(props, 'rowGap') : null,
 
     gridArea: ({ props, deps }) => props.gridArea && ({ gridArea: props.gridArea }),
 
@@ -205,31 +235,6 @@ export const Block = {
       order: props.order
     }),
 
-    flexWrap: ({ props, deps }) => !deps.isUndefined(props.flexWrap) && ({
-      display: 'flex',
-      flexFlow: (props.flexFlow || 'row').split(' ')[0] + ' ' + props.flexWrap
-    }),
-    flexFlow: ({ props, deps }) => {
-      const { flexFlow, reverse } = props
-      if (!deps.isString(flexFlow)) return
-      let [direction, wrap] = (flexFlow || 'row').split(' ')
-      if (flexFlow.startsWith('x') || flexFlow === 'row') direction = 'row'
-      if (flexFlow.startsWith('y') || flexFlow === 'column') direction = 'column'
-      return {
-        display: 'flex',
-        flexFlow: (direction || '') + (!direction.includes('-reverse') && reverse ? '-reverse' : '') + ' ' + (wrap || '')
-      }
-    },
-    flexAlign: ({ props, deps }) => {
-      if (!deps.isString(props.flexAlign)) return
-      const [alignItems, justifyContent] = props.flexAlign.split(' ')
-      return {
-        display: 'flex',
-        alignItems,
-        justifyContent
-      }
-    },
-
     gridColumn: ({ props, deps }) => !deps.isUndefined(props.gridColumn) && ({
       gridColumn: props.gridColumn
     }),
@@ -247,7 +252,9 @@ export const Block = {
       resize: props.resize
     }),
 
-    verticalAlign: ({ props, deps }) => !deps.isUndefined(props.verticalAlign) && ({ verticalAlign: props.verticalAlign }),
+    verticalAlign: ({ props, deps }) => !deps.isUndefined(props.verticalAlign) && ({
+      verticalAlign: props.verticalAlign
+    }),
 
     columns: ({ props, deps }) => !deps.isUndefined(props.columns) && ({
       columns: props.columns
@@ -289,19 +296,8 @@ export const Ol = {
 // export const Article = { tag: 'article' }
 
 export const Gutter = {
-  deps: { getSpacingByKey },
   props: {
     size: 'C1'
-  },
-  class: {
-    size: ({ props, deps }) => {
-      if (!deps.isString(props.size)) return
-      const [height, width] = props.size.split(' ')
-      return {
-        ...deps.getSpacingByKey('height', height),
-        ...deps.getSpacingByKey('width', width || height)
-      }
-    }
   }
 }
 

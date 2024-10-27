@@ -1,19 +1,19 @@
 'use strict'
 
-import {
-  Shape,
-  Position,
-  Theme,
-  Block,
-  Text,
-  Overflow,
-  Timing,
-  Transform,
-  Media,
-  Interaction,
-  XYZ,
-  Animation
-} from '@symbo.ls/atoms'
+// import {
+//   Shape,
+//   Position,
+//   Theme,
+//   Block,
+//   Text,
+//   Overflow,
+//   Timing,
+//   Transform,
+//   Media,
+//   Interaction,
+//   XYZ,
+//   Animation
+// } from '@symbo.ls/atoms'
 
 import { isString, isUndefined } from '@domql/utils'
 
@@ -26,18 +26,18 @@ const PropsCSS = {
 export const Box = {
   extend: [
     PropsCSS,
-    Shape,
-    Position,
-    Theme,
-    Block,
-    Text,
-    Overflow,
-    Timing,
-    Transform,
-    Media,
-    Interaction,
-    XYZ,
-    Animation
+    'Shape',
+    'Position',
+    'Theme',
+    'Block',
+    'Text',
+    'Overflow',
+    'Timing',
+    'Transform',
+    'Media',
+    'Interaction',
+    'XYZ',
+    'Animation'
   ],
   deps: { isString, isUndefined },
   attr: {

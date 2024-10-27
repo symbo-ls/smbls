@@ -1057,11 +1057,11 @@ export const filterAttributesByTagName = (tag, props) => {
   return filteredObject
 }
 
-export const exetuteAttrPerComponent = (component, element) => {
+export const executeAttr = (elem, element) => {
   const attrObj = {}
-  if (component.attr) {
-    for (const attrProp in component.attr) {
-      attrObj[attrProp] = component.attr[attrProp](element)
+  if (elem.attr) {
+    for (const attrProp in elem.attr) {
+      attrObj[attrProp] = elem.attr[attrProp](element, element.state, element.context)
     }
   }
   return attrObj

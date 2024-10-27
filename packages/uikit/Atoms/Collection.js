@@ -7,19 +7,19 @@ export const Collection = {
   define: {
     $collection: (param, el, state) => {
       const { __ref: ref } = el
-      const { children, childrenAs, childrenExtends } = (el.props || {})
+      const { children, childrenAs, childExtends } = (el.props || {})
       const childrenExec = children && exec(children, el, state)
 
       if (isArray(childrenExec)) {
         param = deepCloneWithExtend(childrenExec)
-        if (childrenAs) param = param.map(v => ({ extend: childrenExtends, [childrenAs]: v }))
+        if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
       } else if (isObject(childrenExec)) {
         param = deepCloneWithExtend(childrenExec)
         param = Object.keys(param).map(v => {
           const val = param[v]
           return addAdditionalExtend(v, val)
         })
-        if (childrenAs) param = param.map(v => ({ extend: childrenExtends, [childrenAs]: v }))
+        if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
       }
 
       if (!param) return

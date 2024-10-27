@@ -1,6 +1,7 @@
 'use strict'
 
 import { mergeArray } from '@domql/utils'
+import * as preprocs from './props'
 
 import {
   Shape,
@@ -31,3 +32,5 @@ export const CSS_PROPS_REGISTRY = mergeArray([
   XYZ,
   Animation
 ]).class
+
+export const CSS_PREPROCS_DEFAULTS = mergeArray(Object.values(preprocs))

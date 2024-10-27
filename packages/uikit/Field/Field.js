@@ -10,23 +10,13 @@ export const Field = {
     align: 'center flex-start',
     gap: 'Y',
     boxSizing: 'border-box',
-    position: 'relative',
-
-    Input: {
-      padding: 'Z2 B2 Z2 B',
-      flex: '1'
-    },
-
-    Button: {
-      padding: '0',
-      background: 'transparent',
-      margin: '- - - auto',
-      fontSize: 'Z2'
-    }
+    position: 'relative'
   },
 
   Input: {
-    placeholder: 'Placeholder'
+    placeholder: 'Placeholder',
+    padding: 'Z2 B2 Z2 B',
+    flex: '1'
   },
 
   Icon: {
@@ -36,6 +26,13 @@ export const Field = {
       margin: '- Z1 - -C',
       position: 'relative'
     })
+  },
+
+  Button: {
+    padding: '0',
+    background: 'transparent',
+    margin: '- - - auto',
+    fontSize: 'Z2'
   }
 }
 
