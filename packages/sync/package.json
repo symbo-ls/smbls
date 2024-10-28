@@ -4,6 +4,31 @@
   "main": "index.js",
   "module": "index.js",
   "gitHead": "d1b6122e6d2aaca97f342e5e9ebb181797b85e23",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "repository": "https://github.com/symbo-ls/scratch",
+  "type": "module",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "exports": {
+    ".": {
+      "kalduna": "./index.js",
+      "default": "./dist/cjs/index.js"
+    }
+  },
+  "source": "index.js",
+  "publishConfig": {},
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild ./*.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
+    "build:cjs": "npx esbuild ./*.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
+    "build:cjs:bundle": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs/bundle --loader:.svg=text --bundle --loader:.svg=empty",
+    "build:iife": "npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
+    "build": "yarn build:cjs; yarn build:cjs:bundle",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  },
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/router": "^2.5.0",
@@ -12,5 +37,8 @@
     "@symbo.ls/scratch": "^2.11.453",
     "@symbo.ls/socket": "^2.11.453",
     "@symbo.ls/uikit": "^2.11.455"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.0"
   }
 }
