@@ -8,14 +8,14 @@
   "module": "src/index.js",
   "unpkg": "dist/iife/index.js",
   "jsdelivr": "dist/iife/index.js",
-  "main": "index.js",
+  "main": "src/index.js",
   "exports": "./dist/cjs/index.js",
   "source": "src/index.js",
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./src/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild ./src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:esm": "npx esbuild ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs",
     "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "yarn build:cjs",
     "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
