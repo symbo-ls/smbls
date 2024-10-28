@@ -4,7 +4,7 @@ import { isObjectLike, isUndefined, isDevelopment } from '@domql/utils'
 import { SyncComponent, Inspect, Notifications } from '@symbo.ls/sync'
 
 export const initializeExtend = (app, ctx) => {
-  return isObjectLike(app.extend) ? app.extend : {}
+  return isObjectLike(app.extend) ? app.extend : []
 }
 
 export const initializeSync = (app, ctx) => {
