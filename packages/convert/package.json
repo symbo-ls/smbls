@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/convert",
-  "version": "2.11.458",
+  "version": "2.11.459",
   "license": "MIT",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "type": "module",
@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@domql/utils": "^2.5.0",
-    "@symbo.ls/create": "^2.11.458",
+    "@symbo.ls/create": "^2.11.459",
     "jsdom": "^22.1.0"
   },
   "peerDependencies": {
