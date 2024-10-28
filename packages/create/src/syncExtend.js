@@ -1,9 +1,7 @@
 'use strict'
 
 import { isObjectLike, isUndefined, isDevelopment } from '@domql/utils'
-import { SyncComponent } from '@symbo.ls/sync'
-import { Inspect } from '@symbo.ls/sync/Inspect'
-import { Notifications } from '@symbo.ls/sync/Notifications'
+import { SyncComponent, Inspect, Notifications } from '@symbo.ls/sync'
 
 export const initializeExtend = (app, ctx) => {
   return isObjectLike(app.extend) ? app.extend : {}

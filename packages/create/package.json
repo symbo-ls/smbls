@@ -37,7 +37,7 @@
     "@symbo.ls/fetch": "^2.11.453",
     "@symbo.ls/init": "^2.11.453",
     "@symbo.ls/scratch": "^2.11.453",
-    "@symbo.ls/sync": "^2.11.459",
+    "@symbo.ls/sync": "^2.11.455",
     "@symbo.ls/uikit": "^2.11.455",
     "@symbo.ls/utils": "^2.11.453",
     "domql": "^2.5.155"
