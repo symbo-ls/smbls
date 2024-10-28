@@ -23,7 +23,7 @@
     "@symbo.ls/utils": "^2.11.453",
     "attrs-in-props": "^2.11.455",
     "css-in-props": "^2.11.457",
-    "domql": "^2.5.0"
+    "domql": "^2.5.155"
   },
   "type": "module",
   "exports": "./dist/cjs/index.js",
@@ -31,8 +31,9 @@
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild ./index.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
-    "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text --bundle",
-    "build": "yarn build:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --loader:.svg=text",
+    "build:cjs:bundle": "yarn build:cjs --bundle",
+    "build": "yarn build:cjs --outdir=dist/cjs; yarn build:cjs:bundle --outfile=dist/cjs/index.bundle.js",
+    "prepublish": "rimraf -I dist; yarn build; yarn copy:package:cjs"
   }
 }

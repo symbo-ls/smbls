@@ -40,7 +40,7 @@
     "@symbo.ls/sync": "^2.11.455",
     "@symbo.ls/uikit": "^2.11.455",
     "@symbo.ls/utils": "^2.11.453",
-    "domql": "^2.5.0"
+    "domql": "^2.5.155"
   },
   "devDependencies": {
     "@babel/core": "^7.12.0"
