@@ -20,6 +20,8 @@ export const Collection = {
           return addAdditionalExtend(v, val)
         })
         if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
+      } else if (childrenExec) {
+        param = [{ text: param }]
       }
 
       if (!param) return
