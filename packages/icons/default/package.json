@@ -4,7 +4,7 @@
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
+  "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "files": [
     "src",
     "dist"
@@ -18,7 +18,7 @@
   "source": "index.js",
   "publishConfig": {},
   "scripts": {
-    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "copy:package:cjs": "cp ../../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild index.js --target=es2017 --format=esm --outdir=dist/esm --bundle --loader:.svg=text",
     "build:cjs": "npx esbuild index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle --loader:.svg=text",
     "build": "yarn build:cjs",
