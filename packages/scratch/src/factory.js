@@ -14,7 +14,7 @@ export const CONFIG = {
   useVariable: true,
   useReset: true,
   CSS_VARS,
-  ...CONF
+  ...(CONF.default || CONF)
 }
 
 const cachedConfig = deepClone(CONFIG)

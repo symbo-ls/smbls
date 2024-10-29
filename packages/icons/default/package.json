@@ -4,5 +4,24 @@
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945"
+  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "repository": "https://github.com/symbo-ls/smbls",
+  "type": "module",
+  "module": "index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "publishConfig": {},
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild index.js --target=es2017 --format=esm --outdir=dist/esm --bundle --loader:.svg=text",
+    "build:cjs": "npx esbuild index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle --loader:.svg=text",
+    "build": "yarn build:cjs",
+    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+  }
 }

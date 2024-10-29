@@ -18,11 +18,12 @@ export const generateSprite = (icons) => {
 }
 
 const parseRootAttributes = (htmlString) => {
-  if (!isString(htmlString)) {
-    return console.warn(`parseRootAttributes: ${htmlString} is not a string`)
+  const val = htmlString.default || htmlString
+  if (!isString(val)) {
+    return console.warn(`parseRootAttributes: ${val} is not a string`)
   }
 
-  const match = htmlString.match(/<svg\s+(.*?)>/)
+  const match = val.match(/<svg\s+(.*?)>/)
   if (!match || !match[1]) {
     return {}
   }
