@@ -5,7 +5,7 @@
   "module": "index.js",
   "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "files": [
-    "src",
+    "*.js",
     "dist"
   ],
   "repository": "https://github.com/symbo-ls/scratch",
