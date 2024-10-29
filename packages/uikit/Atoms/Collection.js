@@ -14,12 +14,19 @@ export const Collection = {
         param = deepCloneWithExtend(childrenExec)
         if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
       } else if (isObject(childrenExec)) {
-        param = deepCloneWithExtend(childrenExec.$$typeof ? { key: childrenExec.key, props: childrenExec.props } : childrenExec)
+        if (!childrenExec.$$typeof) return
         param = Object.keys(param).map(v => {
           const val = param[v]
           return addAdditionalExtend(v, val)
         })
-        if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
+        el.removeContent()
+        el.content = {
+          extend: childExtends,
+          props: {
+            childProps: el.props && el.props.childProps
+          }
+        }
+        return
       } else if (childrenExec) {
         param = [{ text: param }]
       }
