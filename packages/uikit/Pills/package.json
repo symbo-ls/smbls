@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/pills",
-  "version": "2.11.467",
+  "version": "2.11.468",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.11.467"
+    "@symbo.ls/atoms": "^2.11.468"
   },
   "source": "src/index.js"
 }
