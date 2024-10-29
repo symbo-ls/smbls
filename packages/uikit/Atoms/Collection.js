@@ -23,6 +23,7 @@ export const Collection = {
       }
 
       if (!param) return
+      param = param.filter(v => !v.$$typeof)
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()

@@ -47,6 +47,6 @@
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "dependencies": {
-    "domql": "^2.5.155"
+    "domql": "^2.5.158"
   }
 }
