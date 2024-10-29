@@ -28,7 +28,9 @@ export const Collection = {
         }
         return
       } else if (childrenExec) {
-        param = [{ text: param }]
+        el.removeContent()
+        el.content = { text: param }
+        return
       }
 
       if (!param) return
