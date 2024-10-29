@@ -15,6 +15,7 @@ export const Collection = {
         if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
       } else if (isObject(childrenExec)) {
         if (childrenExec.$$typeof) return
+        param = deepCloneWithExtend(childrenExec)
         param = Object.keys(param).map(v => {
           const val = param[v]
           return addAdditionalExtend(v, val)
