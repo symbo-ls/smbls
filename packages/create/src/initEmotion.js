@@ -6,7 +6,7 @@ import { init } from '@symbo.ls/init'
 import { deepClone, deepMerge } from '@domql/utils'
 
 import { DESIGN_SYSTEM_OPTIONS } from './options'
-import DEFAULT_CONFIG from '@symbo.ls/default-config'
+import { DEFAULT_CONFIG } from '@symbo.ls/default-config'
 
 export const initEmotion = (key, options = {}) => {
   const doc = options.parent || options.document || document
