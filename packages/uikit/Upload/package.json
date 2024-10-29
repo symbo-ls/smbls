@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/upload",
-  "version": "2.11.470",
+  "version": "2.11.471",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "source": "index.js",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.11.470",
-    "@symbo.ls/button": "^2.11.470",
-    "@symbo.ls/hgroup": "^2.11.470",
-    "@symbo.ls/modal": "^2.11.470"
+    "@symbo.ls/atoms": "^2.11.471",
+    "@symbo.ls/button": "^2.11.471",
+    "@symbo.ls/hgroup": "^2.11.471",
+    "@symbo.ls/modal": "^2.11.471"
   }
 }
