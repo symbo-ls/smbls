@@ -14,7 +14,7 @@ export const Collection = {
         param = deepCloneWithExtend(childrenExec)
         if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
       } else if (isObject(childrenExec)) {
-        if (childrenExec.$$typeof) return
+        if (childrenExec.$$typeof) return el.call('renderReact', childrenExec, el)
         param = deepCloneWithExtend(childrenExec)
         param = Object.keys(param).map(v => {
           const val = param[v]
@@ -35,7 +35,12 @@ export const Collection = {
       }
 
       if (!param) return
-      param = param.filter(v => !v.$$typeof)
+      const filterReact = param.filter(v => !v.$$typeof)
+      if (filterReact.length !== param.length) {
+        const extractedReactComponents = param.filter(v => v.$$typeof)
+        el.call('renderReact', extractedReactComponents, el)
+      }
+      param = filterReact
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()

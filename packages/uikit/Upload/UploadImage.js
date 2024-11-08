@@ -28,31 +28,25 @@ export const UploadIcon = {
   },
 
   Input: {
-    props: {
-      type: 'file',
-      position: 'absolute',
-      inset: '0 0 0 0',
-      opacity: '0',
-      visibility: 'hidden'
-    }
+    type: 'file',
+    position: 'absolute',
+    inset: '0 0 0 0',
+    opacity: '0',
+    visibility: 'hidden'
   },
 
   Icon: {
-    props: {
-      name: 'upload',
-      fontSize: 'B',
-      opacity: '.2'
-    }
+    name: 'upload',
+    fontSize: 'B',
+    opacity: '.2'
   },
 
   P: {
-    props: {
-      text: ' or click and upload from your computer',
-      flexFlow: 'column',
-      flexAlign: 'center center',
-      opacity: '.22',
-      margin: '0'
-    },
+    text: ' or click and upload from your computer',
+    flexFlow: 'column',
+    flexAlign: 'center center',
+    opacity: '.22',
+    margin: '0',
     Span: {
       text: 'Drag and drop your font file',
       display: 'block'
