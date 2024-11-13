@@ -19,8 +19,8 @@
     "build:esm": "npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
     "build:cjs": "npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
     "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "yarn build:cjs",
-    "prepublish": "rimraf -I dist && yarn build && yarn copy:package:cjs"
+    "build": "npm run build:cjs",
+    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "license": "ISC",
   "dependencies": {

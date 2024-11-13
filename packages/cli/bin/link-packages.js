@@ -31,7 +31,7 @@ const capture = (opts) => {
       console.error(e)
     }
 
-    execSync(`yarn link ${packages.join(' ')} --force`, { stdio: 'inherit' })
+    execSync(`npm link ${packages.join(' ')} --force`, { stdio: 'inherit' })
   })
 }
 
@@ -45,7 +45,7 @@ program
     if (opts.join) {
       try {
         console.log('Linking all smbls packages...')
-        execSync(`yarn link ${packages.join(' ')} --force`, { stdio: 'inherit' })
+        execSync(`npm link ${packages.join(' ')} --force`, { stdio: 'inherit' })
         console.log('All packages linked successfully.')
       } catch (error) {
         console.error('Error linking packages:', error.message)
@@ -56,7 +56,7 @@ program
     try {
       for (const packageName of packages) {
         console.log(`Linking ${packageName}...`)
-        execSync(`yarn link ${packageName} --force`, { stdio: 'inherit' })
+        execSync(`npm link ${packageName} --force`, { stdio: 'inherit' })
       }
       console.log('All packages linked successfully.')
     } catch (error) {

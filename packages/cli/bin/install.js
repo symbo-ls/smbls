@@ -21,7 +21,7 @@ try {
 
 const makeCommand = (packageManager, packageName) => {
   return packageManager === 'yarn'
-    ? `yarn add ${packageName}`
+    ? `npm run add ${packageName}`
     : packageManager === 'pnpm'
       ? `pnpm add ${packageName}`
       : `npm i ${packageName} --save`
