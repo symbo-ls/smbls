@@ -1,7 +1,7 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, exec, deepCloneWithExtend, addAdditionalExtend } from '@domql/utils'
+import { isString, isNot, isArray, isObject, isObjectLike, exec, deepClone, addAdditionalExtend } from '@domql/utils'
 
 export const Collection = {
   define: {
@@ -11,11 +11,11 @@ export const Collection = {
       const childrenExec = children && exec(children, el, state)
 
       if (isArray(childrenExec)) {
-        param = deepCloneWithExtend(childrenExec)
+        param = deepClone(childrenExec)
         if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
       } else if (isObject(childrenExec)) {
         if (childrenExec.$$typeof) return el.call('renderReact', childrenExec, el)
-        param = deepCloneWithExtend(childrenExec)
+        param = deepClone(childrenExec)
         param = Object.keys(param).map(v => {
           const val = param[v]
           return addAdditionalExtend(v, val)
@@ -49,7 +49,7 @@ export const Collection = {
       if (isState(param)) param = param.parse()
       if (isNot(param)('array', 'object')) return
 
-      param = deepCloneWithExtend(param)
+      param = deepClone(param)
 
       if (ref.__collectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
@@ -57,11 +57,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__collectionCache = deepCloneWithExtend(param)
+          ref.__collectionCache = deepClone(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__collectionCache = deepCloneWithExtend(param)
+        ref.__collectionCache = deepClone(param)
       }
 
       const obj = {
@@ -117,7 +117,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
-      param = deepCloneWithExtend(param)
+      param = deepClone(param)
 
       if (ref.__stateCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
@@ -125,11 +125,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__stateCollectionCache = deepCloneWithExtend(param)
+          ref.__stateCollectionCache = deepClone(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__stateCollectionCache = deepCloneWithExtend(param)
+        ref.__stateCollectionCache = deepClone(param)
       }
 
       const obj = {
@@ -163,7 +163,7 @@ export const Collection = {
       if (isNot(param)('array', 'object')) return
 
       const { __ref: ref } = el
-      param = deepCloneWithExtend(param)
+      param = deepClone(param)
 
       if (ref.__propsCollectionCache) {
         const equals = JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
@@ -171,11 +171,11 @@ export const Collection = {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__propsCollectionCache = deepCloneWithExtend(param)
+          ref.__propsCollectionCache = deepClone(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__propsCollectionCache = deepCloneWithExtend(param)
+        ref.__propsCollectionCache = deepClone(param)
       }
 
       const obj = {

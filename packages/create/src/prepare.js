@@ -3,7 +3,7 @@
 import {
   isObject,
   deepMerge,
-  deepCloneWithExtend,
+  deepClone,
   merge,
   checkIfKeyIsComponent
 } from '@domql/utils'
@@ -154,7 +154,7 @@ export const prepareState = (app, context) => {
   const state = {}
   if (context.state) utils.deepMerge(state, context.state)
   if (app && app.state) deepMerge(state, app.state)
-  return deepCloneWithExtend(state)
+  return deepClone(state)
 }
 
 export const preparePages = (app, context) => {

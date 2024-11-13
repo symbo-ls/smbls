@@ -47,6 +47,7 @@ export const UploadIcon = {
     flexAlign: 'center center',
     opacity: '.22',
     margin: '0',
+
     Span: {
       text: 'Drag and drop your font file',
       display: 'block'
