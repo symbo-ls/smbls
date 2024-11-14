@@ -35,6 +35,7 @@ export const Input = {
       }
       return val
     },
+    checked: (el) => el.call('exec', el.props.checked, el),
     disabled: ({ props }) => props.disabled || null,
     readonly: ({ props }) => props.readonly,
     required: ({ props }) => props.required,

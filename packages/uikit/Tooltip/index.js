@@ -4,6 +4,7 @@ import { isDefined } from '@domql/utils'
 
 export const Tooltip = {
   extend: 'Flex',
+
   props: {
     theme: 'dialog',
     background: 'black',
@@ -23,24 +24,20 @@ export const Tooltip = {
 
   Title: {
     if: ({ parent, props }) => isDefined(parent.props.title) || props.text,
-    props: ({ parent }) => ({
-      width: 'fit-content',
-      fontWeight: 500,
-      color: 'gray12',
-      text: parent.props.title
-    })
+    width: 'fit-content',
+    fontWeight: 500,
+    color: 'gray12',
+    text: ({ parent }) => parent.props.title
   },
 
   P: {
     if: ({ parent, props }) => isDefined(parent.props.description) || props.text,
-    props: ({ parent }) => ({
-      width: 'fit-content',
-      fontSize: 'Z2',
-      margin: '0',
-      color: 'gray6',
-      fontWeight: '400',
-      text: parent.props.description
-    })
+    width: 'fit-content',
+    fontSize: 'Z2',
+    margin: '0',
+    color: 'gray6',
+    fontWeight: '400',
+    text: ({ parent }) => parent.props.description
   }
 }
 
