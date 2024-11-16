@@ -1,9 +1,7 @@
 'use strict'
 
-import { Focusable } from '@symbo.ls/atoms'
-
 export const Select = {
-  extend: Focusable,
+  extend: 'Focusable',
   tag: 'select',
 
   props: {
