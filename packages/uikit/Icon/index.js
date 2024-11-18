@@ -97,7 +97,6 @@ export const IconText = {
     if: (el) => {
       const { parent, props } = el
       return el.call('exec', parent.props.icon ||
-        parent.props.Icon ||
         props.name ||
         props.icon ||
         props.sfSymbols ||
