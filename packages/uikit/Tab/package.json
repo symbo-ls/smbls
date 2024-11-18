@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/tab",
-  "version": "2.11.475",
+  "version": "2.11.476",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "dependencies": {
-    "@symbo.ls/button": "^2.11.475"
+    "@symbo.ls/button": "^2.11.476"
   },
   "source": "src/index.js"
 }
