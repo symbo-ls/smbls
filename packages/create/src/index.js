@@ -11,8 +11,6 @@ import DEFAULT_CREATE_OPTIONS from './options'
 import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json'
 import { createDomqlElement } from './createDomql'
 
-const SYMBOLS_KEY = process.env.SYMBOLS_KEY
-
 const mergeWithLocalFile = (options, optionsExternalFile) => deepMerge(
   options,
   isObject(optionsExternalFile) ? optionsExternalFile : DYNAMIC_JSON || {}
@@ -34,7 +32,8 @@ export const createAsync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExtern
   const domqlApp = create(App, options, optionsExternalFile)
 
   const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
-  const key = redefinedOptions.key || SYMBOLS_KEY
+  // const SYMBOLS_KEY = process.env.SYMBOLS_KEY
+  const key = redefinedOptions.key
   fetchAsync(domqlApp, key, { utils, ...redefinedOptions })
 
   return domqlApp
@@ -43,7 +42,8 @@ export const createAsync = (App, options = DEFAULT_CREATE_OPTIONS, optionsExtern
 export const createSync = async (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFile) => {
   const redefinedOptions = { ...DEFAULT_CREATE_OPTIONS, ...mergeWithLocalFile(options, optionsExternalFile) }
 
-  const key = options.key || SYMBOLS_KEY
+  // const SYMBOLS_KEY = process.env.SYMBOLS_KEY
+  const key = options.key
   await fetchSync(key, redefinedOptions)
 
   const domqlApp = createDomqlElement(App, redefinedOptions)

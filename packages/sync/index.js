@@ -29,7 +29,7 @@ const onChange = (el, s, ctx) => {
     if (event === 'change') {
       const obj = JSON.parse(data)
       if (!obj?.DATA) return
-      const { state, designSystem, pages, components, snippets } = obj.DATA
+      const { state, designSystem, pages, components, snippets, functions } = obj.DATA
       const { utils } = ctx
 
       if (pages) {
@@ -41,6 +41,10 @@ const onChange = (el, s, ctx) => {
         overwriteShallow(ctx.components, components)
       }
 
+      if (functions) {
+        overwriteShallow(ctx.functions, functions)
+      }
+
       if (snippets) {
         overwriteShallow(ctx.snippets, snippets)
       }
@@ -48,10 +52,10 @@ const onChange = (el, s, ctx) => {
       if (state) {
         const route = state.route
         if (route) (utils.router || router)(route.replace('/state', '') || '/', el, {})
-        else if (!(snippets && components && pages)) s.update(state)
+        else if (!(snippets && functions && components && pages)) s.update(state)
       }
 
-      if (snippets || components || pages) {
+      if (snippets || functions || components || pages) {
         const { pathname, search, hash } = ctx.window.location
         ;(utils.router || router)(pathname + search + hash, el, {})
       }

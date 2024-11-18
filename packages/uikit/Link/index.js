@@ -41,7 +41,7 @@ export const RouterLink = {
 
       if (stopPropagation) event.stopPropagation()
       if (!href) return
-      const { utils, snippets, routerOptions } = ctx
+      const { utils, snippets, functions, routerOptions } = ctx
       const root = el.__ref.root
       const linkIsExternal = href.includes('http://') ||
         href.includes('https://') ||
@@ -49,7 +49,7 @@ export const RouterLink = {
         href.includes('tel:')
       if (href && !linkIsExternal) {
         try {
-          (snippets.router || utils.router || defaultRouter)(href, root, {}, {
+          (functions.router || snippets.router || utils.router || defaultRouter)(href, root, {}, {
             scrollToOptions: { behaviour: 'instant' },
             scrollToTop: isDefined(scrollToTop) ? scrollToTop : true,
             ...routerOptions,

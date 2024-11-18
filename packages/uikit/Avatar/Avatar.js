@@ -2,11 +2,11 @@
 
 export const Avatar = {
   extend: 'Img',
-  props: ({ key, props }) => ({
+  props: {
     display: 'block',
     avatarType: 'adventurer-neutral',
     borderRadius: '100%',
     boxSize: 'C+X C+X',
-    src: `https://api.dicebear.com/7.x/${props.avatarType || 'initials'}/svg?seed=${props.key || key || 'no-avatar'}`
-  })
+    src: el => `https://api.dicebear.com/7.x/${el.props.avatarType || 'initials'}/svg?seed=${el.props.key || el.key || 'no-avatar'}`
+  }
 }

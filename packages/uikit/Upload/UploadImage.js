@@ -49,6 +49,7 @@ export const UploadIcon = {
     margin: '0',
 
     Span: {
+      order: -1,
       text: 'Drag and drop your font file',
       display: 'block'
     }

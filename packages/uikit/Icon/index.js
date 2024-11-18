@@ -45,8 +45,7 @@ export const Icon = {
       parentPropsActive.icon
     ) {
       activeIconName = exec(
-        parentPropsActive.icon || parentPropsActive.Icon.name || parentPropsActive.Icon.icon,
-        el
+        parentPropsActive.icon || parentPropsActive.Icon.name || parentPropsActive.Icon.icon, el
       )
     }
 

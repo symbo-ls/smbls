@@ -47,7 +47,7 @@ export const prepareComponents = context => {
 }
 
 export const prepareUtils = context => {
-  return { ...utils, ...utils.scratchUtils, ...(context.snippets || context.utils || context.functions || {}) }
+  return { ...utils, ...utils.scratchUtils, ...context.utils, ...context.snippets, ...context.functions }
 }
 
 export const prepareMethods = (context) => {
@@ -56,7 +56,7 @@ export const prepareMethods = (context) => {
     require: context.utils.require,
     requireOnDemand: context.utils.requireOnDemand,
     call: function (fnKey, ...args) {
-      return (context.utils[fnKey] || context.methods[fnKey])?.call(this, ...args)
+      return (context.utils[fnKey] || context.functions[fnKey] || context.methods[fnKey] || context.snippets[fnKey])?.call(this, ...args)
     }
   }
 }

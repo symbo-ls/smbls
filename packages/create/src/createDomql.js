@@ -21,10 +21,9 @@ import {
   prepareMethods
 } from './prepare'
 
-const SYMBOLS_KEY = process.env.SYMBOLS_KEY
-
 export const prepareContext = (app, context = {}) => {
-  const key = context.key = context.key || SYMBOLS_KEY || (isString(app) ? app : 'smblsapp')
+  // const rcFileKey = process?.env?.SYMBOLS_KEY
+  const key = context.key = context.key || (isString(app) ? app : 'smblsapp')
   context.define = context.define || defaultDefine
   context.window = prepareWindow(context)
   const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(key, context)
@@ -36,7 +35,6 @@ export const prepareContext = (app, context = {}) => {
   context.pages = preparePages(app, context)
   context.components = prepareComponents(context)
   context.utils = prepareUtils(context)
-  context.snippets = context.utils
   context.dependencies = prepareDependencies(context)
   context.methods = prepareMethods(context)
   context.routerOptions = initRouter(app, context)
@@ -68,8 +66,8 @@ export const createDomqlElement = (app, ctx) => {
   app.data.frameListeners = initAnimationFrame()
 
   prepareRequire({
-    functions: ctx.snippets,
-    utils: ctx.snippets,
+    functions: ctx.functions,
+    utils: ctx.utils,
     snippets: ctx.snippets,
     ...ctx.files
   }, ctx)
