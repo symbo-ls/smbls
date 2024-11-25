@@ -98,7 +98,6 @@ export const IconText = {
       const { parent, props } = el
       return el.call('exec', parent.props.icon ||
         props.name ||
-        props.icon ||
         props.sfSymbols ||
         parent.props.sfSymbols
       , el)

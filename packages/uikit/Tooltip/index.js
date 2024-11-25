@@ -31,13 +31,13 @@ export const Tooltip = {
   },
 
   P: {
-    if: ({ parent, props }) => isDefined(parent.props.description) || props.text,
+    if: (el, s) => el.call('isDefined', el.call('exec', el.parent.props.description, el)) || el.props.text,
     width: 'fit-content',
     fontSize: 'Z2',
     margin: '0',
     color: 'gray6',
     fontWeight: '400',
-    text: ({ parent }) => parent.props.description
+    text: (el, s) => el.call('exec', el.parent.props.description, el)
   }
 }
 

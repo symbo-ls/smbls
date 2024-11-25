@@ -11,9 +11,9 @@
     "clean": "npm run clean:dist; npm run clean:packages; npm run clean:modules; npm run clean:package-modules",
     "clean:dist": "rm -rf ./dist ./.cache ./.parcel-cache",
     "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
-    "clean:packages": "lerna exec -- rm -rf dist yarn.lock yarn-error.log package-lock.json",
-    "clean:package-modules": "lerna exec -- rm -rf node_modules yarn.lock yarn-error.log package-lock.json",
-    "reinstall": "npm run clean; npm i",
+    "clean:packages": "npx lerna exec -- rm -rf dist yarn.lock yarn-error.log package-lock.json",
+    "clean:package-modules": "npx lerna exec -- rm -rf node_modules yarn.lock yarn-error.log package-lock.json",
+    "reinstall": "npm run clean; npm i --verbose",
     "link:all": "npx lerna exec -- npm run unlink; npx lerna exec -- npm run link",
     "link:all-force": "npx lerna exec -- npm run unlink; npm run link:all"
   },

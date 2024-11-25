@@ -38,6 +38,7 @@ export const DialogHeader = {
 
 export const DialogFooter = {
   extend: 'Flex',
+
   props: {
     align: 'center flex-end',
     gap: 'X2',
