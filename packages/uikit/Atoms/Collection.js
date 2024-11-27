@@ -1,46 +1,45 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNot, isArray, isObject, isObjectLike, exec, deepClone, addAdditionalExtend } from '@domql/utils'
+import { isString, isNumber, isNot, isArray, isObject, isObjectLike, exec, deepClone, addAdditionalExtend } from '@domql/utils'
 
 export const Collection = {
   define: {
     $collection: (param, el, state) => {
       const { __ref: ref } = el
-      const { children, childrenAs, childExtends } = (el.props || {})
-      const childrenExec = children && exec(children, el, state)
+      const { children: childrenProps, childrenAs, childExtends } = (el.props || {})
+      const children = childrenProps && exec(childrenProps, el, state)
 
-      if (isArray(childrenExec)) {
-        param = deepClone(childrenExec)
-        if (childrenAs) param = param.map(v => ({ extend: childExtends, [childrenAs]: v }))
-      } else if (isObject(childrenExec)) {
-        if (childrenExec.$$typeof) return el.call('renderReact', childrenExec, el)
-        param = deepClone(childrenExec)
-        param = Object.keys(param).map(v => {
-          const val = param[v]
-          return addAdditionalExtend(v, val)
-        })
-        el.removeContent()
-        el.content = {
-          extend: childExtends,
-          props: {
-            childProps: el.props && el.props.childProps
+      if (children) {
+        if (isObject(children)) {
+          if (children.$$typeof) return el.call('renderReact', children, el)
+          param = deepClone(children)
+          param = Object.keys(param).map(v => {
+            const val = param[v]
+            return addAdditionalExtend(v, val)
+          })
+        } else if (isArray(children)) {
+          param = deepClone(children)
+          if (childrenAs) {
+            param = param.map(v => ({
+              extend: childExtends,
+              [childrenAs]: v
+            }))
           }
+        } else if (isString(children) || isNumber(children)) {
+          el.removeContent()
+          el.content = { text: param }
+          return
         }
-        return
-      } else if (childrenExec) {
-        el.removeContent()
-        el.content = { text: param }
-        return
       }
 
       if (!param) return
+
       const filterReact = param.filter(v => !v.$$typeof)
       if (filterReact.length !== param.length) {
         const extractedReactComponents = param.filter(v => v.$$typeof)
         el.call('renderReact', extractedReactComponents, el)
-      }
-      param = filterReact
+      } param = filterReact
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()
@@ -67,6 +66,7 @@ export const Collection = {
       const obj = {
         tag: 'fragment',
         props: {
+          ignoreChildProps: true,
           childProps: el.props && el.props.childProps
         }
       }
