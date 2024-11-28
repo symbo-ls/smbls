@@ -22,7 +22,6 @@ export default [
   '@symbo.ls/icon',
   '@symbo.ls/input',
   '@symbo.ls/notification',
-  '@symbo.ls/hgroup',
   '@symbo.ls/link',
   '@symbo.ls/progress',
   '@symbo.ls/list',

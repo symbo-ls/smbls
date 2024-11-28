@@ -8,7 +8,6 @@
   "dependencies": {
     "@symbo.ls/atoms": "^2.11.477",
     "@symbo.ls/button": "^2.11.477",
-    "@symbo.ls/hgroup": "^2.11.477",
     "@symbo.ls/modal": "^2.11.477"
   }
 }

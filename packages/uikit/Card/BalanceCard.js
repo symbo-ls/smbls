@@ -1,7 +1,7 @@
 'use strict'
 
 import { Card } from './Card'
-import { Hgroup } from '@symbo.ls/hgroup'
+import { Hgroup } from '@symbo.ls/atoms'
 import { Button } from '@symbo.ls/button'
 
 export const BalanceCard = {

@@ -1,7 +1,7 @@
 'use strict'
 
 import { Card } from './Card'
-import { Hgroup } from '@symbo.ls/hgroup'
+import { Hgroup } from '@symbo.ls/atoms'
 
 export const ConvertCard = {
   extend: [Card, Hgroup],

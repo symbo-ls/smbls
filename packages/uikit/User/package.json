@@ -9,7 +9,6 @@
     "@symbo.ls/atoms": "^2.11.477",
     "@symbo.ls/avatar": "^2.11.477",
     "@symbo.ls/button": "^2.11.477",
-    "@symbo.ls/hgroup": "^2.11.477",
     "@symbo.ls/indicator": "^2.11.477",
     "@symbo.ls/unitvalue": "^2.11.477"
   }

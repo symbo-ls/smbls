@@ -5,7 +5,7 @@
   "license": "MIT",
   "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "dependencies": {
-    "@symbo.ls/hgroup": "^2.11.477",
+    "@symbo.ls/atoms": "^2.11.477",
     "@symbo.ls/list": "^2.11.477"
   },
   "source": "src/index.js"
