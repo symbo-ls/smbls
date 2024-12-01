@@ -1,13 +1,13 @@
 {
   "name": "@symbo.ls/sociallink",
-  "version": "2.11.477",
+  "version": "2.11.480",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.11.477",
-    "@symbo.ls/icon": "^2.11.477",
-    "@symbo.ls/link": "^2.11.477"
+    "@symbo.ls/atoms": "^2.11.480",
+    "@symbo.ls/icon": "^2.11.480",
+    "@symbo.ls/link": "^2.11.480"
   },
   "source": "index.js"
 }

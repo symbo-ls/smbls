@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/progress",
-  "version": "2.11.477",
+  "version": "2.11.480",
   "main": "index.js",
   "license": "MIT",
   "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.11.477"
+    "@symbo.ls/atoms": "^2.11.480"
   },
   "source": "src/index.js"
 }
