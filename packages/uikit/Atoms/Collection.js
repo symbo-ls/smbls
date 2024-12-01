@@ -135,7 +135,7 @@ export const Collection = {
       const obj = {
         tag: 'fragment',
         props: {
-          children: el.props && el.props.children,
+          ignoreChildProps: true,
           childProps: el.props && el.props.childProps
         }
       }
@@ -181,6 +181,7 @@ export const Collection = {
       const obj = {
         tag: 'fragment',
         props: {
+          ignoreChildProps: true,
           childProps: el.props && el.props.childProps
         }
       }
