@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/sync",
-  "version": "2.11.485",
+  "version": "2.11.486",
   "main": "index.js",
   "module": "index.js",
   "gitHead": "9faef80fdf0768924f344ed26587f5ac69af11d7",
@@ -35,7 +35,7 @@
     "@symbo.ls/init": "^2.11.475",
     "@symbo.ls/scratch": "^2.11.475",
     "@symbo.ls/socket": "^2.11.475",
-    "@symbo.ls/uikit": "^2.11.485"
+    "@symbo.ls/uikit": "^2.11.486"
   },
   "devDependencies": {
     "@babel/core": "^7.12.0"
