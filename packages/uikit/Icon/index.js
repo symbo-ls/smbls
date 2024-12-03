@@ -1,7 +1,5 @@
 'use strict'
 
-import { isString, exec, replaceLiteralsWithObjectFields } from '@domql/utils'
-
 const inheritFromIsActive = (el) => {
   const { props } = el
   const propsActive = props['.isActive']
@@ -12,7 +10,7 @@ const getIconName = (el, s) => {
   const { key, props } = el
   let icon = el.call('exec', props.name || props.icon || key, el)
 
-  if (isString(icon) && icon.includes('{{')) {
+  if (el.call('isString', icon) && icon.includes('{{')) {
     icon = el.call('replaceLiteralsWithObjectFields', icon, s)
   }
 
@@ -21,7 +19,6 @@ const getIconName = (el, s) => {
 
 export const Icon = {
   extend: 'Svg',
-  deps: { isString, replaceLiteralsWithObjectFields },
   props: (el, s, ctx) => {
     const { props, parent, deps } = el
     const { ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
@@ -44,12 +41,12 @@ export const Icon = {
       parentPropsActive &&
       parentPropsActive.icon
     ) {
-      activeIconName = exec(
+      activeIconName = el.call('exec',
         parentPropsActive.icon || parentPropsActive.Icon.name || parentPropsActive.Icon.icon, el
       )
     }
 
-    if (isString(activeIconName) && activeIconName.includes('{{')) {
+    if (el.call('isString', activeIconName) && activeIconName.includes('{{')) {
       activeIconName = deps.replaceLiteralsWithObjectFields(activeIconName, s)
     }
 
