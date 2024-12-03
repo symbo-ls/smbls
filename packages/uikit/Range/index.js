@@ -1,13 +1,6 @@
 'use strict'
 
-import { isFunction } from '@domql/utils'
 import { opacify } from '@symbo.ls/scratch'
-
-const returnPropertyValue = (el, property, def) => {
-  const val = el.props && el.props[property]
-  const r = (isFunction(val) ? val(el, el.state) : val !== undefined ? val : def !== undefined ? def : 0)
-  return r + ''
-}
 
 export const Range = {
   props: {
@@ -19,7 +12,7 @@ export const Range = {
 
     onInput: (ev, el, s) => {
       const props = el.props
-      if (isFunction(props.onInput)) {
+      if (el.call('isFunction', props.onInput)) {
         props.onInput(ev, el, s)
       } else {
         s.update({ value: parseFloat(el.node.value) })
@@ -27,7 +20,7 @@ export const Range = {
     },
     onChange: (ev, el, s) => {
       const props = el.props
-      if (isFunction(props.onChange)) {
+      if (el.call('isFunction', props.onChange)) {
         props.onChange(ev, el, s)
       } else {
         s.update({ value: parseFloat(el.node.value) })
@@ -94,85 +87,21 @@ export const Range = {
     }
   },
 
+  deps: {
+    returnPropertyValue: (el, property, def) => {
+      const val = el.props && el.props[property]
+      const r = (el.call('isFunction', val) ? val(el, el.state) : val !== undefined ? val : def !== undefined ? def : 0)
+      return r + ''
+    }
+  },
+
   tag: 'input',
 
   attr: {
     type: 'range',
     value: (el, s) => parseFloat(el.state.value || el.props.value || el.props.defaultValue),
-    min: (el, s) => returnPropertyValue(el, 'min', 0),
-    max: (el, s) => returnPropertyValue(el, 'max', 100),
-    step: (el, s) => returnPropertyValue(el, 'step', 1)
-  }
-}
-
-export const RangeWithButtons = {
-  SquareButton_minus: {
-    icon: 'minus',
-    theme: 'field',
-    onClick: (ev, el, s) => {
-      const parentProps = el.parent.props
-      if (isFunction(parentProps.onDecrease)) {
-        parentProps.onDecrease(ev, el.parent, s)
-      } else {
-        const value = parseFloat(s.value)
-        const min = returnPropertyValue(el.parent, 'min', 1)
-        const step = returnPropertyValue(el.parent, 'step', 1)
-        if (value > min) {
-          s.update({ value: value - step })
-        }
-      }
-    }
-  },
-
-  Value: {
-    tag: 'span',
-    width: '4ch',
-    text: ({ state, parent }) => {
-      const unit = returnPropertyValue(parent, 'unit', '')
-      return '' + (state.value || state.defaultValue || 0) + unit
-    }
-  },
-
-  Range: {
-    attr: {
-      value: (el, s) => parseFloat(s.value || s.defaultValue),
-      min: (el, s) => returnPropertyValue(el.parent, 'min', 0),
-      max: (el, s) => returnPropertyValue(el.parent, 'max', 100),
-      step: (el, s) => returnPropertyValue(el.parent, 'step', 1)
-    },
-    onInput: (ev, el, s) => {
-      const parentProps = el.parent.props
-      if (isFunction(parentProps.onInput)) {
-        parentProps.onInput(ev, el, s)
-      } else {
-        s.update({ value: parseFloat(el.node.value) })
-      }
-    },
-    onChange: (ev, el, s) => {
-      const parentProps = el.parent.props
-      if (isFunction(parentProps.onChange)) {
-        parentProps.onChange(ev, el, s)
-      } else {
-        s.update({ value: parseFloat(el.node.value) })
-      }
-    }
-  },
-
-  SquareButton_plus: {
-    theme: 'field',
-    icon: 'plus',
-    onClick: (ev, el, s) => {
-      const parentProps = el.parent.props
-      if (isFunction(parentProps.onIncrease)) {
-        parentProps.onIncrease(ev, el.parent, s)
-      } else {
-        const value = parseFloat(s.value)
-        const max = returnPropertyValue(el.parent, 'max', 1)
-        const step = returnPropertyValue(el.parent, 'step', 1)
-        if (value < max) {
-          s.update({ value: value + step })
-        }
-      }
-    }
+    min: (el, s) => el.deps.returnPropertyValue(el, 'min', 0),
+    max: (el, s) => el.deps.returnPropertyValue(el, 'max', 100),
+    step: (el, s) => el.deps.returnPropertyValue(el, 'step', 1)
   }
 }
