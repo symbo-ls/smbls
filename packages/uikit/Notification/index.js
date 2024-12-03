@@ -13,7 +13,12 @@ export const Notification = {
   },
 
   IconText: {
-    icon: 'info outline'
+    Icon: {
+      name: 'info outline'
+    },
+    Text: {
+      ':empty': { hide: true }
+    }
   },
 
   Flex: {
@@ -26,7 +31,8 @@ export const Notification = {
       margin: '0',
       fontWeight: '600',
       lineHeight: '1em',
-      text: 'Notification'
+      text: 'Notification',
+      ':empty': { hide: true }
     },
 
     P: {
@@ -35,18 +41,5 @@ export const Notification = {
       text: 'is not always a distraction',
       ':empty': { hide: true }
     }
-  }
-}
-
-export const NotificationIndicator = {
-  extend: 'Flex',
-  props: {
-    text: '2',
-    fontSize: 'Z',
-    lineHeight: '1em',
-    background: '#0474F2',
-    boxSize: 'fit-content fit-content',
-    padding: 'X+W',
-    round: 'Y+X'
   }
 }
