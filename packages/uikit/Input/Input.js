@@ -1,13 +1,9 @@
 'use strict'
 
-import { isString, replaceLiteralsWithObjectFields } from '@domql/utils'
-
 export const Input = {
   extend: ['Focusable'],
 
   tag: 'input',
-
-  deps: { isString, replaceLiteralsWithObjectFields },
 
   props: {
     border: 'none',
@@ -27,11 +23,9 @@ export const Input = {
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
     value: (el, s) => {
-      const { props, state, deps } = el
-      const { isString, exec, replaceLiteralsWithObjectFields } = deps
-      const val = exec(props.value, el)
-      if (isString(val) && val.includes('{{')) {
-        return replaceLiteralsWithObjectFields(val, state)
+      const val = el.call('exec', el.props.value, el)
+      if (el.call('isString', val) && val.includes('{{')) {
+        return el.call('replaceLiteralsWithObjectFields', val, s)
       }
       return val
     },

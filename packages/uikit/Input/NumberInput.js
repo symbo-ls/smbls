@@ -1,9 +1,7 @@
 'use strict'
 
-import { Input } from './Input'
-
 export const NumberInput = {
-  extend: ['Flex', Input],
+  extend: ['Flex', 'Input'],
 
   props: {
     type: 'number',

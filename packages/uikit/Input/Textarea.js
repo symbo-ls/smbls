@@ -1,11 +1,8 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Input } from './Input'
-
 export const Textarea = {
   tag: 'textarea',
-  extend: [Input, Flex],
+  extend: ['Input', 'Flex'],
 
   props: {
     variant: 'outlined',
@@ -57,9 +54,7 @@ export const TextareaWithButton = {
     minHeight: 'fit-content'
   },
   SquareButton: {
-    props: {
-      background: 'blue',
-      Icon: { name: 'send' }
-    }
+    background: 'blue',
+    Icon: { name: 'send' }
   }
 }

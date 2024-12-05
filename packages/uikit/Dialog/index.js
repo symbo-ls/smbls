@@ -21,7 +21,7 @@ export const DialogHeader = {
   },
 
   Title: {
-    props: { align: 'center space-between' },
+    align: 'center space-between',
 
     Text: { text: 'Title' },
 
@@ -32,7 +32,7 @@ export const DialogHeader = {
   },
 
   Paragraph: {
-    props: { color: 'caption' }
+    color: 'caption'
   }
 }
 

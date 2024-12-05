@@ -12,36 +12,30 @@ export const Checkbox = {
   },
 
   Input: {
-    props: {
-      type: 'checkbox',
-      display: 'none',
-      ':checked + div': { theme: 'primary' },
-      ':checked + div > svg': {
-        transform: 'none',
-        opacity: '1'
-      }
+    type: 'checkbox',
+    display: 'none',
+    ':checked + div': { theme: 'primary' },
+    ':checked + div > svg': {
+      transform: 'none',
+      opacity: '1'
     },
     attr: {
-      checked: ({ parent }) => parent.props.checked
+      checked: (el) => el.call('exec', el.parent.props.checked)
     }
   },
 
   Flex: {
-    props: {
-      align: 'center center',
-      fontSize: 'B1',
-      padding: 'V',
-      theme: 'field',
-      round: 'X2',
-      transition: 'background A defaultBezier'
-    },
+    align: 'center center',
+    fontSize: 'B1',
+    padding: 'V',
+    theme: 'field',
+    round: 'X2',
+    transition: 'background A defaultBezier',
     Icon: {
-      props: {
-        icon: 'check',
-        opacity: '0',
-        transform: 'scale(0.9) rotate(-15deg)',
-        transition: 'opacity B defaultBezier'
-      }
+      icon: 'check',
+      opacity: '0',
+      transform: 'scale(0.9) rotate(-15deg)',
+      transition: 'opacity B defaultBezier'
     }
   }
 }

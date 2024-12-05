@@ -44,61 +44,65 @@ export const Tooltip = {
 export const TooltipHidden = {
   extend: 'Tooltip',
 
-  props: ({ props }) => ({
+  props: {
     position: 'absolute',
     pointerEvents: 'none',
     opacity: '0',
     visibility: 'hidden',
     transition: 'C defaultBezier opacity, C defaultBezier visibility, B defaultBezier transform',
 
-    ...(props.shapeDirection === 'top'
-      ? {
-          top: '112%',
-          left: '50%',
-          transform: 'translate3d(-50%,10%,0)',
+    isTop: ({ props }) => !props.shapeDirection || props.shapeDirection === 'top',
+    '.isTop': {
+      top: '112%',
+      left: '50%',
+      transform: 'translate3d(-50%,10%,0)',
 
-          '.active': {
-            transform: 'translate3d(-50%,0,0)',
-            opacity: 1,
-            visibility: 'visible'
-          }
-        }
-      : props.shapeDirection === 'right'
-        ? {
-            transform: 'translate3d(10%,-50%,0)',
-            right: '112%',
-            top: '50%',
+      '.active': {
+        transform: 'translate3d(-50%,0,0)',
+        opacity: 1,
+        visibility: 'visible'
+      }
+    },
 
-            '.active': {
-              transform: 'translate3d(0%,-50%,0)',
-              opacity: 1,
-              visibility: 'visible'
-            }
-          }
-        : props.shapeDirection === 'bottom'
-          ? {
-              transform: 'translate3d(-50%,-10%,0)',
-              bottom: '112%',
-              left: '50%',
+    isRight: ({ props }) => props.shapeDirection === 'right',
+    '.isRight': {
+      transform: 'translate3d(10%,-50%,0)',
+      left: '112%',
+      top: '50%',
 
-              '.active': {
-                transform: 'translate3d(-50%,0,0)',
-                opacity: 1,
-                visibility: 'visible'
-              }
-            }
-          : {
-              transform: 'translate3d(10%,-50%,0)',
-              left: '112%',
-              top: '50%',
+      '.active': {
+        transform: 'translate3d(0%,-50%,0)',
+        opacity: 1,
+        visibility: 'visible'
+      }
+    },
 
-              '.active': {
-                transform: 'translate3d(0%,-50%,0)',
-                opacity: 1,
-                visibility: 'visible'
-              }
-            })
-  })
+    isBottom: ({ props }) => props.shapeDirection === 'bottom',
+    '.isBottom': {
+      transform: 'translate3d(-50%,-10%,0)',
+      bottom: '112%',
+      left: '50%',
+
+      '.active': {
+        transform: 'translate3d(-50%,0,0)',
+        opacity: 1,
+        visibility: 'visible'
+      }
+    },
+
+    isLeft: ({ props }) => props.shapeDirection === 'left',
+    '.isLeft': {
+      transform: 'translate3d(10%,-50%,0)',
+      right: '112%',
+      top: '50%',
+
+      '.active': {
+        transform: 'translate3d(0%,-50%,0)',
+        opacity: 1,
+        visibility: 'visible'
+      }
+    }
+  }
 }
 
 export const TooltipParent = {

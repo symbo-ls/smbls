@@ -1,9 +1,7 @@
 'use strict'
 
-import { Checkbox, CheckboxHgroup } from './Checkbox'
-
 export const Radio = {
-  extend: Checkbox,
+  extend: 'Checkbox',
 
   Input: {
     type: 'radio',
@@ -11,26 +9,23 @@ export const Radio = {
   },
 
   Flex: {
-    extend: 'Pseudo',
-    props: {
+    round: '100%',
+    padding: 'Y',
+    ':after': {
+      content: '""',
+      display: 'block',
+      boxSize: 'X+W1',
       round: '100%',
-      padding: 'Y',
-      ':after': {
-        content: '""',
-        display: 'block',
-        boxSize: 'X+W1',
-        round: '100%',
-        background: 'white',
-        opacity: '0',
-        transition: 'opacity .15s ease-in-out'
-      }
+      background: 'white',
+      opacity: '0',
+      transition: 'opacity .15s ease-in-out'
     },
     Icon: null
   }
 }
 
 export const RadioHgroup = {
-  extend: CheckboxHgroup,
+  extend: 'CheckboxHgroup',
   Checkbox: null,
   Radio: {}
 }
