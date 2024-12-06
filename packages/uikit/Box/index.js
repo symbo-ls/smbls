@@ -15,11 +15,9 @@
 //   Animation
 // } from '@symbo.ls/atoms'
 
-import { isString, isUndefined } from '@domql/utils'
-
 const PropsCSS = {
   class: {
-    style: ({ props }) => props && props.style
+    style: el => el.props && el.props.style
   }
 }
 
@@ -39,18 +37,17 @@ export const Box = {
     'XYZ',
     'Animation'
   ],
-  deps: { isString, isUndefined },
   attr: {
-    id: ({ props, deps }) => deps.isString(props.id) && props.id,
-    title: ({ props, deps }) => deps.isString(props.title) && props.title,
-    contentEditable: ({ props }) => props.contentEditable || props.contenteditable,
-    dir: ({ props }) => props.dir,
-    draggable: ({ props }) => props.draggable,
-    hidden: ({ props }) => props.hidden,
-    lang: ({ props }) => props.lang,
-    spellcheck: ({ props }) => props.spellcheck,
-    tabindex: ({ props }) => props.tabindex,
-    translate: ({ props }) => props.translate
+    id: el => el.call('isString', el.props.id) && el.props.id,
+    title: el => el.call('isString', el.props.title) && el.props.title,
+    contentEditable: el => el.props.contentEditable || el.props.contenteditable,
+    dir: el => el.props.dir,
+    draggable: el => el.props.draggable,
+    hidden: el => el.props.hidden,
+    lang: el => el.props.lang,
+    spellcheck: el => el.props.spellcheck,
+    tabindex: el => el.props.tabindex,
+    translate: el => el.props.translate
   }
 }
 

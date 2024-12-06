@@ -89,7 +89,7 @@ export const Range = {
 
   deps: {
     returnPropertyValue: (el, property, def) => {
-      const val = el.props && el.props[property]
+      const val = el.props && el.call('exec', el.props[property], el)
       const r = (el.call('isFunction', val) ? val(el, el.state) : val !== undefined ? val : def !== undefined ? def : 0)
       return r + ''
     }

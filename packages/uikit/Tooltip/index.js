@@ -44,65 +44,63 @@ export const Tooltip = {
 export const TooltipHidden = {
   extend: 'Tooltip',
 
-  props: {
+  props: ({ props }) => ({
     position: 'absolute',
     pointerEvents: 'none',
     opacity: '0',
     visibility: 'hidden',
     transition: 'C defaultBezier opacity, C defaultBezier visibility, B defaultBezier transform',
 
-    isTop: ({ props }) => !props.shapeDirection || props.shapeDirection === 'top',
-    '.isTop': {
-      top: '112%',
-      left: '50%',
-      transform: 'translate3d(-50%,10%,0)',
+    ...(!props.shapeDirection || props.shapeDirection === 'top'
+      ? {
+          top: '112%',
+          left: '50%',
+          transform: 'translate3d(-50%,10%,0)',
 
-      '.active': {
-        transform: 'translate3d(-50%,0,0)',
-        opacity: 1,
-        visibility: 'visible'
-      }
-    },
+          '.isActive': {
+            transform: 'translate3d(-50%,0,0)',
+            opacity: 1,
+            visibility: 'visible'
+          }
+        }
+      : props.shapeDirection === 'right'
+        ? {
+            transform: 'translate3d(10%,-50%,0)',
+            left: '112%',
+            top: '50%',
 
-    isRight: ({ props }) => props.shapeDirection === 'right',
-    '.isRight': {
-      transform: 'translate3d(10%,-50%,0)',
-      left: '112%',
-      top: '50%',
+            '.isActive': {
+              transform: 'translate3d(0%,-50%,0)',
+              opacity: 1,
+              visibility: 'visible'
+            }
+          }
+        : ({ props }) => props.shapeDirection === 'bottom'
+            ? {
+                transform: 'translate3d(-50%,-10%,0)',
+                bottom: '112%',
+                left: '50%',
 
-      '.active': {
-        transform: 'translate3d(0%,-50%,0)',
-        opacity: 1,
-        visibility: 'visible'
-      }
-    },
+                '.isActive': {
+                  transform: 'translate3d(-50%,0,0)',
+                  opacity: 1,
+                  visibility: 'visible'
+                }
+              }
+            : props.shapeDirection === 'left'
+              ? {
+                  transform: 'translate3d(10%,-50%,0)',
+                  right: '112%',
+                  top: '50%',
 
-    isBottom: ({ props }) => props.shapeDirection === 'bottom',
-    '.isBottom': {
-      transform: 'translate3d(-50%,-10%,0)',
-      bottom: '112%',
-      left: '50%',
-
-      '.active': {
-        transform: 'translate3d(-50%,0,0)',
-        opacity: 1,
-        visibility: 'visible'
-      }
-    },
-
-    isLeft: ({ props }) => props.shapeDirection === 'left',
-    '.isLeft': {
-      transform: 'translate3d(10%,-50%,0)',
-      right: '112%',
-      top: '50%',
-
-      '.active': {
-        transform: 'translate3d(0%,-50%,0)',
-        opacity: 1,
-        visibility: 'visible'
-      }
-    }
-  }
+                  '.isActive': {
+                    transform: 'translate3d(0%,-50%,0)',
+                    opacity: 1,
+                    visibility: 'visible'
+                  }
+                }
+              : {})
+  })
 }
 
 export const TooltipParent = {
@@ -110,14 +108,14 @@ export const TooltipParent = {
     const { Tooltip, TooltipHidden } = el
     const TooltipElem = (Tooltip || TooltipHidden)
     if (!TooltipElem) return
-    const TooltipActive = TooltipElem && TooltipElem.props && TooltipElem.props['.active']
+    const TooltipActive = TooltipElem && TooltipElem.props && TooltipElem.props['.isActive']
     return {
       position: 'relative',
       zIndex: 999,
       ':hover, &:focus-visible': {
         zIndex: 1000,
         '& [tooltip]': TooltipActive || {
-          transform: 'translate3d(-50%,0,0)',
+          transform: 'translate3d(-50%, 0, 0)',
           opacity: 1,
           visibility: 'visible'
         }
