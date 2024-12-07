@@ -3,7 +3,7 @@
   "version": "2.11.489",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "9faef80fdf0768924f344ed26587f5ac69af11d7",
+  "gitHead": "cbcc223a344574ecc400fcd560fbe5b43adfe7c7",
   "dependencies": {
     "@domql/utils": "^2.5.0",
     "@symbo.ls/button": "^2.11.482",
