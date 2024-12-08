@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.11.492",
+  "version": "2.11.493",
   "license": "MIT",
   "gitHead": "824ba2bff2e873302e79509d2db61e7e8cdea868",
   "files": [
@@ -37,8 +37,8 @@
     "@symbo.ls/fetch": "^2.11.475",
     "@symbo.ls/init": "^2.11.475",
     "@symbo.ls/scratch": "^2.11.475",
-    "@symbo.ls/sync": "^2.11.492",
-    "@symbo.ls/uikit": "^2.11.492",
+    "@symbo.ls/sync": "^2.11.493",
+    "@symbo.ls/uikit": "^2.11.493",
     "@symbo.ls/utils": "^2.11.475",
     "domql": "^2.5.158"
   },
