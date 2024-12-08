@@ -6,6 +6,8 @@ import { program } from './program.js'
 
 import packages from './linking/packages.js'
 
+const DOMQL = ['@domql/utils', '@domql/performance', '@domql/report', '@domql/emotion', '@domql/event', '@domql/router', '@domql/render', '@domql/state', '@domql/element', '@domql/parse', 'domql']
+
 const COMMAND = 'npx lerna exec -- cat package.json | jq \'.name\''
 const capture = (opts) => {
   exec(COMMAND, (error, stdout, stderr) => {
@@ -20,7 +22,7 @@ const capture = (opts) => {
       .filter(Boolean)
 
     const output = `export default [
-  ${packageNames.map((name) => `${name}`).join(',\n  ')}
+  ${packageNames.concat(DOMQL.map(v => `'${v}'`)).map((name) => `${name}`).join(',\n  ')}
 ]\n`
 
     try {
@@ -31,7 +33,7 @@ const capture = (opts) => {
       console.error(e)
     }
 
-    execSync(`npm link ${packages.join(' ')} --force`, { stdio: 'inherit' })
+    execSync(`npm link ${packages.join(' ')} --force --verbose`, { stdio: 'inherit' })
   })
 }
 
