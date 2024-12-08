@@ -11,7 +11,7 @@ const getIconName = (el, s) => {
   let icon = el.call('exec', props.name || props.icon || key, el)
 
   if (el.call('isString', icon) && icon.includes('{{')) {
-    icon = el.call('replaceLiteralsWithObjectFields', icon, s)
+    icon = el.call('replaceLiteralsWithObjectFields', icon)
   }
 
   return el.call('isString', icon) ? icon : key
@@ -20,7 +20,7 @@ const getIconName = (el, s) => {
 export const Icon = {
   extend: 'Svg',
   props: (el, s, ctx) => {
-    const { props, parent, deps } = el
+    const { props, parent } = el
     const { ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
     const { toCamelCase } = ctx && ctx.utils
 
@@ -47,7 +47,7 @@ export const Icon = {
     }
 
     if (el.call('isString', activeIconName) && activeIconName.includes('{{')) {
-      activeIconName = deps.replaceLiteralsWithObjectFields(activeIconName, s)
+      activeIconName = el.call('replaceLiteralsWithObjectFields', activeIconName)
     }
 
     let iconInContext

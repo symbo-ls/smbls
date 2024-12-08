@@ -14,10 +14,10 @@ export const Link = {
   },
   attr: {
     href: (el, s, ctx) => {
-      const { isString, exec, replaceLiteralsWithObjectFields } = ctx.utils
-      const href = exec(el.props.href, el) || exec(exec(el.props, el).href, el)
-      if (isString(href) && href.includes('{{')) {
-        return replaceLiteralsWithObjectFields(href, s)
+      const props = el.props
+      const href = el.call('exec', props.href, el) || el.call('exec', el.call('exec', props, el).href, el)
+      if (el.call('isString', href) && href.includes('{{')) {
+        return el.call('replaceLiteralsWithObjectFields', href)
       }
       return href
     },
@@ -32,11 +32,10 @@ export const RouterLink = {
     click: (event, el, s) => {
       const { props, context: ctx } = el
       const { href: h, scrollToTop, stopPropagation } = props
-      const { exec, isString, replaceLiteralsWithObjectFields, isDefined } = ctx.utils
-      let href = exec(h, el, s)
+      let href = el.call('exec', h, el)
 
-      if (isString(href) && href.includes('{{')) {
-        href = replaceLiteralsWithObjectFields(href, s)
+      if (el.call('isString', href) && href.includes('{{')) {
+        href = el.call('replaceLiteralsWithObjectFields', href)
       }
 
       if (stopPropagation) event.stopPropagation()
@@ -51,7 +50,7 @@ export const RouterLink = {
         try {
           (functions.router || snippets.router || utils.router || defaultRouter)(href, root, {}, {
             scrollToOptions: { behaviour: 'instant' },
-            scrollToTop: isDefined(scrollToTop) ? scrollToTop : true,
+            scrollToTop: el.call('isDefined', scrollToTop) ? scrollToTop : true,
             ...routerOptions,
             ...props.routerOptions
           })

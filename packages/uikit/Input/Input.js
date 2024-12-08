@@ -22,10 +22,11 @@ export const Input = {
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
-    value: (el, s) => {
+    value: (el) => {
+      if (!el.props || !el.props.value) return
       const val = el.call('exec', el.props.value, el)
       if (el.call('isString', val) && val.includes('{{')) {
-        return el.call('replaceLiteralsWithObjectFields', val, s)
+        return el.call('replaceLiteralsWithObjectFields', val)
       }
       return val
     },

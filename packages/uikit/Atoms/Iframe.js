@@ -8,7 +8,17 @@ export const Iframe = {
     minHeight: 'H'
   },
   attr: {
-    src: ({ props }) => props.src,
+    src: (el, s) => {
+      let src = el.call('exec', el.props.src, el)
+
+      if (el.call('isString', src) && src.includes('{{')) {
+        src = el.call('replaceLiteralsWithObjectFields', src)
+      }
+
+      let isUrl
+      try { isUrl = new URL(src) } catch (e) {}
+      if (isUrl) return src
+    },
     srcdoc: ({ props }) => props.srcdoc,
     sandbox: ({ props }) => props.sandbox,
     seamless: ({ props }) => props.seamless,

@@ -6,11 +6,10 @@ export const Img = {
   attr: {
     src: (el) => {
       const { props, context } = el
-      const { exec, isString, replaceLiteralsWithObjectFields } = context.utils
-      let src = (props.preSrc || '') + exec(props.src, el)
+      let src = (props.preSrc || '') + el.call('exec', props.src, el)
 
-      if (isString(src) && src.includes('{{')) {
-        src = replaceLiteralsWithObjectFields(src, el.state)
+      if (el.call('isString', src) && src.includes('{{')) {
+        src = el.call('replaceLiteralsWithObjectFields', src)
       }
 
       let isUrl

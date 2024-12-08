@@ -9,20 +9,17 @@ export const Select = {
     border: 'none',
     boxSizing: 'border-box',
     theme: 'field',
-    cursor: 'pointer'
-  },
-
-  childExtend: {
-    tag: 'option',
-    props: {
+    cursor: 'pointer',
+    childProps: {
+      tag: 'option',
       value: '',
       selected: '',
-      disabled: ''
-    },
-    attr: {
-      value: ({ props }) => props.value,
-      selected: ({ props }) => props.selected,
-      disabled: ({ props }) => props.disabled
+      disabled: '',
+      attr: {
+        value: ({ props }) => props.value,
+        selected: ({ props }) => props.selected,
+        disabled: ({ props }) => props.disabled
+      }
     }
   },
 
