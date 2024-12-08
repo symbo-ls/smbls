@@ -23,6 +23,7 @@
     "@symbo.ls/input": "^2.11.491",
     "@symbo.ls/link": "^2.11.491",
     "@symbo.ls/notification": "^2.11.491",
+    "@symbo.ls/dropdown": "^2.11.491",
     "@symbo.ls/range": "^2.11.491",
     "@symbo.ls/scratch": "^2.11.475",
     "@symbo.ls/select": "^2.11.491",
