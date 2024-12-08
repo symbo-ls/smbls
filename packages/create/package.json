@@ -2,7 +2,7 @@
   "name": "@symbo.ls/create",
   "version": "2.11.492",
   "license": "MIT",
-  "gitHead": "e608b4deeb4bd878b42f3dd9fff06e7cc2c16df1",
+  "gitHead": "824ba2bff2e873302e79509d2db61e7e8cdea868",
   "files": [
     "src",
     "dist"

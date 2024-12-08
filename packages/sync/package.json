@@ -3,7 +3,7 @@
   "version": "2.11.492",
   "main": "index.js",
   "module": "index.js",
-  "gitHead": "e608b4deeb4bd878b42f3dd9fff06e7cc2c16df1",
+  "gitHead": "824ba2bff2e873302e79509d2db61e7e8cdea868",
   "files": [
     "*.js",
     "dist"
