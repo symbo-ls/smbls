@@ -8,7 +8,6 @@ export default [
   '@symbo.ls/material-icons',
   '@symbo.ls/fluent-icons',
   '@symbo.ls/preview',
-  '@symbo.ls/video',
   '@symbo.ls/utils',
   '@symbo.ls/default-config',
   '@symbo.ls/scratch',
