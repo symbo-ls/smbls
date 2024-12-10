@@ -121,7 +121,6 @@ export const prepareRequire = (packages, ctx) => {
         const url = `https://pkg.symbo.ls/${key}${random}`
         ctx.utils.loadJavascriptFileEmbedSync(url, documentOpts, d => {
           windowOpts.packages[key] = 'loadedOnDeman'
-          console.log(d)
         })
       }
     }

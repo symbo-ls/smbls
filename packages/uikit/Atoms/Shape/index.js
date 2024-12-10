@@ -3,7 +3,6 @@
 import { exec, isString } from '@domql/utils'
 import { SHAPES } from './style'
 import { getSpacingBasedOnRatio, getMediaColor } from '@symbo.ls/scratch'
-import { Pseudo } from '../Pseudo'
 
 const transformBorderRadius = (radius, props, propertyName) => {
   if (!isString(radius)) return
@@ -13,7 +12,7 @@ const transformBorderRadius = (radius, props, propertyName) => {
 }
 
 export const Shape = {
-  extend: Pseudo,
+  extend: 'Pseudo',
 
   deps: { exec, getSpacingBasedOnRatio, getMediaColor, transformBorderRadius },
 
