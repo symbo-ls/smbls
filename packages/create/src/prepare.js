@@ -11,6 +11,7 @@ import { initEmotion } from './initEmotion'
 
 import * as uikit from '@symbo.ls/uikit'
 import * as utils from './utilImports'
+import * as routerUtils from '@domql/router'
 
 const ENV = process.env.NODE_ENV
 
@@ -47,7 +48,7 @@ export const prepareComponents = context => {
 }
 
 export const prepareUtils = context => {
-  return { ...utils, ...utils.scratchUtils, ...context.utils, ...context.snippets, ...context.functions }
+  return { ...utils, ...routerUtils, ...utils.scratchUtils, ...context.utils, ...context.snippets, ...context.functions }
 }
 
 export const prepareMethods = (context) => {
