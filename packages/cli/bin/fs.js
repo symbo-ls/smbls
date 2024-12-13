@@ -17,7 +17,7 @@ const {
 } = utils
 
 let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies', 'packages']
-const directoryKeys = ['components', 'snippets', 'pages', 'functions']
+const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
 
 const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'packages', 'schema']
 

@@ -12,9 +12,6 @@ export const Select = {
     cursor: 'pointer',
     childProps: {
       tag: 'option',
-      value: '',
-      selected: '',
-      disabled: '',
       attr: {
         value: ({ props }) => props.value,
         selected: ({ props }) => props.selected,
