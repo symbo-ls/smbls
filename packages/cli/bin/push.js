@@ -1,7 +1,10 @@
+'use strict'
+
 import fs from 'fs'
 import path from 'path'
 import { build } from 'esbuild'
 import { loadModule } from './require.js'
+import { program } from './program.js'
 
 const RC_PATH = process.cwd() + '/symbols.json'
 
@@ -83,3 +86,8 @@ async function getFilesRecursively (directoryPath) {
   await traverseDirectory(directoryPath)
   return files
 }
+
+program
+  .command('push')
+  .description('Push changes to platform')
+  .action(fs2js)
