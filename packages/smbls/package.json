@@ -1,6 +1,6 @@
 {
   "name": "smbls",
-  "version": "2.11.500",
+  "version": "2.11.501",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
   "gitHead": "1d7906188cda2e33e2298636e43efd7dfb321110",
@@ -13,12 +13,12 @@
     "dist"
   ],
   "dependencies": {
-    "@symbo.ls/cli": "^2.11.500",
-    "@symbo.ls/create": "^2.11.500",
-    "@symbo.ls/default-config": "^2.11.475",
-    "@symbo.ls/init": "^2.11.500",
+    "@symbo.ls/cli": "^2.11.501",
+    "@symbo.ls/create": "^2.11.501",
+    "@symbo.ls/default-config": "^2.11.501",
+    "@symbo.ls/init": "^2.11.501",
     "@symbo.ls/scratch": "^2.11.500",
-    "@symbo.ls/sync": "^2.11.500",
+    "@symbo.ls/sync": "^2.11.501",
     "@symbo.ls/uikit": "^2.11.500",
     "@symbo.ls/utils": "^2.11.497",
     "attrs-in-props": "^2.11.470",
