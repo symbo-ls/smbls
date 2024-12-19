@@ -39,6 +39,7 @@ export const DEFAULT_CONFIG = {
   },
   DEVICES: {},
   CASES: {},
+  CLASS: {},
   SVG: {} // TODO: Check with @nikoloza on this
 }
 

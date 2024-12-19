@@ -11,5 +11,6 @@ export const CustomDesignSystem = {
   FONT_FAMILY: {},
   TIMING: {},
   MEDIA: {},
+  CLASS: {},
   RESET: {}
 }
