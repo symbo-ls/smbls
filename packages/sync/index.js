@@ -5,11 +5,10 @@ import { init } from '@symbo.ls/init'
 import { connect } from '@symbo.ls/socket/client'
 import { window } from '@domql/globals'
 import { overwriteShallow } from '@domql/utils'
-import { connectedToSymbols, Notifications } from './Notifications'
+import { connectedToSymbols, Notifications } from './SyncNotifications'
 import { Inspect } from './Inspect'
 
-export * from './DefaultSyncApp'
-export * from './Notifications'
+export * from './SyncNotifications'
 export * from './Inspect'
 
 const isLocalhost = window && window.location && window.location.host.includes('local')

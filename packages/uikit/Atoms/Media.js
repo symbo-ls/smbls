@@ -142,7 +142,7 @@ const applyConditionalFalsyProps = (key, props, result, element) => {
 
 const applyTrueProps = (props, result, element) => merge(result, convertPropsToClass(props, result, element))
 
-const beforeClassAssign = (element, s) => {
+const beforeClassAssign = (element, s, ctx) => {
   const { props, class: className, context } = element
 
   const CLASS_NAMES = {
@@ -170,7 +170,16 @@ const beforeClassAssign = (element, s) => {
       }
     }
     if (setter) setter(key, props[key], CLASS_NAMES, element)
-    else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
+    else if (key === 'class') {
+      const value = element.props.class
+      if (!element.call('isString', value)) return
+      const classArr = value.split(' ')
+      const scratchClasses = ctx.designSystem.CLASS
+      CLASS_NAMES.class = classArr.reduce((accumulator, current) => {
+        const scratchClass = scratchClasses[current]
+        return merge(accumulator, scratchClass)
+      }, {})
+    } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
   }
 
   // override props
