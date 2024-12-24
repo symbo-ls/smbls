@@ -2,6 +2,7 @@
 
 import fs from 'fs'
 import chalk from 'chalk'
+import { readFs } from './fs2.js'
 import { loadModule } from './require.js'
 import { program } from './program.js'
 import { update, getAllItems } from '@symbo.ls/sdk'
@@ -22,7 +23,7 @@ try {
   console.error('Please include symbols.json to your root of respository')
 }
 
-export async function pushLocalFile () {
+export async function pushLocal () {
   await rc.then(async (data) => {
     const { key, framework, distDir, metadata } = data
     let bodyString, originalBody
