@@ -2,6 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { build } from 'esbuild'
 import { loadModule } from './require.js'
+import * as utils from '@domql/utils'
+
+const { deepStringify } = utils
 
 const RC_PATH = process.cwd() + '/symbols.json'
 
@@ -24,6 +27,20 @@ export async function fs2js () {
     })
   const kleo = await import(process.cwd() + '/toko/dist/index.js')
   console.log(JSON.stringify(kleo))
+}
+
+export async function readFs (distDir) {
+  const directoryPath = `.${distDir}`
+  const outputDirectory = `.${distDir}/dist`
+  buildDirectory(directoryPath, outputDirectory)
+    .then(() => {
+      console.log('All files built successfully')
+    })
+    .catch((error) => {
+      console.error('Error:', error)
+    })
+  const kleo = await import(process.cwd() + `${distDir}/dist/index.js`)
+  return JSON.stringify(deepStringify(kleo))
 }
 
 async function buildDirectory (directoryPath, outputDirectory) {
