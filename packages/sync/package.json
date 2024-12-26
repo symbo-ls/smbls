@@ -23,7 +23,7 @@
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
-    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text --bundle",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
     "build:iife": "npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
     "build": "npm run build:esm; npm run build:cjs",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
