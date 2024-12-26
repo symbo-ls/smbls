@@ -7,9 +7,7 @@ import { window } from '@domql/globals'
 import { overwriteShallow } from '@domql/utils'
 import { connectedToSymbols, Notifications } from './SyncNotifications'
 import { Inspect } from './Inspect'
-
-export * from './SyncNotifications'
-export * from './Inspect'
+export { Inspect, Notifications }
 
 const isLocalhost = window && window.location && window.location.host.includes('local')
 

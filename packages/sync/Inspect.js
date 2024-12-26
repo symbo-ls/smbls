@@ -30,7 +30,7 @@ function findComponent (el) {
   return findComponent(el.parent)
 }
 
-const inspectOnKey = (app, state, ctx) => {
+const onInspect = (app, state, ctx) => {
   const windowOpts = ctx.window || window
   windowOpts.onkeydown = (ev) => {
     if (ev.altKey && ev.shiftKey) {
@@ -56,11 +56,67 @@ const inspectOnKey = (app, state, ctx) => {
 export const Inspect = {
   props: {
     '.preventSelect': { userSelect: 'none' },
-    '!preventSelect': { userSelect: 'auto' }
+    '!preventSelect': { userSelect: 'auto' },
+
+    onInspect,
+
+    onMousemove: (ev, e, state) => {
+      const el = ev.target.ref
+      const component = findComponent(el)
+      const focusState = e.Inspector.state
+
+      if (!component || !state.debugging || !component.__ref) return focusState.update({ area: false })
+
+      const componentKey = getComponentKey(component)
+      const updateValue = (area) => {
+        focusState.update({ area, focusKey: componentKey })
+      }
+
+      const update = () => {
+        if (ev.altKey && ev.shiftKey) {
+          const { x, y, width, height } = component.node.getBoundingClientRect()
+          const area = { x, y, width, height }
+
+          if (!focusState.area) return updateValue(area)
+          if (focusState.area.x !== area.x) updateValue(area)
+        } else if (focusState.area) {
+          focusState.update({ area: false })
+        }
+      }
+
+      window.requestAnimationFrame(() => {
+        update()
+        window.requestAnimationFrame(update)
+      })
+    },
+
+    onMousedown: (ev, elem, state) => {
+      if (!state.debugging) return
+      const el = ev.target.ref
+      const component = findComponent(el)
+      if (!component) return
+      const componentKey = getComponentKey(component)
+      if (!componentKey) return
+
+      const editor = el.context.editor
+      if (editor && editor.onInspect) {
+        return editor.onInspect(componentKey, el, el.state, { allowRouterWhileInspect: true })
+      }
+
+      const data = JSON.stringify({
+        componentKey: `${componentKey}`
+      })
+      send.call(el.context.socket, 'route', data)
+
+      ev.preventDefault()
+      ev.stopPropagation()
+      return false
+    }
   },
 
   Inspector: {
     state: {},
+
     props: (el, s) => ({
       transition: 'all, defaultBezier, X',
       position: 'fixed',
@@ -137,61 +193,6 @@ export const Inspect = {
 
         return false
       }
-    }
-  },
-
-  on: {
-    inspectOnKey,
-    mousemove: (ev, e, state) => {
-      const el = ev.target.ref
-      const component = findComponent(el)
-      const focusState = e.Inspector.state
-
-      if (!component || !state.debugging || !component.__ref) return focusState.update({ area: false })
-
-      const componentKey = getComponentKey(component)
-      const updateValue = (area) => {
-        focusState.update({ area, focusKey: componentKey })
-      }
-
-      const update = () => {
-        if (ev.altKey && ev.shiftKey) {
-          const { x, y, width, height } = component.node.getBoundingClientRect()
-          const area = { x, y, width, height }
-
-          if (!focusState.area) return updateValue(area)
-          if (focusState.area.x !== area.x) updateValue(area)
-        } else if (focusState.area) {
-          focusState.update({ area: false })
-        }
-      }
-
-      window.requestAnimationFrame(() => {
-        update()
-        window.requestAnimationFrame(update)
-      })
-    },
-    mousedown: (ev, elem, state) => {
-      if (!state.debugging) return
-      const el = ev.target.ref
-      const component = findComponent(el)
-      if (!component) return
-      const componentKey = getComponentKey(component)
-      if (!componentKey) return
-
-      const editor = el.context.editor
-      if (editor && editor.onInspect) {
-        return editor.onInspect(componentKey, el, el.state, { allowRouterWhileInspect: true })
-      }
-
-      const data = JSON.stringify({
-        componentKey: `${componentKey}`
-      })
-      send.call(el.context.socket, 'route', data)
-
-      ev.preventDefault()
-      ev.stopPropagation()
-      return false
     }
   }
 }
