@@ -13,7 +13,7 @@ try {
 }
 
 export async function fs2js () {
-  const directoryPath = './toko'
+  const directoryPath = './toko' // replace from "distDir" - https://github.com/symbo-ls/smbls/blob/feature/sdkpush/packages/cli/bin/fs.js#L39
   const outputDirectory = './toko/dist'
   buildDirectory(directoryPath, outputDirectory)
     .then(() => {
@@ -22,8 +22,8 @@ export async function fs2js () {
     .catch((error) => {
       console.error('Error:', error)
     })
-  const kleo = await import(process.cwd() + '/toko/dist/index.js')
-  console.log(JSON.stringify(kleo))
+  const data = await import(process.cwd() + '/toko/dist/index.js')
+  console.log(JSON.stringify(data))
 }
 
 async function buildDirectory (directoryPath, outputDirectory) {
