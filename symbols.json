@@ -1,4 +1,7 @@
 {
     "key": "toko-demo.symbo.ls",
-    "distDir": "./toko"
+    "distDir": "./toko",
+    "framework": "domql",
+    "branch": "main",
+    "version": "latest"
 }
