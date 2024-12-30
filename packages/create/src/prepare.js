@@ -64,7 +64,7 @@ export const prepareMethods = (context) => {
 
 const cachedDeps = {}
 export const prepareDependencies = ({
-  packages: dependencies,
+  dependencies,
   dependenciesOnDemand,
   document
 }) => {

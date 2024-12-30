@@ -16,10 +16,10 @@ const {
   removeValueFromArray
 } = utils
 
-let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies', 'packages']
+let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies']
 const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
 
-const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'packages', 'schema']
+const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema']
 
 export async function createFs (
   body,
