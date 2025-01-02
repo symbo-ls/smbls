@@ -42,7 +42,7 @@ export const prepareContext = (app, context = {}) => {
   return context
 }
 
-export const createDomqlElement = (app, ctx) => {
+export const createDomqlElement = async (app, ctx) => {
   if (!isObject(ctx)) ctx = {}
   if (isNode(app)) {
     app = {}
@@ -78,7 +78,7 @@ export const createDomqlElement = (app, ctx) => {
 
   const parentNode = ctx.parent || ctx.document.body
   const domqlCreate = (DOM.default && DOM.default.create) || DOM.create
-  const smblsApp = domqlCreate(app, parentNode, ctx.key, {
+  const smblsApp = await domqlCreate(app, parentNode, ctx.key, {
     verbose: ctx.verbose,
     ...ctx.domqlOptions
   })

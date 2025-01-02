@@ -12,9 +12,11 @@ try {
   console.error('Please include symbols.json to your root of respository')
 }
 
-export async function fs2js () {
-  const directoryPath = './toko' // replace from "distDir" - https://github.com/symbo-ls/smbls/blob/feature/sdkpush/packages/cli/bin/fs.js#L39
-  const outputDirectory = './toko/dist'
+export async function fs2js (
+  distDir = path.join(process.cwd(), 'smbls')
+) {
+  const directoryPath = distDir
+  const outputDirectory = distDir + '/dist'
   buildDirectory(directoryPath, outputDirectory)
     .then(() => {
       console.log('All files built successfully')
