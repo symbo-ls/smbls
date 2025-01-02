@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/default-config",
-  "version": "2.11.501",
+  "version": "2.11.508",
   "source": "src/index.js",
   "main": "src/index.js",
   "type": "module",
