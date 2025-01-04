@@ -10,7 +10,7 @@ import * as socketClient from '@symbo.ls/socket/client.js'
 import { fetchFromCli } from './fetch.js'
 import { convertFromCli } from './convert.js'
 
-const { debounce } = utils.default
+const { debounce } = (utils.default || utils)
 
 const SOCKET_API_URL_LOCAL = 'http://localhost:13336/'
 const SOCKET_API_URL = 'https://socket.symbols.app/'

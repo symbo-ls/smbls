@@ -1,12 +1,12 @@
 import fs from 'fs'
 import chalk from 'chalk'
 import path from 'path'
-import utils from '@domql/utils'
+import * as utils from '@domql/utils'
 import * as smblsUtils from '@symbo.ls/utils'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 
-const { removeChars, toCamelCase, toTitleCase } = smblsUtils.default
+const { removeChars, toCamelCase, toTitleCase } = (smblsUtils.default || smblsUtils)
 const {
   deepDestringify,
   objectToString,
@@ -14,7 +14,7 @@ const {
   isString,
   isObject,
   removeValueFromArray
-} = utils
+} = (utils.default || utils)
 
 let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies']
 const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']

@@ -7,7 +7,7 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { createRequire } from 'module'
 import * as utils from '@domql/utils'
-const { overwriteDeep } = utils.default
+const { overwriteDeep } = (utils.default || utils)
 
 const require = createRequire(import.meta.url) // construct the require method
 const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
