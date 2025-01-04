@@ -2,10 +2,10 @@
   "name": "@symbo.ls/create",
   "version": "2.11.510",
   "license": "MIT",
-  "gitHead": "597a7ea98e0521447777326702a2796351e73605",
+  "gitHead": "87a89420d23573f16877a2a1c20e6ddaf204606b",
   "type": "module",
-  "module": "index.js",
-  "main": "index.js",
+  "module": "src/index.js",
+  "main": "src/index.js",
   "unpkg": "dist/iife/index.js",
   "jsdelivr": "dist/iife/index.js",
   "exports": {
@@ -15,18 +15,18 @@
       "require": "./dist/cjs/index.js"
     }
   },
-  "source": "index.js",
+  "source": "src/index.js",
   "files": [
     "src",
     "dist"
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "build:esm": "npx esbuild src/*.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild src/*.js --target=node16 --format=iife --outdir=dist/iife",
     "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
     "@domql/emotion": "^2.5.0",
