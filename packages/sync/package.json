@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/sync",
-  "version": "2.11.510",
+  "version": "2.11.511",
   "main": "index.js",
   "module": "index.js",
   "gitHead": "87a89420d23573f16877a2a1c20e6ddaf204606b",
@@ -34,7 +34,7 @@
     "@domql/utils": "^2.5.0",
     "@symbo.ls/init": "^2.11.508",
     "@symbo.ls/scratch": "^2.11.504",
-    "@symbo.ls/socket": "^2.11.510",
+    "@symbo.ls/socket": "^2.11.511",
     "@symbo.ls/uikit": "^2.11.504"
   },
   "devDependencies": {
