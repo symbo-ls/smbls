@@ -2,7 +2,7 @@
   "name": "@symbo.ls/fetch",
   "version": "2.11.509",
   "license": "MIT",
-  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
+  "gitHead": "597a7ea98e0521447777326702a2796351e73605",
   "type": "module",
   "module": "index.js",
   "main": "index.js",
