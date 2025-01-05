@@ -4,12 +4,12 @@ import DOM from 'domql'
 import * as uikit from '@symbo.ls/uikit'
 
 import { isString, isNode, isObject } from '@domql/utils'
+import { initAnimationFrame } from '@domql/event'
 import { defaultDefine } from './define'
 import { initRouter } from './router'
 import { initializeExtend, initializeInspect, initializeNotifications, initializeSync } from './syncExtend'
 
 import {
-  initAnimationFrame,
   prepareComponents,
   prepareDependencies,
   prepareDesignSystem,
@@ -63,7 +63,7 @@ export const createDomqlElement = async (app, ctx) => {
   app.state = ctx.state
   app.context = ctx
   app.data = app.data || {}
-  app.data.frameListeners = initAnimationFrame()
+  app.data.frameListeners = initAnimationFrame(ctx)
 
   prepareRequire({
     functions: ctx.functions,

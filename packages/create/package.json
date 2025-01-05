@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@domql/emotion": "^2.5.0",
+    "@domql/event": "^2.5.0",
     "@domql/report": "^2.5.0",
     "@domql/router": "^2.5.0",
     "@symbo.ls/fetch": "^2.11.511",
