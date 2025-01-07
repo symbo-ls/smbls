@@ -1,27 +1,35 @@
 {
   "name": "@symbo.ls/fetch",
-  "version": "2.11.475",
+  "version": "2.11.511",
   "license": "MIT",
-  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
+  "gitHead": "87a89420d23573f16877a2a1c20e6ddaf204606b",
   "type": "module",
   "module": "index.js",
   "main": "index.js",
-  "exports": "./dist/cjs/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "exports": {
+    ".": {
+      "default": "./dist/esm/index.js",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "source": "index.js",
   "files": [
     "*.js",
     "dist"
   ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "prepublish": "npm run build; npm run copy:package:cjs"
+  },
   "dependencies": {
     "@domql/globals": "latest",
     "@domql/utils": "^2.5.0"
-  },
-  "scripts": {
-    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./index.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "npm run build:cjs && npm run copy:package:cjs",
-    "prepublish": "rimraf -I dist && npm run build"
   }
 }

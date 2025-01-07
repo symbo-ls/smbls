@@ -64,7 +64,7 @@ export const prepareMethods = (context) => {
 
 const cachedDeps = {}
 export const prepareDependencies = ({
-  packages: dependencies,
+  dependencies,
   dependenciesOnDemand,
   document
 }) => {
@@ -170,28 +170,4 @@ export const preparePages = (app, context) => {
       delete pages[v]
       return pages
     }, pages)
-}
-
-export const initAnimationFrame = () => {
-  const frameListeners = new Set()
-
-  function requestFrame () {
-    // Iterate over frameListeners
-    for (const element of frameListeners) {
-      if (!document.body.contains(element.node)) {
-        frameListeners.delete(element) // Remove if node has no parent
-      } else {
-        try {
-          (element.on.frame || element.props.onFrame)(element, element.state, element.context)
-        } catch (e) {
-          console.warn(e)
-        }
-      }
-    }
-    window.requestAnimationFrame(requestFrame)
-  }
-
-  requestFrame()
-
-  return frameListeners
 }

@@ -23,7 +23,7 @@ export const create = (App, options = DEFAULT_CREATE_OPTIONS, optionsExternalFil
 
   popStateRouter(domqlApp, redefinedOptions)
 
-  if (redefinedOptions.on && redefinedOptions.on.create) redefinedOptions.on.create(domqlApp, redefinedOptions)
+  if (redefinedOptions.on && redefinedOptions.on.create) redefinedOptions.on.create(domqlApp, domqlApp.state, domqlApp.context, redefinedOptions)
 
   return domqlApp
 }
@@ -46,8 +46,8 @@ export const createSync = async (App, options = DEFAULT_CREATE_OPTIONS, optionsE
   const key = options.key
   await fetchSync(key, redefinedOptions)
 
-  const domqlApp = createDomqlElement(App, redefinedOptions)
-  if (redefinedOptions.on && redefinedOptions.on.create) redefinedOptions.on.create(domqlApp, redefinedOptions)
+  const domqlApp = await createDomqlElement(App, redefinedOptions)
+  if (redefinedOptions.on && redefinedOptions.on.create) await (redefinedOptions.on.create(domqlApp, domqlApp.state, domqlApp.context, redefinedOptions))
 
   return domqlApp
 }

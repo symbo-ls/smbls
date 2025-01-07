@@ -1,39 +1,46 @@
 {
   "name": "smbls",
-  "version": "2.11.499",
+  "version": "2.11.513",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
-  "gitHead": "1d7906188cda2e33e2298636e43efd7dfb321110",
-  "source": "index.js",
-  "main": "index.js",
+  "gitHead": "87a89420d23573f16877a2a1c20e6ddaf204606b",
+  "type": "module",
   "module": "index.js",
+  "main": "index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "exports": {
+    ".": {
+      "default": "./dist/esm/index.js",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "source": "index.js",
   "files": [
-    "index.js",
-    "package.json",
+    "*.js",
     "dist"
   ],
   "dependencies": {
-    "@symbo.ls/cli": "^2.11.499",
-    "@symbo.ls/create": "^2.11.499",
-    "@symbo.ls/default-config": "^2.11.475",
-    "@symbo.ls/init": "^2.11.497",
-    "@symbo.ls/scratch": "^2.11.497",
-    "@symbo.ls/sync": "^2.11.499",
-    "@symbo.ls/uikit": "^2.11.499",
-    "@symbo.ls/utils": "^2.11.497",
+    "@symbo.ls/cli": "^2.11.512",
+    "@symbo.ls/create": "^2.11.512",
+    "@symbo.ls/default-config": "^2.11.508",
+    "@symbo.ls/init": "^2.11.512",
+    "@symbo.ls/scratch": "^2.11.512",
+    "@symbo.ls/sync": "^2.11.512",
+    "@symbo.ls/uikit": "^2.11.512",
+    "@symbo.ls/utils": "^2.11.512",
     "attrs-in-props": "^2.11.470",
-    "css-in-props": "^2.11.497",
+    "css-in-props": "^2.11.512",
     "domql": "^2.5.158"
   },
-  "type": "module",
-  "exports": "./dist/cjs/index.js",
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "npx esbuild ./index.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
     "build:cjs": "npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
     "build:cjs:bundle": "npm run build:cjs --bundle",
-    "build": "npm run build:cjs --outdir=dist/cjs; npm run build:cjs:bundle --outfile=dist/cjs/index.bundle.js",
+    "build": "npm run build:cjs; npm run build:cjs:bundle --outfile=dist/cjs/index.bundle.js; npm run build:esm;",
     "prepublish": "rimraf -I dist; npm run build; npm run copy:package:cjs"
   }
 }

@@ -1,45 +1,44 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.11.499",
+  "version": "2.11.512",
   "license": "MIT",
-  "gitHead": "1d7906188cda2e33e2298636e43efd7dfb321110",
+  "gitHead": "87a89420d23573f16877a2a1c20e6ddaf204606b",
+  "type": "module",
+  "module": "src/index.js",
+  "main": "src/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "exports": {
+    ".": {
+      "default": "./dist/esm/index.js",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "source": "src/index.js",
   "files": [
     "src",
     "dist"
   ],
-  "repository": "https://github.com/symbo-ls/scratch",
-  "type": "module",
-  "module": "src/index.js",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
-  "main": "src/index.js",
-  "exports": {
-    ".": {
-      "kalduna": "./src/index.js",
-      "default": "./dist/cjs/index.js"
-    }
-  },
-  "source": "src/index.js",
-  "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./src/*.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
-    "build:cjs": "npx esbuild ./src/*.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
-    "build:cjs:bundle": "npx esbuild ./src/index.js --target=node16 --format=cjs --outdir=dist/cjs/bundle --loader:.svg=text --bundle --loader:.svg=empty",
-    "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
-    "build": "npm run build:cjs; npm run build:cjs:bundle",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build:esm": "npx esbuild src/*.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx esbuild src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx esbuild src/*.js --target=node16 --format=iife --outdir=dist/iife",
+    "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
     "@domql/emotion": "^2.5.0",
+    "@domql/event": "^2.5.0",
     "@domql/report": "^2.5.0",
     "@domql/router": "^2.5.0",
-    "@symbo.ls/fetch": "^2.11.475",
-    "@symbo.ls/init": "^2.11.497",
-    "@symbo.ls/scratch": "^2.11.497",
-    "@symbo.ls/sync": "^2.11.499",
-    "@symbo.ls/uikit": "^2.11.499",
-    "@symbo.ls/utils": "^2.11.497",
+    "@symbo.ls/fetch": "^2.11.511",
+    "@symbo.ls/init": "^2.11.512",
+    "@symbo.ls/scratch": "^2.11.512",
+    "@symbo.ls/sync": "^2.11.512",
+    "@symbo.ls/uikit": "^2.11.512",
+    "@symbo.ls/utils": "^2.11.512",
     "domql": "^2.5.158"
   },
   "devDependencies": {

@@ -4,12 +4,12 @@ import DOM from 'domql'
 import * as uikit from '@symbo.ls/uikit'
 
 import { isString, isNode, isObject } from '@domql/utils'
+import { initAnimationFrame } from '@domql/event'
 import { defaultDefine } from './define'
 import { initRouter } from './router'
 import { initializeExtend, initializeInspect, initializeNotifications, initializeSync } from './syncExtend'
 
 import {
-  initAnimationFrame,
   prepareComponents,
   prepareDependencies,
   prepareDesignSystem,
@@ -42,7 +42,7 @@ export const prepareContext = (app, context = {}) => {
   return context
 }
 
-export const createDomqlElement = (app, ctx) => {
+export const createDomqlElement = async (app, ctx) => {
   if (!isObject(ctx)) ctx = {}
   if (isNode(app)) {
     app = {}
@@ -63,7 +63,7 @@ export const createDomqlElement = (app, ctx) => {
   app.state = ctx.state
   app.context = ctx
   app.data = app.data || {}
-  app.data.frameListeners = initAnimationFrame()
+  app.data.frameListeners = initAnimationFrame(ctx)
 
   prepareRequire({
     functions: ctx.functions,
@@ -78,7 +78,7 @@ export const createDomqlElement = (app, ctx) => {
 
   const parentNode = ctx.parent || ctx.document.body
   const domqlCreate = (DOM.default && DOM.default.create) || DOM.create
-  const smblsApp = domqlCreate(app, parentNode, ctx.key, {
+  const smblsApp = await domqlCreate(app, parentNode, ctx.key, {
     verbose: ctx.verbose,
     ...ctx.domqlOptions
   })

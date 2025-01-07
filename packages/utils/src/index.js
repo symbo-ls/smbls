@@ -8,7 +8,6 @@ export * from './date'
 export * from './fibonacci'
 export * from './load'
 export * from './files'
-export * from './animationFrame'
 
 export const copyStringToClipboard = async (str) => {
   try {

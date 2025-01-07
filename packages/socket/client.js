@@ -47,7 +47,7 @@ export const connect = (key, options = {}) => {
 
   socket.on('connect', () => {
     if (isDev) {
-      console.log(
+      console.warn(
         `Connected to %c${primaryUrl} %c${key} %c${socket.id}`,
         'font-weight: bold; color: green;',
         'font-weight: bold;',

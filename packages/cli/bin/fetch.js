@@ -8,8 +8,8 @@ import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
-const { isObjectLike } = utils.default
-const { fetchRemote } = fetch.default
+const { isObjectLike } = (utils.default || utils)
+const { fetchRemote } = (fetch.default || fetch)
 
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH =
