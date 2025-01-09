@@ -46,59 +46,115 @@ function generateDiffDisplay(type, path, oldValue, newValue) {
 // Helper to generate changes array from diff
 function generateChanges(oldData, newData) {
   const changes = []
-  const diffs = [] // Store detailed diffs
+  const diffs = []
+
+  // Define allowed top-level fields to compare
+  const ALLOWED_FIELDS = [
+    'designsystem',
+    'functions',
+    'files',
+    'state',
+    'components',
+    'dependencies',
+    'pages',
+    'snippets',
+    'bucket',
+    'schema'
+  ]
 
   // Validate input data
   if (!oldData || !newData) {
     throw new Error('Both oldData and newData must be provided')
   }
 
-  // Helper to recursively find differences
-  function compareObjects(oldObj, newObj, currentPath = []) {
-    // Skip comparison if values are exactly the same
-    if (oldObj === newObj) return
+  function isEqual(val1, val2) {
+    // Handle case where both values are undefined or null
+    if (!val1 && !val2) return true
+    if (!val1 || !val2) return false
+
+    // Handle functions - consider them equal if both are functions
+    if (typeof val1 === 'function' && typeof val2 === 'function') {
+      return true
+    }
+
+    // Handle arrays
+    if (Array.isArray(val1) && Array.isArray(val2)) {
+      if (val1.length !== val2.length) return false
+      return val1.every((item, index) => isEqual(item, val2[index]))
+    }
 
     // Handle primitive values
-    if (typeof oldObj !== 'object' || typeof newObj !== 'object' ||
-        oldObj === null || newObj === null) {
-      if (oldObj !== newObj) {
-        changes.push(['update', currentPath, newObj])
-        diffs.push(generateDiffDisplay('update', currentPath, oldObj, newObj))
-      }
+    if (typeof val1 !== 'object' || val1 === null || val2 === null) {
+      return Object.is(val1, val2)
+    }
+
+    // Handle objects
+    const keys1 = Object.keys(val1)
+    const keys2 = Object.keys(val2)
+    if (keys1.length !== keys2.length) return false
+    return keys1.every(key => keys2.includes(key) && isEqual(val1[key], val2[key]))
+  }
+
+  function compareObjects(oldObj, newObj, currentPath = []) {
+    // Handle undefined/null cases
+    oldObj = oldObj || {}
+    newObj = newObj || {}
+
+    // Skip comparison if values are exactly the same
+    if (isEqual(oldObj, newObj)) return
+
+    // Skip if top-level path is not in allowed fields
+    if (currentPath.length === 1 && !ALLOWED_FIELDS.includes(currentPath[0])) {
       return
     }
 
-    // Handle both objects and arrays
-    const allKeys = Array.isArray(oldObj) && Array.isArray(newObj)
-      ? new Set([...Array(Math.max(oldObj.length, newObj.length)).keys()])
-      : new Set([...Object.keys(oldObj), ...Object.keys(newObj)])
+    // If either value is primitive or null, compare directly
+    if (
+      typeof oldObj !== 'object' ||
+      typeof newObj !== 'object' ||
+      oldObj === null ||
+      newObj === null
+    ) {
+      changes.push(['update', currentPath, newObj])
+      diffs.push(generateDiffDisplay('update', currentPath, oldObj, newObj))
+      return
+    }
 
-    for (const key of allKeys) {
+    // Both are objects/arrays at this point
+    const oldKeys = Object.keys(oldObj)
+    const newKeys = Object.keys(newObj)
+
+    // Handle deletions
+    for (const key of oldKeys) {
+      if (!newKeys.includes(key)) {
+        changes.push(['delete', [...currentPath, key]])
+        diffs.push(generateDiffDisplay('delete', [...currentPath, key], oldObj[key]))
+      }
+    }
+
+    // Handle additions and updates
+    for (const key of newKeys) {
       const newValue = newObj[key]
       const oldValue = oldObj[key]
-      const keyPath = [...currentPath, key]
 
-      if (!(key in newObj)) {
-        changes.push(['delete', keyPath])
-        diffs.push(generateDiffDisplay('delete', keyPath, oldValue))
-      } else if (!(key in oldObj)) {
-        changes.push(['update', keyPath, newValue])
-        diffs.push(generateDiffDisplay('add', keyPath, undefined, newValue))
-      } else if (
-        typeof newValue === 'object' &&
-        typeof oldValue === 'object' &&
-        newValue !== null &&
-        oldValue !== null
-      ) {
-        compareObjects(oldValue, newValue, keyPath)
-      } else if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-        changes.push(['update', keyPath, newValue])
-        diffs.push(generateDiffDisplay('update', keyPath, oldValue, newValue))
+      if (!oldKeys.includes(key)) {
+        changes.push(['update', [...currentPath, key], newValue])
+        diffs.push(generateDiffDisplay('add', [...currentPath, key], undefined, newValue))
+      } else if (!isEqual(oldValue, newValue)) {
+        compareObjects(oldValue, newValue, [...currentPath, key])
       }
     }
   }
 
-  compareObjects(oldData, newData)
+  // Only compare allowed top-level fields
+  for (const field of ALLOWED_FIELDS) {
+    compareObjects(
+      oldData[field],
+      newData[field],
+      [field]
+    )
+  }
+
   return { changes, diffs }
 }
 
