@@ -6,8 +6,8 @@ import path from 'path'
 import os from 'os'
 import chalk from 'chalk'
 import { program } from './program.js'
+import { getApiUrl } from './config.js'
 
-const API_URL = 'http://localhost:13335'
 const RC_FILE = '.smblsrc'
 
 // Helper to manage credentials
@@ -76,7 +76,7 @@ program
 
     try {
       // Make login request
-      const response = await fetch(`${API_URL}/auth/login`, {
+      const response = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

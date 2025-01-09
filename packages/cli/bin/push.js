@@ -9,9 +9,9 @@ import { CredentialManager } from './login.js'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { spawn } from 'child_process'
+import { getApiUrl } from './config.js'
 
 const RC_PATH = process.cwd() + '/symbols.json'
-const API_URL = 'http://localhost:13335'
 
 // Helper to format value for display
 function formatValue(value) {
@@ -104,7 +104,7 @@ function generateChanges(oldData, newData) {
 
 // Helper to get project data from server
 async function getServerProjectData(appKey, authToken) {
-  const response = await fetch(`${API_URL}/get/`, {
+  const response = await fetch(`${getApiUrl()}/get/`, {
     method: 'GET',
     headers: {
       'X-AppKey': appKey,
@@ -236,7 +236,7 @@ export async function fs2js() {
     }
 
     // Send update request
-    const response = await fetch(`${API_URL}/auth/project/update`, {
+    const response = await fetch(`${getApiUrl()}/auth/project/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
