@@ -181,7 +181,6 @@ async function getServerProjectData(appKey, authToken) {
   }
 
   const data = await response.json()
-  console.log('Raw server data:', data)
   return data
 }
 
@@ -216,6 +215,22 @@ async function showDiffPager(diffs) {
   })
 }
 
+// Add this helper function at the top level
+function normalizeKeys(obj) {
+  if (!obj || typeof obj !== 'object') return obj;
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => normalizeKeys(item));
+  }
+
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    // Only transform top-level keys to lowercase
+    const normalizedKey = key.toLowerCase();
+    acc[normalizedKey] = value;
+    return acc;
+  }, {});
+}
+
 // Modified fs2js function
 export async function fs2js() {
   // Load credentials
@@ -239,7 +254,6 @@ export async function fs2js() {
   const { key: appKey } = config
 
   try {
-    // Load project.json
     let projectData
     try {
       // Build project data
@@ -253,17 +267,17 @@ export async function fs2js() {
       // Build and get project data
       await buildDirectory(distDir, outputDirectory)
       const outputFile = path.join(outputDirectory, 'index.js')
-      projectData = await loadModule(outputFile)
+      projectData = normalizeKeys(await loadModule(outputFile))
       console.log(chalk.dim('Local project built and loaded successfully'))
     } catch (err) {
       throw new Error('Failed to build project data: ' + err.message)
     }
 
-    // Get server project data
-    const serverProjectData = await getServerProjectData(appKey, authToken)
+    // Get and normalize server project data
+    const serverProjectData = normalizeKeys(await getServerProjectData(appKey, authToken))
     console.log(chalk.dim('Server data fetched successfully'))
 
-    // Generate changes with diffs
+    // Rest of the comparison logic will now work with normalized keys
     const { changes, diffs } = generateChanges(serverProjectData, projectData)
 
     // Log changes summary
@@ -312,7 +326,6 @@ export async function fs2js() {
         projectUpdates: projectData
       })
     })
-    console.log(response);
 
     if (!response.ok) {
       const error = await response.json()
