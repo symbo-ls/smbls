@@ -53,12 +53,10 @@ function generateChanges(oldData, newData) {
     'designsystem',
     'functions',
     'files',
-    'state',
     'components',
     'dependencies',
     'pages',
     'snippets',
-    'bucket',
     'schema'
   ]
 
@@ -73,8 +71,8 @@ function generateChanges(oldData, newData) {
     if (!val1 || !val2) return false
 
     // Handle functions - consider them equal if both are functions
-    if (typeof val1 === 'function' && typeof val2 === 'function') {
-      return true
+    if (typeof val1 === 'function' || typeof val2 === 'function') {
+      return val1.toString() === val2.toString()
     }
 
     // Handle arrays
@@ -85,14 +83,24 @@ function generateChanges(oldData, newData) {
 
     // Handle primitive values
     if (typeof val1 !== 'object' || val1 === null || val2 === null) {
+      // Convert numbers to strings for comparison to handle potential formatting differences
+      if (typeof val1 === 'number' && typeof val2 === 'number') {
+        return val1.toString() === val2.toString()
+      }
       return Object.is(val1, val2)
     }
 
     // Handle objects
-    const keys1 = Object.keys(val1)
-    const keys2 = Object.keys(val2)
+    const keys1 = Object.keys(val1).sort()
+    const keys2 = Object.keys(val2).sort()
+
     if (keys1.length !== keys2.length) return false
-    return keys1.every(key => keys2.includes(key) && isEqual(val1[key], val2[key]))
+
+    // Compare sorted keys to ensure consistent order
+    if (!keys1.every((key, index) => key === keys2[index])) return false
+
+    // Compare values
+    return keys1.every(key => isEqual(val1[key], val2[key]))
   }
 
   function compareObjects(oldObj, newObj, currentPath = []) {
@@ -115,7 +123,7 @@ function generateChanges(oldData, newData) {
       oldObj === null ||
       newObj === null
     ) {
-      changes.push(['update', currentPath, newObj])
+      changes.push(['update', currentPath, typeof newObj === 'function' ? newObj.toString() : newObj])
       diffs.push(generateDiffDisplay('update', currentPath, oldObj, newObj))
       return
     }
@@ -138,7 +146,7 @@ function generateChanges(oldData, newData) {
       const oldValue = oldObj[key]
 
       if (!oldKeys.includes(key)) {
-        changes.push(['update', [...currentPath, key], newValue])
+        changes.push(['update', [...currentPath, key], typeof newValue === 'function' ? newValue.toString() : newValue])
         diffs.push(generateDiffDisplay('add', [...currentPath, key], undefined, newValue))
       } else if (!isEqual(oldValue, newValue)) {
         compareObjects(oldValue, newValue, [...currentPath, key])
