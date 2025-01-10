@@ -6,7 +6,7 @@ import path from 'path'
 import os from 'os'
 import chalk from 'chalk'
 import { program } from './program.js'
-import { getApiUrl } from './config.js'
+import { getApiUrl } from '../helpers/config.js'
 
 const RC_FILE = '.smblsrc'
 
