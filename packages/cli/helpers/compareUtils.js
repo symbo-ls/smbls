@@ -47,7 +47,6 @@ export function generateChanges(oldData, newData) {
       obj[key] = newData[key]
       return obj
     }, {})
-  console.log(filteredNewData.schema);
 
   compareObjects(filteredOldData, filteredNewData, [], changes, diffs)
 

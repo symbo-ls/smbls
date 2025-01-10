@@ -2,19 +2,46 @@ import { getApiUrl } from './config.js'
 import { ALLOWED_FIELDS } from './compareUtils.js'
 
 export async function getServerProjectData(appKey, authToken) {
-  const response = await fetch(`${getApiUrl()}/get/`, {
-    method: 'GET',
-    headers: {
-      'X-AppKey': appKey,
-      'Authorization': `Bearer ${authToken}`
+  try {
+    const response = await fetch(`${getApiUrl()}/get/`, {
+      method: 'GET',
+      headers: {
+        'X-AppKey': appKey,
+        'Authorization': `Bearer ${authToken}`
+      }
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      const error = new Error(`Failed to fetch server data: ${response.statusText}`)
+      error.response = {
+        status: response.status,
+        data
+      }
+      throw error
     }
-  })
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch server data: ${response.statusText}`)
+    // Check if response is empty object
+    if (data && Object.keys(data).length === 0) {
+      const error = new Error('Project not found')
+      error.response = {
+        status: 404,
+        data
+      }
+      throw error
+    }
+
+    return data
+  } catch (error) {
+    if (!error.response) {
+      error.response = {
+        status: 500,
+        data: {}
+      }
+    }
+    throw error
   }
-
-  return await response.json()
 }
 
 export async function updateProjectOnServer(appKey, authToken, changes, projectData) {
