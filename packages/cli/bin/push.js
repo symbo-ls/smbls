@@ -100,16 +100,24 @@ export async function pushProjectChanges() {
     const { key: appKey } = config
 
     // Build and load local project
+    console.log(chalk.dim('Building local project...'))
     const projectData = await buildLocalProject()
     console.log(chalk.gray('Local project built and loaded successfully'))
 
     // Get server data
     try {
-      const serverProjectData = normalizeKeys(await getServerProjectData(appKey, authToken))
+      console.log(chalk.dim('Fetching server data...'))
+      const serverProjectData = await getServerProjectData(appKey, authToken)
+
+      if (!serverProjectData) {
+        throw new Error('Failed to fetch server data: Empty response')
+      }
+
+      const normalizedServerData = normalizeKeys(serverProjectData)
       console.log(chalk.gray('Server data fetched successfully'))
 
       // Compare and get changes
-      const { changes, diffs } = generateChanges(serverProjectData, projectData)
+      const { changes, diffs } = generateChanges(normalizedServerData, projectData)
 
       // Show changes and confirm
       if (changes.length > 0) {
@@ -124,6 +132,7 @@ export async function pushProjectChanges() {
       }
 
       // Update server
+      console.log(chalk.dim('Updating server...'))
       await updateProjectOnServer(appKey, authToken, changes, projectData)
 
       console.log(chalk.bold.green('\nProject updated successfully!'))

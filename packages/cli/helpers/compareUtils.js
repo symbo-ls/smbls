@@ -7,8 +7,7 @@ export const ALLOWED_FIELDS = [
   'components',
   'dependencies',
   'pages',
-  'snippets',
-  'schema'
+  'snippets'
 ]
 
 export function normalizeKeys(obj) {
