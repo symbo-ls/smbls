@@ -12,7 +12,7 @@ const RC_PATH = process.cwd() + '/symbols.json'
 
 let rc = {}
 try {
-  rc = loadModule(RC_PATH)
+  rc = loadModule(RC_PATH) //eslint-disable-line
 } catch (e) {
   console.error('Please include symbols.json to your root of repository')
 }
