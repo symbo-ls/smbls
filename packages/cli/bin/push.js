@@ -1,118 +1,185 @@
 'use strict'
 
-import fs from 'fs'
 import path from 'path'
-import { build } from 'esbuild'
+import chalk from 'chalk'
+import inquirer from 'inquirer'
 import { loadModule } from './require.js'
 import { program } from './program.js'
-import { createRequire } from 'module'
+import { CredentialManager } from './login.js'
+import { buildDirectory } from '../helpers/fileUtils.js'
+import { showDiffPager } from '../helpers/diffUtils.js'
+import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
+import {
+  getServerProjectData,
+  updateProjectOnServer
+} from '../helpers/apiUtils.js'
 
-const require = createRequire(import.meta.url)
 const RC_PATH = process.cwd() + '/symbols.json'
+const CREATE_PROJECT_URL = 'https://symbols.app/create'
 
-let rc = {}
-try {
-  rc = loadModule(RC_PATH) //eslint-disable-line
-} catch (e) {
-  console.error('Please include symbols.json to your root of repository')
+function printProjectNotFoundGuidance (appKey) {
+  console.error(chalk.bold.red('\nProject not found or access denied.'))
+  console.error(chalk.bold.yellow('\nPossible reasons:'))
+  console.error(chalk.gray('1. The project does not exist'))
+  console.error(chalk.gray("2. You don't have access to this project"))
+  console.error(chalk.gray('3. The app key in symbols.json might be incorrect'))
+
+  console.error(chalk.bold.yellow('\nTo resolve this:'))
+  console.error(
+    chalk.white(
+      `1. Visit ${chalk.cyan.underline(
+        CREATE_PROJECT_URL
+      )} to create a new project`
+    )
+  )
+  console.error(
+    chalk.white(
+      '2. After creating the project, update your symbols.json with the correct information:'
+    )
+  )
+  console.error(chalk.gray(`   - Verify the app key: ${chalk.cyan(appKey)}`))
+  console.error(chalk.gray('   - Make sure you have the correct permissions'))
+
+  console.error(chalk.bold.yellow('\nThen try again:'))
+  console.error(chalk.cyan('$ smbls push'))
 }
 
-export async function fs2js () {
+async function loadProjectConfiguration () {
+  try {
+    const config = await loadModule(RC_PATH)
+    if (!config.key) {
+      throw new Error('Missing app key in symbols.json')
+    }
+    return config
+  } catch (e) {
+    if (e.message.includes('Missing app key')) {
+      console.error(chalk.bold.red('\nInvalid symbols.json configuration:'))
+      console.error(chalk.white('The file must contain a valid app key.'))
+      console.error(chalk.bold.yellow('\nExample symbols.json:'))
+      console.error(
+        chalk.cyan(JSON.stringify({ key: 'your.app.key' }, null, 2))
+      )
+    } else {
+      console.error(
+        chalk.bold.red('Please include symbols.json in your repository root')
+      )
+    }
+    process.exit(1)
+  }
+}
+
+async function buildLocalProject () {
   const distDir = path.join(process.cwd(), 'smbls')
   const outputDirectory = path.join(distDir, 'dist')
 
-  // Ensure output directory exists
-  if (!fs.existsSync(outputDirectory)) {
-    fs.mkdirSync(outputDirectory, { recursive: true })
+  await buildDirectory(distDir, outputDirectory)
+  const outputFile = path.join(outputDirectory, 'index.js')
+  return normalizeKeys(await loadModule(outputFile))
+}
+
+async function confirmChanges (changes) {
+  if (changes.length === 0) {
+    console.log(chalk.bold.yellow('No changes detected'))
+    return false
   }
 
-  try {
-    // Wait for the build to complete
-    await buildDirectory(distDir, outputDirectory)
-    console.log('All files built successfully')
+  console.log(chalk.bold.white('\nDetected changes:'))
+  const changesByType = changes.reduce((acc, [type, path]) => {
+    acc[type] = (acc[type] || 0) + 1
+    return acc
+  }, {})
 
-    const outputFile = path.join(outputDirectory, 'index.js')
-    if (!fs.existsSync(outputFile)) {
-      throw new Error(`Built file not found: ${outputFile}`)
+  Object.entries(changesByType).forEach(([type, count]) => {
+    console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
+  })
+
+  const { proceed } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'proceed',
+      message: 'Proceed with these changes?',
+      default: false
     }
+  ])
 
-    // Use createRequire to load the CommonJS module
-    const moduleData = require(outputFile)
-    console.log(JSON.stringify(moduleData))
-  } catch (error) {
-    console.error('Build or import error:', error)
-    throw error
-  }
+  return proceed
 }
 
-async function buildDirectory (directoryPath, outputDirectory) {
+export async function pushProjectChanges () {
+  const credManager = new CredentialManager()
+  const authToken = credManager.getAuthToken()
+
+  if (!authToken) {
+    console.error(chalk.red('Please login first using: smbls login'))
+    process.exit(1)
+  }
+
   try {
-    const files = await getFilesRecursively(directoryPath)
-    const buildPromises = files.map(async (filePath) => {
-      const relativePath = path.relative(directoryPath, filePath)
-      const outputFile = path.join(outputDirectory, relativePath)
+    const config = await loadProjectConfiguration()
+    const { key: appKey } = config
 
-      // Ensure output subdirectories exist
-      const outputDir = path.dirname(outputFile)
-      if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true })
+    // Build and load local project
+    console.log(chalk.dim('Building local project...'))
+    const projectData = await buildLocalProject()
+    console.log(chalk.gray('Local project built and loaded successfully'))
+
+    // Get server data
+    try {
+      console.log(chalk.dim('Fetching server data...'))
+      const serverProjectData = await getServerProjectData(appKey, authToken)
+
+      if (!serverProjectData) {
+        throw new Error('Failed to fetch server data: Empty response')
       }
 
-      await buildFromFile(filePath, outputFile)
-    })
-    await Promise.all(buildPromises)
-  } catch (error) {
-    console.error('Error building directory:', error)
-    throw error
-  }
-}
+      const normalizedServerData = normalizeKeys(serverProjectData)
+      console.log(chalk.gray('Server data fetched successfully'))
 
-async function buildFromFile (inputFilePath, outputFilePath) {
-  try {
-    const fileContents = fs.readFileSync(inputFilePath, 'utf8')
-    await build({
-      stdin: {
-        contents: fileContents,
-        sourcefile: inputFilePath,
-        loader: 'js',
-        resolveDir: path.dirname(inputFilePath)
-      },
-      minify: false,
-      outfile: outputFilePath,
-      target: 'node14',
-      platform: 'node',
-      format: 'cjs', // Changed back to CommonJS
-      bundle: true,
-      mainFields: ['module', 'main'],
-      external: ['esbuild'] // Don't bundle esbuild itself
-    })
-  } catch (error) {
-    console.error('Error building file:', error)
-    throw error
-  }
-}
+      // Compare and get changes
+      const { changes, diffs } = generateChanges(
+        normalizedServerData,
+        projectData
+      )
 
-async function getFilesRecursively (directoryPath) {
-  const files = []
-  async function traverseDirectory (currentPath) {
-    const entries = fs.readdirSync(currentPath, { withFileTypes: true })
-    for (const entry of entries) {
-      if (entry.name === 'dist' || entry.name === 'node_modules') {
-        continue
+      // Show changes and confirm
+      if (changes.length > 0) {
+        console.log('\nDetailed changes:')
+        await showDiffPager(diffs)
       }
-      const fullPath = path.join(currentPath, entry.name)
-      if (entry.isDirectory()) {
-        await traverseDirectory(fullPath)
-      } else if (entry.isFile() && entry.name.endsWith('.js')) {
-        files.push(fullPath)
+
+      const shouldProceed = await confirmChanges(changes)
+      if (!shouldProceed) {
+        console.log(chalk.yellow('Operation cancelled'))
+        return
       }
+
+      // Update server
+      console.log(chalk.dim('Updating server...'))
+      await updateProjectOnServer(appKey, authToken, changes, projectData)
+
+      console.log(chalk.bold.green('\nProject updated successfully!'))
+      console.log(
+        chalk.gray(`Total changes applied: ${chalk.cyan(changes.length)}`)
+      )
+    } catch (error) {
+      if (
+        error.message.includes('Failed to fetch server data') ||
+        (error.response && error.response.status === 404) ||
+        Object.keys(error.response?.data || {}).length === 0
+      ) {
+        printProjectNotFoundGuidance(appKey)
+      } else {
+        throw error // Re-throw other errors to be caught by outer catch block
+      }
+      process.exit(1)
     }
+  } catch (error) {
+    console.error(chalk.bold.red('\nPush failed:'), chalk.white(error.message))
+    process.exit(1)
   }
-  await traverseDirectory(directoryPath)
-  return files
 }
 
 program
   .command('push')
   .description('Push changes to platform')
-  .action(fs2js)
+  .action(pushProjectChanges)
