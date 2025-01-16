@@ -21,6 +21,34 @@ const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods'
 
 const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema']
 
+async function removeStaleFiles(body, targetDir) {
+  for (const key of directoryKeys) {
+    const dirPath = path.join(targetDir, key)
+    if (!fs.existsSync(dirPath)) continue
+
+    const existingFiles = await fs.promises.readdir(dirPath)
+    const currentEntries = body[key] ? Object.keys(body[key]).map(entry => {
+      // Apply the same transformations as in createKeyDirectoryAndFiles
+      let fileName = entry
+      if (fileName.startsWith('/')) fileName = fileName.slice(1)
+      if (fileName === '') fileName = 'main'
+      if (fileName.includes('*')) fileName = 'fallback'
+      return `${fileName.replace('/', '-')}.js`
+    }) : []
+
+    // Don't remove index.js
+    const filesToCheck = existingFiles.filter(file => file !== 'index.js')
+
+    for (const file of filesToCheck) {
+      if (!currentEntries.includes(file)) {
+        const filePath = path.join(dirPath, file)
+        console.log(chalk.yellow(`Removing stale file: ${path.join(key, file)}`))
+        await fs.promises.unlink(filePath)
+      }
+    }
+  }
+}
+
 export async function createFs (
   body,
   distDir = path.join(process.cwd(), 'smbls'),
@@ -71,6 +99,10 @@ export async function createFs (
   if (filesExist) {
     const cacheDir = path.join(distDir, '.cache')
     await fs.promises.mkdir(cacheDir, { recursive: true })
+
+    if (update) {
+      await removeStaleFiles(body, targetDir)
+    }
 
     const cachePromises = [
       ...directoryKeys.map((key) =>
