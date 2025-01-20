@@ -62,9 +62,13 @@ export const setValue = (FACTORY_NAME, value, key) => {
   const FACTORY = CONFIG[FACTORY_NAME]
 
   if (VALUE_TRANSFORMERS[factoryName]) {
-    const result = VALUE_TRANSFORMERS[factoryName](value, key)
-    FACTORY[key] = result
-    return FACTORY
+    try {
+      const result = VALUE_TRANSFORMERS[factoryName](value, key)
+      FACTORY[key] = result
+      return FACTORY
+    } catch (error) {
+      if (CONFIG.verbose) console.warn('Error setting', factoryName, 'value', value, key, error)
+    }
   }
 
   if (CONFIG.verbose) console.warn('Can not find', factoryName, 'method in scratch')
