@@ -9,7 +9,8 @@ import { CredentialManager } from './login.js'
 import { buildDirectory } from '../helpers/fileUtils.js'
 import { showDiffPager } from '../helpers/diffUtils.js'
 import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
-import { getServerProjectData, updateProjectOnServer } from '../helpers/apiUtils.js'
+import { getProjectDataFromSymStory, updateProjectOnSymStoryServer } from '../helpers/apiUtils.js'
+import fs from 'fs'
 
 const RC_PATH = process.cwd() + '/symbols.json'
 const CREATE_PROJECT_URL = 'https://symbols.app/create'
@@ -86,7 +87,8 @@ async function confirmChanges(changes) {
   return proceed
 }
 
-export async function pushProjectChanges() {
+export async function pushProjectChanges(options) {
+  const { verbose, message } = options
   const credManager = new CredentialManager()
   const authToken = credManager.getAuthToken()
 
@@ -97,60 +99,68 @@ export async function pushProjectChanges() {
 
   try {
     const config = await loadProjectConfiguration()
-    const { key: appKey } = config
+    const { key: appKey, branch, version: versionFromConfig } = config
 
     // Build and load local project
     console.log(chalk.dim('Building local project...'))
-    const projectData = await buildLocalProject()
-    console.log(chalk.gray('Local project built and loaded successfully'))
+    const localProject = await buildLocalProject()
+    console.log(chalk.gray('Local project built successfully'))
 
-    // Get server data
-    try {
-      console.log(chalk.dim('Fetching server data...'))
-      const serverProjectData = await getServerProjectData(appKey, authToken)
+    // Get current server state
+    console.log(chalk.dim('Fetching current server state...'))
+    const serverProject = await getProjectDataFromSymStory(appKey, authToken, branch, versionFromConfig)
 
-      if (!serverProjectData) {
-        throw new Error('Failed to fetch server data: Empty response')
-      }
-
-      const normalizedServerData = normalizeKeys(serverProjectData)
-      console.log(chalk.gray('Server data fetched successfully'))
-
-      // Compare and get changes
-      const { changes, diffs } = generateChanges(normalizedServerData, projectData)
-
-      // Show changes and confirm
-      if (changes.length > 0) {
-        console.log('\nDetailed changes:')
-        await showDiffPager(diffs)
-      }
-
-      const shouldProceed = await confirmChanges(changes)
-      if (!shouldProceed) {
-        console.log(chalk.yellow('Operation cancelled'))
-        return
-      }
-
-      // Update server
-      console.log(chalk.dim('Updating server...'))
-      await updateProjectOnServer(appKey, authToken, changes, projectData)
-
-      console.log(chalk.bold.green('\nProject updated successfully!'))
-      console.log(chalk.gray(`Total changes applied: ${chalk.cyan(changes.length)}`))
-
-    } catch (error) {
-      if (error.message.includes('Failed to fetch server data') ||
-          (error.response && error.response.status === 404) ||
-          Object.keys(error.response?.data || {}).length === 0) {
-        printProjectNotFoundGuidance(appKey)
-      } else {
-        throw error // Re-throw other errors to be caught by outer catch block
-      }
+    // Check if server project is empty (not found or no access)
+    if (!serverProject || Object.keys(serverProject).length === 0) {
+      printProjectNotFoundGuidance(appKey)
       process.exit(1)
     }
 
+    console.log(chalk.gray('Server state fetched successfully'))
+
+    // Calculate local changes
+    const { changes, diffs } = generateChanges(
+      normalizeKeys(serverProject),
+      localProject
+    )
+
+    if (!changes.length) {
+      console.log(chalk.bold.yellow('\nNo changes to push'))
+      return
+    }
+
+    // Show changes
+    console.log('\nLocal changes to push:')
+    await showDiffPager(diffs)
+
+    // Confirm push
+    const shouldProceed = await confirmChanges(changes)
+    if (!shouldProceed) {
+      console.log(chalk.yellow('Push cancelled'))
+      return
+    }
+
+    // Push changes
+    console.log(chalk.dim('\nPushing changes...'))
+    const response = await updateProjectOnSymStoryServer(
+      appKey,
+      authToken,
+      changes,
+      message || 'Push from CLI'
+    )
+    const { id: versionId, value: version } = await response.json()
+
+    // Update symbols.json
+    config.version = version
+    config.versionId = versionId
+    await fs.promises.writeFile(RC_PATH, JSON.stringify(config, null, 2))
+
+    console.log(chalk.bold.green('\nChanges pushed successfully!'))
+    console.log(chalk.gray(`New version: ${chalk.cyan(version)}`))
+
   } catch (error) {
     console.error(chalk.bold.red('\nPush failed:'), chalk.white(error.message))
+    if (verbose) console.error(error.stack)
     process.exit(1)
   }
 }
@@ -158,4 +168,5 @@ export async function pushProjectChanges() {
 program
   .command('push')
   .description('Push changes to platform')
+  .option('-m, --message <message>', 'Specify a commit message')
   .action(pushProjectChanges)
