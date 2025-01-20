@@ -8,6 +8,8 @@ import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
+import { CredentialManager } from './login.js'
+import { getProjectDataFromSymStory } from '../helpers/apiUtils.js'
 const { isObjectLike } = (utils.default || utils)
 const { fetchRemote } = (fetch.default || fetch)
 
@@ -36,14 +38,44 @@ try {
 
 export const fetchFromCli = async (opts) => {
   const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
+
+  const credManager = new CredentialManager()
+  const authToken = credManager.getAuthToken()
+
+  if (!authToken) {
+    console.error(chalk.red('Please login first using: smbls login'))
+    process.exit(1)
+  }
+
   await rc.then(async (data) => {
-    const { key, framework, distDir, metadata } = data
+    const { key, framework, distDir, metadata, branch = 'main', version = '1.0.0' } = data
+
+    console.log('\nFetching project data...\n')
+
+    let body
+    try {
+      body = await getProjectDataFromSymStory(key, authToken, branch, version)
+
+      // Update symbols.json with version and branch info
+      const updatedConfig = { ...data, version: body.version, branch }
+      await fs.promises.writeFile(RC_PATH, JSON.stringify(updatedConfig, null, 2))
+
+      if (verbose) {
+        console.log(chalk.gray(`Version: ${chalk.cyan(body.version)}`))
+        console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+      }
+    } catch (e) {
+      console.log(chalk.red('Failed to fetch:'), key)
+      if (verbose) console.error(e)
+      else console.log(debugMsg)
+      return
+    }
 
     const endpoint = dev ? API_URL_LOCAL : API_URL
 
     console.log('\nFetching from:', chalk.bold(endpoint), '\n')
 
-    const body = await fetchRemote(key, {
+    const bodyFromFetch = await fetchRemote(key, {
       endpoint,
       metadata: metadata || metadataOpt,
       onError: (e) => {
@@ -56,13 +88,13 @@ export const fetchFromCli = async (opts) => {
     // console.log('ON FETCH:')
     // console.log(body.components.Configuration)
 
-    if (!body) return
+    if (!bodyFromFetch) return
 
-    const { version, ...config } = body
+    const { version: fetchedVersion, ...config } = bodyFromFetch
 
-    if (body.designsystem) {
-      body.designSystem = body.designsystem
-      delete body.designsystem
+    if (bodyFromFetch.designsystem) {
+      bodyFromFetch.designSystem = bodyFromFetch.designsystem
+      delete bodyFromFetch.designsystem
     }
 
     if (verbose) {
@@ -70,7 +102,7 @@ export const fetchFromCli = async (opts) => {
         console.log(
           chalk.bold('Symbols'),
           'data fetched for',
-          chalk.green(body.name)
+          chalk.green(bodyFromFetch.name)
         )
       } else {
         console.log(
@@ -98,7 +130,7 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (!distDir) {
-      const bodyString = JSON.stringify(body, null, prettify ?? 2)
+      const bodyString = JSON.stringify(bodyFromFetch, null, prettify ?? 2)
 
       try {
         await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
@@ -120,14 +152,14 @@ export const fetchFromCli = async (opts) => {
       return {}
     }
 
-    if (body.components && convertOpt && framework) {
-      convertFromCli(body.components, { ...opts, framework })
+    if (bodyFromFetch.components && convertOpt && framework) {
+      convertFromCli(bodyFromFetch.components, { ...opts, framework })
     }
 
     if (update || force) {
-      createFs(body, distDir, { update: true, metadata })
+      createFs(bodyFromFetch, distDir, { update: true, metadata })
     } else {
-      createFs(body, distDir, { metadata })
+      createFs(bodyFromFetch, distDir, { metadata })
     }
   })
 }
