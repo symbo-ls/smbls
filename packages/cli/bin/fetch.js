@@ -2,28 +2,18 @@
 
 import fs from 'fs'
 import chalk from 'chalk'
-import { loadModule } from './require.js'
 import { program } from './program.js'
-import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
 import { CredentialManager } from './login.js'
 import { getProjectDataFromSymStory } from '../helpers/apiUtils.js'
 const { isObjectLike } = (utils.default || utils)
-const { fetchRemote } = (fetch.default || fetch)
 
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH =
   process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = "https://api.symbols.app/"; // eslint-disable-line
-
-const API_URL_LOCAL = 'http://localhost:13335/get'
-const API_URL = 'https://api.symbols.app/get'
-
-const rcFile = loadModule(RC_PATH); // eslint-disable-line
-const localConfig = loadModule(LOCAL_CONFIG_PATH); // eslint-disable-line
 
 const debugMsg = chalk.dim(
   'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
@@ -48,14 +38,13 @@ export const fetchFromCli = async (opts) => {
   }
 
   await rc.then(async (data) => {
-    const { key, framework, distDir, metadata, branch = 'main', version = '1.0.0' } = data
+    const { key, framework, distDir, metadata, branch = 'main' } = data
 
     console.log('\nFetching project data...\n')
 
     let body
     try {
-      body = await getProjectDataFromSymStory(key, authToken, branch, version)
-
+      body = await getProjectDataFromSymStory(key, authToken, branch)
       // Update symbols.json with version and branch info
       const updatedConfig = { ...data, version: body.version, branch }
       await fs.promises.writeFile(RC_PATH, JSON.stringify(updatedConfig, null, 2))
@@ -71,30 +60,9 @@ export const fetchFromCli = async (opts) => {
       return
     }
 
-    const endpoint = dev ? API_URL_LOCAL : API_URL
-
-    console.log('\nFetching from:', chalk.bold(endpoint), '\n')
-
-    const bodyFromFetch = await fetchRemote(key, {
-      endpoint,
-      metadata: metadata || metadataOpt,
-      onError: (e) => {
-        console.log(chalk.red('Failed to fetch:'), key)
-        if (verbose) console.error(e)
-        else console.log(debugMsg)
-      }
-    })
-
-    // console.log('ON FETCH:')
-    // console.log(body.components.Configuration)
-
-    if (!bodyFromFetch) return
-
-    const { version: fetchedVersion, ...config } = bodyFromFetch
-
-    if (bodyFromFetch.designsystem) {
-      bodyFromFetch.designSystem = bodyFromFetch.designsystem
-      delete bodyFromFetch.designsystem
+    if (body.designsystem) {
+      body.designSystem = body.designsystem
+      delete body.designsystem
     }
 
     if (verbose) {
@@ -102,7 +70,7 @@ export const fetchFromCli = async (opts) => {
         console.log(
           chalk.bold('Symbols'),
           'data fetched for',
-          chalk.green(bodyFromFetch.name)
+          chalk.green(body.name)
         )
       } else {
         console.log(
@@ -114,6 +82,8 @@ export const fetchFromCli = async (opts) => {
       }
       console.log()
     }
+
+    const { version: fetchedVersion, ...config } = body
 
     for (const t in config) {
       const type = config[t]
@@ -130,7 +100,7 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (!distDir) {
-      const bodyString = JSON.stringify(bodyFromFetch, null, prettify ?? 2)
+      const bodyString = JSON.stringify(body, null, prettify ?? 2)
 
       try {
         await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
@@ -152,14 +122,14 @@ export const fetchFromCli = async (opts) => {
       return {}
     }
 
-    if (bodyFromFetch.components && convertOpt && framework) {
-      convertFromCli(bodyFromFetch.components, { ...opts, framework })
+    if (body.components && convertOpt && framework) {
+      convertFromCli(body.components, { ...opts, framework })
     }
 
     if (update || force) {
-      createFs(bodyFromFetch, distDir, { update: true, metadata })
+      createFs(body, distDir, { update: true, metadata })
     } else {
-      createFs(bodyFromFetch, distDir, { metadata })
+      createFs(body, distDir, { metadata })
     }
   })
 }

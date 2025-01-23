@@ -98,58 +98,72 @@ export async function createFs (
 
   if (filesExist) {
     const cacheDir = path.join(distDir, '.cache')
-    await fs.promises.mkdir(cacheDir, { recursive: true })
 
-    if (update) {
-      await removeStaleFiles(body, targetDir)
-    }
+    try {
+      await fs.promises.mkdir(cacheDir, { recursive: true })
 
-    const cachePromises = [
-      ...directoryKeys.map((key) =>
-        createKeyDirectoryAndFiles(key, body, cacheDir, true)
-      ),
-      ...singleFileKeys.map((key) => {
-        if (body[key] && typeof body[key] === 'object') {
-          return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
-        }
-        return undefined
-      })
-    ]
+      if (update) {
+        await removeStaleFiles(body, targetDir)
+      }
 
-    await Promise.all(cachePromises)
-    await generateIndexjsFile(
-      joinArrays(directoryKeys, singleFileKeys),
-      cacheDir,
-      'root'
-    )
+      const cachePromises = [
+        ...directoryKeys.map((key) =>
+          createKeyDirectoryAndFiles(key, body, cacheDir, true)
+        ),
+        ...singleFileKeys.map((key) => {
+          if (body[key] && typeof body[key] === 'object') {
+            return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
+          }
+          return undefined
+        })
+      ]
 
-    const diffs = await findDiff(cacheDir, targetDir)
-    if (diffs.length > 0) {
-      console.log('Differences found:')
-      diffs.forEach((diff) => {
-        console.log(chalk.green(`File: ${diff.file}`))
-        console.log(chalk.yellow('Diff:'))
-        console.log(chalk.yellow(diff.diff))
-        console.log('---')
-      })
-      if (!update) {
-        const { consent } = await askForConsent()
-        if (consent) {
+      await Promise.all(cachePromises)
+      await generateIndexjsFile(
+        joinArrays(directoryKeys, singleFileKeys),
+        cacheDir,
+        'root'
+      )
+
+      const diffs = await findDiff(cacheDir, targetDir)
+      if (diffs.length > 0) {
+        console.log('Differences found:')
+        diffs.forEach((diff) => {
+          console.log(chalk.green(`File: ${diff.file}`))
+          console.log(chalk.yellow('Diff:'))
+          console.log(chalk.yellow(diff.diff))
+          console.log('---')
+        })
+        if (!update) {
+          const { consent } = await askForConsent()
+          if (consent) {
+            await overrideFiles(cacheDir, targetDir)
+            console.log('Files overridden successfully.')
+          } else {
+            console.log('Files not overridden.')
+          }
+        } else {
           await overrideFiles(cacheDir, targetDir)
           console.log('Files overridden successfully.')
-        } else {
-          console.log('Files not overridden.')
+          console.log()
+          console.log(chalk.dim('\n----------------\n'))
         }
       } else {
-        await overrideFiles(cacheDir, targetDir)
-        console.log('Files overridden successfully.')
+        console.log('No differences found.')
         console.log()
         console.log(chalk.dim('\n----------------\n'))
       }
-    } else {
-      console.log('No differences found.')
-      console.log()
-      console.log(chalk.dim('\n----------------\n'))
+
+      // Clean up cache directory
+      await fs.promises.rm(cacheDir, { recursive: true, force: true })
+    } catch (error) {
+      // Make sure we clean up even if there's an error
+      try {
+        await fs.promises.rm(cacheDir, { recursive: true, force: true })
+      } catch (cleanupError) {
+        // Ignore cleanup errors
+      }
+      throw error // Re-throw the original error
     }
   }
 
