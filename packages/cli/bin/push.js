@@ -15,16 +15,26 @@ import fs from 'fs'
 const RC_PATH = process.cwd() + '/symbols.json'
 const CREATE_PROJECT_URL = 'https://symbols.app/create'
 
-function printProjectNotFoundGuidance(appKey) {
+function printProjectNotFoundGuidance (appKey) {
   console.error(chalk.bold.red('\nProject not found or access denied.'))
   console.error(chalk.bold.yellow('\nPossible reasons:'))
   console.error(chalk.gray('1. The project does not exist'))
-  console.error(chalk.gray('2. You don\'t have access to this project'))
+  console.error(chalk.gray("2. You don't have access to this project"))
   console.error(chalk.gray('3. The app key in symbols.json might be incorrect'))
 
   console.error(chalk.bold.yellow('\nTo resolve this:'))
-  console.error(chalk.white(`1. Visit ${chalk.cyan.underline(CREATE_PROJECT_URL)} to create a new project`))
-  console.error(chalk.white('2. After creating the project, update your symbols.json with the correct information:'))
+  console.error(
+    chalk.white(
+      `1. Visit ${chalk.cyan.underline(
+        CREATE_PROJECT_URL
+      )} to create a new project`
+    )
+  )
+  console.error(
+    chalk.white(
+      '2. After creating the project, update your symbols.json with the correct information:'
+    )
+  )
   console.error(chalk.gray(`   - Verify the app key: ${chalk.cyan(appKey)}`))
   console.error(chalk.gray('   - Make sure you have the correct permissions'))
 
@@ -32,7 +42,7 @@ function printProjectNotFoundGuidance(appKey) {
   console.error(chalk.cyan('$ smbls push'))
 }
 
-async function loadProjectConfiguration() {
+async function loadProjectConfiguration () {
   try {
     const config = await loadModule(RC_PATH)
     if (!config.key) {
@@ -44,15 +54,19 @@ async function loadProjectConfiguration() {
       console.error(chalk.bold.red('\nInvalid symbols.json configuration:'))
       console.error(chalk.white('The file must contain a valid app key.'))
       console.error(chalk.bold.yellow('\nExample symbols.json:'))
-      console.error(chalk.cyan(JSON.stringify({ key: 'your.app.key' }, null, 2)))
+      console.error(
+        chalk.cyan(JSON.stringify({ key: 'your.app.key' }, null, 2))
+      )
     } else {
-      console.error(chalk.bold.red('Please include symbols.json in your repository root'))
+      console.error(
+        chalk.bold.red('Please include symbols.json in your repository root')
+      )
     }
     process.exit(1)
   }
 }
 
-async function buildLocalProject() {
+async function buildLocalProject () {
   const distDir = path.join(process.cwd(), 'smbls')
   const outputDirectory = path.join(distDir, 'dist')
 
@@ -61,7 +75,7 @@ async function buildLocalProject() {
   return normalizeKeys(await loadModule(outputFile))
 }
 
-async function confirmChanges(changes) {
+async function confirmChanges (changes) {
   if (changes.length === 0) {
     console.log(chalk.bold.yellow('No changes detected'))
     return false
@@ -77,12 +91,14 @@ async function confirmChanges(changes) {
     console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
   })
 
-  const { proceed } = await inquirer.prompt([{
-    type: 'confirm',
-    name: 'proceed',
-    message: 'Proceed with these changes?',
-    default: false
-  }])
+  const { proceed } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'proceed',
+      message: 'Proceed with these changes?',
+      default: false
+    }
+  ])
 
   return proceed
 }
