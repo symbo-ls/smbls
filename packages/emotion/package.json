@@ -6,9 +6,6 @@
   "main": "index.js",
   "targets": {},
   "files": [],
-  "scripts": {
-    "clean": "rm -rf dist node_modules yarn.lock yarn-error.log"
-  },
   "dependencies": {
     "@emotion/css": "^11.10.0"
   },

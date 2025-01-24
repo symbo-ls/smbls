@@ -50,7 +50,7 @@ program
       framework = 'vue3'
     }
     const cloneUrl = REPO_URLS[framework]
-    const packageManager = options.packageManager || 'yarn'
+    const packageManager = options.packageManager || 'npm'
 
     if (folderExists(dest)) {
       console.error(`Folder ${dest} already exists!`)
