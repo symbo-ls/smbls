@@ -1,6 +1,6 @@
 {
     "key": "toko-demo.symbo.ls",
-    "distDir": "./toko",
+    "distDir": "./smbls",
     "packageManager": "npm",
     "framework": "domql",
     "branch": "main",
