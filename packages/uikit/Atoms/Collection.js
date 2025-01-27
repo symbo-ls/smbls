@@ -10,6 +10,8 @@ export const Collection = {
       const { children: childrenProps, childrenAs, childExtends } = (el.props || {})
       const children = childrenProps && exec(childrenProps, el, state)
 
+      const childrenAsDefault = childrenAs || 'props'
+
       if (children) {
         if (isObject(children)) {
           if (children.$$typeof) return el.call('renderReact', children, el)
@@ -20,10 +22,10 @@ export const Collection = {
           })
         } else if (isArray(children)) {
           param = deepClone(children)
-          if (childrenAs) {
+          if (childrenAsDefault) {
             param = param.map(v => ({
               extend: childExtends,
-              [childrenAs]: v
+              [childrenAsDefault]: v
             }))
           }
         } else if (isString(children) || isNumber(children)) {
