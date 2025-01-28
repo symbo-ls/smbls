@@ -12,12 +12,12 @@ const RC_FILE = '.smblsrc'
 
 // Helper to manage credentials
 export class CredentialManager {
-  constructor() {
+  constructor () {
     this.rcPath = path.join(os.homedir(), RC_FILE)
   }
 
   // Load credentials from rc file
-  loadCredentials() {
+  loadCredentials () {
     try {
       const data = fs.readFileSync(this.rcPath, 'utf8')
       return JSON.parse(data)
@@ -27,7 +27,7 @@ export class CredentialManager {
   }
 
   // Save credentials to rc file
-  saveCredentials(credentials) {
+  saveCredentials (credentials) {
     try {
       fs.writeFileSync(this.rcPath, JSON.stringify(credentials, null, 2))
       return true
@@ -38,13 +38,13 @@ export class CredentialManager {
   }
 
   // Get stored auth token
-  getAuthToken() {
+  getAuthToken () {
     const creds = this.loadCredentials()
     return creds.authToken
   }
 
   // Clear stored credentials
-  clearCredentials() {
+  clearCredentials () {
     try {
       fs.unlinkSync(this.rcPath)
       return true
@@ -103,7 +103,6 @@ program
 
       console.log(chalk.green('\nSuccessfully logged in!'))
       console.log(chalk.dim(`Credentials saved to ${credManager.rcPath}`))
-
     } catch (error) {
       console.error(chalk.red('\nLogin failed:'), error.message)
       process.exit(1)
