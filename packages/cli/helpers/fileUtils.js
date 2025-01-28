@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { build } from 'esbuild'
 
-export async function buildDirectory(directoryPath, outputDirectory) {
+export async function buildDirectory (directoryPath, outputDirectory) {
   try {
     const files = await getFilesRecursively(directoryPath)
     const buildPromises = files.map(async (filePath) => {
@@ -24,7 +24,7 @@ export async function buildDirectory(directoryPath, outputDirectory) {
   }
 }
 
-async function buildFromFile(inputFilePath, outputFilePath) {
+async function buildFromFile (inputFilePath, outputFilePath) {
   try {
     const fileContents = fs.readFileSync(inputFilePath, 'utf8')
     await build({
@@ -49,9 +49,9 @@ async function buildFromFile(inputFilePath, outputFilePath) {
   }
 }
 
-async function getFilesRecursively(directoryPath) {
+async function getFilesRecursively (directoryPath) {
   const files = []
-  async function traverseDirectory(currentPath) {
+  async function traverseDirectory (currentPath) {
     const entries = fs.readdirSync(currentPath, { withFileTypes: true })
     for (const entry of entries) {
       if (entry.name === 'dist' || entry.name === 'node_modules') continue

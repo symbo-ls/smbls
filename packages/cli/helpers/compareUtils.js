@@ -10,7 +10,7 @@ export const ALLOWED_FIELDS = [
   'snippets'
 ]
 
-export function normalizeKeys(obj) {
+export function normalizeKeys (obj) {
   if (!obj || typeof obj !== 'object') return obj
 
   if (Array.isArray(obj)) {
@@ -24,7 +24,7 @@ export function normalizeKeys(obj) {
   }, {})
 }
 
-export function generateChanges(oldData, newData) {
+export function generateChanges (oldData, newData) {
   const changes = []
   const diffs = []
 
@@ -52,7 +52,7 @@ export function generateChanges(oldData, newData) {
   return { changes, diffs }
 }
 
-function isEqual(val1, val2) {
+function isEqual (val1, val2) {
   if (val1 === val2) return true
   if (!val1 && !val2) return true
   if (!val1 || !val2) return false
@@ -84,7 +84,7 @@ function isEqual(val1, val2) {
   return keys1.every(key => isEqual(val1[key], val2[key]))
 }
 
-function compareObjects(oldObj, newObj, currentPath, changes, diffs) {
+function compareObjects (oldObj, newObj, currentPath, changes, diffs) {
   oldObj = oldObj || {}
   newObj = newObj || {}
 
@@ -105,7 +105,7 @@ function compareObjects(oldObj, newObj, currentPath, changes, diffs) {
   handleAdditionsAndUpdates(oldObj, newObj, currentPath, changes, diffs)
 }
 
-function handleDeletions(oldObj, newObj, currentPath, changes, diffs) {
+function handleDeletions (oldObj, newObj, currentPath, changes, diffs) {
   const oldKeys = Object.keys(oldObj)
   const newKeys = Object.keys(newObj)
 
@@ -117,7 +117,7 @@ function handleDeletions(oldObj, newObj, currentPath, changes, diffs) {
   }
 }
 
-function handleAdditionsAndUpdates(oldObj, newObj, currentPath, changes, diffs) {
+function handleAdditionsAndUpdates (oldObj, newObj, currentPath, changes, diffs) {
   const oldKeys = Object.keys(oldObj)
   const newKeys = Object.keys(newObj)
 
