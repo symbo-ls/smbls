@@ -22,10 +22,10 @@ export const Collection = {
           })
         } else if (isArray(children)) {
           param = deepClone(children)
-          if (childrenAsDefault) {
+          if (childrenAsDefault || childrenAsDefault !== 'element') {
             param = param.map(v => ({
               extend: childExtends,
-              [childrenAsDefault]: v
+              [childrenAsDefault]: isObjectLike(v) ? v : childrenAsDefault === 'state' ? { value: v } : { text: v }
             }))
           }
         } else if (isString(children) || isNumber(children)) {

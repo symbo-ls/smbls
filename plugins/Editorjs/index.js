@@ -33,7 +33,9 @@ export const Editorjs = {
         interceptorApi.addInterceptor(DomValueInterceptor, 'before')
       }
 
+      console.log(param)
       const content = editorJsToDOMQL(param)
+      console.log(content)
       const cloned = deepClone(content.asObjectArray)
       el.removeContent()
       return el.set(cloned)
