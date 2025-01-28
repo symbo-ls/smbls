@@ -58,6 +58,10 @@ program
   .command('login')
   .description('Sign in to Symbols')
   .action(async () => {
+    console.log('yo login')
+
+    console.log(getApiUrl())
+
     // Prompt for credentials
     const answers = await inquirer.prompt([
       {

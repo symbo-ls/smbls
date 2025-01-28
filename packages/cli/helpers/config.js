@@ -18,9 +18,9 @@ export const getApiUrl = () => {
 
   switch (process.env.NODE_ENV) {
     case 'production':
-      return 'https://api.production-domain.com'
+      return 'https://api.symbols.app'
     case 'staging':
-      return 'https://api.staging-domain.com'
+      return 'https://api-staging.symbols.app'
     default:
       return 'http://localhost:13335'
   }
