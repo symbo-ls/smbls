@@ -8,7 +8,6 @@ import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
-import { fs2js } from './fs2.js'
 const { isObjectLike } = (utils.default || utils)
 const { fetchRemote } = (fetch.default || fetch)
 
@@ -145,5 +144,3 @@ program
   .option('--verbose-code', 'Verbose errors and warnings')
   .option('--dist-dir', 'Directory to import files to.')
   .action(fetchFromCli)
-
-program.command('push').description('Push changes to platform').action(fs2js)
