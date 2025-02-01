@@ -5,6 +5,7 @@ import { isUndefined, isString } from '@domql/utils'
 import {
   getSpacingBasedOnRatio,
   transformSize,
+  transformBorderRadius,
   transformSizeRatio,
   transfromGap
 } from '@symbo.ls/scratch'
@@ -112,10 +113,17 @@ export const BLOCK_PROPS = {
       ...transformSize('paddingBlockEnd', paddingBlockEnd || paddingBlockStart)
     }
   },
-  paddingInlineStart: ({ props }) => transformSizeRatio('paddingInlineStart', props),
-  paddingInlineEnd: ({ props }) => transformSizeRatio('paddingInlineEnd', props),
-  paddingBlockStart: ({ props }) => transformSizeRatio('paddingBlockStart', props),
-  paddingBlockEnd: ({ props }) => transformSizeRatio('paddingBlockEnd', props),
+  // Traditional directional padding
+  paddingTop: ({ props }) => transformSizeRatio('paddingBlockStart', props),
+  paddingBottom: ({ props }) => transformSizeRatio('paddingBlockEnd', props),
+  paddingLeft: ({ props }) => transformSizeRatio('paddingInlineStart', props),
+  paddingRight: ({ props }) => transformSizeRatio('paddingInlineEnd', props),
+
+  // Logical properties (for reference)
+  paddingBlockStart: ({ props }) => transformSizeRatio('paddingBlockStart', props), // maps to top
+  paddingBlockEnd: ({ props }) => transformSizeRatio('paddingBlockEnd', props), // maps to bottom
+  paddingInlineStart: ({ props }) => transformSizeRatio('paddingInlineStart', props), // maps to left
+  paddingInlineEnd: ({ props }) => transformSizeRatio('paddingInlineEnd', props), // maps to right
 
   margin: ({ props }) => transformSizeRatio('margin', props),
   marginInline: ({ props }) => {
@@ -169,6 +177,8 @@ export const BLOCK_PROPS = {
       alignItems,
       justifyContent
     }
-  }
+  },
 
+  round: ({ props, key, deps, ...el }) => transformBorderRadius(props.round || props.borderRadius, props, 'round'),
+  borderRadius: ({ props, key, deps, ...el }) => transformBorderRadius(props.borderRadius || props.round, props, 'borderRadius')
 }

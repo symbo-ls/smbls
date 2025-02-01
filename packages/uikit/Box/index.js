@@ -25,17 +25,9 @@ export const Box = {
   extend: [
     PropsCSS,
     'Shape',
-    'Position',
     'Theme',
-    'Block',
     'Text',
-    'Overflow',
-    'Timing',
-    'Transform',
-    'Media',
-    'Interaction',
-    'XYZ',
-    'Animation'
+    'Media'
   ],
   attr: {
     id: el => el.call('isString', el.props.id) && el.props.id,

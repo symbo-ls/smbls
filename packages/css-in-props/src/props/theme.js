@@ -72,18 +72,6 @@ export const THEME_PROPS = {
     })
   },
 
-  backgroundSize: ({ props }) => ({
-    backgroundSize: props.backgroundSize
-  }),
-
-  backgroundPosition: ({ props }) => ({
-    backgroundPosition: props.backgroundPosition
-  }),
-
-  backgroundRepeat: ({ props }) => ({
-    backgroundRepeat: props.backgroundRepeat
-  }),
-
   textStroke: ({ props }) => ({
     WebkitTextStroke: transformTextStroke(props.textStroke)
   }),

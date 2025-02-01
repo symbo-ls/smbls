@@ -27,12 +27,12 @@ export const ANIMATION_PROPS = {
     animationName: applyAnimationProps(el.props.animationName, el)
   }),
   animationDuration: ({ props, deps }) => ({
-    animationDuration: deps.getTimingByKey(props.animationDuration).timing
+    animationDuration: getTimingByKey(props.animationDuration).timing
   }),
   animationDelay: ({ props, deps }) => ({
-    animationDelay: deps.getTimingByKey(props.animationDelay).timing
+    animationDelay: getTimingByKey(props.animationDelay).timing
   }),
   animationTimingFunction: ({ props, deps }) => ({
-    animationTimingFunction: deps.getTimingFunction(props.animationTimingFunction)
+    animationTimingFunction: getTimingFunction(props.animationTimingFunction)
   })
 }

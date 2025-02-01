@@ -1,7 +1,8 @@
 'use strict'
 
-import { merge, isArray, overwriteDeep, overwriteShallow } from '@domql/utils'
+import { merge, isArray, overwriteDeep, overwriteShallow, exec } from '@domql/utils'
 import { getSystemGlobalTheme } from './Theme'
+import { CSS_PROPS_REGISTRY, DEFAULT_CSS_PROPERTIES_LIST } from 'css-in-props'
 
 export const keySetters = {
   '@': (key, props, result, element, isSubtree) => applyMediaProps(
@@ -43,25 +44,21 @@ export const keySetters = {
 }
 
 const execClass = (key, props, result, element) => {
-  const { class: className } = element
-  const classnameExec = className[key]
+  let value
 
-  if (typeof classnameExec !== 'function') return
-
-  let classExec = classnameExec({
-    props,
-    context: element.context,
-    state: element.state,
-    deps: element.deps
-  }, element.state, element.context)
-
-  if (isArray(classExec)) classExec = classExec.reduce((a, c) => merge(a, c), {})
-
-  for (const finalProp in classExec) {
-    result[finalProp] = classExec[finalProp]
+  if (element.class[key]) {
+    value = element.call('exec', element.class[key], element)
+  } else if (CSS_PROPS_REGISTRY[key]) {
+    value = element.call('exec', CSS_PROPS_REGISTRY[key], element)
+  } else if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {
+    value = { [key]: props[key] }
   }
 
-  return classExec
+  if (isArray(value)) value = value.reduce((a, c) => merge(a, c), {})
+
+  result[key] = value
+
+  return value
 }
 
 const convertPropsToClass = (props, result, element) => {
@@ -169,6 +166,7 @@ const beforeClassAssign = (element, s, ctx) => {
         })
       }
     }
+
     if (setter) setter(key, props[key], CLASS_NAMES, element)
     else if (key === 'class') {
       const value = element.props.class
@@ -179,7 +177,15 @@ const beforeClassAssign = (element, s, ctx) => {
         const scratchClass = scratchClasses[current]
         return merge(accumulator, scratchClass)
       }, {})
-    } else if (key === 'true') applyTrueProps(props[key], CLASS_NAMES, element)
+    } else if (key === 'true') {
+      applyTrueProps(props[key], CLASS_NAMES, element)
+    } else if (element.class[key]) {
+      CLASS_NAMES[key] = element.call('exec', element.class[key], element)
+    } else if (CSS_PROPS_REGISTRY[key]) {
+      CLASS_NAMES[key] = element.call('exec', CSS_PROPS_REGISTRY[key], element)
+    } else if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {
+      CLASS_NAMES[key] = { [key]: props[key] }
+    }
   }
 
   // override props
