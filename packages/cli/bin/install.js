@@ -18,7 +18,6 @@ const makeCommand = (packageManager, packageName) => {
 }
 
 export const installFromCli = async (options) => {
-
   const symbolsConfig = await loadSymbolsConfig()
 
   const framework = symbolsConfig.framework || options.framework
