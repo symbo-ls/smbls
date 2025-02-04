@@ -10,13 +10,13 @@ const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
 
-const pkg = loadModule(PACKAGE_PATH)
-const rcFile = loadModule(RC_PATH) // eslint-disable-line
-const localConfig = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
+const pkg = await loadModule(PACKAGE_PATH, { json: true, silent: true })
+const rcFile = await loadModule(RC_PATH, { json: true, silent: true })
+const localConfig = await loadModule(LOCAL_CONFIG_PATH, { json: true, silent: true })
 
 let rc = {}
 try {
-  rc = loadModule(RC_PATH) // eslint-disable-line
+  rc = await loadModule(RC_PATH, { json: true })
 } catch (e) { console.error('Please include symbols.json to your root of respository') }
 
 const makeCommand = (packageManager, packageName) => {

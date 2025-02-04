@@ -6,17 +6,20 @@ import { loadModule } from './require.js'
 
 const RC_PATH = process.cwd() + '/symbols.json'
 let rc = {}
+
 try {
-  rc = loadModule(RC_PATH) // eslint-disable-line
-} catch (e) { console.error('Please include symbols.json to your root of respository') }
+  rc = await loadModule(RC_PATH, { json: true, silent: true })
+} catch (e) {
+  console.error('Please include symbols.json to your root of respository')
+}
 
 program
   .command('socket-server')
   .description('Realtime sync with Symbols')
   .option('-l, --live', 'Bypass the local build')
   .action(async (options) => {
-    rc.then(data => {
-      const opts = { ...data, ...options }
+    if (rc) {
+      const opts = { ...rc, ...options }
       sync(null, opts)
-    })
+    }
   })

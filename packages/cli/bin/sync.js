@@ -18,7 +18,7 @@ const distDir = path.join(process.cwd(), 'smbls')
 
 async function loadProjectConfiguration() {
   try {
-    const config = await loadModule(RC_PATH)
+    const config = await loadModule(RC_PATH, { json: true })
     if (!config.key) {
       throw new Error('Missing app key in symbols.json')
     }
@@ -38,10 +38,9 @@ async function loadProjectConfiguration() {
 
 async function buildLocalProject() {
   const outputDirectory = path.join(distDir, 'dist')
-
   await buildDirectory(distDir, outputDirectory)
   const outputFile = path.join(outputDirectory, 'index.js')
-  return normalizeKeys(await loadModule(outputFile))
+  return normalizeKeys(await loadModule(outputFile, { silent: true }))
 }
 
 async function resolveConflicts(conflicts) {
