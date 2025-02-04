@@ -1,14 +1,14 @@
 import chalk from 'chalk'
 import { spawn } from 'child_process'
 
-export function formatValue(value) {
+export function formatValue (value) {
   if (typeof value === 'object' && value !== null) {
     return JSON.stringify(value, null, 2)
   }
   return String(value)
 }
 
-export function generateDiffDisplay(type, path, oldValue, newValue) {
+export function generateDiffDisplay (type, path, oldValue, newValue) {
   const pathStr = path.join('.')
   let output = chalk.dim(`@ ${pathStr}\n`)
 
@@ -29,7 +29,7 @@ export function generateDiffDisplay(type, path, oldValue, newValue) {
   return output
 }
 
-export async function showDiffPager(diffs) {
+export async function showDiffPager (diffs) {
   return new Promise((resolve, reject) => {
     const formattedDiffs = diffs.join('\n' + chalk.dim('---') + '\n')
 

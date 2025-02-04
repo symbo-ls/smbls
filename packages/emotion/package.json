@@ -1,14 +1,11 @@
 {
   "name": "@symbo.ls/emotion",
-  "version": "2.11.470",
+  "version": "2.11.515",
   "license": "MIT",
   "source": "index.js",
   "main": "index.js",
   "targets": {},
   "files": [],
-  "scripts": {
-    "clean": "rm -rf dist node_modules yarn.lock yarn-error.log"
-  },
   "dependencies": {
     "@emotion/css": "^11.10.0"
   },

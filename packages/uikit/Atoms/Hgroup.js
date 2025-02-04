@@ -1,91 +1,59 @@
 'use strict'
 
 export const Hgroup = {
-  extend: 'Flex',
   tag: 'hgroup',
-
+  extend: [
+    'Flex'
+  ],
   props: {
     flow: 'y',
-    gap: 'Y2',
-
-    Title: {
-      fontWeight: '700',
-      alignItems: 'center'
-    },
-
-    Paragraph: {
-      margin: '0',
-      color: 'caption',
-      '> p': { margin: '0' }
-    },
-
-    H: {
-      color: 'title',
-      tag: 'h3',
-      lineHeight: '1em',
-      margin: '0'
-    },
-    P: {
-      margin: '0',
-      color: 'paragraph'
-    }
+    gap: 'Z'
   },
-
-  H: {},
-  P: {},
-
-  Title: {
-    extend: 'Flex',
-    if: ({ parent }) => parent.props.title,
-    props: ({ parent }) => ({
-      text: parent.props.title,
-      lineHeight: '1em'
-    })
+  H: {
+    tag: 'h3',
+    text: 'Heading',
+    lineHeight: '1em',
+    margin: '0'
   },
-
-  Paragraph: {
-    extend: 'Flex',
-    if: ({ parent }) => parent.props.paragraph,
-    props: ({ parent }) => ({
-      text: parent.props.paragraph,
-      margin: '0'
-    })
+  P: {
+    text: 'Paragraph',
+    margin: '0',
+    color: 'paragraph'
   }
 }
 
 export const HgroupRows = {
   extend: 'Hgroup',
 
-  Title: {
-    extend: 'Flex',
-    props: { color: 'title', align: 'center space-between' }
+  H: {
+    extends: 'Flex',
+    color: 'title',
+    align: 'center space-between'
   },
 
-  Paragraph: {
-    extend: 'Flex',
-    props: { color: 'paragraph', align: 'center space-between' }
+  P: {
+    color: 'paragraph', align: 'center space-between'
   }
 }
 
 export const HgroupButton = {
   extend: 'HgroupRows',
 
-  Title: {
-    props: { justifyContent: 'space-between' },
+  H: {
+    justifyContent: 'space-between',
 
     Span: {},
+
     Button: {
-      props: {
-        background: 'transparent',
-        color: 'currentColor',
-        padding: '0',
-        Icon: {
-          name: 'x',
-          fontSize: 'C'
-        }
+      background: 'transparent',
+      color: 'currentColor',
+      padding: '0',
+      Icon: {
+        name: 'x',
+        fontSize: 'C'
       }
     }
   },
 
-  Paragraph: {}
+  P: {}
 }

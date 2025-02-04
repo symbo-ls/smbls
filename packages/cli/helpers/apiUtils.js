@@ -1,13 +1,13 @@
 import { getApiUrl } from './config.js'
 import { ALLOWED_FIELDS } from './compareUtils.js'
 
-export async function getServerProjectData(appKey, authToken) {
+export async function getServerProjectData (appKey, authToken) {
   try {
     const response = await fetch(`${getApiUrl()}/get/`, {
       method: 'GET',
       headers: {
         'X-AppKey': appKey,
-        'Authorization': `Bearer ${authToken}`
+        Authorization: `Bearer ${authToken}`
       }
     })
 
@@ -44,7 +44,7 @@ export async function getServerProjectData(appKey, authToken) {
   }
 }
 
-export async function updateProjectOnServer(appKey, authToken, changes, projectData) {
+export async function updateProjectOnServer (appKey, authToken, changes, projectData) {
   // Validate changes before sending
   const validChanges = changes.filter(([type, path]) => {
     const normalizedPath = path[0].toLowerCase()
@@ -55,7 +55,7 @@ export async function updateProjectOnServer(appKey, authToken, changes, projectD
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${authToken}`
+      Authorization: `Bearer ${authToken}`
     },
     body: JSON.stringify({
       appKey,
