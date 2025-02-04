@@ -8,6 +8,8 @@ import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
 import { CredentialManager } from './login.js'
 import { getProjectDataFromSymStory } from '../helpers/apiUtils.js'
+import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 const { isObjectLike } = (utils.default || utils)
 
 const RC_PATH = process.cwd() + '/symbols.json'
@@ -19,13 +21,6 @@ const debugMsg = chalk.dim(
   'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
 )
 
-let rc = {}
-try {
-  rc = loadModule(RC_PATH); // eslint-disable-line
-} catch (e) {
-  console.error('Please include symbols.json to your root of respository')
-}
-
 export const fetchFromCli = async (opts) => {
   const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
 
@@ -33,12 +28,13 @@ export const fetchFromCli = async (opts) => {
   const authToken = credManager.getAuthToken()
 
   if (!authToken) {
-    console.error(chalk.red('Please login first using: smbls login'))
+    showAuthRequiredMessages()
+
     process.exit(1)
   }
 
-  await rc.then(async (data) => {
-    const { key, framework, distDir, metadata, branch = 'main' } = data
+  const symbolsConfig = await loadSymbolsConfig()
+  const { key, framework, distDir, metadata, branch = 'main' } = symbolsConfig
 
     console.log('\nFetching project data...\n')
 
@@ -46,7 +42,7 @@ export const fetchFromCli = async (opts) => {
     try {
       body = await getProjectDataFromSymStory(key, authToken, branch)
       // Update symbols.json with version and branch info
-      const updatedConfig = { ...data, version: body.version, branch }
+      const updatedConfig = { ...symbolsConfig, version: body.version, branch }
       await fs.promises.writeFile(RC_PATH, JSON.stringify(updatedConfig, null, 2))
 
       if (verbose) {
@@ -131,7 +127,6 @@ export const fetchFromCli = async (opts) => {
     } else {
       createFs(body, distDir, { metadata })
     }
-  })
 }
 
 program

@@ -11,60 +11,9 @@ import { showDiffPager } from '../helpers/diffUtils.js'
 import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
 import { getProjectDataFromSymStory, updateProjectOnSymStoryServer } from '../helpers/apiUtils.js'
 import fs from 'fs'
-
+import { showAuthRequiredMessages, showProjectNotFoundMessages } from '../helpers/buildMessages.js'
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 const RC_PATH = process.cwd() + '/symbols.json'
-const CREATE_PROJECT_URL = 'https://symbols.app/create'
-
-function printProjectNotFoundGuidance (appKey) {
-  console.error(chalk.bold.red('\nProject not found or access denied.'))
-  console.error(chalk.bold.yellow('\nPossible reasons:'))
-  console.error(chalk.gray('1. The project does not exist'))
-  console.error(chalk.gray("2. You don't have access to this project"))
-  console.error(chalk.gray('3. The app key in symbols.json might be incorrect'))
-
-  console.error(chalk.bold.yellow('\nTo resolve this:'))
-  console.error(
-    chalk.white(
-      `1. Visit ${chalk.cyan.underline(
-        CREATE_PROJECT_URL
-      )} to create a new project`
-    )
-  )
-  console.error(
-    chalk.white(
-      '2. After creating the project, update your symbols.json with the correct information:'
-    )
-  )
-  console.error(chalk.gray(`   - Verify the app key: ${chalk.cyan(appKey)}`))
-  console.error(chalk.gray('   - Make sure you have the correct permissions'))
-
-  console.error(chalk.bold.yellow('\nThen try again:'))
-  console.error(chalk.cyan('$ smbls push'))
-}
-
-async function loadProjectConfiguration () {
-  try {
-    const config = await loadModule(RC_PATH, { json: true })
-    if (!config.key) {
-      throw new Error('Missing app key in symbols.json')
-    }
-    return config
-  } catch (e) {
-    if (e.message.includes('Missing app key')) {
-      console.error(chalk.bold.red('\nInvalid symbols.json configuration:'))
-      console.error(chalk.white('The file must contain a valid app key.'))
-      console.error(chalk.bold.yellow('\nExample symbols.json:'))
-      console.error(
-        chalk.cyan(JSON.stringify({ key: 'your.app.key' }, null, 2))
-      )
-    } else {
-      console.error(
-        chalk.bold.red('Please include symbols.json in your repository root')
-      )
-    }
-    process.exit(1)
-  }
-}
 
 async function buildLocalProject () {
   const distDir = path.join(process.cwd(), 'smbls')
@@ -109,13 +58,13 @@ export async function pushProjectChanges(options) {
   const authToken = credManager.getAuthToken()
 
   if (!authToken) {
-    console.error(chalk.red('Please login first using: smbls login'))
+    showAuthRequiredMessages()
     process.exit(1)
   }
 
   try {
-    const config = await loadProjectConfiguration()
-    const { key: appKey, branch, version: versionFromConfig } = config
+    const symbolsConfig = await loadSymbolsConfig()
+    const { key: appKey, branch, version: versionFromConfig } = symbolsConfig
 
     // Build and load local project
     console.log(chalk.dim('Building local project...'))
@@ -128,7 +77,7 @@ export async function pushProjectChanges(options) {
 
     // Check if server project is empty (not found or no access)
     if (!serverProject || Object.keys(serverProject).length === 0) {
-      printProjectNotFoundGuidance(appKey)
+      showProjectNotFoundMessages(appKey, CREATE_PROJECT_URL)
       process.exit(1)
     }
 

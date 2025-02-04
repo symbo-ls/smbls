@@ -12,29 +12,10 @@ import { showDiffPager } from '../helpers/diffUtils.js'
 import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
 import { getProjectDataFromSymStory, getRemoteChangesFromSymStory, updateProjectOnSymStoryServer, findConflicts } from '../helpers/apiUtils.js'
 import { createFs } from './fs.js'
-
+import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 const RC_PATH = process.cwd() + '/symbols.json'
 const distDir = path.join(process.cwd(), 'smbls')
-
-async function loadProjectConfiguration() {
-  try {
-    const config = await loadModule(RC_PATH, { json: true })
-    if (!config.key) {
-      throw new Error('Missing app key in symbols.json')
-    }
-    return config
-  } catch (e) {
-    if (e.message.includes('Missing app key')) {
-      console.error(chalk.bold.red('\nInvalid symbols.json configuration:'))
-      console.error(chalk.white('The file must contain a valid app key.'))
-      console.error(chalk.bold.yellow('\nExample symbols.json:'))
-      console.error(chalk.cyan(JSON.stringify({ key: 'your.app.key' }, null, 2)))
-    } else {
-      console.error(chalk.bold.red('Please include symbols.json in your repository root'))
-    }
-    process.exit(1)
-  }
-}
 
 async function buildLocalProject() {
   const outputDirectory = path.join(distDir, 'dist')
@@ -111,16 +92,16 @@ export async function syncProjectChanges(options) {
   const authToken = credManager.getAuthToken()
 
   if (!authToken) {
-    console.error(chalk.red('Please login first using: smbls login'))
+    showAuthRequiredMessages()
     process.exit(1)
   }
 
   try {
     // Load configuration
-    const config = await loadProjectConfiguration()
-    const { key: appKey } = config
-    const localVersion = config.version || '1.0.0'
-    const localBranch = config.branch || 'main'
+    const symbolsConfig = await loadSymbolsConfig()
+    const { key: appKey } = symbolsConfig
+    const localVersion = symbolsConfig.version || '1.0.0'
+    const localBranch = symbolsConfig.branch || 'main'
 
     if (options.verbose) {
       console.log(chalk.dim('\nSync configuration:'))
