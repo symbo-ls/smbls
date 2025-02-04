@@ -1,20 +1,11 @@
 'use strict'
 
-import { exec, isString } from '@domql/utils'
+import { exec } from '@domql/utils'
 import { SHAPES } from './style'
 import { getSpacingBasedOnRatio, getMediaColor } from '@symbo.ls/scratch'
 
-const transformBorderRadius = (radius, props, propertyName) => {
-  if (!isString(radius)) return
-  return {
-    borderRadius: radius.split(' ').map((v, k) => getSpacingBasedOnRatio(props, propertyName, v)[propertyName]).join(' ')
-  }
-}
-
 export const Shape = {
-  extend: 'Pseudo',
-
-  deps: { exec, getSpacingBasedOnRatio, getMediaColor, transformBorderRadius },
+  deps: { exec, getSpacingBasedOnRatio, getMediaColor },
 
   class: {
     shape: ({ props, deps }) => {
@@ -33,10 +24,7 @@ export const Shape = {
         borderColor: deps.getMediaColor(background || backgroundColor)
       }
       return props.shapeDirection ? borderColor : null
-    },
-
-    round: ({ props, key, deps, ...el }) => deps.transformBorderRadius(props.round || props.borderRadius, props, 'round'),
-    borderRadius: ({ props, key, deps, ...el }) => deps.transformBorderRadius(props.borderRadius || props.round, props, 'borderRadius')
+    }
   }
 }
 

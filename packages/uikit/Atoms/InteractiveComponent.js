@@ -31,7 +31,7 @@ export const Hoverable = {
 }
 
 export const Clickable = {
-  extend: Hoverable,
+  extend: 'Hoverable',
   props: {
     ':active': {
       opacity: 1,
@@ -60,7 +60,7 @@ export const Focusable = {
 }
 
 export const FocusableComponent = {
-  extend: Focusable,
+  extend: 'Focusable',
   tag: 'button',
   props: {
     fontSize: 'A',
