@@ -172,10 +172,10 @@ export async function syncProjectChanges(options) {
     const { id: versionId, value: version } = await response.json()
 
     // Update symbols.json with new version
-    config.version = version
-    config.branch = localBranch
-    config.versionId = versionId
-    await fs.promises.writeFile(RC_PATH, JSON.stringify(config, null, 2))
+    symbolsConfig.version = version
+    symbolsConfig.branch = localBranch
+    symbolsConfig.versionId = versionId
+    await fs.promises.writeFile(RC_PATH, JSON.stringify(symbolsConfig, null, 2))
 
     // Get latest project data after sync
     console.log(chalk.dim('Fetching latest project data...'))

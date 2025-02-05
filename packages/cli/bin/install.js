@@ -50,7 +50,7 @@ export const installFromCli = async (options) => {
 }
 
 program
-  .version(pkg.version ?? 'unknown')
+  .version(pkg && pkg.version ? pkg.version : 'unknown')
 
 program
   .command('install')

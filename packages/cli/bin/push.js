@@ -116,9 +116,9 @@ export async function pushProjectChanges(options) {
     const { id: versionId, value: version } = await response.json()
 
     // Update symbols.json
-    config.version = version
-    config.versionId = versionId
-    await fs.promises.writeFile(RC_PATH, JSON.stringify(config, null, 2))
+    symbolsConfig.version = version
+    symbolsConfig.versionId = versionId
+    await fs.promises.writeFile(RC_PATH, JSON.stringify(symbolsConfig, null, 2))
 
     console.log(chalk.bold.green('\nChanges pushed successfully!'))
     console.log(chalk.gray(`New version: ${chalk.cyan(version)}`))
