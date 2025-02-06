@@ -167,7 +167,7 @@ export async function syncProjectChanges(options) {
       appKey,
       authToken,
       finalChanges,
-      'Sync from CLI'
+      options.message || 'Sync from CLI'
     )
     const { id: versionId, value: version } = await response.json()
 
@@ -202,6 +202,7 @@ export async function syncProjectChanges(options) {
 program
   .command('sync')
   .description('Sync local changes with remote server')
+  .option('-m, --message <message>', 'Specify a commit message')
   .option('-d, --dev', 'Run against local server')
   .option('-v, --verbose', 'Show verbose output')
   .action(syncProjectChanges)
