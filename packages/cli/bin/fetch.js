@@ -2,63 +2,59 @@
 
 import fs from 'fs'
 import chalk from 'chalk'
-import { loadModule } from './require.js'
 import { program } from './program.js'
-import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
+import { CredentialManager } from '../helpers/credentialManager.js'
+import { getProjectDataFromSymStory } from '../helpers/apiUtils.js'
+import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 const { isObjectLike } = (utils.default || utils)
-const { fetchRemote } = (fetch.default || fetch)
 
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH =
   process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = "https://api.symbols.app/"; // eslint-disable-line
-
-const API_URL_LOCAL = 'http://localhost:13335/get'
-const API_URL = 'https://api.symbols.app/get'
-
-const rcFile = loadModule(RC_PATH); // eslint-disable-line
-const localConfig = loadModule(LOCAL_CONFIG_PATH); // eslint-disable-line
 
 const debugMsg = chalk.dim(
   'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
 )
 
-let rc = {}
-try {
-  rc = loadModule(RC_PATH); // eslint-disable-line
-} catch (e) {
-  console.error('Please include symbols.json to your root of respository')
-}
-
 export const fetchFromCli = async (opts) => {
   const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
-  await rc.then(async (data) => {
-    const { key, framework, distDir, metadata } = data
 
-    const endpoint = dev ? API_URL_LOCAL : API_URL
+  const credManager = new CredentialManager()
+  const authToken = credManager.getAuthToken()
 
-    console.log('\nFetching from:', chalk.bold(endpoint), '\n')
+  if (!authToken) {
+    showAuthRequiredMessages()
 
-    const body = await fetchRemote(key, {
-      endpoint,
-      metadata: metadata || metadataOpt,
-      onError: (e) => {
-        console.log(chalk.red('Failed to fetch:'), key)
-        if (verbose) console.error(e)
-        else console.log(debugMsg)
+    process.exit(1)
+  }
+
+  const symbolsConfig = await loadSymbolsConfig()
+  const { key, framework, distDir, metadata, branch = 'main' } = symbolsConfig
+
+    console.log('\nFetching project data...\n')
+
+    let body
+    try {
+      body = await getProjectDataFromSymStory(key, authToken, branch)
+      // Update symbols.json with version and branch info
+      const updatedConfig = { ...symbolsConfig, version: body.version, branch }
+      await fs.promises.writeFile(RC_PATH, JSON.stringify(updatedConfig, null, 2))
+
+      if (verbose) {
+        console.log(chalk.gray(`Version: ${chalk.cyan(body.version)}`))
+        console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
       }
-    })
-
-    // console.log('ON FETCH:')
-    // console.log(body.components.Configuration)
-
-    if (!body) return
-
-    const { version, ...config } = body
+    } catch (e) {
+      console.log(chalk.red('Failed to fetch:'), key)
+      if (verbose) console.error(e)
+      else console.log(debugMsg)
+      return
+    }
 
     if (body.designsystem) {
       body.designSystem = body.designsystem
@@ -82,6 +78,8 @@ export const fetchFromCli = async (opts) => {
       }
       console.log()
     }
+
+    const { version: fetchedVersion, ...config } = body
 
     for (const t in config) {
       const type = config[t]
@@ -129,7 +127,6 @@ export const fetchFromCli = async (opts) => {
     } else {
       createFs(body, distDir, { metadata })
     }
-  })
 }
 
 program
