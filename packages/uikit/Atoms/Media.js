@@ -143,9 +143,6 @@ const beforeClassAssign = (element, s, ctx) => {
   const { props, class: className, context } = element
 
   const CLASS_NAMES = {
-    media: {},
-    selector: {},
-    case: {},
     variable: {}
   }
 
@@ -189,11 +186,17 @@ const beforeClassAssign = (element, s, ctx) => {
     }
   }
 
+  CLASS_NAMES.media = {}
+  CLASS_NAMES.selector = {}
+  CLASS_NAMES.case = {}
+  
   // Second pass: handle setter properties
   for (const key in rest) {
     const setter = keySetters[key.slice(0, 1)]
     if (setter) setter(key, props[key], CLASS_NAMES, element)
   }
+
+  console.log(CLASS_NAMES)
 
   const parentProps = element.parent && element.parent.props
   if (parentProps && parentProps.spacingRatio && parentProps.inheritSpacingRatio) {
