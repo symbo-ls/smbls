@@ -1,7 +1,7 @@
 'use strict'
 
 export const MISC_PROPS = {
-  overflow: ({ props, deps }) => !deps.isUndefined(props.overflow) && ({
+  overflow: ({ props }) => ({
     overflow: props.overflow,
     scrollBehavior: 'smooth'
   }),

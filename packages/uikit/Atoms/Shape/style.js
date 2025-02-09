@@ -1,7 +1,7 @@
 'use strict'
 
 import { getActiveConfig, getColor } from '@symbo.ls/scratch' // eslint-disable-line no-unused-vars
-import { Timing } from '../Timing'
+import { TIMING_PROPS } from 'css-in-props/src/props'
 
 const CONFIG = getActiveConfig()
 
@@ -22,7 +22,7 @@ const getComputedBackgroundColor = ({ props }) => {
 }
 
 const inheritTransition = ({ props, deps }) => {
-  const exec = Timing.class.transition({ props, deps })
+  const exec = TIMING_PROPS.transition({ props, deps })
   return exec && exec.transition
 }
 
