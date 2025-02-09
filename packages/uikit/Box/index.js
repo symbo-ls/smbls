@@ -1,20 +1,5 @@
 'use strict'
 
-// import {
-//   Shape,
-//   Position,
-//   Theme,
-//   Block,
-//   Text,
-//   Overflow,
-//   Timing,
-//   Transform,
-//   Media,
-//   Interaction,
-//   XYZ,
-//   Animation
-// } from '@symbo.ls/atoms'
-
 const PropsCSS = {
   class: {
     style: el => el.props && el.props.style

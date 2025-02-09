@@ -1,6 +1,6 @@
 'use strict'
 
-import { merge, isArray, overwriteDeep, overwriteShallow, exec } from '@domql/utils'
+import { merge, isArray, overwriteDeep, overwriteShallow } from '@domql/utils'
 import { getSystemGlobalTheme } from './Theme'
 import { CSS_PROPS_REGISTRY, DEFAULT_CSS_PROPERTIES_LIST } from 'css-in-props'
 
@@ -152,25 +152,24 @@ const beforeClassAssign = (element, s, ctx) => {
   if (!context) return
   const globalTheme = context.designSystem.globalTheme
 
-  for (const key in props) {
-    const setter = keySetters[key.slice(0, 1)]
-    if (globalTheme) {
-      if (key === 'theme' && !props.themeModifier) {
-        props.update({
-          themeModifier: globalTheme
-        }, {
-          preventListeners: true,
-          preventRecursive: true,
-          isForced: true,
-          preventDefineUpdate: true
-        })
-      }
-    }
+  // Handle global theme first
+  if (globalTheme && props.theme && !props.themeModifier) {
+    props.update({
+      themeModifier: globalTheme
+    }, {
+      preventListeners: true,
+      preventRecursive: true,
+      isForced: true,
+      preventDefineUpdate: true
+    })
+  }
 
-    if (setter) setter(key, props[key], CLASS_NAMES, element)
-    else if (key === 'class') {
-      const value = element.props.class
-      if (!element.call('isString', value)) return
+  // First pass: handle non-setter properties
+  const rest = {}
+  for (const key in props) {
+    if (key === 'class') {
+      const value = props.class
+      if (!element.call('isString', value)) continue
       const classArr = value.split(' ')
       const scratchClasses = ctx.designSystem.CLASS
       CLASS_NAMES.class = classArr.reduce((accumulator, current) => {
@@ -185,15 +184,16 @@ const beforeClassAssign = (element, s, ctx) => {
       CLASS_NAMES[key] = element.call('exec', CSS_PROPS_REGISTRY[key], element)
     } else if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {
       CLASS_NAMES[key] = { [key]: props[key] }
+    } else {
+      rest[key] = props[key]
     }
   }
 
-  // override props
-  // if (props['^']) {
-  //   for (const key in props['^']) {
-  //     execClass(key, props, CLASS_NAMES, element)
-  //   }
-  // }
+  // Second pass: handle setter properties
+  for (const key in rest) {
+    const setter = keySetters[key.slice(0, 1)]
+    if (setter) setter(key, props[key], CLASS_NAMES, element)
+  }
 
   const parentProps = element.parent && element.parent.props
   if (parentProps && parentProps.spacingRatio && parentProps.inheritSpacingRatio) {
