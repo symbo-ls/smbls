@@ -22,7 +22,7 @@ const getComputedBackgroundColor = ({ props }) => {
 }
 
 const inheritTransition = ({ props, deps }) => {
-  const exec = TIMING_PROPS.transition({ props, deps })
+  const exec = TIMING_PROPS.transition(props.transition, { props, deps })
   return exec && exec.transition
 }
 

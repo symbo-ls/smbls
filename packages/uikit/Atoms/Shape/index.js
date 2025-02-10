@@ -12,6 +12,11 @@ export const Shape = {
       const { shape } = props
       return deps.exec(SHAPES[shape], ({ props, deps }))
     },
+    // TODO: replace with this
+    // shape: (el) => {
+    //   const { shape } = el.props
+    //   return el.call('exec', SHAPES[shape], el)
+    // },
     shapeDirection: ({ props }) => {
       const { shape, shapeDirection } = props
       if (!shape || !shapeDirection) return
@@ -25,6 +30,12 @@ export const Shape = {
       }
       return props.shapeDirection ? borderColor : null
     }
+  }
+}
+
+export const Circle = {
+  props: {
+    round: '100%'
   }
 }
 

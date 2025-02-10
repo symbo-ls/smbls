@@ -1,8 +1,6 @@
 'use strict'
 
 export * from './Block'
-export * from './Flex'
-export * from './Grid'
 export * from './Img'
 export * from './Form'
 export * from './Media'
@@ -15,3 +13,4 @@ export * from './Shape'
 export * from './Video'
 export * from './Theme'
 export * from './Text'
+export * from './Box'

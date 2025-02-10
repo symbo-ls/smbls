@@ -11,130 +11,130 @@ import {
 } from '@symbo.ls/scratch'
 
 export const BLOCK_PROPS = {
-  show: (el, s, ctx) => !!(ctx.utils.exec(el.props.show, el, s) === false) && ({
+  show: (val, el, s, ctx) => !!(ctx.utils.exec(val, el, s) === false) && ({
     display: 'none !important'
   }),
 
-  hide: (el, s, ctx) => !!ctx.utils.exec(el.props.hide, el, s) && ({
+  hide: (val, el, s, ctx) => !!ctx.utils.exec(val, el, s) && ({
     display: 'none !important'
   }),
 
-  height: ({ props }) => transformSizeRatio('height', props),
-  width: ({ props }) => transformSizeRatio('width', props),
+  height: (val, { props }) => transformSizeRatio('height', val, props),
+  width: (val, { props }) => transformSizeRatio('width', val, props),
 
-  boxSizing: ({ props }) => !isUndefined(props.boxSizing)
-    ? ({ boxSizing: props.boxSizing })
+  boxSizing: (val) => !isUndefined(val)
+    ? ({ boxSizing: val })
     : { boxSizing: 'border-box' },
 
-  boxSize: ({ props }) => {
-    if (!isString(props.boxSize)) return
-    const [height, width] = props.boxSize.split(' ')
+  boxSize: (val) => {
+    if (!isString(val)) return
+    const [height, width] = val.split(' ')
     return {
       ...transformSize('height', height),
       ...transformSize('width', width || height)
     }
   },
 
-  inlineSize: ({ props }) => transformSizeRatio('inlineSize', props),
-  blockSize: ({ props }) => transformSizeRatio('blockSize', props),
+  inlineSize: (val, { props }) => transformSizeRatio('inlineSize', val, props),
+  blockSize: (val, { props }) => transformSizeRatio('blockSize', val, props),
 
-  minWidth: ({ props }) => transformSizeRatio('minWidth', props),
-  maxWidth: ({ props }) => transformSizeRatio('maxWidth', props),
-  widthRange: ({ props }) => {
-    if (!isString(props.widthRange)) return
-    const [minWidth, maxWidth] = props.widthRange.split(' ')
+  minWidth: (val, { props }) => transformSizeRatio('minWidth', val, props),
+  maxWidth: (val, { props }) => transformSizeRatio('maxWidth', val, props),
+  widthRange: (val) => {
+    if (!isString(val)) return
+    const [minWidth, maxWidth] = val.split(' ')
     return {
       ...transformSize('minWidth', minWidth),
       ...transformSize('maxWidth', maxWidth || minWidth)
     }
   },
 
-  minHeight: ({ props }) => transformSizeRatio('minHeight', props),
-  maxHeight: ({ props }) => transformSizeRatio('maxHeight', props),
-  heightRange: ({ props }) => {
-    if (!isString(props.heightRange)) return
-    const [minHeight, maxHeight] = props.heightRange.split(' ')
+  minHeight: (val, { props }) => transformSizeRatio('minHeight', val, props),
+  maxHeight: (val, { props }) => transformSizeRatio('maxHeight', val, props),
+  heightRange: (val) => {
+    if (!isString(val)) return
+    const [minHeight, maxHeight] = val.split(' ')
     return {
       ...transformSize('minHeight', minHeight),
       ...transformSize('maxHeight', maxHeight || minHeight)
     }
   },
 
-  size: ({ props }) => {
-    if (!isString(props.size)) return
-    const [inlineSize, blockSize] = props.size.split(' ')
+  size: (val) => {
+    if (!isString(val)) return
+    const [inlineSize, blockSize] = val.split(' ')
     return {
       ...transformSizeRatio('inlineSize', inlineSize),
       ...transformSizeRatio('blockSize', blockSize || inlineSize)
     }
   },
 
-  minBlockSize: ({ props }) => transformSizeRatio('minBlockSize', props),
-  minInlineSize: ({ props }) => transformSizeRatio('minInlineSize', props),
+  minBlockSize: (val, { props }) => transformSizeRatio('minBlockSize', val, props),
+  minInlineSize: (val, { props }) => transformSizeRatio('minInlineSize', val, props),
 
-  maxBlockSize: ({ props }) => transformSizeRatio('maxBlockSize', props),
-  maxInlineSize: ({ props }) => transformSizeRatio('maxInlineSize', props),
+  maxBlockSize: (val, { props }) => transformSizeRatio('maxBlockSize', val, props),
+  maxInlineSize: (val, { props }) => transformSizeRatio('maxInlineSize', val, props),
 
-  minSize: ({ props }) => {
-    if (!isString(props.minSize)) return
-    const [minInlineSize, minBlockSize] = props.minSize.split(' ')
+  minSize: (val) => {
+    if (!isString(val)) return
+    const [minInlineSize, minBlockSize] = val.split(' ')
     return {
       ...transformSize('minInlineSize', minInlineSize),
       ...transformSize('minBlockSize', minBlockSize || minInlineSize)
     }
   },
 
-  maxSize: ({ props }) => {
-    if (!isString(props.maxSize)) return
-    const [maxInlineSize, maxBlockSize] = props.maxSize.split(' ')
+  maxSize: (val) => {
+    if (!isString(val)) return
+    const [maxInlineSize, maxBlockSize] = val.split(' ')
     return {
       ...transformSize('maxInlineSize', maxInlineSize),
       ...transformSize('maxBlockSize', maxBlockSize || maxInlineSize)
     }
   },
 
-  borderWidth: ({ props }) => transformSizeRatio('borderWidth', props),
+  borderWidth: (val, { props }) => transformSizeRatio('borderWidth', val, props),
 
-  padding: ({ props }) => transformSizeRatio('padding', props),
-  scrollPadding: ({ props }) => transformSizeRatio('scrollPadding', props),
-  paddingInline: ({ props }) => {
-    if (!isString(props.paddingInline)) return
-    const [paddingInlineStart, paddingInlineEnd] = props.paddingInline.split(' ')
+  padding: (val, { props }) => transformSizeRatio('padding', val, props),
+  scrollPadding: (val, { props }) => transformSizeRatio('scrollPadding', val, props),
+  paddingInline: (val) => {
+    if (!isString(val)) return
+    const [paddingInlineStart, paddingInlineEnd] = val.split(' ')
     return {
       ...transformSize('paddingInlineStart', paddingInlineStart),
       ...transformSize('paddingInlineEnd', paddingInlineEnd || paddingInlineStart)
     }
   },
-  paddingBlock: ({ props }) => {
-    if (!isString(props.paddingBlock)) return
-    const [paddingBlockStart, paddingBlockEnd] = props.paddingBlock.split(' ')
+  paddingBlock: (val) => {
+    if (!isString(val)) return
+    const [paddingBlockStart, paddingBlockEnd] = val.split(' ')
     return {
       ...transformSize('paddingBlockStart', paddingBlockStart),
       ...transformSize('paddingBlockEnd', paddingBlockEnd || paddingBlockStart)
     }
   },
   // Traditional directional padding
-  paddingTop: ({ props }) => transformSizeRatio('paddingBlockStart', props),
-  paddingBottom: ({ props }) => transformSizeRatio('paddingBlockEnd', props),
-  paddingLeft: ({ props }) => transformSizeRatio('paddingInlineStart', props),
-  paddingRight: ({ props }) => transformSizeRatio('paddingInlineEnd', props),
+  paddingTop: (val, { props }) => transformSizeRatio('paddingBlockStart', val, props),
+  paddingBottom: (val, { props }) => transformSizeRatio('paddingBlockEnd', val, props),
+  paddingLeft: (val, { props }) => transformSizeRatio('paddingInlineStart', val, props),
+  paddingRight: (val, { props }) => transformSizeRatio('paddingInlineEnd', val, props),
 
   // Logical properties (for reference)
-  paddingBlockStart: ({ props }) => transformSizeRatio('paddingBlockStart', props), // maps to top
-  paddingBlockEnd: ({ props }) => transformSizeRatio('paddingBlockEnd', props), // maps to bottom
-  paddingInlineStart: ({ props }) => transformSizeRatio('paddingInlineStart', props), // maps to left
-  paddingInlineEnd: ({ props }) => transformSizeRatio('paddingInlineEnd', props), // maps to right
+  paddingBlockStart: (val, { props }) => transformSizeRatio('paddingBlockStart', val, props), // maps to top
+  paddingBlockEnd: (val, { props }) => transformSizeRatio('paddingBlockEnd', val, props), // maps to bottom
+  paddingInlineStart: (val, { props }) => transformSizeRatio('paddingInlineStart', val, props), // maps to left
+  paddingInlineEnd: (val, { props }) => transformSizeRatio('paddingInlineEnd', val, props), // maps to right
 
-  margin: ({ props }) => transformSizeRatio('margin', props),
-  marginInline: ({ props }) => {
-    if (!isString(props.marginInline)) return
-    const [marginInlineStart, marginInlineEnd] = props.marginInline.split(' ')
+  margin: (val, { props }) => transformSizeRatio('margin', val, props),
+  marginInline: (val) => {
+    if (!isString(val)) return
+    const [marginInlineStart, marginInlineEnd] = val.split(' ')
     return {
       ...transformSize('marginInlineStart', marginInlineStart),
       ...transformSize('marginInlineEnd', marginInlineEnd || marginInlineStart)
     }
   },
-  marginBlock: ({ props }) => {
+  marginBlock: (val, { props }) => {
     if (!isString(props.marginBlock)) return
     const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
     return {
@@ -142,36 +142,36 @@ export const BLOCK_PROPS = {
       ...transformSize('marginBlockEnd', marginBlockEnd || marginBlockStart)
     }
   },
-  marginInlineStart: ({ props }) => transformSizeRatio('marginInlineStart', props),
-  marginInlineEnd: ({ props }) => transformSizeRatio('marginInlineEnd', props),
-  marginBlockStart: ({ props }) => transformSizeRatio('marginBlockStart', props),
-  marginBlockEnd: ({ props }) => transformSizeRatio('marginBlockEnd', props),
+  marginInlineStart: (val, { props }) => transformSizeRatio('marginInlineStart', val, props),
+  marginInlineEnd: (val, { props }) => transformSizeRatio('marginInlineEnd', val, props),
+  marginBlockStart: (val, { props }) => transformSizeRatio('marginBlockStart', val, props),
+  marginBlockEnd: (val, { props }) => transformSizeRatio('marginBlockEnd', val, props),
 
-  gap: ({ props }) => ({
-    gap: transfromGap(props.gap)
+  gap: (val) => ({
+    gap: transfromGap(val)
   }),
 
-  columnGap: ({ props }) => getSpacingBasedOnRatio(props, 'columnGap'),
-  rowGap: ({ props }) => getSpacingBasedOnRatio(props, 'rowGap'),
+  columnGap: (val, { props }) => getSpacingBasedOnRatio(props, 'columnGap', val),
+  rowGap: (val, { props }) => getSpacingBasedOnRatio(props, 'rowGap', val),
 
-  flexWrap: ({ props }) => ({
+  flexWrap: (val, { props }) => ({
     display: 'flex',
-    flexFlow: (props.flexFlow || 'row').split(' ')[0] + ' ' + props.flexWrap
+    flexFlow: (val || 'row').split(' ')[0] + ' ' + props.flexWrap
   }),
-  flexFlow: ({ props }) => {
-    const { flexFlow, reverse } = props
-    if (!isString(flexFlow)) return
-    let [direction, wrap] = (flexFlow || 'row').split(' ')
-    if (flexFlow.startsWith('x') || flexFlow === 'row') direction = 'row'
-    if (flexFlow.startsWith('y') || flexFlow === 'column') direction = 'column'
+  flexFlow: (val, { props }) => {
+    const { reverse } = props
+    if (!isString(val)) return
+    let [direction, wrap] = (val || 'row').split(' ')
+    if (val.startsWith('x') || val === 'row') direction = 'row'
+    if (val.startsWith('y') || val === 'column') direction = 'column'
     return {
       display: 'flex',
       flexFlow: (direction || '') + (!direction.includes('-reverse') && reverse ? '-reverse' : '') + ' ' + (wrap || '')
     }
   },
-  flexAlign: ({ props }) => {
-    if (!isString(props.flexAlign)) return
-    const [alignItems, justifyContent] = props.flexAlign.split(' ')
+  flexAlign: (val) => {
+    if (!isString(val)) return
+    const [alignItems, justifyContent] = val.split(' ')
     return {
       display: 'flex',
       alignItems,
@@ -179,6 +179,6 @@ export const BLOCK_PROPS = {
     }
   },
 
-  round: ({ props, key, deps, ...el }) => transformBorderRadius(props.round || props.borderRadius, props, 'round'),
-  borderRadius: ({ props, key, deps, ...el }) => transformBorderRadius(props.borderRadius || props.round, props, 'borderRadius')
+  round: (val, { props }) => transformBorderRadius(val || props.borderRadius, props, 'round'),
+  borderRadius: (val, { props }) => transformBorderRadius(val || props.round, props, 'borderRadius')
 }

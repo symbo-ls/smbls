@@ -4,6 +4,7 @@
     "start": "npm run clean:dist; npm run clean:package-modules; parcel example/index.html --no-cache",
     "build": "npm run clean:dist; npm run clean:package-modules; parcel build example/index.html --no-cache",
     "build:packages": "lerna run build",
+    "build:watch": "nodemon --exec \"npm run build:packages\" --ignore 'dist/*'",
     "postinstall": "npx lerna run build && npx lerna run copy:package:cjs",
     "update-linkable-list": "npx smbls link-packages -c",
     "test:lint": "npx standard \"packages/**/*.js\"",

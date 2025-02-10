@@ -16,7 +16,6 @@
     "@domql/utils": "^2.5.0",
     "@symbo.ls/atoms": "^2.11.515",
     "@symbo.ls/avatar": "^2.11.515",
-    "@symbo.ls/box": "^2.11.515",
     "@symbo.ls/button": "^2.11.515",
     "@symbo.ls/dialog": "^2.11.515",
     "@symbo.ls/dropdown": "^2.11.515",

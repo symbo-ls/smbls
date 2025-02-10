@@ -1,226 +1,61 @@
 'use strict'
 
-import { merge, isArray, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { getSystemGlobalTheme } from './Theme'
-import { CSS_PROPS_REGISTRY, DEFAULT_CSS_PROPERTIES_LIST } from 'css-in-props'
+import { useCssInProps } from 'css-in-props'
 
-export const keySetters = {
-  '@': (key, props, result, element, isSubtree) => applyMediaProps(
-    key, props, isSubtree ? result : (result && result.media), element
-  ),
-  ':': (key, props, result, element, isSubtree) => applySelectorProps(
-    key, props, isSubtree ? result : (result && result.selector), element
-  ),
-  '[': (key, props, result, element, isSubtree) => applySelectorProps(
-    key, props, isSubtree ? result : (result && result.selector), element
-  ),
-  '*': (key, props, result, element, isSubtree) => applySelectorProps(
-    key, props, isSubtree ? result : (result && result.selector), element
-  ),
-  '+': (key, props, result, element, isSubtree) => applySelectorProps(
-    key, props, isSubtree ? result : (result && result.selector), element
-  ),
-  '~': (key, props, result, element, isSubtree) => applySelectorProps(
-    key, props, isSubtree ? result : (result && result.selector), element
-  ),
-  '&': (key, props, result, element, isSubtree) => applyAndProps(
-    key, props, isSubtree ? result : (result && result.selector), element
-  ),
-  '>': (key, props, result, element, isSubtree) => applyAndProps(
-    key, props, isSubtree ? result : (result && result.selector), element
-  ),
-  $: (key, props, result, element, isSubtree) => applyCaseProps(
-    key, props, isSubtree ? result : (result && result.case), element
-  ),
-  '-': (key, props, result, element, isSubtree) => applyVariableProps(
-    key, props, isSubtree ? result : (result && result.variable), element
-  ),
-  '.': (key, props, result, element, isSubtree) => applyConditionalCaseProps(
-    key, props, isSubtree ? result : (result && result.case), element
-  ),
-  '!': (key, props, result, element, isSubtree) => applyConditionalFalsyProps(
-    key, props, isSubtree ? result : (result && result.case), element
-  )
-}
-
-const execClass = (key, props, result, element) => {
-  let value
-
-  if (element.class[key]) {
-    value = element.call('exec', element.class[key], element)
-  } else if (CSS_PROPS_REGISTRY[key]) {
-    value = element.call('exec', CSS_PROPS_REGISTRY[key], element)
-  } else if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {
-    value = { [key]: props[key] }
-  }
-
-  if (isArray(value)) value = value.reduce((a, c) => merge(a, c), {})
-
-  result[key] = value
-
-  return value
-}
-
-const convertPropsToClass = (props, result, element) => {
-  const propsClassObj = {}
-
-  for (const key in props) {
-    const setter = keySetters[key.slice(0, 1)]
-    if (setter) {
-      setter(key, props[key], propsClassObj, element, true)
-      continue
-    } else {
-      execClass(key, props, propsClassObj, element)
-    }
-  }
-
-  return propsClassObj
-}
-
-const applyMediaProps = (key, props, result, element) => {
-  const { context } = element
-  if (!context.designSystem || !context.designSystem.MEDIA) return
-  const globalTheme = getSystemGlobalTheme(element)
-  const { MEDIA } = context.designSystem
-  const mediaValue = MEDIA[key.slice(1)]
-  const generatedClass = convertPropsToClass(props, result, element)
-
-  const name = key.slice(1)
-  const isTheme = ['dark', 'light'].includes(name)
-  const matchesGlobal = name === globalTheme
-
-  if (globalTheme && isTheme) {
-    if (matchesGlobal) return merge(result, generatedClass)
-    return
-  }
-
-  const printValue = '@media ' + (mediaValue === 'print' ? `${mediaValue}` : `screen and ${mediaValue}`)
-  const mediaKey = mediaValue ? printValue : key
-  result[mediaKey] = generatedClass
-  return result[mediaKey]
-}
-
-const applyAndProps = (key, props, result, element) => {
-  result[key] = convertPropsToClass(props, result, element)
-  return result[key]
-}
-
-const applySelectorProps = (key, props, result, element) => {
-  const selectorKey = `&${key}`
-  result[selectorKey] = convertPropsToClass(props, result, element)
-  return result[selectorKey]
-}
-
-const applyCaseProps = (key, props, result, element) => {
-  const { CASES } = element.context && element.context.designSystem
-  const caseKey = key.slice(1)
-  const isPropTrue = element.props[caseKey]
-  if (!CASES[caseKey] && !isPropTrue) return
-  return merge(result, convertPropsToClass(props, result, element))
-}
-
-const applyVariableProps = (key, props, result, element) => {
-  result[key] = props
-  return result
-}
-
-const applyConditionalCaseProps = (key, props, result, element) => {
-  const caseKey = key.slice(1)
-  const isPropTrue = element.props[caseKey] === true || element.state[caseKey] || element[caseKey]
-  if (!isPropTrue) return // remove classname if not here
-  return overwriteDeep(result, convertPropsToClass(props, result, element))
-}
-
-const applyConditionalFalsyProps = (key, props, result, element) => {
-  const caseKey = key.slice(1)
-  const isPropTrue = element.props[caseKey] === true || element.state[caseKey] || element[caseKey]
-  if (!isPropTrue) return overwriteDeep(result, convertPropsToClass(props, result, element))
-}
-
-const applyTrueProps = (props, result, element) => merge(result, convertPropsToClass(props, result, element))
-
+// Main class assignment handler
 const beforeClassAssign = (element, s, ctx) => {
-  const { props, class: className, context } = element
+  if (!element.context) return
 
-  const CLASS_NAMES = {
-    variable: {}
-  }
+  // console.group(element.key)
+  // Initialize class names container
+  const { props, __ref: ref } = element
 
-  if (!context) return
-  const globalTheme = context.designSystem.globalTheme
+  // // Handle global theme
+  // const globalTheme = element.context.designSystem.globalTheme
+  // if (globalTheme && props.theme && !props.themeModifier) {
+  //   props.themeModifier = globalTheme
+  // //   props.update({ themeModifier: globalTheme }, {
+  // //     preventListeners: true,
+  // //     preventRecursive: true,
+  // //     isForced: true,
+  // //     preventDefineUpdate: true
+  // //   })
+  // }
 
-  // Handle global theme first
-  if (globalTheme && props.theme && !props.themeModifier) {
-    props.update({
-      themeModifier: globalTheme
-    }, {
-      preventListeners: true,
-      preventRecursive: true,
-      isForced: true,
-      preventDefineUpdate: true
-    })
-  }
+  // if (element.key === 'Logo') debugger
 
-  // First pass: handle non-setter properties
-  const rest = {}
-  for (const key in props) {
-    if (key === 'class') {
-      const value = props.class
-      if (!element.call('isString', value)) continue
-      const classArr = value.split(' ')
-      const scratchClasses = ctx.designSystem.CLASS
-      CLASS_NAMES.class = classArr.reduce((accumulator, current) => {
-        const scratchClass = scratchClasses[current]
-        return merge(accumulator, scratchClass)
-      }, {})
-    } else if (key === 'true') {
-      applyTrueProps(props[key], CLASS_NAMES, element)
-    } else if (element.class[key]) {
-      CLASS_NAMES[key] = element.call('exec', element.class[key], element)
-    } else if (CSS_PROPS_REGISTRY[key]) {
-      CLASS_NAMES[key] = element.call('exec', CSS_PROPS_REGISTRY[key], element)
-    } else if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {
-      CLASS_NAMES[key] = { [key]: props[key] }
-    } else {
-      rest[key] = props[key]
-    }
-  }
+  // Process props in two passes
+  // console.log('----')
+  // console.log('before', ref.__class)
+  ref.__class = useCssInProps(props, element, { unpack: false })
+  // console.log('after', ref.__class)
 
-  CLASS_NAMES.media = {}
-  CLASS_NAMES.selector = {}
-  CLASS_NAMES.case = {}
-  
-  // Second pass: handle setter properties
-  for (const key in rest) {
-    const setter = keySetters[key.slice(0, 1)]
-    if (setter) setter(key, props[key], CLASS_NAMES, element)
-  }
+  // console.error('yo')
+  // console.log(CLASS_NAMES)
 
-  console.log(CLASS_NAMES)
+  // Handle spacing inheritance
+  // const { parent } = element
+  // if (parent?.props?.spacingRatio && parent.props.inheritSpacingRatio) {
+  //   element.setProps({
+  //     spacingRatio: parent.props.spacingRatio,
+  //     inheritSpacingRatio: true
+  //   }, {
+  //     preventListeners: true,
+  //     preventRecursive: true,
+  //     isForced: true,
+  //     preventDefineUpdate: true
+  //   })
+  // }
 
-  const parentProps = element.parent && element.parent.props
-  if (parentProps && parentProps.spacingRatio && parentProps.inheritSpacingRatio) {
-    element.setProps({
-      spacingRatio: parentProps.spacingRatio,
-      inheritSpacingRatio: true
-    }, {
-      preventListeners: true,
-      preventRecursive: true,
-      isForced: true,
-      preventDefineUpdate: true
-    })
-  }
+  // console.log(CLASS_NAMES)
 
-  overwriteShallow(className, CLASS_NAMES)
+  // console.log(CLASS_NAMES, className, ref.__class)
+  // overwriteShallow(ref.__class, CLASS_NAMES)
+
+  // console.groupEnd(element.key)
 }
 
+// Export Media component
 export const Media = {
-  class: {
-    case: (el, s) => {
-      return {
-        //
-      }
-    }
-  },
   on: { beforeClassAssign }
 }

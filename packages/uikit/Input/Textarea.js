@@ -43,8 +43,7 @@ export const Textarea = {
 }
 
 export const TextareaWithButton = {
-  extend: 'Flex',
-  props: { gap: 'Y2' },
+  props: { display: 'flex', gap: 'Y2' },
   Textarea: {
     height: 'C2+W',
     minWidth: 'H',
