@@ -32,11 +32,11 @@ export const Box = {
   class: {
     style: el => el.props && el.props.style
   },
-  // text: (el) => {
-  //   const { key, props, state } = el
-  //   if (props.text === true) return (state && state[key]) || (props && props[key])
-  //   return el.call('exec', props.text, el)
-  // },
+  text: (el) => {
+    const { key, props, state } = el
+    if (props.text === true) return (state && state[key]) || (props && props[key])
+    return el.call('exec', props.text, el)
+  },
   on: { beforeClassAssign }
 }
 

@@ -12,12 +12,12 @@ export const Collection = {
 
       const childrenAsDefault = childrenAs || 'props'
 
-      if (children || el.props.children) {
-        console.log('222---')
-        console.log(children)
-        console.log(el.props.children)
-        console.log(el)
-      }
+      // if (children || el.props.children) {
+      //   console.log('222---')
+      //   console.log(children)
+      //   console.log(el.props.children)
+      //   console.log(el)
+      // }
 
       if (children) {
         if (isObject(children)) {
