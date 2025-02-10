@@ -14,6 +14,9 @@ export const Box = {
     'Text',
     'Media'
   ],
+  props: {
+    boxSizing: 'border-box'
+  },
   attr: {
     id: el => el.call('isString', el.props.id) && el.props.id,
     title: el => el.call('isString', el.props.title) && el.props.title,
