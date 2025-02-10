@@ -1,7 +1,7 @@
 'use strict'
 
 export const Component = {
-  extend: 'Flex',
+  extends: 'Flex',
   props: {
     align: 'center center',
     minHeight: '100vh'
@@ -12,7 +12,7 @@ export const Component = {
       const urlParams = new URLSearchParams(window.location.search)
       return !urlParams.get('hideUi') || !urlParams.get('fullsize')
     },
-    extend: 'Flex',
+    extends: 'Flex',
     props: {
       align: 'center space-between',
       position: 'absolute',
@@ -49,7 +49,7 @@ export const Component = {
     const schema = ctx.schema[factory][key]
     return {
       key,
-      extend: 'Flex',
+      extends: 'Flex',
       state: schema.state,
       props: () => ({
         class: 'component',

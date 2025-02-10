@@ -4,11 +4,11 @@ import { icon } from '../blocks'
 
 export const Icons = {
   tag: 'article',
-  extend: 'Flex',
+  extends: 'Flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
     Title: { text: 'Icons' },
     Paragraph: {
       P: {},
@@ -25,5 +25,5 @@ export const Icons = {
     }
   },
 
-  Section: { extend: icon }
+  Section: { extends: icon }
 }

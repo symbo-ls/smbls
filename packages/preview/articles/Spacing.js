@@ -2,11 +2,11 @@
 
 export const Spacing = {
   tag: 'article',
-  extend: 'Flex',
+  extends: 'Flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
 
     Title: {
       props: {

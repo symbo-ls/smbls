@@ -3,7 +3,7 @@
 import { DefaultBlock } from './section'
 
 export const FontsBlock = {
-  extend: DefaultBlock,
+  extends: DefaultBlock,
   props: {
     flex: '1',
     padding: 'D D D1 D',

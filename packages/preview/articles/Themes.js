@@ -4,7 +4,7 @@ import { ColorBlock } from '../blocks'
 
 export const Themes = {
   tag: 'article',
-  extend: 'Flex',
+  extends: 'Flex',
 
   Banner: {
     Title: { props: { text: 'Themes' } },
@@ -33,8 +33,8 @@ export const Themes = {
       padding: 'E C1 - C1',
       gap: 'E'
     },
-    childExtend: {
-      extend: ColorBlock,
+    childExtends: {
+      extends: ColorBlock,
       Hgroup: {},
       Grid: {
         props: {
@@ -44,21 +44,21 @@ export const Themes = {
             border: 'none !important'
           }
         },
-        childExtend: {
-          extend: 'Flex',
+        childExtends: {
+          extends: 'Flex',
           props: {
             flow: 'column',
             align: 'flex-start space-between',
             padding: 'Z1 Z2'
           },
           icons: {
-            extend: 'Flex',
+            extends: 'Flex',
             props: {
               gap: 'B',
               align: 'center space-between',
               minWidth: '100%'
             },
-            childExtend: 'Icon',
+            childExtends: 'Icon',
             $propsCollection: [
               { name: 'sun' },
               { name: 'moon' }

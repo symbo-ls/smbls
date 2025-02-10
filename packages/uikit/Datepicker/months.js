@@ -1,7 +1,7 @@
 'use strict'
 
 export const DatePickerMonthsSlider = {
-  extend: 'Flex',
+  extends: 'Flex',
   props: {
     position: 'relative',
     overflow: 'hidden',
@@ -76,7 +76,7 @@ export const DatePickerMonthsSlider = {
       '::-webkit-scrollbar': { display: 'none' }
     },
 
-    childExtend: {
+    childExtends: {
       tag: 'h6',
       props: ({ state, key }) => ({
         fontSize: 'Z1',

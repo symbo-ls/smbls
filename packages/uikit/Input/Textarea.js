@@ -2,7 +2,7 @@
 
 export const Textarea = {
   tag: 'textarea',
-  extend: ['Input', 'Flex'],
+  extends: ['Input', 'Flex'],
 
   props: {
     variant: 'outlined',

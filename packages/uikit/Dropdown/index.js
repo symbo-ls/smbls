@@ -1,7 +1,7 @@
 'use strict'
 
 export const DropdownList = {
-  extend: 'Flex',
+  extends: 'Flex',
 
   attr: {
     dropdown: true
@@ -26,8 +26,8 @@ export const DropdownList = {
     }
   },
 
-  childExtend: {
-    extend: 'Button',
+  childExtends: {
+    extends: 'Button',
     state: {},
     props: {
       isActive: ({ key, state }) => state.active === key,

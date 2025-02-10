@@ -1,7 +1,7 @@
 'use strict'
 
 export const Radio = {
-  extend: 'Checkbox',
+  extends: 'Checkbox',
 
   Input: {
     type: 'radio',
@@ -25,7 +25,7 @@ export const Radio = {
 }
 
 export const RadioHgroup = {
-  extend: 'CheckboxHgroup',
+  extends: 'CheckboxHgroup',
   Checkbox: null,
   Radio: {}
 }

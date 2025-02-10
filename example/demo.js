@@ -12,7 +12,7 @@
 //   pages: {
 //     '/': {
 //       box: {
-//         extend: Editorjs,
+//         extends: Editorjs,
 //         $editorjs: [{
 //           id: 'k5OwVLgA2l',
 //           type: 'header',
@@ -776,7 +776,7 @@ window.require = (key) => {
 
 // // Example DOMQL string
 // const domqlString = `export const IconText = {
-//   extend: "Flex",
+//   extends: "Flex",
 
 //   props: {
 //     align: "center center",

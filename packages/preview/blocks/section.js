@@ -2,7 +2,7 @@
 
 export const DefaultBlock = {
   tag: 'section',
-  extend: 'Hgroup',
+  extends: 'Hgroup',
 
   props: { gap: 'A' },
 

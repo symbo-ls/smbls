@@ -1,18 +1,18 @@
 'use strict'
 
-const PropsCSS = {
-  class: {
-    style: el => el.props && el.props.style
-  }
+import { useCssInProps } from 'css-in-props'
+
+// Main class assignment handler
+const beforeClassAssign = (element, s, ctx) => {
+  if (!element.context) return
+  const { props, __ref: ref } = element
+  ref.__class = useCssInProps(props, element, { unpack: false })
 }
 
 export const Box = {
-  extend: [
-    PropsCSS,
+  extends: [
     'Shape',
-    'Theme',
-    'Text',
-    'Media'
+    'Theme'
   ],
   props: {
     boxSizing: 'border-box'
@@ -28,7 +28,16 @@ export const Box = {
     spellcheck: el => el.props.spellcheck,
     tabindex: el => el.props.tabindex,
     translate: el => el.props.translate
-  }
+  },
+  class: {
+    style: el => el.props && el.props.style
+  },
+  // text: (el) => {
+  //   const { key, props, state } = el
+  //   if (props.text === true) return (state && state[key]) || (props && props[key])
+  //   return el.call('exec', props.text, el)
+  // },
+  on: { beforeClassAssign }
 }
 
 export const Hr = {
@@ -39,9 +48,9 @@ export const Br = { tag: 'br' }
 export const Li = { tag: 'li' }
 export const Ul = {
   tag: 'ul',
-  childExtend: { extend: 'Li' }
+  childExtends: { extends: 'Li' }
 }
 export const Ol = {
   tag: 'ol',
-  childExtend: { extend: 'Li' }
+  childExtends: { extends: 'Li' }
 }

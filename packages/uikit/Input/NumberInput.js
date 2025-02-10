@@ -1,7 +1,7 @@
 'use strict'
 
 export const NumberInput = {
-  extend: ['Flex', 'Input'],
+  extends: ['Flex', 'Input'],
 
   props: {
     type: 'number',

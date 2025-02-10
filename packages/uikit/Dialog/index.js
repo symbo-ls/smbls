@@ -1,7 +1,7 @@
 'use strict'
 
 export const Dialog = {
-  extend: 'Flex',
+  extends: 'Flex',
   tag: 'dialog',
 
   props: {
@@ -13,7 +13,7 @@ export const Dialog = {
 }
 
 export const DialogHeader = {
-  extend: 'Hgroup',
+  extends: 'Hgroup',
 
   props: {
     minWidth: '100%',
@@ -37,7 +37,7 @@ export const DialogHeader = {
 }
 
 export const DialogFooter = {
-  extend: 'Flex',
+  extends: 'Flex',
 
   props: {
     align: 'center flex-end',
@@ -46,8 +46,8 @@ export const DialogFooter = {
     padding: 'Y2 X2'
   },
 
-  childExtend: {
-    extend: 'Button',
+  childExtends: {
+    extends: 'Button',
     props: {
       textTransform: 'uppercase',
       background: 'transparent',

@@ -1,14 +1,14 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNumber, isNot, isArray, isObject, isObjectLike, exec, deepClone, addAdditionalExtend } from '@domql/utils'
+import { isString, isNumber, isNot, isArray, isObject, isObjectLike, exec, deepClone, applyAdditionalExtend } from '@domql/utils'
 
 export const Collection = {
   define: {
-    $collection: (param, el, state) => {
+    children: (param, el, state) => {
       const { __ref: ref } = el
-      const { children: childrenProps, childrenAs, childExtends } = (el.props || {})
-      const children = childrenProps && exec(childrenProps, el, state)
+      const { childrenAs, childExtends } = (el.props || {})
+      const children = param && exec(param, el, state)
 
       const childrenAsDefault = childrenAs || 'props'
 
@@ -18,13 +18,13 @@ export const Collection = {
           param = deepClone(children)
           param = Object.keys(param).map(v => {
             const val = param[v]
-            return addAdditionalExtend(v, val)
+            return applyAdditionalExtend(v, val)
           })
         } else if (isArray(children)) {
           param = deepClone(children)
           if (childrenAsDefault || childrenAsDefault !== 'element') {
             param = param.map(v => ({
-              extend: childExtends,
+              extends: childExtends,
               [childrenAsDefault]: isObjectLike(v) ? v : childrenAsDefault === 'state' ? { value: v } : { text: v }
             }))
           }
@@ -52,25 +52,23 @@ export const Collection = {
 
       param = deepClone(param)
 
-      if (ref.__collectionCache) {
-        const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
+      if (ref.__childrenCache) {
+        const equals = JSON.stringify(param) === JSON.stringify(ref.__childrenCache)
         if (equals) {
           ref.__noCollectionDifference = true
           return
         } else {
-          ref.__collectionCache = deepClone(param)
+          ref.__childrenCache = deepClone(param)
           delete ref.__noCollectionDifference
         }
       } else {
-        ref.__collectionCache = deepClone(param)
+        ref.__childrenCache = deepClone(param)
       }
 
       const obj = {
         tag: 'fragment',
-        props: {
-          ignoreChildProps: true,
-          childProps: el.props && el.props.childProps
-        }
+        ignoreChildProps: true,
+        childProps: el.props && el.props.childProps
       }
 
       for (const key in param) {

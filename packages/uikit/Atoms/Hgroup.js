@@ -1,7 +1,7 @@
 'use strict'
 
 export const Hgroup = {
-  extend: 'Flex',
+  extends: 'Flex',
   tag: 'hgroup',
 
   props: {
@@ -35,7 +35,7 @@ export const Hgroup = {
   P: {},
 
   Title: {
-    extend: 'Flex',
+    extends: 'Flex',
     if: ({ parent }) => parent.props.title,
     props: ({ parent }) => ({
       text: parent.props.title,
@@ -44,7 +44,7 @@ export const Hgroup = {
   },
 
   Paragraph: {
-    extend: 'Flex',
+    extends: 'Flex',
     if: ({ parent }) => parent.props.paragraph,
     props: ({ parent }) => ({
       text: parent.props.paragraph,
@@ -54,21 +54,21 @@ export const Hgroup = {
 }
 
 export const HgroupRows = {
-  extend: 'Hgroup',
+  extends: 'Hgroup',
 
   Title: {
-    extend: 'Flex',
+    extends: 'Flex',
     props: { color: 'title', align: 'center space-between' }
   },
 
   Paragraph: {
-    extend: 'Flex',
+    extends: 'Flex',
     props: { color: 'paragraph', align: 'center space-between' }
   }
 }
 
 export const HgroupButton = {
-  extend: 'HgroupRows',
+  extends: 'HgroupRows',
 
   Title: {
     props: { justifyContent: 'space-between' },

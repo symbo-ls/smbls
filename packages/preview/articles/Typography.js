@@ -4,11 +4,11 @@ import { FontsBlock } from '../blocks'
 
 export const Typography = {
   tag: 'article',
-  extend: 'Flex',
+  extends: 'Flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
     Title: {
       props: {
         text: 'type',
@@ -41,7 +41,7 @@ export const Typography = {
         }
       }
     },
-    childExtend: FontsBlock,
+    childExtends: FontsBlock,
     ...[{}, {}]
   }
   // Section: {
@@ -67,7 +67,7 @@ export const Typography = {
   // }
 
   // Section: {
-  //   extend: font,
+  //   extends: font,
   //   Title: {
   //     props: { text: 'Sans Serif' }
   //   },

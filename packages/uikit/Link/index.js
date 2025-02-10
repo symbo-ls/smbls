@@ -3,7 +3,7 @@
 import { router as defaultRouter } from '@domql/router'
 
 export const Link = {
-  extend: 'Focusable',
+  extends: 'Focusable',
   tag: 'a',
   props: {
     aria: {},
@@ -64,5 +64,5 @@ export const RouterLink = {
 }
 
 export const RouteLink = {
-  extend: [Link, RouterLink]
+  extends: [Link, RouterLink]
 }

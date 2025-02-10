@@ -1,7 +1,7 @@
 'use strict'
 
 export const Select = {
-  extend: 'Focusable',
+  extends: 'Focusable',
   tag: 'select',
 
   props: {

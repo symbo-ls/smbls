@@ -3,7 +3,7 @@
 import { isDefined } from '@domql/utils'
 
 export const Tooltip = {
-  extend: 'Flex',
+  extends: 'Flex',
 
   props: {
     theme: 'dialog',
@@ -42,7 +42,7 @@ export const Tooltip = {
 }
 
 export const TooltipHidden = {
-  extend: 'Tooltip',
+  extends: 'Tooltip',
 
   props: ({ props }) => ({
     position: 'absolute',

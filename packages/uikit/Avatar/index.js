@@ -1,7 +1,7 @@
 'use strict'
 
 export const Avatar = {
-  extend: 'Img',
+  extends: 'Img',
   props: {
     display: 'block',
     avatarType: 'adventurer-neutral',

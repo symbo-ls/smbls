@@ -43,8 +43,8 @@ export const DatePickerYears = {
       '::-webkit-scrollbar': { display: 'none' }
     },
 
-    childExtend: {
-      extend: 'Button',
+    childExtends: {
+      extends: 'Button',
       props: ({ state, text }) => ({
         fontSize: 'Y1',
         opacity: '.4',

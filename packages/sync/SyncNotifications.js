@@ -92,8 +92,8 @@ export const Notifications = {
       bottom: 'Z2',
       zIndex: '999'
     },
-    childExtend: {
-      extend: 'Notification',
+    childExtends: {
+      extends: 'Notification',
       props: ({ state }) => ({
         animationDuration: 'C',
         background: NOTIF_COLORS[state.type || 'success'],

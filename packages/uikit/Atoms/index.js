@@ -3,7 +3,6 @@
 export * from './Block'
 export * from './Img'
 export * from './Form'
-export * from './Media'
 export * from './Iframe'
 export * from './InteractiveComponent'
 export * from './Collection'

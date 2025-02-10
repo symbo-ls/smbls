@@ -6,7 +6,7 @@ export const Picture = {
   deps: { getSystemGlobalTheme },
   tag: 'picture',
 
-  childExtend: {
+  childExtends: {
     tag: 'source',
     attr: {
       media: (element) => {
@@ -26,7 +26,7 @@ export const Picture = {
 
   Img: ({ props }) => ({
     width: 'inherit',
-    ignoreChildExtend: true,
+    ignoreChildExtends: true,
     height: 'inherit',
     src: props.src
   })

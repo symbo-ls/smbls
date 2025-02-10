@@ -4,7 +4,7 @@ import { ColorBlock } from '../blocks'
 
 export const Colors = {
   tag: 'article',
-  extend: 'Flex',
+  extends: 'Flex',
 
   props: {
     margin: 'auto',
@@ -43,12 +43,12 @@ export const Colors = {
       '@mobileS': { padding: '- B' }
     },
 
-    childExtend: ColorBlock,
+    childExtends: ColorBlock,
 
     pallete: {
       Title: { text: 'Color pallete' },
       Paragraph: {
-        $collection: ({ context }) => {
+        children: ({ context }) => {
           const { COLOR } = context.designSystem
           return Object.keys(COLOR).filter(v => COLOR[v].value)
             .map(v => ({

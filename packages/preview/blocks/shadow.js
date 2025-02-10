@@ -3,7 +3,7 @@
 import { DefaultBlock } from './section'
 
 export const shadow = {
-  extend: DefaultBlock,
+  extends: DefaultBlock,
   props: {
     padding: 'D2 D',
     '@mobileL': { padding: 'E C' },
@@ -13,7 +13,7 @@ export const shadow = {
   Title: null,
 
   Paragraph: {
-    extend: 'Grid',
+    extends: 'Grid',
     props: {
       columns: 'repeat(8, 1fr)',
       gap: 'C2',

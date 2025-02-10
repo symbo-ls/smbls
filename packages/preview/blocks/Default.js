@@ -2,7 +2,7 @@
 
 export const DefaultBlock = {
   tag: 'section',
-  extend: 'Hgroup',
+  extends: 'Hgroup',
   props: {
     flow: 'row',
     boxSizing: 'border-box',

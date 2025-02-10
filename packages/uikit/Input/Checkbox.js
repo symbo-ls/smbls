@@ -1,7 +1,7 @@
 'use strict'
 
 export const Checkbox = {
-  extend: 'Focusable',
+  extends: 'Focusable',
 
   tag: 'label',
 
@@ -41,7 +41,7 @@ export const Checkbox = {
 }
 
 export const CheckboxHgroup = {
-  extend: 'Flex',
+  extends: 'Flex',
   tag: 'label',
 
   props: {

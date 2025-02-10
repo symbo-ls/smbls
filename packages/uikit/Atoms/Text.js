@@ -1,13 +1,6 @@
 'use strict'
 
-export const Text = {
-  text: (el) => {
-    const { key, props, state, deps } = el
-    if (props.text === true) return (state && state[key]) || (props && props[key])
-    // return console.log(el) || deps.exec(props.text, el)
-    return deps.exec(props.text, el)
-  }
-}
+export const Text = {}
 
 export const H1 = { tag: 'h1' }
 export const H2 = { tag: 'h2' }

@@ -18,7 +18,7 @@ const getIconName = (el, s) => {
 }
 
 export const Icon = {
-  extend: 'Svg',
+  extends: 'Svg',
   props: (el, s, ctx) => {
     const { props, parent } = el
     const { ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
@@ -75,7 +75,7 @@ export const Icon = {
 }
 
 export const IconText = {
-  extend: 'Flex',
+  extends: 'Flex',
 
   props: {
     align: 'center center',
@@ -106,7 +106,7 @@ export const IconText = {
 }
 
 export const FileIcon = {
-  extend: 'Flex',
+  extends: 'Flex',
   props: {
     theme: 'tertiary',
     boxSize: 'C1',

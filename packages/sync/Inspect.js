@@ -12,7 +12,7 @@ function getComponentKey (el) {
   if (!el) return
   const __componentKey = el.__ref.__componentKey
   const extendStr = el.extend && returnStringExtend(el.extend)
-  const parentChildExtendStr = el.parent && el.parent.childExtend && returnStringExtend(el.parent.childExtend)
+  const parentChildExtendStr = el.parent && el.parent.childExtends && returnStringExtend(el.parent.childExtends)
   return (__componentKey || extendStr || parentChildExtendStr || '').split('_')[0].split('.')[0].split('+')[0]
 }
 
@@ -129,7 +129,7 @@ export const Inspect = {
       }
     }),
 
-    span: {
+    Span: {
       props: {
         position: 'absolute',
         margin: 'A2 0',
@@ -189,7 +189,7 @@ export const Inspect = {
         }
 
         el.node.style = style
-        el.span.node.innerText = s.focusKey
+        el.Span.node.innerText = s.focusKey
 
         return false
       }

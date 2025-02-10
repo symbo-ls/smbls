@@ -4,11 +4,11 @@ import { shadow } from '../blocks'
 
 export const Shadows = {
   tag: 'article',
-  extend: 'Flex',
+  extends: 'Flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
 
     Title: { text: 'Shadow' },
     Paragraph: {
@@ -27,6 +27,6 @@ export const Shadows = {
   },
 
   Section: {
-    extend: shadow
+    extends: shadow
   }
 }

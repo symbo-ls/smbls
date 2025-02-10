@@ -13,12 +13,12 @@
  * @example
  * // Example usage of the Button component:
  * const myButton = {
- *   extend: Button
+ *   extends: Button
  * }
  */
 
 export const Button = {
-  extend: ['IconText', 'FocusableComponent'],
+  extends: ['IconText', 'FocusableComponent'],
   tag: 'button',
 
   props: {
@@ -42,7 +42,7 @@ export const Button = {
 }
 
 export const SquareButton = {
-  extend: 'Button',
+  extends: 'Button',
   props: {
     fontSize: 'A',
     width: 'A',
@@ -57,23 +57,23 @@ export const SquareButton = {
 }
 
 export const CircleButton = {
-  extend: 'SquareButton',
+  extends: 'SquareButton',
   props: { round: 'C' }
 }
 
 export const KangorooButton = {
-  extend: 'Button',
-  childExtend: 'IconText'
+  extends: 'Button',
+  childExtends: 'IconText'
 }
 
 export const ButtonSet = {
   tag: 'nav',
-  extend: 'Flex',
-  childExtend: 'SquareButton'
+  extends: 'Flex',
+  childExtends: 'SquareButton'
 }
 
 export const IconButton = {
-  extend: [
+  extends: [
     'SquareButton',
     'ClickableItem'
   ],

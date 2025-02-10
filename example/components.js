@@ -3,7 +3,7 @@
 import { Avatar, SearchWithButton } from '@symbo.ls/uikit'
 
 export const ComponentsView = {
-  extend: 'Flex',
+  extends: 'Flex',
 
   state: {
     globalTheme: 'dark',
@@ -75,7 +75,7 @@ export const ComponentsView = {
   },
 
   cnt: {
-    extend: 'Flex',
+    extends: 'Flex',
 
     props: {
       flow: 'column',
@@ -90,14 +90,14 @@ export const ComponentsView = {
       }
     },
 
-    childExtend: {
+    childExtends: {
       props: ({ key, state }) => ({
         hide: !key.toLowerCase().includes(state.value),
         position: 'relative'
       }),
       __title: {
         props: {
-          ignoreChildExtend: true,
+          ignoreChildExtends: true,
           position: 'absolute',
           left: '0',
           top: '-C',
@@ -118,7 +118,7 @@ export const ComponentsView = {
     Avatar: {},
     AvatarIndicator: {},
     AvatarBundle: {
-      childExtend: Avatar,
+      childExtends: Avatar,
       ...[{}, {}, {}]
     },
     AvatarChooser: {
@@ -244,9 +244,9 @@ export const ComponentsView = {
   },
 
   footer: {
-    extend: 'Flex',
+    extends: 'Flex',
     Search: {
-      extend: SearchWithButton,
+      extends: SearchWithButton,
       props: {
         minWidth: 'G+C',
         minHeight: 'C+X',

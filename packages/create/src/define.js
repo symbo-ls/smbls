@@ -22,7 +22,7 @@ export const defaultDefine = {
     return obj
   },
 
-  $collection: Collection.define.$collection,
+  children: Collection.define.children,
   $setCollection: Collection.define.$setCollection,
   $stateCollection: Collection.define.$stateCollection,
   $propsCollection: Collection.define.$propsCollection

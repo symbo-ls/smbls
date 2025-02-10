@@ -1,7 +1,7 @@
 'use strict'
 
 export const ComponentsPage = {
-  extend: 'Flex',
+  extends: 'Flex',
 
   state: {
     globalTheme: 'dark',
@@ -22,14 +22,14 @@ export const ComponentsPage = {
       }
     },
 
-    childExtend: {
+    childExtends: {
       props: ({ key, state }) => ({
         hide: !key.toLowerCase().includes(state.value),
         position: 'relative'
       }),
       __title: {
         props: {
-          ignoreChildExtend: true,
+          ignoreChildExtends: true,
           position: 'absolute',
           left: '0',
           top: '-C',
@@ -50,7 +50,7 @@ export const ComponentsPage = {
     Avatar: {},
     AvatarIndicator: {},
     AvatarBundle: {
-      childExtend: 'Avatar',
+      childExtends: 'Avatar',
       ...[{}, {}, {}]
     },
     AvatarChooser: {
@@ -216,7 +216,7 @@ export const ComponentsPage = {
       }
     },
     Search: {
-      extend: 'SearchWithButton',
+      extends: 'SearchWithButton',
       props: {
         minWidth: 'G+C',
         minHeight: 'C+X',

@@ -84,5 +84,5 @@ export const SyncComponent = {
 }
 
 export const DefaultSyncApp = {
-  extend: [SyncComponent, Inspect, Notifications]
+  extends: [SyncComponent, Inspect, Notifications]
 }

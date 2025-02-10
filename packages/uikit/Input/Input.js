@@ -1,7 +1,7 @@
 'use strict'
 
 export const Input = {
-  extend: ['Focusable'],
+  extends: ['Focusable'],
 
   tag: 'input',
 

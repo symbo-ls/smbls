@@ -10,12 +10,12 @@ export const Editorjs = {
   on: {
     init: () => initMutiny()
   },
-  childExtend: {
+  childExtends: {
     html: (el, s) => {
       const text = el.text || el.props.text
       if (text && text.includes('</')) { return text }
     },
-    childExtend: {
+    childExtends: {
       html: (el, s) => el.props.text || el.text
     }
   },

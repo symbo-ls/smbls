@@ -13,7 +13,7 @@ const state = {}
 const props = {}
 
 const value = {
-  extend: Avatar
+  extends: Avatar
 }
 
 const code = ''

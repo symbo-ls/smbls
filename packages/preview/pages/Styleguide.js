@@ -3,7 +3,7 @@
 import { Colors, Typography, Shadows, Icons, Spacing, Shapes } from '../articles'
 
 export const Styleguide = {
-  extend: 'Flex',
+  extends: 'Flex',
   tag: 'main',
 
   props: {
@@ -18,7 +18,7 @@ export const Styleguide = {
     }
   },
 
-  childExtend: {
+  childExtends: {
     props: {
       flow: 'column',
       '> header': {

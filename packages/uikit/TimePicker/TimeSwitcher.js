@@ -10,10 +10,10 @@ const props = {
 
 export const TimeSwitcher = {
   props,
-  extend: 'Flex',
+  extends: 'Flex',
 
-  childExtend: {
-    extend: 'Button',
+  childExtends: {
+    extends: 'Button',
     props: {
       padding: '0',
       flex: '1',

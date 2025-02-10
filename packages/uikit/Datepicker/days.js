@@ -1,7 +1,7 @@
 'use strict'
 
 export const DatePickerDay = {
-  extend: 'Button',
+  extends: 'Button',
   state: true,
 
   props: ({ state, key }) => {

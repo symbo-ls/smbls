@@ -3,7 +3,7 @@
 import { DefaultBlock } from './section'
 
 export const icon = {
-  extend: DefaultBlock,
+  extends: DefaultBlock,
   props: {
     padding: 'E D E1 D',
     '@mobileL': { padding: 'D C' },
@@ -12,7 +12,7 @@ export const icon = {
 
   Title: null,
   Paragraph: {
-    extend: 'Grid',
+    extends: 'Grid',
     props: {
       columns: 'repeat(7, 1fr)',
       gap: 'C',
@@ -22,8 +22,8 @@ export const icon = {
       '@mobileS': { gap: 'Z' }
       // padding: 'E D E2 D'
     },
-    childExtend: {
-      extend: 'Flex',
+    childExtends: {
+      extends: 'Flex',
       props: {
         align: 'center',
         aspectRatio: '1/1',
@@ -42,7 +42,7 @@ export const icon = {
       }
     },
 
-    $collection: ({ context }) => {
+    children: ({ context }) => {
       const { ICONS } = context.designSystem
       return Object.keys(ICONS).map(name => ({
         Icon: { name }

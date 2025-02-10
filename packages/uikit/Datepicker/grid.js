@@ -20,7 +20,7 @@ const extractMonthDays = (data) => {
 }
 
 export const DatePickerGrid = {
-  extend: 'Grid',
+  extends: 'Grid',
 
   props: {
     columns: 'repeat(7, 1fr)',
@@ -30,7 +30,7 @@ export const DatePickerGrid = {
     style: { scrollSnapAlign: 'center' }
   },
 
-  childExtend: DatePickerDay,
+  childExtends: DatePickerDay,
   $stateCollection: ({ state }) => state.days
 }
 
@@ -84,8 +84,8 @@ export const DatePickerGridContainer = {
   },
 
   Flex: {
-    childExtend: {
-      extend: DatePickerGrid,
+    childExtends: {
+      extends: DatePickerGrid,
       on: {
         render: (el, state) => {
           const { key } = el
