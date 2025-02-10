@@ -8,9 +8,16 @@ export const Collection = {
     children: (param, el, state) => {
       const { __ref: ref } = el
       const { childrenAs, childExtends } = (el.props || {})
-      const children = param && exec(param, el, state)
+      const children = (param && exec(param, el, state)) || (el.props.children && exec(el.props.children, el, state))
 
       const childrenAsDefault = childrenAs || 'props'
+
+      if (children || el.props.children) {
+        console.log('222---')
+        console.log(children)
+        console.log(el.props.children)
+        console.log(el)
+      }
 
       if (children) {
         if (isObject(children)) {
