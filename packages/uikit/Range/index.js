@@ -99,7 +99,7 @@ export const Range = {
 
   attr: {
     type: 'range',
-    value: (el, s) => parseFloat(el.state.value || el.props.value || el.props.defaultValue),
+    value: (el, s) => el.call('exec', s.value || el.props.value || el.props.defaultValue, el),
     min: (el, s) => el.deps.returnPropertyValue(el, 'min', 0),
     max: (el, s) => el.deps.returnPropertyValue(el, 'max', 100),
     step: (el, s) => el.deps.returnPropertyValue(el, 'step', 1)
