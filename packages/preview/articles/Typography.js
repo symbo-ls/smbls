@@ -80,7 +80,8 @@ export const Typography = {
   //   }
   // },
 
-  // $stateCollection: ({ context }) => {
+  // childrenAs: 'state',
+  // children: ({ context }) => {
   //   const { FONT } = context.designSystem
   //   return Object.keys(FONT).map(v => ({
   //     name: v

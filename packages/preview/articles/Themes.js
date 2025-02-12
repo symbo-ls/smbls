@@ -59,7 +59,7 @@ export const Themes = {
               minWidth: '100%'
             },
             childExtends: 'Icon',
-            $propsCollection: [
+            children: [
               { name: 'sun' },
               { name: 'moon' }
             ]

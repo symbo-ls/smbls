@@ -31,7 +31,8 @@ export const DatePickerGrid = {
   },
 
   childExtends: DatePickerDay,
-  $stateCollection: ({ state }) => state.days
+  childrenAs: 'state',
+  children: ({ state }) => state.days
 }
 
 export const DatePickerGridContainer = {
@@ -84,24 +85,23 @@ export const DatePickerGridContainer = {
   },
 
   Flex: {
-    childExtends: {
-      extends: DatePickerGrid,
-      on: {
-        render: (el, state) => {
-          const { key } = el
-          const isSelected = state.parent.parent.activeMonth === parseInt(key)
-          if (isSelected) {
-            window.requestAnimationFrame(() => {
-              el.parent.parent.node.scrollTo({
-                left: el.node.offsetLeft,
-                behavior: state.initialized ? 'smooth' : 'instant'
-              })
+    childProps: {
+      onRender: (el, state) => {
+        const { key } = el
+        const isSelected = state.parent.parent.activeMonth === parseInt(key)
+        if (isSelected) {
+          window.requestAnimationFrame(() => {
+            el.parent.parent.node.scrollTo({
+              left: el.node.offsetLeft,
+              behavior: state.initialized ? 'smooth' : 'instant'
             })
-            // if (!state.initialized) state.update({ initialized: true }, { preventUpdate: true, isHoisted: true })
-          }
+          })
+        // if (!state.initialized) state.update({ initialized: true }, { preventUpdate: true, isHoisted: true })
         }
       }
     },
-    $stateCollection: ({ state }) => state.parse()
+    childExtends: 'DatePickerGrid',
+    childrenAs: 'state',
+    children: ({ state }) => state.parse()
   }
 }

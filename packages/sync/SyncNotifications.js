@@ -98,14 +98,6 @@ export const Notifications = {
         animationDuration: 'C',
         background: NOTIF_COLORS[state.type || 'success'],
         icon: null,
-        Flex: {
-          Title: {
-            text: '{{ title }}'
-          },
-          P: {
-            text: '{{ title }}'
-          }
-        },
         onRender: (e, el, s) => {
           el.setProps({ animation: 'fadeInUp' })
         },
@@ -115,8 +107,17 @@ export const Notifications = {
           if (s.onClose) s.onClose(e, el, s)
         }
       }),
+      Flex: {
+        Title: {
+          text: '{{ title }}'
+        },
+        P: {
+          text: '{{ title }}'
+        }
+      },
       IconText: null
     },
-    $stateCollection: ({ state }) => state.notifications
+    childrenAs: 'state',
+    children: ({ state }) => state.notifications
   }
 }

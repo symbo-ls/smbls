@@ -22,8 +22,5 @@ export const defaultDefine = {
     return obj
   },
 
-  children: Collection.define.children,
-  $setCollection: Collection.define.$setCollection,
-  $stateCollection: Collection.define.$stateCollection,
-  $propsCollection: Collection.define.$propsCollection
+  children: Collection.define.children
 }

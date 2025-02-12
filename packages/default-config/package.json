@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/default-config",
   "version": "2.11.508",
-  "source": "src/index.js",
-  "main": "src/index.js",
+  "source": "blank/index.js",
+  "main": "blank/index.js",
   "type": "module",
   "dependencies": {
     "@symbo.ls/default-icons": "^2.11.475"
