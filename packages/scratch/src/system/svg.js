@@ -1,6 +1,6 @@
 'use strict'
 
-import { document } from '@domql/globals'
+import { document } from '@domql/utils'
 import { generateSprite, convertSvgToSymbol } from '../utils'
 import { getActiveConfig } from '../factory.js'
 

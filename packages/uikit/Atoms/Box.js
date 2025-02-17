@@ -3,7 +3,7 @@
 import { useCssInProps } from 'css-in-props'
 
 // Main class assignment handler
-const beforeClassAssign = (element, s, ctx) => {
+const onBeforeClassAssign = (element) => {
   if (!element.context) return
   const { props, __ref: ref } = element
   ref.__class = useCssInProps(props, element, { unpack: false })
@@ -15,9 +15,9 @@ export const Box = {
     'Shape',
     'Theme'
   ],
-  props: {
-    boxSizing: 'border-box'
-  },
+
+  boxSizing: 'border-box',
+
   attr: {
     id: el => el.call('isString', el.props.id) && el.props.id,
     title: el => el.call('isString', el.props.title) && el.props.title,
@@ -30,20 +30,17 @@ export const Box = {
     tabindex: el => el.props.tabindex,
     translate: el => el.props.translate
   },
+
   class: {
-    style: el => el.props && el.props.style
+    style: el => el.style || el.props?.style
   },
-  text: (el) => {
-    const { key, props, state } = el
-    if (props.text === true) return (state && state[key]) || (props && props[key])
-    return el.call('exec', props.text, el)
-  },
-  on: { beforeClassAssign }
+
+  onBeforeClassAssign
 }
 
 export const Hr = {
   tag: 'hr',
-  props: { margin: 'C1 0' }
+  margin: 'C1 0'
 }
 export const Br = { tag: 'br' }
 export const Li = { tag: 'li' }

@@ -1,7 +1,6 @@
 'use strict'
 
-import { document, window } from '@domql/globals'
-import { isString, isNumber } from '@domql/utils'
+import { document, window, isString, isNumber } from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const colorStringToRgbaArray = color => {

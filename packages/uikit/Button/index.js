@@ -21,20 +21,18 @@ export const Button = {
   extends: ['IconText', 'FocusableComponent'],
   tag: 'button',
 
-  props: {
-    fontSize: 'A',
-    type: 'button',
-    borderStyle: 'none',
-    display: 'inline-flex',
-    align: 'center center',
-    textDecoration: 'none',
-    lineHeight: '1',
-    whiteSpace: 'nowrap',
-    padding: 'Z B2',
-    fontWeight: '500',
-    fontFamily: 'inherit',
-    round: 'C2'
-  },
+  fontSize: 'A',
+  type: 'button',
+  borderStyle: 'none',
+  display: 'inline-flex',
+  align: 'center center',
+  textDecoration: 'none',
+  lineHeight: '1',
+  whiteSpace: 'nowrap',
+  padding: 'Z B2',
+  fontWeight: '500',
+  fontFamily: 'inherit',
+  round: 'C2',
 
   attr: {
     type: ({ props }) => props.type
@@ -43,22 +41,20 @@ export const Button = {
 
 export const SquareButton = {
   extends: 'Button',
-  props: {
-    fontSize: 'A',
-    width: 'A',
-    padding: 'Z',
-    aspectRatio: '1 / 1',
-    icon: 'smile',
-    boxSize: 'fit-content fit-content',
-    justifyContent: 'center',
-    round: 'Z',
-    boxSizing: 'content-box'
-  }
+  fontSize: 'A',
+  width: 'A',
+  padding: 'Z',
+  aspectRatio: '1 / 1',
+  icon: 'smile',
+  boxSize: 'fit-content fit-content',
+  justifyContent: 'center',
+  round: 'Z',
+  boxSizing: 'content-box'
 }
 
 export const CircleButton = {
   extends: 'SquareButton',
-  props: { round: 'C' }
+  round: 'C'
 }
 
 export const KangorooButton = {
@@ -77,8 +73,5 @@ export const IconButton = {
     'SquareButton',
     'ClickableItem'
   ],
-  props: {
-    round: 'Z'
-  },
-  __hash: '3a7v57sk5rd'
+  round: 'Z'
 }

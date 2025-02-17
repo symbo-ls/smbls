@@ -54,145 +54,137 @@ const onInspect = (app, state, ctx) => {
 }
 
 export const Inspect = {
-  props: {
-    '.preventSelect': { userSelect: 'none' },
-    '!preventSelect': { userSelect: 'auto' },
+  '.preventSelect': { userSelect: 'none' },
+  '!preventSelect': { userSelect: 'auto' },
 
-    onInspect,
+  onInspect,
 
-    onMousemove: (ev, e, state) => {
-      const el = ev.target.ref
-      const component = findComponent(el)
-      const focusState = e.Inspector.state
+  onMousemove: (ev, e, state) => {
+    const el = ev.target.ref
+    const component = findComponent(el)
+    const focusState = e.Inspector.state
 
-      if (!component || !state.debugging || !component.__ref) return focusState.update({ area: false })
+    if (!component || !state.debugging || !component.__ref) return focusState.update({ area: false })
 
-      const componentKey = getComponentKey(component)
-      const updateValue = (area) => {
-        focusState.update({ area, focusKey: componentKey })
-      }
-
-      const update = () => {
-        if (ev.altKey && ev.shiftKey) {
-          const { x, y, width, height } = component.node.getBoundingClientRect()
-          const area = { x, y, width, height }
-
-          if (!focusState.area) return updateValue(area)
-          if (focusState.area.x !== area.x) updateValue(area)
-        } else if (focusState.area) {
-          focusState.update({ area: false })
-        }
-      }
-
-      window.requestAnimationFrame(() => {
-        update()
-        window.requestAnimationFrame(update)
-      })
-    },
-
-    onMousedown: (ev, elem, state) => {
-      if (!state.debugging) return
-      const el = ev.target.ref
-      const component = findComponent(el)
-      if (!component) return
-      const componentKey = getComponentKey(component)
-      if (!componentKey) return
-
-      const editor = el.context.editor
-      if (editor && editor.onInspect) {
-        return editor.onInspect(componentKey, el, el.state, { allowRouterWhileInspect: true })
-      }
-
-      const data = JSON.stringify({
-        componentKey: `${componentKey}`
-      })
-      send.call(el.context.socket, 'route', data)
-
-      ev.preventDefault()
-      ev.stopPropagation()
-      return false
+    const componentKey = getComponentKey(component)
+    const updateValue = (area) => {
+      focusState.update({ area, focusKey: componentKey })
     }
+
+    const update = () => {
+      if (ev.altKey && ev.shiftKey) {
+        const { x, y, width, height } = component.node.getBoundingClientRect()
+        const area = { x, y, width, height }
+
+        if (!focusState.area) return updateValue(area)
+        if (focusState.area.x !== area.x) updateValue(area)
+      } else if (focusState.area) {
+        focusState.update({ area: false })
+      }
+    }
+
+    window.requestAnimationFrame(() => {
+      update()
+      window.requestAnimationFrame(update)
+    })
+  },
+
+  onMousedown: (ev, elem, state) => {
+    if (!state.debugging) return
+    const el = ev.target.ref
+    const component = findComponent(el)
+    if (!component) return
+    const componentKey = getComponentKey(component)
+    if (!componentKey) return
+
+    const editor = el.context.editor
+    if (editor && editor.onInspect) {
+      return editor.onInspect(componentKey, el, el.state, { allowRouterWhileInspect: true })
+    }
+
+    const data = JSON.stringify({
+      componentKey: `${componentKey}`
+    })
+    send.call(el.context.socket, 'route', data)
+
+    ev.preventDefault()
+    ev.stopPropagation()
+    return false
   },
 
   Inspector: {
     state: {},
 
-    props: (el, s) => ({
-      transition: 'all, defaultBezier, X',
-      position: 'fixed',
-      hide: !(s.area && s.parent.debugging),
-      style: {
-        boxShadow: '0 0 10px #3686F733, 0 0 0 3px #3686F766, 0 0 100vmax 100vmax #000A',
-        zIndex: '9999999',
-        borderRadius: '10px',
-        pointerEvents: 'none'
-      }
-    }),
-
-    Span: {
-      props: {
-        position: 'absolute',
-        margin: 'A2 0',
-        fontSize: 'Z',
-        color: 'text',
-        // color: 'blue',
-        zIndex: '99999999',
-        transition: 'all, defaultBezier, X',
-        textDecoration: 'underline',
-        fontWeight: '500',
-        top: '100%',
-        style: {
-          boxShadow: '0 25px 10px 35px black',
-          textShadow: '0 0 10px black'
-        },
-        text: '{{ focusKey }}'
-      }
+    transition: 'all, defaultBezier, X',
+    position: 'fixed',
+    hide: (el, s) => !(s.area && s.parent.debugging),
+    style: {
+      boxShadow: '0 0 10px #3686F733, 0 0 0 3px #3686F766, 0 0 100vmax 100vmax #000A',
+      zIndex: '9999999',
+      borderRadius: '10px',
+      pointerEvents: 'none'
     },
 
-    on: {
-      init: ({ context }) => {
-        const { components } = context
+    Span: {
+      position: 'absolute',
+      margin: 'A2 0',
+      fontSize: 'Z',
+      color: 'text',
+      // color: 'blue',
+      zIndex: '99999999',
+      transition: 'all, defaultBezier, X',
+      textDecoration: 'underline',
+      fontWeight: '500',
+      top: '100%',
+      style: {
+        boxShadow: '0 25px 10px 35px black',
+        textShadow: '0 0 10px black'
+      },
+      text: '{{ focusKey }}'
+    },
 
-        if (isObject(components)) {
-          const { Content, ...rest } = components
-          for (const key in rest) {
-            if (smblsUI[key]) continue
-            if (!rest[key].__ref) rest[key].__ref = {}
-            if (!rest[key].__ref.__componentKey) {
-              rest[key].__ref.__componentKey = key
-            }
+    onInit: ({ context }) => {
+      const { components } = context
+
+      if (isObject(components)) {
+        const { Content, ...rest } = components
+        for (const key in rest) {
+          if (smblsUI[key]) continue
+          if (!rest[key].__ref) rest[key].__ref = {}
+          if (!rest[key].__ref.__componentKey) {
+            rest[key].__ref.__componentKey = key
           }
         }
-      },
-      beforeUpdate: (ch, el, s) => {
-        const { area } = s
-        const isDebugging = s.area && s.parent.debugging
+      }
+    },
+    onBeforeUpdate: (ch, el, s) => {
+      const { area } = s
+      const isDebugging = s.area && s.parent.debugging
 
-        let style
-        if (!isDebugging) {
-          style = 'display: none !important'
-        } else if (area) {
-          const { x, y, width, height } = area
-          // el.node.style = Object.stringify({
-          //   top: y - 6 + 'px',
-          //   left: x - 6 + 'px',
-          //   width: width + 12 + 'px',
-          //   height: height + 12 + 'px'
-          // })
-          style = `
+      let style
+      if (!isDebugging) {
+        style = 'display: none !important'
+      } else if (area) {
+        const { x, y, width, height } = area
+        // el.node.style = Object.stringify({
+        //   top: y - 6 + 'px',
+        //   left: x - 6 + 'px',
+        //   width: width + 12 + 'px',
+        //   height: height + 12 + 'px'
+        // })
+        style = `
             display: block !important;
             top: ${y - 6}px;
             left: ${x - 6}px;
             width: ${width + 12}px;
             height: ${height + 12}px;
           `
-        }
-
-        el.node.style = style
-        el.Span.node.innerText = s.focusKey
-
-        return false
       }
+
+      el.node.style = style
+      el.Span.node.innerText = s.focusKey
+
+      return false
     }
   }
 }

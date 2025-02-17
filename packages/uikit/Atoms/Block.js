@@ -1,33 +1,29 @@
 'use strict'
 
 export const Block = {
-  props: {
-    display: 'block'
-  }
+  display: 'block'
 }
 
 export const Inline = {
-  props: {
-    display: 'inline'
-  }
+  display: 'inline'
 }
 
 export const Flex = {
-  props: {
-    display: 'flex'
-  }
+  display: 'flex'
+}
+
+export const InlineFlex = {
+  display: 'inline-flex'
 }
 
 export const Grid = {
-  props: { display: 'grid' }
+  display: 'grid'
 }
 
-export const Div = { tag: 'div' }
-export const Span = { tag: 'span' }
-// export const Article = { tag: 'article' }
+export const InlineGrid = {
+  display: 'inline-grid'
+}
 
 export const Gutter = {
-  props: {
-    boxSize: 'C1'
-  }
+  boxSize: 'C1'
 }

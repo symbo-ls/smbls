@@ -65,6 +65,8 @@ export const createDomqlElement = async (app, ctx) => {
   app.data = app.data || {}
   app.data.frameListeners = initAnimationFrame(ctx)
 
+  console.log(app)
+
   prepareRequire({
     functions: ctx.functions,
     utils: ctx.utils,

@@ -5,10 +5,8 @@ import { isString } from '@domql/utils'
 export const FLEX_PROPS = {
   flow: (value, el) => {
     const { props } = el
-    // console.log('----flex')
-    // console.log(value)
-    // console.log(el)
-    if (props.display !== 'flex') return
+    const DISPLAY_FLEX_ALLOWED = ['flex', 'inline-flex']
+    if (!DISPLAY_FLEX_ALLOWED.includes(props.display)) return
     const { reverse } = props
     if (!isString(value)) return
     let [direction, wrap] = (value || 'row').split(' ')
@@ -20,12 +18,14 @@ export const FLEX_PROPS = {
   },
 
   wrap: (value, { props }) => {
-    if (props.display !== 'flex') return
+    const DISPLAY_FLEX_ALLOWED = ['flex', 'inline-flex']
+    if (!DISPLAY_FLEX_ALLOWED.includes(props.display)) return
     return { flexWrap: value }
   },
 
   align: (value, { props }) => {
-    if (props.display !== 'flex') return
+    const DISPLAY_FLEX_ALLOWED = ['flex', 'inline-flex']
+    if (!DISPLAY_FLEX_ALLOWED.includes(props.display)) return
     const [alignItems, justifyContent] = value.split(' ')
     return { alignItems, justifyContent }
   }

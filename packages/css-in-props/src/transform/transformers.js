@@ -41,6 +41,10 @@ const applyAndProps = (key, selectorProps, element) => {
 
 const applySelectorProps = (key, selectorProps, element) => {
   const selectorKey = `&${key}`
+  // if (key === ':after') {
+  //   console.log(selectorKey)
+  //   console.log(useCssInProps(selectorProps, element))
+  // }
   return { [selectorKey]: useCssInProps(selectorProps, element) }
 }
 
