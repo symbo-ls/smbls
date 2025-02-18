@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "2.11.518",
+  "version": "2.11.519",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -16,7 +16,7 @@
     "@domql/utils": "^2.5.0",
     "@symbo.ls/atoms": "^2.11.517",
     "@symbo.ls/avatar": "^2.11.517",
-    "@symbo.ls/box": "^2.11.517",
+    "@symbo.ls/box": "^2.11.519",
     "@symbo.ls/button": "^2.11.517",
     "@symbo.ls/dialog": "^2.11.517",
     "@symbo.ls/dropdown": "^2.11.517",
@@ -26,7 +26,7 @@
     "@symbo.ls/notification": "^2.11.517",
     "@symbo.ls/range": "^2.11.518",
     "@symbo.ls/scratch": "^2.11.515",
-    "@symbo.ls/select": "^2.11.517",
+    "@symbo.ls/select": "^2.11.519",
     "@symbo.ls/tooltip": "^2.11.517"
   },
   "scripts": {
