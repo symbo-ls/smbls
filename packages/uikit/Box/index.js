@@ -47,7 +47,8 @@ export const Box = {
     lang: el => el.props.lang,
     spellcheck: el => el.props.spellcheck,
     tabindex: el => el.props.tabindex,
-    translate: el => el.props.translate
+    translate: el => el.props.translate,
+    'data-testid': (el, s) => s.root.ENV === 'testing' && Math.random()
   }
 }
 
