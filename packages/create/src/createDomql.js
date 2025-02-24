@@ -58,7 +58,7 @@ export const createDomqlElement = async (app, ctx) => {
 
   prepareContext(app, ctx)
 
-  app.extend = initializeExtend(app, ctx)
+  app.extends = initializeExtend(app, ctx)
   app.routes = ctx.pages
   app.state = ctx.state
   app.context = ctx

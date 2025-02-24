@@ -740,7 +740,7 @@
 //           id: 'dCMiE4GN72',
 //           type: 'paragraph',
 //           data: {
-//             text: 'Furthermore, we extend the option of product photography, which is not covered by the website\'s pricing. Our affiliated entity, <b>Snapshot</b>, specialises in capturing product images both against a white backdrop and in the composition, ensuring optimal preparation for online presentation.'
+//             text: 'Furthermore, we extends the option of product photography, which is not covered by the website\'s pricing. Our affiliated entity, <b>Snapshot</b>, specialises in capturing product images both against a white backdrop and in the composition, ensuring optimal preparation for online presentation.'
 //           }
 //         }
 //         ]

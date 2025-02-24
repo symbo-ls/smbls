@@ -1,7 +1,6 @@
 'use strict'
 
-import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNumber, isNot, isArray, isObject, isObjectLike, exec, deepClone, applyAdditionalExtend } from '@domql/utils'
+import { isString, isNumber, isNot, isArray, isObject, isObjectLike, exec, deepClone, applyAdditionalExtend, getChildStateInKey, isState } from '@domql/utils'
 
 export const Collection = {
   define: {
@@ -10,7 +9,7 @@ export const Collection = {
       const { childrenAs, childExtends } = (el.props || {})
       const children = (param && exec(param, el, state)) || (el.props.children && exec(el.props.children, el, state))
 
-      const childrenAsDefault = childrenAs || 'props'
+      const childrenAsDefault = childrenAs
 
       // if (children || el.props.children) {
       //   console.log('222---')

@@ -7,7 +7,7 @@ const key = 'Avatar'
 const title = 'Avatar'
 const description = ''
 const category = ['Atoms']
-const extend = 'Avatar'
+const extends = 'Avatar'
 
 const state = {}
 const props = {}
@@ -27,7 +27,7 @@ export default {
   title,
   description,
   category,
-  extend,
+  extends,
 
   value,
   code,

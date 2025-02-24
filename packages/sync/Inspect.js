@@ -4,16 +4,16 @@ import * as smblsUI from '@symbo.ls/uikit'
 import { isObject, isString, isArray } from '@domql/utils'
 import { send } from '@symbo.ls/socket/client'
 
-function returnStringExtend (extend) {
-  return isString(extend) ? extend : isArray(extend) ? extend.find(extItem => isString(extItem)) : ''
+function returnStringExtend (_extends) {
+  return isString(_extends) ? _extends : isArray(_extends) ? _extends.find(extItem => isString(extItem)) : ''
 }
 
 function getComponentKey (el) {
   if (!el) return
   const __componentKey = el.__ref.__componentKey
-  const extendStr = el.extend && returnStringExtend(el.extend)
+  const extendsStr = el.extends && returnStringExtend(el.extends)
   const parentChildExtendStr = el.parent && el.parent.childExtends && returnStringExtend(el.parent.childExtends)
-  return (__componentKey || extendStr || parentChildExtendStr || '').split('_')[0].split('.')[0].split('+')[0]
+  return (__componentKey || extendsStr || parentChildExtendStr || '').split('_')[0].split('.')[0].split('+')[0]
 }
 
 function findComponent (el) {
