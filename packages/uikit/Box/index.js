@@ -47,7 +47,8 @@ export const Box = {
     lang: el => el.props.lang,
     spellcheck: el => el.props.spellcheck,
     tabindex: el => el.props.tabindex,
-    translate: el => el.props.translate
+    translate: el => el.props.translate,
+    'data-testid': (el, s) => s.root.ENV === 'testing' && ((el.__ref.path.length > 5 ? el.__ref.path.slice(1, 4).concat(el.__ref.path.slice(-2)) : el.__ref.path.slice(1)).join('.') || 'root')
   }
 }
 

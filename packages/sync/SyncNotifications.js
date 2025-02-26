@@ -40,7 +40,6 @@ const NOTIF_COLORS = {
 }
 
 export const connectedToSymbols = (clients, element, state) => {
-  console.log(clients)
   if (clients.symbols) {
     if (!state.connected) {
       state.notifications.connected = {
@@ -86,37 +85,34 @@ export const Notifications = {
   },
 
   Notifications: {
-    props: {
-      position: 'fixed',
-      left: 'A2',
-      bottom: 'Z2',
-      zIndex: '999'
-    },
-    childExtend: {
-      extend: 'Notification',
-      props: ({ state }) => ({
-        animationDuration: 'C',
-        background: NOTIF_COLORS[state.type || 'success'],
-        icon: null,
-        Flex: {
-          Title: {
-            text: '{{ title }}'
-          },
-          P: {
-            text: '{{ title }}'
-          }
+    position: 'fixed',
+    left: 'A2',
+    bottom: 'Z2',
+    zIndex: '999',
+    childExtends: 'Notification',
+    childProps: ({ state }) => ({
+      animationDuration: 'C',
+      background: NOTIF_COLORS[state.type || 'success'],
+      icon: null,
+      Flex: {
+        Title: {
+          text: '{{ title }}'
         },
-        onRender: (e, el, s) => {
-          el.setProps({ animation: 'fadeInUp' })
-        },
-        onClick: (e, el, s) => {
-          delete s.notifications[el.key]
-          el.setProps({ animation: 'fadeOutDown' })
-          if (s.onClose) s.onClose(e, el, s)
+        P: {
+          text: '{{ title }}'
         }
-      }),
-      IconText: null
-    },
-    $stateCollection: ({ state }) => state.notifications
+      },
+      onRender: (e, el, s) => {
+        el.setProps({ animation: 'fadeInUp' })
+      },
+      onClick: (e, el, s) => {
+        delete s.notifications[el.key]
+        el.setProps({ animation: 'fadeOutDown' })
+        if (s.onClose) s.onClose(e, el, s)
+      }
+    }),
+    IconText: null,
+    childrenAs: 'state',
+    children: ({ state }) => state.notifications
   }
 }
