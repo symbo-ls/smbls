@@ -36,12 +36,18 @@ async function buildFromFile (inputFilePath, outputFilePath) {
       },
       minify: false,
       outfile: outputFilePath,
-      target: 'node14',
+      target: 'node16',
       platform: 'node',
       format: 'cjs',
       bundle: true,
       mainFields: ['module', 'main'],
-      external: ['esbuild']
+      external: ['esbuild'],
+      define: {
+        window: 'undefined',
+        document: 'undefined',
+        navigator: 'undefined',
+        global: '{}'
+      }
     })
   } catch (error) {
     console.error('Error building file:', error)
