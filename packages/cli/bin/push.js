@@ -11,17 +11,26 @@ import { showDiffPager } from '../helpers/diffUtils.js'
 import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
 import { getProjectDataFromSymStory, updateProjectOnSymStoryServer } from '../helpers/apiUtils.js'
 import fs from 'fs'
-import { showAuthRequiredMessages, showProjectNotFoundMessages } from '../helpers/buildMessages.js'
+import { showAuthRequiredMessages, showProjectNotFoundMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 const RC_PATH = process.cwd() + '/symbols.json'
 
 async function buildLocalProject () {
-  const distDir = path.join(process.cwd(), 'smbls')
-  const outputDirectory = path.join(distDir, 'dist')
+  try {
+    const distDir = path.join(process.cwd(), 'smbls')
+    const outputDirectory = path.join(distDir, 'dist')
 
-  await buildDirectory(distDir, outputDirectory)
-  const outputFile = path.join(outputDirectory, 'index.js')
-  return normalizeKeys(await loadModule(outputFile, { silent: true }))
+    await buildDirectory(distDir, outputDirectory)
+    const outputFile = path.join(outputDirectory, 'index.js')
+    return normalizeKeys(await loadModule(outputFile, { silent: false }))
+  } catch (error) {
+    // Enhance error with build context
+    error.buildContext = {
+      command: 'push',
+      workspace: process.cwd()
+    }
+    throw error
+  }
 }
 
 async function confirmChanges (changes) {
@@ -68,8 +77,14 @@ export async function pushProjectChanges(options) {
 
     // Build and load local project
     console.log(chalk.dim('Building local project...'))
-    const localProject = await buildLocalProject()
-    console.log(chalk.gray('Local project built successfully'))
+    let localProject
+    try {
+      localProject = await buildLocalProject()
+      console.log(chalk.gray('Local project built successfully'))
+    } catch (buildError) {
+      showBuildErrorMessages(buildError)
+      process.exit(1)
+    }
 
     // Get current server state
     console.log(chalk.dim('Fetching current server state...'))

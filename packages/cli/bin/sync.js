@@ -12,16 +12,25 @@ import { showDiffPager } from '../helpers/diffUtils.js'
 import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
 import { getProjectDataFromSymStory, getRemoteChangesFromSymStory, updateProjectOnSymStoryServer, findConflicts } from '../helpers/apiUtils.js'
 import { createFs } from './fs.js'
-import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
+import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 const RC_PATH = process.cwd() + '/symbols.json'
 const distDir = path.join(process.cwd(), 'smbls')
 
 async function buildLocalProject() {
-  const outputDirectory = path.join(distDir, 'dist')
-  await buildDirectory(distDir, outputDirectory)
-  const outputFile = path.join(outputDirectory, 'index.js')
-  return normalizeKeys(await loadModule(outputFile, { silent: true }))
+  try {
+    const outputDirectory = path.join(distDir, 'dist')
+    await buildDirectory(distDir, outputDirectory)
+    const outputFile = path.join(outputDirectory, 'index.js')
+    return normalizeKeys(await loadModule(outputFile, { silent: false }))
+  } catch (error) {
+    // Enhance error with build context
+    error.buildContext = {
+      command: 'sync',
+      workspace: process.cwd()
+    }
+    throw error
+  }
 }
 
 async function resolveConflicts(conflicts) {
@@ -115,8 +124,15 @@ export async function syncProjectChanges(options) {
 
     // Build and load local project
     console.log(chalk.dim('Building local project...'))
-    const localProject = await buildLocalProject()
-    console.log(chalk.gray('Local project built successfully'))
+    let localProject
+    try {
+      localProject = await buildLocalProject()
+      console.log(chalk.gray('Local project built successfully'))
+    } catch (buildError) {
+      showBuildErrorMessages(buildError)
+      process.exit(1)
+    }
+
     // Get server data
     console.log(chalk.dim('Fetching server data...'))
     const serverProject = await getProjectDataFromSymStory(appKey, authToken, localBranch, localVersion)

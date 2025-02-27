@@ -35,3 +35,42 @@ export const showProjectNotFoundMessages = (appKey) => {
   console.error(chalk.bold.yellow('\nThen try again:'))
   console.error(chalk.cyan('$ smbls push'))
 }
+
+export function showBuildErrorMessages(error) {
+  console.log(chalk.bold.red('\nBuild Failed ❌'))
+  console.log(chalk.white('\nError details:'))
+  console.log(chalk.yellow(error.message))
+
+  // Extract useful information from the error
+  const errorLocation = error.errors?.[0]?.location || {}
+  if (errorLocation.file) {
+    console.log(chalk.white('\nError location:'))
+    console.log(chalk.gray(`File: ${chalk.cyan(errorLocation.file)}`))
+    if (errorLocation.line) {
+      console.log(chalk.gray(`Line: ${chalk.cyan(errorLocation.line)}`))
+    }
+  }
+
+  console.log(chalk.white('\nPossible solutions:'))
+
+  // Common build issues and their solutions
+  if (error.message.includes('instanceof')) {
+    console.log(chalk.gray('• Check if you are using browser-specific APIs in Node.js environment'))
+    console.log(chalk.gray('  Consider using conditional checks: typeof window !== "undefined"'))
+  }
+  if (error.message.includes('Could not resolve')) {
+    console.log(chalk.gray('• Verify all dependencies are installed: npm install'))
+    console.log(chalk.gray('• Check import/require paths are correct'))
+  }
+  if (error.message.includes('Unexpected token')) {
+    console.log(chalk.gray('• Ensure the code syntax is compatible with the target environment'))
+    console.log(chalk.gray('• Check for syntax errors in the indicated file'))
+  }
+
+  console.log(chalk.white('\nNext steps:'))
+  console.log(chalk.gray('1. Fix the build errors in your local project'))
+  console.log(chalk.gray('2. Ensure all dependencies are properly installed'))
+  console.log(chalk.gray('3. Run the command again'))
+
+  console.log(chalk.gray('\nFor more help, please check the documentation or report this issue on GitHub'))
+}
