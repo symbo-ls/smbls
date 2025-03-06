@@ -11,7 +11,6 @@ const onBeforeClassAssign = (element) => {
 
 export const Box = {
   extends: [
-    'Collection',
     'Shape',
     'Theme'
   ],
