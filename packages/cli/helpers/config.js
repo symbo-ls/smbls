@@ -6,7 +6,7 @@ export const getApiUrl = () => {
     return process.env.SMBLS_API_URL
   }
 
-  const configPath = path.join(process.cwd(), '.smblsrc.json')
+  const configPath = path.join(process.cwd(), '.smblsrc')
   if (fs.existsSync(configPath)) {
     try {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
