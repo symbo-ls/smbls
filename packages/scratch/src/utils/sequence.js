@@ -168,9 +168,9 @@ export const generateSequence = (sequenceProps) => {
   return sequenceProps
 }
 
-export const generateSequencePosition = (sequenceProps, position) => {
+export const generateSequencePosition = (sequenceProps, position = 0) => {
   const { type, base, ratio, subSequence } = sequenceProps
-  const letterKey = numToLetterMap[position]
+  const letterKey = this.call("isString", position) ? position : numToLetterMap[position]
 
   if (!letterKey) {
     console.warn(`Position ${position} is out of range in numToLetterMap`)
