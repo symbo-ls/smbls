@@ -77,17 +77,15 @@ export const Icon = {
 export const IconText = {
   extends: 'Flex',
 
-  props: {
-    align: 'center center',
-    lineHeight: 1,
+  align: 'center center',
+  lineHeight: 1,
 
-    '.reversed': {
-      flow: 'row-reverse'
-    },
+  '.reversed': {
+    flow: 'row-reverse'
+  },
 
-    '.vertical': {
-      flow: 'column'
-    }
+  '.vertical': {
+    flow: 'column'
   },
 
   Icon: {
