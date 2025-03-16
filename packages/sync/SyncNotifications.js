@@ -85,39 +85,6 @@ export const Notifications = {
   },
 
   Notifications: {
-<<<<<<< HEAD
-    props: {
-      position: 'fixed',
-      left: 'A2',
-      bottom: 'Z2',
-      zIndex: '999'
-    },
-    childExtends: {
-      extends: 'Notification',
-      props: ({ state }) => ({
-        animationDuration: 'C',
-        background: NOTIF_COLORS[state.type || 'success'],
-        icon: null,
-        onRender: (e, el, s) => {
-          el.setProps({ animation: 'fadeInUp' })
-        },
-        onClick: (e, el, s) => {
-          delete s.notifications[el.key]
-          el.setProps({ animation: 'fadeOutDown' })
-          if (s.onClose) s.onClose(e, el, s)
-        }
-      }),
-      Flex: {
-        Title: {
-          text: '{{ title }}'
-        },
-        P: {
-          text: '{{ title }}'
-        }
-      },
-      IconText: null
-    },
-=======
     position: 'fixed',
     left: 'A2',
     bottom: 'Z2',
@@ -145,7 +112,6 @@ export const Notifications = {
       }
     }),
     IconText: null,
->>>>>>> origin/main
     childrenAs: 'state',
     children: ({ state }) => state.notifications
   }

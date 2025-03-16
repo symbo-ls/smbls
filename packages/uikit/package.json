@@ -14,7 +14,6 @@
   ],
   "dependencies": {
     "@domql/utils": "^2.5.0",
-<<<<<<< HEAD
     "@symbo.ls/atoms": "^2.11.515",
     "@symbo.ls/avatar": "^2.11.515",
     "@symbo.ls/button": "^2.11.515",
@@ -28,22 +27,6 @@
     "@symbo.ls/scratch": "^2.11.515",
     "@symbo.ls/select": "^2.11.515",
     "@symbo.ls/tooltip": "^2.11.515"
-=======
-    "@symbo.ls/atoms": "^2.11.522",
-    "@symbo.ls/avatar": "^2.11.522",
-    "@symbo.ls/box": "^2.11.522",
-    "@symbo.ls/button": "^2.11.522",
-    "@symbo.ls/dialog": "^2.11.522",
-    "@symbo.ls/dropdown": "^2.11.522",
-    "@symbo.ls/icon": "^2.11.522",
-    "@symbo.ls/input": "^2.11.522",
-    "@symbo.ls/link": "^2.11.522",
-    "@symbo.ls/notification": "^2.11.522",
-    "@symbo.ls/range": "^2.11.522",
-    "@symbo.ls/scratch": "^2.11.522",
-    "@symbo.ls/select": "^2.11.522",
-    "@symbo.ls/tooltip": "^2.11.522"
->>>>>>> origin/main
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
