@@ -203,7 +203,7 @@ export const generateSequencePosition = (sequenceProps, position = 0) => {
     scaling,
     scalingVariable,
     ratio,
-    index: index
+    index
   }
 
   setSequenceValue(props, result)
