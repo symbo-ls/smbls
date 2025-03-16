@@ -170,7 +170,7 @@ export const generateSequence = (sequenceProps) => {
 
 export const generateSequencePosition = (sequenceProps, position = 0) => {
   const { type, base, ratio, subSequence } = sequenceProps
-  const letterKey = this.call("isString", position) ? position : numToLetterMap[position]
+  const letterKey = isString(position) ? position : numToLetterMap[position]
 
   if (!letterKey) {
     console.warn(`Position ${position} is out of range in numToLetterMap`)
