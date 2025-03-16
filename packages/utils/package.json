@@ -24,7 +24,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@domql/utils": "^2.5.0"
+    "@domql/utils": "^3.0.0"
   },
   "gitHead": "5d7fe1ba3ab1985ab56bc3896e3e8e09b1c96d5c"
 }

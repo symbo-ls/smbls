@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@domql/globals": "latest",
-    "@domql/router": "^2.5.0",
-    "@domql/utils": "^2.5.0",
+    "@domql/router": "^3.0.0",
+    "@domql/utils": "^3.0.0",
     "@symbo.ls/init": "^3.0.1",
     "@symbo.ls/scratch": "^3.0.1",
     "@symbo.ls/socket": "^3.0.1",

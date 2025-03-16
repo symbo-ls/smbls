@@ -6,7 +6,7 @@
   "source": "index.js",
   "main": "index.js",
   "dependencies": {
-    "@domql/utils": "^2.5.0",
+    "@domql/utils": "^3.0.0",
     "@symbo.ls/default-config": "^3.0.1",
     "@symbo.ls/emotion": "^3.0.1",
     "@symbo.ls/scratch": "^3.0.1"

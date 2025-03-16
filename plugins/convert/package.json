@@ -12,7 +12,7 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "^2.5.0",
+    "@domql/utils": "^3.0.0",
     "@symbo.ls/create": "^2.11.486",
     "jsdom": "^22.1.0"
   },

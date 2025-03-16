@@ -5,7 +5,7 @@
   "license": "MIT",
   "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a",
   "dependencies": {
-    "@domql/utils": "^2.5.0",
+    "@domql/utils": "^3.0.0",
     "@symbo.ls/button": "^3.0.1",
     "@symbo.ls/scratch": "^3.0.1"
   },

@@ -7,6 +7,6 @@
   "main": "index.js",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
-    "@domql/utils": "^2.5.0"
+    "@domql/utils": "^3.0.0"
   }
 }

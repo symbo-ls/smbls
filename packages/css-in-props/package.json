@@ -25,7 +25,7 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "^2.5.0",
+    "@domql/utils": "^3.0.0",
     "@symbo.ls/atoms": "^3.0.1",
     "@symbo.ls/emotion": "^3.0.1",
     "@symbo.ls/scratch": "^3.0.1"

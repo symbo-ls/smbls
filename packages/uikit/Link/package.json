@@ -5,7 +5,7 @@
   "license": "MIT",
   "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a",
   "dependencies": {
-    "@domql/router": "^2.5.0",
+    "@domql/router": "^3.0.0",
     "@symbo.ls/atoms": "^3.0.1"
   },
   "source": "src/index.js"
