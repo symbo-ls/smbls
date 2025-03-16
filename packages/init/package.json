@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/init",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "license": "MIT",
   "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a",
   "source": "index.js",
@@ -9,7 +9,7 @@
     "@domql/utils": "^3.0.0",
     "@symbo.ls/default-config": "^3.0.1",
     "@symbo.ls/emotion": "^3.0.1",
-    "@symbo.ls/scratch": "^3.0.1"
+    "@symbo.ls/scratch": "^3.0.2"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "devDependencies": {
