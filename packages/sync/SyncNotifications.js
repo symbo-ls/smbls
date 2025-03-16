@@ -40,7 +40,6 @@ const NOTIF_COLORS = {
 }
 
 export const connectedToSymbols = (clients, element, state) => {
-  console.log(clients)
   if (clients.symbols) {
     if (!state.connected) {
       state.notifications.connected = {
@@ -86,6 +85,7 @@ export const Notifications = {
   },
 
   Notifications: {
+<<<<<<< HEAD
     props: {
       position: 'fixed',
       left: 'A2',
@@ -117,6 +117,35 @@ export const Notifications = {
       },
       IconText: null
     },
+=======
+    position: 'fixed',
+    left: 'A2',
+    bottom: 'Z2',
+    zIndex: '999',
+    childExtends: 'Notification',
+    childProps: ({ state }) => ({
+      animationDuration: 'C',
+      background: NOTIF_COLORS[state.type || 'success'],
+      icon: null,
+      Flex: {
+        Title: {
+          text: '{{ title }}'
+        },
+        P: {
+          text: '{{ title }}'
+        }
+      },
+      onRender: (e, el, s) => {
+        el.setProps({ animation: 'fadeInUp' })
+      },
+      onClick: (e, el, s) => {
+        delete s.notifications[el.key]
+        el.setProps({ animation: 'fadeOutDown' })
+        if (s.onClose) s.onClose(e, el, s)
+      }
+    }),
+    IconText: null,
+>>>>>>> origin/main
     childrenAs: 'state',
     children: ({ state }) => state.notifications
   }

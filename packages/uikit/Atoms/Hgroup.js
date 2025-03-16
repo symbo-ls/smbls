@@ -22,26 +22,25 @@ export const Hgroup = {
 export const HgroupRows = {
   extends: 'Hgroup',
 
-  Title: {
+  H: {
     extends: 'Flex',
     color: 'title',
     align: 'center space-between'
   },
 
-  Paragraph: {
-    extends: 'Flex',
-    color: 'paragraph',
-    align: 'center space-between'
+  P: {
+    color: 'paragraph', align: 'center space-between'
   }
 }
 
 export const HgroupButton = {
   extends: 'HgroupRows',
 
-  Title: {
+  H: {
     justifyContent: 'space-between',
 
     Span: {},
+
     Button: {
       background: 'transparent',
       color: 'currentColor',
@@ -53,5 +52,5 @@ export const HgroupButton = {
     }
   },
 
-  Paragraph: {}
+  P: {}
 }
