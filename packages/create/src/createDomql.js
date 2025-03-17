@@ -39,6 +39,8 @@ export const prepareContext = (app, context = {}) => {
   context.methods = prepareMethods(context)
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
+  context.snippets = context.snippets || {}
+  context.functions = context.functions || {}
   return context
 }
 
