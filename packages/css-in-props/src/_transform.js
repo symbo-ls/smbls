@@ -11,7 +11,7 @@ export const transformClassname = (
   restProps = {}
 ) => {
   const classCss = {}
-  const { props, class: elementClass } = element
+  const { props, classlist: elementClass } = element
 
   if (!isObject(props)) return
 

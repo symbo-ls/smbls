@@ -12,7 +12,7 @@ export const P = { tag: 'p' }
 export const Caption = { tag: 'caption' }
 export const Strong = {
   tag: 'strong',
-  props: { fontWeight: '700' }
+  fontWeight: '700'
 }
 export const Underline = { tag: 'u' }
 export const Italic = { tag: 'i' }
@@ -21,17 +21,18 @@ export const Title = {}
 
 export const Headline = {
   tag: 'h6',
-  props: { fontSize: 'B', fontWeight: 500 }
+  fontSize: 'B',
+  fontWeight: 500
 }
 
 export const Subhead = {
   tag: 'span',
-  props: { fontSize: 'Z1' }
+  fontSize: 'Z1'
 }
 
 export const Footnote = {
   tag: 'span',
-  props: { fontSize: 'Z' }
+  fontSize: 'Z'
 }
 
 export const B = { tag: 'b' }

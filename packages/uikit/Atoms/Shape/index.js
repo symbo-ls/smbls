@@ -7,7 +7,7 @@ import { getSpacingBasedOnRatio, getMediaColor } from '@symbo.ls/scratch'
 export const Shape = {
   deps: { exec, getSpacingBasedOnRatio, getMediaColor },
 
-  class: {
+  classlist: {
     shape: ({ props, deps }) => {
       const { shape } = props
       return deps.exec(SHAPES[shape], ({ props, deps }))
@@ -34,9 +34,7 @@ export const Shape = {
 }
 
 export const Circle = {
-  props: {
-    round: '100%'
-  }
+  round: '100%'
 }
 
 export default Shape

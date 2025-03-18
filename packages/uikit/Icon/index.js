@@ -19,6 +19,10 @@ const getIconName = (el, s) => {
 
 export const Icon = {
   extends: 'Svg',
+  width: 'A',
+  height: 'A',
+  display: 'inline-block',
+
   props: (el, s, ctx) => {
     const { props, parent } = el
     const { ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
@@ -63,14 +67,12 @@ export const Icon = {
     const directSrc = (parent && parent.props && parent.props.src) || props.src
 
     return {
-      width: 'A',
-      height: 'A',
-      display: 'inline-block',
       spriteId: useIconSprite && iconInContext,
       src: iconFromLibrary || directSrc || ICONS.noIcon,
       style: { fill: 'currentColor', '*': { fill: 'currentColor' } }
     }
   },
+
   attr: { viewBox: '0 0 24 24' }
 }
 
@@ -105,12 +107,10 @@ export const IconText = {
 
 export const FileIcon = {
   extends: 'Flex',
-  props: {
-    theme: 'tertiary',
-    boxSize: 'C1',
-    align: 'center center',
-    round: 'Z'
-  },
+  theme: 'tertiary',
+  boxSize: 'C1',
+  align: 'center center',
+  round: 'Z',
   Icon: {
     fontSize: 'B',
     margin: 'auto',

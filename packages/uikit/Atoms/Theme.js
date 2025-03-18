@@ -13,7 +13,7 @@ export const Theme = {
     depth
   },
 
-  class: {
+  classlist: {
     depth: ({ props, deps }) => !isUndefined(props.depth) && deps.depth[props.depth]
   }
 }

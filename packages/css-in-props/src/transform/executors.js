@@ -27,7 +27,7 @@ export const usePropsAsCSS = (sourceObj, element, opts) => {
 
   for (const key in sourceObj) {
     const value = sourceObj[key]
-    if (key === 'class' && element.call('isString', sourceObj.class)) {
+    if (key === 'classlist' && element.call('isString', sourceObj.classlist)) {
       const val = value.split(' ')
       if (val.length) {
         const CLASS = element.context.designSystem.CLASS
@@ -38,8 +38,8 @@ export const usePropsAsCSS = (sourceObj, element, opts) => {
     } else if (key === 'true') {
       const val = exec(value, element)
       merge(obj, applyTrueProps(val, element))
-    } else if (element.class[key]) {
-      const originalFromClass = element.class[key]
+    } else if (element.classlist[key]) {
+      const originalFromClass = element.classlist[key]
       const result = isFunction(originalFromClass)
         ? originalFromClass(element, element.state, element.context)
         : originalFromClass

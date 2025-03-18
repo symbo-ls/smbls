@@ -3,6 +3,8 @@
 export const Video = {
   tag: 'video',
 
+  controls: true,
+
   childExtends: {
     tag: 'source',
     attr: {
@@ -10,10 +12,6 @@ export const Video = {
       type: ({ props }) => props.type,
       controls: ({ props }) => props.controls
     }
-  },
-
-  props: {
-    controls: true
   },
 
   attr: {

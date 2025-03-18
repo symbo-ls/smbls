@@ -5,11 +5,9 @@ export const Checkbox = {
 
   tag: 'label',
 
-  props: {
-    boxSize: 'fit-content fit-content',
-    cursor: 'pointer',
-    round: 'Y'
-  },
+  boxSize: 'fit-content fit-content',
+  cursor: 'pointer',
+  round: 'Y',
 
   Input: {
     type: 'checkbox',
@@ -44,11 +42,9 @@ export const CheckboxHgroup = {
   extends: 'Flex',
   tag: 'label',
 
-  props: {
-    boxSize: 'fit-content',
-    align: 'flex-start flex-start',
-    gap: 'A'
-  },
+  boxSize: 'fit-content',
+  align: 'flex-start flex-start',
+  gap: 'A',
 
   Checkbox: { tag: 'div' },
   HgroupRows: {

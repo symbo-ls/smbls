@@ -30,7 +30,7 @@ export const Box = {
     translate: el => el.props.translate
   },
 
-  class: {
+  classlist: {
     style: el => el.style || el.props?.style
   },
 
