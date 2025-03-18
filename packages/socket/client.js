@@ -16,7 +16,7 @@ const CONNECT_ATTEPT_MAX_ALLOWED = 1
 const getIsDev = (options) => {
   return options.development ||
     (window && window.location && window.location.host.includes('local')) ||
-    (ENV === 'test' || ENV === 'development')
+    (ENV === 'testing' || ENV === 'development')
 }
 
 const getSocketUrl = (options, isDev) => {
@@ -76,7 +76,7 @@ export const connect = (key, options = {}) => {
 
         socket.disconnect()
 
-        if (ENV === 'test' || ENV === 'development') {
+        if (ENV === 'testing' || ENV === 'development') {
           console.log(
             'Could not connect to %c' + primaryUrl + '%c, reconnecting to %c' + secondaryUrl,
             'font-weight: bold; color: red;',
