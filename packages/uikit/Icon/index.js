@@ -22,6 +22,7 @@ export const Icon = {
   width: 'A',
   height: 'A',
   display: 'inline-block',
+  style: { fill: 'currentColor', '*': { fill: 'currentColor' } },
 
   props: (el, s, ctx) => {
     const { props, parent } = el
@@ -68,8 +69,7 @@ export const Icon = {
 
     return {
       spriteId: useIconSprite && iconInContext,
-      src: iconFromLibrary || directSrc || ICONS.noIcon,
-      style: { fill: 'currentColor', '*': { fill: 'currentColor' } }
+      src: iconFromLibrary || directSrc || ICONS.noIcon
     }
   },
 

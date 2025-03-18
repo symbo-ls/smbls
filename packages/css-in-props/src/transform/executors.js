@@ -27,7 +27,7 @@ export const usePropsAsCSS = (sourceObj, element, opts) => {
 
   for (const key in sourceObj) {
     const value = sourceObj[key]
-    if (key === 'classlist' && element.call('isString', sourceObj.classlist)) {
+    if (key === 'class' && element.call('isString', sourceObj.class)) {
       const val = value.split(' ')
       if (val.length) {
         const CLASS = element.context.designSystem.CLASS

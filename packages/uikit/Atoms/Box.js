@@ -30,10 +30,6 @@ export const Box = {
     translate: el => el.props.translate
   },
 
-  classlist: {
-    style: el => el.style || el.props?.style
-  },
-
   onBeforeClassAssign
 }
 
