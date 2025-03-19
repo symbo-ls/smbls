@@ -57,7 +57,7 @@ export const usePropsAsCSS = (sourceObj, element, opts) => {
       // they can be grouped
       const result = exec(value, element)
       setToObj(key, { [key]: result })
-      if (!isProd) obj[key].label = key
+      if (!isProd && isObject(obj[key])) obj[key].label = key
     } else {
       rest[key] = value
     }
