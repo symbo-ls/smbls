@@ -78,7 +78,13 @@ export const setEach = (factoryName, props) => {
   const CONFIG = getActiveConfig()
   const FACTORY_NAME = factoryName.toUpperCase()
   const keys = Object.keys(props)
-  keys.map(key => setValue(FACTORY_NAME, props[key], key))
+  keys.map(key => {
+    try {
+      setValue(FACTORY_NAME, props[key], key)
+    } catch (error) {
+      if (CONFIG.verbose) console.warn('Error setting', FACTORY_NAME, 'value', props[key], key, error)
+    }
+  })
 
   return CONFIG[FACTORY_NAME]
 }
