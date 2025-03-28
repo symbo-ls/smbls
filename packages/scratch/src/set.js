@@ -78,9 +78,9 @@ export const setEach = (factoryName, props) => {
   const CONFIG = getActiveConfig()
   const FACTORY_NAME = factoryName.toUpperCase()
   const keys = Object.keys(props)
-  keys.map(key => {
+  keys.map((key) => {
     try {
-      setValue(FACTORY_NAME, props[key], key)
+      return setValue(FACTORY_NAME, props[key], key)
     } catch (error) {
       if (CONFIG.verbose) console.warn('Error setting', FACTORY_NAME, 'value', props[key], key, error)
     }
@@ -131,9 +131,21 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   keys.map(key => setEach(key, config[key]))
 
   // apply generic configs
-  if (config.TYPOGRAPHY) applyTypographySequence()
-  if (config.SPACING) applySpacingSequence()
-  if (config.TIMING) applyTimingSequence()
+  if (config.TYPOGRAPHY) {
+    try { applyTypographySequence() } catch (e) {
+      if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
+    }
+  }
+  if (config.SPACING) {
+    try { applySpacingSequence() } catch (e) {
+      if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
+    }
+  }
+  if (config.TIMING) {
+    try { applyTimingSequence() } catch (e) {
+      if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
+    }
+  }
   applyDocument()
   applyReset()
 
