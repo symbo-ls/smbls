@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/socket",
-  "version": "2.11.530",
+  "version": "2.25.1",
   "description": "Connect your app to Symbols editor",
   "main": "server.js",
   "author": "symbo.ls",
@@ -10,8 +10,8 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
-    "@domql/utils": "^2.5.0",
-    "@symbo.ls/init": "^2.11.530",
+    "@domql/utils": "^2.25.1",
+    "@symbo.ls/init": "^2.25.1",
     "chalk": "^5.0.0",
     "express": "^4.18.1",
     "http": "^0.0.1-security",
@@ -19,5 +19,5 @@
     "socket.io": "^4.5.2",
     "socket.io-client": "^4.5.2"
   },
-  "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a"
+  "gitHead": "f4de780d7f974a235640526d303a3f3dc68ac1b4"
 }

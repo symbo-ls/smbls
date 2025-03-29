@@ -2,11 +2,11 @@
   "name": "attrs-in-props",
   "description": "Utilize props as attributes",
   "author": "symbo.ls",
-  "version": "2.11.470",
+  "version": "2.25.1",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
-  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
+  "gitHead": "f4de780d7f974a235640526d303a3f3dc68ac1b4",
   "dependencies": {
-    "@domql/utils": "^2.5.0"
+    "@domql/utils": "^2.25.1"
   }
 }
