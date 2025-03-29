@@ -18,13 +18,13 @@
     "link:all-force": "npx lerna exec -- npm run unlink; npm run link:all"
   },
   "devDependencies": {
-    "caniuse-lite": "^1.0.30001707",
     "@babel/core": "^7.18.10",
     "@babel/eslint-parser": "^7.21.3",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",
     "@parcel/babel-preset-env": "^2.11.0",
     "@parcel/transformer-raw": "^2.11.0",
+    "caniuse-lite": "^1.0.30001707",
     "commander": "^11.0.0",
     "esbuild": "^0.19.2",
     "eslint": "^8.54.0",
@@ -49,7 +49,7 @@
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "dependencies": {
-    "domql": "^2.25.1"
+    "domql": "^2.25.2"
   },
-  "version": "2.25.1"
+  "version": "2.25.2"
 }
