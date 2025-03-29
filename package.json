@@ -48,6 +48,7 @@
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "dependencies": {
+    "caniuse-lite": "^1.0.30001707",
     "domql": "^2.5.158"
   }
 }
