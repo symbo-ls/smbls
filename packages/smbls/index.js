@@ -1,9 +1,9 @@
 'use strict'
 
 export * from '@domql/utils'
-export * from '@symbo.ls/attrs-in-props'
+export * from 'attrs-in-props'
 export * from '@symbo.ls/create'
-export * from '@symbo.ls/css-in-props'
+export * from 'css-in-props'
 export * from '@symbo.ls/default-config'
 export * from '@symbo.ls/emotion'
 export * from '@symbo.ls/init'
