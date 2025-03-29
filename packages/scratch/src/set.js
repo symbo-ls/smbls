@@ -78,7 +78,8 @@ export const setEach = (factoryName, props) => {
   const CONFIG = getActiveConfig()
   const FACTORY_NAME = factoryName.toUpperCase()
   const keys = Object.keys(props)
-  keys.map((key) => {
+
+  keys.forEach((key) => {
     try {
       return setValue(FACTORY_NAME, props[key], key)
     } catch (error) {
