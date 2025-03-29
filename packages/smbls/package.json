@@ -1,9 +1,9 @@
 {
   "name": "smbls",
-  "version": "3.0.102",
+  "version": "3.0.111",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
-  "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a",
+  "gitHead": "1e749ee3ef95b5a4a618c4eda1961f7c3011beff",
   "type": "module",
   "module": "index.js",
   "main": "index.js",
@@ -22,17 +22,17 @@
     "dist"
   ],
   "dependencies": {
-    "@symbo.ls/cli": "^3.0.101",
-    "@symbo.ls/create": "^3.0.100",
-    "@symbo.ls/default-config": "^3.0.1",
-    "@symbo.ls/init": "^3.0.2",
-    "@symbo.ls/scratch": "^3.0.2",
-    "@symbo.ls/sync": "^3.0.100",
-    "@symbo.ls/uikit": "^3.0.100",
-    "@symbo.ls/utils": "^3.0.2",
-    "attrs-in-props": "^3.0.2",
-    "css-in-props": "^3.0.102",
-    "domql": "^3.0.0"
+    "@symbo.ls/cli": "^3.0.111",
+    "@symbo.ls/create": "^3.0.111",
+    "@symbo.ls/default-config": "^3.0.111",
+    "@symbo.ls/init": "^3.0.111",
+    "@symbo.ls/scratch": "^3.0.111",
+    "@symbo.ls/sync": "^3.0.111",
+    "@symbo.ls/uikit": "^3.0.111",
+    "@symbo.ls/utils": "^3.0.111",
+    "attrs-in-props": "^3.0.111",
+    "css-in-props": "^3.0.111",
+    "domql": "^3.0.111"
   },
   "publishConfig": {},
   "scripts": {

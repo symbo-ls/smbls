@@ -170,8 +170,13 @@ export const generateSequence = (sequenceProps) => {
 
 export const generateSequencePosition = (sequenceProps, position = 0) => {
   const { type, base, ratio, subSequence } = sequenceProps
-  const letterKey = this.call("isString", position) ? position : numToLetterMap[position]
-
+  const letterKey = isString(position) ? position : numToLetterMap[position]
+  const index = isString(position)
+    ? Object.entries(numToLetterMap).find(
+        ([, value]) => value === position
+      )?.[0]
+    : position
+  
   if (!letterKey) {
     console.warn(`Position ${position} is out of range in numToLetterMap`)
     return null
@@ -184,11 +189,11 @@ export const generateSequencePosition = (sequenceProps, position = 0) => {
     ...sequenceProps
   }
 
-  const value = base * Math.pow(ratio, position)
+  const value = base * Math.pow(ratio, index)
   const scaling = ~~((value / base) * 100) / 100
   const prefix = '--' + (type && type.replace('.', '-')) + '-'
   const variable = prefix + letterKey
-  const scalingVariable = setScalingVar(position, sequenceProps)
+  const scalingVariable = setScalingVar(index, sequenceProps)
 
   const props = {
     key: letterKey,
@@ -198,7 +203,7 @@ export const generateSequencePosition = (sequenceProps, position = 0) => {
     scaling,
     scalingVariable,
     ratio,
-    index: position
+    index
   }
 
   setSequenceValue(props, result)

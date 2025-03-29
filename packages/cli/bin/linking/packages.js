@@ -1,6 +1,6 @@
 export default [
-  'attrs-in-props',
   'create-smbls',
+  'attrs-in-props',
   '@symbo.ls/emotion',
   '@symbo.ls/default-icons',
   '@symbo.ls/fetch',
@@ -18,6 +18,7 @@ export default [
   '@symbo.ls/avatar',
   '@symbo.ls/input',
   '@symbo.ls/icon',
+  '@symbo.ls/input',
   '@symbo.ls/link',
   '@symbo.ls/notification',
   '@symbo.ls/select',

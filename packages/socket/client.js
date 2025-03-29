@@ -1,11 +1,9 @@
 'use strict'
 
 import * as utils from '@domql/utils'
-import * as globals from '@domql/globals'
 import io from 'socket.io-client'
 
-const { isFunction, isArray } = utils.default || utils
-const { window } = globals.default || globals
+const { window, isFunction, isArray } = utils.default || utils
 const ENV = process.env.NODE_ENV
 
 const defautlOpts = {}
@@ -16,7 +14,7 @@ const CONNECT_ATTEPT_MAX_ALLOWED = 1
 const getIsDev = (options) => {
   return options.development ||
     (window && window.location && window.location.host.includes('local')) ||
-    (ENV === 'test' || ENV === 'development')
+    (ENV === 'testing' || ENV === 'development')
 }
 
 const getSocketUrl = (options, isDev) => {
@@ -76,7 +74,7 @@ export const connect = (key, options = {}) => {
 
         socket.disconnect()
 
-        if (ENV === 'test' || ENV === 'development') {
+        if (ENV === 'testing' || ENV === 'development') {
           console.log(
             'Could not connect to %c' + primaryUrl + '%c, reconnecting to %c' + secondaryUrl,
             'font-weight: bold; color: red;',

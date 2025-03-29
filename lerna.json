@@ -1,6 +1,6 @@
 {
   "npmClient": "npm",
-  "version": "3.0.102",
+  "version": "2.25.1",
   "packages": [
     "packages/*",
     "packages/*/*"

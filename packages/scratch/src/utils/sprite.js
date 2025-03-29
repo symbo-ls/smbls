@@ -3,6 +3,9 @@
 import { isArray, isString } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 
+const ENV = process.env.NODE_ENV || 'development'
+const isDev = ENV === 'development' || ENV === 'testing'
+
 export const generateSprite = (icons) => {
   const CONFIG = getActiveConfig()
 
@@ -20,7 +23,8 @@ export const generateSprite = (icons) => {
 const parseRootAttributes = (htmlString) => {
   const val = htmlString.default || htmlString
   if (!isString(val)) {
-    return console.warn(`parseRootAttributes: ${val} is not a string`)
+    if (isDev) console.warn('parseRootAttributes:', val, 'is not a string')
+    return
   }
 
   const match = val.match(/<svg\s+(.*?)>/)

@@ -76,8 +76,9 @@ export const applyHeadings = (props) => {
     for (const k in HEADINGS) {
       const headerName = `h${parseInt(k) + 1}`
       const headerStyle = templates[headerName]
+      if (!HEADINGS[k]) continue
       templates[headerName] = {
-        fontSize: CONFIG.useVariable ? `var(${HEADINGS[k].variable})` : `${HEADINGS[k].scaling}${unit}`,
+        fontSize: CONFIG.useVariable ? `var(${HEADINGS[k]?.variable})` : `${HEADINGS[k].scaling}${unit}`,
         margin: headerStyle ? headerStyle.margin : 0,
         lineHeight: headerStyle ? headerStyle.lineHeight : props.lineHeight,
         letterSpacing: headerStyle ? headerStyle.letterSpacing : props.letterSpacing,

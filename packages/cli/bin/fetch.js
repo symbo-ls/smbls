@@ -60,11 +60,6 @@ export const fetchFromCli = async (opts) => {
 
     const { version, ...config } = body
 
-    if (body.designsystem) {
-      body.designSystem = body.designsystem
-      delete body.designsystem
-    }
-
     if (verbose) {
       if (key) {
         console.log(

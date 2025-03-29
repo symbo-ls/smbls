@@ -1,13 +1,13 @@
 {
   "name": "@symbo.ls/datepicker",
-  "version": "3.0.100",
+  "version": "3.0.111",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a",
+  "gitHead": "1e749ee3ef95b5a4a618c4eda1961f7c3011beff",
   "dependencies": {
-    "@symbo.ls/atoms": "^3.0.100",
-    "@symbo.ls/button": "^3.0.100",
-    "@symbo.ls/dialog": "^3.0.100",
+    "@symbo.ls/atoms": "^3.0.111",
+    "@symbo.ls/button": "^3.0.111",
+    "@symbo.ls/dialog": "^3.0.111",
     "headless-datepicker": "^1.0.1"
   },
   "source": "src/index.js"

@@ -21,12 +21,13 @@ export const Notification = {
     }
   },
 
-  Flex: {
-    flow: 'column',
+  Hgroup: {
+    extends: ['Flex', 'Hgroup'],
+    flow: 'y',
     align: 'flex-start',
     gap: 'X2',
 
-    Title: {
+    H: {
       tag: 'h6',
       margin: '0',
       fontWeight: '600',
