@@ -25,7 +25,6 @@
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/globals": "latest",
     "@domql/utils": "^2.5.0",
     "@symbo.ls/utils": "^2.11.512",
     "color-contrast-checker": "^1.5.0"

@@ -1,9 +1,7 @@
 'use strict'
 
 import * as utils from '@domql/utils'
-import * as globals from '@domql/globals'
-const { overwriteDeep, deepDestringify } = utils
-const { window } = globals
+const { window, overwriteDeep, deepDestringify } = utils
 
 const IS_DEVELOPMENT =
   window && window.location

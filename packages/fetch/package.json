@@ -29,7 +29,6 @@
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/globals": "latest",
     "@domql/utils": "^2.5.0"
   }
 }

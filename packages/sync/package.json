@@ -29,7 +29,6 @@
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/globals": "latest",
     "@domql/router": "^2.5.0",
     "@domql/utils": "^2.5.0",
     "@symbo.ls/init": "^2.11.530",
