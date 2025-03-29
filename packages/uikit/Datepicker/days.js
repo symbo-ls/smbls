@@ -39,11 +39,9 @@ export const DatePickerDay = {
     }
   },
 
-  on: {
-    click: (event, element, state) => {
-      state.parent.parent.parent.update({
-        activeDay: element.props.date
-      })
-    }
+  onClick: (event, element, state) => {
+    state.parent.parent.parent.update({
+      activeDay: element.props.date
+    })
   }
 }

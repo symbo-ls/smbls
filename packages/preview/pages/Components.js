@@ -2,47 +2,40 @@
 
 export const ComponentsPage = {
   extends: 'Flex',
-
   state: {
     globalTheme: 'dark',
     value: ''
   },
 
-  Flex: {
-    props: {
-      flow: 'column',
-      padding: 'F E E D',
-      gap: 'E+C',
-      minWidth: 'calc(100% - 70px)',
-      height: '100dvh',
-      margin: '- - - auto',
-      style: {
-        overflowY: 'auto',
-        scrollBehavior: 'smooth'
-      }
+  FleX: {
+    flow: 'column',
+    padding: 'F E E D',
+    gap: 'E+C',
+    minWidth: 'calc(100% - 70px)',
+    height: '100dvh',
+    margin: '- - - auto',
+    style: {
+      overflowY: 'auto',
+      scrollBehavior: 'smooth'
     },
 
     childExtends: {
-      props: ({ key, state }) => ({
-        hide: !key.toLowerCase().includes(state.value),
-        position: 'relative'
-      }),
-      __title: {
-        props: {
-          ignoreChildExtends: true,
-          position: 'absolute',
-          left: '0',
-          top: '-C',
-          fontSize: '14px',
-          color: 'white .35'
-        },
+      hide: ({ key, state }) => !key.toLowerCase().includes(state.value),
+      position: 'relative',
+      Title: {
+        ignoreChildExtends: true,
+        position: 'absolute',
+        left: '0',
+        top: '-C',
+        fontSize: '14px',
+        color: 'white .35',
         text: ({ parent }) => parent.key
       }
     },
 
     H1: {
-      props: { hide: false },
-      __title: { text: 'Searched value:' },
+      hide: false,
+      Title: { text: 'Searched value:' },
       text: ({ state }) => state.value
     },
 
@@ -54,11 +47,14 @@ export const ComponentsPage = {
       ...[{}, {}, {}]
     },
     AvatarChooser: {
-      options: [{
-        text: 'Kevin'
-      }, {
-        text: 'John'
-      }]
+      options: [
+        {
+          text: 'Kevin'
+        },
+        {
+          text: 'John'
+        }
+      ]
     },
     Hgroup: {
       Title: { text: 'Title' },
@@ -114,13 +110,13 @@ export const ComponentsPage = {
     UploadingProcess3: {},
     UploadedProcess3: {},
     ProgressCircle: {},
-    ProgressCircleWithIcon: {},
+    ProgresICircleWithIcon: {},
     ProgressCircleWithUnitValue: {},
     UploadingProcess4: {},
     UploadedProcess4: {},
     UploadModal4: {},
 
-    Checkbox: {},
+    CheckboX: {},
     Radio: {},
     Toggle: {},
     NumberInput: {},
@@ -134,7 +130,7 @@ export const ComponentsPage = {
     ParagraphButton: {},
     VerificationCode: {},
     ResetPassword: {},
-    ParagraphButtonWithCheckbox: {},
+    ParagraphButtonWithCheckboX: {},
     ContactForm: {},
     SignUp: {},
     DoubleHr: {},
@@ -176,82 +172,72 @@ export const ComponentsPage = {
   },
 
   Flex_footer: {
-    props: {
-      position: 'fixed',
-      width: 'calc(100% - 70px)',
-      zIndex: '100',
-      bottom: '0',
-      right: '0',
-      align: 'center flex-end',
-      padding: '- B B -',
-      '@mobile': {
-        justifyContent: 'center',
-        padding: '- 20px 30px 20px'
+    position: 'fixed',
+    width: 'calc(100% - 70px)',
+    zIndex: '100',
+    bottom: '0',
+    right: '0',
+    align: 'center flex-end',
+    padding: '- B B -',
+    '@mobile': {
+      justifyContent: 'center',
+      padding: '- 20px 30px 20px'
+    },
+    Search: {
+      fontFamily: 'avenir',
+      fontWeight: '400',
+      round: 'D',
+      flow: 'row',
+      border: 'solid, #252527',
+      borderWidth: '1px',
+      width: 'G+D',
+      padding: 'Z A Z B',
+      position: 'relative',
+      Icon: {
+        boxSize: 'A+V A+V',
+        color: '#3F3F43'
       },
-      search: {
+      Input: {
         fontFamily: 'avenir',
-        fontWeight: '400',
-        round: 'D',
-        flow: 'row',
-        border: 'solid, #252527',
-        borderWidth: '1px',
-        width: 'G+D',
-        padding: 'Z A Z B',
-        position: 'relative',
-        Icon: {
-          boxSize: 'A+V A+V',
-          color: '#3F3F43'
-        },
-        input: {
-          fontFamily: 'avenir',
-          placeholder: 'find component . . .',
-          fontSize: 'A',
-          ':focus ~ svg': { opacity: '0' }
-        },
-        x: {
-          color: 'white',
-          position: 'absolute',
-          right: 'A'
-        }
+        placeholder: 'find component . . .',
+        fontSize: 'A',
+        ':focus ~ svg': { opacity: '0' }
+      },
+      X: {
+        color: 'white',
+        position: 'absolute',
+        right: 'A'
       }
     },
     Search: {
       extends: 'SearchWithButton',
-      props: {
-        minWidth: 'G+C',
-        minHeight: 'C+X',
-        maxHeight: 'C+Z',
-        round: 'C',
-        padding: '- A+W - A+Y',
-        border: '1px solid #3F3F43',
-        background: 'transparent'
-      },
+      minWidth: 'G+C',
+      minHeight: 'C+X',
+      maxHeight: 'C+Z',
+      round: 'C',
+      padding: '- A+W - A+Y',
+      border: '1px solid #3F3F43',
+      background: 'transparent',
       Input: {
         props: {
           fontSize: 'Z1',
           placeholder: 'Find component ...',
           ':focus ~ svg': { opacity: '0' }
         },
-        on: {
-          keyup: (event, el, s) => {
-            const value = el.node.value.toLowerCase()
-            s.update({ value })
-          }
+        onKeyup: (event, el, s) => {
+          const value = el.node.value.toLowerCase()
+          s.update({ value })
         }
       },
       Icon: {
-        props: {
-          fontSize: 'C',
-          color: '#3F3F43'
-        }
+        fontSize: 'C',
+        color: '#3F3F43'
       },
       Button: {
-        props: {
-          position: 'absolute',
-          margin: 'auto',
-          right: 'Z',
-          color: '#3F3F43'
-        }
+        position: 'absolute',
+        margin: 'auto',
+        right: 'Z',
+        color: '#3F3F43'
       }
     }
   }

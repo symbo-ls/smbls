@@ -13,7 +13,8 @@ export const DatePickerMonthsSlider = {
       content: '""',
       position: 'absolute',
       boxSize: '100% 100px',
-      background: 'linear-gradient(to right, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
+      background:
+        'linear-gradient(to right, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
       left: '0',
       top: '0',
       zIndex: '30',
@@ -23,7 +24,8 @@ export const DatePickerMonthsSlider = {
       content: '""',
       position: 'absolute',
       boxSize: '100% 100px',
-      background: 'linear-gradient(to left, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
+      background:
+        'linear-gradient(to left, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
       right: '0',
       top: '0',
       zIndex: '30',
@@ -54,16 +56,14 @@ export const DatePickerMonthsSlider = {
         theme: 'primary @light .color-only'
       }
     },
-    on: {
-      click: (ev, el, s) => {
-        const { activeMonth, activeYear } = s
-        if (activeMonth > 0) s.update({ activeMonth: activeMonth - 1 })
-        else {
-          s.update({
-            activeYear: activeYear - 1,
-            activeMonth: 11
-          })
-        }
+    onClick: (ev, el, s) => {
+      const { activeMonth, activeYear } = s
+      if (activeMonth > 0) s.update({ activeMonth: activeMonth - 1 })
+      else {
+        s.update({
+          activeYear: activeYear - 1,
+          activeMonth: 11
+        })
       }
     }
   },
@@ -78,30 +78,26 @@ export const DatePickerMonthsSlider = {
 
     childExtends: {
       tag: 'h6',
-      props: ({ state, key }) => ({
-        fontSize: 'Z1',
-        textAlign: 'center',
-        boxSizing: 'content-box',
-        minWidth: '272px',
-        style: { scrollSnapAlign: 'center' },
+      fontSize: 'Z1',
+      textAlign: 'center',
+      boxSizing: 'content-box',
+      minWidth: '272px',
+      style: { scrollSnapAlign: 'center' },
 
-        isSelected: state.activeMonth === parseInt(key),
-        '.isSelected': { opacity: '1' }
-      }),
+      isSelected: ({ state, key }) => state.activeMonth === parseInt(key),
+      '.isSelected': { opacity: '1' },
 
-      on: {
-        update: (el, state) => {
-          const { props } = el
-          const { isSelected } = props
-          if (isSelected) {
-            window.requestAnimationFrame(() => {
-              el.parent.parent.node.scrollTo({
-                left: el.node.offsetLeft,
-                behavior: state.initialized ? 'smooth' : 'instant'
-              })
+      onUpdate: (el, state) => {
+        const { props } = el
+        const { isSelected } = props
+        if (isSelected) {
+          window.requestAnimationFrame(() => {
+            el.parent.parent.node.scrollTo({
+              left: el.node.offsetLeft,
+              behavior: state.initialized ? 'smooth' : 'instant'
             })
-            // if (!state.initialized) state.update({ initialized: true }, { preventUpdate: true, isHoisted: true })
-          }
+          })
+          // if (!state.initialized) state.update({ initialized: true }, { preventUpdate: true, isHoisted: true })
         }
       }
     },
@@ -134,16 +130,15 @@ export const DatePickerMonthsSlider = {
         theme: 'primary @light .color-only'
       }
     },
-    on: {
-      click: (ev, el, s) => {
-        const { activeMonth, activeYear } = s
-        if (activeMonth < 11) s.update({ activeMonth: activeMonth + 1 })
-        else {
-          s.update({
-            activeYear: activeYear + 1,
-            activeMonth: 0
-          })
-        }
+
+    onClick: (ev, el, s) => {
+      const { activeMonth, activeYear } = s
+      if (activeMonth < 11) s.update({ activeMonth: activeMonth + 1 })
+      else {
+        s.update({
+          activeYear: activeYear + 1,
+          activeMonth: 0
+        })
       }
     }
   }

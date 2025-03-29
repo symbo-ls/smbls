@@ -1,19 +1,22 @@
 'use strict'
 
-import domqlConverterLib, { editorJsToDOMQL, initMutiny } from '@domql/converter'
+import domqlConverterLib, {
+  editorJsToDOMQL,
+  initMutiny
+} from '@domql/converter'
 
 import { DomValueInterceptor } from './data/DomValueInterceptor'
 
 export { initMutiny, DomValueInterceptor, editorJsToDOMQL, domqlConverterLib }
 
 export const Editorjs = {
-  on: {
-    init: () => initMutiny()
-  },
+  onInit: () => initMutiny(),
   childExtends: {
     html: (el, s) => {
       const text = el.text || el.props.text
-      if (text && text.includes('</')) { return text }
+      if (text && text.includes('</')) {
+        return text
+      }
     },
     childExtends: {
       html: (el, s) => el.props.text || el.text
