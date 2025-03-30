@@ -35,6 +35,9 @@ export const RouterLink = {
     const { href: h, scrollToTop, stopPropagation } = props
     let href = el.call('exec', h, el)
 
+    debugger
+    console.log('clicking in smbls!')
+
     if (el.call('isString', href) && href.includes('{{')) {
       href = el.call('replaceLiteralsWithObjectFields', href)
     }
@@ -44,10 +47,20 @@ export const RouterLink = {
     const { utils, snippets, functions, routerOptions } = ctx
     const root = el.__ref.root
     const linkIsExternal =
-      href.includes('http://') ||
-      href.includes('https://') ||
-      href.includes('mailto:') ||
-      href.includes('tel:')
+      href.startsWith('http://') ||
+      href.startsWith('https://') ||
+      href.startsWith('mailto:') ||
+      href.startsWith('tel:') ||
+      href.startsWith('sketch:') ||
+      href.startsWith('whatsapp:') ||
+      href.startsWith('sms:') ||
+      href.startsWith('skype:') ||
+      href.startsWith('viber:') ||
+      href.startsWith('callto:') ||
+      href.startsWith('facetime:') ||
+      href.startsWith('facetime-audio:') ||
+      href.startsWith('geo:') ||
+      href.startsWith('maps:')
     if (href && !linkIsExternal) {
       try {
         ;(functions.router || snippets.router || utils.router || defaultRouter)(

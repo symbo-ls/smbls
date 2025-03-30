@@ -2,7 +2,6 @@
 
 import { router as defaultRouter } from '@domql/router'
 import { window, deepMerge, merge, isUndefined } from '@domql/utils'
-import { Link, RouterLink } from '@symbo.ls/uikit'
 
 const DEFAULT_ROUTING_OPTIONS = {
   initRouter: true,
@@ -16,17 +15,22 @@ export const initRouter = (element, context) => {
   else merge(context.router || {}, DEFAULT_ROUTING_OPTIONS)
 
   const routerOptions = context.router
-  const router = (context.utils && context.utils.router) ? context.utils.router : defaultRouter
+  const router =
+    context.utils && context.utils.router ? context.utils.router : defaultRouter
 
-  const onRouterRenderDefault = (el, s) => {
+  const onRouterRenderDefault = async (el, s) => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    if (el.routes) router(url, el, {}, { initialRender: true })
+    if (el.routes) await router(url, el, {}, { initialRender: true })
   }
 
   // console.log(element)
   // debugger
-  const hasRenderRouter = (element.on && !isUndefined(element.on.renderRouter)) || !isUndefined(element.onRenderRouter) // || element.on.renderRouter
+  console.log('element:')
+  console.log(element)
+  const hasRenderRouter =
+    (element.on && !isUndefined(element.on.renderRouter)) ||
+    !isUndefined(element.onRenderRouter) // || element.on.renderRouter
   if (routerOptions && routerOptions.initRouter && !hasRenderRouter) {
     if (element.on) {
       element.on.renderRouter = onRouterRenderDefault
@@ -48,9 +52,8 @@ export const popStateRouter = (element, context) => {
   popStateFired = true
   const routerOptions = context.router || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
-  const router = (context.utils && context.utils.router)
-    ? context.utils.router
-    : defaultRouter
+  const router =
+    context.utils && context.utils.router ? context.utils.router : defaultRouter
   window.onpopstate = e => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
@@ -58,8 +61,10 @@ export const popStateRouter = (element, context) => {
   }
 }
 
-export const injectRouterInLinkComponent = (routerOptions) => {
+export const injectRouterInLinkComponent = (context, routerOptions) => {
+  const { Link, RouterLink } = context.components
   if (routerOptions && routerOptions.injectRouterInLinkComponent) {
+    console.log(context.components)
     return deepMerge(Link, RouterLink)
   }
 }
