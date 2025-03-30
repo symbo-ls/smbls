@@ -11,10 +11,13 @@ const defautlOpts = {}
 let CONNECT_ATTEPT = 0
 const CONNECT_ATTEPT_MAX_ALLOWED = 1
 
-const getIsDev = (options) => {
-  return options.development ||
+const getIsDev = options => {
+  return (
+    options.development ||
     (window && window.location && window.location.host.includes('local')) ||
-    (ENV === 'testing' || ENV === 'development')
+    ENV === 'testing' ||
+    ENV === 'development'
+  )
 }
 
 const getSocketUrl = (options, isDev) => {
@@ -64,7 +67,7 @@ export const connect = (key, options = {}) => {
     }
   })
 
-  socket.on('connect_error', (err) => {
+  socket.on('connect_error', err => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
       if (isFunction(options.onError)) options.onError(err, socket)
@@ -76,7 +79,10 @@ export const connect = (key, options = {}) => {
 
         if (ENV === 'testing' || ENV === 'development') {
           console.log(
-            'Could not connect to %c' + primaryUrl + '%c, reconnecting to %c' + secondaryUrl,
+            'Could not connect to %c' +
+              primaryUrl +
+              '%c, reconnecting to %c' +
+              secondaryUrl,
             'font-weight: bold; color: red;',
             '',
             'font-weight: bold; color: green;'
@@ -90,7 +96,7 @@ export const connect = (key, options = {}) => {
     }
   })
 
-  socket.on('disconnect', (reason) => {
+  socket.on('disconnect', reason => {
     console.log(`event: disconnect | reason: ${reason}`)
     try {
       if (isFunction(options.onDisconnect)) options.onDisconnect(reason, socket)

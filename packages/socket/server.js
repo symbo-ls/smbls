@@ -7,7 +7,7 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { createRequire } from 'module'
 import * as utils from '@domql/utils'
-const { overwriteDeep } = (utils.default || utils)
+const { overwriteDeep } = utils.default || utils
 
 const require = createRequire(import.meta.url) // construct the require method
 const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
@@ -15,7 +15,9 @@ const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in 
 const app = express()
 let io
 
-const debugMsg = chalk.dim('Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls')
+const debugMsg = chalk.dim(
+  'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
+)
 
 export const updateDynamycFile = (changes, options = {}) => {
   const { verbose, prettify, verboseCode } = options
@@ -29,7 +31,8 @@ export const updateDynamycFile = (changes, options = {}) => {
 
   console.log(chalk.dim('Received update:'))
   console.log(Object.keys(changes).join(', '))
-  if (verboseCode) console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
+  if (verboseCode)
+    console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
 
   try {
     fs.writeFileSync(initPath, mergeStr)
@@ -59,11 +62,11 @@ export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
     res.end('open')
   })
 
-  io.on('connection', (socket) => {
+  io.on('connection', socket => {
     socket.join(key)
     let source
 
-    socket.on('initConnect', (options) => {
+    socket.on('initConnect', options => {
       const { clientsCount } = io.engine
       socket.to(key).emit('clientsCount', clientsCount)
       source = options.source
