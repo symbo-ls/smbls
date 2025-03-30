@@ -24,10 +24,6 @@ export const initRouter = (element, context) => {
     if (el.routes) await router(url, el, {}, { initialRender: true })
   }
 
-  // console.log(element)
-  // debugger
-  console.log('element:')
-  console.log(element)
   const hasRenderRouter =
     (element.on && !isUndefined(element.on.renderRouter)) ||
     !isUndefined(element.onRenderRouter) // || element.on.renderRouter
@@ -41,7 +37,7 @@ export const initRouter = (element, context) => {
     }
   }
 
-  injectRouterInLinkComponent(routerOptions)
+  injectRouterInLinkComponent(context, routerOptions)
 
   return routerOptions
 }
@@ -64,7 +60,6 @@ export const popStateRouter = (element, context) => {
 export const injectRouterInLinkComponent = (context, routerOptions) => {
   const { Link, RouterLink } = context.components
   if (routerOptions && routerOptions.injectRouterInLinkComponent) {
-    console.log(context.components)
     return deepMerge(Link, RouterLink)
   }
 }

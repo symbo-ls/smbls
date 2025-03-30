@@ -35,9 +35,6 @@ export const RouterLink = {
     const { href: h, scrollToTop, stopPropagation } = props
     let href = el.call('exec', h, el)
 
-    debugger
-    console.log('clicking in smbls!')
-
     if (el.call('isString', href) && href.includes('{{')) {
       href = el.call('replaceLiteralsWithObjectFields', href)
     }
