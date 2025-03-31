@@ -19,22 +19,21 @@
     "link:all-force": "npx lerna exec -- npm run unlink; npm run link:all"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.10",
-    "@babel/eslint-parser": "^7.21.3",
-    "@babel/preset-env": "^7.21.4",
-    "@babel/preset-react": "^7.18.6",
+    "@babel/core": "^7.26.0",
+    "@babel/eslint-parser": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
     "@parcel/babel-preset-env": "^2.11.0",
     "@parcel/transformer-raw": "^2.11.0",
     "caniuse-lite": "^1.0.30001707",
-    "commander": "^11.0.0",
+    "commander": "^13.1.0",
     "esbuild": "^0.25.1",
-    "eslint": "^8.54.0",
+    "eslint": "^9.23.0",
     "globusa": "^1.1.4",
     "lerna": "^8.1.9",
-    "parcel": "^2.11.0",
+    "parcel": "^2.13.3",
     "process": "^0.11.10",
     "rimraf": "^5.0.1",
-    "standard": "^17.1.0",
+    "standard": "^17.1.2",
     "svgo": "^3.3.2"
   },
   "standard": {
@@ -50,7 +49,7 @@
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "dependencies": {
-    "domql": "^3.0.111"
+    "domql": "^3.1.1"
   },
-  "version": "3.0.112"
+  "version": "3.1.2"
 }
