@@ -50,5 +50,5 @@
   "dependencies": {
     "domql": "^2.25.8"
   },
-  "version": "2.25.9"
+  "version": "2.26.0"
 }
