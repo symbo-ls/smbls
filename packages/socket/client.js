@@ -14,7 +14,7 @@ const getIsDev = options => {
   return (
     options.development ||
     (window && window.location && window.location.host.includes('local')) ||
-    isNotProduction()
+    utils.isNotProduction()
   )
 }
 
