@@ -6,7 +6,7 @@ const { window, overwriteDeep, deepDestringify } = utils
 const IS_DEVELOPMENT =
   window && window.location
     ? window.location.host.includes('dev.')
-    : process.env.NODE_ENV === 'development'
+    : utils.isDevelopment(ENV)
 
 const SERVER_URL = IS_DEVELOPMENT
   ? 'http://localhost:13335/get'
@@ -22,7 +22,7 @@ export const fetchRemote = async (key, options = defaultOptions) => {
   const baseUrl = options.endpoint || SERVER_URL
   const route = options.serviceRoute
     ? utils.isArray(options.serviceRoute)
-      ? options.serviceRoute.map((v) => v.toLowerCase() + '=true').join('&')
+      ? options.serviceRoute.map(v => v.toLowerCase() + '=true').join('&')
       : options.serviceRoute
     : ''
 
@@ -30,7 +30,11 @@ export const fetchRemote = async (key, options = defaultOptions) => {
   try {
     response = await fetch(baseUrl + '/' + '?' + route, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'X-AppKey': key, 'X-Metadata': options.metadata }
+      headers: {
+        'Content-Type': 'application/json',
+        'X-AppKey': key,
+        'X-Metadata': options.metadata
+      }
     })
 
     return await response.json()
@@ -45,20 +49,21 @@ export const fetchProject = async (key, options) => {
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-    const evalData = (IS_DEVELOPMENT || options.isDevelopment)
-      ? deepDestringify(data)
-      : deepDestringify(data.releases[0])
+    const evalData =
+      IS_DEVELOPMENT || options.isDevelopment
+        ? deepDestringify(data)
+        : deepDestringify(data.releases[0])
 
     if (editor.serviceRoute) {
       if (utils.isArray(editor.serviceRoute)) {
-        editor.serviceRoute.forEach((route) => {
+        editor.serviceRoute.forEach(route => {
           overwriteDeep(options[route], evalData[route.toLowerCase()])
         })
       } else {
         overwriteDeep(options[editor.serviceRoute], evalData)
       }
     } else {
-      [
+      ;[
         'state',
         'designSystem',
         'components',
@@ -68,7 +73,7 @@ export const fetchProject = async (key, options) => {
         'files',
         'packages',
         'functions'
-      ].forEach((key) => {
+      ].forEach(key => {
         overwriteDeep(options[key], evalData[key.toLowerCase()])
       })
     }
@@ -82,9 +87,10 @@ export const fetchProjectAsync = async (key, options, callback) => {
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-    const evalData = (IS_DEVELOPMENT || options.isDevelopment)
-      ? deepDestringify(data)
-      : deepDestringify(data.releases[0])
+    const evalData =
+      IS_DEVELOPMENT || options.isDevelopment
+        ? deepDestringify(data)
+        : deepDestringify(data.releases[0])
     callback(evalData)
   }
 }

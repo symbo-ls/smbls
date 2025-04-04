@@ -15,9 +15,9 @@ import * as routerUtils from '@domql/router'
 
 const ENV = process.env.NODE_ENV
 
-export const prepareWindow = (context) => {
-  if (typeof (window) === 'undefined') window = globalThis || {} // eslint-disable-line
-  if (typeof (document) === 'undefined') {
+export const prepareWindow = context => {
+  if (typeof window === 'undefined') window = globalThis || {} // eslint-disable-line
+  if (typeof document === 'undefined') {
     if (!window.document) window.document = globalThis.document || { body: {} }
     document = window.document // eslint-disable-line
   }
@@ -44,20 +44,34 @@ export const UIkitWithPrefix = () => {
 }
 
 export const prepareComponents = context => {
-  return context.components ? { ...UIkitWithPrefix(), ...context.components } : UIkitWithPrefix()
+  return context.components
+    ? { ...UIkitWithPrefix(), ...context.components }
+    : UIkitWithPrefix()
 }
 
 export const prepareUtils = context => {
-  return { ...utils, ...routerUtils, ...utils.scratchUtils, ...context.utils, ...context.snippets, ...context.functions }
+  return {
+    ...utils,
+    ...routerUtils,
+    ...utils.scratchUtils,
+    ...context.utils,
+    ...context.snippets,
+    ...context.functions
+  }
 }
 
-export const prepareMethods = (context) => {
+export const prepareMethods = context => {
   return {
     ...(context.methods || {}),
     require: context.utils.require,
     requireOnDemand: context.utils.requireOnDemand,
     call: function (fnKey, ...args) {
-      return (context.utils[fnKey] || context.functions[fnKey] || context.methods[fnKey] || context.snippets[fnKey])?.call(this, ...args)
+      return (
+        context.utils[fnKey] ||
+        context.functions[fnKey] ||
+        context.methods[fnKey] ||
+        context.snippets[fnKey]
+      )?.call(this, ...args)
     }
   }
 }
@@ -77,7 +91,7 @@ export const prepareDependencies = ({
       continue
     }
 
-    const random = ENV === 'development' ? `?${Math.random()}` : ''
+    const random = utils.isDevelopment(ENV) ? `?${Math.random()}` : ''
     let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
 
     if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
@@ -113,7 +127,7 @@ export const prepareRequire = (packages, ctx) => {
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window
     if (!windowOpts.packages[key]) {
-      const random = ENV === 'development' ? `?${Math.random()}` : ''
+      const random = utils.isDevelopment(ENV) ? `?${Math.random()}` : ''
       if (dependenciesOnDemand && dependenciesOnDemand[key]) {
         const version = dependenciesOnDemand[key]
         const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`

@@ -1,6 +1,12 @@
 'use strict'
 
-import { document, window, isString, isNumber } from '@domql/utils'
+import {
+  document,
+  window,
+  isString,
+  isNumber,
+  isNotProduction
+} from '@domql/utils'
 const ENV = process.env.NODE_ENV
 
 export const colorStringToRgbaArray = color => {
@@ -10,11 +16,22 @@ export const colorStringToRgbaArray = color => {
   // convert #RGB and #RGBA to #RRGGBB and #RRGGBBAA
   if (color[0] === '#') {
     if (color.length < 7) {
-      color = '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3] + (color.length > 4 ? color[4] + color[4] : '')
-    } return [parseInt(color.substr(1, 2), 16),
+      color =
+        '#' +
+        color[1] +
+        color[1] +
+        color[2] +
+        color[2] +
+        color[3] +
+        color[3] +
+        (color.length > 4 ? color[4] + color[4] : '')
+    }
+    return [
+      parseInt(color.substr(1, 2), 16),
       parseInt(color.substr(3, 2), 16),
       parseInt(color.substr(5, 2), 16),
-      color.length > 7 ? parseInt(color.substr(7, 2), 16) / 255 : 1]
+      color.length > 7 ? parseInt(color.substr(7, 2), 16) / 255 : 1
+    ]
   }
 
   // convert named colors
@@ -81,11 +98,7 @@ export const hexToRgba = (hex, alpha = 1) => {
 export const mixTwoRgb = (colorA, colorB, range = 0.5) => {
   const arr = []
   for (let i = 0; i < 3; i++) {
-    arr[i] = ~~(
-      colorA[i] + (
-        (colorB[i] - colorA[i]) * range
-      )
-    )
+    arr[i] = ~~(colorA[i] + (colorB[i] - colorA[i]) * range)
   }
   return `rgb(${arr})`
 }
@@ -93,25 +106,27 @@ export const mixTwoRgb = (colorA, colorB, range = 0.5) => {
 export const changeLightness = (delta, hsl) => {
   const [hue, saturation, lightness] = hsl
 
-  const newLightness = Math.max(
-    0,
-    Math.min(100, lightness + parseFloat(delta))
-  )
+  const newLightness = Math.max(0, Math.min(100, lightness + parseFloat(delta)))
 
   return [hue, saturation, newLightness]
 }
 
 export const rgbToHSL = (r, g, b) => {
-  const a = Math.max(r, g, b); const n = a - Math.min(r, g, b); const f = (1 - Math.abs(a + a - n - 1))
-  const h = n && ((a == r) ? (g - b) / n : ((a == g) ? 2 + (b - r) / n : 4 + (r - g) / n)) //eslint-disable-line
+  const a = Math.max(r, g, b)
+  const n = a - Math.min(r, g, b)
+  const f = 1 - Math.abs(a + a - n - 1)
+  const h =
+    n && (a == r ? (g - b) / n : a == g ? 2 + (b - r) / n : 4 + (r - g) / n) //eslint-disable-line
   return [60 * (h < 0 ? h + 6 : h), f ? n / f : 0, (a + a - n) / 2]
 }
 
-export const hslToRgb = (h, s, l,
+export const hslToRgb = (
+  h,
+  s,
+  l,
   a = s * Math.min(l, 1 - l),
-  f = (n, k = (n + h / 30) % 12) => l - a * Math.max(
-    Math.min(k - 3, 9 - k, 1), -1
-  )
+  f = (n, k = (n + h / 30) % 12) =>
+    l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
 ) => [f(0), f(8), f(4)]
 
 export const getColorShade = (col, amt) => {
@@ -122,12 +137,12 @@ export const getColorShade = (col, amt) => {
   if (r > 255) r = 255
   else if (r < 0) r = 0
 
-  let b = ((num >> 8) & 0x00FF) + amt
+  let b = ((num >> 8) & 0x00ff) + amt
 
   if (b > 255) b = 255
   else if (b < 0) b = 0
 
-  let g = (num & 0x0000FF) + amt
+  let g = (num & 0x0000ff) + amt
 
   if (g > 255) g = 255
   else if (g < 0) g = 0
@@ -138,12 +153,8 @@ export const getColorShade = (col, amt) => {
 export const mixTwoRgba = (colorA, colorB, range = 0.5) => {
   const arr = []
   for (let i = 0; i < 4; i++) {
-    const round = (i === 3) ? x => x : Math.round
-    arr[i] = round(
-      (colorA[i] + (
-        (colorB[i] - colorA[i]) * range
-      ))
-    )
+    const round = i === 3 ? x => x : Math.round
+    arr[i] = round(colorA[i] + (colorB[i] - colorA[i]) * range)
   }
   return `rgba(${arr})`
 }
@@ -151,7 +162,7 @@ export const mixTwoRgba = (colorA, colorB, range = 0.5) => {
 export const opacify = (color, opacity) => {
   const arr = colorStringToRgbaArray(color)
   if (!arr) {
-    if (ENV === 'testing' || ENV === 'development') console.warn(color + ' color is not rgba')
+    if (isNotProduction(ENV)) console.warn(color + ' color is not rgba')
     return
   }
   arr[3] = opacity
@@ -159,7 +170,8 @@ export const opacify = (color, opacity) => {
 }
 
 export const getRgbTone = (rgb, tone) => {
-  if (isString(rgb) && rgb.includes('rgb')) rgb = colorStringToRgbaArray(rgb).join(', ')
+  if (isString(rgb) && rgb.includes('rgb'))
+    rgb = colorStringToRgbaArray(rgb).join(', ')
   if (isString(rgb)) rgb = rgb.split(',').map(v => parseFloat(v.trim()))
   if (isNumber(tone)) tone += ''
   const toHex = rgbArrayToHex(rgb)
@@ -172,7 +184,7 @@ export const getRgbTone = (rgb, tone) => {
     const [r, g, b] = rgb
     const hsl = rgbToHSL(r, g, b)
     const [h, s, l] = hsl // eslint-disable-line
-    const newRgb = hslToRgb(h, s, parseFloat(tone) / 100 * 255)
+    const newRgb = hslToRgb(h, s, (parseFloat(tone) / 100) * 255)
     return newRgb
   }
 }
