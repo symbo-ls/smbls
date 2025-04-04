@@ -18,9 +18,9 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
-    "build:iife": "npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "npm run build:cjs",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },

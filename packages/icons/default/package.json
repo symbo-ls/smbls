@@ -19,8 +19,8 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild index.js --target=es2017 --format=esm --outdir=dist/esm --bundle --loader:.svg=text",
-    "build:cjs": "npx esbuild index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle --loader:.svg=text",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --target=es2017 --format=esm --outdir=dist/esm --bundle --loader:.svg=text",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle --loader:.svg=text",
     "build": "npm run build:cjs",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   }
