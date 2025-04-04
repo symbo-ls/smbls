@@ -1,9 +1,9 @@
 {
   "name": "smbls",
-  "version": "2.27.11",
+  "version": "2.27.16",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
-  "gitHead": "0189e4620f901c763754d06de65bcf6075c05618",
+  "gitHead": "aa562640d37f34a66e567c177be8f6ab6b41eccc",
   "type": "module",
   "module": "index.js",
   "main": "index.js",
@@ -22,23 +22,23 @@
     "dist"
   ],
   "dependencies": {
-    "@symbo.ls/cli": "^2.27.11",
-    "@symbo.ls/create": "^2.27.11",
-    "@symbo.ls/default-config": "^2.27.11",
-    "@symbo.ls/init": "^2.27.11",
-    "@symbo.ls/scratch": "^2.27.11",
-    "@symbo.ls/sync": "^2.27.11",
-    "@symbo.ls/uikit": "^2.27.11",
-    "@symbo.ls/utils": "^2.27.11",
-    "attrs-in-props": "^2.27.11",
-    "css-in-props": "^2.27.11",
-    "domql": "^2.27.11"
+    "@symbo.ls/cli": "^2.27.16",
+    "@symbo.ls/create": "^2.27.16",
+    "@symbo.ls/default-config": "^2.27.16",
+    "@symbo.ls/init": "^2.27.16",
+    "@symbo.ls/scratch": "^2.27.16",
+    "@symbo.ls/sync": "^2.27.16",
+    "@symbo.ls/uikit": "^2.27.16",
+    "@symbo.ls/utils": "^2.27.16",
+    "attrs-in-props": "^2.27.16",
+    "css-in-props": "^2.27.16",
+    "domql": "^2.27.16"
   },
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
-    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
     "build:cjs:bundle": "npm run build:cjs --bundle",
     "build": "npm run build:cjs; npm run build:cjs:bundle --outfile=dist/cjs/index.bundle.js; npm run build:esm;",
     "prepublish": "rimraf -I dist; npm run build; npm run copy:package:cjs"

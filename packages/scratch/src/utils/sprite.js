@@ -3,8 +3,7 @@
 import { isArray, isNotProduction, isString } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 
-const ENV = process.env.NODE_ENV || 'development'
-const isDev = isNotProduction(ENV)
+const isDev = isNotProduction()
 
 export const generateSprite = icons => {
   const CONFIG = getActiveConfig()

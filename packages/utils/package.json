@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/utils",
-  "version": "2.27.11",
+  "version": "2.27.16",
   "author": "symbo.ls",
   "files": [
     "src",
@@ -16,15 +16,15 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
-    "build:iife": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
     "build": "npm run build:cjs",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "license": "ISC",
   "dependencies": {
-    "@domql/utils": "^2.27.11"
+    "@domql/utils": "^2.27.16"
   },
-  "gitHead": "0189e4620f901c763754d06de65bcf6075c05618"
+  "gitHead": "aa562640d37f34a66e567c177be8f6ab6b41eccc"
 }

@@ -6,7 +6,7 @@ const { window, overwriteDeep, deepDestringify } = utils
 const IS_DEVELOPMENT =
   window && window.location
     ? window.location.host.includes('dev.')
-    : utils.isDevelopment(ENV)
+    : utils.isDevelopment()
 
 const SERVER_URL = IS_DEVELOPMENT
   ? 'http://localhost:13335/get'

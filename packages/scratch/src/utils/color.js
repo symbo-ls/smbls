@@ -7,7 +7,6 @@ import {
   isNumber,
   isNotProduction
 } from '@domql/utils'
-const ENV = process.env.NODE_ENV
 
 export const colorStringToRgbaArray = color => {
   if (color === '') return [0, 0, 0, 0]
@@ -162,7 +161,7 @@ export const mixTwoRgba = (colorA, colorB, range = 0.5) => {
 export const opacify = (color, opacity) => {
   const arr = colorStringToRgbaArray(color)
   if (!arr) {
-    if (isNotProduction(ENV)) console.warn(color + ' color is not rgba')
+    if (isNotProduction()) console.warn(color + ' color is not rgba')
     return
   }
   arr[3] = opacity
