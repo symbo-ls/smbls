@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/fetch",
-  "version": "2.27.11",
+  "version": "2.27.18",
   "license": "MIT",
-  "gitHead": "0189e4620f901c763754d06de65bcf6075c05618",
+  "gitHead": "0d6418dd1eabd119d4ef1b6bb07b7733151878a5",
   "type": "module",
   "module": "index.js",
   "main": "index.js",
@@ -22,13 +22,13 @@
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
     "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/utils": "^2.27.11"
+    "@domql/utils": "^2.27.18"
   }
 }

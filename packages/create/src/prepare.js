@@ -14,7 +14,7 @@ import * as uikit from '@symbo.ls/uikit'
 import * as utils from './utilImports.js'
 import * as routerUtils from '@domql/router'
 
-const ENV = process.env.NODE_ENV
+// @preserve-env
 
 export const prepareWindow = context => {
   if (typeof window === 'undefined') window = globalThis || {} // eslint-disable-line
@@ -92,7 +92,7 @@ export const prepareDependencies = ({
       continue
     }
 
-    const random = isDevelopment(ENV) ? `?${Math.random()}` : ''
+    const random = isDevelopment() ? `?${Math.random()}` : ''
     let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
 
     if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
@@ -128,7 +128,7 @@ export const prepareRequire = (packages, ctx) => {
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window
     if (!windowOpts.packages[key]) {
-      const random = isDevelopment(ENV) ? `?${Math.random()}` : ''
+      const random = isDevelopment() ? `?${Math.random()}` : ''
       if (dependenciesOnDemand && dependenciesOnDemand[key]) {
         const version = dependenciesOnDemand[key]
         const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`

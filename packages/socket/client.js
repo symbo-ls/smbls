@@ -4,7 +4,6 @@ import * as utils from '@domql/utils'
 import io from 'socket.io-client'
 
 const { window, isFunction, isArray } = utils.default || utils
-const ENV = process.env.NODE_ENV
 
 const defautlOpts = {}
 
@@ -15,7 +14,7 @@ const getIsDev = options => {
   return (
     options.development ||
     (window && window.location && window.location.host.includes('local')) ||
-    isNotProduction(ENV)
+    utils.isNotProduction()
   )
 }
 
@@ -76,7 +75,7 @@ export const connect = (key, options = {}) => {
 
         socket.disconnect()
 
-        if (utils.isNotProduction(ENV)) {
+        if (utils.isNotProduction()) {
           console.log(
             'Could not connect to %c' +
               primaryUrl +
