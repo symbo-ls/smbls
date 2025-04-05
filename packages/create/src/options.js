@@ -1,6 +1,6 @@
 'use strict'
 
-import { defaultDefine } from './define'
+import { defaultDefine } from './define.js'
 
 export const DESIGN_SYSTEM_OPTIONS = {
   useReset: true,

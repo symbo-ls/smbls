@@ -13,12 +13,14 @@ import { isObject, deepMerge, deepClone } from '@domql/utils'
 import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 // import { setClassname } from 'css-in-props'
 
-import DYNAMIC_JSON from './dynamic.json'
+import DYNAMIC_JSON from './dynamic.json' with { type: 'json' }
 
 const CONFIG = getActiveConfig()
 
 const mergeWithLocalFile = (config = CONFIG, options) => {
-  const rcfile = isObject(options.localFile) ? options.localFile : DYNAMIC_JSON || {}
+  const rcfile = isObject(options.localFile)
+    ? options.localFile
+    : DYNAMIC_JSON || {}
   const clonedFile = deepClone(rcfile.designSystem || {})
   return deepMerge(config, clonedFile)
 }
@@ -37,17 +39,20 @@ export const init = (config, options = SET_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
   const resultConfig = mergeWithLocalFile(config || {}, options)
 
-  const conf = set({
-    verbose: options.verbose,
-    useReset: options.useReset,
-    useFontImport: options.useFontImport,
-    useVariable: options.useVariable,
-    useSvgSprite: options.useSvgSprite,
-    useDocumentTheme: options.useDocumentTheme,
-    useIconSprite: options.useIconSprite,
-    useDefaultConfig: options.useDefaultConfig,
-    ...resultConfig
-  }, { newConfig: options.newConfig })
+  const conf = set(
+    {
+      verbose: options.verbose,
+      useReset: options.useReset,
+      useFontImport: options.useFontImport,
+      useVariable: options.useVariable,
+      useSvgSprite: options.useSvgSprite,
+      useDocumentTheme: options.useDocumentTheme,
+      useIconSprite: options.useIconSprite,
+      useDefaultConfig: options.useDefaultConfig,
+      ...resultConfig
+    },
+    { newConfig: options.newConfig }
+  )
 
   const FontFace = getFontFaceString(conf.FONT)
 
@@ -64,10 +69,12 @@ export const init = (config, options = SET_OPTIONS) => {
   if (useReset) emotion.injectGlobal(conf.RESET)
 
   if (hasSvgs) appendSVGSprite(hasSvgs, { document: options.document })
-  else if (useSvgSprite) appendSVGSprite(conf.SVG, { document: options.document })
+  else if (useSvgSprite)
+    appendSVGSprite(conf.SVG, { document: options.document })
 
   if (hasIcons) appendSvgIconsSprite(hasIcons, { document: options.document })
-  else if (useIconSprite) appendSvgIconsSprite(conf.ICONS, { document: options.document })
+  else if (useIconSprite)
+    appendSvgIconsSprite(conf.ICONS, { document: options.document })
 
   return conf
 }
@@ -102,6 +109,6 @@ export const updateVars = (config, options = UPDATE_OPTIONS) => {
   emotion.injectGlobal({ ':root': config.CSS_VARS })
 }
 
-export const setClass = (props, options = UPDATE_OPTIONS) => {}// setClassname(props, options.emotion.css)
+export const setClass = (props, options = UPDATE_OPTIONS) => {} // setClassname(props, options.emotion.css)
 
 export { DYNAMIC_JSON }

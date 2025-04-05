@@ -5,12 +5,13 @@ import {
   deepMerge,
   deepClone,
   merge,
-  checkIfKeyIsComponent
+  checkIfKeyIsComponent,
+  isDevelopment
 } from '@domql/utils'
-import { initEmotion } from './initEmotion'
+import { initEmotion } from './initEmotion.js'
 
 import * as uikit from '@symbo.ls/uikit'
-import * as utils from './utilImports'
+import * as utils from './utilImports.js'
 import * as routerUtils from '@domql/router'
 
 const ENV = process.env.NODE_ENV
@@ -91,7 +92,7 @@ export const prepareDependencies = ({
       continue
     }
 
-    const random = utils.isDevelopment(ENV) ? `?${Math.random()}` : ''
+    const random = isDevelopment(ENV) ? `?${Math.random()}` : ''
     let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
 
     if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
@@ -127,7 +128,7 @@ export const prepareRequire = (packages, ctx) => {
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window
     if (!windowOpts.packages[key]) {
-      const random = utils.isDevelopment(ENV) ? `?${Math.random()}` : ''
+      const random = isDevelopment(ENV) ? `?${Math.random()}` : ''
       if (dependenciesOnDemand && dependenciesOnDemand[key]) {
         const version = dependenciesOnDemand[key]
         const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`

@@ -4,8 +4,22 @@
   "author": "symbo.ls",
   "version": "2.27.11",
   "repository": "https://github.com/symbo-ls/smbls",
-  "main": "index.js",
-  "gitHead": "0189e4620f901c763754d06de65bcf6075c05618",
+  "type": "module",
+  "module": "src/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "main": "src/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "src/index.js",
+  "publishConfig": {},
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
+    "build": "npm run build:cjs",
+    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+  },
   "dependencies": {
     "@domql/utils": "^2.27.11"
   }

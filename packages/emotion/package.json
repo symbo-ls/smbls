@@ -4,6 +4,7 @@
   "license": "MIT",
   "source": "index.js",
   "main": "index.js",
+  "type": "module",
   "targets": {},
   "files": [],
   "dependencies": {

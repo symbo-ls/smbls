@@ -5,6 +5,7 @@
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
+  "type": "module",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },

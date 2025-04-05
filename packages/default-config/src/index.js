@@ -1,13 +1,13 @@
 'use strict'
 
 import { DEFAULT_ICONS } from '@symbo.ls/default-icons'
-import { COLOR, GRADIENT } from './color'
-import { THEME } from './theme'
-import { TYPOGRAPHY } from './typography'
-import { SPACING } from './spacing'
-import { FONT, FONT_FAMILY } from './font'
-import { MEDIA } from './media'
-import { TIMING } from './timing'
+import { COLOR, GRADIENT } from './color.js'
+import { THEME } from './theme.js'
+import { TYPOGRAPHY } from './typography.js'
+import { SPACING } from './spacing.js'
+import { FONT, FONT_FAMILY } from './font.js'
+import { MEDIA } from './media.js'
+import { TIMING } from './timing.js'
 
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
@@ -22,10 +22,8 @@ export const DEFAULT_CONFIG = {
   ICONS: DEFAULT_ICONS,
   MEDIA,
   RESET: {
-    html: {
-    },
-    body: {
-    }
+    html: {},
+    body: {}
   },
   ANIMATION: {
     fadeIn: {

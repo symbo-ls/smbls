@@ -5,9 +5,14 @@ import * as uikit from '@symbo.ls/uikit'
 
 import { isString, isNode, isObject } from '@domql/utils'
 import { initAnimationFrame } from '@domql/event'
-import { defaultDefine } from './define'
-import { initRouter } from './router'
-import { initializeExtend, initializeInspect, initializeNotifications, initializeSync } from './syncExtend'
+import { defaultDefine } from './define.js'
+import { initRouter } from './router.js'
+import {
+  initializeExtend,
+  initializeInspect,
+  initializeNotifications,
+  initializeSync
+} from './syncExtend.js'
 
 import {
   prepareComponents,
@@ -19,14 +24,17 @@ import {
   prepareState,
   prepareUtils,
   prepareMethods
-} from './prepare'
+} from './prepare.js'
 
 export const prepareContext = (app, context = {}) => {
   // const rcFileKey = process?.env?.SYMBOLS_KEY
-  const key = context.key = context.key || (isString(app) ? app : 'smblsapp')
+  const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
   context.window = prepareWindow(context)
-  const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(key, context)
+  const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(
+    key,
+    context
+  )
   context.designSystem = scratcDesignSystem
   context.registry = registry
   context.emotion = emotion
@@ -65,12 +73,15 @@ export const createDomqlElement = async (app, ctx) => {
   app.data = app.data || {}
   app.data.frameListeners = initAnimationFrame(ctx)
 
-  prepareRequire({
-    functions: ctx.functions,
-    utils: ctx.utils,
-    snippets: ctx.snippets,
-    ...ctx.files
-  }, ctx)
+  prepareRequire(
+    {
+      functions: ctx.functions,
+      utils: ctx.utils,
+      snippets: ctx.snippets,
+      ...ctx.files
+    },
+    ctx
+  )
 
   initializeSync(app, ctx)
   initializeInspect(app, ctx)

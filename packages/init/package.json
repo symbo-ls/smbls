@@ -5,6 +5,7 @@
   "gitHead": "0189e4620f901c763754d06de65bcf6075c05618",
   "source": "index.js",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
     "@domql/utils": "^2.27.11",
     "@symbo.ls/default-config": "^2.27.11",
