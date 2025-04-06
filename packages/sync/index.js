@@ -8,7 +8,8 @@ import { connectedToSymbols, Notifications } from './SyncNotifications'
 import { Inspect } from './Inspect'
 export { Inspect, Notifications }
 
-const isLocalhost = window && window.location && window.location.host.includes('local')
+const isLocalhost =
+  window && window.location && window.location.host.includes('local')
 
 const onConnect = (element, state) => {
   return (socketId, socket) => {
@@ -25,7 +26,8 @@ const onChange = (el, s, ctx) => {
     if (event === 'change') {
       const obj = JSON.parse(data)
       if (!obj?.DATA) return
-      const { state, designSystem, pages, components, snippets, functions } = obj.DATA
+      const { state, designSystem, pages, components, snippets, functions } =
+        obj.DATA
       const { utils } = ctx
 
       if (pages) {
@@ -47,8 +49,10 @@ const onChange = (el, s, ctx) => {
 
       if (state) {
         const route = state.route
-        if (route) (utils.router || router)(route.replace('/state', '') || '/', el, {})
-        else if (!(snippets && functions && components && pages)) s.update(state)
+        if (route)
+          (utils.router || router)(route.replace('/state', '') || '/', el, {})
+        else if (!(snippets && functions && components && pages))
+          s.update(state)
       }
 
       if (snippets || functions || components || pages) {
@@ -68,7 +72,7 @@ const onChange = (el, s, ctx) => {
 export const connectToSocket = (el, s, ctx) => {
   return connect(ctx.key, {
     source: isLocalhost ? 'localhost' : 'client',
-    socketUrl: isLocalhost ? 'localhost:13336' : 'socket.symbols.app',
+    socketUrl: isLocalhost ? 'localhost:13335' : 'api.symbols.app',
     location: window.location.host,
     onConnect: onConnect(el, s, ctx),
     onDisconnect: onDisconnect(el, s, ctx),

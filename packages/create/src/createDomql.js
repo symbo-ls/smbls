@@ -26,7 +26,7 @@ import {
   prepareMethods
 } from './prepare.js'
 
-export const prepareContext = (app, context = {}) => {
+export const prepareContext = async (app, context = {}) => {
   // const rcFileKey = process?.env?.SYMBOLS_KEY
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
@@ -43,7 +43,7 @@ export const prepareContext = (app, context = {}) => {
   context.pages = preparePages(app, context)
   context.components = prepareComponents(context)
   context.utils = prepareUtils(context)
-  context.dependencies = prepareDependencies(context)
+  context.dependencies = await prepareDependencies(context)
   context.methods = prepareMethods(context)
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
@@ -64,7 +64,7 @@ export const createDomqlElement = async (app, ctx) => {
     app = {}
   }
 
-  prepareContext(app, ctx)
+  await prepareContext(app, ctx)
 
   app.extend = initializeExtend(app, ctx)
   app.routes = ctx.pages
@@ -73,7 +73,7 @@ export const createDomqlElement = async (app, ctx) => {
   app.data = app.data || {}
   app.data.frameListeners = initAnimationFrame(ctx)
 
-  prepareRequire(
+  await prepareRequire(
     {
       functions: ctx.functions,
       utils: ctx.utils,

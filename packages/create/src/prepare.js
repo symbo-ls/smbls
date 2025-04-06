@@ -65,46 +65,41 @@ export const prepareMethods = context => {
   return {
     ...(context.methods || {}),
     require: context.utils.require,
-    requireOnDemand: context.utils.requireOnDemand,
-    call: function (fnKey, ...args) {
-      return (
-        context.utils[fnKey] ||
-        context.functions[fnKey] ||
-        context.methods[fnKey] ||
-        context.snippets[fnKey]
-      )?.call(this, ...args)
-    }
+    requireOnDemand: context.utils.requireOnDemand
   }
 }
 
 const cachedDeps = {}
-export const prepareDependencies = ({
+export const prepareDependencies = async ({
   dependencies,
   dependenciesOnDemand,
-  document
+  document,
+  preventCaching = false
 }) => {
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null
   }
 
   for (const [dependency, version] of Object.entries(dependencies)) {
-    if (version === 'loading' || version === 'error') {
+    if (
+      version === 'loading' ||
+      version === 'error' ||
+      (dependenciesOnDemand && dependenciesOnDemand[dependency])
+    ) {
       continue
     }
 
-    const random = isDevelopment() ? `?${Math.random()}` : ''
+    const random = isDevelopment() && preventCaching ? `?${Math.random()}` : ''
     let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
 
     if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
       url = `https://pkg.symbo.ls/${dependency}${random}`
     }
 
-    if (dependenciesOnDemand && dependenciesOnDemand[dependency]) continue
-
     try {
       if (cachedDeps[dependency]) return
       cachedDeps[dependency] = true
-      utils.loadJavascriptFileEmbedSync(url, document)
+      await utils.loadRemoteScript(url, { document })
     } catch (e) {
       console.error(`Failed to load ${dependency}:`, e)
     }
@@ -113,17 +108,17 @@ export const prepareDependencies = ({
   return dependencies
 }
 
-export const prepareRequire = (packages, ctx) => {
+export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
 
-  const initRequire = ctx => key => {
+  const initRequire = ctx => async key => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
-    if (typeof pkg === 'function') return pkg()
+    if (typeof pkg === 'function') return await pkg()
     return pkg
   }
 
-  const initRequireOnDemand = ctx => key => {
+  const initRequireOnDemand = ctx => async key => {
     const { dependenciesOnDemand } = ctx
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window
@@ -132,15 +127,20 @@ export const prepareRequire = (packages, ctx) => {
       if (dependenciesOnDemand && dependenciesOnDemand[key]) {
         const version = dependenciesOnDemand[key]
         const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`
-        ctx.utils.loadJavascriptFileEmbedSync(url, documentOpts)
+        await ctx.utils.loadRemoteScript(url, {
+          window: windowOpts,
+          document: documentOpts
+        })
       } else {
         const url = `https://pkg.symbo.ls/${key}${random}`
-        ctx.utils.loadJavascriptFileEmbedSync(url, documentOpts, d => {
-          windowOpts.packages[key] = 'loadedOnDeman'
+        await ctx.utils.loadRemoteScript(url, {
+          window: windowOpts,
+          document: documentOpts
         })
+        windowOpts.packages[key] = 'loadedOnDeman'
       }
     }
-    return windowOpts.require(key)
+    return await windowOpts.require(key)
   }
 
   if (windowOpts.packages) {
@@ -150,12 +150,12 @@ export const prepareRequire = (packages, ctx) => {
   }
 
   if (!windowOpts.require) {
-    ctx.utils.require = initRequire(ctx)
+    ctx.utils.require = await initRequire(ctx)
     windowOpts.require = ctx.utils.require
   }
 
   if (!windowOpts.requireOnDemand) {
-    ctx.utils.requireOnDemand = initRequireOnDemand(ctx)
+    ctx.utils.requireOnDemand = await initRequireOnDemand(ctx)
     windowOpts.requireOnDemand = ctx.utils.requireOnDemand
   }
 }

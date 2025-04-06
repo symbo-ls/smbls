@@ -20,15 +20,15 @@ const getIsDev = options => {
 
 const getSocketUrl = (options, isDev) => {
   const SOCKET_BACKEND_URL = isDev
-    ? 'http://localhost:13336/'
-    : 'https://socket.symbols.app/'
+    ? 'http://localhost:13335/'
+    : 'https://api.symbols.app/'
 
   const socketUrls = isArray(options.socketUrl)
     ? options.socketUrl
     : [options.socketUrl || SOCKET_BACKEND_URL]
 
   const primaryUrl = socketUrls[0]
-  const secondaryUrl = socketUrls[1] || 'socket.symbols.app'
+  const secondaryUrl = socketUrls[1] || 'api.symbols.app'
 
   return {
     primaryUrl: primaryUrl || SOCKET_BACKEND_URL,

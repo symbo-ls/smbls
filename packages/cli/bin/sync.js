@@ -10,30 +10,37 @@ import * as socketClient from '@symbo.ls/socket/client.js'
 import { fetchFromCli } from './fetch.js'
 import { convertFromCli } from './convert.js'
 
-const { debounce } = (utils.default || utils)
+const { debounce } = utils.default || utils
 
-const SOCKET_API_URL_LOCAL = 'http://localhost:13336/'
-const SOCKET_API_URL = 'https://socket.symbols.app/'
+const SOCKET_API_URL_LOCAL = 'http://localhost:13335/'
+const SOCKET_API_URL = 'https://api.symbols.app/'
 
-const debugMsg = chalk.dim('Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls')
+const debugMsg = chalk.dim(
+  'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
+)
 
 const RC_PATH = process.cwd() + '/symbols.json'
 let rc = {}
 try {
   rc = loadModule(RC_PATH) // eslint-disable-line
-} catch (e) { console.error('Please include symbols.json to your root of respository') }
+} catch (e) {
+  console.error('Please include symbols.json to your root of respository')
+}
 
 program
   .command('sync')
   .description('Realtime sync with Symbols')
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
-  .option('-k, --key', 'Bypass the symbols.json key, overriding the key manually')
+  .option(
+    '-k, --key',
+    'Bypass the symbols.json key, overriding the key manually'
+  )
   .option('-f, --fetch', 'Verbose errors and warnings', true)
   .option('--convert', 'Verbose errors and warnings', true)
   .option('--update', 'overriding changes from platform', true)
   .option('--verbose-code', 'Verbose errors and warnings')
-  .action(async (opts) => {
+  .action(async opts => {
     const { dev, verbose, fetch: fetchOpt, convert: convertOpt } = opts
 
     if (fetchOpt) {
@@ -61,7 +68,13 @@ program
         source: 'cli',
         socketUrl,
         onConnect: (id, socket) => {
-          console.log('Connected to', chalk.green(key), 'from', chalk.bold('Symbols'), 'socket server')
+          console.log(
+            'Connected to',
+            chalk.green(key),
+            'from',
+            chalk.bold('Symbols'),
+            'socket server'
+          )
           console.log('Socket id:', id)
           console.log(chalk.dim('\nListening to updates...\n'))
         },
@@ -83,7 +96,8 @@ program
             console.log(chalk.dim('\n----------------\n'))
             console.log(chalk.dim('Received update:'))
             console.log(Object.keys(d).join(', '))
-            if (verboseCode) console.log(chalk.dim(JSON.stringify(d, null, prettify ?? 2)))
+            if (verboseCode)
+              console.log(chalk.dim(JSON.stringify(d, null, prettify ?? 2)))
 
             if (distDir) {
               if (fetchOpt) {
@@ -98,7 +112,8 @@ program
 
           if (d.components && convertOpt && framework) {
             convertFromCli(d.components, {
-              ...options, framework
+              ...options,
+              framework
             })
           }
         }, 1500),
