@@ -111,7 +111,7 @@ export const prepareDependencies = async ({
 export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
 
-  const initRequire = ctx => async key => {
+  const initRequire = async ctx => async key => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
     if (typeof pkg === 'function') return await pkg()
