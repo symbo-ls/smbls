@@ -114,11 +114,11 @@ export const prepareRequire = async (packages, ctx) => {
   const initRequire = async ctx => async key => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
-    if (typeof pkg === 'function') return await pkg()
+    if (typeof pkg === 'function') return pkg()
     return pkg
   }
 
-  const initRequireOnDemand = ctx => async key => {
+  const initRequireOnDemand = async ctx => async key => {
     const { dependenciesOnDemand } = ctx
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window

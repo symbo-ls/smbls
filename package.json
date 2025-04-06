@@ -2,7 +2,7 @@
   "name": "smbls-root",
   "private": true,
   "scripts": {
-    "start": "npm run clean:dist; parcel example/index.html --no-cache --port 4321 --hmr-port 4321",
+    "start": "npm run clean:dist; parcel example/index.html --no-cache --port 4321",
     "build": "npm run clean:dist; parcel build example/index.html --no-cache",
     "build:packages": "lerna run build",
     "postinstall": "npx lerna run build && npx lerna run copy:package:cjs",
