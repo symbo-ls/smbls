@@ -8,20 +8,20 @@ import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
-const { isObjectLike } = (utils.default || utils)
-const { fetchRemote } = (fetch.default || fetch)
+const { isObjectLike } = utils.default || utils
+const { fetchRemote } = fetch.default || fetch
 
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH =
   process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = "https://api.symbols.app/"; // eslint-disable-line
+const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
 
 const API_URL_LOCAL = 'http://localhost:13335/get'
 const API_URL = 'https://api.symbols.app/get'
 
-const rcFile = loadModule(RC_PATH); // eslint-disable-line
-const localConfig = loadModule(LOCAL_CONFIG_PATH); // eslint-disable-line
+const rcFile = loadModule(RC_PATH) // eslint-disable-line
+const localConfig = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
 
 const debugMsg = chalk.dim(
   'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
@@ -29,24 +29,32 @@ const debugMsg = chalk.dim(
 
 let rc = {}
 try {
-  rc = loadModule(RC_PATH); // eslint-disable-line
+  rc = loadModule(RC_PATH) // eslint-disable-line
 } catch (e) {
   console.error('Please include symbols.json to your root of respository')
 }
 
-export const fetchFromCli = async (opts) => {
-  const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
-  await rc.then(async (data) => {
+export const fetchFromCli = async opts => {
+  const {
+    dev,
+    verbose,
+    prettify,
+    convert: convertOpt,
+    metadata: metadataOpt,
+    update,
+    force
+  } = opts
+  await rc.then(async data => {
     const { key, framework, distDir, metadata } = data
 
-    const endpoint = dev ? API_URL_LOCAL : API_URL
+    const endpoint = dev || utils.isLocal() ? API_URL_LOCAL : API_URL
 
     console.log('\nFetching from:', chalk.bold(endpoint), '\n')
 
     const body = await fetchRemote(key, {
       endpoint,
       metadata: metadata || metadataOpt,
-      onError: (e) => {
+      onError: e => {
         console.log(chalk.red('Failed to fetch:'), key)
         if (verbose) console.error(e)
         else console.log(debugMsg)
@@ -111,7 +119,9 @@ export const fetchFromCli = async (opts) => {
       }
 
       console.log()
-      console.warn('No --dist-dir option or "distDir" in symbols.json provided. Saving in ./node_modules/@symbo.ls/init/dynamic.json.')
+      console.warn(
+        'No --dist-dir option or "distDir" in symbols.json provided. Saving in ./node_modules/@symbo.ls/init/dynamic.json.'
+      )
       return {}
     }
 
