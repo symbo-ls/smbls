@@ -78,3 +78,19 @@ export const DropdownParent = {
     }
   }
 }
+
+export const DropdownParentFocus = {
+  props: {
+    position: 'relative',
+    style: {
+      '&:focus-within': {
+        zIndex: 1000,
+        '& [dropdown]': {
+          transform: 'translate3d(0,0,0)',
+          opacity: 1,
+          visibility: 'visible'
+        }
+      }
+    }
+  }
+}
