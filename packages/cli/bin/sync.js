@@ -12,7 +12,7 @@ import { convertFromCli } from './convert.js'
 
 const { debounce } = utils.default || utils
 
-const SOCKET_API_URL_LOCAL = 'http://localhost:13335/'
+const SOCKET_API_URL_LOCAL = 'http://localhost:8080/'
 const SOCKET_API_URL = 'https://api.symbols.app/'
 
 const debugMsg = chalk.dim(

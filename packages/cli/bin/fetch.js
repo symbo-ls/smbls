@@ -17,7 +17,7 @@ const LOCAL_CONFIG_PATH =
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
 const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
 
-const API_URL_LOCAL = 'http://localhost:13335/get'
+const API_URL_LOCAL = 'http://localhost:8080/get'
 const API_URL = 'https://api.symbols.app/get'
 
 const rcFile = loadModule(RC_PATH) // eslint-disable-line

@@ -9,7 +9,7 @@ const IS_DEVELOPMENT =
     : utils.isDevelopment()
 
 const SERVER_URL = IS_DEVELOPMENT
-  ? 'http://localhost:13335/get'
+  ? 'http://localhost:8080/get'
   : 'https://api.symbols.app/get'
 
 const defaultOptions = {

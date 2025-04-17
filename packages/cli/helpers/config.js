@@ -22,6 +22,6 @@ export const getApiUrl = () => {
     case 'staging':
       return 'https://api-staging.symbols.app'
     default:
-      return 'http://localhost:13335'
+      return 'http://localhost:8080'
   }
 }

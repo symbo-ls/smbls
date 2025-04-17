@@ -20,7 +20,7 @@ const getIsDev = options => {
 
 const getSocketUrl = (options, isDev) => {
   const SOCKET_BACKEND_URL = isDev
-    ? 'http://localhost:13335/'
+    ? 'http://localhost:8080/'
     : 'https://api.symbols.app/'
 
   const socketUrls = isArray(options.socketUrl)
