@@ -75,6 +75,8 @@ export const createSync = async (
   await fetchSync(key, redefinedOptions)
 
   const domqlApp = await createDomqlElement(App, redefinedOptions)
+  popStateRouter(domqlApp, redefinedOptions)
+
   if (redefinedOptions.on && redefinedOptions.on.create)
     await redefinedOptions.on.create(
       domqlApp,

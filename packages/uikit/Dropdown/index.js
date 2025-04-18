@@ -82,6 +82,7 @@ export const DropdownParent = {
 export const DropdownParentFocus = {
   props: {
     position: 'relative',
+    tabindex: '0',
     style: {
       '&:focus-within': {
         zIndex: 1000,

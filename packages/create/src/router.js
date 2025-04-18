@@ -16,7 +16,8 @@ export const initRouter = (element, context) => {
   else merge(context.router || {}, DEFAULT_ROUTING_OPTIONS)
 
   const routerOptions = context.router
-  const router = (context.utils && context.utils.router) ? context.utils.router : defaultRouter
+  const router =
+    context.utils && context.utils.router ? context.utils.router : defaultRouter
 
   const onRouterRenderDefault = (el, s) => {
     const { pathname, search, hash } = window.location
@@ -46,17 +47,21 @@ export const popStateRouter = (element, context) => {
   popStateFired = true
   const routerOptions = context.router || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
-  const router = (context.utils && context.utils.router)
-    ? context.utils.router
-    : defaultRouter
-  window.onpopstate = e => {
+  const router =
+    context.utils && context.utils.router ? context.utils.router : defaultRouter
+  window.onpopstate = async e => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    router(url, element, {}, { pushState: false, scrollToTop: false, level: 0 })
+    await router(
+      url,
+      element,
+      {},
+      { pushState: false, scrollToTop: false, level: 0 }
+    )
   }
 }
 
-export const injectRouterInLinkComponent = (routerOptions) => {
+export const injectRouterInLinkComponent = routerOptions => {
   if (routerOptions && routerOptions.injectRouterInLinkComponent) {
     return deepMerge(Link, RouterLink)
   }
