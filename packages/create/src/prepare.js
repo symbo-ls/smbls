@@ -23,7 +23,8 @@ export const prepareWindow = context => {
     document = window.document // eslint-disable-line
   }
   context.document = context.document || document
-  return (context.window = context.window || window)
+  context.window = context.window || window
+  return context.window
 }
 
 function onlyDotsAndNumbers (str) {

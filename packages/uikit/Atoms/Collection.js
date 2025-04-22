@@ -1,14 +1,28 @@
 'use strict'
 
 import { isState, getChildStateInKey } from '@domql/state'
-import { isString, isNumber, isNot, isArray, isObject, isObjectLike, exec, deepClone, addAdditionalExtend } from '@domql/utils'
+import {
+  isString,
+  isNumber,
+  isNot,
+  isArray,
+  isObject,
+  isObjectLike,
+  exec,
+  deepClone,
+  addAdditionalExtend
+} from '@domql/utils'
 
 export const Collection = {
   define: {
-    $collection: (param, el, state) => {
+    $collection: async (param, el, state) => {
       const { __ref: ref } = el
-      const { children: childrenProps, childrenAs, childExtends } = (el.props || {})
-      const children = childrenProps && exec(childrenProps, el, state)
+      const {
+        children: childrenProps,
+        childrenAs,
+        childExtends
+      } = el.props || {}
+      const children = childrenProps && (await exec(childrenProps, el, state))
 
       const childrenAsDefault = childrenAs || 'props'
 
@@ -22,10 +36,14 @@ export const Collection = {
           })
         } else if (isArray(children)) {
           param = deepClone(children)
-          if (childrenAsDefault || childrenAsDefault !== 'element') {
+          if (childrenAsDefault && childrenAsDefault !== 'element') {
             param = param.map(v => ({
-              extend: childExtends,
-              [childrenAsDefault]: isObjectLike(v) ? v : childrenAsDefault === 'state' ? { value: v } : { text: v }
+              ...(childExtends && { extend: childExtends }),
+              [childrenAsDefault]: isObjectLike(v)
+                ? v
+                : childrenAsDefault === 'state'
+                ? { value: v }
+                : { text: v }
             }))
           }
         } else if (isString(children) || isNumber(children)) {
@@ -41,7 +59,8 @@ export const Collection = {
       if (filterReact.length !== param.length) {
         const extractedReactComponents = param.filter(v => v.$$typeof)
         el.call('renderReact', extractedReactComponents, el)
-      } param = filterReact
+      }
+      param = filterReact
 
       if (isString(param)) {
         if (param === 'state') param = state.parse()
@@ -53,7 +72,8 @@ export const Collection = {
       param = deepClone(param)
 
       if (ref.__collectionCache) {
-        const equals = JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
+        const equals =
+          JSON.stringify(param) === JSON.stringify(ref.__collectionCache)
         if (equals) {
           ref.__noCollectionDifference = true
           return
@@ -84,7 +104,7 @@ export const Collection = {
       // return deepClone(param)
     },
 
-    $setCollection: (param, el, state) => {
+    $setCollection: async (param, el, state) => {
       if (!param) return
 
       if (isString(param)) {
@@ -92,14 +112,16 @@ export const Collection = {
         else param = getChildStateInKey(param, state)
       }
 
-      const data = (isArray(param) ? param : isObject(param) ? Object.values(param) : [])
-        .map(item => !isObjectLike(item)
-          ? { props: { value: item } }
-          : item)
+      const data = (
+        isArray(param) ? param : isObject(param) ? Object.values(param) : []
+      ).map(item => (!isObjectLike(item) ? { props: { value: item } } : item))
 
       if (data.length) {
         const t = setTimeout(() => {
-          el.set({ tag: 'fragment', ...data }, { preventDefineUpdate: '$setCollection' })
+          el.set(
+            { tag: 'fragment', ...data },
+            { preventDefineUpdate: '$setCollection' }
+          )
           clearTimeout(t)
         })
       }
@@ -107,8 +129,8 @@ export const Collection = {
       return data
     },
 
-    $stateCollection: (param, el, state, ctx) => {
-      const { children, childrenAs } = (el.props || {})
+    $stateCollection: async (param, el, state, ctx) => {
+      const { children, childrenAs } = el.props || {}
       if (!param || children || childrenAs) return
 
       if (isString(param)) {
@@ -122,7 +144,8 @@ export const Collection = {
       param = deepClone(param)
 
       if (ref.__stateCollectionCache) {
-        const equals = JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
+        const equals =
+          JSON.stringify(param) === JSON.stringify(ref.__stateCollectionCache)
         if (equals) {
           ref.__noCollectionDifference = true
           return
@@ -153,8 +176,8 @@ export const Collection = {
       // return deepClone(param)
     },
 
-    $propsCollection: (param, el, state) => {
-      const { children, childrenAs } = (el.props || {})
+    $propsCollection: async (param, el, state) => {
+      const { children, childrenAs } = el.props || {}
       if (!param || children || childrenAs) return
 
       if (isString(param)) {
@@ -168,7 +191,8 @@ export const Collection = {
       param = deepClone(param)
 
       if (ref.__propsCollectionCache) {
-        const equals = JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
+        const equals =
+          JSON.stringify(param) === JSON.stringify(ref.__propsCollectionCache) // eslint-disable-line
         if (equals) {
           ref.__noCollectionDifference = true
           return
