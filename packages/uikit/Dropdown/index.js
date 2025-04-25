@@ -93,5 +93,17 @@ export const DropdownParentFocus = {
         }
       }
     }
+  },
+
+  Input_trigger: {
+    type: 'checkbox',
+    opacity: '0',
+    position: 'absolute',
+    inset: '0',
+    onUpdate: ev => ev.target.blur()
+  },
+
+  Dropdown: {
+    onClick: (ev, el) => el.parent.Input_trigger.node.blur()
   }
 }
