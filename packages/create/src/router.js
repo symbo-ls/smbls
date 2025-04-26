@@ -49,14 +49,14 @@ export const popStateRouter = (element, context) => {
   if (!routerOptions.popState) return
   const router =
     context.utils && context.utils.router ? context.utils.router : defaultRouter
-  window.onpopstate = async e => {
+  window.onpopstate = async event => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
     await router(
       url,
       element,
       {},
-      { pushState: false, scrollToTop: false, level: 0 }
+      { pushState: false, scrollToTop: false, level: 0, event }
     )
   }
 }

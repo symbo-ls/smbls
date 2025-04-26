@@ -100,10 +100,13 @@ export const DropdownParentFocus = {
     opacity: '0',
     position: 'absolute',
     inset: '0',
-    onUpdate: ev => ev.target.blur()
+    onUpdate: el => el.node.blur()
   },
 
   Dropdown: {
-    onClick: (ev, el) => el.parent.Input_trigger.node.blur()
+    // onClick: (ev, el) => el.parent.Input_trigger.node.blur()
+    onClick: () => {
+      document.activeElement?.blur()
+    }
   }
 }
