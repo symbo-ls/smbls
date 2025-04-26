@@ -1,10 +1,10 @@
 {
   "name": "@symbo.ls/default-icons",
-  "version": "2.28.49",
+  "version": "2.28.50",
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "c30cac084c3a84a5fe936f9215b91b87b77378f5",
+  "gitHead": "1118b1967af5775fd23520e21e543c4530b97864",
   "files": [
     "src",
     "dist"
