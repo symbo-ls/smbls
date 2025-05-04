@@ -21,9 +21,9 @@
     "domql": "^2.28.54"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/eslint-parser": "^7.26.10",
-    "@babel/preset-env": "^7.26.9",
+    "@babel/core": "^7.27.1",
+    "@babel/eslint-parser": "^7.27.1",
+    "@babel/preset-env": "^7.27.1",
     "@parcel/babel-preset-env": "^2.11.0",
     "@parcel/transformer-raw": "^2.13.3",
     "caniuse-lite": "^1.0.30001707",

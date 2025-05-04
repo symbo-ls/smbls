@@ -37,6 +37,6 @@
     "@symbo.ls/uikit": "^2.28.54"
   },
   "devDependencies": {
-    "@babel/core": "^7.26.0"
+    "@babel/core": "^7.27.1"
   }
 }

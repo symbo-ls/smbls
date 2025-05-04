@@ -82,11 +82,7 @@ export const prepareDependencies = async ({
   }
 
   for (const [dependency, version] of Object.entries(dependencies)) {
-    if (
-      version === 'loading' ||
-      version === 'error' ||
-      (dependenciesOnDemand && dependenciesOnDemand[dependency])
-    ) {
+    if (dependenciesOnDemand && dependenciesOnDemand[dependency]) {
       continue
     }
 
