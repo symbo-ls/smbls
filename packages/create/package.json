@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.28.63",
+  "version": "2.28.64",
   "license": "MIT",
-  "gitHead": "ae41fca65a13b742ec8a9290a2e3a6540be3618e",
+  "gitHead": "66179f8f57708389db05e867b17e1b93ae5ceb8a",
   "type": "module",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -29,17 +29,17 @@
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/emotion": "^2.28.63",
-    "@domql/event": "^2.28.63",
-    "@domql/report": "^2.28.63",
-    "@domql/router": "^2.28.63",
-    "@symbo.ls/fetch": "^2.28.63",
-    "@symbo.ls/init": "^2.28.63",
-    "@symbo.ls/scratch": "^2.28.63",
-    "@symbo.ls/sync": "^2.28.63",
-    "@symbo.ls/uikit": "^2.28.63",
-    "@symbo.ls/utils": "^2.28.63",
-    "domql": "^2.28.63"
+    "@domql/emotion": "^2.28.64",
+    "@domql/event": "^2.28.64",
+    "@domql/report": "^2.28.64",
+    "@domql/router": "^2.28.64",
+    "@symbo.ls/fetch": "^2.28.64",
+    "@symbo.ls/init": "^2.28.64",
+    "@symbo.ls/scratch": "^2.28.64",
+    "@symbo.ls/sync": "^2.28.64",
+    "@symbo.ls/uikit": "^2.28.64",
+    "@symbo.ls/utils": "^2.28.64",
+    "domql": "^2.28.64"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1"
