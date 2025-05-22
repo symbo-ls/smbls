@@ -18,7 +18,7 @@
     "link:all-force": "npx lerna exec -- npm run unlink; npm run link:all"
   },
   "dependencies": {
-    "domql": "^2.28.72"
+    "domql": "^2.28.73"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1",
@@ -51,5 +51,5 @@
     "packages/*/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "2.28.72"
+  "version": "2.28.73"
 }
