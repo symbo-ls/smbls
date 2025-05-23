@@ -35,8 +35,14 @@ program
   .option('--angular', 'Use Angular in the project')
   .option('--vue2', 'Use Vue2 in the project')
   .option('--vue3', 'Use Vue3 in the project')
-  .option('--package-manager <manager>', 'Choose the package manager (e.g., npm, yarn)', 'npm')
+  .option(
+    '--package-manager <manager>',
+    'Choose the package manager (e.g., npm, yarn)',
+    'npm'
+  )
   .option('--clean-from-git', 'remove starter-kit git repository', true)
+  .option('--no-dependencies', 'Skip installing dependencies')
+  .option('--no-clone', 'Create folder instead of cloning from git')
   .action(async (dest = 'symbols-starter-kit', options) => {
     // Determine framework
     let framework = 'domql'
@@ -57,39 +63,79 @@ program
       return
     }
 
-    console.log(`Cloning ${cloneUrl} into '${dest}'...`)
-    execSync(`git clone ${options.remote ? ' -b feature/remote' : ''} ${cloneUrl} ${dest}`)
+    if (options.clone) {
+      console.log(`Cloning ${cloneUrl} into '${dest}'...`)
+      execSync(
+        `git clone ${
+          options.remote ? ' -b feature/remote' : ''
+        } ${cloneUrl} ${dest}`
+      )
+    } else {
+      console.log(`Creating directory '${dest}'...`)
+      fs.mkdirSync(dest, { recursive: true })
+    }
 
     process.chdir(dest)
 
     const SYMBOLS_FILE_PATH = path.join(process.cwd(), 'symbols.json')
-    addToJson(SYMBOLS_FILE_PATH, 'key', `${dest}.symbo.ls`)
-    addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${packageManager}`)
 
-    console.log(`Installing dependencies using ${packageManager}...`)
-
-    const exc = exec(packageManager === 'yarn' ? 'yarn' : 'npm i')
-
-    if (options.verbose) {
-      exc.stdout.on('data', (data) => {
-        console.log(data)
-      })
-      exc.stderr.on('data', (data) => {
-        console.error(data)
-      })
+    // Create symbols.json if not using clone
+    if (!options.clone) {
+      const initialSymbolsJson = {
+        key: `${dest}.symbo.ls`,
+        packageManager: packageManager
+      }
+      fs.writeFileSync(
+        SYMBOLS_FILE_PATH,
+        JSON.stringify(initialSymbolsJson, null, 2)
+      )
+      console.log('Created symbols.json file')
     } else {
-      console.log(chalk.dim('Use --verbose to print the output'))
+      addToJson(SYMBOLS_FILE_PATH, 'key', `${dest}.symbo.ls`)
+      addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${packageManager}`)
     }
 
-    console.log()
+    if (options.dependencies) {
+      console.log(`Installing dependencies using ${packageManager}...`)
 
-    exc.on('close', (code) => {
+      const exc = exec(packageManager === 'yarn' ? 'yarn' : 'npm i')
+
+      if (options.verbose) {
+        exc.stdout.on('data', data => {
+          console.log(data)
+        })
+        exc.stderr.on('data', data => {
+          console.error(data)
+        })
+      } else {
+        console.log(chalk.dim('Use --verbose to print the output'))
+      }
+
+      console.log()
+
+      exc.on('close', code => {
+        console.log()
+        console.log(chalk.green.bold(dest), 'successfuly created!')
+        console.log(
+          `Done! run \`${chalk.bold(
+            'cd ' + dest + '; ' + packageManager + ' start'
+          )}\` to start the development server.`
+        )
+      })
+    } else {
+      console.log(
+        chalk.dim('Skipping dependency installation (--no-dependencies)')
+      )
       console.log()
       console.log(chalk.green.bold(dest), 'successfuly created!')
-      console.log(`Done! run \`${chalk.bold('cd ' + dest + '; ' + packageManager + ' start')}\` to start the development server.`)
-    })
+      console.log(
+        `Done! Now run \`${chalk.bold(
+          'cd ' + dest
+        )}\` and install dependencies manually.`
+      )
+    }
 
-    if (options.cleanFromGit) {
+    if (options.cleanFromGit && options.clone) {
       fs.rmSync('.git', {
         recursive: true,
         force: true

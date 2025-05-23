@@ -45,7 +45,7 @@ export const fetchFromCli = async opts => {
     force
   } = opts
   await rc.then(async data => {
-    const { key, framework, distDir, metadata } = data
+    const { key, framework, distDir, metadata } = data || {}
 
     const endpoint = dev || utils.isLocal() ? API_URL_LOCAL : API_URL
 
