@@ -1,9 +1,9 @@
 {
   "name": "@symbo.ls/sync",
-  "version": "2.28.89",
+  "version": "2.28.92",
   "main": "index.js",
   "module": "index.js",
-  "gitHead": "36889e1ffad57d4046a110059a886304e6e9de1b",
+  "gitHead": "495993d1dd4a62a5e1e8af063591b2b8e3fca73d",
   "files": [
     "*.js",
     "dist"
@@ -29,12 +29,12 @@
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/router": "^2.28.89",
-    "@domql/utils": "^2.28.89",
-    "@symbo.ls/init": "^2.28.89",
-    "@symbo.ls/scratch": "^2.28.89",
-    "@symbo.ls/socket": "^2.28.89",
-    "@symbo.ls/uikit": "^2.28.89"
+    "@domql/router": "^2.28.92",
+    "@domql/utils": "^2.28.92",
+    "@symbo.ls/init": "^2.28.92",
+    "@symbo.ls/scratch": "^2.28.92",
+    "@symbo.ls/socket": "^2.28.92",
+    "@symbo.ls/uikit": "^2.28.92"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1"
