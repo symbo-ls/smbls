@@ -4,6 +4,5 @@
   "main": "main.js",
   "gitHead": "1b6522182c933e1bfd158cdd882aa31845ee5d3d",
   "scripts": {
-    "build": "webpack --config webpack.config.js"
   }
 }
