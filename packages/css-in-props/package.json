@@ -2,7 +2,7 @@
   "name": "css-in-props",
   "description": "Utilize props as CSS methods",
   "author": "symbo.ls",
-  "version": "2.28.97",
+  "version": "2.29.0",
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
   "module": "src/index.js",
@@ -25,10 +25,10 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "^2.28.97",
-    "@symbo.ls/atoms": "^2.28.97",
-    "@symbo.ls/emotion": "^2.28.97",
-    "@symbo.ls/scratch": "^2.28.97"
+    "@domql/utils": "^2.29.0",
+    "@symbo.ls/atoms": "^2.29.0",
+    "@symbo.ls/emotion": "^2.29.0",
+    "@symbo.ls/scratch": "^2.29.0"
   },
-  "gitHead": "fd62568ca87b6a44413336844aa744b58eb0db01"
+  "gitHead": "97bf369ff02d0ece2b9c3b410fcd495ea215aed8"
 }
