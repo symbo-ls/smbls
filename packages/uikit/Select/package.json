@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/select",
-  "version": "2.28.96",
+  "version": "2.28.97",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "c7b209f61336f5bc7f3812e184c30bf88b3372f4",
+  "gitHead": "fd62568ca87b6a44413336844aa744b58eb0db01",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.28.96"
+    "@symbo.ls/atoms": "^2.28.97"
   },
   "source": "src/index.js"
 }
