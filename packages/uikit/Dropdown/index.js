@@ -1,7 +1,7 @@
 'use strict'
 
 export const DropdownList = {
-  extends: 'Flex',
+  display: 'flex',
 
   attr: {
     dropdown: true

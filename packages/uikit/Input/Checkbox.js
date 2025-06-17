@@ -18,7 +18,7 @@ export const Checkbox = {
       opacity: '1'
     },
     attr: {
-      checked: (el) => el.call('exec', el.parent.props.checked)
+      checked: el => el.call('exec', el.parent.props.checked)
     }
   },
 
@@ -39,7 +39,7 @@ export const Checkbox = {
 }
 
 export const CheckboxHgroup = {
-  extends: 'Flex',
+  display: 'flex',
   tag: 'label',
 
   boxSize: 'fit-content',

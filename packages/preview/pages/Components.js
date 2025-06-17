@@ -1,7 +1,7 @@
 'use strict'
 
 export const ComponentsPage = {
-  extends: 'Flex',
+  display: 'flex',
   state: {
     globalTheme: 'dark',
     value: ''

@@ -1,6 +1,6 @@
 'use strict'
 
-const inheritFromIsActive = (el) => {
+const inheritFromIsActive = el => {
   const { props } = el
   const propsActive = props['.isActive']
   return el.call('exec', propsActive.name || propsActive.icon)
@@ -46,22 +46,30 @@ export const Icon = {
       parentPropsActive &&
       parentPropsActive.icon
     ) {
-      activeIconName = el.call('exec',
-        parentPropsActive.icon || parentPropsActive.Icon.name || parentPropsActive.Icon.icon, el
+      activeIconName = el.call(
+        'exec',
+        parentPropsActive.icon ||
+          parentPropsActive.Icon.name ||
+          parentPropsActive.Icon.icon,
+        el
       )
     }
 
     if (el.call('isString', activeIconName) && activeIconName.includes('{{')) {
-      activeIconName = el.call('replaceLiteralsWithObjectFields', activeIconName)
+      activeIconName = el.call(
+        'replaceLiteralsWithObjectFields',
+        activeIconName
+      )
     }
 
     let iconInContext
     if (ICONS[activeIconName]) iconInContext = activeIconName
     if (ICONS[camelCase]) iconInContext = camelCase
-    else if (ICONS[isArray[0] + isArray[1]]) iconInContext = isArray[0] + isArray[1]
+    else if (ICONS[isArray[0] + isArray[1]])
+      iconInContext = isArray[0] + isArray[1]
     else if (ICONS[isArray[0]]) iconInContext = isArray[0]
     else {
-      if (verbose) el.warn('Can\'t find icon:', iconName, iconInContext)
+      if (verbose) el.warn("Can't find icon:", iconName, iconInContext)
     }
 
     const iconFromLibrary = ICONS[iconInContext]
@@ -77,7 +85,7 @@ export const Icon = {
 }
 
 export const IconText = {
-  extends: 'Flex',
+  display: 'flex',
 
   align: 'center center',
   lineHeight: 1,
@@ -91,13 +99,16 @@ export const IconText = {
   },
 
   Icon: {
-    if: (el) => {
+    if: el => {
       const { parent, props } = el
-      return el.call('exec', parent.props.icon ||
-        props.name ||
-        props.sfSymbols ||
-        parent.props.sfSymbols
-      , el)
+      return el.call(
+        'exec',
+        parent.props.icon ||
+          props.name ||
+          props.sfSymbols ||
+          parent.props.sfSymbols,
+        el
+      )
     },
     icon: el => el.call('exec', el.parent.props.icon, el.parent)
   },
@@ -106,7 +117,7 @@ export const IconText = {
 }
 
 export const FileIcon = {
-  extends: 'Flex',
+  display: 'flex',
   theme: 'tertiary',
   boxSize: 'C1',
   align: 'center center',
@@ -125,11 +136,17 @@ const getSemanticIcon = (el, s, ctx) => {
   let iconName = getIconName(el, s)
   const camelCase = toCamelCase(iconName)
   const isArray = camelCase.split(/([a-z])([A-Z])/g)
-  const semanticIconRootName = isArray[1] ? isArray[0] : iconName.split('.')[0].split(' ')[0]
+  const semanticIconRootName = isArray[1]
+    ? isArray[0]
+    : iconName.split('.')[0].split(' ')[0]
   const semanticIcon = SEMANTIC_ICONS && SEMANTIC_ICONS[semanticIconRootName]
   if (semanticIcon) {
-    const iconKey = iconName.includes('.') ? 'sfsymbols.' + iconName.split('.').slice(1).join('.') : 'sfsymbols'
-    iconName = semanticIcon[iconKey] || semanticIcon[iconName.split('.')[0].split(' ')[0]]
+    const iconKey = iconName.includes('.')
+      ? 'sfsymbols.' + iconName.split('.').slice(1).join('.')
+      : 'sfsymbols'
+    iconName =
+      semanticIcon[iconKey] ||
+      semanticIcon[iconName.split('.')[0].split(' ')[0]]
     return {
       tag: 'span',
       semantic_symbols: true,

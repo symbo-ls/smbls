@@ -4,7 +4,7 @@ import { shape } from '../blocks'
 
 export const Shapes = {
   tag: 'article',
-  extends: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
@@ -21,11 +21,14 @@ export const Shapes = {
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              props: { text: 'Brand font' }
+            },
+            {
+              props: { text: 'Functional font' }
+            }
+          ]
         }
       }
     }

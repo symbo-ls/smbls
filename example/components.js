@@ -3,7 +3,7 @@
 import { Avatar, SearchWithButton } from '@symbo.ls/uikit'
 
 export const ComponentsView = {
-  extends: 'Flex',
+  display: 'flex',
 
   state: {
     globalTheme: 'dark',
@@ -74,7 +74,7 @@ export const ComponentsView = {
   },
 
   Cnt: {
-    extends: 'Flex',
+    display: 'flex',
 
     flow: 'column',
     padding: 'F E E D',
@@ -244,7 +244,7 @@ export const ComponentsView = {
   },
 
   footer: {
-    extends: 'Flex',
+    display: 'flex',
     Search: {
       extends: SearchWithButton,
       minWidth: 'G+C',

@@ -4,7 +4,7 @@ import { ColorBlock } from '../blocks'
 
 export const Themes = {
   tag: 'article',
-  extends: 'Flex',
+  display: 'flex',
 
   Banner: {
     Title: { props: { text: 'Themes' } },
@@ -15,10 +15,7 @@ export const Themes = {
       list: {
         Title: { text: 'What you’ll find' },
         Paragraph: {
-          ...[
-            { text: 'Dark theme' },
-            { text: 'Light theme' }
-          ]
+          ...[{ text: 'Dark theme' }, { text: 'Light theme' }]
         }
       },
       P: {
@@ -45,24 +42,21 @@ export const Themes = {
           }
         },
         childExtends: {
-          extends: 'Flex',
+          display: 'flex',
           props: {
             flow: 'column',
             align: 'flex-start space-between',
             padding: 'Z1 Z2'
           },
           icons: {
-            extends: 'Flex',
+            display: 'flex',
             props: {
               gap: 'B',
               align: 'center space-between',
               minWidth: '100%'
             },
             childExtends: 'Icon',
-            children: [
-              { name: 'sun' },
-              { name: 'moon' }
-            ]
+            children: [{ name: 'sun' }, { name: 'moon' }]
           },
           title: {
             tag: 'h6',
@@ -75,15 +69,13 @@ export const Themes = {
         },
         ...[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       }
-
     },
     ...[
       {
         Hgroup: {
           Title: { props: { text: 'Dark Theme' } }
         },
-        Grid: {
-        }
+        Grid: {}
       }
     ]
   }

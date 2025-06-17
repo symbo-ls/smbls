@@ -23,7 +23,7 @@ export const icon = {
       // padding: 'E D E2 D'
     },
     childExtends: {
-      extends: 'Flex',
+      display: 'flex',
       props: {
         align: 'center',
         aspectRatio: '1/1',
@@ -48,6 +48,5 @@ export const icon = {
         Icon: { name }
       }))
     }
-
   }
 }

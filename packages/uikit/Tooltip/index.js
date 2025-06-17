@@ -3,7 +3,7 @@
 import { isDefined } from '@domql/utils'
 
 export const Tooltip = {
-  extends: 'Flex',
+  display: 'flex',
 
   theme: 'dialog',
   background: 'black',

@@ -1,9 +1,16 @@
 'use strict'
 
-import { Colors, Typography, Shadows, Icons, Spacing, Shapes } from '../articles'
+import {
+  Colors,
+  Typography,
+  Shadows,
+  Icons,
+  Spacing,
+  Shapes
+} from '../articles'
 
 export const Styleguide = {
-  extends: 'Flex',
+  display: 'flex',
   tag: 'main',
 
   props: {

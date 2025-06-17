@@ -4,7 +4,7 @@ import { FontsBlock } from '../blocks'
 
 export const Typography = {
   tag: 'article',
-  extends: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
@@ -20,11 +20,14 @@ export const Typography = {
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              props: { text: 'Brand font' }
+            },
+            {
+              props: { text: 'Functional font' }
+            }
+          ]
         }
       }
     }

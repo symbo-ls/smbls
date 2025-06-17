@@ -1,7 +1,7 @@
 'use strict'
 
 export const Notification = {
-  extends: 'Flex',
+  display: 'flex',
 
   props: {
     theme: 'alert',

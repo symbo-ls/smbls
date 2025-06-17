@@ -1,7 +1,7 @@
 'use strict'
 
 export const DatePickerMonthsSlider = {
-  extends: 'Flex',
+  display: 'flex',
   props: {
     position: 'relative',
     overflow: 'hidden',

@@ -14,7 +14,7 @@ const props = {
 
 export const TimePickerItem = {
   tag: 'label',
-  extends: 'Flex',
+  display: 'flex',
   props,
   Button_plus: { icon: 'plus' },
   NumberInput: {

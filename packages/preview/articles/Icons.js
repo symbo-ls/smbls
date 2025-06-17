@@ -4,7 +4,7 @@ import { icon } from '../blocks'
 
 export const Icons = {
   tag: 'article',
-  extends: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
@@ -15,11 +15,14 @@ export const Icons = {
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              props: { text: 'Brand font' }
+            },
+            {
+              props: { text: 'Functional font' }
+            }
+          ]
         }
       }
     }

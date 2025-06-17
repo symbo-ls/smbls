@@ -3,7 +3,7 @@
 import { DefaultBlock } from './section'
 
 const ColorTemplate = {
-  extends: 'Flex',
+  display: 'flex',
   props: {
     gap: 'A'
   },
@@ -16,7 +16,7 @@ const ColorTemplate = {
   },
 
   Description: {
-    extends: 'Flex',
+    display: 'flex',
     props: { gap: 'X', flow: 'column' },
     Title: { color: 'title' },
     Value: { margin: 'X - -', color: 'paragraph' },

@@ -1,7 +1,7 @@
 'use strict'
 
 export const Dialog = {
-  extends: 'Flex',
+  display: 'flex',
   tag: 'dialog',
   flow: 'column',
   border: '0',
@@ -32,7 +32,7 @@ export const DialogHeader = {
 }
 
 export const DialogFooter = {
-  extends: 'Flex',
+  display: 'flex',
 
   align: 'center flex-end',
   gap: 'X2',

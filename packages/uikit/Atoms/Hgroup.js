@@ -1,7 +1,7 @@
 'use strict'
 
 export const Hgroup = {
-  extends: 'Flex',
+  display: 'flex',
   tag: 'hgroup',
 
   flow: 'y',
@@ -23,13 +23,14 @@ export const HgroupRows = {
   extends: 'Hgroup',
 
   H: {
-    extends: 'Flex',
+    display: 'flex',
     color: 'title',
     align: 'center space-between'
   },
 
   P: {
-    color: 'paragraph', align: 'center space-between'
+    color: 'paragraph',
+    align: 'center space-between'
   }
 }
 

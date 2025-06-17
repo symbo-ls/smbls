@@ -1,7 +1,7 @@
 'use strict'
 
 export const TimeSwitcher = {
-  extends: 'Flex',
+  display: 'flex',
   boxSize: 'C B2',
   flow: 'column',
   overflow: 'hidden',

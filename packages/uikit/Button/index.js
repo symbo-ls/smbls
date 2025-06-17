@@ -64,14 +64,11 @@ export const KangorooButton = {
 
 export const ButtonSet = {
   tag: 'nav',
-  extends: 'Flex',
+  display: 'flex',
   childExtends: 'SquareButton'
 }
 
 export const IconButton = {
-  extends: [
-    'SquareButton',
-    'ClickableItem'
-  ],
+  extends: ['SquareButton', 'ClickableItem'],
   round: 'Z'
 }

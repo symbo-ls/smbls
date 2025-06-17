@@ -4,7 +4,7 @@ import { shadow } from '../blocks'
 
 export const Shadows = {
   tag: 'article',
-  extends: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
@@ -16,11 +16,14 @@ export const Shadows = {
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              props: { text: 'Brand font' }
+            },
+            {
+              props: { text: 'Functional font' }
+            }
+          ]
         }
       }
     }

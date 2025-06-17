@@ -1,7 +1,7 @@
 'use strict'
 
 export const Component = {
-  extends: 'Flex',
+  display: 'flex',
   props: {
     align: 'center center',
     minHeight: '100vh'
@@ -12,7 +12,7 @@ export const Component = {
       const urlParams = new URLSearchParams(window.location.search)
       return !urlParams.get('hideUi') || !urlParams.get('fullsize')
     },
-    extends: 'Flex',
+    display: 'flex',
     props: {
       align: 'center space-between',
       position: 'absolute',
@@ -20,7 +20,10 @@ export const Component = {
       background: 'black 0.15',
       padding: 'Z A'
     },
-    'Link+SquareButton': { Icon: { name: 'symbols', fontSize: 'B' }, href: '/' },
+    'Link+SquareButton': {
+      Icon: { name: 'symbols', fontSize: 'B' },
+      href: '/'
+    },
     OpenInSymbols: () => {
       const urlParams = new URLSearchParams(window.location.search)
       const key = urlParams.get('key') || 'Logo'
@@ -49,7 +52,7 @@ export const Component = {
     const schema = ctx.schema[factory][key]
     return {
       key,
-      extends: 'Flex',
+      display: 'flex',
       state: schema.state,
       props: () => ({
         class: 'component',

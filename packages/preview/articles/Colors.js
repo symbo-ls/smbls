@@ -4,7 +4,7 @@ import { ColorBlock } from '../blocks'
 
 export const Colors = {
   tag: 'article',
-  extends: 'Flex',
+  display: 'flex',
 
   props: {
     margin: 'auto',
@@ -23,13 +23,17 @@ export const Colors = {
       Flex: {
         props: {},
         Title: {},
-        Paragraph: [{
-          props: { text: 'Brand color pallete' }
-        }, {
-          props: { text: 'Semantic colors' }
-        }, {
-          props: { text: 'Theming' }
-        }]
+        Paragraph: [
+          {
+            props: { text: 'Brand color pallete' }
+          },
+          {
+            props: { text: 'Semantic colors' }
+          },
+          {
+            props: { text: 'Theming' }
+          }
+        ]
       }
     }
   },
@@ -50,7 +54,8 @@ export const Colors = {
       Paragraph: {
         children: ({ context }) => {
           const { COLOR } = context.designSystem
-          return Object.keys(COLOR).filter(v => COLOR[v].value)
+          return Object.keys(COLOR)
+            .filter(v => COLOR[v].value)
             .map(v => ({
               Color: { background: v },
               Description: {
@@ -69,9 +74,7 @@ export const Colors = {
         props: {
           childProps: { theme: 'dialog' }
         },
-        ...[
-          {}, {}, {}, {}, {}, {}, {}, {}
-        ]
+        ...[{}, {}, {}, {}, {}, {}, {}, {}]
       }
     }
   }
