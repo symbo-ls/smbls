@@ -4,7 +4,7 @@ import { isObjectLike, isUndefined, isDevelopment, isArray } from '@domql/utils'
 import { SyncComponent, Inspect, Notifications } from '@symbo.ls/sync'
 
 export const initializeExtend = (app, ctx) => {
-  return isObjectLike(app.extend) ? app.extend : []
+  return isObjectLike(app.extends) ? app.extends : []
 }
 
 export const initializeSync = (app, ctx) => {
@@ -12,11 +12,11 @@ export const initializeSync = (app, ctx) => {
   if (!editor) return
   const liveSync = isUndefined(editor.liveSync) ? isDevelopment() : editor.liveSync
   if (liveSync) {
-    if (isArray(app.extend)) app.extend.push(SyncComponent)
-    else if (app.extend) {
-      app.extend = [app.extend, SyncComponent]
+    if (isArray(app.extends)) app.extends.push(SyncComponent)
+    else if (app.extends) {
+      app.extends = [app.extends, SyncComponent]
     } else {
-      app.extend = [SyncComponent]
+      app.extends = [SyncComponent]
     }
   }
 }
@@ -26,11 +26,11 @@ export const initializeInspect = (app, ctx) => {
   if (!editor) return
   const inspect = isUndefined(editor.inspect) ? isDevelopment() : editor.inspect
   if (inspect) {
-    if (isArray(app.extend)) app.extend.push(Inspect)
-    else if (app.extend) {
-      app.extend = [app.extend, Inspect]
+    if (isArray(app.extends)) app.extends.push(Inspect)
+    else if (app.extends) {
+      app.extends = [app.extends, Inspect]
     } else {
-      app.extend = [Inspect]
+      app.extends = [Inspect]
     }
   }
 }
@@ -40,11 +40,11 @@ export const initializeNotifications = (app, ctx) => {
   if (!editor) return
   const verbose = isUndefined(editor.verbose) ? isDevelopment() || ctx.verbose : editor.verbose
   if (verbose) {
-    if (isArray(app.extend)) app.extend.push(Notifications)
-    else if (app.extend) {
-      app.extend = [app.extend, Notifications]
+    if (isArray(app.extends)) app.extends.push(Notifications)
+    else if (app.extends) {
+      app.extends = [app.extends, Notifications]
     } else {
-      app.extend = [Notifications]
+      app.extends = [Notifications]
     }
   }
 }

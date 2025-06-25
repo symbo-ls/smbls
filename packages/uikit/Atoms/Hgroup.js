@@ -1,43 +1,41 @@
 'use strict'
 
 export const Hgroup = {
+  display: 'flex',
   tag: 'hgroup',
-  extend: [
-    'Flex'
-  ],
-  props: {
-    flow: 'y',
-    gap: 'Z'
-  },
+
+  flow: 'y',
+  gap: 'Y2',
+
   H: {
+    color: 'title',
     tag: 'h3',
-    text: 'Heading',
     lineHeight: '1em',
     margin: '0'
   },
   P: {
-    text: 'Paragraph',
     margin: '0',
     color: 'paragraph'
   }
 }
 
 export const HgroupRows = {
-  extend: 'Hgroup',
+  extends: 'Hgroup',
 
   H: {
-    extends: 'Flex',
+    display: 'flex',
     color: 'title',
     align: 'center space-between'
   },
 
   P: {
-    color: 'paragraph', align: 'center space-between'
+    color: 'paragraph',
+    align: 'center space-between'
   }
 }
 
 export const HgroupButton = {
-  extend: 'HgroupRows',
+  extends: 'HgroupRows',
 
   H: {
     justifyContent: 'space-between',

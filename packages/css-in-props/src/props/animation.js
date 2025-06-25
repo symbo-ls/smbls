@@ -14,8 +14,8 @@ const applyAnimationProps = (animation, element) => {
 }
 
 export const ANIMATION_PROPS = {
-  animation: (el) => ({
-    animationName: applyAnimationProps(el.props.animation, el),
+  animation: (val, el) => ({
+    animationName: applyAnimationProps(val, el),
     animationDuration: getTimingByKey(el.props.animationDuration || 'A').timing,
     animationDelay: getTimingByKey(el.props.animationDelay || '0s').timing,
     animationTimingFunction: getTimingFunction(el.props.animationTimingFunction || 'ease'),
@@ -23,16 +23,16 @@ export const ANIMATION_PROPS = {
     animationPlayState: el.props.animationPlayState,
     animationDirection: el.props.animationDirection
   }),
-  animationName: (el) => ({
-    animationName: applyAnimationProps(el.props.animationName, el)
+  animationName: (val, el) => ({
+    animationName: applyAnimationProps(val, el)
   }),
-  animationDuration: ({ props, deps }) => ({
-    animationDuration: deps.getTimingByKey(props.animationDuration).timing
+  animationDuration: (val) => ({
+    animationDuration: getTimingByKey(val).timing
   }),
-  animationDelay: ({ props, deps }) => ({
-    animationDelay: deps.getTimingByKey(props.animationDelay).timing
+  animationDelay: (val) => ({
+    animationDelay: getTimingByKey(val).timing
   }),
-  animationTimingFunction: ({ props, deps }) => ({
-    animationTimingFunction: deps.getTimingFunction(props.animationTimingFunction)
+  animationTimingFunction: (val) => ({
+    animationTimingFunction: getTimingFunction(val)
   })
 }

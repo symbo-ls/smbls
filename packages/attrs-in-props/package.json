@@ -2,26 +2,15 @@
   "name": "attrs-in-props",
   "description": "Utilize props as attributes",
   "author": "symbo.ls",
-  "version": "2.29.4",
+  "version": "3.1.2",
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
   "module": "index.js",
   "unpkg": "dist/iife/index.js",
   "jsdelivr": "dist/iife/index.js",
   "main": "index.js",
-  "exports": "./dist/cjs/index.js",
-  "source": "index.js",
-  "publishConfig": {},
-  "scripts": {
-    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "npm run build:cjs",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
-  },
+  "gitHead": "429b36616aa04c8587a26ce3c129815115e35897",
   "dependencies": {
-    "@domql/utils": "^2.29.4"
-  },
-  "gitHead": "7e273889b26550829ccbbb5312f674297bced410"
+    "@domql/utils": "^3.1.2"
+  }
 }

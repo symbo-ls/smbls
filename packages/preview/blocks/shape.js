@@ -3,7 +3,7 @@
 import { shadow } from './shadow'
 
 export const shape = {
-  extend: shadow,
+  extends: shadow,
   Title: null,
   Paragraph: {
     props: {

@@ -1,7 +1,7 @@
 'use strict'
 
 export const Toggle = {
-  extend: 'Checkbox',
+  extends: 'Checkbox',
 
   Input: {
     ':checked + div': {
@@ -30,7 +30,7 @@ export const Toggle = {
 }
 
 export const ToggleHgroup = {
-  extend: 'CheckboxHgroup',
+  extends: 'CheckboxHgroup',
   Checkbox: null,
   Toggle: {}
 }

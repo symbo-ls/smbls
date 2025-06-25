@@ -4,11 +4,11 @@ import { FontsBlock } from '../blocks'
 
 export const Typography = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
     Title: {
       props: {
         text: 'type',
@@ -20,11 +20,14 @@ export const Typography = {
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              props: { text: 'Brand font' }
+            },
+            {
+              props: { text: 'Functional font' }
+            }
+          ]
         }
       }
     }
@@ -41,7 +44,7 @@ export const Typography = {
         }
       }
     },
-    childExtend: FontsBlock,
+    childExtends: FontsBlock,
     ...[{}, {}]
   }
   // Section: {
@@ -67,7 +70,7 @@ export const Typography = {
   // }
 
   // Section: {
-  //   extend: font,
+  //   extends: font,
   //   Title: {
   //     props: { text: 'Sans Serif' }
   //   },
@@ -80,7 +83,8 @@ export const Typography = {
   //   }
   // },
 
-  // $stateCollection: ({ context }) => {
+  // childrenAs: 'state',
+  // children: ({ context }) => {
   //   const { FONT } = context.designSystem
   //   return Object.keys(FONT).map(v => ({
   //     name: v

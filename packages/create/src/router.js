@@ -2,7 +2,6 @@
 
 import { router as defaultRouter } from '@domql/router'
 import { window, deepMerge, merge, isUndefined } from '@domql/utils'
-import { Link, RouterLink } from '@symbo.ls/uikit'
 
 const DEFAULT_ROUTING_OPTIONS = {
   initRouter: true,
@@ -19,13 +18,15 @@ export const initRouter = (element, context) => {
   const router =
     context.utils && context.utils.router ? context.utils.router : defaultRouter
 
-  const onRouterRenderDefault = (el, s) => {
+  const onRouterRenderDefault = async (el, s) => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    if (el.routes) router(url, el, {}, { initialRender: true })
+    if (el.routes) await router(url, el, {}, { initialRender: true })
   }
 
-  const hasRenderRouter = element.on && !isUndefined(element.on.renderRouter)
+  const hasRenderRouter =
+    (element.on && !isUndefined(element.on.renderRouter)) ||
+    !isUndefined(element.onRenderRouter) // || element.on.renderRouter
   if (routerOptions && routerOptions.initRouter && !hasRenderRouter) {
     if (element.on) {
       element.on.renderRouter = onRouterRenderDefault
@@ -36,7 +37,7 @@ export const initRouter = (element, context) => {
     }
   }
 
-  injectRouterInLinkComponent(routerOptions)
+  injectRouterInLinkComponent(context, routerOptions)
 
   return routerOptions
 }
@@ -49,7 +50,7 @@ export const popStateRouter = (element, context) => {
   if (!routerOptions.popState) return
   const router =
     context.utils && context.utils.router ? context.utils.router : defaultRouter
-  window.onpopstate = async event => {
+  window.onpopstate = e => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
     await router(
@@ -61,7 +62,8 @@ export const popStateRouter = (element, context) => {
   }
 }
 
-export const injectRouterInLinkComponent = routerOptions => {
+export const injectRouterInLinkComponent = (context, routerOptions) => {
+  const { Link, RouterLink } = context.components
   if (routerOptions && routerOptions.injectRouterInLinkComponent) {
     return deepMerge(Link, RouterLink)
   }

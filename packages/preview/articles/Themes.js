@@ -4,7 +4,7 @@ import { ColorBlock } from '../blocks'
 
 export const Themes = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
   Banner: {
     Title: { props: { text: 'Themes' } },
@@ -15,10 +15,7 @@ export const Themes = {
       list: {
         Title: { text: 'What you’ll find' },
         Paragraph: {
-          ...[
-            { text: 'Dark theme' },
-            { text: 'Light theme' }
-          ]
+          ...[{ text: 'Dark theme' }, { text: 'Light theme' }]
         }
       },
       P: {
@@ -33,8 +30,8 @@ export const Themes = {
       padding: 'E C1 - C1',
       gap: 'E'
     },
-    childExtend: {
-      extend: ColorBlock,
+    childExtends: {
+      extends: ColorBlock,
       Hgroup: {},
       Grid: {
         props: {
@@ -44,25 +41,22 @@ export const Themes = {
             border: 'none !important'
           }
         },
-        childExtend: {
-          extend: 'Flex',
+        childExtends: {
+          display: 'flex',
           props: {
             flow: 'column',
             align: 'flex-start space-between',
             padding: 'Z1 Z2'
           },
           icons: {
-            extend: 'Flex',
+            display: 'flex',
             props: {
               gap: 'B',
               align: 'center space-between',
               minWidth: '100%'
             },
-            childExtend: 'Icon',
-            $propsCollection: [
-              { name: 'sun' },
-              { name: 'moon' }
-            ]
+            childExtends: 'Icon',
+            children: [{ name: 'sun' }, { name: 'moon' }]
           },
           title: {
             tag: 'h6',
@@ -75,15 +69,13 @@ export const Themes = {
         },
         ...[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       }
-
     },
     ...[
       {
         Hgroup: {
           Title: { props: { text: 'Dark Theme' } }
         },
-        Grid: {
-        }
+        Grid: {}
       }
     ]
   }

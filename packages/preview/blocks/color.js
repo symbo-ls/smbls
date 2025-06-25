@@ -3,7 +3,7 @@
 import { DefaultBlock } from './section'
 
 const ColorTemplate = {
-  extend: 'Flex',
+  display: 'flex',
   props: {
     gap: 'A'
   },
@@ -16,7 +16,7 @@ const ColorTemplate = {
   },
 
   Description: {
-    extend: 'Flex',
+    display: 'flex',
     props: { gap: 'X', flow: 'column' },
     Title: { color: 'title' },
     Value: { margin: 'X - -', color: 'paragraph' },
@@ -25,7 +25,7 @@ const ColorTemplate = {
 }
 
 export const ColorBlock = {
-  extend: DefaultBlock,
+  extends: DefaultBlock,
 
   Title: {
     props: {
@@ -35,7 +35,7 @@ export const ColorBlock = {
   },
 
   Paragraph: {
-    extend: 'Grid',
+    extends: 'Grid',
 
     props: {
       columns: 'repeat(4, 1fr)',
@@ -46,6 +46,6 @@ export const ColorBlock = {
       '@mobileXS': { gap: 'A2' }
     },
 
-    childExtend: ColorTemplate
+    childExtends: ColorTemplate
   }
 }

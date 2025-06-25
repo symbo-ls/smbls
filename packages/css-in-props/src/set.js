@@ -1,6 +1,6 @@
 'use strict'
 
-import { transformClassname } from './transform'
+import { transformClassname } from './_transform'
 import { transformEmotion } from './emotion'
 
 export const setClassname = (props, emotionCss) => {

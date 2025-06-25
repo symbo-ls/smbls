@@ -7,7 +7,7 @@ export * from './TimePickerItem'
 export * from './TimeSwitcher'
 
 export const TimePicker = {
-  extend: [Dialog, Flex],
+  extends: [Dialog, Flex],
 
   state: {
     activeShift: 'am'

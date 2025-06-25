@@ -139,8 +139,15 @@ export const transformSize = (propertyName, val, props = {}, opts = {}) => {
   }
 }
 
-export const transformSizeRatio = (propertyName, props) => {
-  return transformSize(propertyName, null, props, {
+export const transformSizeRatio = (propertyName, val = null, props) => {
+  return transformSize(propertyName, val, props, {
     ratio: true
   })
+}
+
+export const transformBorderRadius = (radius, props, propertyName) => {
+  if (!isString(radius)) return
+  return {
+    borderRadius: radius.split(' ').map((v, k) => getSpacingBasedOnRatio(props, propertyName, v)[propertyName]).join(' ')
+  }
 }

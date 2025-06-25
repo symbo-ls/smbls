@@ -1,21 +1,24 @@
 'use strict'
 
-import domqlConverterLib, { editorJsToDOMQL, initMutiny } from '@domql/converter'
+import domqlConverterLib, {
+  editorJsToDOMQL,
+  initMutiny
+} from '@domql/converter'
 
 import { DomValueInterceptor } from './data/DomValueInterceptor'
 
 export { initMutiny, DomValueInterceptor, editorJsToDOMQL, domqlConverterLib }
 
 export const Editorjs = {
-  on: {
-    init: () => initMutiny()
-  },
-  childExtend: {
+  onInit: () => initMutiny(),
+  childExtends: {
     html: (el, s) => {
       const text = el.text || el.props.text
-      if (text && text.includes('</')) { return text }
+      if (text && text.includes('</')) {
+        return text
+      }
     },
-    childExtend: {
+    childExtends: {
       html: (el, s) => el.props.text || el.text
     }
   },
@@ -33,9 +36,9 @@ export const Editorjs = {
         interceptorApi.addInterceptor(DomValueInterceptor, 'before')
       }
 
-      console.log(param)
+      // console.log(param)
       const content = editorJsToDOMQL(param)
-      console.log(content)
+      // console.log(content)
       const cloned = deepClone(content.asObjectArray)
       el.removeContent()
       return el.set(cloned)

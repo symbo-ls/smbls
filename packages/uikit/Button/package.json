@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/button",
-  "version": "2.29.4",
+  "version": "3.1.2",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "7e273889b26550829ccbbb5312f674297bced410",
+  "gitHead": "429b36616aa04c8587a26ce3c129815115e35897",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.29.4",
-    "@symbo.ls/icon": "^2.29.4"
+    "@symbo.ls/atoms": "^3.1.2",
+    "@symbo.ls/icon": "^3.1.2"
   },
   "source": "src/index.js"
 }

@@ -1,0 +1,8 @@
+{
+  "name": "@symbo.ls/material-icons",
+  "version": "3.1.2",
+  "main": "index.js",
+  "author": "symbo.ls",
+  "license": "ISC",
+  "gitHead": "429b36616aa04c8587a26ce3c129815115e35897"
+}

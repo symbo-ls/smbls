@@ -2,11 +2,11 @@
 
 export const Spacing = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
 
     Title: {
       props: {
@@ -19,11 +19,14 @@ export const Spacing = {
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              props: { text: 'Brand font' }
+            },
+            {
+              props: { text: 'Functional font' }
+            }
+          ]
         }
       }
     }

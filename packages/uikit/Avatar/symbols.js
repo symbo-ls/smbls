@@ -7,13 +7,13 @@ const key = 'Avatar'
 const title = 'Avatar'
 const description = ''
 const category = ['Atoms']
-const extend = 'Avatar'
+const _extends = 'Avatar'
 
 const state = {}
 const props = {}
 
 const value = {
-  extend: Avatar
+  extends: Avatar
 }
 
 const code = ''
@@ -27,7 +27,7 @@ export default {
   title,
   description,
   category,
-  extend,
+  extends: _extends,
 
   value,
   code,

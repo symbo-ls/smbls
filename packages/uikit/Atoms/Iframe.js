@@ -2,11 +2,10 @@
 
 export const Iframe = {
   tag: 'iframe',
-  props: {
-    position: 'relative',
-    minWidth: 'H',
-    minHeight: 'H'
-  },
+  position: 'relative',
+  minWidth: 'H',
+  minHeight: 'H',
+
   attr: {
     src: (el, s) => {
       let src = el.call('exec', el.props.src, el)

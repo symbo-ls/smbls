@@ -10,7 +10,7 @@ export * from './years'
 export * from './grid'
 
 export const DatePicker = {
-  extend: [Dialog, Flex],
+  extends: [Dialog, Flex],
 
   state: ({ props }) => {
     const date = new Date()
@@ -53,7 +53,7 @@ export const DatePicker = {
 }
 
 export const DatePickerTwoColumns = {
-  extend: DatePicker,
+  extends: DatePicker,
   DatePickerYears: {},
   Flex: {
     DatePickerMonthsSlider: {

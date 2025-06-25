@@ -1,24 +1,19 @@
 'use strict'
 
 export const Dialog = {
-  extend: 'Flex',
+  display: 'flex',
   tag: 'dialog',
-
-  props: {
-    flow: 'column',
-    border: '0',
-    theme: 'dialog',
-    round: 'Z2'
-  }
+  flow: 'column',
+  border: '0',
+  theme: 'dialog',
+  round: 'Z2'
 }
 
 export const DialogHeader = {
-  extend: 'Hgroup',
+  extends: 'Hgroup',
 
-  props: {
-    minWidth: '100%',
-    gap: 'A'
-  },
+  minWidth: '100%',
+  gap: 'A',
 
   Title: {
     align: 'center space-between',
@@ -37,42 +32,38 @@ export const DialogHeader = {
 }
 
 export const DialogFooter = {
-  extend: 'Flex',
+  display: 'flex',
 
-  props: {
-    align: 'center flex-end',
-    gap: 'X2',
-    margin: 'auto - -',
-    padding: 'Y2 X2'
-  },
+  align: 'center flex-end',
+  gap: 'X2',
+  margin: 'auto - -',
+  padding: 'Y2 X2',
 
-  childExtend: {
-    extend: 'Button',
-    props: {
-      textTransform: 'uppercase',
-      background: 'transparent',
-      '@dark': {
-        theme: 'primary @dark .color-only'
-      },
-      '@light': {
-        theme: 'primary @light .color-only'
-      },
-      '&': {
-        padding: 'Z A'
-      },
-      ':hover': {
-        theme: 'tertiary'
-      },
-      ':active': {
-        background: 'white .1'
-      }
+  childExtends: {
+    extends: 'Button',
+    textTransform: 'uppercase',
+    background: 'transparent',
+    '@dark': {
+      theme: 'primary @dark .color-only'
+    },
+    '@light': {
+      theme: 'primary @light .color-only'
+    },
+    '&': {
+      padding: 'Z A'
+    },
+    ':hover': {
+      theme: 'tertiary'
+    },
+    ':active': {
+      background: 'white .1'
     }
   },
 
-  cancel: {
+  Cancel: {
     text: 'cancel'
   },
-  ok: {
+  Ok: {
     text: 'ok'
   }
 }

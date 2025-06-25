@@ -1,7 +1,7 @@
 'use strict'
 
 export const DatePickerWeekDays = {
-  extend: 'Grid',
+  extends: 'Grid',
   props: {
     overflow: 'hidden',
     padding: '- Z A',
@@ -14,9 +14,9 @@ export const DatePickerWeekDays = {
       }
     }
   },
-  childExtend: {
+  childExtends: {
     tag: 'span',
-    extend: 'Flex',
+    display: 'flex',
     props: {
       fontSize: 'Y1',
       textTransform: 'capitalize',

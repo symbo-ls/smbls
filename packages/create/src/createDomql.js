@@ -47,6 +47,8 @@ export const prepareContext = async (app, context = {}) => {
   context.methods = prepareMethods(context)
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
+  context.snippets = context.snippets || {}
+  context.functions = context.functions || {}
   return context
 }
 
@@ -66,7 +68,7 @@ export const createDomqlElement = async (app, ctx) => {
 
   await prepareContext(app, ctx)
 
-  app.extend = initializeExtend(app, ctx)
+  app.extends = initializeExtend(app, ctx)
   app.routes = ctx.pages
   app.state = ctx.state
   app.context = ctx

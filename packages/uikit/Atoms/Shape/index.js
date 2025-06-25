@@ -1,26 +1,22 @@
 'use strict'
 
-import { exec, isString } from '@domql/utils'
+import { exec } from '@domql/utils'
 import { SHAPES } from './style'
 import { getSpacingBasedOnRatio, getMediaColor } from '@symbo.ls/scratch'
 
-const transformBorderRadius = (radius, props, propertyName) => {
-  if (!isString(radius)) return
-  return {
-    borderRadius: radius.split(' ').map((v, k) => getSpacingBasedOnRatio(props, propertyName, v)[propertyName]).join(' ')
-  }
-}
-
 export const Shape = {
-  extend: 'Pseudo',
+  deps: { exec, getSpacingBasedOnRatio, getMediaColor },
 
-  deps: { exec, getSpacingBasedOnRatio, getMediaColor, transformBorderRadius },
-
-  class: {
+  classlist: {
     shape: ({ props, deps }) => {
       const { shape } = props
       return deps.exec(SHAPES[shape], ({ props, deps }))
     },
+    // TODO: replace with this
+    // shape: (el) => {
+    //   const { shape } = el.props
+    //   return el.call('exec', SHAPES[shape], el)
+    // },
     shapeDirection: ({ props }) => {
       const { shape, shapeDirection } = props
       if (!shape || !shapeDirection) return
@@ -33,11 +29,12 @@ export const Shape = {
         borderColor: deps.getMediaColor(background || backgroundColor)
       }
       return props.shapeDirection ? borderColor : null
-    },
-
-    round: ({ props, key, deps, ...el }) => deps.transformBorderRadius(props.round || props.borderRadius, props, 'round'),
-    borderRadius: ({ props, key, deps, ...el }) => deps.transformBorderRadius(props.borderRadius || props.round, props, 'borderRadius')
+    }
   }
+}
+
+export const Circle = {
+  round: '100%'
 }
 
 export default Shape

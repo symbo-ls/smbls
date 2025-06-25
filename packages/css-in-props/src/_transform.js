@@ -3,15 +3,15 @@
 import { merge, deepMerge, isFunction, isObject, isArray } from '@domql/utils'
 import { keySetters } from '@symbo.ls/atoms'
 
-import { CSS_PREPROCS_DEFAULTS } from './registry'
-import { DEFAULT_CSS_PROPERTIES_LIST } from './defaults'
+import { CSS_PROPS_REGISTRY } from './props'
+import { DEFAULT_CSS_PROPERTIES_LIST } from './props/defaults'
 
 export const transformClassname = (
   element,
   restProps = {}
 ) => {
   const classCss = {}
-  const { props, class: elementClass } = element
+  const { props, classlist: elementClass } = element
 
   if (!isObject(props)) return
 
@@ -56,7 +56,7 @@ export const extractCSSfromProps = (element) => {
       continue
     }
 
-    const preprop = CSS_PREPROCS_DEFAULTS[key]
+    const preprop = CSS_PROPS_REGISTRY[key]
     if (preprop) {
       // const stack = hasCSS(element)
       const stack = preprop(element, element.state, element.context)

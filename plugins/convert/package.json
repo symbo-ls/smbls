@@ -12,8 +12,8 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "^2.5.0",
-    "@symbo.ls/create": "^2.11.486",
+    "@domql/utils": "^3.0.111",
+    "@symbo.ls/create": "^3.0.111",
     "jsdom": "^26.0.0"
   },
   "peerDependencies": {

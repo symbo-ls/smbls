@@ -5,8 +5,7 @@ import {
   deepMerge,
   deepClone,
   merge,
-  checkIfKeyIsComponent,
-  isDevelopment
+  matchesComponentNaming
 } from '@domql/utils'
 import { initEmotion } from './initEmotion.js'
 
@@ -35,7 +34,7 @@ export const UIkitWithPrefix = () => {
   const newObj = {}
   for (const key in uikit) {
     if (Object.prototype.hasOwnProperty.call(uikit, key)) {
-      if (checkIfKeyIsComponent(key)) {
+      if (matchesComponentNaming(key)) {
         newObj[`smbls.${key}`] = uikit[key]
       } else {
         newObj[key] = uikit[key]
