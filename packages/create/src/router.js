@@ -50,7 +50,7 @@ export const popStateRouter = (element, context) => {
   if (!routerOptions.popState) return
   const router =
     context.utils && context.utils.router ? context.utils.router : defaultRouter
-  window.onpopstate = e => {
+  window.onpopstate = async e => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
     await router(
