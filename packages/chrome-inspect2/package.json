@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/inspect2",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "main": "main.js",
-  "gitHead": "e70bbf2d67cb61fbd52a6265d95257236d055f2b",
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "scripts": {}
 }
