@@ -38,7 +38,7 @@ export const Collection = {
           param = deepClone(children)
           if (childrenAsDefault && childrenAsDefault !== 'element') {
             param = param.map(v => ({
-              ...(childExtends && { extend: childExtends }),
+              ...(childExtends && { extends: childExtends }),
               [childrenAsDefault]: isObjectLike(v)
                 ? v
                 : childrenAsDefault === 'state'
@@ -87,10 +87,8 @@ export const Collection = {
 
       const obj = {
         tag: 'fragment',
-        props: {
-          ignoreChildProps: true,
-          childProps: el.props && el.props.childProps
-        }
+        ignoreChildProps: true,
+        childProps: el.props && el.props.childProps
       }
 
       for (const key in param) {
@@ -114,7 +112,7 @@ export const Collection = {
 
       const data = (
         isArray(param) ? param : isObject(param) ? Object.values(param) : []
-      ).map(item => (!isObjectLike(item) ? { props: { value: item } } : item))
+      ).map(item => (!isObjectLike(item) ? { value: item } : item))
 
       if (data.length) {
         const t = setTimeout(() => {
@@ -159,10 +157,8 @@ export const Collection = {
 
       const obj = {
         tag: 'fragment',
-        props: {
-          ignoreChildProps: true,
-          childProps: el.props && el.props.childProps
-        }
+        ignoreChildProps: true,
+        childProps: el.props && el.props.childProps
       }
 
       for (const key in param) {
@@ -206,10 +202,8 @@ export const Collection = {
 
       const obj = {
         tag: 'fragment',
-        props: {
-          ignoreChildProps: true,
-          childProps: el.props && el.props.childProps
-        }
+        ignoreChildProps: true,
+        childProps: el.props && el.props.childProps
       }
 
       for (const key in param) {

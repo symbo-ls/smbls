@@ -1,24 +1,18 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Dialog } from '@symbo.ls/dialog'
-
 export * from './TimePickerItem'
 export * from './TimeSwitcher'
 
 export const TimePicker = {
-  extends: [Dialog, Flex],
+  extends: ['Dialog'],
 
   state: {
     activeShift: 'am'
   },
 
-  props: {
-    flow: 'column',
-    width: 'fit-content',
-    padding: 'Z2 A'
-  },
-
+  flow: 'column',
+  width: 'fit-content',
+  padding: 'Z2 A',
   Title: {
     fontSize: 'Z1',
     textTransform: 'capitalize',
@@ -27,17 +21,12 @@ export const TimePicker = {
   },
 
   Flex: {
-    props: {
-      align: 'center center',
-      gap: 'A'
-    },
-
+    align: 'center center',
+    gap: 'A',
     Flex: {
       tag: 'label',
-      props: {
-        align: 'center center',
-        gap: 'Y2'
-      },
+      align: 'center center',
+      gap: 'Y2',
       TimePickerItem_hh: {
         NumberInput: {
           placeholder: 'HH',

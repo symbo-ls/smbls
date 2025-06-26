@@ -5,15 +5,13 @@ export const Input = {
 
   tag: 'input',
 
-  props: {
-    border: 'none',
-    type: 'input',
-    theme: 'field',
-    fontSize: 'A',
-    round: 'C',
-    lineHeight: '1',
-    padding: 'Z2 B'
-  },
+  border: 'none',
+  type: 'input',
+  theme: 'field',
+  fontSize: 'A',
+  round: 'C',
+  lineHeight: '1',
+  padding: 'Z2 B',
 
   attr: {
     pattern: ({ props }) => props.pattern,
@@ -22,7 +20,7 @@ export const Input = {
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
     placeholder: ({ props }) => props.placeholder,
-    value: (el) => {
+    value: el => {
       if (!el.props || !el.props.value) return
       const val = el.call('exec', el.props.value, el)
       if (el.call('isString', val) && val.includes('{{')) {
@@ -30,7 +28,7 @@ export const Input = {
       }
       return val
     },
-    checked: (el) => el.call('exec', el.props.checked, el),
+    checked: el => el.call('exec', el.props.checked, el),
     disabled: ({ props }) => props.disabled || null,
     readonly: ({ props }) => props.readonly,
     required: ({ props }) => props.required,

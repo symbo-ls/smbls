@@ -74,17 +74,15 @@ export const DropdownParent = {
 }
 
 export const DropdownParentFocus = {
-  props: {
-    position: 'relative',
-    tabindex: '0',
-    style: {
-      '&:focus-within': {
-        zIndex: 1000,
-        '& [dropdown]': {
-          transform: 'translate3d(0,0,0)',
-          opacity: 1,
-          visibility: 'visible'
-        }
+  position: 'relative',
+  tabindex: '0',
+  style: {
+    '&:focus-within': {
+      zIndex: 1000,
+      '& [dropdown]': {
+        transform: 'translate3d(0,0,0)',
+        opacity: 1,
+        visibility: 'visible'
       }
     }
   },

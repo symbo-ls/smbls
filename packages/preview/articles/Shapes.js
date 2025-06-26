@@ -11,10 +11,8 @@ export const Shapes = {
     extends: 'Banner',
 
     Title: {
-      props: {
-        text: 'Shapes',
-        lineHeight: '1.15em'
-      }
+      text: 'Shapes',
+      lineHeight: '1.15em'
     },
     Paragraph: {
       P: {},
@@ -23,10 +21,10 @@ export const Shapes = {
         Paragraph: {
           ...[
             {
-              props: { text: 'Brand font' }
+              text: 'Brand font'
             },
             {
-              props: { text: 'Functional font' }
+              text: 'Functional font'
             }
           ]
         }

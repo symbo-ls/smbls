@@ -2,6 +2,7 @@
 
 import { router as defaultRouter } from '@domql/router'
 import { window, deepMerge, merge, isUndefined } from '@domql/utils'
+import { Link } from 'smbls'
 
 const DEFAULT_ROUTING_OPTIONS = {
   initRouter: true,
@@ -57,14 +58,17 @@ export const popStateRouter = (element, context) => {
       url,
       element,
       {},
-      { pushState: false, scrollToTop: false, level: 0, event }
+      { pushState: false, scrollToTop: false, level: 0, event: e }
     )
   }
 }
 
 export const injectRouterInLinkComponent = (context, routerOptions) => {
-  const { Link, RouterLink } = context.components
+  const { components } = context
   if (routerOptions && routerOptions.injectRouterInLinkComponent) {
-    return deepMerge(Link, RouterLink)
+    return deepMerge(
+      components['Link'] || components['smbls.Link'],
+      components['RouterLink'] || components['smbls.RouterLink']
+    )
   }
 }

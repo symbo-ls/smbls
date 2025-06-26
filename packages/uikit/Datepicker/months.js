@@ -2,59 +2,53 @@
 
 export const DatePickerMonthsSlider = {
   display: 'flex',
-  props: {
-    position: 'relative',
-    overflow: 'hidden',
-    alignItems: 'center',
-    padding: '- - A2 -',
-    maxWidth: `${272 / 16}em`,
-    boxSizing: 'border-box',
-    ':before': {
-      content: '""',
-      position: 'absolute',
-      boxSize: '100% 100px',
-      background:
-        'linear-gradient(to right, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
-      left: '0',
-      top: '0',
-      zIndex: '30',
-      pointerEvents: 'none'
-    },
-    ':after': {
-      content: '""',
-      position: 'absolute',
-      boxSize: '100% 100px',
-      background:
-        'linear-gradient(to left, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
-      right: '0',
-      top: '0',
-      zIndex: '30',
-      pointerEvents: 'none'
-    },
+  position: 'relative',
+  overflow: 'hidden',
+  alignItems: 'center',
+  padding: '- - A2 -',
+  maxWidth: `${272 / 16}em`,
+  boxSizing: 'border-box',
+  ':before': {
+    content: '""',
+    position: 'absolute',
+    boxSize: '100% 100px',
+    background:
+      'linear-gradient(to right, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
+    left: '0',
+    top: '0',
+    zIndex: '30',
+    pointerEvents: 'none'
+  },
+  ':after': {
+    content: '""',
+    position: 'absolute',
+    boxSize: '100% 100px',
+    background:
+      'linear-gradient(to left, var(--theme-tertiary-dark-background) 0%, transparent 100%)',
+    right: '0',
+    top: '0',
+    zIndex: '30',
+    pointerEvents: 'none'
+  },
 
-    style: {
-      '> button': {
-        padding: '0',
-        width: 'A',
-        height: 'A',
-        position: 'absolute',
-        zIndex: '35',
-        background: 'transparent',
-        ':first-child': { left: '18px' },
-        ':last-child': { right: '18px' }
-      }
-    }
+  '> button': {
+    padding: '0',
+    width: 'A',
+    height: 'A',
+    position: 'absolute',
+    zIndex: '35',
+    background: 'transparent',
+    ':first-child': { left: '18px' },
+    ':last-child': { right: '18px' }
   },
 
   Button_left: {
-    props: {
-      icon: 'arrowLeft',
-      '@dark': {
-        theme: 'primary @dark .color-only'
-      },
-      '@light': {
-        theme: 'primary @light .color-only'
-      }
+    icon: 'arrowLeft',
+    '@dark': {
+      theme: 'primary @dark .color-only'
+    },
+    '@light': {
+      theme: 'primary @light .color-only'
     },
     onClick: (ev, el, s) => {
       const { activeMonth, activeYear } = s
@@ -69,20 +63,17 @@ export const DatePickerMonthsSlider = {
   },
 
   Flex: {
-    props: {
-      flex: '1',
-      overflow: 'hidden',
-      style: { scrollSnapType: 'x mandatory' },
-      '::-webkit-scrollbar': { display: 'none' }
-    },
-
+    flex: '1',
+    overflow: 'hidden',
+    style: { scrollSnapType: 'x mandatory' },
+    '::-webkit-scrollbar': { display: 'none' },
     childExtends: {
       tag: 'h6',
       fontSize: 'Z1',
       textAlign: 'center',
       boxSizing: 'content-box',
       minWidth: '272px',
-      style: { scrollSnapAlign: 'center' },
+      scrollSnapAlign: 'center',
 
       isSelected: ({ state, key }) => state.activeMonth === parseInt(key),
       '.isSelected': { opacity: '1' },
@@ -121,14 +112,12 @@ export const DatePickerMonthsSlider = {
   },
 
   Button_right: {
-    props: {
-      icon: 'arrowRight',
-      '@dark': {
-        theme: 'primary @dark .color-only'
-      },
-      '@light': {
-        theme: 'primary @light .color-only'
-      }
+    icon: 'arrowRight',
+    '@dark': {
+      theme: 'primary @dark .color-only'
+    },
+    '@light': {
+      theme: 'primary @light .color-only'
     },
 
     onClick: (ev, el, s) => {

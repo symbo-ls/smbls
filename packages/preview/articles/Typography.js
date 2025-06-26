@@ -10,10 +10,8 @@ export const Typography = {
     tag: 'header',
     extends: 'Banner',
     Title: {
-      props: {
-        text: 'type',
-        lineHeight: '1.15em'
-      }
+      text: 'type',
+      lineHeight: '1.15em'
     },
     Paragraph: {
       P: {},
@@ -22,10 +20,10 @@ export const Typography = {
         Paragraph: {
           ...[
             {
-              props: { text: 'Brand font' }
+              text: 'Brand font'
             },
             {
-              props: { text: 'Functional font' }
+              text: 'Functional font'
             }
           ]
         }
@@ -34,14 +32,12 @@ export const Typography = {
   },
 
   Flex: {
-    props: {
-      flow: 'column',
-      padding: 'B - C -',
-      childProps: {
-        ':not(:last-child)': {
-          border: 'solid, white .15',
-          borderWidth: '0 0 1px 0'
-        }
+    flow: 'column',
+    padding: 'B - C -',
+    childProps: {
+      ':not(:last-child)': {
+        border: 'solid, white .15',
+        borderWidth: '0 0 1px 0'
       }
     },
     childExtends: FontsBlock,
@@ -72,7 +68,7 @@ export const Typography = {
   // Section: {
   //   extends: font,
   //   Title: {
-  //     props: { text: 'Sans Serif' }
+  //     text: 'Sans Serif'
   //   },
   //   Paragraph: {
   //     letters: {

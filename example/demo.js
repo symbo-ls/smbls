@@ -756,7 +756,7 @@ if (window.packages) {
 } else {
   window.packages = { smbls: () => smbls }
 }
-window.require = (key) => {
+window.require = key => {
   const pkg = window.packages[key]
   if (typeof pkg === 'function') return pkg()
   else return pkg
@@ -778,10 +778,8 @@ window.require = (key) => {
 // const domqlString = `export const IconText = {
 //   extends: "Flex",
 
-//   props: {
 //     align: "center center",
 //     lineHeight: 1,
-//   },
 
 //   Icon: {
 //     props: ({ parent }) => ({ icon: parent.props.icon }),

@@ -9,10 +9,8 @@ export const Spacing = {
     extends: 'Banner',
 
     Title: {
-      props: {
-        text: 'Spacing',
-        lineHeight: '1.15em'
-      }
+      text: 'Spacing',
+      lineHeight: '1.15em'
     },
     Paragraph: {
       P: {},
@@ -21,10 +19,10 @@ export const Spacing = {
         Paragraph: {
           ...[
             {
-              props: { text: 'Brand font' }
+              text: 'Brand font'
             },
             {
-              props: { text: 'Functional font' }
+              text: 'Functional font'
             }
           ]
         }

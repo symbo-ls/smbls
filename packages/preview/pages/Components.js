@@ -7,7 +7,7 @@ export const ComponentsPage = {
     value: ''
   },
 
-  FleX: {
+  Flex: {
     flow: 'column',
     padding: 'F E E D',
     gap: 'E+C',
@@ -219,11 +219,9 @@ export const ComponentsPage = {
       border: '1px solid #3F3F43',
       background: 'transparent',
       Input: {
-        props: {
-          fontSize: 'Z1',
-          placeholder: 'Find component ...',
-          ':focus ~ svg': { opacity: '0' }
-        },
+        fontSize: 'Z1',
+        placeholder: 'Find component ...',
+        ':focus ~ svg': { opacity: '0' },
         onKeyup: (event, el, s) => {
           const value = el.node.value.toLowerCase()
           s.update({ value })

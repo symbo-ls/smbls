@@ -6,32 +6,27 @@ export const Colors = {
   tag: 'article',
   display: 'flex',
 
-  props: {
-    margin: 'auto',
-    minWidth: '100%'
-  },
+  margin: 'auto',
+  minWidth: '100%',
 
   Banner: {
     tag: 'header',
-    props: {},
 
     Title: { text: 'Colors' },
 
     Paragraph: {
-      props: {},
       P: {},
       Flex: {
-        props: {},
         Title: {},
         Paragraph: [
           {
-            props: { text: 'Brand color pallete' }
+            text: 'Brand color pallete'
           },
           {
-            props: { text: 'Semantic colors' }
+            text: 'Semantic colors'
           },
           {
-            props: { text: 'Theming' }
+            text: 'Theming'
           }
         ]
       }
@@ -39,13 +34,11 @@ export const Colors = {
   },
 
   Flex: {
-    props: {
-      flow: 'column',
-      overflow: 'auto',
-      padding: '- D E D',
-      '@mobileM': { padding: '- C' },
-      '@mobileS': { padding: '- B' }
-    },
+    flow: 'column',
+    overflow: 'auto',
+    padding: '- D E D',
+    '@mobileM': { padding: '- C' },
+    '@mobileS': { padding: '- B' },
 
     childExtends: ColorBlock,
 
@@ -69,11 +62,9 @@ export const Colors = {
     },
 
     semantics: {
-      Title: { props: { text: 'Themes' } },
+      Title: { text: 'Themes' },
       Paragraph: {
-        props: {
-          childProps: { theme: 'dialog' }
-        },
+        childProps: { theme: 'dialog' },
         ...[{}, {}, {}, {}, {}, {}, {}, {}]
       }
     }

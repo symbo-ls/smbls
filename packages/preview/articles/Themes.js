@@ -7,12 +7,10 @@ export const Themes = {
   display: 'flex',
 
   Banner: {
-    Title: { props: { text: 'Themes' } },
+    Title: { text: 'Themes' },
     Paragraph: {
-      props: {
-        alignItems: 'flex-end'
-      },
-      list: {
+      alignItems: 'flex-end',
+      List: {
         Title: { text: 'What you’ll find' },
         Paragraph: {
           ...[{ text: 'Dark theme' }, { text: 'Light theme' }]
@@ -25,46 +23,36 @@ export const Themes = {
   },
 
   Flex: {
-    props: {
-      flow: 'column',
-      padding: 'E C1 - C1',
-      gap: 'E'
-    },
+    flow: 'column',
+    padding: 'E C1 - C1',
+    gap: 'E',
     childExtends: {
       extends: ColorBlock,
       Hgroup: {},
       Grid: {
-        props: {
-          columns: 'repeat(5, 1fr)',
-          childProps: {
-            theme: 'primary',
-            border: 'none !important'
-          }
+        columns: 'repeat(5, 1fr)',
+        childProps: {
+          theme: 'primary',
+          border: 'none !important'
         },
         childExtends: {
           display: 'flex',
-          props: {
-            flow: 'column',
-            align: 'flex-start space-between',
-            padding: 'Z1 Z2'
-          },
-          icons: {
+          flow: 'column',
+          align: 'flex-start space-between',
+          padding: 'Z1 Z2',
+          Icons: {
             display: 'flex',
-            props: {
-              gap: 'B',
-              align: 'center space-between',
-              minWidth: '100%'
-            },
+            gap: 'B',
+            align: 'center space-between',
+            minWidth: '100%',
             childExtends: 'Icon',
             children: [{ name: 'sun' }, { name: 'moon' }]
           },
-          title: {
+          Title: {
             tag: 'h6',
-            props: {
-              text: 'primary',
-              textTransform: 'capitalize',
-              fontWeight: '500'
-            }
+            text: 'primary',
+            textTransform: 'capitalize',
+            fontWeight: '500'
           }
         },
         ...[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
@@ -73,7 +61,7 @@ export const Themes = {
     ...[
       {
         Hgroup: {
-          Title: { props: { text: 'Dark Theme' } }
+          Title: { text: 'Dark Theme' }
         },
         Grid: {}
       }

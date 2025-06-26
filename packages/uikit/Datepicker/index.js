@@ -1,8 +1,5 @@
 'use strict'
 
-import { Flex } from '@symbo.ls/atoms'
-import { Dialog } from '@symbo.ls/dialog'
-
 export * from './days'
 export * from './weekdays'
 export * from './months'
@@ -10,7 +7,7 @@ export * from './years'
 export * from './grid'
 
 export const DatePicker = {
-  extends: [Dialog, Flex],
+  extends: ['Dialog'],
 
   state: ({ props }) => {
     const date = new Date()
@@ -26,22 +23,17 @@ export const DatePicker = {
     }
   },
 
-  props: {
-    width: 'fit-content',
-    margin: '0',
-    userSelect: 'none',
-    maxHeight: 'G+B2'
-  },
+  width: 'fit-content',
+  margin: '0',
+  userSelect: 'none',
+  maxHeight: 'G+B2',
 
   DatePickerYears: {},
 
   Flex: {
-    props: {
-      flow: 'column',
-      padding: 'A1 - - -',
-      position: 'relative'
-    },
-
+    flow: 'column',
+    padding: 'A1 - - -',
+    position: 'relative',
     DatePickerMonthsSlider: {},
 
     DatePickerWeekDays: {},
@@ -57,19 +49,13 @@ export const DatePickerTwoColumns = {
   DatePickerYears: {},
   Flex: {
     DatePickerMonthsSlider: {
-      props: {
-        maxWidth: `${544 / 16}em`
-      }
+      maxWidth: `${544 / 16}em`
     },
     DatePickerWeekDays: {
-      props: {
-        maxWidth: `${544 / 16}em`
-      }
+      maxWidth: `${544 / 16}em`
     },
-    monthNumbersContainer: {
-      props: {
-        maxWidth: `${544 / 16}em`
-      }
+    MonthNumbersContainer: {
+      maxWidth: `${544 / 16}em`
     }
   }
 }

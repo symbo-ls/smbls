@@ -5,6 +5,7 @@ import {
   deepMerge,
   deepClone,
   merge,
+  isDevelopment,
   matchesComponentNaming
 } from '@domql/utils'
 import { initEmotion } from './initEmotion.js'

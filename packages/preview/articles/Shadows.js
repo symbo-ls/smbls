@@ -18,10 +18,10 @@ export const Shadows = {
         Paragraph: {
           ...[
             {
-              props: { text: 'Brand font' }
+              text: 'Brand font'
             },
             {
-              props: { text: 'Functional font' }
+              text: 'Functional font'
             }
           ]
         }

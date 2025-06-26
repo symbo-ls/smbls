@@ -2,24 +2,19 @@
 
 export const Component = {
   display: 'flex',
-  props: {
-    align: 'center center',
-    minHeight: '100vh'
-  },
-
+  align: 'center center',
+  minHeight: '100vh',
   smblsHeader: {
     if: () => {
       const urlParams = new URLSearchParams(window.location.search)
       return !urlParams.get('hideUi') || !urlParams.get('fullsize')
     },
     display: 'flex',
-    props: {
-      align: 'center space-between',
-      position: 'absolute',
-      inset: '0 0 auto 0',
-      background: 'black 0.15',
-      padding: 'Z A'
-    },
+    align: 'center space-between',
+    position: 'absolute',
+    inset: '0 0 auto 0',
+    background: 'black 0.15',
+    padding: 'Z A',
     'Link+SquareButton': {
       Icon: { name: 'symbols', fontSize: 'B' },
       href: '/'
@@ -54,11 +49,9 @@ export const Component = {
       key,
       display: 'flex',
       state: schema.state,
-      props: () => ({
-        class: 'component',
-        align: 'center center',
-        boxSize: fullsize ? '100dvh 100dvw' : `${height} ${width}`
-      }),
+      class: 'component',
+      align: 'center center',
+      boxSize: fullsize ? '100dvh 100dvw' : `${height} ${width}`,
       [key]: fullsize
         ? {
             ...schema.props?.demoComponent,

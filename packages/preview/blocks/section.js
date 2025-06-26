@@ -3,18 +3,15 @@
 export const DefaultBlock = {
   tag: 'section',
   extends: 'Hgroup',
-
-  props: { gap: 'A' },
+  gap: 'A',
 
   Title: {
     tag: 'h5',
-    props: {
-      fontSize: 'A',
-      fontWeight: '500',
-      '@tabletS<': { alignItems: 'flex-end' },
-      letterSpacing: '.2em',
-      padding: '- Z1',
-      textTransform: 'uppercase'
-    }
+    fontSize: 'A',
+    fontWeight: '500',
+    '@tabletS<': { alignItems: 'flex-end' },
+    letterSpacing: '.2em',
+    padding: '- Z1',
+    textTransform: 'uppercase'
   }
 }

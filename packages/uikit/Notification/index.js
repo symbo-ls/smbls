@@ -2,15 +2,12 @@
 
 export const Notification = {
   display: 'flex',
-
-  props: {
-    theme: 'alert',
-    padding: 'Z1 B Z A',
-    round: 'A A A Y2',
-    gap: 'X2',
-    cursor: 'pointer',
-    align: 'flex-start center'
-  },
+  theme: 'alert',
+  padding: 'Z1 B Z A',
+  round: 'A A A Y2',
+  gap: 'X2',
+  cursor: 'pointer',
+  align: 'flex-start center',
 
   IconText: {
     Icon: {

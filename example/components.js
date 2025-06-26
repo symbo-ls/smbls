@@ -88,19 +88,15 @@ export const ComponentsView = {
     },
 
     childExtends: {
-      props: ({ key, state }) => ({
-        hide: !key.toLowerCase().includes(state.value),
-        position: 'relative'
-      }),
+      hide: ({ key, state }) => !key.toLowerCase().includes(state.value),
+      position: 'relative',
       __title: {
-        props: {
-          ignoreChildExtends: true,
-          position: 'absolute',
-          left: '0',
-          top: '-C',
-          fontSize: '14px',
-          color: 'white .35'
-        },
+        ignoreChildExtends: true,
+        position: 'absolute',
+        left: '0',
+        top: '-C',
+        fontSize: '14px',
+        color: 'white .35',
         text: ({ parent }) => parent.key
       }
     },

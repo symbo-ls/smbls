@@ -81,9 +81,7 @@ export const connectToSocket = (el, s, ctx) => {
 }
 
 export const SyncComponent = {
-  on: {
-    initSync: connectToSocket
-  }
+  onInitSync: connectToSocket
 }
 
 export const DefaultSyncApp = {
