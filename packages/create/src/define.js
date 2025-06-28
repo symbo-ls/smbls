@@ -1,6 +1,6 @@
 'use strict'
 
-import { Collection } from '@symbo.ls/atoms'
+import { Box } from '@symbo.ls/atoms'
 
 export const defaultDefine = {
   routes: param => param,
@@ -22,8 +22,8 @@ export const defaultDefine = {
     return obj
   },
 
-  $collection: Collection.define.$collection,
-  $setCollection: Collection.define.$setCollection,
-  $stateCollection: Collection.define.$stateCollection,
-  $propsCollection: Collection.define.$propsCollection
+  $collection: Box.define.$collection,
+  $setCollection: Box.define.$setCollection,
+  $stateCollection: Box.define.$stateCollection,
+  $propsCollection: Box.define.$propsCollection
 }

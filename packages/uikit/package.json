@@ -17,7 +17,6 @@
     "@domql/utils": "^2.29.5",
     "@symbo.ls/atoms": "^2.29.5",
     "@symbo.ls/avatar": "^2.29.5",
-    "@symbo.ls/box": "^2.29.5",
     "@symbo.ls/button": "^2.29.5",
     "@symbo.ls/dialog": "^2.29.5",
     "@symbo.ls/dropdown": "^2.29.5",

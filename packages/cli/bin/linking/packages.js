@@ -15,7 +15,6 @@ export default [
   '@symbo.ls/atoms',
   '@symbo.ls/socket',
   'css-in-props',
-  '@symbo.ls/box',
   '@symbo.ls/icon',
   '@symbo.ls/input',
   '@symbo.ls/link',
