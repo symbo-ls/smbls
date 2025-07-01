@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/timepicker",
-  "version": "2.29.19",
+  "version": "2.29.20",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "25cb73bcc94567ee0d1eb1ee7f9effa37619564c",
+  "gitHead": "7cda914263034c8d5f64f0a73dc99163899d128f",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.29.19",
-    "@symbo.ls/dialog": "^2.29.19"
+    "@symbo.ls/atoms": "^2.29.20",
+    "@symbo.ls/dialog": "^2.29.20"
   },
   "source": "src/index.js"
 }
