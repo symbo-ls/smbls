@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/dropdown",
-  "version": "2.29.25",
+  "version": "2.29.26",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "98c5870ef58b557629adb934ea440e788ef4bcda",
+  "gitHead": "9d7c4b7d8a852edb2c8eca40bd0debd282bedb72",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.29.25",
-    "@symbo.ls/button": "^2.29.25"
+    "@symbo.ls/atoms": "^2.29.26",
+    "@symbo.ls/button": "^2.29.26"
   },
   "source": "src/index.js"
 }
