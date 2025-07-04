@@ -2,7 +2,7 @@
   "name": "attrs-in-props",
   "description": "Utilize props as attributes",
   "author": "symbo.ls",
-  "version": "2.29.29",
+  "version": "2.29.31",
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
   "module": "index.js",
@@ -21,7 +21,7 @@
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/utils": "^2.29.29"
+    "@domql/utils": "^2.29.31"
   },
-  "gitHead": "a3778e568d0488f3f9dff2fc09edb5025578b0cd"
+  "gitHead": "d28a053463281cda6947e1288b564945e250687f"
 }
