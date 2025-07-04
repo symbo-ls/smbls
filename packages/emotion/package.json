@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/emotion",
-  "version": "2.29.34",
+  "version": "2.29.36",
   "license": "MIT",
   "source": "index.js",
   "main": "index.js",
@@ -11,5 +11,5 @@
     "@emotion/css": "^11.10.0"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "02ca3d562d8fb996919aad18733784f68830fcc4"
+  "gitHead": "64538960a0f6533dece048b519d9bb9dc96b5356"
 }
