@@ -42,7 +42,7 @@ export const initRouter = (element, context) => {
 }
 
 let popStateFired
-export const popStateRouter = (element, context) => {
+export const onpopstateRouter = (element, context) => {
   if (popStateFired) return
   popStateFired = true
   const routerOptions = context.router || DEFAULT_ROUTING_OPTIONS

@@ -4,7 +4,7 @@ import { deepMerge, isObject, isUndefined } from '@domql/utils'
 
 import * as utils from './utilImports.js'
 
-import { popStateRouter } from './router.js'
+import { onpopstateRouter } from './router.js'
 import { fetchAsync, fetchSync } from './ferchOnCreate.js'
 
 import DEFAULT_CREATE_OPTIONS from './options.js'
@@ -29,7 +29,7 @@ export const create = (
 
   const domqlApp = createDomqlElement(App, redefinedOptions)
 
-  popStateRouter(domqlApp, redefinedOptions)
+  onpopstateRouter(domqlApp, redefinedOptions)
 
   if (redefinedOptions.on && redefinedOptions.on.create)
     redefinedOptions.on.create(
@@ -75,7 +75,7 @@ export const createSync = async (
   await fetchSync(key, redefinedOptions)
 
   const domqlApp = await createDomqlElement(App, redefinedOptions)
-  popStateRouter(domqlApp, redefinedOptions)
+  onpopstateRouter(domqlApp, redefinedOptions)
 
   if (redefinedOptions.on && redefinedOptions.on.create)
     await redefinedOptions.on.create(

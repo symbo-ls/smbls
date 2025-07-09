@@ -70,6 +70,7 @@ const onChange = (el, s, ctx) => {
 }
 
 export const connectToSocket = (el, s, ctx) => {
+  console.log(ctx.key)
   return connect(ctx.key, {
     source: isLocalhost ? 'localhost' : 'client',
     socketUrl: isLocalhost ? 'localhost:8080' : 'api.symbols.app',

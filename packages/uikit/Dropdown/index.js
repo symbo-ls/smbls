@@ -98,6 +98,7 @@ export const DropdownParentFocus = {
   Input_trigger: {
     type: 'checkbox',
     opacity: '0',
+    visibility: 'hidden',
     position: 'absolute',
     inset: '0',
     onUpdate: el => el.node.blur()
