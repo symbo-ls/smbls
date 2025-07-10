@@ -16,7 +16,9 @@ export const Iframe = {
       }
 
       let isUrl
-      try { isUrl = new URL(src) } catch (e) {}
+      try { isUrl = new URL(src) } catch (e) {
+      console.error(e)
+      }
       if (isUrl) return src
     },
     srcdoc: ({ props }) => props.srcdoc,
