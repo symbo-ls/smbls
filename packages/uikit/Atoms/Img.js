@@ -13,7 +13,7 @@ export const Img = {
       }
 
       let isUrl
-      try { isUrl = new URL(src) } catch (e) { console.error(e) }
+      try { isUrl = new URL(src) } catch (e) { el.warn(e) }
       if (isUrl) return src
       const file = context.files && context.files[src]
       if (file) return file.content && file.content.src
