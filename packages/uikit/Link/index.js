@@ -15,14 +15,16 @@ export const Link = {
   attr: {
     href: (el, s, ctx) => {
       const props = el.props
-      const href = el.call('exec', props.href, el) || el.call('exec', el.call('exec', props, el).href, el)
+      const href =
+        el.call('exec', props.href, el) ||
+        el.call('exec', el.call('exec', props, el).href, el)
       if (el.call('isString', href) && href.includes('{{')) {
         return el.call('replaceLiteralsWithObjectFields', href)
       }
       return href
     },
     target: ({ props }) => props.target,
-    'aria-label': ({ props }) => props.aria ? props.aria.label : props.text,
+    'aria-label': ({ props }) => (props.aria ? props.aria.label : props.text),
     draggable: ({ props }) => props.draggable
   }
 }
@@ -40,20 +42,29 @@ export const RouterLink = {
 
       if (stopPropagation) event.stopPropagation()
       if (!href) return
-      const { utils, snippets, functions, routerOptions } = ctx
+      const { routerOptions } = ctx
       const root = el.__ref.root
-      const linkIsExternal = href.includes('http://') ||
+      const linkIsExternal =
+        href.includes('http://') ||
         href.includes('https://') ||
         href.includes('mailto:') ||
         href.includes('tel:')
       if (href && !linkIsExternal) {
         try {
-          (functions.router || snippets.router || utils.router || defaultRouter)(href, root, {}, {
-            scrollToOptions: { behaviour: 'instant' },
-            scrollToTop: el.call('isDefined', scrollToTop) ? scrollToTop : true,
-            ...routerOptions,
-            ...props.routerOptions
-          })
+          el.call(
+            'router',
+            href,
+            root,
+            {},
+            {
+              scrollToOptions: { behaviour: 'instant' },
+              scrollToTop: el.call('isDefined', scrollToTop)
+                ? scrollToTop
+                : true,
+              ...routerOptions,
+              ...props.routerOptions
+            }
+          )
           event.preventDefault()
         } catch (e) {
           console.warn(e)

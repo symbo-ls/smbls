@@ -49,15 +49,14 @@ const onChange = (el, s, ctx) => {
 
       if (state) {
         const route = state.route
-        if (route)
-          (utils.router || router)(route.replace('/state', '') || '/', el, {})
+        if (route) el.call('router', route.replace('/state', '') || '/', el, {})
         else if (!(snippets && functions && components && pages))
           s.update(state)
       }
 
       if (snippets || functions || components || pages) {
         const { pathname, search, hash } = ctx.window.location
-        ;(utils.router || router)(pathname + search + hash, el, {})
+        el.call('router', pathname + search + hash, el, {})
       }
 
       if (designSystem) init(designSystem)
@@ -70,7 +69,6 @@ const onChange = (el, s, ctx) => {
 }
 
 export const connectToSocket = (el, s, ctx) => {
-  console.log(ctx.key)
   return connect(ctx.key, {
     source: isLocalhost ? 'localhost' : 'client',
     socketUrl: isLocalhost ? 'localhost:8080' : 'api.symbols.app',
