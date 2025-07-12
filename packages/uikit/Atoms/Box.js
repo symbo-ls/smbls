@@ -136,11 +136,13 @@ export const Box = {
       if (children) {
         if (isObject(children)) {
           if (children.$$typeof) return el.call('renderReact', children, el)
-          param = deepClone(children)
-          param = Object.keys(param).map(v => {
-            const val = param[v]
-            return addAdditionalExtend(v, val)
-          })
+          if (childrenAsDefault && childrenAsDefault !== 'state') {
+            param = deepClone(children)
+            param = Object.keys(param).map(v => {
+              const val = param[v]
+              return addAdditionalExtend(v, val)
+            })
+          }
         } else if (isArray(children)) {
           param = deepClone(children)
           if (childrenAsDefault && childrenAsDefault !== 'element') {

@@ -1,6 +1,5 @@
 'use strict'
 
-import { router as defaultRouter } from '@domql/router'
 import { window, deepMerge, merge, isUndefined } from '@domql/utils'
 import { Link, RouterLink } from '@symbo.ls/uikit'
 
@@ -16,13 +15,11 @@ export const initRouter = (element, context) => {
   else merge(context.router || {}, DEFAULT_ROUTING_OPTIONS)
 
   const routerOptions = context.router
-  const router =
-    context.utils && context.utils.router ? context.utils.router : defaultRouter
 
   const onRouterRenderDefault = (el, s) => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    if (el.routes) router(url, el, {}, { initialRender: true })
+    if (el.routes) element.call('router', url, el, {}, { initialRender: true })
   }
 
   const hasRenderRouter = element.on && !isUndefined(element.on.renderRouter)
@@ -42,17 +39,16 @@ export const initRouter = (element, context) => {
 }
 
 let popStateFired
-export const popStateRouter = (element, context) => {
+export const onpopstateRouter = (element, context) => {
   if (popStateFired) return
   popStateFired = true
   const routerOptions = context.router || DEFAULT_ROUTING_OPTIONS
   if (!routerOptions.popState) return
-  const router =
-    context.utils && context.utils.router ? context.utils.router : defaultRouter
-  window.onpopstate = async event => {
+  window.onpopstate = async (event) => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    await router(
+    await el.call(
+      'router',
       url,
       element,
       {},
@@ -61,7 +57,7 @@ export const popStateRouter = (element, context) => {
   }
 }
 
-export const injectRouterInLinkComponent = routerOptions => {
+export const injectRouterInLinkComponent = (routerOptions) => {
   if (routerOptions && routerOptions.injectRouterInLinkComponent) {
     return deepMerge(Link, RouterLink)
   }

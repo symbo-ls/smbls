@@ -1,18 +1,20 @@
 module.exports = {
-  extends: ['standard', 'plugin:jest/recommended'],
-  plugins: ['jest'],
-  parser: '@babel/eslint-parser',
+  extends: ["standard", "plugin:jest/recommended"],
+  plugins: ["jest", "prettier"],
+  parser: "@babel/eslint-parser",
   requireConfigFile: false,
-  root: '',
+  root: "",
   env: {
     es6: true,
     browser: true,
     node: true,
-    jest: true
+    jest: true,
   },
-  overrides: [{
-    files: ['test/**/*.test.js'],
-    env: { jest: true },
-    plugins: ['jest']
-  }]
-}
+  overrides: [
+    {
+      files: ["test/**/*.test.js"],
+      env: { jest: true },
+      plugins: ["jest"],
+    },
+  ],
+};
