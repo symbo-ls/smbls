@@ -2,7 +2,7 @@
   "name": "@symbo.ls/scratch",
   "description": "Φ / CSS framework and methodology.",
   "author": "symbo.ls",
-  "version": "2.29.49",
+  "version": "2.29.50",
   "files": [
     "src",
     "dist"
@@ -25,9 +25,9 @@
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/utils": "^2.29.49",
-    "@symbo.ls/utils": "^2.29.49",
+    "@domql/utils": "^2.29.50",
+    "@symbo.ls/utils": "^2.29.50",
     "color-contrast-checker": "^1.5.0"
   },
-  "gitHead": "ebfe2d43195e0283db9fd66131d860751c093711"
+  "gitHead": "0ac401042c1518bd435e8c61b2407d3f00b86264"
 }

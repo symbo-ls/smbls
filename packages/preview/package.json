@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/preview",
-  "version": "2.29.49",
+  "version": "2.29.50",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "ebfe2d43195e0283db9fd66131d860751c093711",
+  "gitHead": "0ac401042c1518bd435e8c61b2407d3f00b86264",
   "source": "src/index.js"
 }
