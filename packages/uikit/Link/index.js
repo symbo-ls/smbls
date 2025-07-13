@@ -1,7 +1,5 @@
 'use strict'
 
-import { router as defaultRouter } from '@domql/router'
-
 export const Link = {
   extend: 'Focusable',
   tag: 'a',
