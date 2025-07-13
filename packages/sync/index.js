@@ -64,8 +64,13 @@ const applyOpsToCtx = (ctx, changes) => {
 
 const fetchServiceToken = async () => {
   try {
-    const urlBase = isLocalhost ? 'http://localhost:8080' : 'https://api.symbols.app'
-    const res = await window.fetch(`${urlBase}/service-token`, { method: 'GET' })
+    // const urlBase = isLocalhost
+    //   ? 'http://localhost:8080'
+    //   : 'https://api.symbols.app'
+    const urlBase = 'https://api.symbols.app'
+    const res = await window.fetch(`${urlBase}/service-token`, {
+      method: 'GET'
+    })
 
     // Attempt to parse JSON first – recent versions return `{ token: "..." }`
     // Fall back to treating the response as raw text for backward-compatibility.
@@ -87,53 +92,67 @@ const fetchServiceToken = async () => {
   }
 }
 
-const onSnapshot = (el, s, ctx) => (payload = {}) => {
-  const { data, schema } = payload
-  if (!data) return
+const onSnapshot =
+  (el, s, ctx) =>
+  (payload = {}) => {
+    let { data, schema } = payload
+    if (!data) return
+    data = el.call('deepDestringify', data, Array.isArray(data) ? [] : {})
 
-  // Overwrite high-level objects shallowly so references are preserved
-  Object.entries(data).forEach(([key, val]) => {
-    if (ctx[key] && typeof ctx[key] === 'object') {
-      overwriteShallow(ctx[key], val)
-    } else {
-      ctx[key] = val
-    }
-  })
+    // Overwrite high-level objects shallowly so references are preserved
+    Object.entries(data).forEach(([key, val]) => {
+      if (ctx[key] && typeof ctx[key] === 'object') {
+        overwriteShallow(ctx[key], val)
+      } else {
+        ctx[key] = val
+      }
+    })
 
-  // Optionally make schema available on ctx
-  if (schema) ctx.schema = schema
+    // Optionally make schema available on ctx
+    if (schema) ctx.schema = schema
 
-  // Trigger routing so UI reflects latest data
-  const { pathname, search, hash } = ctx.window.location
-  ;(ctx.utils?.router || router)(pathname + search + hash, el, {})
-}
-
-const onOps = (el, s, ctx) => (payload = {}) => {
-  console.log('onOps', payload)
-  const { changes } = payload
-  if (!changes || !Array.isArray(changes) || !changes.length) return
-
-  const changed = applyOpsToCtx(ctx, changes)
-
-  // React to specific top-level changes
-  if (changed.has('state')) {
-    const route = ctx.state?.route
-    if (route) {
-      ;(ctx.utils?.router || router)(route.replace('/state', '') || '/', el, {})
-    } else {
-      s.update(ctx.state)
-    }
-  }
-
-  if (['pages', 'components', 'snippets', 'functions'].some(k => changed.has(k))) {
+    // Trigger routing so UI reflects latest data
     const { pathname, search, hash } = ctx.window.location
     ;(ctx.utils?.router || router)(pathname + search + hash, el, {})
   }
 
-  if (changed.has('designSystem')) {
-    init(ctx.designSystem)
+const onOps =
+  (el, s, ctx) =>
+  (payload = {}) => {
+    let { changes } = payload
+    if (!changes || !Array.isArray(changes) || !changes.length) return
+
+    changes = el.call(
+      'deepDestringify',
+      changes,
+      Array.isArray(changes) ? [] : {}
+    )
+
+    const changed = applyOpsToCtx(ctx, changes)
+
+    // React to specific top-level changes
+    if (changed.has('state')) {
+      const route = ctx.state?.route
+      if (route) {
+        el.call('router', route.replace('/state', '') || '/')
+      } else {
+        s.update(ctx.state)
+      }
+    }
+
+    if (
+      ['pages', 'components', 'snippets', 'functions'].some((k) =>
+        changed.has(k)
+      )
+    ) {
+      const { pathname, search, hash } = ctx.window.location
+      el.call('router', pathname + search + hash)
+    }
+
+    if (changed.has('designSystem')) {
+      init(ctx.designSystem)
+    }
   }
-}
 
 export const connectToSocket = async (el, s, ctx) => {
   const token = await fetchServiceToken()
@@ -144,11 +163,16 @@ export const connectToSocket = async (el, s, ctx) => {
 
   const projectKey = ctx.key
   if (!projectKey) {
-    console.warn('[sync] ctx.key missing – cannot establish collaborative connection')
+    console.warn(
+      '[sync] ctx.key missing – cannot establish collaborative connection'
+    )
     return null
   }
 
-  const socketBaseUrl = isLocalhost ? 'http://localhost:8080' : 'https://api.symbols.app'
+  const socketBaseUrl = 'https://api.symbols.app'
+  // const socketBaseUrl = isLocalhost
+  //   ? 'http://localhost:8080'
+  //   : 'https://api.symbols.app'
 
   const socket = io(socketBaseUrl, {
     path: '/collab-socket',
@@ -178,7 +202,8 @@ export const connectToSocket = async (el, s, ctx) => {
   })
 
   socket.on('disconnect', (reason) => {
-    if (ctx.editor?.verbose) console.info('[sync] Disconnected from collab socket', reason)
+    if (ctx.editor?.verbose)
+      console.info('[sync] Disconnected from collab socket', reason)
   })
 
   return socket
