@@ -3,11 +3,11 @@
 import { Flex } from '@symbo.ls/atoms'
 import { Dialog } from '@symbo.ls/dialog'
 
-export * from './days'
-export * from './weekdays'
-export * from './months'
-export * from './years'
-export * from './grid'
+export * from './days.js'
+export * from './weekdays.js'
+export * from './months.js'
+export * from './years.js'
+export * from './grid.js'
 
 export const DatePicker = {
   extend: [Dialog, Flex],
