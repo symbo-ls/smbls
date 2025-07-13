@@ -1,5 +1,3 @@
-'use strict'
-
 import { router } from '@domql/router'
 import { init } from '@symbo.ls/init'
 import { io } from 'socket.io-client'
@@ -8,41 +6,54 @@ import { connectedToSymbols, Notifications } from './SyncNotifications'
 import { Inspect } from './Inspect'
 export { Inspect, Notifications }
 
-const isLocalhost =
-  window && window.location && window.location.host.includes('local')
+const isLocal = process.env.NODE_ENV === 'local'
 
 // ---------------------------------------------
 // Utility helpers to apply ops
 
 const deletePath = (obj, path) => {
-  if (!obj || !Array.isArray(path)) return
+  if (!obj || !Array.isArray(path)) {
+    return
+  }
   path.reduce((acc, v, i, arr) => {
     if (acc && v in acc) {
-      if (i !== arr.length - 1) return acc[v]
+      if (i !== arr.length - 1) {
+        return acc[v]
+      }
       delete acc[v]
     }
-    return undefined
+    return void 0
   }, obj)
 }
 
 const setPath = (obj, path, value, createNestedObjects = false) => {
-  if (!obj || !Array.isArray(path)) return
+  if (!obj || !Array.isArray(path)) {
+    return
+  }
   path.reduce((acc, v, i, arr) => {
-    if (!acc) return undefined
+    if (!acc) {
+      return void 0
+    }
     if (i !== arr.length - 1) {
-      if (!acc[v] && createNestedObjects) acc[v] = {}
+      if (!acc[v] && createNestedObjects) {
+        acc[v] = {}
+      }
       return acc[v]
     }
     acc[v] = value
-    return undefined
+    return void 0
   }, obj)
 }
 
 const applyOpsToCtx = (ctx, changes) => {
   const topLevelChanged = new Set()
-  if (!Array.isArray(changes)) return topLevelChanged
+  if (!Array.isArray(changes)) {
+    return topLevelChanged
+  }
   for (const [action, path, change] of changes) {
-    if (!Array.isArray(path) || !path.length) continue
+    if (!Array.isArray(path) || !path.length) {
+      continue
+    }
     topLevelChanged.add(path[0])
     switch (action) {
       case 'delete':
@@ -64,10 +75,9 @@ const applyOpsToCtx = (ctx, changes) => {
 
 const fetchServiceToken = async () => {
   try {
-    // const urlBase = isLocalhost
-    //   ? 'http://localhost:8080'
-    //   : 'https://api.symbols.app'
-    const urlBase = 'https://api.symbols.app'
+    const urlBase = isLocal
+      ? 'http://localhost:8080'
+      : 'https://api.symbols.app'
     const res = await window.fetch(`${urlBase}/service-token`, {
       method: 'GET'
     })
@@ -77,7 +87,9 @@ const fetchServiceToken = async () => {
     let txt
     try {
       const json = await res.clone().json()
-      if (json && typeof json.token === 'string') return json.token.trim()
+      if (json && typeof json.token === 'string') {
+        return json.token.trim()
+      }
       // If json parsing succeeds but no token field, fall back to text below.
       txt = await res.text()
     } catch {
@@ -85,18 +97,20 @@ const fetchServiceToken = async () => {
       txt = await res.text()
     }
 
-    return (txt || '').replace(/\s+/g, '') || undefined
+    return (txt || '').replace(/\s+/gu, '') || void 0
   } catch (e) {
     console.error('[sync] Failed to fetch service-token', e)
-    return undefined
   }
 }
 
 const onSnapshot =
   (el, s, ctx) =>
   (payload = {}) => {
-    let { data, schema } = payload
-    if (!data) return
+    let { data } = payload
+    const { schema } = payload
+    if (!data) {
+      return
+    }
     data = el.call('deepDestringify', data, Array.isArray(data) ? [] : {})
 
     // Overwrite high-level objects shallowly so references are preserved
@@ -109,7 +123,9 @@ const onSnapshot =
     })
 
     // Optionally make schema available on ctx
-    if (schema) ctx.schema = schema
+    if (schema) {
+      ctx.schema = schema
+    }
 
     // Trigger routing so UI reflects latest data
     const { pathname, search, hash } = ctx.window.location
@@ -120,7 +136,9 @@ const onOps =
   (el, s, ctx) =>
   (payload = {}) => {
     let { changes } = payload
-    if (!changes || !Array.isArray(changes) || !changes.length) return
+    if (!changes || !Array.isArray(changes) || !changes.length) {
+      return
+    }
 
     changes = el.call(
       'deepDestringify',
@@ -169,10 +187,9 @@ export const connectToSocket = async (el, s, ctx) => {
     return null
   }
 
-  const socketBaseUrl = 'https://api.symbols.app'
-  // const socketBaseUrl = isLocalhost
-  //   ? 'http://localhost:8080'
-  //   : 'https://api.symbols.app'
+  const socketBaseUrl = isLocal
+    ? 'http://localhost:8080'
+    : 'https://api.symbols.app'
 
   const socket = io(socketBaseUrl, {
     path: '/collab-socket',
@@ -189,7 +206,9 @@ export const connectToSocket = async (el, s, ctx) => {
   })
 
   socket.on('connect', () => {
-    if (ctx.editor?.verbose) console.info('[sync] Connected to collab socket')
+    if (ctx.editor?.verbose) {
+      console.info('[sync] Connected to collab socket')
+    }
   })
 
   socket.on('snapshot', onSnapshot(el, s, ctx))
@@ -202,8 +221,9 @@ export const connectToSocket = async (el, s, ctx) => {
   })
 
   socket.on('disconnect', (reason) => {
-    if (ctx.editor?.verbose)
+    if (ctx.editor?.verbose) {
       console.info('[sync] Disconnected from collab socket', reason)
+    }
   })
 
   return socket
