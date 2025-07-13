@@ -1,6 +1,6 @@
 'use strict'
 
-import { getSystemGlobalTheme } from './Box'
+import { getSystemGlobalTheme } from './Box.js'
 
 export const Picture = {
   deps: { getSystemGlobalTheme },
@@ -9,7 +9,7 @@ export const Picture = {
   childExtend: {
     tag: 'source',
     attr: {
-      media: element => {
+      media: (element) => {
         const { props, key, context, deps } = element
         const { MEDIA } = context.designSystem
         const globalTheme = deps.getSystemGlobalTheme(element)

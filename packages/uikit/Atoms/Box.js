@@ -16,8 +16,8 @@ import {
   addAdditionalExtend
 } from '@domql/utils'
 
-import { depth, SHAPES } from './Shape'
-import { beforeClassAssign } from './Media'
+import { depth, SHAPES } from './Shape.js'
+import { beforeClassAssign } from './Media.js'
 
 import {
   getTimingFunction,
@@ -68,7 +68,7 @@ const applyAnimationProps = (animation, element) => {
 
 const PropsCSS = {
   class: {
-    style: el => el.props && el.props.style
+    style: (el) => el.props && el.props.style
   }
 }
 
@@ -102,16 +102,17 @@ export const Box = {
   },
 
   attr: {
-    id: el => el.call('isString', el.props.id) && el.props.id,
-    title: el => el.call('isString', el.props.title) && el.props.title,
-    contentEditable: el => el.props.contentEditable || el.props.contenteditable,
-    dir: el => el.props.dir,
-    draggable: el => el.props.draggable,
-    hidden: el => el.props.hidden,
-    lang: el => el.props.lang,
-    spellcheck: el => el.props.spellcheck,
-    tabindex: el => el.props.tabindex,
-    translate: el => el.props.translate,
+    id: (el) => el.call('isString', el.props.id) && el.props.id,
+    title: (el) => el.call('isString', el.props.title) && el.props.title,
+    contentEditable: (el) =>
+      el.props.contentEditable || el.props.contenteditable,
+    dir: (el) => el.props.dir,
+    draggable: (el) => el.props.draggable,
+    hidden: (el) => el.props.hidden,
+    lang: (el) => el.props.lang,
+    spellcheck: (el) => el.props.spellcheck,
+    tabindex: (el) => el.props.tabindex,
+    translate: (el) => el.props.translate,
     'data-testid': (el, s) =>
       (s.root.ENV === 'testing' || s.root.ENV === 'staging') &&
       ((el.__ref.path.length > 5
@@ -138,7 +139,7 @@ export const Box = {
           if (children.$$typeof) return el.call('renderReact', children, el)
           if (childrenAsDefault && childrenAsDefault !== 'state') {
             param = deepClone(children)
-            param = Object.keys(param).map(v => {
+            param = Object.keys(param).map((v) => {
               const val = param[v]
               return addAdditionalExtend(v, val)
             })
@@ -146,13 +147,13 @@ export const Box = {
         } else if (isArray(children)) {
           param = deepClone(children)
           if (childrenAsDefault && childrenAsDefault !== 'element') {
-            param = param.map(v => ({
+            param = param.map((v) => ({
               ...(childExtends && { extend: childExtends }),
               [childrenAsDefault]: isObjectLike(v)
                 ? v
                 : childrenAsDefault === 'state'
-                ? { value: v }
-                : { text: v }
+                  ? { value: v }
+                  : { text: v }
             }))
           }
         } else if (isString(children) || isNumber(children)) {
@@ -164,9 +165,9 @@ export const Box = {
 
       if (!param) return
 
-      const filterReact = param.filter(v => !v.$$typeof)
+      const filterReact = param.filter((v) => !v.$$typeof)
       if (filterReact.length !== param.length) {
-        const extractedReactComponents = param.filter(v => v.$$typeof)
+        const extractedReactComponents = param.filter((v) => v.$$typeof)
         el.call('renderReact', extractedReactComponents, el)
       }
       param = filterReact
@@ -223,7 +224,7 @@ export const Box = {
 
       const data = (
         isArray(param) ? param : isObject(param) ? Object.values(param) : []
-      ).map(item => (!isObjectLike(item) ? { props: { value: item } } : item))
+      ).map((item) => (!isObjectLike(item) ? { props: { value: item } } : item))
 
       if (data.length) {
         const t = setTimeout(() => {
@@ -683,7 +684,7 @@ export const Box = {
         return {
           inset: inset
             .split(' ')
-            .map(v => deps.getSpacingByKey(v, 'k').k)
+            .map((v) => deps.getSpacingByKey(v, 'k').k)
             .join(' ')
         }
       },
@@ -698,7 +699,7 @@ export const Box = {
         if (typeof verticalInset !== 'string') return
         const vi = verticalInset
           .split(' ')
-          .map(v => deps.getSpacingByKey(v, 'k').k)
+          .map((v) => deps.getSpacingByKey(v, 'k').k)
         return {
           top: vi[0],
           bottom: vi[1] || vi[0]
@@ -710,7 +711,7 @@ export const Box = {
         if (typeof horizontalInset !== 'string') return
         const vi = horizontalInset
           .split(' ')
-          .map(v => deps.getSpacingByKey(v, 'k').k)
+          .map((v) => deps.getSpacingByKey(v, 'k').k)
         return {
           left: vi[0],
           right: vi[1] || vi[0]
@@ -824,7 +825,7 @@ export const Box = {
       depth: ({ props, deps }) =>
         !isUndefined(props.depth) && deps.depth[props.depth],
 
-      theme: element => {
+      theme: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.theme) return
@@ -843,7 +844,7 @@ export const Box = {
         )
       },
 
-      color: element => {
+      color: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.color) return
@@ -852,7 +853,7 @@ export const Box = {
         }
       },
 
-      background: element => {
+      background: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.background) return
@@ -861,7 +862,7 @@ export const Box = {
         }
       },
 
-      backgroundColor: element => {
+      backgroundColor: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.backgroundColor) return
@@ -922,7 +923,7 @@ export const Box = {
           border: deps.transformBorder(props.border)
         },
 
-      borderColor: element => {
+      borderColor: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.borderColor) return
@@ -952,7 +953,7 @@ export const Box = {
           borderBottom: deps.transformBorder(props.borderBottom)
         },
 
-      shadow: element => {
+      shadow: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.backgroundImage) return
@@ -1027,7 +1028,7 @@ export const Box = {
 
     // animation
     ...{
-      animation: el =>
+      animation: (el) =>
         el.props.animation && {
           animationName: el.deps.applyAnimationProps(el.props.animation, el),
           animationDuration: el.deps.getTimingByKey(
@@ -1043,7 +1044,7 @@ export const Box = {
           animationPlayState: el.props.animationPlayState,
           animationDirection: el.props.animationDirection
         },
-      animationName: el =>
+      animationName: (el) =>
         el.props.animationName && {
           animationName: el.deps.applyAnimationProps(el.props.animationName, el)
         },

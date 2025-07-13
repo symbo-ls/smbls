@@ -1,7 +1,7 @@
 'use strict'
 
 import { getActiveConfig, getColor } from '@symbo.ls/scratch' // eslint-disable-line no-unused-vars
-import { Box } from './Box'
+import { Box } from './Box.js'
 
 const CONFIG = getActiveConfig()
 

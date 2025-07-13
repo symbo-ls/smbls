@@ -1,7 +1,7 @@
 'use strict'
 
 import { merge, isArray, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { getSystemGlobalTheme } from './Box'
+import { getSystemGlobalTheme } from './Box.js'
 
 export const keySetters = {
   '@': (key, props, result, element, isSubtree) =>
