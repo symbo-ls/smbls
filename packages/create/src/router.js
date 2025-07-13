@@ -47,7 +47,7 @@ export const onpopstateRouter = (element, context) => {
   window.onpopstate = async (event) => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    await el.call(
+    await element.call(
       'router',
       url,
       element,
