@@ -223,11 +223,13 @@ export const generateSequencePosition = (sequenceProps, position = 0) => {
 export const getSequenceValue = (value = 'A', sequenceProps) => {
   const CONFIG = getActiveConfig()
   const { UNIT } = CONFIG
+
   const { sequence, unit = UNIT.default, useVariable } = sequenceProps
 
   if (isString(value) && value.slice(0, 2) === '--') return `var(${value})`
 
   const prefix = `--${toDashCase(sequenceProps.type.replace('.', '-'))}-`
+
   const startsWithDashOrLetterRegex = /^-?[a-zA-Z]/i
   const startsWithDashOrLetter = startsWithDashOrLetterRegex.test(value)
 

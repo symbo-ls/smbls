@@ -1,7 +1,7 @@
 import { router } from '@domql/router'
 import { init } from '@symbo.ls/init'
 import { io } from 'socket.io-client'
-import { window, overwriteShallow } from '@domql/utils'
+import { window, overwriteShallow, overwriteDeep } from '@domql/utils'
 import { connectedToSymbols, Notifications } from './SyncNotifications'
 import { Inspect } from './Inspect'
 export { Inspect, Notifications }
@@ -111,12 +111,17 @@ const onSnapshot =
     if (!data) {
       return
     }
+
     data = el.call('deepDestringify', data, Array.isArray(data) ? [] : {})
 
     // Overwrite high-level objects shallowly so references are preserved
     Object.entries(data).forEach(([key, val]) => {
       if (ctx[key] && typeof ctx[key] === 'object') {
-        overwriteShallow(ctx[key], val)
+        if (key === 'designSystem') {
+          init(val)
+        } else {
+          overwriteShallow(ctx[key], val)
+        }
       } else {
         ctx[key] = val
       }
@@ -129,7 +134,13 @@ const onSnapshot =
 
     // Trigger routing so UI reflects latest data
     const { pathname, search, hash } = ctx.window.location
-    ;(ctx.utils?.router || router)(pathname + search + hash, el, {})
+    el.call(
+      'router',
+      pathname + search + hash,
+      el.__ref.root,
+      {},
+      { scrollToTop: false }
+    )
   }
 
 const onOps =
@@ -152,7 +163,13 @@ const onOps =
     if (changed.has('state')) {
       const route = ctx.state?.route
       if (route) {
-        el.call('router', route.replace('/state', '') || '/')
+        el.call(
+          'router',
+          route.replace('/state', '') || '/',
+          el.__ref.root,
+          {},
+          { scrollToTop: false }
+        )
       } else {
         s.update(ctx.state)
       }
@@ -164,7 +181,13 @@ const onOps =
       )
     ) {
       const { pathname, search, hash } = ctx.window.location
-      el.call('router', pathname + search + hash)
+      el.call(
+        'router',
+        pathname + search + hash,
+        el.__ref.root,
+        {},
+        { scrollToTop: false }
+      )
     }
 
     if (changed.has('designSystem')) {
