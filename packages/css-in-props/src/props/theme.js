@@ -11,11 +11,13 @@ import {
   transformSizeRatio
 } from '@symbo.ls/scratch'
 
-import { isString } from '@domql/utils'
+import { isDefined, isString } from '@domql/utils'
 
 export const getSystemGlobalTheme = ({ context, state }) => {
   const rootState = state && state.root
-  return rootState && rootState.globalTheme ? rootState.globalTheme : context.designSystem && context.designSystem.globalTheme
+  return rootState && rootState.globalTheme
+    ? rootState.globalTheme
+    : context.designSystem && context.designSystem.globalTheme
 }
 
 export const THEME_PROPS = {
@@ -29,7 +31,8 @@ export const THEME_PROPS = {
       const themeAppliedInVal = props.theme.split(' ')
       themeAppliedInVal.splice(1, 0, globalThemeForced)
       return getMediaTheme(themeAppliedInVal)
-    } else if (props.theme.includes('@{globalTheme}')) props.theme.replace('@{globalTheme}', globalThemeForced)
+    } else if (props.theme.includes('@{globalTheme}'))
+      props.theme.replace('@{globalTheme}', globalThemeForced)
     return getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
   },
 
@@ -67,9 +70,9 @@ export const THEME_PROPS = {
     if (!val) return
     const file = ctx.files && ctx.files[val]
     if (file && file.content) val = file.content.src
-    return ({
+    return {
       backgroundImage: transformBackgroundImage(val, globalTheme)
-    })
+    }
   },
 
   backgroundSize: ({ props }) => ({
@@ -88,15 +91,17 @@ export const THEME_PROPS = {
     WebkitTextStroke: transformTextStroke(props.textStroke)
   }),
 
-  outline: ({ props }) => ({
-    outline: transformBorder(props.outline)
-  }),
+  outline: ({ props }) =>
+    isDefined(props.outline) && {
+      outline: transformBorder(props.outline)
+    },
 
   outlineOffset: ({ props }) => transformSizeRatio('outlineOffset', props),
 
-  border: ({ props }) => ({
-    border: transformBorder(props.border)
-  }),
+  border: ({ props }) =>
+    isDefined(props.border) && {
+      border: transformBorder(props.border)
+    },
 
   borderColor: (element) => {
     const { props } = element
@@ -123,9 +128,9 @@ export const THEME_PROPS = {
     const { props } = element
     const globalTheme = getSystemGlobalTheme(element)
     if (!props.backgroundImage) return
-    return ({
+    return {
       boxShadow: transformShadow(props.shadow, globalTheme)
-    })
+    }
   },
 
   boxShadow: (element, state, context) => {
@@ -140,7 +145,10 @@ export const THEME_PROPS = {
   },
 
   textShadow: ({ props, context }) => ({
-    textShadow: transformBoxShadow(props.textShadow, context.designSystem.globalTheme)
+    textShadow: transformBoxShadow(
+      props.textShadow,
+      context.designSystem.globalTheme
+    )
   }),
 
   columnRule: ({ props }) => ({

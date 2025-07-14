@@ -919,7 +919,7 @@ export const Box = {
         deps.transformSizeRatio('outlineOffset', props),
 
       border: ({ props, deps }) =>
-        !isUndefined(props.border) && {
+        (isString(props.border) || isNumber(props.border)) && {
           border: deps.transformBorder(props.border)
         },
 
