@@ -4,7 +4,7 @@ import { exec, isUndefined } from '@domql/utils'
 import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
 const props = {
-  fontSize: el => {
+  fontSize: (el) => {
     const { props, deps } = el
     return props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null
   },
@@ -20,7 +20,7 @@ const props = {
 export const Text = {
   deps: { exec, getFontSizeByKey, getFontFamily },
 
-  text: el => {
+  text: (el) => {
     const { key, props, state, deps } = el
     if (props.text === true)
       return (state && state[key]) || (props && props[key])
@@ -78,6 +78,7 @@ export const Strong = {
   tag: 'strong',
   props: { fontWeight: '700' }
 }
+export const U = { tag: 'u' }
 export const Underline = { tag: 'u' }
 export const Italic = { tag: 'i' }
 
