@@ -104,9 +104,9 @@ export const Box = {
   attr: {
     id: (el) => el.call('isString', el.props.id) && el.props.id,
     title: (el) => el.call('isString', el.props.title) && el.props.title,
-    contentEditable: async (el) => {
+    contentEditable: (el) => {
       const isEditable = el.props.contentEditable || el.props.contenteditable
-      if (isEditable) return await el.call('exec', isEditable, el, state)
+      if (isEditable) return el.call('exec', isEditable, el, state)
     },
     dir: (el) => el.props.dir,
     draggable: (el) => el.props.draggable,
