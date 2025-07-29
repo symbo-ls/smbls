@@ -13,6 +13,7 @@ export const Select = {
     childProps: {
       tag: 'option',
       attr: {
+        text: ({ props }) => props.text || props.value,
         value: ({ props }) => props.value,
         selected: ({ props }) => props.selected,
         disabled: ({ props }) => props.disabled
