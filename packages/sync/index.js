@@ -196,30 +196,6 @@ const onOps =
   }
 
 export const connectToSocket = async (el, s, ctx) => {
-  // Skip socket connection for published or versioned views, or for non-symbols domains
-  try {
-    const loc = ctx?.window?.location || window.location
-    const search = loc?.search || ''
-    const hostname = loc?.hostname || ''
-    const params = new URLSearchParams(search)
-
-    const hasPublish = params.has('publish')
-    const hasVersion = params.has('version')
-    const isSymbolsDomain =
-      typeof hostname === 'string' && hostname.endsWith('symbo.ls')
-
-    if (hasPublish || hasVersion || !isSymbolsDomain) {
-      if (ctx?.editor?.verbose) {
-        console.info(
-          '[sync] Skipping socket (publish/version query or non-symbols domain)'
-        )
-      }
-      return null
-    }
-  } catch {
-    // If URL parsing fails, proceed as normal
-  }
-
   const token = await fetchServiceToken()
   if (!token) {
     console.warn('[sync] No service token – live collaboration disabled')
