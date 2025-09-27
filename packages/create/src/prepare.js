@@ -16,7 +16,7 @@ import * as routerUtils from '@domql/router'
 
 // @preserve-env
 
-export const prepareWindow = context => {
+export const prepareWindow = (context) => {
   if (typeof window === 'undefined') window = globalThis || {} // eslint-disable-line
   if (typeof document === 'undefined') {
     if (!window.document) window.document = globalThis.document || { body: {} }
@@ -27,7 +27,7 @@ export const prepareWindow = context => {
   return context.window
 }
 
-function onlyDotsAndNumbers (str) {
+function onlyDotsAndNumbers(str) {
   return /^[0-9.]+$/.test(str) && str !== ''
 }
 
@@ -45,13 +45,13 @@ export const UIkitWithPrefix = () => {
   return newObj
 }
 
-export const prepareComponents = context => {
+export const prepareComponents = (context) => {
   return context.components
     ? { ...UIkitWithPrefix(), ...context.components }
     : UIkitWithPrefix()
 }
 
-export const prepareUtils = context => {
+export const prepareUtils = (context) => {
   return {
     ...utils,
     ...routerUtils,
@@ -62,7 +62,7 @@ export const prepareUtils = context => {
   }
 }
 
-export const prepareMethods = context => {
+export const prepareMethods = (context) => {
   return {
     ...(context.methods || {}),
     require: context.utils.require,
@@ -89,7 +89,7 @@ export const prepareDependencies = async ({
     const random = isDevelopment() && preventCaching ? `?${Math.random()}` : ''
     let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
 
-    if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
+    if (dependency.split('/').length > 1 || !onlyDotsAndNumbers(version)) {
       url = `https://pkg.symbo.ls/${dependency}${random}`
     }
 
@@ -108,14 +108,14 @@ export const prepareDependencies = async ({
 export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
 
-  const initRequire = async ctx => async key => {
+  const initRequire = async (ctx) => async (key) => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
     if (typeof pkg === 'function') return pkg()
     return pkg
   }
 
-  const initRequireOnDemand = async ctx => async key => {
+  const initRequireOnDemand = async (ctx) => async (key) => {
     const { dependenciesOnDemand } = ctx
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window
@@ -134,7 +134,7 @@ export const prepareRequire = async (packages, ctx) => {
           window: windowOpts,
           document: documentOpts
         })
-        windowOpts.packages[key] = 'loadedOnDeman'
+        windowOpts.packages[key] = 'loadedOnDemand'
       }
     }
     return await windowOpts.require(key)
@@ -175,7 +175,7 @@ export const preparePages = (app, context) => {
   }
   const pages = app.routes || context.pages || {}
   return Object.keys(pages)
-    .filter(v => !v.startsWith('/'))
+    .filter((v) => !v.startsWith('/'))
     .reduce((pages, v) => {
       const index = v === 'index' ? '' : v
       pages['/' + index] = pages[v]

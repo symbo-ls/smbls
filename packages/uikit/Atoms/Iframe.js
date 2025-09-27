@@ -17,11 +17,14 @@ export const Iframe = {
         src = el.call('replaceLiteralsWithObjectFields', src)
       }
 
-      let isUrl
-      try { isUrl = new URL(src) } catch (e) {
-      console.error(e)
-      }
-      if (isUrl) return src
+      // let isUrl
+      // try {
+      //   isUrl = new URL(src)
+      // } catch (e) {
+      //   el.warn(e)
+      // }
+      // if (isUrl)
+      return src
     },
     srcdoc: ({ props }) => props.srcdoc,
     sandbox: ({ props }) => props.sandbox,
