@@ -28,8 +28,8 @@ export const Link = {
 }
 
 export const RouterLink = {
-  on: {
-    click: (event, el, s) => {
+  props: {
+    onClick: (event, el, s) => {
       const { props, context: ctx } = el
       const { href: h, scrollToTop, stopPropagation } = props
       let href = el.call('exec', h, el)
