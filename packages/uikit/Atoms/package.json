@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/atoms",
-  "version": "2.31.16",
+  "version": "2.31.17",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "f332a8f66685880e9a6c90605a54aebcb7365bd0",
+  "gitHead": "7fe64ec7509eb97acbab39e78caa87c834e2e85c",
   "dependencies": {
-    "@domql/state": "^2.31.16",
-    "@domql/utils": "^2.31.16",
-    "@symbo.ls/emotion": "^2.31.16",
-    "@symbo.ls/scratch": "^2.31.16"
+    "@domql/state": "^2.31.17",
+    "@domql/utils": "^2.31.17",
+    "@symbo.ls/emotion": "^2.31.17",
+    "@symbo.ls/scratch": "^2.31.17"
   },
   "source": "src/index.js",
   "devDependencies": {
