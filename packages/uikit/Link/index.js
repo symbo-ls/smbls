@@ -27,6 +27,10 @@ export const Link = {
   }
 }
 
+export const A = {
+  extend: 'Link'
+}
+
 export const RouterLink = {
   props: {
     onClick: (event, el, s) => {
