@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/tooltip",
-  "version": "2.31.25",
+  "version": "2.31.26",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "b80aa4c1d31877d2f759404129e750516af33d7b",
+  "gitHead": "126577d65a218af7e2f66b0a3f9691942ee8b9d2",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.31.25"
+    "@symbo.ls/atoms": "^2.31.26"
   },
   "source": "src/index.js"
 }
