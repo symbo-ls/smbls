@@ -36,13 +36,13 @@ const CDN_PROVIDERS = {
     url: 'https://cdn.skypack.dev',
     formatUrl: (pkg, version) => `${CDN_PROVIDERS.skypack.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
   },
-  symbo: {
+  symbols: {
     url: 'https://pkg.symbo.ls',
     formatUrl: (pkg, version) => {
       if (pkg.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
-        return `${CDN_PROVIDERS.symbo.url}/${pkg}`
+        return `${CDN_PROVIDERS.symbols.url}/${pkg}`
       }
-      return `${CDN_PROVIDERS.symbo.url}/${pkg}/${version}.js`
+      return `${CDN_PROVIDERS.symbols.url}/${pkg}/${version}.js`
     }
   }
 }
@@ -118,11 +118,11 @@ export const prepareDependencies = async ({
     } catch (e) {
       console.error(`Failed to load ${dependency} from ${cdnProvider}:`, e)
 
-      if (cdnProvider !== 'symbo') {
+      if (cdnProvider !== 'symbols') {
         try {
-          const fallbackUrl = getCDNUrl(dependency, version, 'symbo') + random
+          const fallbackUrl = getCDNUrl(dependency, version, 'symbols') + random
           await utils.loadRemoteScript(fallbackUrl, { document })
-          console.log(`Successfully loaded ${dependency} from fallback (symbo.ls)`)
+          console.log(`Successfully loaded ${dependency} from fallback (symbols.ls)`)
         } catch (fallbackError) {
           console.error(`Failed to load ${dependency} from fallback:`, fallbackError)
         }
@@ -162,8 +162,8 @@ export const prepareRequire = async (packages, ctx) => {
         } catch (e) {
           console.error(`Failed to load ${key} from ${provider}:`, e)
           // Fallback to symbo if not already using it
-          if (provider !== 'symbo') {
-            const fallbackUrl = getCDNUrl(key, version, 'symbo') + random
+          if (provider !== 'symbols') {
+            const fallbackUrl = getCDNUrl(key, version, 'symbols') + random
             await ctx.utils.loadRemoteScript(fallbackUrl, {
               window: windowOpts,
               document: documentOpts
@@ -180,8 +180,8 @@ export const prepareRequire = async (packages, ctx) => {
         } catch (e) {
           console.error(`Failed to load ${key} from ${provider}:`, e)
           // Fallback to symbo if not already using it
-          if (provider !== 'symbo') {
-            const fallbackUrl = getCDNUrl(key, 'latest', 'symbo') + random
+          if (provider !== 'symbols') {
+            const fallbackUrl = getCDNUrl(key, 'latest', 'symbols') + random
             await ctx.utils.loadRemoteScript(fallbackUrl, {
               window: windowOpts,
               document: documentOpts
