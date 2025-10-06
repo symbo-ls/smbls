@@ -112,7 +112,11 @@ const onSnapshot =
       return
     }
 
-    data = el.call('deepDestringify', data, Array.isArray(data) ? [] : {})
+    data = el.call(
+      'deepDestringifyFunctions',
+      data,
+      Array.isArray(data) ? [] : {}
+    )
 
     // Overwrite high-level objects shallowly so references are preserved
     Object.entries(data).forEach(([key, val]) => {
@@ -152,7 +156,7 @@ const onOps =
     }
 
     changes = el.call(
-      'deepDestringify',
+      'deepDestringifyFunctions',
       changes,
       Array.isArray(changes) ? [] : {}
     )

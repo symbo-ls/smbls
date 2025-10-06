@@ -1,7 +1,7 @@
 'use strict'
 
 import * as utils from '@domql/utils'
-const { window, overwriteDeep, deepDestringify } = utils
+const { window, overwriteDeep, deepDestringifyFunctions } = utils
 
 const IS_DEVELOPMENT =
   window && window.location
@@ -22,7 +22,7 @@ export const fetchRemote = async (key, options = defaultOptions) => {
   const baseUrl = options.endpoint || SERVER_URL
   const route = options.serviceRoute
     ? utils.isArray(options.serviceRoute)
-      ? options.serviceRoute.map(v => v.toLowerCase() + '=true').join('&')
+      ? options.serviceRoute.map((v) => v.toLowerCase() + '=true').join('&')
       : options.serviceRoute
     : ''
 
@@ -51,12 +51,12 @@ export const fetchProject = async (key, options) => {
     const data = await fetchRemote(key, editor)
     const evalData =
       IS_DEVELOPMENT || options.isDevelopment
-        ? deepDestringify(data)
-        : deepDestringify(data.releases[0])
+        ? deepDestringifyFunctions(data)
+        : deepDestringifyFunctions(data.releases[0])
 
     if (editor.serviceRoute) {
       if (utils.isArray(editor.serviceRoute)) {
-        editor.serviceRoute.forEach(route => {
+        editor.serviceRoute.forEach((route) => {
           overwriteDeep(options[route], evalData[route.toLowerCase()])
         })
       } else {
@@ -73,7 +73,7 @@ export const fetchProject = async (key, options) => {
         'files',
         'packages',
         'functions'
-      ].forEach(key => {
+      ].forEach((key) => {
         overwriteDeep(options[key], evalData[key.toLowerCase()])
       })
     }
@@ -89,8 +89,8 @@ export const fetchProjectAsync = async (key, options, callback) => {
     const data = await fetchRemote(key, editor)
     const evalData =
       IS_DEVELOPMENT || options.isDevelopment
-        ? deepDestringify(data)
-        : deepDestringify(data.releases[0])
+        ? deepDestringifyFunctions(data)
+        : deepDestringifyFunctions(data.releases[0])
     callback(evalData)
   }
 }

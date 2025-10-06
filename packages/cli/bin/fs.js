@@ -9,7 +9,7 @@ import { createPatch } from 'diff'
 const { removeChars, toCamelCase, toTitleCase } =
   smblsUtils.default || smblsUtils
 const {
-  deepDestringify,
+  deepDestringifyFunctions,
   objectToString,
   joinArrays,
   isString,
@@ -180,7 +180,7 @@ export async function createFs(
     if (isString(value)) {
       stringifiedContent = `${validKey} = ${value}`
     } else {
-      const content = deepDestringify(value)
+      const content = deepDestringifyFunctions(value)
       // console.log('ON DEEPDESTR:')
       // console.log(content.components.Configuration)
       stringifiedContent = `${validKey} = ${objectToString(content)};`
@@ -203,7 +203,7 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
     }
 
     if (isString(data)) data = { default: data }
-    const content = deepDestringify(data)
+    const content = deepDestringifyFunctions(data)
     const stringifiedContent = `export default ${objectToString(content)};`
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
