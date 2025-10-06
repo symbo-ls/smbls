@@ -31,6 +31,27 @@ function onlyDotsAndNumbers (str) {
   return /^[0-9.]+$/.test(str) && str !== ''
 }
 
+const CDN_PROVIDERS = {
+  skypack: {
+    url: 'https://cdn.skypack.dev',
+    formatUrl: (pkg, version) => `${CDN_PROVIDERS.skypack.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
+  },
+  symbo: {
+    url: 'https://pkg.symbo.ls',
+    formatUrl: (pkg, version) => {
+      if (pkg.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
+        return `${CDN_PROVIDERS.symbo.url}/${pkg}`
+      }
+      return `${CDN_PROVIDERS.symbo.url}/${pkg}/${version}.js`
+    }
+  }
+}
+
+export const getCDNUrl = (packageName, version = 'latest', provider = 'skypack') => {
+  const cdnConfig = CDN_PROVIDERS[provider] || CDN_PROVIDERS.skypack
+  return cdnConfig.formatUrl(packageName, version)
+}
+
 export const UIkitWithPrefix = () => {
   const newObj = {}
   for (const key in uikit) {
@@ -75,7 +96,8 @@ export const prepareDependencies = async ({
   dependencies,
   dependenciesOnDemand,
   document,
-  preventCaching = false
+  preventCaching = false,
+  cdnProvider = 'skypack'
 }) => {
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null
@@ -87,18 +109,24 @@ export const prepareDependencies = async ({
     }
 
     const random = isDevelopment() && preventCaching ? `?${Math.random()}` : ''
-    let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
-
-    if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
-      url = `https://pkg.symbo.ls/${dependency}${random}`
-    }
+    const url = getCDNUrl(dependency, version, cdnProvider) + random
 
     try {
       if (cachedDeps[dependency]) return
       cachedDeps[dependency] = true
-      await utils.loadRemoteScript(url, { document })
+      await utils.loadRemoteScript(url, { document, type: "module" })
     } catch (e) {
-      console.error(`Failed to load ${dependency}:`, e)
+      console.error(`Failed to load ${dependency} from ${cdnProvider}:`, e)
+
+      if (cdnProvider !== 'symbo') {
+        try {
+          const fallbackUrl = getCDNUrl(dependency, version, 'symbo') + random
+          await utils.loadRemoteScript(fallbackUrl, { document })
+          console.log(`Successfully loaded ${dependency} from fallback (symbo.ls)`)
+        } catch (fallbackError) {
+          console.error(`Failed to load ${dependency} from fallback:`, fallbackError)
+        }
+      }
     }
   }
 
@@ -107,15 +135,16 @@ export const prepareDependencies = async ({
 
 export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
+  const defaultProvider = ctx.cdnProvider || 'skypack'
 
-  const initRequire = async ctx => async key => {
+  const initRequire = async ctx => async (key, provider) => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
     if (typeof pkg === 'function') return pkg()
     return pkg
   }
 
-  const initRequireOnDemand = async ctx => async key => {
+  const initRequireOnDemand = async ctx => async (key, provider = defaultProvider) => {
     const { dependenciesOnDemand } = ctx
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window
@@ -123,21 +152,46 @@ export const prepareRequire = async (packages, ctx) => {
       const random = isDevelopment() ? `?${Math.random()}` : ''
       if (dependenciesOnDemand && dependenciesOnDemand[key]) {
         const version = dependenciesOnDemand[key]
-        const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`
-        await ctx.utils.loadRemoteScript(url, {
-          window: windowOpts,
-          document: documentOpts
-        })
+        const url = getCDNUrl(key, version, provider) + random
+        try {
+          await ctx.utils.loadRemoteScript(url, {
+            window: windowOpts,
+            document: documentOpts,
+            
+          })
+        } catch (e) {
+          console.error(`Failed to load ${key} from ${provider}:`, e)
+          // Fallback to symbo if not already using it
+          if (provider !== 'symbo') {
+            const fallbackUrl = getCDNUrl(key, version, 'symbo') + random
+            await ctx.utils.loadRemoteScript(fallbackUrl, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          }
+        }
       } else {
-        const url = `https://pkg.symbo.ls/${key}${random}`
-        await ctx.utils.loadRemoteScript(url, {
-          window: windowOpts,
-          document: documentOpts
-        })
+        const url = getCDNUrl(key, 'latest', provider) + random
+        try {
+          await ctx.utils.loadRemoteScript(url, {
+            window: windowOpts,
+            document: documentOpts,
+          })
+        } catch (e) {
+          console.error(`Failed to load ${key} from ${provider}:`, e)
+          // Fallback to symbo if not already using it
+          if (provider !== 'symbo') {
+            const fallbackUrl = getCDNUrl(key, 'latest', 'symbo') + random
+            await ctx.utils.loadRemoteScript(fallbackUrl, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          }
+        }
         windowOpts.packages[key] = 'loadedOnDeman'
       }
     }
-    return await windowOpts.require(key)
+    return await windowOpts.require(key, provider)
   }
 
   if (windowOpts.packages) {
