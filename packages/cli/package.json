@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/cli",
-  "version": "2.31.26",
+  "version": "2.31.27",
   "description": "Fetch your Symbols configuration",
   "main": "bin/fetch.js",
   "author": "Symbols",
@@ -15,9 +15,9 @@
     "vpatch": "npm version patch && npm publish"
   },
   "dependencies": {
-    "@symbo.ls/fetch": "^2.31.26",
-    "@symbo.ls/init": "^2.31.26",
-    "@symbo.ls/socket": "^2.31.26",
+    "@symbo.ls/fetch": "^2.31.27",
+    "@symbo.ls/init": "^2.31.27",
+    "@symbo.ls/socket": "^2.31.27",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
     "diff": "^5.2.0",
@@ -26,5 +26,5 @@
     "node-fetch": "^3.3.2",
     "v8-compile-cache": "^2.4.0"
   },
-  "gitHead": "126577d65a218af7e2f66b0a3f9691942ee8b9d2"
+  "gitHead": "0edcd5aae5c16b6a53a7e9b6512bb2562e8eb8a1"
 }
