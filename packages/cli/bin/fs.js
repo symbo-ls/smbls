@@ -165,7 +165,7 @@ export async function createFs(
       childKey.includes('-') || childKey.includes('/')
         ? removeChars(toCamelCase(childKey))
         : childKey
-    const filePath = path.join(dirPath, `${childKey.replace('/', '-')}.js`)
+    const filePath = path.join(dirPath, `${childKey.replaceAll('/', '-')}.js`)
 
     if (!update && fs.existsSync(filePath)) {
       return
@@ -314,7 +314,7 @@ async function generateIndexjsFile(dirs, dirPath, key) {
               d.includes('-') || d.includes('/')
                 ? removeChars(toCamelCase(d))
                 : d
-            } } from './${d.replace('/', '-')}';`
+            } } from './${d.replaceAll('/', '-')}';`
         )
         .join('\n') +
       '\n' +
