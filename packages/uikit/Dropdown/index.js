@@ -17,7 +17,6 @@ export const DropdownList = {
     transition: 'B defaultBezier',
     transitionProperty: 'transform, opacity, visibility',
     children: ({ props }) => props.options || [],
-    childrenAs: 'props',
 
     '.hidden': {
       transform: 'translate3d(0,10%,0)',
@@ -101,7 +100,7 @@ export const DropdownParentFocus = {
     visibility: 'hidden',
     position: 'absolute',
     inset: '0',
-    onUpdate: el => el.node.blur()
+    onUpdate: (el) => el.node.blur()
   },
 
   Dropdown: {
