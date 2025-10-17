@@ -37,7 +37,8 @@ export const Button = {
   },
 
   attr: {
-    type: ({ props }) => props.type
+    type: ({ props }) => props.type,
+    disabled: (el) => el.call('exec', el.props.disabled)
   }
 }
 
@@ -73,10 +74,7 @@ export const ButtonSet = {
 }
 
 export const IconButton = {
-  extend: [
-    'SquareButton',
-    'ClickableItem'
-  ],
+  extend: ['SquareButton', 'ClickableItem'],
   props: {
     round: 'Z'
   },

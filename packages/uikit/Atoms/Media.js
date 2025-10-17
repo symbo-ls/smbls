@@ -222,17 +222,18 @@ export const beforeClassAssign = (element, s, ctx) => {
     const setter = keySetters[key.slice(0, 1)]
     if (globalTheme) {
       if (key === 'theme' && !props.themeModifier) {
-        props.update(
-          {
-            themeModifier: globalTheme
-          },
-          {
-            preventListeners: true,
-            preventRecursive: true,
-            isForced: true,
-            preventDefineUpdate: true
-          }
-        )
+        props.themeModifier = globalTheme
+        // props.update(
+        //   {
+        //     themeModifier: globalTheme
+        //   },
+        //   {
+        //     preventListeners: true,
+        //     preventRecursive: true,
+        //     isForced: true,
+        //     preventDefineUpdate: true
+        //   }
+        // )
       }
     }
     if (setter) setter(key, props[key], CLASS_NAMES, element)
