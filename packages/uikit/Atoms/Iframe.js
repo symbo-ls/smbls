@@ -18,8 +18,10 @@ export const Iframe = {
       }
 
       let isUrl
-      try { isUrl = new URL(src) } catch (e) {
-      console.error(e)
+      try {
+        isUrl = new URL(src)
+      } catch (e) {
+        el.warn(e)
       }
       if (isUrl) return src
     },
