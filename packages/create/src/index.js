@@ -72,7 +72,6 @@ export const createSync = async (
 
   // const SYMBOLS_KEY = process.env.SYMBOLS_KEY
   const key = options.key
-  console.log(redefinedOptions)
   await fetchSync(key, redefinedOptions)
 
   const domqlApp = await createDomqlElement(App, redefinedOptions)
