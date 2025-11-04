@@ -39,7 +39,13 @@ export const Textarea = {
     }
   },
 
-  html: (el, s) => el.props.value
+  html: (el, s) => {
+    const val = el.call('exec', el.props.value, el)
+    if (el.call('isString', val) && val.includes('{{')) {
+      return el.call('replaceLiteralsWithObjectFields', val)
+    }
+    return val || ''
+  }
 }
 
 export const TextareaWithButton = {

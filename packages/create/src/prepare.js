@@ -16,7 +16,7 @@ import * as routerUtils from '@domql/router'
 
 // @preserve-env
 
-export const prepareWindow = context => {
+export const prepareWindow = (context) => {
   if (typeof window === 'undefined') window = globalThis || {} // eslint-disable-line
   if (typeof document === 'undefined') {
     if (!window.document) window.document = globalThis.document || { body: {} }
@@ -27,7 +27,7 @@ export const prepareWindow = context => {
   return context.window
 }
 
-function onlyDotsAndNumbers (str) {
+function onlyDotsAndNumbers(str) {
   return /^[0-9.]+$/.test(str) && str !== ''
 }
 
@@ -66,13 +66,13 @@ export const UIkitWithPrefix = () => {
   return newObj
 }
 
-export const prepareComponents = context => {
+export const prepareComponents = (context) => {
   return context.components
     ? { ...UIkitWithPrefix(), ...context.components }
     : UIkitWithPrefix()
 }
 
-export const prepareUtils = context => {
+export const prepareUtils = (context) => {
   return {
     ...utils,
     ...routerUtils,
@@ -83,7 +83,7 @@ export const prepareUtils = context => {
   }
 }
 
-export const prepareMethods = context => {
+export const prepareMethods = (context) => {
   return {
     ...(context.methods || {}),
     require: context.utils.require,
@@ -229,7 +229,7 @@ export const preparePages = (app, context) => {
   }
   const pages = app.routes || context.pages || {}
   return Object.keys(pages)
-    .filter(v => !v.startsWith('/'))
+    .filter((v) => !v.startsWith('/'))
     .reduce((pages, v) => {
       const index = v === 'index' ? '' : v
       pages['/' + index] = pages[v]

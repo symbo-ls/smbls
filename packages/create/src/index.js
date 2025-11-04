@@ -27,17 +27,17 @@ export const create = (
     ...mergeWithLocalFile(options, optionsExternalFile)
   }
 
-  const domqlApp = createDomqlElement(App, redefinedOptions)
+  const domqlApp = createDomqlElement(App, redefinedOptions).then((App) => {
+    onpopstateRouter(App, redefinedOptions)
 
-  onpopstateRouter(domqlApp, redefinedOptions)
-
-  if (redefinedOptions.on && redefinedOptions.on.create)
-    redefinedOptions.on.create(
-      domqlApp,
-      domqlApp.state,
-      domqlApp.context,
-      redefinedOptions
-    )
+    if (redefinedOptions.on && redefinedOptions.on.create)
+      redefinedOptions.on.create(
+        domqlApp,
+        domqlApp.state,
+        domqlApp.context,
+        redefinedOptions
+      )
+  })
 
   return domqlApp
 }

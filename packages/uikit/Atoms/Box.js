@@ -104,9 +104,9 @@ export const Box = {
   attr: {
     id: (el) => el.call('isString', el.props.id) && el.props.id,
     title: (el) => el.call('isString', el.props.title) && el.props.title,
-    contentEditable: (el) => {
+    contentEditable: (el, s) => {
       const isEditable = el.props.contentEditable || el.props.contenteditable
-      if (isEditable) return el.call('exec', isEditable, el, state)
+      if (isEditable) return el.call('exec', isEditable, el, s)
     },
     dir: (el) => el.props.dir,
     draggable: (el) => el.props.draggable,
