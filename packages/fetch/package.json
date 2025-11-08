@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/fetch",
-  "version": "2.32.8",
+  "version": "2.32.9",
   "license": "MIT",
-  "gitHead": "f7531cb41b391a1357d31a03fbdd33ad93e0a29d",
+  "gitHead": "6b5bbf4c7ffd0eaa9b47ebc87496ef1026a17cf3",
   "type": "module",
   "module": "index.js",
   "main": "index.js",
@@ -29,6 +29,6 @@
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/utils": "^2.32.8"
+    "@domql/utils": "^2.32.9"
   }
 }
