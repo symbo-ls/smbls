@@ -9,7 +9,7 @@ import { defaultDefine } from './define.js'
 import { initRouter } from './router.js'
 import {
   initializeExtend,
-  initializeInspect,
+  // initializeInspect,
   initializeNotifications,
   initializeSync
 } from './syncExtend.js'
@@ -84,7 +84,7 @@ export const createDomqlElement = async (app, ctx) => {
   )
 
   initializeSync(app, ctx)
-  initializeInspect(app, ctx)
+  // initializeInspect(app, ctx)
   initializeNotifications(app, ctx)
 
   const parentNode = ctx.parent || ctx.document.body
