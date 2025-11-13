@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/notification",
-  "version": "2.32.12",
+  "version": "2.32.13",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "f8666aee255847f4080ae65b1f27d87eb2b8815e",
+  "gitHead": "c9fa0cbf09841fd8c586d525a1f4e96f3ba11569",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.32.12"
+    "@symbo.ls/atoms": "^2.32.13"
   },
   "source": "src/index.js"
 }
