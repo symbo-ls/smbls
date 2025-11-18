@@ -19,11 +19,13 @@
     "@symbo.ls/init": "^2.11.515",
     "@symbo.ls/socket": "^2.11.515",
     "chalk": "^5.0.0",
+    "chokidar": "^4.0.3",
     "commander": "latest",
     "diff": "^5.2.0",
     "esbuild": "^0.19.2",
     "inquirer": "^9.2.17",
     "node-fetch": "^3.1.0",
+    "socket.io-client": "^4.8.1",
     "v8-compile-cache": "^2.3.0"
   },
   "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a"
