@@ -22,7 +22,9 @@ export class CredentialManager {
   // Save credentials to rc file
   saveCredentials(credentials) {
     try {
-      fs.writeFileSync(this.rcPath, JSON.stringify(credentials, null, 2))
+      const existing = this.loadCredentials()
+      const merged = { ...existing, ...credentials }
+      fs.writeFileSync(this.rcPath, JSON.stringify(merged, null, 2))
       return true
     } catch (err) {
       console.error('Failed to save credentials:', err)
@@ -32,8 +34,24 @@ export class CredentialManager {
 
   // Get stored auth token
   getAuthToken() {
+    const envToken = process.env.SYMBOLS_TOKEN || process.env.SMBLS_TOKEN
+    if (envToken) return envToken
     const creds = this.loadCredentials()
-    return creds.authToken
+    return creds.authToken || creds.token || creds.accessToken || creds.jwt
+  }
+
+  // Ensure token presence; returns token or null
+  ensureAuthToken() {
+    const token = this.getAuthToken()
+    return token || null
+  }
+
+  // Optional: get refresh token if present
+  getRefreshToken() {
+    const envToken = process.env.SYMBOLS_REFRESH_TOKEN
+    if (envToken) return envToken
+    const creds = this.loadCredentials()
+    return creds.refreshToken || null
   }
 
   // Clear stored credentials
