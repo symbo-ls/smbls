@@ -8,12 +8,14 @@ import { loadModule } from './require.js'
 import { program } from './program.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { buildDirectory } from '../helpers/fileUtils.js'
-import { showDiffPager } from '../helpers/diffUtils.js'
-import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
-import { getProjectDataFromSymStory, getRemoteChangesFromSymStory, updateProjectOnSymStoryServer, findConflicts } from '../helpers/apiUtils.js'
+import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
+import { normalizeKeys } from '../helpers/compareUtils.js'
+import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
+import { computeCoarseChanges, threeWayRebase, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
 import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
 const RC_PATH = process.cwd() + '/symbols.json'
 const distDir = path.join(process.cwd(), 'smbls')
 
@@ -33,30 +35,60 @@ async function buildLocalProject() {
   }
 }
 
-async function resolveConflicts(conflicts) {
-  const choices = conflicts.map(([localChange, remoteChange]) => ({
-    name: `${chalk.cyan(localChange[1].join('.'))}:
-    ${chalk.red('- Remote:')} ${JSON.stringify(remoteChange[2])}
-    ${chalk.green('+ Local:')} ${JSON.stringify(localChange[2])}`,
-    value: localChange
-  }))
+async function resolveTopLevelConflicts(conflictsKeys, ours, theirs) {
+  const choices = conflictsKeys.map((key) => {
+    const ourChange = ours.find((c) => c[1][0] === key)
+    const theirChange = theirs.find((c) => c[1][0] === key)
+    return {
+      name: `${chalk.cyan(key)}  ${chalk.green('Local')} vs ${chalk.red('Remote')}`,
+      value: key,
+      short: key,
+      description: `${chalk.green('+ Local:')} ${JSON.stringify(ourChange?.[2])}
+${chalk.red('- Remote:')} ${JSON.stringify(theirChange?.[2])}`
+    }
+  })
 
-  const { selectedChanges } = await inquirer.prompt([{
+  const { selected } = await inquirer.prompt([{
     type: 'checkbox',
-    name: 'selectedChanges',
-    message: 'Select changes to keep (unchecked will use remote version):',
+    name: 'selected',
+    message: 'Conflicts detected. Select the keys to keep from Local (unchecked will keep Remote):',
     choices,
-    pageSize: 10 // Limit number of visible choices
+    pageSize: 10
   }])
 
-  return conflicts.map(([localChange, remoteChange]) =>
-    selectedChanges.find(selected =>
-      selected[1].join('.') === localChange[1].join('.')
-    ) || remoteChange
-  )
+  const final = conflictsKeys.map((key) => {
+    if (selected.includes(key)) {
+      return ours.find((c) => c[1][0] === key)
+    }
+    return theirs.find((c) => c[1][0] === key)
+  }).filter(Boolean)
+
+  return final
 }
 
-async function confirmChanges(localChanges, remoteChanges) {
+function getAt(obj, pathArr = []) {
+  try {
+    return pathArr.reduce((acc, k) => (acc == null ? undefined : acc[k]), obj)
+  } catch (_) {
+    return undefined
+  }
+}
+
+function buildDiffsFromChanges(changes, base, target) {
+  const diffs = []
+  for (const [op, path, value] of changes) {
+    const oldVal = getAt(base, path)
+    if (op === 'delete') {
+      diffs.push(generateDiffDisplay('delete', path, oldVal))
+    } else {
+      const newVal = value !== undefined ? value : getAt(target, path)
+      diffs.push(generateDiffDisplay('update', path, oldVal, newVal))
+    }
+  }
+  return diffs
+}
+
+async function confirmChanges(localChanges, remoteChanges, base, local, remote) {
   if (localChanges.length === 0 && remoteChanges.length === 0) {
     console.log(chalk.bold.yellow('No changes detected'))
     return false
@@ -86,6 +118,25 @@ async function confirmChanges(localChanges, remoteChanges) {
     })
   }
 
+  const { view } = await inquirer.prompt([{
+    type: 'confirm',
+    name: 'view',
+    message: 'View full list of changes?',
+    default: false
+  }])
+  if (view) {
+    const diffs = []
+    if (localChanges.length) {
+      diffs.push(chalk.bold('\nLocal changes:\n'))
+      diffs.push(...buildDiffsFromChanges(localChanges, base, local))
+    }
+    if (remoteChanges.length) {
+      diffs.push(chalk.bold('\nRemote changes:\n'))
+      diffs.push(...buildDiffsFromChanges(remoteChanges, base, remote))
+    }
+    await showDiffPager(diffs)
+  }
+
   const { proceed } = await inquirer.prompt([{
     type: 'confirm',
     name: 'proceed',
@@ -98,7 +149,7 @@ async function confirmChanges(localChanges, remoteChanges) {
 
 export async function syncProjectChanges(options) {
   const credManager = new CredentialManager()
-  const authToken = credManager.getAuthToken()
+  const authToken = credManager.ensureAuthToken()
 
   if (!authToken) {
     showAuthRequiredMessages()
@@ -108,14 +159,17 @@ export async function syncProjectChanges(options) {
   try {
     // Load configuration
     const symbolsConfig = await loadSymbolsConfig()
-    const { key: appKey } = symbolsConfig
-    const localVersion = symbolsConfig.version || '1.0.0'
-    const localBranch = symbolsConfig.branch || 'main'
+    const cliConfig = loadCliConfig()
+    const lock = readLock()
+    const { projectPath } = getConfigPaths()
+    const { key: legacyKey } = symbolsConfig
+    const appKey = cliConfig.projectKey || legacyKey
+    const localBranch = cliConfig.branch || symbolsConfig.branch || 'main'
 
     if (options.verbose) {
       console.log(chalk.dim('\nSync configuration:'))
       console.log(chalk.gray(`App Key: ${chalk.cyan(appKey)}`))
-      console.log(chalk.gray(`Current version: ${chalk.cyan(localVersion)}`))
+      console.log(chalk.gray(`Current version: ${chalk.cyan(lock.version || 'unknown')}`))
       console.log(chalk.gray(`Branch: ${chalk.cyan(localBranch)}`))
       console.log(chalk.gray(`Environment: ${chalk.cyan(options.dev ? 'Development' : 'Production')}\n`))
     } else {
@@ -133,45 +187,68 @@ export async function syncProjectChanges(options) {
       process.exit(1)
     }
 
-    // Get server data
+    // Load base snapshot (last pulled)
+    const baseSnapshot = (() => {
+      try {
+        const raw = fs.readFileSync(projectPath, 'utf8')
+        return JSON.parse(raw)
+      } catch (_) {
+        return {}
+      }
+    })()
+
+    // Get latest server data (ignore ETag to ensure latest)
     console.log(chalk.dim('Fetching server data...'))
-    const serverProject = await getProjectDataFromSymStory(appKey, authToken, localBranch, localVersion)
+    const serverResp = await getCurrentProjectData(
+      { projectKey: appKey, projectId: lock.projectId },
+      authToken,
+      { branch: localBranch, includePending: true }
+    )
+    const serverProject = serverResp.data || {}
     console.log(chalk.gray('Server data fetched successfully'))
 
-    // Generate local and remote changes
-    const { changes: localChanges, diffs: localDiffs } = generateChanges(
-      normalizeKeys(serverProject),
-      localProject
-    )
+    // Generate coarse local and remote changes via simple three-way rebase
+    const base = normalizeKeys(baseSnapshot || {})
+    const local = normalizeKeys(localProject || {})
+    const remote = normalizeKeys(serverProject || {})
+    const { ours, theirs, conflicts, finalChanges } = threeWayRebase(base, local, remote)
 
-    // Get remote changes since last sync
-    const remoteChanges = await getRemoteChangesFromSymStory(appKey, authToken, localVersion, localBranch)
+    const localChanges = ours
+    const remoteChanges = theirs
 
     if (!localChanges.length && !remoteChanges.length) {
       console.log(chalk.bold.green('\nProject is already in sync'))
       return
     }
 
-    // Find conflicts
-    const conflicts = findConflicts(localChanges, remoteChanges)
-
-    // Show changes
-    if (localChanges.length || remoteChanges.length) {
-      if (localChanges.length) {
-        console.log('\nLocal changes:')
-        await showDiffPager(localDiffs)
-      }
+    // Show change summaries
+    if (localChanges.length) {
+      const byType = localChanges.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+      console.log(chalk.cyan('\nLocal changes:'))
+      Object.entries(byType).forEach(([type, count]) => {
+        console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
+      })
+    }
+    if (remoteChanges.length) {
+      const byType = remoteChanges.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+      console.log(chalk.cyan('\nRemote changes:'))
+      Object.entries(byType).forEach(([type, count]) => {
+        console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
+      })
     }
 
     // Handle conflicts if any
-    let finalChanges = [...localChanges]
+    let toApply = finalChanges && finalChanges.length ? finalChanges : [...localChanges]
     if (conflicts.length) {
       console.log(chalk.yellow(`\nFound ${conflicts.length} conflicts`))
-      finalChanges = await resolveConflicts(conflicts)
+      const chosen = await resolveTopLevelConflicts(conflicts, ours, theirs)
+      // Combine non-conflicting ours with chosen resolutions
+      const nonConflictOurs = ours.filter(([_, [k]]) => !conflicts.includes(k))
+      toApply = [...nonConflictOurs, ...chosen]
     }
 
     // Confirm sync
-    const shouldProceed = await confirmChanges(localChanges, remoteChanges)
+    const shouldProceed = await confirmChanges(localChanges, remoteChanges, base, local, remote)
     if (!shouldProceed) {
       console.log(chalk.yellow('Sync cancelled'))
       return
@@ -179,23 +256,38 @@ export async function syncProjectChanges(options) {
 
     // Update server
     console.log(chalk.dim('\nUpdating server...'))
-    const response = await updateProjectOnSymStoryServer(
-      appKey,
-      authToken,
-      finalChanges,
-      options.message || 'Sync from CLI'
-    )
-    const { id: versionId, value: version } = await response.json()
+    const projectId = lock.projectId || serverProject?.projectInfo?.id
+    if (!projectId) {
+      console.log(chalk.red('Unable to resolve projectId. Please fetch first to initialize lock.'))
+      process.exit(1)
+    }
+    const operationId = `cli-${Date.now()}`
+    // Expand into granular changes against remote/server state, compute orders from local
+    const { granularChanges } = preprocessChanges(remote, toApply)
+    const orders = computeOrdersForTuples(local, granularChanges)
+    const result = await postProjectChanges(projectId, authToken, {
+      branch: localBranch,
+      type: options.type || 'patch',
+      operationId,
+      changes: toApply,
+      granularChanges,
+      orders
+    })
+    const { id: versionId, value: version } = result.noOp ? {} : (result.data || {})
 
     // Update symbols.json with new version
-    symbolsConfig.version = version
-    symbolsConfig.branch = localBranch
-    symbolsConfig.versionId = versionId
-    await fs.promises.writeFile(RC_PATH, JSON.stringify(symbolsConfig, null, 2))
+    if (version) {
+      updateLegacySymbolsJson({ ...(symbolsConfig || {}), version, branch: localBranch, versionId })
+    }
 
     // Get latest project data after sync
     console.log(chalk.dim('Fetching latest project data...'))
-    const updatedServerData = await getProjectDataFromSymStory(appKey, authToken)
+    const updated = await getCurrentProjectData(
+      { projectKey: appKey, projectId },
+      authToken,
+      { branch: localBranch, includePending: true }
+    )
+    const updatedServerData = updated?.data || {}
 
     // Apply changes to local files
     console.log(chalk.dim('Updating local files...'))
@@ -204,6 +296,19 @@ export async function syncProjectChanges(options) {
 
     console.log(chalk.bold.green('\nProject synced successfully!'))
     console.log(chalk.gray(`New version: ${chalk.cyan(version)}`))
+
+    // Update lock and base snapshot
+    writeLock({
+      etag: updated.etag || null,
+      version: version || (lock.version || null),
+      branch: localBranch,
+      projectId,
+      pulledAt: new Date().toISOString()
+    })
+    try {
+      const { projectPath } = getConfigPaths()
+      await fs.promises.writeFile(projectPath, JSON.stringify(updatedServerData, null, 2))
+    } catch (_) {}
 
   } catch (error) {
     console.error(chalk.bold.red('\nSync failed:'), chalk.white(error.message))
