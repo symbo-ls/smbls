@@ -1,6 +1,6 @@
 'use strict'
 
-import { getSystemGlobalTheme } from './Theme'
+import { getSystemGlobalTheme } from './Box.js'
 
 export const Picture = {
   deps: { getSystemGlobalTheme },
@@ -16,7 +16,8 @@ export const Picture = {
         const mediaName = (props.media || key).slice(1)
 
         if (mediaName === globalTheme) return '(min-width: 0px)'
-        else if (mediaName === 'dark' || mediaName === 'light') return '(max-width: 0px)'
+        else if (mediaName === 'dark' || mediaName === 'light')
+          return '(max-width: 0px)'
 
         return MEDIA[mediaName]
       },

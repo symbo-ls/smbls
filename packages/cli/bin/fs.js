@@ -6,15 +6,16 @@ import * as smblsUtils from '@symbo.ls/utils'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 
-const { removeChars, toCamelCase, toTitleCase } = (smblsUtils.default || smblsUtils)
+const { removeChars, toCamelCase, toTitleCase } =
+  smblsUtils.default || smblsUtils
 const {
-  deepDestringify,
+  deepDestringifyFunctions,
   objectToString,
   joinArrays,
   isString,
   isObject,
   removeValueFromArray
-} = (utils.default || utils)
+} = utils.default || utils
 
 let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies']
 const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
@@ -218,7 +219,7 @@ export async function createFs (
     }
   }
 
-  async function createKeyDirectoryAndFiles (key, body, distDir, update) {
+  async function createKeyDirectoryAndFiles(key, body, distDir, update) {
     const dirPath = path.join(distDir, key)
     await fs.promises.mkdir(dirPath, { recursive: true })
 
@@ -246,7 +247,7 @@ export async function createFs (
     await generateIndexjsFile(dirs, dirPath, key)
   }
 
-  async function createOrUpdateFile (dirPath, childKey, value, update) {
+  async function createOrUpdateFile(dirPath, childKey, value, update) {
     const itemKey =
       childKey.includes('-') || childKey.includes('/')
         ? removeChars(toCamelCase(childKey))
@@ -271,9 +272,7 @@ export async function createFs (
       const content = reorderWithOrderKeys(deepDestringify(value))
       // console.log('ON DEEPDESTR:')
       // console.log(content.components.Configuration)
-      stringifiedContent = `${validKey} = ${objectToString(
-        content
-      )};`
+      stringifiedContent = `${validKey} = ${objectToString(content)};`
     }
 
     if (itemKeyInvalid) {
@@ -285,7 +284,7 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
   }
 
-  async function createSingleFileFolderAndFile (key, data, distDir, update) {
+  async function createSingleFileFolderAndFile(key, data, distDir, update) {
     const filePath = path.join(distDir, `${key}.js`)
 
     if (!update && fs.existsSync(filePath)) {
@@ -318,7 +317,7 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
   // }
 }
 
-async function findDiff (targetDir, distDir) {
+async function findDiff(targetDir, distDir) {
   const diffs = []
 
   for (const key of directoryKeys) {
@@ -393,7 +392,7 @@ async function findDiff (targetDir, distDir) {
   return diffs
 }
 
-async function generateIndexjsFile (dirs, dirPath, key) {
+async function generateIndexjsFile(dirs, dirPath, key) {
   let indexContent
   if (key === 'pages') {
     indexContent =
@@ -404,7 +403,7 @@ async function generateIndexjsFile (dirs, dirPath, key) {
               d.includes('-') || d.includes('/')
                 ? removeChars(toCamelCase(d))
                 : d
-            } } from './${d.replace('/', '-')}';`
+            } } from './${d.replaceAll('/', '-')}';`
         )
         .join('\n') +
       '\n' +
@@ -426,19 +425,23 @@ async function generateIndexjsFile (dirs, dirPath, key) {
     indexContent =
       dirs
         .map((d) => {
+          const dirOrSingleJs = directoryKeys.includes(d)
+            ? d + '/index.js'
+            : d + '.js'
           if (defaultExports.includes(d)) {
-            return `export { default as ${d} } from './${d}';`
-          } else return `export * as ${d} from './${d}';`
+            return `export { default as ${d} } from './${dirOrSingleJs}';`
+          } else return `export * as ${d} from './${dirOrSingleJs}';`
         })
         .join('\n') + '\n'
   } else {
-    indexContent = dirs.map((d) => `export * from './${d}';`).join('\n') + '\n'
+    indexContent =
+      dirs.map((d) => `export * from './${d}.js';`).join('\n') + '\n'
   }
   const indexFilePath = path.join(dirPath, 'index.js')
   await fs.promises.writeFile(indexFilePath, indexContent, 'utf8')
 }
 
-async function overrideFiles (targetDir, distDir) {
+async function overrideFiles(targetDir, distDir) {
   for (const key of directoryKeys) {
     const targetDirPath = path.join(targetDir, key)
     const distDirPath = path.join(distDir, key)
@@ -468,7 +471,7 @@ async function overrideFiles (targetDir, distDir) {
   }
 }
 
-async function askForConsent () {
+async function askForConsent() {
   const questions = [
     {
       type: 'confirm',

@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/create",
-  "version": "2.11.520",
+  "version": "2.32.14",
   "license": "MIT",
-  "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a",
+  "gitHead": "b9c8c8e0b8c5a9172678236729c78f7b8a1ec116",
   "type": "module",
   "module": "src/index.js",
   "main": "src/index.js",
@@ -10,9 +10,9 @@
   "jsdelivr": "dist/iife/index.js",
   "exports": {
     ".": {
-      "default": "./dist/esm/index.js",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
     }
   },
   "source": "src/index.js",
@@ -22,26 +22,26 @@
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild src/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx esbuild src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "npx esbuild src/*.js --target=node16 --format=iife --outdir=dist/iife",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=node16 --format=iife --outdir=dist/iife",
     "build": "rimraf -I dist; npm run build:cjs; npm run build:esm",
     "prepublish": "npm run build; npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/emotion": "^2.5.0",
-    "@domql/event": "^2.5.0",
-    "@domql/report": "^2.5.0",
-    "@domql/router": "^2.5.0",
-    "@symbo.ls/fetch": "^2.11.511",
-    "@symbo.ls/init": "^2.11.515",
-    "@symbo.ls/scratch": "^2.11.515",
-    "@symbo.ls/sync": "^2.11.520",
-    "@symbo.ls/uikit": "^2.11.520",
-    "@symbo.ls/utils": "^2.11.512",
-    "domql": "^2.5.158"
+    "@domql/emotion": "^2.32.14",
+    "@domql/event": "^2.32.14",
+    "@domql/report": "^2.32.14",
+    "@domql/router": "^2.32.14",
+    "@symbo.ls/fetch": "^2.32.14",
+    "@symbo.ls/init": "^2.32.14",
+    "@symbo.ls/scratch": "^2.32.14",
+    "@symbo.ls/sync": "^2.32.14",
+    "@symbo.ls/uikit": "^2.32.14",
+    "@symbo.ls/utils": "^2.32.14",
+    "domql": "^2.32.14"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.0"
+    "@babel/core": "^7.27.1"
   }
 }

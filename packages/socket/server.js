@@ -7,7 +7,7 @@ import http from 'http'
 import { Server } from 'socket.io'
 import { createRequire } from 'module'
 import * as utils from '@domql/utils'
-const { overwriteDeep } = (utils.default || utils)
+const { overwriteDeep } = utils.default || utils
 
 const require = createRequire(import.meta.url) // construct the require method
 const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
@@ -15,7 +15,9 @@ const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in 
 const app = express()
 let io
 
-const debugMsg = chalk.dim('Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls')
+const debugMsg = chalk.dim(
+  'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
+)
 
 export const updateDynamycFile = (changes, options = {}) => {
   const { verbose, prettify, verboseCode } = options
@@ -23,13 +25,15 @@ export const updateDynamycFile = (changes, options = {}) => {
 
   const newMerge = overwriteDeep(file, changes)
   const mergeStr = JSON.stringify(newMerge, null, 2)
-  const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
+  const initPath = `${process.cwd()}/node_modules/@symbo.ls/init/dynamic.json`
 
   console.log(chalk.dim('\n----------------\n'))
 
   console.log(chalk.dim('Received update:'))
   console.log(Object.keys(changes).join(', '))
-  if (verboseCode) console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
+  if (verboseCode) {
+    console.log(chalk.dim(JSON.stringify(changes, null, prettify ?? 2)))
+  }
 
   try {
     fs.writeFileSync(initPath, mergeStr)
@@ -39,14 +43,18 @@ export const updateDynamycFile = (changes, options = {}) => {
   } catch (e) {
     console.log('')
     console.log(chalk.bold.red('Error writing file'))
-    if (verbose) console.error(e)
-    else console.log(debugMsg)
+    if (verbose) {
+      console.error(e)
+    } else {
+      console.log(debugMsg)
+    }
   }
 }
 
-export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
+// eslint-disable-next-line no-unused-vars
+export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, opts = {}) => {
   const server = http.createServer(app)
-  const { key } = options
+  const { key } = opts
 
   io = new Server(server, {
     transports: ['websocket', 'polling', 'flashsocket'],
@@ -81,6 +89,7 @@ export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
 
     socket.on('change', updateDynamycFile)
 
+    // eslint-disable-next-line no-unused-vars
     socket.on('disconnect', (changes, options) => {
       const { clientsCount } = io.engine
       socket.to(key).emit('clientsCount', clientsCount)

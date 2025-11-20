@@ -13,17 +13,25 @@ export const Select = {
     childProps: {
       tag: 'option',
       attr: {
-        value: ({ props }) => props.value,
-        selected: ({ props }) => props.selected,
-        disabled: ({ props }) => props.disabled
+        text: ({ props }) => props.text || props.value,
+        required: (el) => el.call('exec', el.props.required),
+        disabled: (el) => el.call('exec', el.props.disabled),
+        value: (el) => {
+          if (!el.props || !el.props.value) return
+          const val = el.call('exec', el.props.value, el)
+          if (el.call('isString', val) && val.includes('{{')) {
+            return el.call('replaceLiteralsWithObjectFields', val)
+          }
+          return val
+        }
       }
     }
   },
 
   attr: {
-    required: ({ props }) => props.required,
     name: ({ props }) => props.name,
-    disabled: ({ props }) => props.disabled,
+    required: (el) => el.call('exec', el.props.required),
+    disabled: (el) => el.call('exec', el.props.disabled),
     value: (el) => {
       if (!el.props || !el.props.value) return
       const val = el.call('exec', el.props.value, el)

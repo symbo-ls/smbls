@@ -1,7 +1,6 @@
 'use strict'
 
 export * from '@symbo.ls/atoms'
-export * from '@symbo.ls/box'
 export * from '@symbo.ls/icon'
 export * from '@symbo.ls/link'
 export * from '@symbo.ls/input'

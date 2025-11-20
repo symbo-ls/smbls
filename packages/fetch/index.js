@@ -1,17 +1,15 @@
 'use strict'
 
 import * as utils from '@domql/utils'
-import * as globals from '@domql/globals'
-const { overwriteDeep, deepDestringify } = utils
-const { window } = globals
+const { window, overwriteDeep, deepDestringifyFunctions } = utils
 
 const IS_DEVELOPMENT =
   window && window.location
     ? window.location.host.includes('dev.')
-    : process.env.NODE_ENV === 'development'
+    : utils.isDevelopment()
 
 const SERVER_URL = IS_DEVELOPMENT
-  ? 'http://localhost:13335/get'
+  ? 'http://localhost:8080/get'
   : 'https://api.symbols.app/get'
 
 const defaultOptions = {
@@ -32,7 +30,11 @@ export const fetchRemote = async (key, options = defaultOptions) => {
   try {
     response = await fetch(baseUrl + '/' + '?' + route, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json', 'X-AppKey': key, 'X-Metadata': options.metadata }
+      headers: {
+        'Content-Type': 'application/json',
+        'X-AppKey': key,
+        'X-Metadata': options.metadata
+      }
     })
 
     return await response.json()
@@ -47,9 +49,10 @@ export const fetchProject = async (key, options) => {
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-    const evalData = (IS_DEVELOPMENT || options.isDevelopment)
-      ? deepDestringify(data)
-      : deepDestringify(data.releases[0])
+    const evalData =
+      IS_DEVELOPMENT || options.isDevelopment
+        ? deepDestringifyFunctions(data)
+        : deepDestringifyFunctions(data.releases[0])
 
     if (editor.serviceRoute) {
       if (utils.isArray(editor.serviceRoute)) {
@@ -60,7 +63,7 @@ export const fetchProject = async (key, options) => {
         overwriteDeep(options[editor.serviceRoute], evalData)
       }
     } else {
-      [
+      ;[
         'state',
         'designSystem',
         'components',
@@ -84,9 +87,10 @@ export const fetchProjectAsync = async (key, options, callback) => {
 
   if (editor && editor.remote) {
     const data = await fetchRemote(key, editor)
-    const evalData = (IS_DEVELOPMENT || options.isDevelopment)
-      ? deepDestringify(data)
-      : deepDestringify(data.releases[0])
+    const evalData =
+      IS_DEVELOPMENT || options.isDevelopment
+        ? deepDestringifyFunctions(data)
+        : deepDestringifyFunctions(data.releases[0])
     callback(evalData)
   }
 }

@@ -17,7 +17,6 @@ export const DropdownList = {
     transition: 'B defaultBezier',
     transitionProperty: 'transform, opacity, visibility',
     children: ({ props }) => props.options || [],
-    childrenAs: 'props',
 
     '.hidden': {
       transform: 'translate3d(0,10%,0)',
@@ -75,6 +74,39 @@ export const DropdownParent = {
           visibility: 'visible'
         }
       }
+    }
+  }
+}
+
+export const DropdownParentFocus = {
+  props: {
+    position: 'relative',
+    tabindex: '0',
+    style: {
+      '&:focus-within': {
+        zIndex: 1000,
+        '& [dropdown]': {
+          transform: 'translate3d(0,0,0)',
+          opacity: 1,
+          visibility: 'visible'
+        }
+      }
+    }
+  },
+
+  Input_trigger: {
+    type: 'checkbox',
+    opacity: '0',
+    visibility: 'hidden',
+    position: 'absolute',
+    inset: '0',
+    onUpdate: (el) => el.node.blur()
+  },
+
+  Dropdown: {
+    // onClick: (ev, el) => el.parent.Input_trigger.node.blur()
+    onClick: () => {
+      document.activeElement?.blur()
     }
   }
 }

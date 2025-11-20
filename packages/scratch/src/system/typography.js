@@ -23,15 +23,7 @@ export const runThroughMedia = FACTORY => {
     const { mediaRegenerate } = FACTORY
     const mediaName = prop.slice(1)
 
-    const {
-      type,
-      base,
-      ratio,
-      range,
-      subSequence,
-      h1Matches,
-      unit
-    } = FACTORY
+    const { type, base, ratio, range, subSequence, h1Matches, unit } = FACTORY
 
     merge(mediaValue, {
       type,
@@ -44,7 +36,8 @@ export const runThroughMedia = FACTORY => {
     })
 
     const query = MEDIA[mediaName]
-    const media = '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
+    const media =
+      '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
     TYPOGRAPHY.templates[media] = {
       fontSize: mediaValue.base / TYPOGRAPHY.browserDefault + unit
     }
@@ -67,7 +60,7 @@ export const runThroughMedia = FACTORY => {
   }
 }
 
-export const applyHeadings = (props) => {
+export const applyHeadings = props => {
   const CONFIG = getActiveConfig()
   if (props.h1Matches) {
     const unit = props.unit
@@ -77,11 +70,15 @@ export const applyHeadings = (props) => {
       const headerName = `h${parseInt(k) + 1}`
       const headerStyle = templates[headerName]
       templates[headerName] = {
-        fontSize: CONFIG.useVariable ? `var(${HEADINGS[k].variable})` : `${HEADINGS[k].scaling}${unit}`,
+        fontSize: CONFIG.useVariable
+          ? `var(${HEADINGS[k]?.variable})`
+          : `${HEADINGS[k]?.scaling}${unit}`,
         margin: headerStyle ? headerStyle.margin : 0,
         lineHeight: headerStyle ? headerStyle.lineHeight : props.lineHeight,
-        letterSpacing: headerStyle ? headerStyle.letterSpacing : props.letterSpacing,
-        fontWeight: headerStyle ? headerStyle.fontWeight : 900 - (k * 100)
+        letterSpacing: headerStyle
+          ? headerStyle.letterSpacing
+          : props.letterSpacing,
+        fontWeight: headerStyle ? headerStyle.fontWeight : 900 - k * 100
       }
     }
   }
@@ -100,9 +97,5 @@ export const applyTypographySequence = () => {
 export const getFontSizeByKey = value => {
   const CONFIG = getActiveConfig()
   const { TYPOGRAPHY } = CONFIG
-  return getSequenceValuePropertyPair(
-    value,
-    'fontSize',
-    TYPOGRAPHY
-  )
+  return getSequenceValuePropertyPair(value, 'fontSize', TYPOGRAPHY)
 }

@@ -5,7 +5,7 @@ import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 import { init } from '@symbo.ls/init'
 import { deepClone, deepMerge } from '@domql/utils'
 
-import { DESIGN_SYSTEM_OPTIONS } from './options'
+import { DESIGN_SYSTEM_OPTIONS } from './options.js'
 import { DEFAULT_CONFIG } from '@symbo.ls/default-config'
 
 export const initEmotion = (key, options = {}) => {
@@ -15,10 +15,12 @@ export const initEmotion = (key, options = {}) => {
 
   if (!initOptions.emotion) initOptions.emotion = defaultEmotion
 
-  const registry = options.registry || transformDOMQLEmotion(initOptions.emotion, options)
-  const designSystem = (initOptions.useDefaultConfig || options.designSystem?.useDefaultConfig)
-    ? deepMerge(options.designSystem, deepClone(DEFAULT_CONFIG))
-    : options.designSystem || deepClone(DEFAULT_CONFIG)
+  const registry =
+    options.registry || transformDOMQLEmotion(initOptions.emotion, options)
+  const designSystem =
+    initOptions.useDefaultConfig || options.designSystem?.useDefaultConfig
+      ? deepMerge(options.designSystem, deepClone(DEFAULT_CONFIG))
+      : options.designSystem || deepClone(DEFAULT_CONFIG)
 
   const scratchSystem = init(designSystem, {
     key,

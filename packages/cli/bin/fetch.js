@@ -148,7 +148,9 @@ export const fetchFromCli = async (opts) => {
       }
 
       console.log()
-      console.warn('No --dist-dir option or "distDir" in symbols.json provided. Saving in ./node_modules/@symbo.ls/init/dynamic.json.')
+      console.warn(
+        'No --dist-dir option or "distDir" in symbols.json provided. Saving in ./node_modules/@symbo.ls/init/dynamic.json.'
+      )
       return {}
     }
 

@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/feather-icons",
-  "version": "2.11.470",
+  "version": "2.32.14",
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945"
+  "gitHead": "b9c8c8e0b8c5a9172678236729c78f7b8a1ec116"
 }

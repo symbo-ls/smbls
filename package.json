@@ -1,38 +1,42 @@
 {
+  "name": "smbls-root",
   "private": true,
   "scripts": {
-    "start": "npm run clean:dist; npm run clean:package-modules; parcel example/index.html --no-cache",
-    "build": "npm run clean:dist; npm run clean:package-modules; parcel build example/index.html --no-cache",
+    "start": "npm run clean:dist; parcel example/index.html --no-cache --port 4321",
+    "build": "npm run clean:dist; parcel build example/index.html --no-cache",
     "build:packages": "lerna run build",
     "postinstall": "npx lerna run build && npx lerna run copy:package:cjs",
     "update-linkable-list": "npx smbls link-packages -c",
     "test:lint": "npx standard \"packages/**/*.js\"",
     "test": "echo running all tests is not supported, maybe run: \"npm run test:lint\"",
-    "clean": "npm run clean:dist; npm run clean:packages; npm run clean:modules; npm run clean:package-modules",
+    "clean": "npm run clean:dist; npm run clean:packages; npm run clean:modules",
     "clean:dist": "rm -rf ./dist ./.cache ./.parcel-cache",
     "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
     "clean:packages": "npx lerna exec -- rm -rf dist yarn.lock yarn-error.log package-lock.json",
-    "clean:package-modules": "npx lerna exec -- rm -rf node_modules yarn.lock yarn-error.log package-lock.json",
     "reinstall": "npm run clean; npm i --verbose",
     "link:all": "npx lerna exec -- npm run unlink; npx lerna exec -- npm run link",
     "link:all-force": "npx lerna exec -- npm run unlink; npm run link:all"
   },
+  "dependencies": {
+    "domql": "^2.32.14"
+  },
   "devDependencies": {
-    "@babel/core": "^7.18.10",
-    "@babel/eslint-parser": "^7.21.3",
-    "@babel/preset-env": "^7.21.4",
-    "@babel/preset-react": "^7.18.6",
+    "@babel/core": "^7.27.1",
+    "@babel/eslint-parser": "^7.27.1",
+    "@babel/preset-env": "^7.27.1",
     "@parcel/babel-preset-env": "^2.11.0",
-    "@parcel/transformer-raw": "^2.11.0",
-    "commander": "^11.0.0",
-    "esbuild": "^0.19.2",
-    "eslint": "^8.54.0",
+    "@parcel/transformer-raw": "^2.15.2",
+    "caniuse-lite": "^1.0.30001707",
+    "commander": "^13.1.0",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.25.1",
+    "eslint": "^9.28.0",
     "globusa": "^1.1.4",
     "lerna": "^8.1.9",
-    "parcel": "^2.11.0",
+    "parcel": "^2.15.2",
     "process": "^0.11.10",
     "rimraf": "^5.0.1",
-    "standard": "^17.1.0",
+    "standard": "^17.1.2",
     "svgo": "^3.3.2"
   },
   "standard": {
@@ -47,7 +51,5 @@
     "packages/*/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "dependencies": {
-    "domql": "^2.5.158"
-  }
+  "version": "2.32.14"
 }

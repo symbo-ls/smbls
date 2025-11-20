@@ -1,7 +1,7 @@
 import { generateDiffDisplay } from './diffUtils.js'
 
 export const ALLOWED_FIELDS = [
-  'designsystem',
+  'designSystem',
   'functions',
   'files',
   'components',

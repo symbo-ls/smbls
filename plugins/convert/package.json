@@ -14,7 +14,7 @@
   "dependencies": {
     "@domql/utils": "^2.5.0",
     "@symbo.ls/create": "^2.11.486",
-    "jsdom": "^22.1.0"
+    "jsdom": "^26.0.0"
   },
   "peerDependencies": {
     "globusa": "latest",

@@ -1,9 +1,9 @@
 {
   "name": "@symbo.ls/sync",
-  "version": "2.11.520",
+  "version": "2.32.14",
   "main": "index.js",
   "module": "index.js",
-  "gitHead": "7744e475b747954ee8f0a8968651ff0eae11127a",
+  "gitHead": "b9c8c8e0b8c5a9172678236729c78f7b8a1ec116",
   "files": [
     "*.js",
     "dist"
@@ -14,30 +14,30 @@
   "jsdelivr": "dist/iife/index.js",
   "exports": {
     ".": {
-      "kalduna": "./index.js",
-      "default": "./dist/cjs/index.js"
+      "import": "./index.js",
+      "require": "./dist/cjs/index.js"
     }
   },
   "source": "index.js",
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
-    "build:cjs": "npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
-    "build:iife": "npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
     "build": "npm run build:esm; npm run build:cjs",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/globals": "latest",
-    "@domql/router": "^2.5.0",
-    "@domql/utils": "^2.5.0",
-    "@symbo.ls/init": "^2.11.515",
-    "@symbo.ls/scratch": "^2.11.515",
-    "@symbo.ls/socket": "^2.11.515",
-    "@symbo.ls/uikit": "^2.11.520"
+    "@domql/router": "^2.32.14",
+    "@domql/utils": "^2.32.14",
+    "@symbo.ls/init": "^2.32.14",
+    "@symbo.ls/scratch": "^2.32.14",
+    "@symbo.ls/socket": "^2.32.14",
+    "@symbo.ls/uikit": "^2.32.14",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.0"
+    "@babel/core": "^7.27.1"
   }
 }

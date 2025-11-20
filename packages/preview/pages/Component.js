@@ -20,7 +20,29 @@ export const Component = {
       background: 'black 0.15',
       padding: 'Z A'
     },
-    'Link+SquareButton': { Icon: { name: 'symbols', fontSize: 'B' }, href: '/' },
+    'Link+SquareButton': {
+      Icon: { name: 'symbols', fontSize: 'B' },
+      href: () => {
+        const marketplaceProjects = [
+          'default.symbo.ls',
+          'ecommerce.symbo.ls',
+          'forms.symbo.ls',
+          'ai.symbo.ls',
+          'web3.symbo.ls',
+          'marketing.symbo.ls',
+          'docs.symbo.ls',
+          'charts.symbo.ls',
+          'ui.symbo.ls',
+          'cms.symbo.ls',
+          'code.symbo.ls',
+          'miscellaneous.symbo.ls'
+        ]
+        if (marketplaceProjects.includes(window.location))
+          return 'http://symbols.app/explore'
+        return '/'
+      },
+      text: null
+    },
     OpenInSymbols: () => {
       const urlParams = new URLSearchParams(window.location.search)
       const key = urlParams.get('key') || 'Logo'
@@ -30,8 +52,9 @@ export const Component = {
         extends: ['Link', 'Button'],
         target: '_blank',
         padding: 'Z A',
-        href: `https://symbols.app/?activeProject=${activeProject}&selected=${key}`,
-        // href: () => `https://symbols.app/?activeProject=${window.location.host.split('.')[0]}&selected=${key}`,
+        fontSize: 'Z2',
+        href: () =>
+          `https://symbols.app/?activeProject=${activeProject}&selected=${key}`,
         text: screenshot ? window.location.host : 'Open in Symbols'
       }
     }

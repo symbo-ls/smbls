@@ -1,9 +1,11 @@
 'use strict'
 
-import { isArray, isString } from '@domql/utils'
+import { isArray, isNotProduction, isString } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 
-export const generateSprite = (icons) => {
+const isDev = isNotProduction()
+
+export const generateSprite = icons => {
   const CONFIG = getActiveConfig()
 
   let sprite = ''
@@ -17,10 +19,11 @@ export const generateSprite = (icons) => {
   return sprite
 }
 
-const parseRootAttributes = (htmlString) => {
+const parseRootAttributes = htmlString => {
   const val = htmlString.default || htmlString
   if (!isString(val)) {
-    return console.warn(`parseRootAttributes: ${val} is not a string`)
+    if (isDev) console.warn('parseRootAttributes:', val, 'is not a string')
+    return
   }
 
   const match = val.match(/<svg\s+(.*?)>/)
@@ -29,7 +32,9 @@ const parseRootAttributes = (htmlString) => {
   }
 
   const attrString = match[1]
-  const attrs = attrString.match(/(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|\s*\/?[>"']))+.)["']?/gm)
+  const attrs = attrString.match(
+    /(\S+)=["']?((?:.(?!["']?\s+(?:\S+)=|\s*\/?[>"']))+.)["']?/gm
+  )
   return attrs.reduce((acc, attr) => {
     const [key, value] = attr.split('=')
     acc[key] = value.replace(/['"]/g, '')
@@ -45,7 +50,9 @@ const replaceIdsAndUrls = (code, key) => {
   if (isArray(matches)) {
     matches.forEach(() => {
       const randomKey = Math.floor(Math.random() * 100000)
-      replacedCode = code.replace(idRegex, `id="${key}-${randomKey}"`).replace(urlRegex, `url(#${key}-${randomKey})`)
+      replacedCode = code
+        .replace(idRegex, `id="${key}-${randomKey}"`)
+        .replace(urlRegex, `url(#${key}-${randomKey})`)
     })
   }
   return replacedCode
@@ -60,7 +67,8 @@ export const convertSvgToSymbol = (key, code) => {
 
   const replacedCode = replaceIdsAndUrls(code, key)
 
-  let symbol = replacedCode.replace('<svg',
+  let symbol = replacedCode.replace(
+    '<svg',
     `<symbol id="${key}" xmlns="${xmlns}" viewBox="${viewBox}"`
   )
 

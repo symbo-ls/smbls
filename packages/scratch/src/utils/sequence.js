@@ -39,7 +39,7 @@ const setSequenceValue = (props, sequenceProps) => {
   sequenceProps.sequence[key] = {
     key,
     decimal: ~~(value * 100) / 100,
-    val: ~~(value),
+    val: ~~value,
     scaling,
     index,
     scalingVariable,
@@ -81,16 +81,16 @@ export const setSubScalingVar = (index, arr, variable, sequenceProps) => {
 }
 
 export const getSubratioDifference = (base, ratio) => {
-  const diff = (base * ratio - base)
+  const diff = base * ratio - base
   const subRatio = diff / 1.618
-  const first = (base * ratio - subRatio)
+  const first = base * ratio - subRatio
   const second = base + subRatio
   const middle = (first + second) / 2
   return [first, middle, second]
 }
 
 export const getSubratio = (base, ratio) => {
-  return getSubratioDifference(base, ratio).map(v => v / base)
+  return getSubratioDifference(base, ratio).map((v) => v / base)
 }
 
 export const generateSubSequence = (props, sequenceProps) => {
@@ -105,10 +105,15 @@ export const generateSubSequence = (props, sequenceProps) => {
   else arr = [first, second]
 
   arr.forEach((v, k) => {
-    const scaling = ~~(v / base * 1000) / 1000
+    const scaling = ~~((v / base) * 1000) / 1000
     const newVar = variable + (k + 1)
     const newIndex = index + (k + 1) / 10
-    const scalingVariable = setSubScalingVar(k + 1, arr, variable, sequenceProps)
+    const scalingVariable = setSubScalingVar(
+      k + 1,
+      arr,
+      variable,
+      sequenceProps
+    )
 
     const props = {
       key: key + (k + 1),
@@ -146,7 +151,7 @@ export const generateSequence = (sequenceProps) => {
     const key = range[1] - i
     const letterKey = numToLetterMap[key]
     const value = switchSequenceOnNegative(key, base, ratio)
-    const scaling = ~~(value / base * 100) / 100
+    const scaling = ~~((value / base) * 100) / 100
     const variable = prefix + letterKey
     const scalingVariable = setScalingVar(key, sequenceProps)
 
@@ -168,15 +173,58 @@ export const generateSequence = (sequenceProps) => {
   return sequenceProps
 }
 
+export const generateSequencePosition = (sequenceProps, position = 0) => {
+  const { type, base, ratio, subSequence } = sequenceProps
+  const letterKey = isString(position) ? position : numToLetterMap[position]
+  const index = isString(position)
+    ? Object.entries(numToLetterMap).find(
+        ([, value]) => value === position
+      )?.[0]
+    : position
+
+  if (!letterKey) {
+    console.warn(`Position ${position} is out of range in numToLetterMap`)
+    return null
+  }
+
+  const result = {
+    sequence: {},
+    scales: {},
+    vars: {},
+    ...sequenceProps
+  }
+
+  const value = base * Math.pow(ratio, index)
+  const scaling = ~~((value / base) * 100) / 100
+  const prefix = '--' + (type && type.replace('.', '-')) + '-'
+  const variable = prefix + letterKey
+  const scalingVariable = setScalingVar(index, sequenceProps)
+
+  const props = {
+    key: letterKey,
+    variable,
+    value,
+    base,
+    scaling,
+    scalingVariable,
+    ratio,
+    index
+  }
+
+  setSequenceValue(props, result)
+
+  if (subSequence) {
+    generateSubSequence(props, result)
+  }
+
+  return result
+}
+
 export const getSequenceValue = (value = 'A', sequenceProps) => {
   const CONFIG = getActiveConfig()
   const { UNIT } = CONFIG
 
-  const {
-    sequence,
-    unit = UNIT.default,
-    useVariable
-  } = sequenceProps
+  const { sequence, unit = UNIT.default, useVariable } = sequenceProps
 
   if (isString(value) && value.slice(0, 2) === '--') return `var(${value})`
 
@@ -196,7 +244,8 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
     value.includes('calc') ||
     value.includes('var') ||
     !startsWithDashOrLetter
-  ) return value
+  )
+    return value
 
   const letterVal = value.toUpperCase()
   const isNegative = letterVal.slice(0, 1) === '-' ? '-' : ''
@@ -208,7 +257,8 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
     absValue = absValue.split('_')[0]
   }
 
-  const varValue = v => startsWithDashOrLetterRegex.test(v) ? `var(${prefix}${v}${mediaName})` : v
+  const varValue = (v) =>
+    startsWithDashOrLetterRegex.test(v) ? `var(${prefix}${v}${mediaName})` : v
   if (absValue.includes('+')) {
     const [first, second] = absValue.split('+')
     const joint = `${varValue(first)} + ${varValue(second)}`
@@ -227,7 +277,11 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
 
   // if subsequence is not set but value is applied
   if (!sequence[absValue] && absValue.length === 2) {
-    if (CONFIG.verbose) console.warn(absValue, '- value is not found because `subSequence` is set to false')
+    if (CONFIG.verbose)
+      console.warn(
+        absValue,
+        '- value is not found because `subSequence` is set to false'
+      )
     absValue = absValue.slice(0, 1)
   }
 
@@ -237,7 +291,7 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   }
 
   const sequenceItem = sequence ? sequence[absValue] : null
-  if (!sequenceItem) return console.warn('can\'t find', sequence, absValue)
+  if (!sequenceItem) return console.warn("can't find", sequence, absValue)
 
   if (unit === 'ms' || unit === 's') {
     return isNegative + sequenceItem.val + unit
@@ -246,19 +300,24 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   return isNegative + sequenceItem.scaling + unit
 }
 
-export const getSequenceValuePropertyPair = (value, propertyName, sequenceProps) => {
+export const getSequenceValuePropertyPair = (
+  value,
+  propertyName,
+  sequenceProps
+) => {
   if (typeof value !== 'string') {
     const CONFIG = getActiveConfig()
     if (CONFIG.verbose) console.warn(propertyName, value, 'is not a string')
-    return ({ [propertyName]: value })
+    return { [propertyName]: value }
   }
-  if (value === '-' || value === '') return ({})
+  if (value === '-' || value === '') return {}
   return { [propertyName]: getSequenceValue(value, sequenceProps) }
 }
 
-export const findHeadingLetter = (h1Matches, index) => numToLetterMap[h1Matches - index]
+export const findHeadingLetter = (h1Matches, index) =>
+  numToLetterMap[h1Matches - index]
 
-export const findHeadings = propertyNames => {
+export const findHeadings = (propertyNames) => {
   const { h1Matches, sequence } = propertyNames
   return new Array(6).fill(null).map((_, i) => {
     const findLetter = findHeadingLetter(h1Matches, i)

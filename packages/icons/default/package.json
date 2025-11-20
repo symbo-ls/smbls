@@ -1,10 +1,10 @@
 {
   "name": "@symbo.ls/default-icons",
-  "version": "2.11.475",
+  "version": "2.32.14",
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "08ea2b44ed5381b019a8a1fd8a2ea9fcc4d932d4",
+  "gitHead": "b9c8c8e0b8c5a9172678236729c78f7b8a1ec116",
   "files": [
     "src",
     "dist"
@@ -19,8 +19,8 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx esbuild index.js --target=es2017 --format=esm --outdir=dist/esm --bundle --loader:.svg=text",
-    "build:cjs": "npx esbuild index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle --loader:.svg=text",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --target=es2017 --format=esm --outdir=dist/esm --bundle --loader:.svg=text",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --target=node16 --format=cjs --outdir=dist/cjs --bundle --loader:.svg=text",
     "build": "npm run build:cjs",
     "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
   }

@@ -20,6 +20,7 @@ export const Checkbox = {
       opacity: '1'
     },
     attr: {
+      name: (el) => el.call('exec', el.parent.props.name),
       checked: (el) => el.call('exec', el.parent.props.checked)
     }
   },

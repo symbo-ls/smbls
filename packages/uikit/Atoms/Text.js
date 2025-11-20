@@ -22,26 +22,46 @@ export const Text = {
 
   text: (el) => {
     const { key, props, state, deps } = el
-    if (props.text === true) return (state && state[key]) || (props && props[key])
-    // return console.log(el) || deps.exec(props.text, el)
+    if (props.text === true)
+      return (state && state[key]) || (props && props[key])
     return deps.exec(props.text, el)
   },
 
   class: {
-    font: ({ props }) => !isUndefined(props.font) && ({ font: props.font }),
-    lineHeight: ({ props }) => !isUndefined(props.lineHeight) && ({ lineHeight: props.lineHeight }),
+    font: ({ props }) => !isUndefined(props.font) && { font: props.font },
+    lineHeight: ({ props }) =>
+      !isUndefined(props.lineHeight) && { lineHeight: props.lineHeight },
     // lineHeight: ({ props }) => !isUndefined(props.lineHeight) && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
-    textDecoration: ({ props }) => !isUndefined(props.textDecoration) && ({ textDecoration: props.textDecoration }),
-    textTransform: ({ props }) => !isUndefined(props.textTransform) && ({ textTransform: props.textTransform }),
-    wordBreak: ({ props }) => !isUndefined(props.wordBreak) && ({ wordBreak: props.wordBreak }),
-    whiteSpace: ({ props }) => !isUndefined(props.whiteSpace) && ({ whiteSpace: props.whiteSpace }),
-    wordWrap: ({ props }) => !isUndefined(props.wordWrap) && ({ wordWrap: props.wordWrap }),
-    letterSpacing: ({ props }) => !isUndefined(props.letterSpacing) && ({ letterSpacing: props.letterSpacing }),
-    textOverflow: ({ props }) => !isUndefined(props.textOverflow) && ({ textOverflow: props.textOverflow }),
-    textAlign: ({ props }) => !isUndefined(props.textAlign) && ({ textAlign: props.textAlign }),
-    writingMode: ({ props }) => !isUndefined(props.writingMode) && ({ writingMode: props.writingMode }),
-    textOrientation: ({ props }) => !isUndefined(props.textOrientation) && ({ textOrientation: props.textOrientation }),
-    textIndent: ({ props }) => !isUndefined(props.textIndent) && ({ textIndent: props.textIndent }),
+    textDecoration: ({ props }) =>
+      !isUndefined(props.textDecoration) && {
+        textDecoration: props.textDecoration
+      },
+    textTransform: ({ props }) =>
+      !isUndefined(props.textTransform) && {
+        textTransform: props.textTransform
+      },
+    wordBreak: ({ props }) =>
+      !isUndefined(props.wordBreak) && { wordBreak: props.wordBreak },
+    whiteSpace: ({ props }) =>
+      !isUndefined(props.whiteSpace) && { whiteSpace: props.whiteSpace },
+    wordWrap: ({ props }) =>
+      !isUndefined(props.wordWrap) && { wordWrap: props.wordWrap },
+    letterSpacing: ({ props }) =>
+      !isUndefined(props.letterSpacing) && {
+        letterSpacing: props.letterSpacing
+      },
+    textOverflow: ({ props }) =>
+      !isUndefined(props.textOverflow) && { textOverflow: props.textOverflow },
+    textAlign: ({ props }) =>
+      !isUndefined(props.textAlign) && { textAlign: props.textAlign },
+    writingMode: ({ props }) =>
+      !isUndefined(props.writingMode) && { writingMode: props.writingMode },
+    textOrientation: ({ props }) =>
+      !isUndefined(props.textOrientation) && {
+        textOrientation: props.textOrientation
+      },
+    textIndent: ({ props }) =>
+      !isUndefined(props.textIndent) && { textIndent: props.textIndent },
     ...props
   }
 }
@@ -58,6 +78,7 @@ export const Strong = {
   tag: 'strong',
   props: { fontWeight: '700' }
 }
+export const U = { tag: 'u' }
 export const Underline = { tag: 'u' }
 export const Italic = { tag: 'i' }
 

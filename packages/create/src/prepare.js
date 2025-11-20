@@ -5,28 +5,51 @@ import {
   deepMerge,
   deepClone,
   merge,
-  checkIfKeyIsComponent
+  checkIfKeyIsComponent,
+  isDevelopment
 } from '@domql/utils'
-import { initEmotion } from './initEmotion'
+import { initEmotion } from './initEmotion.js'
 
 import * as uikit from '@symbo.ls/uikit'
-import * as utils from './utilImports'
+import * as utils from './utilImports.js'
 import * as routerUtils from '@domql/router'
 
-const ENV = process.env.NODE_ENV
+// @preserve-env
 
 export const prepareWindow = (context) => {
-  if (typeof (window) === 'undefined') window = globalThis || {} // eslint-disable-line
-  if (typeof (document) === 'undefined') {
+  if (typeof window === 'undefined') window = globalThis || {} // eslint-disable-line
+  if (typeof document === 'undefined') {
     if (!window.document) window.document = globalThis.document || { body: {} }
     document = window.document // eslint-disable-line
   }
   context.document = context.document || document
-  return (context.window = context.window || window)
+  context.window = context.window || window
+  return context.window
 }
 
-function onlyDotsAndNumbers (str) {
+function onlyDotsAndNumbers(str) {
   return /^[0-9.]+$/.test(str) && str !== ''
+}
+
+const CDN_PROVIDERS = {
+  skypack: {
+    url: 'https://cdn.skypack.dev',
+    formatUrl: (pkg, version) => `${CDN_PROVIDERS.skypack.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
+  },
+  symbols: {
+    url: 'https://pkg.symbo.ls',
+    formatUrl: (pkg, version) => {
+      if (pkg.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
+        return `${CDN_PROVIDERS.symbols.url}/${pkg}`
+      }
+      return `${CDN_PROVIDERS.symbols.url}/${pkg}/${version}.js`
+    }
+  }
+}
+
+export const getCDNUrl = (packageName, version = 'latest', provider = 'skypack') => {
+  const cdnConfig = CDN_PROVIDERS[provider] || CDN_PROVIDERS.skypack
+  return cdnConfig.formatUrl(packageName, version)
 }
 
 export const UIkitWithPrefix = () => {
@@ -43,89 +66,132 @@ export const UIkitWithPrefix = () => {
   return newObj
 }
 
-export const prepareComponents = context => {
-  return context.components ? { ...UIkitWithPrefix(), ...context.components } : UIkitWithPrefix()
+export const prepareComponents = (context) => {
+  return context.components
+    ? { ...UIkitWithPrefix(), ...context.components }
+    : UIkitWithPrefix()
 }
 
-export const prepareUtils = context => {
-  return { ...utils, ...routerUtils, ...utils.scratchUtils, ...context.utils, ...context.snippets, ...context.functions }
+export const prepareUtils = (context) => {
+  return {
+    ...utils,
+    ...routerUtils,
+    ...utils.scratchUtils,
+    ...context.utils,
+    ...context.snippets,
+    ...context.functions
+  }
 }
 
 export const prepareMethods = (context) => {
   return {
     ...(context.methods || {}),
     require: context.utils.require,
-    requireOnDemand: context.utils.requireOnDemand,
-    call: function (fnKey, ...args) {
-      return (context.utils[fnKey] || context.functions[fnKey] || context.methods[fnKey] || context.snippets[fnKey])?.call(this, ...args)
-    }
+    requireOnDemand: context.utils.requireOnDemand
   }
 }
 
 const cachedDeps = {}
-export const prepareDependencies = ({
+export const prepareDependencies = async ({
   dependencies,
   dependenciesOnDemand,
-  document
+  document,
+  preventCaching = false,
+  cdnProvider = 'skypack'
 }) => {
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null
   }
 
   for (const [dependency, version] of Object.entries(dependencies)) {
-    if (version === 'loading' || version === 'error') {
+    if (dependenciesOnDemand && dependenciesOnDemand[dependency]) {
       continue
     }
 
-    const random = ENV === 'development' ? `?${Math.random()}` : ''
-    let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
-
-    if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
-      url = `https://pkg.symbo.ls/${dependency}${random}`
-    }
-
-    if (dependenciesOnDemand && dependenciesOnDemand[dependency]) continue
+    const random = isDevelopment() && preventCaching ? `?${Math.random()}` : ''
+    const url = getCDNUrl(dependency, version, cdnProvider) + random
 
     try {
       if (cachedDeps[dependency]) return
       cachedDeps[dependency] = true
-      utils.loadJavascriptFileEmbedSync(url, document)
+      await utils.loadRemoteScript(url, { document, type: "module" })
     } catch (e) {
-      console.error(`Failed to load ${dependency}:`, e)
+      console.error(`Failed to load ${dependency} from ${cdnProvider}:`, e)
+
+      if (cdnProvider !== 'symbols') {
+        try {
+          const fallbackUrl = getCDNUrl(dependency, version, 'symbols') + random
+          await utils.loadRemoteScript(fallbackUrl, { document })
+          console.log(`Successfully loaded ${dependency} from fallback (symbols.ls)`)
+        } catch (fallbackError) {
+          console.error(`Failed to load ${dependency} from fallback:`, fallbackError)
+        }
+      }
     }
   }
 
   return dependencies
 }
 
-export const prepareRequire = (packages, ctx) => {
+export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
+  const defaultProvider = ctx.cdnProvider || 'skypack'
 
-  const initRequire = ctx => key => {
+  const initRequire = async ctx => async (key, provider) => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
     if (typeof pkg === 'function') return pkg()
     return pkg
   }
 
-  const initRequireOnDemand = ctx => key => {
+  const initRequireOnDemand = async ctx => async (key, provider = defaultProvider) => {
     const { dependenciesOnDemand } = ctx
     const documentOpts = ctx.document || document
     const windowOpts = ctx.window || window
     if (!windowOpts.packages[key]) {
-      const random = ENV === 'development' ? `?${Math.random()}` : ''
+      const random = isDevelopment() ? `?${Math.random()}` : ''
       if (dependenciesOnDemand && dependenciesOnDemand[key]) {
         const version = dependenciesOnDemand[key]
-        const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`
-        ctx.utils.loadJavascriptFileEmbedSync(url, documentOpts)
+        const url = getCDNUrl(key, version, provider) + random
+        try {
+          await ctx.utils.loadRemoteScript(url, {
+            window: windowOpts,
+            document: documentOpts,
+            
+          })
+        } catch (e) {
+          console.error(`Failed to load ${key} from ${provider}:`, e)
+          // Fallback to symbo if not already using it
+          if (provider !== 'symbols') {
+            const fallbackUrl = getCDNUrl(key, version, 'symbols') + random
+            await ctx.utils.loadRemoteScript(fallbackUrl, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          }
+        }
       } else {
-        const url = `https://pkg.symbo.ls/${key}${random}`
-        ctx.utils.loadJavascriptFileEmbedSync(url, documentOpts, d => {
-          windowOpts.packages[key] = 'loadedOnDeman'
-        })
+        const url = getCDNUrl(key, 'latest', provider) + random
+        try {
+          await ctx.utils.loadRemoteScript(url, {
+            window: windowOpts,
+            document: documentOpts,
+          })
+        } catch (e) {
+          console.error(`Failed to load ${key} from ${provider}:`, e)
+          // Fallback to symbo if not already using it
+          if (provider !== 'symbols') {
+            const fallbackUrl = getCDNUrl(key, 'latest', 'symbols') + random
+            await ctx.utils.loadRemoteScript(fallbackUrl, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          }
+        }
+        windowOpts.packages[key] = 'loadedOnDeman'
       }
     }
-    return windowOpts.require(key)
+    return await windowOpts.require(key, provider)
   }
 
   if (windowOpts.packages) {
@@ -135,12 +201,12 @@ export const prepareRequire = (packages, ctx) => {
   }
 
   if (!windowOpts.require) {
-    ctx.utils.require = initRequire(ctx)
+    ctx.utils.require = await initRequire(ctx)
     windowOpts.require = ctx.utils.require
   }
 
   if (!windowOpts.requireOnDemand) {
-    ctx.utils.requireOnDemand = initRequireOnDemand(ctx)
+    ctx.utils.requireOnDemand = await initRequireOnDemand(ctx)
     windowOpts.requireOnDemand = ctx.utils.requireOnDemand
   }
 }
@@ -163,7 +229,7 @@ export const preparePages = (app, context) => {
   }
   const pages = app.routes || context.pages || {}
   return Object.keys(pages)
-    .filter(v => !v.startsWith('/'))
+    .filter((v) => !v.startsWith('/'))
     .reduce((pages, v) => {
       const index = v === 'index' ? '' : v
       pages['/' + index] = pages[v]
