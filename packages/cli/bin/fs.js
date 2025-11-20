@@ -269,7 +269,7 @@ export async function createFs (
     if (isString(value)) {
       stringifiedContent = `${validKey} = ${value}`
     } else {
-      const content = reorderWithOrderKeys(deepDestringify(value))
+      const content = reorderWithOrderKeys(deepDestringifyFunctions(value))
       // console.log('ON DEEPDESTR:')
       // console.log(content.components.Configuration)
       stringifiedContent = `${validKey} = ${objectToString(content)};`
@@ -292,7 +292,7 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
     }
 
     if (isString(data)) data = { default: data }
-    const content = reorderWithOrderKeys(deepDestringify(data))
+    const content = reorderWithOrderKeys(deepDestringifyFunctions(data))
     const stringifiedContent = `export default ${objectToString(content)};`
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
