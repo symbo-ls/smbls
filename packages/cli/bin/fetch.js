@@ -157,9 +157,9 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (update || force) {
-      createFs(payload, distDir, { update: true, metadata })
+      createFs(payload, distDir, { update: true, metadata: false })
     } else {
-      createFs(payload, distDir, { metadata })
+      createFs(payload, distDir, { metadata: false })
     }
 }
 

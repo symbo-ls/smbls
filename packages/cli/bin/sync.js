@@ -291,7 +291,7 @@ export async function syncProjectChanges(options) {
 
     // Apply changes to local files
     console.log(chalk.dim('Updating local files...'))
-    await createFs(updatedServerData, distDir, { update: true, metadata: true })
+    await createFs(updatedServerData, distDir, { update: true, metadata: false })
     console.log(chalk.gray('Local files updated successfully'))
 
     console.log(chalk.bold.green('\nProject synced successfully!'))

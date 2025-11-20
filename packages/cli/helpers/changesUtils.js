@@ -1,15 +1,29 @@
 import { normalizeKeys } from './compareUtils.js'
 
-// Top-level data keys as per server contract
+// Keys managed by the CLI filesystem representation (exclude settings/schema/key/thumbnail/etc.)
 export const DATA_KEYS = [
-  'key','designSystem','components','state','pages','snippets','settings',
-  'packages','methods','thumbnail','functions','integrations','dependencies',
-  'colors','icons','canvas','files'
+  'designSystem','components','state','pages','snippets',
+  'methods','functions','dependencies','files'
 ]
 
+function stripMetaDeep(val) {
+  if (Array.isArray(val)) {
+    return val.map(stripMetaDeep)
+  }
+  if (val && typeof val === 'object') {
+    const out = {}
+    for (const [k, v] of Object.entries(val)) {
+      if (k === '__order') continue
+      out[k] = stripMetaDeep(v)
+    }
+    return out
+  }
+  return val
+}
+
 function asPlain(obj) {
-  // Ensure consistent comparison
-  return normalizeKeys(obj || {})
+  // Ensure consistent comparison and strip meta keys (like __order)
+  return stripMetaDeep(normalizeKeys(obj || {}))
 }
 
 function equal(a, b) {
