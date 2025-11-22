@@ -18,7 +18,7 @@
     "link:all-force": "npx lerna exec -- npm run unlink; npm run link:all"
   },
   "dependencies": {
-    "domql": "^2.32.16"
+    "domql": "^2.32.17"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1",
@@ -32,7 +32,7 @@
     "esbuild": "^0.25.1",
     "eslint": "^9.28.0",
     "globusa": "^1.1.4",
-    "lerna": "^8.1.9",
+    "lerna": "^9.0.1",
     "parcel": "^2.15.2",
     "process": "^0.11.10",
     "rimraf": "^5.0.1",
@@ -51,5 +51,5 @@
     "packages/*/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "2.32.16"
+  "version": "2.32.17"
 }
