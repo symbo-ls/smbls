@@ -1115,6 +1115,22 @@ export const Box = {
           props,
           'borderRadius'
         )
+    },
+
+    // container
+    ...{
+      container: ({ props }) =>
+        props.container && {
+          container: props.container
+        },
+      containerName: ({ props }) =>
+        props.containerName && {
+          containerName: props.containerName || 1
+        },
+      containerType: ({ props }) =>
+        props.containerType && {
+          containerType: props.containerType
+        }
     }
   },
 
