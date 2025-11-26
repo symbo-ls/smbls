@@ -5,79 +5,58 @@ import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { loadModule } from './require.js'
 import { program } from './program.js'
-import { CredentialManager } from './login.js'
+import { CredentialManager } from '../helpers/credentialManager.js'
 import { buildDirectory } from '../helpers/fileUtils.js'
-import { showDiffPager } from '../helpers/diffUtils.js'
-import { normalizeKeys, generateChanges } from '../helpers/compareUtils.js'
-import {
-  getServerProjectData,
-  updateProjectOnServer
-} from '../helpers/apiUtils.js'
+import { normalizeKeys } from '../helpers/compareUtils.js'
+import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
+import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
+import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
+import { showAuthRequiredMessages, showProjectNotFoundMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
 
-const RC_PATH = process.cwd() + '/symbols.json'
-const CREATE_PROJECT_URL = 'https://symbols.app/create'
 
-function printProjectNotFoundGuidance (appKey) {
-  console.error(chalk.bold.red('\nProject not found or access denied.'))
-  console.error(chalk.bold.yellow('\nPossible reasons:'))
-  console.error(chalk.gray('1. The project does not exist'))
-  console.error(chalk.gray("2. You don't have access to this project"))
-  console.error(chalk.gray('3. The app key in symbols.json might be incorrect'))
-
-  console.error(chalk.bold.yellow('\nTo resolve this:'))
-  console.error(
-    chalk.white(
-      `1. Visit ${chalk.cyan.underline(
-        CREATE_PROJECT_URL
-      )} to create a new project`
-    )
-  )
-  console.error(
-    chalk.white(
-      '2. After creating the project, update your symbols.json with the correct information:'
-    )
-  )
-  console.error(chalk.gray(`   - Verify the app key: ${chalk.cyan(appKey)}`))
-  console.error(chalk.gray('   - Make sure you have the correct permissions'))
-
-  console.error(chalk.bold.yellow('\nThen try again:'))
-  console.error(chalk.cyan('$ smbls push'))
-}
-
-async function loadProjectConfiguration () {
+async function buildLocalProject () {
   try {
-    const config = await loadModule(RC_PATH)
-    if (!config.key) {
-      throw new Error('Missing app key in symbols.json')
+    const distDir = path.join(process.cwd(), 'smbls')
+    const outputDirectory = path.join(distDir, 'dist')
+
+    await buildDirectory(distDir, outputDirectory)
+    const outputFile = path.join(outputDirectory, 'index.js')
+    return normalizeKeys(await loadModule(outputFile, { silent: false }))
+  } catch (error) {
+    // Enhance error with build context
+    error.buildContext = {
+      command: 'push',
+      workspace: process.cwd()
     }
-    return config
-  } catch (e) {
-    if (e.message.includes('Missing app key')) {
-      console.error(chalk.bold.red('\nInvalid symbols.json configuration:'))
-      console.error(chalk.white('The file must contain a valid app key.'))
-      console.error(chalk.bold.yellow('\nExample symbols.json:'))
-      console.error(
-        chalk.cyan(JSON.stringify({ key: 'your.app.key' }, null, 2))
-      )
-    } else {
-      console.error(
-        chalk.bold.red('Please include symbols.json in your repository root')
-      )
-    }
-    process.exit(1)
+    throw error
   }
 }
 
-async function buildLocalProject () {
-  const distDir = path.join(process.cwd(), 'smbls')
-  const outputDirectory = path.join(distDir, 'dist')
-
-  await buildDirectory(distDir, outputDirectory)
-  const outputFile = path.join(outputDirectory, 'index.js')
-  return normalizeKeys(await loadModule(outputFile))
+function getAt(obj, pathArr = []) {
+  try {
+    return pathArr.reduce((acc, k) => (acc == null ? undefined : acc[k]), obj)
+  } catch (_) {
+    return undefined
+  }
 }
 
-async function confirmChanges (changes) {
+function buildDiffsFromChanges(changes, base, local) {
+  const diffs = []
+  for (const [op, path, value] of changes) {
+    const oldVal = getAt(base, path)
+    if (op === 'delete') {
+      diffs.push(generateDiffDisplay('delete', path, oldVal))
+    } else {
+      const newVal = value !== undefined ? value : getAt(local, path)
+      diffs.push(generateDiffDisplay('update', path, oldVal, newVal))
+    }
+  }
+  return diffs
+}
+
+async function confirmChanges (changes, base, local) {
   if (changes.length === 0) {
     console.log(chalk.bold.yellow('No changes detected'))
     return false
@@ -93,6 +72,19 @@ async function confirmChanges (changes) {
     console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
   })
 
+  const { view } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'view',
+      message: 'View full list of changes?',
+      default: false
+    }
+  ])
+  if (view) {
+    const diffs = buildDiffsFromChanges(changes, base, local)
+    await showDiffPager(diffs)
+  }
+
   const { proceed } = await inquirer.prompt([
     {
       type: 'confirm',
@@ -105,76 +97,123 @@ async function confirmChanges (changes) {
   return proceed
 }
 
-export async function pushProjectChanges () {
+export async function pushProjectChanges(options) {
+  const { verbose, message, type = 'patch' } = options
   const credManager = new CredentialManager()
-  const authToken = credManager.getAuthToken()
+  const authToken = credManager.ensureAuthToken()
 
   if (!authToken) {
-    console.error(chalk.red('Please login first using: smbls login'))
+    showAuthRequiredMessages()
     process.exit(1)
   }
 
   try {
-    const config = await loadProjectConfiguration()
-    const { key: appKey } = config
+    const symbolsConfig = await loadSymbolsConfig()
+    const cliConfig = loadCliConfig()
+    const lock = readLock()
+    const appKey = cliConfig.projectKey || symbolsConfig.key
+    const branch = cliConfig.branch || symbolsConfig.branch || 'main'
 
     // Build and load local project
     console.log(chalk.dim('Building local project...'))
-    const projectData = await buildLocalProject()
-    console.log(chalk.gray('Local project built and loaded successfully'))
-
-    // Get server data
+    let localProject
     try {
-      console.log(chalk.dim('Fetching server data...'))
-      const serverProjectData = await getServerProjectData(appKey, authToken)
-
-      if (!serverProjectData) {
-        throw new Error('Failed to fetch server data: Empty response')
-      }
-
-      const normalizedServerData = normalizeKeys(serverProjectData)
-      console.log(chalk.gray('Server data fetched successfully'))
-
-      // Compare and get changes
-      const { changes, diffs } = generateChanges(
-        normalizedServerData,
-        projectData
-      )
-
-      // Show changes and confirm
-      if (changes.length > 0) {
-        console.log('\nDetailed changes:')
-        await showDiffPager(diffs)
-      }
-
-      const shouldProceed = await confirmChanges(changes)
-      if (!shouldProceed) {
-        console.log(chalk.yellow('Operation cancelled'))
-        return
-      }
-
-      // Update server
-      console.log(chalk.dim('Updating server...'))
-      await updateProjectOnServer(appKey, authToken, changes, projectData)
-
-      console.log(chalk.bold.green('\nProject updated successfully!'))
-      console.log(
-        chalk.gray(`Total changes applied: ${chalk.cyan(changes.length)}`)
-      )
-    } catch (error) {
-      if (
-        error.message.includes('Failed to fetch server data') ||
-        (error.response && error.response.status === 404) ||
-        Object.keys(error.response?.data || {}).length === 0
-      ) {
-        printProjectNotFoundGuidance(appKey)
-      } else {
-        throw error // Re-throw other errors to be caught by outer catch block
-      }
+      localProject = await buildLocalProject()
+      console.log(chalk.gray('Local project built successfully'))
+    } catch (buildError) {
+      showBuildErrorMessages(buildError)
       process.exit(1)
     }
+
+    // Get current server state (ETag aware)
+    console.log(chalk.dim('Fetching current server state...'))
+    const serverResp = await getCurrentProjectData(
+      { projectKey: appKey, projectId: lock.projectId },
+      authToken,
+      { branch, includePending: true, etag: lock.etag }
+    )
+    const serverProject = serverResp.notModified ? null : serverResp.data
+
+    // Check if server project is empty (not found or no access)
+    if (serverProject && Object.keys(serverProject).length === 0) {
+      showProjectNotFoundMessages(appKey)
+      process.exit(1)
+    }
+
+    console.log(chalk.gray('Server state fetched successfully'))
+
+    // Calculate coarse local changes vs server snapshot (or base)
+    const base = normalizeKeys(serverProject || {})
+    const changes = computeCoarseChanges(base, localProject)
+
+    if (!changes.length) {
+      console.log(chalk.bold.yellow('\nNo changes to push'))
+      return
+    }
+
+    // Show change summary
+    console.log('\nLocal changes to push:')
+    const byType = changes.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+    Object.entries(byType).forEach(([t, c]) => {
+      console.log(chalk.gray(`- ${t}: ${chalk.cyan(c)} changes`))
+    })
+
+    // Confirm push
+    const shouldProceed = await confirmChanges(changes, base, localProject)
+    if (!shouldProceed) {
+      console.log(chalk.yellow('Push cancelled'))
+      return
+    }
+
+    // Push changes
+    console.log(chalk.dim('\nPushing changes...'))
+    const projectId = lock.projectId || serverProject?.projectInfo?.id
+    if (!projectId) {
+      console.log(chalk.red('Unable to resolve projectId. Please fetch first to initialize lock.'))
+      process.exit(1)
+    }
+    const operationId = `cli-${Date.now()}`
+    // Derive granular changes against server base and compute orders using local for pending children
+    const { granularChanges } = preprocessChanges(base, changes)
+    const orders = computeOrdersForTuples(localProject, granularChanges)
+    const result = await postProjectChanges(projectId, authToken, {
+      branch,
+      type,
+      operationId,
+      // Send both forms for compatibility with preprocessors
+      changes,
+      granularChanges,
+      orders
+    })
+    if (result.noOp) {
+      console.log(chalk.bold.yellow('\nNo-op on server'))
+      return
+    }
+    const { id: versionId, value: version } = result.data || {}
+
+    // Update symbols.json
+    updateLegacySymbolsJson({ ...(symbolsConfig || {}), version, versionId })
+
+    console.log(chalk.bold.green('\nChanges pushed successfully!'))
+    console.log(chalk.gray(`New version: ${chalk.cyan(version)}`))
+
+    // Refresh lock with latest ETag by fetching head
+    const latest = await getCurrentProjectData(
+      { projectKey: appKey, projectId },
+      authToken,
+      { branch, includePending: true }
+    )
+    writeLock({
+      etag: latest.etag || null,
+      version,
+      branch,
+      projectId,
+      pulledAt: new Date().toISOString()
+    })
+
   } catch (error) {
     console.error(chalk.bold.red('\nPush failed:'), chalk.white(error.message))
+    if (verbose) console.error(error.stack)
     process.exit(1)
   }
 }
@@ -182,4 +221,5 @@ export async function pushProjectChanges () {
 program
   .command('push')
   .description('Push changes to platform')
+  .option('-m, --message <message>', 'Specify a commit message')
   .action(pushProjectChanges)
