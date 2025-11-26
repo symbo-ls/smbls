@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/utils",
-  "version": "2.32.18",
+  "version": "2.32.19",
   "author": "symbo.ls",
   "files": [
     "src",
@@ -24,7 +24,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@domql/utils": "^2.32.18"
+    "@domql/utils": "^2.32.19"
   },
-  "gitHead": "1af6547fd19f5b3ea7b93398c3c7efe0bd8b89a5"
+  "gitHead": "ce092725c84d862876d7c96eeb42e0407c96fef3"
 }
