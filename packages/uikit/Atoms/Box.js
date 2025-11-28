@@ -876,11 +876,14 @@ export const Box = {
         }
       },
 
-      backgroundImage: (element, s, context) => {
-        const { props, deps } = element
-        const globalTheme = deps.getSystemGlobalTheme(element)
-        let val = props.backgroundImage
+      backgroundImage: (el, s, context) => {
+        const { props, deps } = el
+        const globalTheme = deps.getSystemGlobalTheme(el)
+        let val = el.call('exec', props.backgroundImage)
         if (!val) return
+        if (el.call('isString', val) && val.includes('{{')) {
+          val = el.call('replaceLiteralsWithObjectFields', val)
+        }
         const file = context.files && context.files[val]
         if (file && file.content) val = file.content.src
         return {
