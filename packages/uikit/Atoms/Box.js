@@ -154,8 +154,8 @@ export const Box = {
               [childrenAsDefault]: isObjectLike(v)
                 ? v
                 : childrenAsDefault === 'state'
-                  ? { value: v }
-                  : { text: v }
+                ? { value: v }
+                : { text: v }
             }))
           }
         } else if (isString(children) || isNumber(children)) {
@@ -1120,7 +1120,7 @@ export const Box = {
         )
     },
 
-    // container
+    // container queries
     ...{
       container: ({ props }) =>
         props.container && {
