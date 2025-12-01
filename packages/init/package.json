@@ -1,16 +1,16 @@
 {
   "name": "@symbo.ls/init",
-  "version": "2.32.26",
+  "version": "2.32.27",
   "license": "MIT",
-  "gitHead": "66d87154b447b4b96fdc5030ab372fbfeb4547f3",
+  "gitHead": "f381d42b95f2a166aa002a5de5f3c89009005039",
   "source": "index.js",
   "main": "index.js",
   "type": "module",
   "dependencies": {
-    "@domql/utils": "^2.32.26",
-    "@symbo.ls/default-config": "^2.32.26",
-    "@symbo.ls/emotion": "^2.32.26",
-    "@symbo.ls/scratch": "^2.32.26"
+    "@domql/utils": "^2.32.27",
+    "@symbo.ls/default-config": "^2.32.27",
+    "@symbo.ls/emotion": "^2.32.27",
+    "@symbo.ls/scratch": "^2.32.27"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "devDependencies": {
