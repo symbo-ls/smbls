@@ -18,24 +18,90 @@ const {
 } = utils.default || utils
 
 let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies']
-const directoryKeys = [
-  'components',
-  'snippets',
-  'pages',
-  'functions',
-  'methods'
-]
+const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
 
-const defaultExports = [
-  'pages',
-  'designSystem',
-  'state',
-  'files',
-  'dependencies',
-  'schema'
-]
+const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema']
 
-export async function createFs(
+// Minimal reserved identifier set to avoid invalid named exports like "export const default"
+const RESERVED_IDENTIFIERS = new Set(['default'])
+function isReservedIdentifier (name) {
+  return RESERVED_IDENTIFIERS.has(name)
+}
+
+// Keys that should never be materialized as files inside collection directories
+const SKIP_ENTRY_KEYS = new Set(['__order', 'schema'])
+function shouldSkipEntryKey (name) {
+  return SKIP_ENTRY_KEYS.has(name) || isReservedIdentifier(name)
+}
+
+function reorderWithOrderKeys (input) {
+  if (Array.isArray(input)) {
+    return input.map(reorderWithOrderKeys)
+  }
+  if (!input || typeof input !== 'object') return input
+  const hasOrder = Array.isArray(input.__order)
+  const originalKeys = Object.keys(input)
+  const orderedKeys = []
+  if (hasOrder) {
+    for (let i = 0; i < input.__order.length; i++) {
+      const k = input.__order[i]
+      if (k === '__order') continue
+      if (originalKeys.includes(k) && !orderedKeys.includes(k)) {
+        orderedKeys.push(k)
+      }
+    }
+  }
+  for (let i = 0; i < originalKeys.length; i++) {
+    const k = originalKeys[i]
+    if (k === '__order') continue
+    if (!orderedKeys.includes(k)) orderedKeys.push(k)
+  }
+  const out = {}
+  for (let i = 0; i < orderedKeys.length; i++) {
+    const k = orderedKeys[i]
+    out[k] = reorderWithOrderKeys(input[k])
+  }
+  if (hasOrder) {
+    out.__order = input.__order.slice()
+  } else if (Object.prototype.hasOwnProperty.call(input, '__order')) {
+    // Preserve explicit empty/non-array __order semantics at the end
+    out.__order = input.__order
+  }
+  return out
+}
+
+async function removeStaleFiles(body, targetDir) {
+  for (const key of directoryKeys) {
+    const dirPath = path.join(targetDir, key)
+    if (!fs.existsSync(dirPath)) continue
+
+    const existingFiles = await fs.promises.readdir(dirPath)
+    const currentEntries = body[key] ? Object.keys(body[key])
+      // Drop meta/reserved identifiers like "__order" and "default"
+      .filter(entry => !shouldSkipEntryKey(entry))
+      .map(entry => {
+      // Apply the same transformations as in createKeyDirectoryAndFiles
+      let fileName = entry
+      if (fileName.startsWith('/')) fileName = fileName.slice(1)
+      if (fileName === '') fileName = 'main'
+      if (fileName.includes('*')) fileName = 'fallback'
+      return `${fileName.replace('/', '-')}.js`
+    }) : []
+
+    // Don't remove index.js
+    const filesToCheck = existingFiles.filter(file => file !== 'index.js')
+
+    for (const file of filesToCheck) {
+      if (!currentEntries.includes(file)) {
+        const filePath = path.join(dirPath, file)
+        console.log(chalk.yellow(`Removing stale file: ${path.join(key, file)}`))
+        await fs.promises.unlink(filePath)
+      }
+    }
+  }
+}
+
+export async function createFs (
   body,
   distDir = path.join(process.cwd(), 'smbls'),
   opts = {}
@@ -84,54 +150,72 @@ export async function createFs(
 
   if (filesExist) {
     const cacheDir = path.join(distDir, '.cache')
-    await fs.promises.mkdir(cacheDir, { recursive: true })
 
-    const cachePromises = [
-      ...directoryKeys.map((key) =>
-        createKeyDirectoryAndFiles(key, body, cacheDir, true)
-      ),
-      ...singleFileKeys.map((key) => {
-        if (body[key] && typeof body[key] === 'object') {
-          return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
-        }
-        return undefined
-      })
-    ]
+    try {
+      await fs.promises.mkdir(cacheDir, { recursive: true })
 
-    await Promise.all(cachePromises)
-    await generateIndexjsFile(
-      joinArrays(directoryKeys, singleFileKeys),
-      cacheDir,
-      'root'
-    )
+      if (update) {
+        await removeStaleFiles(body, targetDir)
+      }
 
-    const diffs = await findDiff(cacheDir, targetDir)
-    if (diffs.length > 0) {
-      console.log('Differences found:')
-      diffs.forEach((diff) => {
-        console.log(chalk.green(`File: ${diff.file}`))
-        console.log(chalk.yellow('Diff:'))
-        console.log(chalk.yellow(diff.diff))
-        console.log('---')
-      })
-      if (!update) {
-        const { consent } = await askForConsent()
-        if (consent) {
+      const cachePromises = [
+        ...directoryKeys.map((key) =>
+          createKeyDirectoryAndFiles(key, body, cacheDir, true)
+        ),
+        ...singleFileKeys.map((key) => {
+          if (body[key] && typeof body[key] === 'object') {
+            return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
+          }
+          return undefined
+        })
+      ]
+
+      await Promise.all(cachePromises)
+      await generateIndexjsFile(
+        joinArrays(directoryKeys, singleFileKeys),
+        cacheDir,
+        'root'
+      )
+
+      const diffs = await findDiff(cacheDir, targetDir)
+      if (diffs.length > 0) {
+        console.log('Differences found:')
+        diffs.forEach((diff) => {
+          console.log(chalk.green(`File: ${diff.file}`))
+          console.log(chalk.yellow('Diff:'))
+          console.log(chalk.yellow(diff.diff))
+          console.log('---')
+        })
+        if (!update) {
+          const { consent } = await askForConsent()
+          if (consent) {
+            await overrideFiles(cacheDir, targetDir)
+            console.log('Files overridden successfully.')
+          } else {
+            console.log('Files not overridden.')
+          }
+        } else {
           await overrideFiles(cacheDir, targetDir)
           console.log('Files overridden successfully.')
-        } else {
-          console.log('Files not overridden.')
+          console.log()
+          console.log(chalk.dim('\n----------------\n'))
         }
       } else {
-        await overrideFiles(cacheDir, targetDir)
-        console.log('Files overridden successfully.')
+        console.log('No differences found.')
         console.log()
         console.log(chalk.dim('\n----------------\n'))
       }
-    } else {
-      console.log('No differences found.')
-      console.log()
-      console.log(chalk.dim('\n----------------\n'))
+
+      // Clean up cache directory
+      await fs.promises.rm(cacheDir, { recursive: true, force: true })
+    } catch (error) {
+      // Make sure we clean up even if there's an error
+      try {
+        await fs.promises.rm(cacheDir, { recursive: true, force: true })
+      } catch (cleanupError) {
+        // Ignore cleanup errors
+      }
+      throw error // Re-throw the original error
     }
   }
 
@@ -142,7 +226,10 @@ export async function createFs(
     const dirs = []
 
     if (body[key] && isObject(body[key])) {
-      const promises = Object.entries(body[key]).map(
+      const promises = Object.entries(body[key])
+        // Skip meta/reserved identifier entries (e.g. "__order", "default")
+        .filter(([entryKey]) => !shouldSkipEntryKey(entryKey))
+        .map(
         async ([entryKey, value]) => {
           // if pages
           if (entryKey.startsWith('/')) entryKey = entryKey.slice(1)
@@ -165,7 +252,9 @@ export async function createFs(
       childKey.includes('-') || childKey.includes('/')
         ? removeChars(toCamelCase(childKey))
         : childKey
-    const filePath = path.join(dirPath, `${childKey.replaceAll('/', '-')}.js`)
+    // Avoid reserved identifiers that break ESM syntax, e.g. "export const default"
+    const safeItemKey = isReservedIdentifier(itemKey) ? `_${itemKey}` : itemKey
+    const filePath = path.join(dirPath, `${childKey.replace('/', '-')}.js`)
 
     if (!update && fs.existsSync(filePath)) {
       return
@@ -174,13 +263,13 @@ export async function createFs(
     const itemKeyInvalid = itemKey.includes('.')
     const validKey = itemKeyInvalid
       ? `const ${removeChars(toTitleCase(itemKey))}`
-      : `export const ${itemKey}`
+      : `export const ${safeItemKey}`
 
     let stringifiedContent
     if (isString(value)) {
       stringifiedContent = `${validKey} = ${value}`
     } else {
-      const content = deepDestringifyFunctions(value)
+      const content = reorderWithOrderKeys(deepDestringifyFunctions(value))
       // console.log('ON DEEPDESTR:')
       // console.log(content.components.Configuration)
       stringifiedContent = `${validKey} = ${objectToString(content)};`
@@ -203,7 +292,7 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
     }
 
     if (isString(data)) data = { default: data }
-    const content = deepDestringifyFunctions(data)
+    const content = reorderWithOrderKeys(deepDestringifyFunctions(data))
     const stringifiedContent = `export default ${objectToString(content)};`
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
