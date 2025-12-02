@@ -34,7 +34,7 @@ try {
   console.error('Please include symbols.json to your root of respository')
 }
 
-export const fetchFromCli = async opts => {
+export const fetchFromCli = async (opts) => {
   const {
     dev,
     verbose,
@@ -44,7 +44,7 @@ export const fetchFromCli = async opts => {
     update,
     force
   } = opts
-  await rc.then(async data => {
+  await rc.then(async (data) => {
     const { key, framework, distDir, metadata } = data || {}
 
     const endpoint = dev || utils.isLocal() ? API_URL_LOCAL : API_URL
@@ -54,7 +54,7 @@ export const fetchFromCli = async opts => {
     const body = await fetchRemote(key, {
       endpoint,
       metadata: metadata || metadataOpt,
-      onError: e => {
+      onError: (e) => {
         console.log(chalk.red('Failed to fetch:'), key)
         if (verbose) console.error(e)
         else console.log(debugMsg)
@@ -64,7 +64,7 @@ export const fetchFromCli = async opts => {
     // console.log('ON FETCH:')
     // console.log(body.components.Configuration)
 
-    if (!body) return
+    if (!body || body.error) return
 
     const { version, ...config } = body
 
