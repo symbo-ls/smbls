@@ -135,16 +135,6 @@ const onSnapshot =
     if (schema) {
       ctx.schema = schema
     }
-
-    // Trigger routing so UI reflects latest data
-    const { pathname, search, hash } = ctx.window.location
-    el.call(
-      'router',
-      pathname + search + hash,
-      el.__ref.root,
-      {},
-      { scrollToTop: false }
-    )
   }
 
 const onOps =
