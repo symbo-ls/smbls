@@ -89,6 +89,7 @@ export const Box = {
     splitTransition,
     transformDuration,
     depth,
+    exec,
     getSystemGlobalTheme,
     getMediaTheme,
     getMediaColor,
@@ -876,15 +877,15 @@ export const Box = {
         }
       },
 
-      backgroundImage: (el, s, context) => {
+      backgroundImage: (el, s, ctx) => {
         const { props, deps } = el
         const globalTheme = deps.getSystemGlobalTheme(el)
-        let val = el.call('exec', props.backgroundImage)
+        let val = ctx.utils.exec.call(el, props.backgroundImage)
         if (!val) return
-        if (el.call('isString', val) && val.includes('{{')) {
-          val = el.call('replaceLiteralsWithObjectFields', val)
+        if (ctx.utils.isString.call(el, val) && val.includes('{{')) {
+          val = ctx.utils.replaceLiteralsWithObjectFields.call(el, val)
         }
-        const file = context.files && context.files[val]
+        const file = ctx.files && ctx.files[val]
         if (file && file.content) val = file.content.src
         return {
           backgroundImage: deps.transformBackgroundImage(val, globalTheme)
