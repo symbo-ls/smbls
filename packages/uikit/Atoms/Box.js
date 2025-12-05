@@ -1149,7 +1149,7 @@ export const Circle = {
 
 export const Hr = {
   tag: 'hr',
-  props: { margin: 'C1 0' }
+  props: { margin: 'C1 0', borderWidth: '0 0 1px 0' }
 }
 export const Br = { tag: 'br' }
 export const Div = { tag: 'div' }

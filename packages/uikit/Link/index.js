@@ -69,7 +69,7 @@ export const RouterLink = {
           )
           event.preventDefault()
         } catch (e) {
-          console.warn(e)
+          el.warn(e)
         }
       }
     }
