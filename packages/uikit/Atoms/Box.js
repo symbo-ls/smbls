@@ -89,6 +89,7 @@ export const Box = {
     splitTransition,
     transformDuration,
     depth,
+    exec,
     getSystemGlobalTheme,
     getMediaTheme,
     getMediaColor,
@@ -154,8 +155,8 @@ export const Box = {
               [childrenAsDefault]: isObjectLike(v)
                 ? v
                 : childrenAsDefault === 'state'
-                  ? { value: v }
-                  : { text: v }
+                ? { value: v }
+                : { text: v }
             }))
           }
         } else if (isString(children) || isNumber(children)) {
@@ -876,12 +877,15 @@ export const Box = {
         }
       },
 
-      backgroundImage: (element, s, context) => {
-        const { props, deps } = element
-        const globalTheme = deps.getSystemGlobalTheme(element)
-        let val = props.backgroundImage
+      backgroundImage: (el, s, ctx) => {
+        const { props, deps } = el
+        const globalTheme = deps.getSystemGlobalTheme(el)
+        let val = ctx.utils.exec.call(el, props.backgroundImage)
         if (!val) return
-        const file = context.files && context.files[val]
+        if (ctx.utils.isString.call(el, val) && val.includes('{{')) {
+          val = ctx.utils.replaceLiteralsWithObjectFields.call(el, val)
+        }
+        const file = ctx.files && ctx.files[val]
         if (file && file.content) val = file.content.src
         return {
           backgroundImage: deps.transformBackgroundImage(val, globalTheme)
@@ -1115,6 +1119,22 @@ export const Box = {
           props,
           'borderRadius'
         )
+    },
+
+    // container queries
+    ...{
+      container: ({ props }) =>
+        props.container && {
+          container: props.container
+        },
+      containerName: ({ props }) =>
+        props.containerName && {
+          containerName: props.containerName || 1
+        },
+      containerType: ({ props }) =>
+        props.containerType && {
+          containerType: props.containerType
+        }
     }
   },
 
@@ -1129,7 +1149,7 @@ export const Circle = {
 
 export const Hr = {
   tag: 'hr',
-  props: { margin: 'C1 0' }
+  props: { margin: 'C1 0', borderWidth: '0 0 1px 0' }
 }
 export const Br = { tag: 'br' }
 export const Div = { tag: 'div' }

@@ -74,7 +74,7 @@ export const ButtonSet = {
 }
 
 export const IconButton = {
-  extend: ['SquareButton', 'ClickableItem'],
+  extend: ['SquareButton'],
   props: {
     round: 'Z'
   },
