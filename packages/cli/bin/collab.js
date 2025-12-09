@@ -7,6 +7,7 @@ import { program } from './program.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
+import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
@@ -263,7 +264,7 @@ export async function startCollab(options) {
       const { buildDirectory } = await import('../helpers/fileUtils.js')
       const { loadModule } = await import('./require.js')
       await buildDirectory(distDir, outputDir)
-      const loaded = await loadModule(outputFile, { silent: true })
+      const loaded = await loadModule(outputFile, { silent: true, noCache: true })
       return loaded
     } catch (e) {
       if (options.verbose) console.error('Build failed while watching:', e.message)
@@ -275,17 +276,20 @@ export async function startCollab(options) {
     if (suppressLocalChanges) return
     const local = await loadLocalProject()
     if (!local) return
-    // Base snapshot is our last pulled .symbols/project.json
+    // Prepare safe, JSON-serialisable snapshots for diffing & transport
     const base = currentBase || {}
-    const changes = computeCoarseChanges(base, local)
+    const safeBase = stringifyFunctionsForTransport(base)
+    const safeLocal = stringifyFunctionsForTransport(local)
+    // Base snapshot is our last pulled .symbols/project.json
+    const changes = computeCoarseChanges(safeBase, safeLocal)
     if (!changes.length) return
     if (options.verbose) {
       const byType = changes.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
       console.log(chalk.gray(`Emitting local ops: ${JSON.stringify(byType)}`))
     }
     // Generate granular changes against base to ensure downstream consumers have fine ops
-    const { granularChanges } = preprocessChanges(base, changes)
-    const orders = computeOrdersForTuples(local, granularChanges)
+    const { granularChanges } = preprocessChanges(safeBase, changes)
+    const orders = computeOrdersForTuples(safeLocal, granularChanges)
     console.log(chalk.gray(`Emitting local ops: ${JSON.stringify({ changes, granularChanges, orders, branch })}`))
     socket.emit('ops', {
       changes,

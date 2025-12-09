@@ -23,6 +23,7 @@ const require = createRequire(import.meta.url)
  * @param {boolean} options.raw - Return raw file contents
  * @param {string} options.encoding - File encoding (default: 'utf8')
  * @param {boolean} options.silent - Don't throw errors, return null instead
+ * @param {boolean} options.noCache - Bust Node's require cache before loading
  * @returns {Promise<any>} - Loaded module/file contents
  */
 export const loadModule = async (modulePath, options = {}) => {
@@ -30,7 +31,8 @@ export const loadModule = async (modulePath, options = {}) => {
     json = false,
     raw = false,
     encoding = 'utf8',
-    silent = false
+    silent = false,
+    noCache = false
   } = options
 
   try {
@@ -62,6 +64,12 @@ export const loadModule = async (modulePath, options = {}) => {
 
     // Handle JavaScript/Node modules
     try {
+      if (noCache) {
+        try {
+          const resolved = require.resolve(modulePath)
+          delete require.cache[resolved]
+        } catch (_) {}
+      }
       const module = require(modulePath)
       return module?.default || module
     } catch (e) {
@@ -88,7 +96,8 @@ export const loadModuleSync = (modulePath, options = {}) => {
     json = false,
     raw = false,
     encoding = 'utf8',
-    silent = false
+    silent = false,
+    noCache = false
   } = options
 
   try {
@@ -116,6 +125,12 @@ export const loadModuleSync = (modulePath, options = {}) => {
     }
 
     try {
+      if (noCache) {
+        try {
+          const resolved = require.resolve(modulePath)
+          delete require.cache[resolved]
+        } catch (_) {}
+      }
       const module = require(modulePath)
       return module?.default || module
     } catch (e) {
