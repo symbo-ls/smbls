@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "2.33.12",
+  "version": "2.33.13",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -14,25 +14,25 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "^2.33.12",
-    "@symbo.ls/atoms": "^2.33.12",
-    "@symbo.ls/avatar": "^2.33.12",
-    "@symbo.ls/button": "^2.33.12",
-    "@symbo.ls/dialog": "^2.33.12",
-    "@symbo.ls/dropdown": "^2.33.12",
-    "@symbo.ls/icon": "^2.33.12",
-    "@symbo.ls/input": "^2.33.12",
-    "@symbo.ls/link": "^2.33.12",
-    "@symbo.ls/notification": "^2.33.12",
-    "@symbo.ls/range": "^2.33.12",
-    "@symbo.ls/scratch": "^2.33.12",
-    "@symbo.ls/select": "^2.33.12",
-    "@symbo.ls/tooltip": "^2.33.12"
+    "@domql/utils": "^2.33.13",
+    "@symbo.ls/atoms": "^2.33.13",
+    "@symbo.ls/avatar": "^2.33.13",
+    "@symbo.ls/button": "^2.33.13",
+    "@symbo.ls/dialog": "^2.33.13",
+    "@symbo.ls/dropdown": "^2.33.13",
+    "@symbo.ls/icon": "^2.33.13",
+    "@symbo.ls/input": "^2.33.13",
+    "@symbo.ls/link": "^2.33.13",
+    "@symbo.ls/notification": "^2.33.13",
+    "@symbo.ls/range": "^2.33.13",
+    "@symbo.ls/scratch": "^2.33.13",
+    "@symbo.ls/select": "^2.33.13",
+    "@symbo.ls/tooltip": "^2.33.13"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "60767a7d229a490dc593404b687ff68b73c73145",
+  "gitHead": "3d34d72f2ada44fdb269644cc915d3ef84cfe360",
   "source": "src/index.js"
 }
