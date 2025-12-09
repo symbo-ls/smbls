@@ -24,6 +24,95 @@ export function normalizeKeys (obj) {
   }, {})
 }
 
+export function generateDefaultSchema(key, type) {
+  // Base schema for components and pages
+  const baseSchema = {
+    key,
+    title: toTitleCase(key),
+    description: '',
+    type: type.slice(0, -1), // Convert plural to singular
+    code: '',
+    state: {},
+    props: {},
+    settings: {
+      gridOptions: {
+        x: 0,
+        y: 0,
+        w: 1,
+        h: 1
+      }
+    }
+  }
+
+  // Type-specific schema generation
+  switch (type.toLowerCase()) {
+    case 'components':
+      return {
+        ...baseSchema,
+        category: ['comp'],
+        draft: false,
+        highlighted: false,
+        tags: [],
+        dataTypes: [],
+        interactivity: [],
+        error: null,
+        thumbnail: null,
+        pdf: null,
+        uses: {
+          components: [],
+          icons: [],
+          themes: [],
+          colors: [],
+          dependencies: []
+        }
+      }
+
+    case 'pages':
+      return {
+        ...baseSchema,
+        key: key.startsWith('/') ? key : `/${key}`,
+        type: 'page'
+      }
+
+    case 'functions':
+    case 'snippets':
+    case 'methods':
+      return {
+        key,
+        title: toTitleCase(key),
+        description: '',
+        type: type.slice(0, -1),
+        code: ''
+      }
+
+    case 'dependencies':
+      return {
+        key,
+        type: 'dependency'
+      }
+
+    case 'secrets':
+      return {
+        key,
+        type: 'secret'
+      }
+
+    case 'files':
+      return {
+        key,
+        format: key.split('.').pop() || '',
+        type: 'file'
+      }
+
+    case 'designsystem':
+      // Design system items (colors, typography, etc) don't need schema entries
+      return null
+
+    default:
+      return baseSchema
+  }
+}
+
 export function generateChanges (oldData, newData) {
   const changes = []
   const diffs = []
@@ -32,7 +121,7 @@ export function generateChanges (oldData, newData) {
     throw new Error('Both oldData and newData must be provided')
   }
 
-  // Filter out non-allowed top-level fields before comparison
+  // Filter allowed fields
   const filteredOldData = Object.keys(oldData)
     .filter(key => ALLOWED_FIELDS.includes(key.toLowerCase()))
     .reduce((obj, key) => {
@@ -47,7 +136,27 @@ export function generateChanges (oldData, newData) {
       return obj
     }, {})
 
-  compareObjects(filteredOldData, filteredNewData, [], changes, diffs)
+  // Compare and generate changes
+  for (const type of ALLOWED_FIELDS) {
+    const oldSection = filteredOldData[type] || {}
+    const newSection = filteredNewData[type] || {}
+
+    // Check for new items
+    for (const key of Object.keys(newSection)) {
+      if (!oldSection[key]) {
+        // New item added - generate schema
+        const defaultSchema = generateDefaultSchema(key, type)
+        changes.push(
+          ['update', [type, key], newSection[key]],
+          ['update', ['schema', type, key], defaultSchema]
+        )
+        diffs.push(generateDiffDisplay('add', [type, key], null, newSection[key]))
+      }
+    }
+
+    // Handle other changes
+    compareObjects(oldSection, newSection, [type], changes, diffs)
+  }
 
   return { changes, diffs }
 }
@@ -132,4 +241,29 @@ function handleAdditionsAndUpdates (oldObj, newObj, currentPath, changes, diffs)
       compareObjects(oldValue, newValue, [...currentPath, key], changes, diffs)
     }
   }
+}
+
+/**
+ * Converts a string to title case format
+ * Examples:
+ * - "myComponent" -> "My Component"
+ * - "my-component" -> "My Component"
+ * - "my_component" -> "My Component"
+ * - "MyComponent" -> "My Component"
+ */
+export function toTitleCase(str) {
+  if (!str) return ''
+
+  // Handle kebab-case and snake_case
+  str = str.replace(/[-_]/g, ' ')
+
+  // Handle camelCase and PascalCase
+  str = str.replace(/([a-z])([A-Z])/g, '$1 $2')
+
+  // Capitalize first letter of each word
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+    .trim()
 }

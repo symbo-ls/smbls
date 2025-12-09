@@ -1,79 +1,101 @@
 #!/usr/bin/env node
 
 import fs from 'fs'
+import path from 'path'
 import chalk from 'chalk'
-import { loadModule } from './require.js'
 import { program } from './program.js'
-import * as fetch from '@symbo.ls/fetch'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
-const { isObjectLike } = utils.default || utils
-const { fetchRemote } = fetch.default || fetch
+import { CredentialManager } from '../helpers/credentialManager.js'
+import { getCurrentProjectData } from '../helpers/apiUtils.js'
+import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
+const { isObjectLike } = (utils.default || utils)
 
 const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH =
   process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
-const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
-
-const API_URL_LOCAL = 'http://localhost:8080/get'
-const API_URL = 'https://api.symbols.app/get'
-
-const rcFile = loadModule(RC_PATH) // eslint-disable-line
-const localConfig = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
 
 const debugMsg = chalk.dim(
   'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
 )
 
-let rc = {}
-try {
-  rc = loadModule(RC_PATH) // eslint-disable-line
-} catch (e) {
-  console.error('Please include symbols.json to your root of respository')
-}
-
 export const fetchFromCli = async (opts) => {
-  const {
-    dev,
-    verbose,
-    prettify,
-    convert: convertOpt,
-    metadata: metadataOpt,
-    update,
-    force
-  } = opts
-  await rc.then(async (data) => {
-    const { key, framework, distDir, metadata } = data || {}
+  const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
 
-    const endpoint = dev || utils.isLocal() ? API_URL_LOCAL : API_URL
+  const credManager = new CredentialManager()
+  const authToken = credManager.ensureAuthToken()
 
-    console.log('\nFetching from:', chalk.bold(endpoint), '\n')
+  if (!authToken) {
+    showAuthRequiredMessages()
 
-    const body = await fetchRemote(key, {
-      endpoint,
-      metadata: metadata || metadataOpt,
-      onError: (e) => {
-        console.log(chalk.red('Failed to fetch:'), key)
-        if (verbose) console.error(e)
-        else console.log(debugMsg)
+    process.exit(1)
+  }
+
+  const symbolsConfig = await loadSymbolsConfig()
+  const cliConfig = loadCliConfig()
+  const projectKey = cliConfig.projectKey || symbolsConfig.key
+  const branch = cliConfig.branch || symbolsConfig.branch || 'main'
+  const { framework, distDir, metadata } = symbolsConfig
+
+    console.log('\nFetching project data...\n')
+
+    let payload
+    try {
+      const lock = readLock()
+      const result = await getCurrentProjectData(
+        { projectKey, projectId: lock.projectId },
+        authToken,
+        { branch, includePending: true, etag: lock.etag }
+      )
+
+      if (result.notModified) {
+        console.log(chalk.bold.green('Already up to date (ETag matched)'))
+        return
       }
-    })
 
-    // console.log('ON FETCH:')
-    // console.log(body.components.Configuration)
+      payload = result.data || {}
+      const etag = result.etag || null
 
-    if (!body || body.error) return
+      // Update lock.json
+      writeLock({
+        etag,
+        version: payload.version,
+        branch,
+        projectId: payload?.projectInfo?.id || lock.projectId,
+        pulledAt: new Date().toISOString()
+      })
 
-    const { version, ...config } = body
+      // Update legacy symbols.json with version and branch
+      updateLegacySymbolsJson({ ...(symbolsConfig || {}), version: payload.version, branch })
+
+      if (verbose) {
+        console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
+        console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+      }
+    } catch (e) {
+      console.log(chalk.red('Failed to fetch:'), projectKey)
+      if (verbose) console.error(e)
+      else console.log(debugMsg)
+      return
+    }
+
+    // Persist base snapshot for future rebases
+    try {
+      const { projectPath } = getConfigPaths()
+      await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
+      await fs.promises.writeFile(projectPath, JSON.stringify(payload, null, 2))
+    } catch (_) {}
 
     if (verbose) {
-      if (key) {
+      if (projectKey) {
         console.log(
           chalk.bold('Symbols'),
           'data fetched for',
-          chalk.green(body.name)
+          chalk.green(payload.name)
         )
       } else {
         console.log(
@@ -85,6 +107,8 @@ export const fetchFromCli = async (opts) => {
       }
       console.log()
     }
+
+    const { version: fetchedVersion, ...config } = payload
 
     for (const t in config) {
       const type = config[t]
@@ -101,7 +125,7 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (!distDir) {
-      const bodyString = JSON.stringify(body, null, prettify ?? 2)
+      const bodyString = JSON.stringify(payload, null, prettify ?? 2)
 
       try {
         await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
@@ -125,16 +149,15 @@ export const fetchFromCli = async (opts) => {
       return {}
     }
 
-    if (body.components && convertOpt && framework) {
-      convertFromCli(body.components, { ...opts, framework })
+    if (payload.components && convertOpt && framework) {
+      convertFromCli(payload.components, { ...opts, framework })
     }
 
     if (update || force) {
-      createFs(body, distDir, { update: true, metadata })
+      createFs(payload, distDir, { update: true, metadata: false })
     } else {
-      createFs(body, distDir, { metadata })
+      createFs(payload, distDir, { metadata: false })
     }
-  })
 }
 
 program

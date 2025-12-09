@@ -4,20 +4,10 @@ import chalk from 'chalk'
 import { loadModule } from './require.js'
 import { exec } from 'child_process'
 import { program } from './program.js'
-
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 const PACKAGE_PATH = process.cwd() + '/package.json'
-const RC_PATH = process.cwd() + '/symbols.json'
-const LOCAL_CONFIG_PATH = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
-const DEFAULT_REMOTE_CONFIG_PATH = 'https://api.symbols.app/' // eslint-disable-line
 
-const pkg = loadModule(PACKAGE_PATH)
-const rcFile = loadModule(RC_PATH) // eslint-disable-line
-const localConfig = loadModule(LOCAL_CONFIG_PATH) // eslint-disable-line
-
-let rc = {}
-try {
-  rc = loadModule(RC_PATH) // eslint-disable-line
-} catch (e) { console.error('Please include symbols.json to your root of respository') }
+const pkg = await loadModule(PACKAGE_PATH, { json: true, silent: true })
 
 const makeCommand = (packageManager, packageName) => {
   return packageManager === 'yarn'
@@ -28,13 +18,10 @@ const makeCommand = (packageManager, packageName) => {
 }
 
 export const installFromCli = async (options) => {
-  if (!rcFile || !localConfig) {
-    console.error('symbols.json not found in the root of the repository')
-    return
-  }
+  const symbolsConfig = await loadSymbolsConfig()
 
-  const framework = rcFile.framework || options.framework
-  const packageManager = rcFile.packageManager || options.packageManager
+  const framework = symbolsConfig.framework || options.framework
+  const packageManager = symbolsConfig.packageManager || options.packageManager
 
   // const packageName = `@symbo.ls/${mode || 'uikit'}`
   const packageName = framework === 'react' ? '@symbo.ls/react' : 'smbls'
@@ -63,7 +50,7 @@ export const installFromCli = async (options) => {
 }
 
 program
-  .version(pkg.version ?? 'unknown')
+  .version(pkg && pkg.version ? pkg.version : 'unknown')
 
 program
   .command('install')
