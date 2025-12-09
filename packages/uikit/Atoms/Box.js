@@ -155,12 +155,12 @@ export const Box = {
               [childrenAsDefault]: isObjectLike(v)
                 ? v
                 : childrenAsDefault === 'state'
-                ? { value: v }
-                : { text: v }
+                  ? { value: v }
+                  : { text: v }
             }))
           }
         } else if (isString(children) || isNumber(children)) {
-          el.removeContent()
+          await el.removeContent()
           el.content = { text: param }
           return
         }
@@ -211,7 +211,7 @@ export const Box = {
         if (value) obj[key] = isObjectLike(value) ? value : { value }
       }
 
-      el.removeContent()
+      await el.removeContent()
       el.content = obj
 
       // return deepClone(param)
@@ -283,7 +283,7 @@ export const Box = {
         if (value) obj[key] = { state: isObjectLike(value) ? value : { value } }
       }
 
-      el.removeContent()
+      await el.removeContent()
       el.content = obj
 
       // return deepClone(param)
@@ -330,7 +330,7 @@ export const Box = {
         if (value) obj[key] = { props: isObjectLike(value) ? value : { value } }
       }
 
-      el.removeContent()
+      await el.removeContent()
       el.content = obj
 
       // const set = () => {
