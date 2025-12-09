@@ -90,11 +90,6 @@ export const fetchFromCli = async (opts) => {
       await fs.promises.writeFile(projectPath, JSON.stringify(payload, null, 2))
     } catch (_) {}
 
-    if (payload.designsystem) {
-      payload.designSystem = payload.designsystem
-      delete payload.designsystem
-    }
-
     if (verbose) {
       if (projectKey) {
         console.log(
