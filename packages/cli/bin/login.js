@@ -113,6 +113,7 @@ program
       console.log(chalk.cyan('  smbls fetch    ') + chalk.dim('Fetch your design system'))
       console.log(chalk.cyan('  smbls sync     ') + chalk.dim('Sync local changes'))
       console.log(chalk.cyan('  smbls push     ') + chalk.dim('Push updates to Symbols'))
+      console.log(chalk.cyan('  smbls collab   ') + chalk.dim('Connect to team on platform in realtime'))
 
       console.log(chalk.dim(`\nCredentials saved to ${credManager.rcPath}`))
       console.log(chalk.dim('For more commands, run: smbls --help\n'))
