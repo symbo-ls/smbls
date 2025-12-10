@@ -3,7 +3,7 @@
 import { isString } from '@domql/utils'
 import { toDashCase } from '@symbo.ls/utils'
 import { getActiveConfig } from '../factory.js'
-import { isScalingUnit } from './unit.js'
+import { CSS_UNITS, isScalingUnit } from './unit.js'
 
 export const numToLetterMap = {
   '-6': 'U',
@@ -47,6 +47,13 @@ const setSequenceValue = (props, sequenceProps) => {
   }
   sequenceProps.scales[key] = scaling
   sequenceProps.vars[variable] = scaling + sequenceProps.unit
+}
+
+export const getFnPrefixAndValue = (val) => {
+  if (!val.includes('(')) return val
+  const prefix = val.split('(')[0]
+  const value = val.slice(val.indexOf('(') + 1, val.lastIndexOf(')'))
+  return [prefix, value]
 }
 
 export const setScalingVar = (key, sequenceProps) => {
@@ -224,29 +231,31 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   const CONFIG = getActiveConfig()
   const { UNIT } = CONFIG
 
-  const { sequence, unit = UNIT.default, useVariable } = sequenceProps
-
   if (isString(value) && value.slice(0, 2) === '--') return `var(${value})`
 
-  const prefix = `--${toDashCase(sequenceProps.type.replace('.', '-'))}-`
+  const { sequence, unit = UNIT.default, useVariable } = sequenceProps
 
   const startsWithDashOrLetterRegex = /^-?[a-zA-Z]/i
   const startsWithDashOrLetter = startsWithDashOrLetterRegex.test(value)
 
-  if (
-    value === 'none' ||
-    value === 'auto' ||
-    value === 'unset' ||
-    value === 'inherit' ||
-    value === 'fit-content' ||
-    value === 'min-content' ||
-    value === 'max-content' ||
-    value.includes('calc') ||
-    value.includes('var') ||
-    !startsWithDashOrLetter
-  )
-    return value
+  const hasUnits = CSS_UNITS.some((unit) => value.includes(unit))
+  if (hasUnits || !startsWithDashOrLetter) return value
 
+  const skipArr = [
+    'none',
+    'auto',
+    'max-content',
+    'min-content',
+    'fit-content',
+    'inherit',
+    'initial',
+    'unset',
+    'revert',
+    'revert-layer'
+  ]
+  if (skipArr.includes(value)) return value
+
+  const prefix = `--${toDashCase(sequenceProps.type.replace('.', '-'))}-`
   const letterVal = value.toUpperCase()
   const isNegative = letterVal.slice(0, 1) === '-' ? '-' : ''
   let absValue = isNegative ? letterVal.slice(1) : letterVal
@@ -300,18 +309,51 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   return isNegative + sequenceItem.scaling + unit
 }
 
+export const getSequenceValueBySymbols = (value, sequenceProps) => {
+  const mathArr = ['+', '-', '*', '/', ','].filter((v) =>
+    value.includes(v + ' ')
+  )
+  if (!mathArr.length) return value
+
+  return mathArr
+    .map((symbol) => {
+      const valuesArr = value.split(symbol + ' ').map((v) => v.trim())
+      const transformedValues = valuesArr.map((v) => {
+        return getSequenceValue(v, sequenceProps)
+      })
+      return transformedValues.join(symbol + ' ')
+    })
+    .join('')
+}
+
 export const getSequenceValuePropertyPair = (
   value,
   propertyName,
-  sequenceProps
+  sequenceProps,
+  fnPrefix
 ) => {
   if (typeof value !== 'string') {
     const CONFIG = getActiveConfig()
     if (CONFIG.verbose) console.warn(propertyName, value, 'is not a string')
     return { [propertyName]: value }
   }
+
   if (value === '-' || value === '') return {}
-  return { [propertyName]: getSequenceValue(value, sequenceProps) }
+
+  if (!fnPrefix && value.includes('(')) {
+    const fnArr = getFnPrefixAndValue(value)
+    fnPrefix = fnArr[0]
+    value = fnArr[1]
+  }
+
+  const mathArr = ['+', '-', '*', '/', ','].filter((v) =>
+    value.includes(v + ' ')
+  )
+  if (mathArr.length) {
+    value = getSequenceValueBySymbols(value, sequenceProps)
+  } else value = getSequenceValue(value, sequenceProps)
+
+  return { [propertyName]: fnPrefix ? `${fnPrefix}(${value})` : value }
 }
 
 export const findHeadingLetter = (h1Matches, index) =>

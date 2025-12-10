@@ -155,8 +155,8 @@ export const Box = {
               [childrenAsDefault]: isObjectLike(v)
                 ? v
                 : childrenAsDefault === 'state'
-                ? { value: v }
-                : { text: v }
+                  ? { value: v }
+                  : { text: v }
             }))
           }
         } else if (isString(children) || isNumber(children)) {
@@ -1118,7 +1118,19 @@ export const Box = {
           props.borderRadius || props.round,
           props,
           'borderRadius'
-        )
+        ),
+      clip: ({ props }) =>
+        !isUndefined(props.clip)
+          ? {
+              clip: props.clip
+            }
+          : null
+    },
+
+    // scrollbar
+    ...{
+      scrollbarWidth: ({ props, deps }) =>
+        deps.transformSizeRatio('scrollbarWidth', props)
     },
 
     // container queries

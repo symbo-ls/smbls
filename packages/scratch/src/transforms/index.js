@@ -9,8 +9,11 @@ import {
   getMediaColor,
   getTimingByKey,
   getTimingFunction,
-  getSpacingBasedOnRatio
+  getSpacingBasedOnRatio,
+  checkIfBoxSize,
+  splitSpacedValue
 } from '../system'
+import { getFnPrefixAndValue } from '../utils'
 
 const isBorderStyle = (str) =>
   [
@@ -142,41 +145,30 @@ export const splitTransition = (transition) => {
   return arr.map(transformTransition).join(',')
 }
 
-export const checkIfBoxSize = (propertyName) => {
-  const prop = propertyName.toLowerCase()
-  return (
-    (prop.includes('width') || prop.includes('height')) &&
-    !prop.includes('border')
-  )
-}
-
 export const transformSize = (propertyName, val, props = {}, opts = {}) => {
   let value = val || props[propertyName]
 
   if (isUndefined(value) && isNull(value)) return
 
-  const shouldScaleBoxSize = props.scaleBoxSize
-  const isBoxSize = checkIfBoxSize(propertyName)
+  let fnPrefix
+  if (isString(value)) {
+    // has function prefix
+    if (value.includes('(')) {
+      const fnArr = getFnPrefixAndValue(value)
+      fnPrefix = fnArr[0]
+      value = fnArr[1]
+    }
 
-  if (!shouldScaleBoxSize && isBoxSize && isString(value)) {
-    value = value
-      .split(' ')
-      .map((v) => {
-        const isSingleLetter = v.length < 3 && /[A-Z]/.test(v)
-        const hasUnits = ['%', 'vw', 'vh', 'ch'].some((unit) =>
-          value.includes(unit)
-        )
-        if (isSingleLetter && !hasUnits) return v + '_default'
-        return v
-      })
-      .join(' ')
+    const shouldScaleBoxSize = props.scaleBoxSize
+    const isBoxSize = checkIfBoxSize(propertyName)
+    if (!shouldScaleBoxSize && isBoxSize) {
+      value = splitSpacedValue(value)
+    }
   }
 
-  if (opts.ratio) {
-    return getSpacingBasedOnRatio(props, propertyName, value)
-  } else {
-    return getSpacingByKey(value, propertyName)
-  }
+  return opts.ratio
+    ? getSpacingBasedOnRatio(props, propertyName, value, fnPrefix)
+    : getSpacingByKey(value, propertyName, undefined, fnPrefix)
 }
 
 export const transformSizeRatio = (propertyName, props) => {

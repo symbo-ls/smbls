@@ -31,7 +31,6 @@ export const Text = {
     font: ({ props }) => !isUndefined(props.font) && { font: props.font },
     lineHeight: ({ props }) =>
       !isUndefined(props.lineHeight) && { lineHeight: props.lineHeight },
-    // lineHeight: ({ props }) => !isUndefined(props.lineHeight) && getSpacingBasedOnRatio(props, 'lineHeight', null, ''),
     textDecoration: ({ props }) =>
       !isUndefined(props.textDecoration) && {
         textDecoration: props.textDecoration
