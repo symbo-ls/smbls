@@ -98,6 +98,7 @@ program
       // Save credentials
       const credManager = new CredentialManager()
       credManager.saveCredentials({
+        apiBaseUrl: answers.apiBaseUrl,
         authToken: token,
         refreshToken,
         authTokenExpiresAt: accessTokenExp,
@@ -105,7 +106,7 @@ program
         email: user?.email || answers.email
       })
 
-      // Persist API base URL to local config
+      // Persist API base URL to local config for this project as well
       saveCliConfig({ apiBaseUrl: answers.apiBaseUrl })
 
       console.log(chalk.green('\n✨ Successfully logged in!'))
