@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { CredentialManager } from './credentialManager.js'
 
 // New configuration layout
 // .symbols/config.json  -> project runtime configuration (apiBaseUrl, projectKey|projectId, branch)
@@ -67,12 +68,21 @@ export function loadCliConfig() {
   // Legacy rc might include apiUrl
   const legacyRc = readJsonSafe(LEGACY_RC_PATH) || {}
 
-  const apiBaseUrl =
+  // Prefer explicit env / project config, then legacy rc, then global current server
+  let apiBaseUrl =
     envApi ||
     symbolsConfig.apiBaseUrl ||
-    legacyRc.apiUrl ||
-    // default to production if nothing set
-    'https://api.symbols.app'
+    legacyRc.apiUrl
+
+  if (!apiBaseUrl) {
+    const credManager = new CredentialManager()
+    apiBaseUrl = credManager.getCurrentApiBaseUrl()
+  }
+
+  if (!apiBaseUrl) {
+    // default to production if nothing set anywhere
+    apiBaseUrl = 'https://api.symbols.app'
+  }
 
   const projectKey = envProjectKey || symbolsConfig.projectKey || legacySymbols.key
   const projectId = envProjectId || symbolsConfig.projectId || null

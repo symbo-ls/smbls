@@ -99,17 +99,17 @@ async function confirmChanges (changes, base, local) {
 
 export async function pushProjectChanges(options) {
   const { verbose, message, type = 'patch' } = options
-  const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken()
-
-  if (!authToken) {
-    showAuthRequiredMessages()
-    process.exit(1)
-  }
-
   try {
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
+    const credManager = new CredentialManager()
+    const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
+
+    if (!authToken) {
+      showAuthRequiredMessages()
+      process.exit(1)
+    }
+
     const lock = readLock()
     const appKey = cliConfig.projectKey || symbolsConfig.key
     const branch = cliConfig.branch || symbolsConfig.branch || 'main'

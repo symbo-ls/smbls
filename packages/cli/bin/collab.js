@@ -35,15 +35,15 @@ function debounce(fn, wait) {
 }
 
 export async function startCollab(options) {
+  const symbolsConfig = await loadSymbolsConfig()
+  const cliConfig = loadCliConfig()
   const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken()
+  const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
   if (!authToken) {
     console.log(chalk.yellow('\nAuthentication required. Please run: smbls login\n'))
     process.exit(1)
   }
 
-  const symbolsConfig = await loadSymbolsConfig()
-  const cliConfig = loadCliConfig()
   const lock = readLock()
   const branch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
   const appKey = cliConfig.projectKey || symbolsConfig.key
