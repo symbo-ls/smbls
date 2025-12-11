@@ -148,18 +148,17 @@ async function confirmChanges(localChanges, remoteChanges, base, local, remote) 
 }
 
 export async function syncProjectChanges(options) {
-  const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken()
-
-  if (!authToken) {
-    showAuthRequiredMessages()
-    process.exit(1)
-  }
-
   try {
     // Load configuration
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
+    const credManager = new CredentialManager()
+    const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
+
+    if (!authToken) {
+      showAuthRequiredMessages()
+      process.exit(1)
+    }
     const lock = readLock()
     const { projectPath } = getConfigPaths()
     const { key: legacyKey } = symbolsConfig

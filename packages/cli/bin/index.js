@@ -14,6 +14,7 @@ import './login.js'
 import './push.js'
 import './link-packages.js'
 import './collab.js'
+import './servers.js'
 
 const args = process.argv
 program.parse(args)

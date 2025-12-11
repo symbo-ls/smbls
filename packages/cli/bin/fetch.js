@@ -26,17 +26,16 @@ const debugMsg = chalk.dim(
 export const fetchFromCli = async (opts) => {
   const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
 
+  const symbolsConfig = await loadSymbolsConfig()
+  const cliConfig = loadCliConfig()
   const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken()
+  const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
 
   if (!authToken) {
     showAuthRequiredMessages()
-
     process.exit(1)
   }
 
-  const symbolsConfig = await loadSymbolsConfig()
-  const cliConfig = loadCliConfig()
   const projectKey = cliConfig.projectKey || symbolsConfig.key
   const branch = cliConfig.branch || symbolsConfig.branch || 'main'
   const { framework, distDir, metadata } = symbolsConfig
