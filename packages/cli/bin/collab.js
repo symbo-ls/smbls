@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import { program } from './program.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
-import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
@@ -47,6 +47,10 @@ export async function startCollab(options) {
   const lock = readLock()
   const branch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
   const appKey = cliConfig.projectKey || symbolsConfig.key
+
+  const distDir =
+    resolveDistDir(symbolsConfig) ||
+    path.join(process.cwd(), 'smbls')
 
   if (!appKey) {
     console.log(chalk.red('Missing project key. Add it to symbols.json or .symbols/config.json'))
@@ -148,7 +152,7 @@ export async function startCollab(options) {
       sendLocalChanges.cancel()
     }
     try {
-      await createFs(fullObj, path.join(process.cwd(), 'smbls'), { update: true, metadata: false })
+      await createFs(fullObj, distDir, { update: true, metadata: false })
     } finally {
       // Extend suppression window to allow file events to settle fully
       suppressUntil = Date.now() + suppressionWindowMs
@@ -253,7 +257,6 @@ export async function startCollab(options) {
   })
 
   // Watch local dist output and push coarse per-key changes
-  const distDir = path.join(process.cwd(), 'smbls')
   const outputDir = path.join(distDir, 'dist')
   const outputFile = path.join(outputDir, 'index.js')
 

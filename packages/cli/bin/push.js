@@ -12,13 +12,12 @@ import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { showAuthRequiredMessages, showProjectNotFoundMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
-import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
 
 
-async function buildLocalProject () {
+async function buildLocalProject (distDir) {
   try {
-    const distDir = path.join(process.cwd(), 'smbls')
     const outputDirectory = path.join(distDir, 'dist')
 
     await buildDirectory(distDir, outputDirectory)
@@ -114,11 +113,15 @@ export async function pushProjectChanges(options) {
     const appKey = cliConfig.projectKey || symbolsConfig.key
     const branch = cliConfig.branch || symbolsConfig.branch || 'main'
 
+    const distDir =
+      resolveDistDir(symbolsConfig) ||
+      path.join(process.cwd(), 'smbls')
+
     // Build and load local project
     console.log(chalk.dim('Building local project...'))
     let localProject
     try {
-      localProject = await buildLocalProject()
+      localProject = await buildLocalProject(distDir)
       console.log(chalk.gray('Local project built successfully'))
     } catch (buildError) {
       showBuildErrorMessages(buildError)

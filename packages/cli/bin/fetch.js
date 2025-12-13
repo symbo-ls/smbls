@@ -10,11 +10,10 @@ import { createFs } from './fs.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
-import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 const { isObjectLike } = (utils.default || utils)
 
-const RC_PATH = process.cwd() + '/symbols.json'
 const LOCAL_CONFIG_PATH =
   process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
 const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
@@ -38,7 +37,7 @@ export const fetchFromCli = async (opts) => {
 
   const projectKey = cliConfig.projectKey || symbolsConfig.key
   const branch = cliConfig.branch || symbolsConfig.branch || 'main'
-  const { framework, distDir, metadata } = symbolsConfig
+  const { framework } = symbolsConfig
 
     console.log('\nFetching project data...\n')
 
@@ -104,7 +103,6 @@ export const fetchFromCli = async (opts) => {
           chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY)
         )
       }
-      console.log()
     }
 
     const { version: fetchedVersion, ...config } = payload
@@ -122,6 +120,11 @@ export const fetchFromCli = async (opts) => {
         }
       } else console.log(chalk.dim(t + ':'), chalk.bold(type))
     }
+
+    // Resolve effective distDir from CLI flag or symbols.json
+    const distDir = resolveDistDir(symbolsConfig, {
+      distDirOverride: opts.distDir
+    })
 
     if (!distDir) {
       const bodyString = JSON.stringify(payload, null, prettify ?? 2)
@@ -169,5 +172,5 @@ program
   .option('--force', 'Force overriding changes from platform')
   .option('--update', 'Overriding changes from platform')
   .option('--verbose-code', 'Verbose errors and warnings')
-  .option('--dist-dir', 'Directory to import files to.')
+  .option('--dist-dir <dir>', 'Directory to import files to.')
   .action(fetchFromCli)

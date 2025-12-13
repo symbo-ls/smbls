@@ -33,3 +33,34 @@ export const loadSymbolsConfig = async (options = {}) => {
     return null
   }
 }
+
+/**
+ * Resolve the effective dist directory for the current workspace.
+ *
+ * Precedence:
+ *  - explicit override (e.g. CLI flag)
+ *  - symbols.json.distDir
+ *
+ * Returns an absolute path when possible; null when no distDir
+ * configuration is available so callers can decide on a default.
+ */
+export function resolveDistDir (symbolsConfig, options = {}) {
+  const cfg = symbolsConfig || {}
+  const {
+    // Prefer explicit override from callers (e.g. CLI flag)
+    distDirOverride,
+    distDir: overrideDistDir,
+    cwd = process.cwd()
+  } = options
+
+  const raw =
+    distDirOverride ||
+    overrideDistDir ||
+    cfg.distDir
+
+  if (!raw) return null
+
+  // If already absolute, return as-is; otherwise resolve against cwd
+  if (path.isAbsolute(raw)) return raw
+  return path.resolve(cwd, raw)
+}
