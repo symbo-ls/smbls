@@ -68,16 +68,18 @@ program
     })
 
     // Update .symbols/config.json (runtime CLI config)
-    const nextCli = saveCliConfig({
+    const _nextCli = saveCliConfig({
       apiBaseUrl: answers.apiBaseUrl,
       projectKey: answers.key || cliConfig.projectKey || nextSymbols.key,
       branch: answers.branch
     })
 
-    console.log()
+    console.log(`\n`)
     console.log(chalk.green('Configuration updated successfully.'))
-    console.log(chalk.gray(`symbols.json: ${chalk.cyan(path.join(process.cwd(), 'symbols.json'))}`))
-    console.log(chalk.gray(`.symbols/config.json: ${chalk.cyan(nextCli ? '.symbols/config.json' : '(created)')}`))
+    const symbolsPath = path.join(process.cwd(), 'symbols.json')
+    const cliConfigPath = path.join(process.cwd(), '.symbols', 'config.json')
+    console.log(chalk.gray(`symbols.json: ${chalk.cyan(symbolsPath)}`))
+    console.log(chalk.gray(`.symbols/config.json: ${chalk.cyan(cliConfigPath)}`))
   })
 
 
