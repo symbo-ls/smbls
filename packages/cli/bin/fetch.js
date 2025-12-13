@@ -10,14 +10,9 @@ import { createFs } from './fs.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
-import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 const { isObjectLike } = (utils.default || utils)
-
-const RC_PATH = process.cwd() + '/symbols.json'
-const LOCAL_CONFIG_PATH =
-  process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
-const DEFAULT_REMOTE_REPOSITORY = 'https://github.com/symbo-ls/default-config/'
 
 const debugMsg = chalk.dim(
   'Use --verbose to debug the error or open the issue at https://github.com/symbo-ls/smbls'
@@ -38,7 +33,7 @@ export const fetchFromCli = async (opts) => {
 
   const projectKey = cliConfig.projectKey || symbolsConfig.key
   const branch = cliConfig.branch || symbolsConfig.branch || 'main'
-  const { framework, distDir, metadata } = symbolsConfig
+  const { framework } = symbolsConfig
 
     console.log('\nFetching project data...\n')
 
@@ -79,7 +74,7 @@ export const fetchFromCli = async (opts) => {
       console.log(chalk.red('Failed to fetch:'), projectKey)
       if (verbose) console.error(e)
       else console.log(debugMsg)
-      return
+      process.exit(1)
     }
 
     // Persist base snapshot for future rebases
@@ -87,24 +82,11 @@ export const fetchFromCli = async (opts) => {
       const { projectPath } = getConfigPaths()
       await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
       await fs.promises.writeFile(projectPath, JSON.stringify(payload, null, 2))
-    } catch (_) {}
-
-    if (verbose) {
-      if (projectKey) {
-        console.log(
-          chalk.bold('Symbols'),
-          'data fetched for',
-          chalk.green(payload.name)
-        )
-      } else {
-        console.log(
-          chalk.bold('Symbols'),
-          'config fetched from',
-          chalk.bold('default-config from:'),
-          chalk.dim.underline(DEFAULT_REMOTE_REPOSITORY)
-        )
-      }
-      console.log()
+    } catch (e) {
+      console.error(chalk.bold.red('\nError writing file'))
+      if (verbose) console.error(e)
+      else console.log(debugMsg)
+      process.exit(1)
     }
 
     const { version: fetchedVersion, ...config } = payload
@@ -123,30 +105,12 @@ export const fetchFromCli = async (opts) => {
       } else console.log(chalk.dim(t + ':'), chalk.bold(type))
     }
 
-    if (!distDir) {
-      const bodyString = JSON.stringify(payload, null, prettify ?? 2)
-
-      try {
-        await fs.writeFileSync(LOCAL_CONFIG_PATH, bodyString)
-
-        if (verbose) {
-          console.log(chalk.dim('\ndynamic.json has been updated:'))
-          console.log(chalk.dim.underline(LOCAL_CONFIG_PATH))
-        }
-
-        console.log(chalk.bold.green('\nSuccessfully wrote file'))
-      } catch (e) {
-        console.log(chalk.bold.red('\nError writing file'))
-        if (verbose) console.error(e)
-        else console.log(debugMsg)
-      }
-
-      console.log()
-      console.warn(
-        'No --dist-dir option or "distDir" in symbols.json provided. Saving in ./node_modules/@symbo.ls/init/dynamic.json.'
-      )
-      return {}
-    }
+    // Resolve effective distDir from CLI flag or symbols.json, with a sane default
+    const distDir =
+      resolveDistDir(symbolsConfig, {
+        distDirOverride: opts.distDir
+      }) ||
+      path.join(process.cwd(), 'smbls')
 
     if (payload.components && convertOpt && framework) {
       convertFromCli(payload.components, { ...opts, framework })
@@ -169,5 +133,5 @@ program
   .option('--force', 'Force overriding changes from platform')
   .option('--update', 'Overriding changes from platform')
   .option('--verbose-code', 'Verbose errors and warnings')
-  .option('--dist-dir', 'Directory to import files to.')
+  .option('--dist-dir <dir>', 'Directory to import files to.')
   .action(fetchFromCli)

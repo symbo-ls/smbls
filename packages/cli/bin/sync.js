@@ -11,15 +11,13 @@ import { buildDirectory } from '../helpers/fileUtils.js'
 import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
 import { normalizeKeys } from '../helpers/compareUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
-import { computeCoarseChanges, threeWayRebase, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
+import { threeWayRebase, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
 import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
-import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
-const RC_PATH = process.cwd() + '/symbols.json'
-const distDir = path.join(process.cwd(), 'smbls')
 
-async function buildLocalProject() {
+async function buildLocalProject(distDir) {
   try {
     const outputDirectory = path.join(distDir, 'dist')
     await buildDirectory(distDir, outputDirectory)
@@ -165,6 +163,10 @@ export async function syncProjectChanges(options) {
     const appKey = cliConfig.projectKey || legacyKey
     const localBranch = cliConfig.branch || symbolsConfig.branch || 'main'
 
+    const distDir =
+      resolveDistDir(symbolsConfig) ||
+      path.join(process.cwd(), 'smbls')
+
     if (options.verbose) {
       console.log(chalk.dim('\nSync configuration:'))
       console.log(chalk.gray(`App Key: ${chalk.cyan(appKey)}`))
@@ -179,7 +181,7 @@ export async function syncProjectChanges(options) {
     console.log(chalk.dim('Building local project...'))
     let localProject
     try {
-      localProject = await buildLocalProject()
+      localProject = await buildLocalProject(distDir)
       console.log(chalk.gray('Local project built successfully'))
     } catch (buildError) {
       showBuildErrorMessages(buildError)
