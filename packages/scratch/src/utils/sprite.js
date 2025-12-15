@@ -5,7 +5,7 @@ import { getActiveConfig } from '../factory'
 
 const isDev = isNotProduction()
 
-export const generateSprite = icons => {
+export const generateSprite = (icons) => {
   const CONFIG = getActiveConfig()
 
   let sprite = ''
@@ -19,7 +19,7 @@ export const generateSprite = icons => {
   return sprite
 }
 
-const parseRootAttributes = htmlString => {
+const parseRootAttributes = (htmlString) => {
   const val = htmlString.default || htmlString
   if (!isString(val)) {
     if (isDev) console.warn('parseRootAttributes:', val, 'is not a string')

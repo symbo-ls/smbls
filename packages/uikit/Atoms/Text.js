@@ -24,7 +24,7 @@ export const Text = {
     const { key, props, state, deps } = el
     if (props.text === true)
       return (state && state[key]) || (props && props[key])
-    return deps.exec(props.text, el)
+    return deps.exec.call(el, props.text)
   },
 
   class: {

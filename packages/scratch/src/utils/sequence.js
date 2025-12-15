@@ -321,7 +321,7 @@ export const getSequenceValueBySymbols = (value, sequenceProps) => {
       const transformedValues = valuesArr.map((v) => {
         return getSequenceValue(v, sequenceProps)
       })
-      return transformedValues.join(symbol + ' ')
+      return transformedValues.join(' ' + symbol + ' ')
     })
     .join('')
 }

@@ -107,7 +107,7 @@ export const Box = {
     title: (el) => el.call('isString', el.props.title) && el.props.title,
     contentEditable: (el, s) => {
       const isEditable = el.props.contentEditable || el.props.contenteditable
-      if (isEditable) return el.call('exec', isEditable, el, s)
+      if (isEditable) return el.call(isEditable, el, s)
     },
     dir: (el) => el.props.dir,
     draggable: (el) => el.props.draggable,
@@ -832,48 +832,48 @@ export const Box = {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.theme) return
-        const hasSubtheme =
-          props.theme.includes(' ') && !props.theme.includes('@')
+        const theme = deps.exec.call(element, props.theme)
+        const hasSubtheme = theme.includes(' ') && !theme.includes('@')
         const globalThemeForced = `@${props.themeModifier || globalTheme}`
         if (hasSubtheme) {
-          const themeAppliedInVal = props.theme.split(' ')
+          const themeAppliedInVal = theme.split(' ')
           themeAppliedInVal.splice(1, 0, globalThemeForced)
           return deps.getMediaTheme(themeAppliedInVal)
-        } else if (props.theme.includes('@{globalTheme}'))
-          props.theme.replace('@{globalTheme}', globalThemeForced)
+        } else if (theme.includes('@{globalTheme}'))
+          theme.replace('@{globalTheme}', globalThemeForced)
         return deps.getMediaTheme(
-          props.theme,
+          theme,
           `@${props.themeModifier || globalTheme}`
         )
       },
 
       color: (element) => {
         const { props, deps } = element
-        const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.color) return
+        const globalTheme = deps.getSystemGlobalTheme(element)
+        const color = deps.exec.call(element, props.color)
         return {
-          color: deps.getMediaColor(props.color, globalTheme)
+          color: deps.getMediaColor(color, globalTheme)
         }
       },
 
       background: (element) => {
         const { props, deps } = element
-        const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.background) return
+        const globalTheme = deps.getSystemGlobalTheme(element)
+        const background = deps.exec.call(element, props.background)
         return {
-          background: deps.getMediaColor(props.background, globalTheme)
+          background: deps.getMediaColor(background, globalTheme)
         }
       },
 
       backgroundColor: (element) => {
         const { props, deps } = element
-        const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.backgroundColor) return
+        const globalTheme = deps.getSystemGlobalTheme(element)
+        const backgroundColor = deps.exec.call(element, props.backgroundColor)
         return {
-          backgroundColor: deps.getMediaColor(
-            props.backgroundColor,
-            globalTheme
-          )
+          backgroundColor: deps.getMediaColor(backgroundColor, globalTheme)
         }
       },
 
