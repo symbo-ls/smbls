@@ -275,10 +275,77 @@ export async function startCollab(options) {
     }
   }
 
+  /**
+   * Augment the loaded project object with any new items that exist as
+   * filesystem files (e.g. newly created component/page/method/function/snippet
+   * files) but are not yet present in the in‑memory data object.
+   *
+   * This bridges the gap between the one‑way createFs → files mapping so that
+   * adding a new file like components/MainFooter.js is seen as a new
+   * `components.MainFooter` data item and can be sent to the server.
+   */
+  async function augmentLocalWithNewFsItems(local) {
+    if (!local || typeof local !== 'object') return
+
+    const TYPES = ['components', 'pages', 'snippets', 'methods', 'functions']
+
+    for (let i = 0; i < TYPES.length; i++) {
+      const type = TYPES[i]
+      const srcDir = path.join(distDir, type)
+
+      let entries
+      try {
+        entries = await fs.promises.readdir(srcDir)
+      } catch {
+        continue
+      }
+      if (!Array.isArray(entries) || !entries.length) continue
+
+      const container = local[type] && typeof local[type] === 'object' && !Array.isArray(local[type])
+        ? local[type]
+        : (local[type] = {})
+      const baseSection = currentBase && currentBase[type] && typeof currentBase[type] === 'object'
+        ? currentBase[type]
+        : {}
+
+      for (let j = 0; j < entries.length; j++) {
+        const filename = entries[j]
+        if (!filename.endsWith('.js') || filename === 'index.js') continue
+
+        const key = filename.slice(0, -3)
+        if (Object.prototype.hasOwnProperty.call(container, key)) continue
+        if (Object.prototype.hasOwnProperty.call(baseSection, key)) continue
+
+        const compiledPath = path.join(outputDir, type, filename)
+        let mod
+        try {
+          const { loadModule } = await import('./require.js')
+          mod = await loadModule(compiledPath, { silent: true })
+        } catch {
+          if (options.verbose) {
+            console.error(`Failed to load new ${type} item from`, compiledPath)
+          }
+          continue
+        }
+
+        if (!mod) continue
+
+        let value = null
+        if (mod && typeof mod === 'object') {
+          value = mod.default || mod[key] || null
+        }
+        if (!value || typeof value !== 'object') continue
+
+        container[key] = value
+      }
+    }
+  }
+
   const sendLocalChanges = debounce(async () => {
     if (suppressLocalChanges) return
     const local = await loadLocalProject()
     if (!local) return
+    await augmentLocalWithNewFsItems(local)
     // Prepare safe, JSON-serialisable snapshots for diffing & transport
     const base = currentBase || {}
     const safeBase = stringifyFunctionsForTransport(base)
@@ -294,6 +361,25 @@ export async function startCollab(options) {
     const { granularChanges } = preprocessChanges(safeBase, changes)
     const orders = computeOrdersForTuples(safeLocal, granularChanges)
     console.log(chalk.gray(`Emitting local ops: ${JSON.stringify({ changes, granularChanges, orders, branch })}`))
+
+    // Optimistically apply our own ops to the in-memory base so that
+    // subsequent diffs are computed against the latest local state.
+    // This avoids repeatedly re-emitting the same changes when the
+    // server does not immediately send back a fresh snapshot.
+    try {
+      const tuplesToApply = Array.isArray(granularChanges) && granularChanges.length
+        ? granularChanges
+        : changes
+      applyTuples(currentBase, tuplesToApply)
+      if (Array.isArray(orders) && orders.length) {
+        applyOrders(currentBase, orders)
+      }
+    } catch (e) {
+      if (options.verbose) {
+        console.error('Failed to apply local ops to in-memory base', e)
+      }
+    }
+
     socket.emit('ops', {
       changes,
       granularChanges,

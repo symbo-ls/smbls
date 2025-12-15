@@ -1,10 +1,15 @@
+import * as utils from '@domql/utils'
 import { normalizeKeys } from './compareUtils.js'
+
+const { objectToString } = utils.default || utils
 
 // Keys managed by the CLI filesystem representation (exclude settings/schema/key/thumbnail/etc.)
 export const DATA_KEYS = [
   'designSystem','components','state','pages','snippets',
   'methods','functions','dependencies','files'
 ]
+
+const SCHEMA_CODE_TYPES = new Set(['pages', 'components', 'functions', 'methods', 'snippets'])
 
 function stripMetaDeep(val) {
   if (Array.isArray(val)) {
@@ -61,9 +66,12 @@ export function computeCoarseChanges(base, local, keys = DATA_KEYS) {
 
   // Generate per-item granular changes one level deeper for each data type.
   // Ignore 'schema' comparisons; manage schema side-effects below.
+  const baseSchema = a?.schema || {}
+
   for (const typeKey of [...keys]) {
     const aSection = a?.[typeKey] || {}
     const bSection = b?.[typeKey] || {}
+    const aSchemaSection = baseSchema?.[typeKey] || {}
 
     // If sections are not plain objects (or are arrays), fallback to coarse replacement on the section itself
     const aIsObject = aSection && typeof aSection === 'object' && !Array.isArray(aSection)
@@ -90,11 +98,17 @@ export function computeCoarseChanges(base, local, keys = DATA_KEYS) {
     for (const itemKey of Object.keys(bSection)) {
       const aVal = aSection[itemKey]
       const bVal = bSection[itemKey]
-      if (aVal === undefined) {
+      const hadPrev = typeof aVal !== 'undefined'
+      if (!hadPrev) {
         // New item
         changes.push(['update', [typeKey, itemKey], bVal])
-        // Ensure any stale schema code is removed (safety)
-        changes.push(['delete', ['schema', typeKey, itemKey, 'code']])
+        const hadSchema = aSchemaSection && Object.prototype.hasOwnProperty.call(aSchemaSection, itemKey)
+        if (SCHEMA_CODE_TYPES.has(typeKey) && !hadSchema) {
+          const schemaItem = buildSchemaItemFromData(typeKey, itemKey, bVal)
+          if (schemaItem) {
+            changes.push(['update', ['schema', typeKey, itemKey], schemaItem])
+          }
+        }
       } else if (!equal(aVal, bVal)) {
         // Updated item
         changes.push(['update', [typeKey, itemKey], bVal])
@@ -112,8 +126,18 @@ export function threeWayRebase(base, local, remote, keys = DATA_KEYS) {
   const theirsKeys = computeChangedKeys(base, remote, keys)
   const conflicts = oursKeys.filter(k => theirsKeys.includes(k))
 
-  const ours = computeCoarseChanges(base, local, keys).filter(([_, [k]]) => oursKeys.includes(k))
-  const theirs = computeCoarseChanges(base, remote, keys).filter(([_, [k]]) => theirsKeys.includes(k))
+  const allOurs = computeCoarseChanges(base, local, keys)
+  const allTheirs = computeCoarseChanges(base, remote, keys)
+
+  const ownsKey = (path, set) => {
+    if (!Array.isArray(path) || !path.length) return false
+    const [rootKey, typeKey] = path
+    const primary = rootKey === 'schema' ? typeKey : rootKey
+    return set.includes(primary)
+  }
+
+  const ours = allOurs.filter(([, path]) => ownsKey(path, oursKeys))
+  const theirs = allTheirs.filter(([, path]) => ownsKey(path, theirsKeys))
 
   let finalChanges = []
   if (conflicts.length === 0) {
@@ -224,6 +248,13 @@ function normaliseSchemaCode(code) {
     .replaceAll('/////tilde', '`')
 }
 
+function encodeSchemaCode(code) {
+  if (typeof code !== 'string' || !code.length) return ''
+  return code
+    .replaceAll('\n', '/////n')
+    .replaceAll('`', '/////tilde')
+}
+
 function parseExportedObject(code) {
   const src = normaliseSchemaCode(code)
   if (!src) return null
@@ -234,6 +265,46 @@ function parseExportedObject(code) {
   } catch {
     return null
   }
+}
+
+export function buildSchemaCodeFromObject(obj) {
+  if (!obj || typeof obj !== 'object') return ''
+  const body = objectToString(obj, 2)
+  const src = `export default ${body}`
+  return encodeSchemaCode(src)
+}
+
+function buildSchemaItemFromData(type, key, value) {
+  const schemaType = type
+
+  const base = {
+    title: key,
+    key,
+    type: schemaType
+  }
+
+  if (['pages', 'components'].includes(schemaType)) {
+    base.settings = {
+      gridOptions: {}
+    }
+    base.props = {}
+    base.interactivity = []
+    base.dataTypes = []
+    base.error = null
+  }
+
+  if (SCHEMA_CODE_TYPES.has(schemaType)) {
+    try {
+      const code = buildSchemaCodeFromObject(value)
+      if (code) {
+        base.code = code
+      }
+    } catch (_) {
+      // Fallback: omit code field if serialisation fails
+    }
+  }
+
+  return base
 }
 
 function extractTopLevelKeysFromCode(code) {
