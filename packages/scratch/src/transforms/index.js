@@ -1,6 +1,6 @@
 'use strict'
 
-import { isNull, isString, isObject, isUndefined } from '@domql/utils'
+import { isNull, isString, isObject, isUndefined, exec } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 import {
   getSpacingByKey,
@@ -145,8 +145,8 @@ export const splitTransition = (transition) => {
   return arr.map(transformTransition).join(',')
 }
 
-export const transformSize = (propertyName, val, props = {}, opts = {}) => {
-  let value = val || props[propertyName]
+export function transformSize(propertyName, val, props = {}, opts = {}) {
+  let value = exec.call(this, val || props[propertyName])
 
   if (isUndefined(value) && isNull(value)) return
 
@@ -171,7 +171,7 @@ export const transformSize = (propertyName, val, props = {}, opts = {}) => {
     : getSpacingByKey(value, propertyName, undefined, fnPrefix)
 }
 
-export const transformSizeRatio = (propertyName, props) => {
+export function transformSizeRatio(propertyName, props) {
   return transformSize(propertyName, null, props, {
     ratio: true
   })

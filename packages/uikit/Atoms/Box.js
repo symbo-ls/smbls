@@ -358,160 +358,248 @@ export const Box = {
           display: 'none !important'
         },
 
-      height: ({ props, deps }) => deps.transformSizeRatio('height', props),
-      width: ({ props, deps }) => deps.transformSizeRatio('width', props),
+      height: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'height', props)
+      },
+      width: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'width', props)
+      },
 
       boxSizing: ({ props, deps }) =>
         !deps.isUndefined(props.boxSizing)
           ? { boxSizing: props.boxSizing }
           : { boxSizing: 'border-box' },
 
-      boxSize: ({ props, deps }) => {
+      boxSize: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.boxSize)) return
         const [height, width] = props.boxSize.split(' ')
         return {
-          ...deps.transformSize('height', height),
-          ...deps.transformSize('width', width || height)
+          ...deps.transformSize.call(el, 'height', height),
+          ...deps.transformSize.call(el, 'width', width || height)
         }
       },
 
-      inlineSize: ({ props, deps }) =>
-        deps.transformSizeRatio('inlineSize', props),
-      blockSize: ({ props, deps }) =>
-        deps.transformSizeRatio('blockSize', props),
+      inlineSize: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'inlineSize', props)
+      },
+      blockSize: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'blockSize', props)
+      },
 
-      minWidth: ({ props, deps }) => deps.transformSizeRatio('minWidth', props),
-      maxWidth: ({ props, deps }) => deps.transformSizeRatio('maxWidth', props),
-      widthRange: ({ props, deps }) => {
+      minWidth: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'minWidth', props)
+      },
+      maxWidth: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'maxWidth', props)
+      },
+      widthRange: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.widthRange)) return
         const [minWidth, maxWidth] = props.widthRange.split(' ')
         return {
-          ...deps.transformSize('minWidth', minWidth),
-          ...deps.transformSize('maxWidth', maxWidth || minWidth)
+          ...deps.transformSize.call(el, 'minWidth', minWidth),
+          ...deps.transformSize.call(el, 'maxWidth', maxWidth || minWidth)
         }
       },
 
-      minHeight: ({ props, deps }) =>
-        deps.transformSizeRatio('minHeight', props),
-      maxHeight: ({ props, deps }) =>
-        deps.transformSizeRatio('maxHeight', props),
-      heightRange: ({ props, deps }) => {
+      minHeight: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'minHeight', props)
+      },
+      maxHeight: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'maxHeight', props)
+      },
+      heightRange: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.heightRange)) return
         const [minHeight, maxHeight] = props.heightRange.split(' ')
         return {
-          ...deps.transformSize('minHeight', minHeight),
-          ...deps.transformSize('maxHeight', maxHeight || minHeight)
+          ...deps.transformSize.call(el, 'minHeight', minHeight),
+          ...deps.transformSize.call(el, 'maxHeight', maxHeight || minHeight)
         }
       },
 
-      size: ({ props, deps }) => {
+      size: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.size)) return
         const [inlineSize, blockSize] = props.size.split(' ')
         return {
-          ...deps.transformSizeRatio('inlineSize', inlineSize),
-          ...deps.transformSizeRatio('blockSize', blockSize || inlineSize)
+          ...deps.transformSizeRatio.call(el, 'inlineSize', inlineSize),
+          ...deps.transformSizeRatio.call(
+            el,
+            'blockSize',
+            blockSize || inlineSize
+          )
         }
       },
 
-      minBlockSize: ({ props, deps }) =>
-        deps.transformSizeRatio('minBlockSize', props),
-      minInlineSize: ({ props, deps }) =>
-        deps.transformSizeRatio('minInlineSize', props),
+      minBlockSize: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'minBlockSize', props)
+      },
+      minInlineSize: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'minInlineSize', props)
+      },
 
-      maxBlockSize: ({ props, deps }) =>
-        deps.transformSizeRatio('maxBlockSize', props),
-      maxInlineSize: ({ props, deps }) =>
-        deps.transformSizeRatio('maxInlineSize', props),
+      maxBlockSize: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'maxBlockSize', props)
+      },
+      maxInlineSize: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'maxInlineSize', props)
+      },
 
-      minSize: ({ props, deps }) => {
+      minSize: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.minSize)) return
         const [minInlineSize, minBlockSize] = props.minSize.split(' ')
         return {
-          ...deps.transformSize('minInlineSize', minInlineSize),
-          ...deps.transformSize('minBlockSize', minBlockSize || minInlineSize)
+          ...deps.transformSize.call(el, 'minInlineSize', minInlineSize),
+          ...deps.transformSize.call(
+            el,
+            'minBlockSize',
+            minBlockSize || minInlineSize
+          )
         }
       },
 
-      maxSize: ({ props, deps }) => {
+      maxSize: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.maxSize)) return
         const [maxInlineSize, maxBlockSize] = props.maxSize.split(' ')
         return {
-          ...deps.transformSize('maxInlineSize', maxInlineSize),
-          ...deps.transformSize('maxBlockSize', maxBlockSize || maxInlineSize)
+          ...deps.transformSize.call(el, 'maxInlineSize', maxInlineSize),
+          ...deps.transformSize.call(
+            el,
+            'maxBlockSize',
+            maxBlockSize || maxInlineSize
+          )
         }
       },
 
-      borderWidth: ({ props, deps }) =>
-        deps.transformSizeRatio('borderWidth', props),
+      borderWidth: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'borderWidth', props)
+      },
 
-      padding: ({ props, deps }) => deps.transformSizeRatio('padding', props),
-      scrollPadding: ({ props, deps }) =>
-        deps.transformSizeRatio('scrollPadding', props),
-      paddingInline: ({ props, deps }) => {
+      padding: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'padding', props)
+      },
+      scrollPadding: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'scrollPadding', props)
+      },
+      paddingInline: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.paddingInline)) return
         const [paddingInlineStart, paddingInlineEnd] =
           props.paddingInline.split(' ')
         return {
-          ...deps.transformSize('paddingInlineStart', paddingInlineStart),
+          ...deps.transformSize.call(
+            el,
+            'paddingInlineStart',
+            paddingInlineStart
+          ),
           ...deps.transformSize(
             'paddingInlineEnd',
             paddingInlineEnd || paddingInlineStart
           )
         }
       },
-      paddingBlock: ({ props, deps }) => {
+      paddingBlock: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.paddingBlock)) return
         const [paddingBlockStart, paddingBlockEnd] =
           props.paddingBlock.split(' ')
         return {
-          ...deps.transformSize('paddingBlockStart', paddingBlockStart),
+          ...deps.transformSize.call(
+            el,
+            'paddingBlockStart',
+            paddingBlockStart
+          ),
           ...deps.transformSize(
             'paddingBlockEnd',
             paddingBlockEnd || paddingBlockStart
           )
         }
       },
-      paddingInlineStart: ({ props, deps }) =>
-        deps.transformSizeRatio('paddingInlineStart', props),
-      paddingInlineEnd: ({ props, deps }) =>
-        deps.transformSizeRatio('paddingInlineEnd', props),
-      paddingBlockStart: ({ props, deps }) =>
-        deps.transformSizeRatio('paddingBlockStart', props),
-      paddingBlockEnd: ({ props, deps }) =>
-        deps.transformSizeRatio('paddingBlockEnd', props),
+      paddingInlineStart: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'paddingInlineStart', props)
+      },
+      paddingInlineEnd: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'paddingInlineEnd', props)
+      },
+      paddingBlockStart: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'paddingBlockStart', props)
+      },
+      paddingBlockEnd: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'paddingBlockEnd', props)
+      },
 
-      margin: ({ props, deps }) => deps.transformSizeRatio('margin', props),
-      marginInline: ({ props, deps }) => {
+      margin: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'margin', props)
+      },
+      marginInline: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.marginInline)) return
         const [marginInlineStart, marginInlineEnd] =
           props.marginInline.split(' ')
         return {
-          ...deps.transformSize('marginInlineStart', marginInlineStart),
+          ...deps.transformSize.call(
+            el,
+            'marginInlineStart',
+            marginInlineStart
+          ),
           ...deps.transformSize(
             'marginInlineEnd',
             marginInlineEnd || marginInlineStart
           )
         }
       },
-      marginBlock: ({ props, deps }) => {
+      marginBlock: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.marginBlock)) return
         const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
         return {
-          ...deps.transformSize('marginBlockStart', marginBlockStart),
+          ...deps.transformSize.call(el, 'marginBlockStart', marginBlockStart),
           ...deps.transformSize(
             'marginBlockEnd',
             marginBlockEnd || marginBlockStart
           )
         }
       },
-      marginInlineStart: ({ props, deps }) =>
-        deps.transformSizeRatio('marginInlineStart', props),
-      marginInlineEnd: ({ props, deps }) =>
-        deps.transformSizeRatio('marginInlineEnd', props),
-      marginBlockStart: ({ props, deps }) =>
-        deps.transformSizeRatio('marginBlockStart', props),
-      marginBlockEnd: ({ props, deps }) =>
-        deps.transformSizeRatio('marginBlockEnd', props),
+      marginInlineStart: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'marginInlineStart', props)
+      },
+      marginInlineEnd: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'marginInlineEnd', props)
+      },
+      marginBlockStart: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'marginBlockStart', props)
+      },
+      marginBlockEnd: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'marginBlockEnd', props)
+      },
 
       gap: ({ props, deps }) =>
         !deps.isUndefined(props.gap) && {
@@ -549,7 +637,8 @@ export const Box = {
             (wrap || '')
         }
       },
-      flexAlign: ({ props, deps }) => {
+      flexAlign: (el) => {
+        const { props, deps } = el
         if (!deps.isString(props.flexAlign)) return
         const [alignItems, justifyContent] = props.flexAlign.split(' ')
         return {
@@ -921,8 +1010,10 @@ export const Box = {
         !isUndefined(props.outline) && {
           outline: deps.transformBorder(props.outline)
         },
-      outlineOffset: ({ props, deps }) =>
-        deps.transformSizeRatio('outlineOffset', props),
+      outlineOffset: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'outlineOffset', props)
+      },
 
       border: ({ props, deps }) =>
         (isString(props.border) || isNumber(props.border)) && {
@@ -1129,8 +1220,10 @@ export const Box = {
 
     // scrollbar
     ...{
-      scrollbarWidth: ({ props, deps }) =>
-        deps.transformSizeRatio('scrollbarWidth', props)
+      scrollbarWidth: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'scrollbarWidth', props)
+      }
     },
 
     // container queries
