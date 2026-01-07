@@ -11,6 +11,14 @@ import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
+import { stripOrderFields } from '../helpers/orderUtils.js'
+import { normalizeKeys } from '../helpers/compareUtils.js'
+import {
+  augmentProjectWithLocalPackageDependencies,
+  ensureSchemaDependencies,
+  findNearestPackageJson,
+  syncPackageJsonDependencies
+} from '../helpers/dependenciesUtils.js'
 
 // Lazy import socket.io-client and chokidar to avoid adding cost for non-collab users
 async function importDeps() {
@@ -19,6 +27,29 @@ async function importDeps() {
     import('chokidar')
   ])
   return { io, chokidar }
+}
+
+function toExportNameFromFileStem(stem) {
+  // Mirror fs.js behavior loosely: kebab/snake/path -> camelCase export name.
+  // e.g. "add-network" -> "addNetwork"
+  if (!stem || typeof stem !== 'string') return stem
+  const parts = stem.split(/[^a-zA-Z0-9]+/).filter(Boolean)
+  if (!parts.length) return stem
+  const first = parts[0]
+  return (
+    first +
+    parts
+      .slice(1)
+      .map((p) => (p ? p[0].toUpperCase() + p.slice(1) : ''))
+      .join('')
+  )
+}
+
+function toPagesRouteKeyFromFileStem(stem) {
+  // createFs writes `/foo` -> pages/foo.js and `/` -> pages/main.js
+  if (!stem || typeof stem !== 'string') return stem
+  if (stem === 'main') return '/'
+  return `/${stem}`
 }
 
 function debounce(fn, wait) {
@@ -51,6 +82,8 @@ export async function startCollab(options) {
   const distDir =
     resolveDistDir(symbolsConfig) ||
     path.join(process.cwd(), 'smbls')
+
+  const packageJsonPath = findNearestPackageJson(process.cwd())
 
   if (!appKey) {
     console.log(chalk.red('Missing project key. Add it to symbols.json or .symbols/config.json'))
@@ -141,9 +174,19 @@ export async function startCollab(options) {
   }
 
   async function writeProjectAndFs(fullObj) {
+    // Avoid persisting ordering metadata into local repository files
+    const persistedObj = stripOrderFields(fullObj)
+    // Keep schema.dependencies consistent and sync dependencies into local package.json
+    try {
+      ensureSchemaDependencies(persistedObj)
+      if (packageJsonPath && persistedObj?.dependencies) {
+        syncPackageJsonDependencies(packageJsonPath, persistedObj.dependencies, { overwriteExisting: true })
+      }
+    } catch (_) {}
+
     const { projectPath } = getConfigPaths()
     try {
-      await fs.promises.writeFile(projectPath, JSON.stringify(fullObj, null, 2))
+      await fs.promises.writeFile(projectPath, JSON.stringify(persistedObj, null, 2))
     } catch (_) {}
     // Avoid echoing the changes we are about to materialize
     suppressLocalChanges = true
@@ -152,7 +195,7 @@ export async function startCollab(options) {
       sendLocalChanges.cancel()
     }
     try {
-      await createFs(fullObj, distDir, { update: true, metadata: false })
+      await createFs(persistedObj, distDir, { update: true, metadata: false })
     } finally {
       // Extend suppression window to allow file events to settle fully
       suppressUntil = Date.now() + suppressionWindowMs
@@ -167,6 +210,12 @@ export async function startCollab(options) {
     { branch, includePending: true }
   )
   const initialData = prime?.data || {}
+  try {
+    ensureSchemaDependencies(initialData)
+    if (packageJsonPath && initialData?.dependencies) {
+      syncPackageJsonDependencies(packageJsonPath, initialData.dependencies, { overwriteExisting: true })
+    }
+  } catch (_) {}
   const etag = prime?.etag || null
   writeLock({
     etag,
@@ -180,7 +229,7 @@ export async function startCollab(options) {
   try {
     const { projectPath } = getConfigPaths()
     await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
-    await fs.promises.writeFile(projectPath, JSON.stringify(initialData, null, 2))
+    await fs.promises.writeFile(projectPath, JSON.stringify(stripOrderFields(initialData), null, 2))
   } catch (_) {}
   currentBase = { ...(initialData || {}) }
 
@@ -240,9 +289,8 @@ export async function startCollab(options) {
         : preprocessChanges(currentBase || {}, payload?.changes || []).granularChanges
       if (!Array.isArray(tuples) || !tuples.length) return
       applyTuples(currentBase, tuples)
-      if (Array.isArray(payload?.orders) && payload.orders.length) {
-        applyOrders(currentBase, payload.orders)
-      }
+      // If server omits schema.dependencies updates, ensure it's present locally
+      ensureSchemaDependencies(currentBase)
       await writeProjectAndFs(currentBase)
       writeLock({ pulledAt: new Date().toISOString() })
       if (options.verbose) console.log(chalk.gray('Applied incoming ops to local workspace'))
@@ -268,7 +316,8 @@ export async function startCollab(options) {
       const { loadModule } = await import('./require.js')
       await buildDirectory(distDir, outputDir)
       const loaded = await loadModule(outputFile, { silent: true, noCache: true })
-      return loaded
+      // Ensure a plain, mutable object (avoid getter-only export objects)
+      return normalizeKeys(loaded)
     } catch (e) {
       if (options.verbose) console.error('Build failed while watching:', e.message)
       return null
@@ -312,9 +361,17 @@ export async function startCollab(options) {
         const filename = entries[j]
         if (!filename.endsWith('.js') || filename === 'index.js') continue
 
-        const key = filename.slice(0, -3)
+        const fileStem = filename.slice(0, -3)
+        const key = type === 'pages'
+          ? toPagesRouteKeyFromFileStem(fileStem)
+          : fileStem
+        const altKey = type === 'pages' ? fileStem : null
+
+        // Skip if already present (support legacy/broken non-slash page keys too)
         if (Object.prototype.hasOwnProperty.call(container, key)) continue
+        if (altKey && Object.prototype.hasOwnProperty.call(container, altKey)) continue
         if (Object.prototype.hasOwnProperty.call(baseSection, key)) continue
+        if (altKey && Object.prototype.hasOwnProperty.call(baseSection, altKey)) continue
 
         const compiledPath = path.join(outputDir, type, filename)
         let mod
@@ -332,7 +389,14 @@ export async function startCollab(options) {
 
         let value = null
         if (mod && typeof mod === 'object') {
-          value = mod.default || mod[key] || null
+          const exportName = toExportNameFromFileStem(fileStem)
+          value =
+            mod.default ||
+            mod[exportName] ||
+            mod[fileStem] ||
+            mod[key] ||
+            (altKey ? mod[altKey] : null) ||
+            null
         }
         if (!value || typeof value !== 'object') continue
 
@@ -343,9 +407,11 @@ export async function startCollab(options) {
 
   const sendLocalChanges = debounce(async () => {
     if (suppressLocalChanges) return
-    const local = await loadLocalProject()
+    let local = await loadLocalProject()
     if (!local) return
     await augmentLocalWithNewFsItems(local)
+    // Include package.json deps into local snapshot so dependency edits can be synced
+    local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
     // Prepare safe, JSON-serialisable snapshots for diffing & transport
     const base = currentBase || {}
     const safeBase = stringifyFunctionsForTransport(base)
@@ -371,9 +437,6 @@ export async function startCollab(options) {
         ? granularChanges
         : changes
       applyTuples(currentBase, tuplesToApply)
-      if (Array.isArray(orders) && orders.length) {
-        applyOrders(currentBase, orders)
-      }
     } catch (e) {
       if (options.verbose) {
         console.error('Failed to apply local ops to in-memory base', e)
@@ -406,6 +469,18 @@ export async function startCollab(options) {
     .on('add', onFsEvent)
     .on('change', onFsEvent)
     .on('unlink', onFsEvent)
+
+  // Also watch package.json for dependency changes
+  if (packageJsonPath) {
+    const pkgWatcher = chokidar.watch(packageJsonPath, {
+      ignoreInitial: true,
+      persistent: true
+    })
+    pkgWatcher
+      .on('add', onFsEvent)
+      .on('change', onFsEvent)
+      .on('unlink', onFsEvent)
+  }
 
   console.log(chalk.green('Watching local changes and syncing over socket...'))
   console.log(chalk.gray('Press Ctrl+C to exit'))

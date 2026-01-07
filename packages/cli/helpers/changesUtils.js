@@ -10,6 +10,9 @@ export const DATA_KEYS = [
 ]
 
 const SCHEMA_CODE_TYPES = new Set(['pages', 'components', 'functions', 'methods', 'snippets'])
+// Types that should auto-create a schema entry when a new key is added.
+// NOTE: dependencies schema objects are not "code", but we still want them present for transport.
+const SCHEMA_AUTO_CREATE_TYPES = new Set([...SCHEMA_CODE_TYPES, 'dependencies'])
 
 function stripMetaDeep(val) {
   if (Array.isArray(val)) {
@@ -103,7 +106,7 @@ export function computeCoarseChanges(base, local, keys = DATA_KEYS) {
         // New item
         changes.push(['update', [typeKey, itemKey], bVal])
         const hadSchema = aSchemaSection && Object.prototype.hasOwnProperty.call(aSchemaSection, itemKey)
-        if (SCHEMA_CODE_TYPES.has(typeKey) && !hadSchema) {
+        if (SCHEMA_AUTO_CREATE_TYPES.has(typeKey) && !hadSchema) {
           const schemaItem = buildSchemaItemFromData(typeKey, itemKey, bVal)
           if (schemaItem) {
             changes.push(['update', ['schema', typeKey, itemKey], schemaItem])
@@ -112,8 +115,10 @@ export function computeCoarseChanges(base, local, keys = DATA_KEYS) {
       } else if (!equal(aVal, bVal)) {
         // Updated item
         changes.push(['update', [typeKey, itemKey], bVal])
-        // When an item changes, drop its schema.code to be regenerated
-        changes.push(['delete', ['schema', typeKey, itemKey, 'code']])
+        // When a code-backed item changes, drop its schema.code to be regenerated
+        if (SCHEMA_CODE_TYPES.has(typeKey)) {
+          changes.push(['delete', ['schema', typeKey, itemKey, 'code']])
+        }
       }
     }
   }
@@ -276,6 +281,20 @@ export function buildSchemaCodeFromObject(obj) {
 
 function buildSchemaItemFromData(type, key, value) {
   const schemaType = type
+
+  if (schemaType === 'dependencies') {
+    const version =
+      typeof value === 'string' && value.length
+        ? value
+        : (value && typeof value === 'object' && typeof value.version === 'string' ? value.version : 'latest')
+    return {
+      key,
+      resolvedVersion: version,
+      type: 'dependency',
+      version,
+      status: 'done'
+    }
+  }
 
   const base = {
     title: key,

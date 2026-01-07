@@ -16,6 +16,13 @@ import { createFs } from './fs.js'
 import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
+import { stripOrderFields } from '../helpers/orderUtils.js'
+import {
+  augmentProjectWithLocalPackageDependencies,
+  ensureSchemaDependencies,
+  findNearestPackageJson,
+  syncPackageJsonDependencies
+} from '../helpers/dependenciesUtils.js'
 
 async function buildLocalProject(distDir) {
   try {
@@ -167,6 +174,8 @@ export async function syncProjectChanges(options) {
       resolveDistDir(symbolsConfig) ||
       path.join(process.cwd(), 'smbls')
 
+    const packageJsonPath = findNearestPackageJson(process.cwd())
+
     if (options.verbose) {
       console.log(chalk.dim('\nSync configuration:'))
       console.log(chalk.gray(`App Key: ${chalk.cyan(appKey)}`))
@@ -182,6 +191,10 @@ export async function syncProjectChanges(options) {
     let localProject
     try {
       localProject = await buildLocalProject(distDir)
+      // Include local package.json dependencies into the project object for diffing/sync
+      localProject = augmentProjectWithLocalPackageDependencies(localProject, packageJsonPath) || localProject
+      // Never sync/persist `__order` (platform metadata)
+      localProject = stripOrderFields(localProject)
       console.log(chalk.gray('Local project built successfully'))
     } catch (buildError) {
       showBuildErrorMessages(buildError)
@@ -192,7 +205,7 @@ export async function syncProjectChanges(options) {
     const baseSnapshot = (() => {
       try {
         const raw = fs.readFileSync(projectPath, 'utf8')
-        return JSON.parse(raw)
+        return stripOrderFields(JSON.parse(raw))
       } catch (_) {
         return {}
       }
@@ -208,10 +221,15 @@ export async function syncProjectChanges(options) {
     const serverProject = serverResp.data || {}
     console.log(chalk.gray('Server data fetched successfully'))
 
+    // Ensure schema.dependencies exists wherever dependencies exist (base/remote/local)
+    ensureSchemaDependencies(baseSnapshot)
+    ensureSchemaDependencies(serverProject)
+    ensureSchemaDependencies(localProject)
+
     // Generate coarse local and remote changes via simple three-way rebase
     const base = normalizeKeys(baseSnapshot || {})
-    const local = normalizeKeys(localProject || {})
-    const remote = normalizeKeys(serverProject || {})
+    const local = normalizeKeys(stripOrderFields(localProject || {}))
+    const remote = normalizeKeys(stripOrderFields(serverProject || {}))
     const { ours, theirs, conflicts, finalChanges } = threeWayRebase(base, local, remote)
 
     const localChanges = ours
@@ -290,9 +308,17 @@ export async function syncProjectChanges(options) {
     )
     const updatedServerData = updated?.data || {}
 
+    // Ensure fetched snapshot has dependency schema and sync deps into local package.json
+    try {
+      ensureSchemaDependencies(updatedServerData)
+      if (packageJsonPath && updatedServerData?.dependencies) {
+        syncPackageJsonDependencies(packageJsonPath, updatedServerData.dependencies, { overwriteExisting: true })
+      }
+    } catch (_) {}
+
     // Apply changes to local files
     console.log(chalk.dim('Updating local files...'))
-    await createFs(updatedServerData, distDir, { update: true, metadata: false })
+    await createFs(stripOrderFields(updatedServerData), distDir, { update: true, metadata: false })
     console.log(chalk.gray('Local files updated successfully'))
 
     console.log(chalk.bold.green('\nProject synced successfully!'))
@@ -308,7 +334,7 @@ export async function syncProjectChanges(options) {
     })
     try {
       const { projectPath } = getConfigPaths()
-      await fs.promises.writeFile(projectPath, JSON.stringify(updatedServerData, null, 2))
+      await fs.promises.writeFile(projectPath, JSON.stringify(stripOrderFields(updatedServerData), null, 2))
     } catch (_) {}
 
   } catch (error) {
