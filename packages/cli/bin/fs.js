@@ -226,25 +226,38 @@ export async function createFs (
     const dirs = []
 
     if (body[key] && isObject(body[key])) {
-      const promises = Object.entries(body[key])
-        // Skip meta/reserved identifier entries (e.g. "__order", "default")
-        .filter(([entryKey]) => !shouldSkipEntryKey(entryKey))
-        .map(
-        async ([entryKey, value]) => {
-          // if pages
+      // Normalize + dedupe entries before writing files. This is especially
+      // important for `pages` where both "/node" and "node" can otherwise map
+      // to the same filename and cause concurrent writes / corrupted output.
+      const normalized = new Map()
+      for (const [rawEntryKey, value] of Object.entries(body[key])) {
+        if (shouldSkipEntryKey(rawEntryKey)) continue
+
+        let entryKey = rawEntryKey
+        if (key === 'pages') {
           if (entryKey.startsWith('/')) entryKey = entryKey.slice(1)
           if (entryKey === '') entryKey = 'main'
           if (entryKey.includes('*')) entryKey = 'fallback'
-
-          await createOrUpdateFile(dirPath, entryKey, value, update)
-          dirs.push(entryKey)
         }
-      )
+
+        // Prefer the canonical slash-prefixed route form when there are collisions
+        const priority = key === 'pages' && rawEntryKey.startsWith('/') ? 1 : 0
+        const existing = normalized.get(entryKey)
+        if (!existing || priority > existing.priority) {
+          normalized.set(entryKey, { value, priority })
+        }
+      }
+
+      const promises = Array.from(normalized.entries()).map(async ([entryKey, info]) => {
+        await createOrUpdateFile(dirPath, entryKey, info.value, update)
+        dirs.push(entryKey)
+      })
 
       await Promise.all(promises)
     }
 
-    await generateIndexjsFile(dirs, dirPath, key)
+    // Ensure deterministic + unique index generation
+    await generateIndexjsFile(Array.from(new Set(dirs)), dirPath, key)
   }
 
   async function createOrUpdateFile(dirPath, childKey, value, update) {

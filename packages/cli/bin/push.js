@@ -14,6 +14,8 @@ import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from 
 import { showAuthRequiredMessages, showProjectNotFoundMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
+import { stripOrderFields } from '../helpers/orderUtils.js'
+import { augmentProjectWithLocalPackageDependencies, findNearestPackageJson } from '../helpers/dependenciesUtils.js'
 
 
 async function buildLocalProject (distDir) {
@@ -117,11 +119,16 @@ export async function pushProjectChanges(options) {
       resolveDistDir(symbolsConfig) ||
       path.join(process.cwd(), 'smbls')
 
+    const packageJsonPath = findNearestPackageJson(process.cwd())
+
     // Build and load local project
     console.log(chalk.dim('Building local project...'))
     let localProject
     try {
       localProject = await buildLocalProject(distDir)
+      localProject = augmentProjectWithLocalPackageDependencies(localProject, packageJsonPath) || localProject
+      // Never push `__order` (platform metadata) from local files
+      localProject = stripOrderFields(localProject)
       console.log(chalk.gray('Local project built successfully'))
     } catch (buildError) {
       showBuildErrorMessages(buildError)
@@ -146,8 +153,8 @@ export async function pushProjectChanges(options) {
     console.log(chalk.gray('Server state fetched successfully'))
 
     // Calculate coarse local changes vs server snapshot (or base)
-    const base = normalizeKeys(serverProject || {})
-    const changes = computeCoarseChanges(base, localProject)
+    const base = normalizeKeys(stripOrderFields(serverProject || {}))
+    const changes = computeCoarseChanges(base, stripOrderFields(localProject))
 
     if (!changes.length) {
       console.log(chalk.bold.yellow('\nNo changes to push'))
@@ -178,7 +185,7 @@ export async function pushProjectChanges(options) {
     const operationId = `cli-${Date.now()}`
     // Derive granular changes against server base and compute orders using local for pending children
     const { granularChanges } = preprocessChanges(base, changes)
-    const orders = computeOrdersForTuples(localProject, granularChanges)
+    const orders = computeOrdersForTuples(stripOrderFields(localProject), granularChanges)
     const result = await postProjectChanges(projectId, authToken, {
       branch,
       type,
