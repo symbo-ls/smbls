@@ -7,6 +7,7 @@ export const Textarea = {
   props: {
     variant: 'outlined',
     fontfamily: 'Avenir',
+    theme: 'field',
     round: 'Z1',
     placeholder: 'Leave us a message...',
     padding: 'A',
@@ -18,25 +19,6 @@ export const Textarea = {
     height: 'E1_default',
     fontFamily: 'inherit',
     style: { resize: 'none' }
-  },
-
-  '.simple': {
-    props: {
-      theme: 'field',
-      round: 'Z2',
-      lineHeight: 1.4
-    }
-  },
-
-  '.outlined': {
-    props: {
-      theme: 'field',
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      lineHeight: 1.4,
-      placeholder: 'Leave us a message...',
-      resize: 'none'
-    }
   },
 
   html: (el, s) => {

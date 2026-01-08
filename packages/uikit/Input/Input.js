@@ -21,7 +21,14 @@ export const Input = {
     maxLength: ({ props }) => props.maxlength,
     name: ({ props }) => props.name,
     autocomplete: ({ props }) => props.autocomplete,
-    placeholder: ({ props }) => props.placeholder,
+    placeholder: (el) => {
+      if (!el.props || !el.props.placeholder) return
+      const placeholder = el.call('exec', el.props.placeholder, el)
+      if (el.call('isString', placeholder) && placeholder.includes('{{')) {
+        return el.call('replaceLiteralsWithObjectFields', placeholder)
+      }
+      return placeholder
+    },
     value: (el) => {
       if (!el.props || !el.props.value) return
       const val = el.call('exec', el.props.value, el)
