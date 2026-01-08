@@ -12,6 +12,8 @@ import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
+import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies } from '../helpers/dependenciesUtils.js'
+import { stripOrderFields } from '../helpers/orderUtils.js'
 const { isObjectLike } = (utils.default || utils)
 
 const debugMsg = chalk.dim(
@@ -81,12 +83,27 @@ export const fetchFromCli = async (opts) => {
     try {
       const { projectPath } = getConfigPaths()
       await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
-      await fs.promises.writeFile(projectPath, JSON.stringify(payload, null, 2))
+      // Ensure schema.dependencies exists for payload.dependencies
+      ensureSchemaDependencies(payload)
+      await fs.promises.writeFile(projectPath, JSON.stringify(stripOrderFields(payload), null, 2))
     } catch (e) {
       console.error(chalk.bold.red('\nError writing file'))
       if (verbose) console.error(e)
       else console.log(debugMsg)
       process.exit(1)
+    }
+
+    // Sync project dependencies into local package.json
+    try {
+      const packageJsonPath = findNearestPackageJson(process.cwd())
+      if (packageJsonPath && payload?.dependencies) {
+        const res = syncPackageJsonDependencies(packageJsonPath, payload.dependencies, { overwriteExisting: true })
+        if (verbose && res?.ok && res.changed) {
+          console.log(chalk.gray(`Updated package.json dependencies from fetched project data`))
+        }
+      }
+    } catch (e) {
+      if (verbose) console.error('Failed updating package.json dependencies', e)
     }
 
     const { version: fetchedVersion, ...config } = payload
@@ -117,9 +134,9 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (update || force) {
-      createFs(payload, distDir, { update: true, metadata: false })
+      createFs(stripOrderFields(payload), distDir, { update: true, metadata: false })
     } else {
-      createFs(payload, distDir, { metadata: false })
+      createFs(stripOrderFields(payload), distDir, { metadata: false })
     }
 }
 
