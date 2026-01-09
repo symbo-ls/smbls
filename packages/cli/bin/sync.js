@@ -17,6 +17,7 @@ import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/bui
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
 import { stripOrderFields } from '../helpers/orderUtils.js'
+import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import {
   augmentProjectWithLocalPackageDependencies,
   ensureSchemaDependencies,
@@ -227,9 +228,10 @@ export async function syncProjectChanges(options) {
     ensureSchemaDependencies(localProject)
 
     // Generate coarse local and remote changes via simple three-way rebase
-    const base = normalizeKeys(baseSnapshot || {})
-    const local = normalizeKeys(stripOrderFields(localProject || {}))
-    const remote = normalizeKeys(stripOrderFields(serverProject || {}))
+    // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)
+    const base = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(baseSnapshot || {})))
+    const local = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(localProject || {})))
+    const remote = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(serverProject || {})))
     const { ours, theirs, conflicts, finalChanges } = threeWayRebase(base, local, remote)
 
     const localChanges = ours

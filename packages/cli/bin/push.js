@@ -16,6 +16,7 @@ import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
 import { stripOrderFields } from '../helpers/orderUtils.js'
 import { augmentProjectWithLocalPackageDependencies, findNearestPackageJson } from '../helpers/dependenciesUtils.js'
+import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 
 
 async function buildLocalProject (distDir) {
@@ -153,8 +154,10 @@ export async function pushProjectChanges(options) {
     console.log(chalk.gray('Server state fetched successfully'))
 
     // Calculate coarse local changes vs server snapshot (or base)
-    const base = normalizeKeys(stripOrderFields(serverProject || {}))
-    const changes = computeCoarseChanges(base, stripOrderFields(localProject))
+    // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)
+    const base = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(serverProject || {})))
+    const local = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(localProject)))
+    const changes = computeCoarseChanges(base, local)
 
     if (!changes.length) {
       console.log(chalk.bold.yellow('\nNo changes to push'))
@@ -169,7 +172,7 @@ export async function pushProjectChanges(options) {
     })
 
     // Confirm push
-    const shouldProceed = await confirmChanges(changes, base, localProject)
+    const shouldProceed = await confirmChanges(changes, base, local)
     if (!shouldProceed) {
       console.log(chalk.yellow('Push cancelled'))
       return
@@ -185,7 +188,7 @@ export async function pushProjectChanges(options) {
     const operationId = `cli-${Date.now()}`
     // Derive granular changes against server base and compute orders using local for pending children
     const { granularChanges } = preprocessChanges(base, changes)
-    const orders = computeOrdersForTuples(stripOrderFields(localProject), granularChanges)
+    const orders = computeOrdersForTuples(local, granularChanges)
     const result = await postProjectChanges(projectId, authToken, {
       branch,
       type,
