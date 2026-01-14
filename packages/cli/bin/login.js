@@ -101,6 +101,11 @@ function extractConfirmToken(data) {
   )
 }
 
+function withCliSessionKeyHeaders(headers, cliSessionKey) {
+  if (!cliSessionKey) return headers
+  return { ...headers, 'X-Symbols-Cli-Session-Key': cliSessionKey }
+}
+
 program
   .command('login')
   .description('Sign in to Symbols')
@@ -111,12 +116,18 @@ program
 
     // Prompt for credentials
     const currentConfig = loadCliConfig()
+    const credManager = new CredentialManager()
+    // If the user selected an active server via `smbls servers -s`, prefer that as the login default.
+    // Env vars should still override everything (useful for CI / debugging).
+    const envApiBaseUrl = process.env.SYMBOLS_API_BASE_URL || process.env.SMBLS_API_URL
+    const defaultApiBaseUrl =
+      envApiBaseUrl || credManager.getCurrentApiBaseUrl() || currentConfig.apiBaseUrl || getApiUrl()
     const first = await inquirer.prompt([
       {
         type: 'input',
         name: 'apiBaseUrl',
         message: 'API Base URL:',
-        default: currentConfig.apiBaseUrl || getApiUrl(),
+        default: defaultApiBaseUrl,
         validate: input => /^https?:\/\//.test(input) || '❌ Please enter a valid URL'
       },
       {
@@ -170,6 +181,21 @@ program
           throw err
         }
       } else if (first.method === 'google_browser' || first.method === 'github_browser') {
+        const defaultCliSessionKey = credManager.getCliSessionKey(apiBaseUrl) || ''
+        const { cliSessionKey } = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'cliSessionKey',
+            message: 'CLI session key (for long-lived tokens, optional):',
+            default: defaultCliSessionKey,
+            filter: (v) => (v || '').trim()
+          }
+        ])
+
+        // Persist per-server key so users can change it per environment
+        // (empty value clears and disables long-lived token request)
+        credManager.setCliSessionKey(apiBaseUrl, cliSessionKey)
+
         const sessionId = crypto.randomUUID()
         const codeVerifier = randomVerifier(64)
         const codeChallenge = sha256Base64url(codeVerifier)
@@ -177,11 +203,12 @@ program
         console.log(chalk.dim('\nCreating secure sign-in session...'))
         const sessionResp = await fetch(`${apiBaseUrl}/core/auth/session`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: withCliSessionKeyHeaders({ 'Content-Type': 'application/json' }, cliSessionKey),
           body: JSON.stringify({
             session_id: sessionId,
             code_challenge: codeChallenge,
-            plugin_info: { version: 'cli', figma_env: 'cli' }
+            plugin_info: { version: 'cli', figma_env: 'cli' },
+            ...(cliSessionKey ? { cli_session_key: cliSessionKey } : {})
           })
         })
 
@@ -214,7 +241,8 @@ program
           }
 
           const statusResp = await fetch(
-            `${apiBaseUrl}/core/auth/session/status?session=${encodeURIComponent(sessionId)}`
+            `${apiBaseUrl}/core/auth/session/status?session=${encodeURIComponent(sessionId)}`,
+            { headers: withCliSessionKeyHeaders({}, cliSessionKey) }
           )
           const statusData = await statusResp.json().catch(async () => ({ message: await statusResp.text() }))
 
@@ -235,8 +263,12 @@ program
         console.log(chalk.dim('Confirming session...'))
         const confirmResp = await fetch(`${apiBaseUrl}/core/auth/session/confirm`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session_id: sessionId, code_verifier: codeVerifier })
+          headers: withCliSessionKeyHeaders({ 'Content-Type': 'application/json' }, cliSessionKey),
+          body: JSON.stringify({
+            session_id: sessionId,
+            code_verifier: codeVerifier,
+            ...(cliSessionKey ? { cli_session_key: cliSessionKey } : {})
+          })
         })
 
         const confirmData = await confirmResp.json().catch(async () => ({ message: await confirmResp.text() }))
@@ -262,7 +294,6 @@ program
       }
 
       // Save credentials
-      const credManager = new CredentialManager()
       credManager.saveCredentials({
         apiBaseUrl,
         authToken: accessToken,
