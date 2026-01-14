@@ -4,10 +4,31 @@ import os from 'os'
 
 const RC_FILE = '.smblsrc'
 const DEFAULT_API = 'https://api.symbols.app'
+const DEFAULT_LOCAL_CLI_SESSION_KEY = 'supersecret...change-in-production!!!'
+const DEFAULT_PROD_CLI_SESSION_KEY =
+  'r5jMdknqYjuGeWAsApTvPjaYHjWkdyw70veJye11Mb_vInBmsBZ9RM4GKU2_rm17Z2qvNahbyIV5gQVXY0V9DlUYdflLKd1jYCKSuc9r_xreC9hVEovfbZqmfbOl-JFCN1w1MXEsPNWkWj48nfF6IFfoWH-0hsdQlPBFjW1mv10'
 
 export class CredentialManager {
   constructor() {
     this.rcPath = path.join(os.homedir(), RC_FILE)
+  }
+
+  static defaultCliSessionKeyForApiBaseUrl(apiBaseUrl) {
+    const baseUrl = (apiBaseUrl || '').trim()
+    if (!baseUrl) return null
+
+    // Match the environments used by login.js's websiteFromApi:
+    // - production: api.symbols.app -> production session key by default
+    // - everything else (dev/staging/test/local/custom): local key by default
+    try {
+      const u = new URL(baseUrl)
+      if (u.host === 'api.symbols.app') return DEFAULT_PROD_CLI_SESSION_KEY
+      return DEFAULT_LOCAL_CLI_SESSION_KEY
+    } catch (_) {
+      // Best-effort fallback if apiBaseUrl is malformed
+      if (baseUrl.includes('api.symbols.app')) return DEFAULT_PROD_CLI_SESSION_KEY
+      return DEFAULT_LOCAL_CLI_SESSION_KEY
+    }
   }
 
   // --- Low-level helpers ----------------------------------------------------
@@ -87,6 +108,66 @@ export class CredentialManager {
   getCurrentApiBaseUrl() {
     const state = this.loadState()
     return state.currentApiBaseUrl || DEFAULT_API
+  }
+
+  getCliSessionKey(apiBaseUrl) {
+    // Allow overriding via env (useful for CI / debugging)
+    const envKey =
+      process.env.SYMBOLS_CLI_SESSION_KEY ||
+      process.env.SMBLS_CLI_SESSION_KEY ||
+      process.env.PLUGIN_CLI_SESSION_KEY
+    if (envKey) return envKey
+
+    const state = this.loadState() || {}
+    const baseUrl = apiBaseUrl || state.currentApiBaseUrl || DEFAULT_API
+
+    // Prefer explicit mapping, then per-profile field
+    const mapped = state.cliSessionKeys && typeof state.cliSessionKeys === 'object'
+      ? state.cliSessionKeys[baseUrl]
+      : null
+    if (mapped) return mapped
+
+    const profileKey =
+      state.profiles && typeof state.profiles === 'object'
+        ? state.profiles[baseUrl]?.cliSessionKey
+        : null
+    if (profileKey) return profileKey
+
+    // Fall back to environment defaults (e.g. localhost)
+    return CredentialManager.defaultCliSessionKeyForApiBaseUrl(baseUrl)
+  }
+
+  setCliSessionKey(apiBaseUrl, cliSessionKey) {
+    const state = this.loadState() || {}
+    const baseUrl = apiBaseUrl || state.currentApiBaseUrl || DEFAULT_API
+    const nextKey = (cliSessionKey || '').trim()
+
+    const next = { ...state }
+
+    // Store in a dedicated map keyed by API base URL
+    const prevMap = (state.cliSessionKeys && typeof state.cliSessionKeys === 'object')
+      ? state.cliSessionKeys
+      : {}
+    const nextMap = { ...prevMap }
+
+    if (!nextKey) {
+      delete nextMap[baseUrl]
+    } else {
+      nextMap[baseUrl] = nextKey
+    }
+
+    next.cliSessionKeys = nextMap
+
+    // Also mirror into the profile (handy for humans inspecting ~/.smblsrc)
+    const profiles = (state.profiles && typeof state.profiles === 'object') ? state.profiles : {}
+    const existing = profiles[baseUrl] || {}
+    const updatedProfile = { ...existing }
+    if (!nextKey) delete updatedProfile.cliSessionKey
+    else updatedProfile.cliSessionKey = nextKey
+    next.profiles = { ...profiles, [baseUrl]: updatedProfile }
+
+    this.saveRaw(next)
+    return next
   }
 
   setCurrentApiBaseUrl(apiBaseUrl) {
