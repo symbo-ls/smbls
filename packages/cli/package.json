@@ -22,7 +22,7 @@
     "chokidar": "^4.0.3",
     "commander": "^13.1.0",
     "diff": "^5.2.0",
-    "esbuild": "^0.25.1",
+    "esbuild": "^0.26.0",
     "inquirer": "^12.9.0",
     "node-fetch": "^3.3.2",
     "socket.io-client": "^4.8.1",
