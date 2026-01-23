@@ -34,6 +34,15 @@ function asPlain(obj) {
   return stripMetaDeep(normalizeKeys(obj || {}))
 }
 
+function getPropCaseInsensitive(obj, key) {
+  if (!obj || typeof obj !== 'object') return undefined
+  // Prefer exact key first to avoid surprises.
+  if (Object.prototype.hasOwnProperty.call(obj, key)) return obj[key]
+  const lower = typeof key === 'string' ? key.toLowerCase() : key
+  if (typeof lower === 'string' && Object.prototype.hasOwnProperty.call(obj, lower)) return obj[lower]
+  return obj[key]
+}
+
 function equal(a, b) {
   // Coarse compare; sufficient for top-level merges
   try {
@@ -49,8 +58,8 @@ export function computeChangedKeys(base, local, keys = DATA_KEYS) {
   const b = asPlain(local)
   // Only consider top-level data keys; ignore 'schema' entirely
   for (const key of [...keys]) {
-    const ak = a?.[key]
-    const bk = b?.[key]
+    const ak = getPropCaseInsensitive(a, key)
+    const bk = getPropCaseInsensitive(b, key)
     if (bk === undefined && ak !== undefined) {
       changed.push(key)
       continue
@@ -72,15 +81,17 @@ export function computeCoarseChanges(base, local, keys = DATA_KEYS) {
   const baseSchema = a?.schema || {}
 
   for (const typeKey of [...keys]) {
-    const aSection = a?.[typeKey] || {}
-    const bSection = b?.[typeKey] || {}
-    const aSchemaSection = baseSchema?.[typeKey] || {}
+    const aSection = getPropCaseInsensitive(a, typeKey) || {}
+    const bSection = getPropCaseInsensitive(b, typeKey) || {}
+    const aSchemaSection = getPropCaseInsensitive(baseSchema, typeKey) || {}
 
     // If sections are not plain objects (or are arrays), fallback to coarse replacement on the section itself
     const aIsObject = aSection && typeof aSection === 'object' && !Array.isArray(aSection)
     const bIsObject = bSection && typeof bSection === 'object' && !Array.isArray(bSection)
     if (!aIsObject || !bIsObject) {
-      if (b?.hasOwnProperty(typeKey) === false && a?.hasOwnProperty(typeKey) === true) {
+      const hasB = Object.prototype.hasOwnProperty.call(b, typeKey) || Object.prototype.hasOwnProperty.call(b, typeKey.toLowerCase())
+      const hasA = Object.prototype.hasOwnProperty.call(a, typeKey) || Object.prototype.hasOwnProperty.call(a, typeKey.toLowerCase())
+      if (!hasB && hasA) {
         changes.push(['delete', [typeKey]])
       } else if (!equal(aSection, bSection)) {
         changes.push(['update', [typeKey], bSection])
