@@ -2,36 +2,54 @@ import { REGISTRY } from '@domql/element/mixins/registry.js'
 
 export function temporaryDomqlHack(value) {
   if (this && !this.getUserSettings?.('useDomql3')) return value
-  if (value.extends) {
-    value.extends = value.extend
-    delete value.extend
+  let obj = { ...value }
+  const on = obj.on
+  if (this.call('isObject', on)) {
+    delete obj.on
+    const transformedOn = {}
+    for (const key in on) {
+      const transformedKey = 'on' + key.charAt(0).toUpperCase() + key.slice(1)
+      transformedOn[transformedKey] = on[key]
+    }
+    obj = { ...transformedOn, ...obj }
   }
-  if (value.childExtends) {
-    value.childExtends = value.childExtend
-    delete value.childExtend
+  const props = obj.props
+  if (this.call('isObject', props)) {
+    delete obj.props
+    obj = { ...props, ...obj }
   }
-  return value
+  const extendObj = {}
+  if (obj.extend) {
+    extendObj.extends = obj.extend
+    delete obj.extend
+  }
+  if (obj.childExtend) {
+    extendObj.childExtends = obj.childExtend
+    delete obj.childExtend
+  }
+  return { ...extendObj, ...obj }
 }
 
 export function temporaryDomqlHackReverse(value) {
   if (this && !this.getUserSettings?.('useDomql3')) return value
-  if (value.extends) {
-    value.extend = value.extends
-    delete value.extends
+  const obj = { ...value }
+  if (obj.extends) {
+    obj.extend = obj.extends
+    delete obj.extends
   }
-  if (value.childExtends) {
-    value.childExtend = value.childExtends
-    delete value.childExtends
+  if (obj.childExtends) {
+    obj.childExtend = obj.childExtends
+    delete obj.childExtends
   }
-  for (const key in value) {
+  for (const key in obj) {
     const allowed = ['transform', 'class']
     if ((REGISTRY[key] && !allowed.includes(key)) || /^[A-Z]/.test(key))
       continue
     else {
-      value.props = value.props || {}
-      value.props[key] = value[key]
-      delete value[key]
+      obj.props = obj.props || {}
+      obj.props[key] = obj[key]
+      delete obj[key]
     }
   }
-  return value
+  return obj
 }

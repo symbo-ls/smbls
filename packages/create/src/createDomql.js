@@ -48,16 +48,19 @@ export const prepareContext = async (app, context = {}) => {
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
 
-  // Iterate over components and pages to run domqlhack
-  for (const key in context.components) {
-    if (context.components.hasOwnProperty(key)) {
-      temporaryDomqlHackReverse(context.components[key])
+  // Iterate over components and pages to run domql3hack
+  if (context.forceDomql3) {
+    for (const key in context.components) {
+      if (!key.includes('smbls.') && context.components.hasOwnProperty(key)) {
+        context.components[key] = temporaryDomqlHackReverse(
+          context.components[key]
+        )
+      }
     }
-  }
-
-  for (const key in context.pages) {
-    if (context.pages.hasOwnProperty(key)) {
-      temporaryDomqlHackReverse(context.pages[key])
+    for (const key in context.pages) {
+      if (context.pages.hasOwnProperty(key)) {
+        context.pages[key] = temporaryDomqlHackReverse(context.pages[key])
+      }
     }
   }
 
@@ -69,13 +72,13 @@ export const createDomqlElement = async (app, ctx) => {
   if (isNode(app)) {
     app = {}
     ctx.parent = app
-  }
-  if (isString(app)) {
+  } else if (isString(app)) {
     app = {}
     ctx.key = app
-  }
-  if (!isObject(app)) {
+  } else if (!isObject(app)) {
     app = {}
+  } else {
+    // app = temporaryDomqlHackReverse(app)
   }
 
   await prepareContext(app, ctx)
