@@ -40,6 +40,5 @@ export const DEFAULT_CONFIG = {
   CLASS: {},
   SVG: {} // TODO: Check with @nikoloza on this
 }
-console.log(DEFAULT_CONFIG)
 
 export default DEFAULT_CONFIG

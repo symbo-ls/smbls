@@ -8,8 +8,9 @@ export * from './date.js'
 export * from './fibonacci.js'
 export * from './load.js'
 export * from './files.js'
+export * from './domqlv3hacks.js'
 
-export const copyStringToClipboard = async str => {
+export const copyStringToClipboard = async (str) => {
   try {
     await navigator.clipboard.writeText(str)
   } catch (err) {
@@ -17,7 +18,7 @@ export const copyStringToClipboard = async str => {
   }
 }
 
-export const copyJavaScriptToClipboard = async jsCode => {
+export const copyJavaScriptToClipboard = async (jsCode) => {
   try {
     // Create a Blob for the JavaScript code with the 'text/javascript' MIME type
     const blob = new Blob([jsCode], { type: 'text/javascript' })
@@ -34,11 +35,11 @@ export const copyJavaScriptToClipboard = async jsCode => {
   }
 }
 
-export const removeChars = str => {
+export const removeChars = (str) => {
   return str.replace(/[^a-zA-Z0-9_]/g, '')
 }
 
-export const toCamelCase = str => {
+export const toCamelCase = (str) => {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
       return index === 0 ? word.toLowerCase() : word.toUpperCase()
@@ -46,13 +47,13 @@ export const toCamelCase = str => {
     .replaceAll(/\s+/g, '')
 }
 
-export const toTitleCase = str =>
+export const toTitleCase = (str) =>
   str &&
-  str.replace(/\w\S*/g, txt => {
+  str.replace(/\w\S*/g, (txt) => {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
   })
 
-export const toDashCase = val =>
+export const toDashCase = (val) =>
   val
     .replace(/[^a-zA-Z0-9]/g, ' ') // Replace non-alphanumeric characters with spaces
     .trim() // Remove leading and trailing spaces
@@ -67,7 +68,7 @@ export const toDescriptionCase = (str = '') => {
   return result.charAt(0).toUpperCase() + result.slice(1)
 }
 
-export const arrayzeValue = val => {
+export const arrayzeValue = (val) => {
   if (isArray(val)) return val
   if (isString(val)) return val.split(' ')
   if (isObject(val)) return Object.values(val)

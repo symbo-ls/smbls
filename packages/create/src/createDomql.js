@@ -9,7 +9,6 @@ import { defaultDefine } from './define.js'
 import { initRouter } from './router.js'
 import {
   initializeExtend,
-  // initializeInspect,
   initializeNotifications,
   initializeSync
 } from './syncExtend.js'
@@ -26,8 +25,9 @@ import {
   prepareMethods
 } from './prepare.js'
 
+import { temporaryDomqlHackReverse } from '@symbo.ls/utils'
+
 export const prepareContext = async (app, context = {}) => {
-  // const rcFileKey = process?.env?.SYMBOLS_KEY
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
   context.window = prepareWindow(context)
@@ -47,6 +47,23 @@ export const prepareContext = async (app, context = {}) => {
   context.methods = prepareMethods(context)
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
+
+  // Iterate over components and pages to run domql3hack
+  if (context.forceDomql3) {
+    for (const key in context.components) {
+      if (!key.includes('smbls.') && context.components.hasOwnProperty(key)) {
+        context.components[key] = temporaryDomqlHackReverse(
+          context.components[key]
+        )
+      }
+    }
+    for (const key in context.pages) {
+      if (context.pages.hasOwnProperty(key)) {
+        context.pages[key] = temporaryDomqlHackReverse(context.pages[key])
+      }
+    }
+  }
+
   return context
 }
 
@@ -55,13 +72,13 @@ export const createDomqlElement = async (app, ctx) => {
   if (isNode(app)) {
     app = {}
     ctx.parent = app
-  }
-  if (isString(app)) {
+  } else if (isString(app)) {
     app = {}
     ctx.key = app
-  }
-  if (!isObject(app)) {
+  } else if (!isObject(app)) {
     app = {}
+  } else {
+    // app = temporaryDomqlHackReverse(app)
   }
 
   await prepareContext(app, ctx)
