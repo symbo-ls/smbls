@@ -151,6 +151,22 @@ const onOps =
       Array.isArray(changes) ? [] : {}
     )
 
+    // Iterate over components and pages to run domql3hack
+    if (ctx.forceDomql3) {
+      for (const key in changes.components) {
+        if (!key.includes('smbls.') && changes.components.hasOwnProperty(key)) {
+          changes.components[key] = temporaryDomqlHackReverse(
+            changes.components[key]
+          )
+        }
+      }
+      for (const key in changes.pages) {
+        if (changes.pages.hasOwnProperty(key)) {
+          changes.pages[key] = temporaryDomqlHackReverse(changes.pages[key])
+        }
+      }
+    }
+
     const changed = applyOpsToCtx(ctx, changes)
 
     // React to specific top-level changes

@@ -1,7 +1,6 @@
 import { REGISTRY } from '@domql/element/mixins/registry.js'
 
 export function temporaryDomqlHack(value) {
-  if (this && !this.getUserSettings?.('useDomql3')) return value
   let obj = { ...value }
   const on = obj.on
   if (this.call('isObject', on)) {
@@ -31,7 +30,6 @@ export function temporaryDomqlHack(value) {
 }
 
 export function temporaryDomqlHackReverse(value) {
-  if (this && !this.getUserSettings?.('useDomql3')) return value
   const obj = { ...value }
   if (obj.extends) {
     obj.extend = obj.extends

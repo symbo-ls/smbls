@@ -14,6 +14,7 @@ export const DESIGN_SYSTEM_OPTIONS = {
 }
 
 export const CREATE_OPTIONS = {
+  forceDomql3OnInit: true,
   forceDomql3: true,
   state: {},
   pages: {},

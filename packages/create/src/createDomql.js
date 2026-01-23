@@ -7,7 +7,7 @@ import { isString, isNode, isObject } from '@domql/utils'
 import { initAnimationFrame } from '@domql/event'
 import { defaultDefine } from './define.js'
 import { initRouter } from './router.js'
-import { version } from '../package.json' assert { type: 'json' }
+import { version } from '../package.json' with { type: 'json' }
 import {
   initializeExtend,
   initializeNotifications,
@@ -79,8 +79,8 @@ export const createDomqlElement = async (app, ctx) => {
     ctx.key = app
   } else if (!isObject(app)) {
     app = {}
-  } else {
-    // app = temporaryDomqlHackReverse(app)
+  } else if (ctx.forceDomql3 && ctx.forceDomql3OnInit) {
+    app = temporaryDomqlHackReverse(app)
   }
 
   await prepareContext(app, ctx)
