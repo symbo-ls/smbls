@@ -13,7 +13,7 @@ import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies } from '../helpers/dependenciesUtils.js'
-import { stripOrderFields } from '../helpers/orderUtils.js'
+import { applyOrderFields } from '../helpers/orderUtils.js'
 const { isObjectLike } = (utils.default || utils)
 
 const debugMsg = chalk.dim(
@@ -85,7 +85,8 @@ export const fetchFromCli = async (opts) => {
       await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
       // Ensure schema.dependencies exists for payload.dependencies
       ensureSchemaDependencies(payload)
-      await fs.promises.writeFile(projectPath, JSON.stringify(stripOrderFields(payload), null, 2))
+      const persisted = applyOrderFields(payload)
+      await fs.promises.writeFile(projectPath, JSON.stringify(persisted, null, 2))
     } catch (e) {
       console.error(chalk.bold.red('\nError writing file'))
       if (verbose) console.error(e)
@@ -134,9 +135,9 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (update || force) {
-      createFs(stripOrderFields(payload), distDir, { update: true, metadata: false })
+      createFs(applyOrderFields(payload), distDir, { update: true, metadata: false })
     } else {
-      createFs(stripOrderFields(payload), distDir, { metadata: false })
+      createFs(applyOrderFields(payload), distDir, { metadata: false })
     }
 }
 

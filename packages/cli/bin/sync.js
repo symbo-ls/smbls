@@ -16,7 +16,7 @@ import { createFs } from './fs.js'
 import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
-import { stripOrderFields } from '../helpers/orderUtils.js'
+import { applyOrderFields, stripOrderFields } from '../helpers/orderUtils.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import {
   augmentProjectWithLocalPackageDependencies,
@@ -320,7 +320,8 @@ export async function syncProjectChanges(options) {
 
     // Apply changes to local files
     console.log(chalk.dim('Updating local files...'))
-    await createFs(stripOrderFields(updatedServerData), distDir, { update: true, metadata: false })
+    const orderedUpdatedServerData = applyOrderFields(updatedServerData)
+    await createFs(orderedUpdatedServerData, distDir, { update: true, metadata: false })
     console.log(chalk.gray('Local files updated successfully'))
 
     console.log(chalk.bold.green('\nProject synced successfully!'))
@@ -336,7 +337,7 @@ export async function syncProjectChanges(options) {
     })
     try {
       const { projectPath } = getConfigPaths()
-      await fs.promises.writeFile(projectPath, JSON.stringify(stripOrderFields(updatedServerData), null, 2))
+      await fs.promises.writeFile(projectPath, JSON.stringify(orderedUpdatedServerData, null, 2))
     } catch (_) {}
 
   } catch (error) {
