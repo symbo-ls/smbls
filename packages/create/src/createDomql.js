@@ -7,6 +7,7 @@ import { isString, isNode, isObject } from '@domql/utils'
 import { initAnimationFrame } from '@domql/event'
 import { defaultDefine } from './define.js'
 import { initRouter } from './router.js'
+import { version } from '../package.json' assert { type: 'json' }
 import {
   initializeExtend,
   initializeNotifications,
@@ -47,6 +48,7 @@ export const prepareContext = async (app, context = {}) => {
   context.methods = prepareMethods(context)
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
+  context.version = version
 
   // Iterate over components and pages to run domql3hack
   if (context.forceDomql3) {
