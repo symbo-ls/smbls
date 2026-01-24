@@ -11,7 +11,7 @@ import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
-import { stripOrderFields } from '../helpers/orderUtils.js'
+import { applyOrderFields } from '../helpers/orderUtils.js'
 import { normalizeKeys } from '../helpers/compareUtils.js'
 import {
   augmentProjectWithLocalPackageDependencies,
@@ -174,8 +174,8 @@ export async function startCollab(options) {
   }
 
   async function writeProjectAndFs(fullObj) {
-    // Avoid persisting ordering metadata into local repository files
-    const persistedObj = stripOrderFields(fullObj)
+    // Apply platform ordering while avoiding persisting `__order` locally
+    const persistedObj = applyOrderFields(fullObj)
     // Keep schema.dependencies consistent and sync dependencies into local package.json
     try {
       ensureSchemaDependencies(persistedObj)
@@ -229,7 +229,7 @@ export async function startCollab(options) {
   try {
     const { projectPath } = getConfigPaths()
     await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
-    await fs.promises.writeFile(projectPath, JSON.stringify(stripOrderFields(initialData), null, 2))
+    await fs.promises.writeFile(projectPath, JSON.stringify(applyOrderFields(initialData), null, 2))
   } catch (_) {}
   currentBase = { ...(initialData || {}) }
 
@@ -289,6 +289,13 @@ export async function startCollab(options) {
         : preprocessChanges(currentBase || {}, payload?.changes || []).granularChanges
       if (!Array.isArray(tuples) || !tuples.length) return
       applyTuples(currentBase, tuples)
+      // Apply server-provided ordering metadata so newly added keys don't just
+      // append to the end locally.
+      let orders = payload?.orders
+      if (typeof orders === 'string') {
+        try { orders = JSON.parse(orders) } catch (_) {}
+      }
+      applyOrders(currentBase, orders)
       // If server omits schema.dependencies updates, ensure it's present locally
       ensureSchemaDependencies(currentBase)
       await writeProjectAndFs(currentBase)
