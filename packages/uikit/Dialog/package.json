@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/dialog",
-  "version": "2.34.12",
+  "version": "2.34.13",
   "main": "index.js",
   "license": "MIT",
-  "gitHead": "774b1a5e796f6ed5f7c6046921d6f6496c2b4f4f",
+  "gitHead": "4b0e55d013de46eda9fc59b029bf46217901282c",
   "dependencies": {
-    "@symbo.ls/atoms": "^2.34.12",
-    "@symbo.ls/button": "^2.34.12"
+    "@symbo.ls/atoms": "^2.34.13",
+    "@symbo.ls/button": "^2.34.13"
   },
   "source": "src/index.js"
 }
