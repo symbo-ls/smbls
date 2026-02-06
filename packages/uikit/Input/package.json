@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/input",
-  "version": "2.34.18",
+  "version": "2.34.20",
   "main": "index.js",
   "source": "index.js",
   "license": "MIT",
-  "gitHead": "0ba969a5728f2c1f479919cf687a77ae699f1fe7",
+  "gitHead": "ee2e9cb9831ae904b984868e68219e95fd9ceeaf",
   "dependencies": {
-    "@domql/utils": "^2.34.18",
-    "@symbo.ls/atoms": "^2.34.18"
+    "@domql/utils": "^2.34.20",
+    "@symbo.ls/atoms": "^2.34.20"
   }
 }
