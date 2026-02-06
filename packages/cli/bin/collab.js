@@ -22,7 +22,7 @@ import {
 } from '../helpers/dependenciesUtils.js'
 
 // Lazy import socket.io-client and chokidar to avoid adding cost for non-collab users
-async function importDeps() {
+async function importDeps () {
   const [{ default: io }, { default: chokidar }] = await Promise.all([
     import('socket.io-client'),
     import('chokidar')
@@ -30,7 +30,7 @@ async function importDeps() {
   return { io, chokidar }
 }
 
-function clonePlain(obj) {
+function clonePlain (obj) {
   try {
     // Node 18+ typically supports structuredClone
     // eslint-disable-next-line no-undef
@@ -44,7 +44,7 @@ function clonePlain(obj) {
   }
 }
 
-function toExportNameFromFileStem(stem) {
+function toExportNameFromFileStem (stem) {
   // Mirror fs.js behavior loosely: kebab/snake/path -> camelCase export name.
   // e.g. "add-network" -> "addNetwork"
   if (!stem || typeof stem !== 'string') return stem
@@ -60,14 +60,14 @@ function toExportNameFromFileStem(stem) {
   )
 }
 
-function toPagesRouteKeyFromFileStem(stem) {
+function toPagesRouteKeyFromFileStem (stem) {
   // createFs writes `/foo` -> pages/foo.js and `/` -> pages/main.js
   if (!stem || typeof stem !== 'string') return stem
   if (stem === 'main') return '/'
   return `/${stem}`
 }
 
-function debounce(fn, wait) {
+function debounce (fn, wait) {
   let t = null
   const debounced = (...args) => {
     clearTimeout(t)
@@ -89,10 +89,10 @@ function debounce(fn, wait) {
  * adding a new file like components/MainFooter.js is seen as a new
  * `components.MainFooter` data item and can be sent/merged.
  */
-async function augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase, options }) {
+async function augmentLocalWithNewFsItems ({ local, distDir, outputDir, currentBase, options }) {
   if (!local || typeof local !== 'object') return
 
-  const TYPES = ['components', 'pages', 'snippets', 'methods', 'functions']
+  const TYPES = ['components', 'pages', 'snippets', 'methods', 'functions', 'designSystem', 'files']
 
   for (let i = 0; i < TYPES.length; i++) {
     const type = TYPES[i]
@@ -161,7 +161,7 @@ async function augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBa
   }
 }
 
-async function resolveTopLevelConflicts(conflictsKeys, ours, theirs) {
+async function resolveTopLevelConflicts (conflictsKeys, ours, theirs) {
   const choices = conflictsKeys.map((key) => {
     const ourChange = ours.find((c) => c[1][0] === key)
     const theirChange = theirs.find((c) => c[1][0] === key)
@@ -192,7 +192,7 @@ ${chalk.red('- Remote:')} ${JSON.stringify(theirChange?.[2])}`
   return final
 }
 
-export async function startCollab(options) {
+export async function startCollab (options) {
   const symbolsConfig = await loadSymbolsConfig()
   const cliConfig = loadCliConfig()
   const credManager = new CredentialManager()
@@ -232,11 +232,11 @@ export async function startCollab(options) {
   let pendingInitialOps = null
   let skipRemoteWrites = false
 
-  function isSuppressed() {
+  function isSuppressed () {
     return suppressLocalChanges || Date.now() < suppressUntil
   }
 
-  function setByPath(root, pathArr = [], value) {
+  function setByPath (root, pathArr = [], value) {
     if (!Array.isArray(pathArr) || !pathArr.length) return
     let cur = root
     for (let i = 0; i < pathArr.length - 1; i++) {
@@ -247,7 +247,7 @@ export async function startCollab(options) {
     cur[pathArr[pathArr.length - 1]] = value
   }
 
-  function deleteByPath(root, pathArr = []) {
+  function deleteByPath (root, pathArr = []) {
     if (!Array.isArray(pathArr) || !pathArr.length) return
     let cur = root
     for (let i = 0; i < pathArr.length - 1; i++) {
@@ -260,7 +260,7 @@ export async function startCollab(options) {
     }
   }
 
-  function applyTuples(root, tuples = []) {
+  function applyTuples (root, tuples = []) {
     if (!root || typeof root !== 'object') return root
     if (!Array.isArray(tuples)) return root
     for (let i = 0; i < tuples.length; i++) {
@@ -276,14 +276,14 @@ export async function startCollab(options) {
     return root
   }
 
-  function applyOrders(root, orders = []) {
+  function applyOrders (root, orders = []) {
     if (!root || typeof root !== 'object') return
     if (!Array.isArray(orders)) return
     for (let i = 0; i < orders.length; i++) {
       const o = orders[i]
       if (!o || !Array.isArray(o.path) || !Array.isArray(o.keys)) continue
       // Ensure container exists
-      setByPath(root, o.path, (function ensure(obj) {
+      setByPath(root, o.path, (function ensure (obj) {
         return obj && typeof obj === 'object' ? obj : {}
       })(pathArrGet(root, o.path)))
       // Now set __order on that container
@@ -294,7 +294,7 @@ export async function startCollab(options) {
     }
   }
 
-  function pathArrGet(root, pathArr = []) {
+  function pathArrGet (root, pathArr = []) {
     if (!Array.isArray(pathArr) || !pathArr.length) return root
     let cur = root
     for (let i = 0; i < pathArr.length; i++) {
@@ -304,7 +304,7 @@ export async function startCollab(options) {
     return cur
   }
 
-  async function writeProjectAndFs(fullObj) {
+  async function writeProjectAndFs (fullObj) {
     // Apply platform ordering while avoiding persisting `__order` locally
     const persistedObj = applyOrderFields(fullObj)
     // Keep schema.dependencies consistent and sync dependencies into local package.json
@@ -364,7 +364,7 @@ export async function startCollab(options) {
   // Build local project for merge detection. If it fails, we will avoid any destructive overwrite.
   const outputDir = path.join(distDir, 'dist')
   const outputFile = path.join(outputDir, 'index.js')
-  async function buildLocalForStartup() {
+  async function buildLocalForStartup () {
     try {
       const { buildDirectory } = await import('../helpers/fileUtils.js')
       const { loadModule } = await import('./require.js')
@@ -599,7 +599,7 @@ export async function startCollab(options) {
 
   // Watch local dist output and push coarse per-key changes
   // Build loader
-  async function loadLocalProject() {
+  async function loadLocalProject () {
     try {
       // Reuse build flow from push/sync
       const { buildDirectory } = await import('../helpers/fileUtils.js')
@@ -629,7 +629,10 @@ export async function startCollab(options) {
     const changes = computeCoarseChanges(safeBase, safeLocal)
     if (!changes.length) return
     if (options.verbose) {
-      const byType = changes.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+      const byType = changes.reduce((acc, [t]) => {
+        acc[t] = (acc[t] || 0) + 1
+        return acc
+      }, {})
       console.log(chalk.gray(`Emitting local ops: ${JSON.stringify(byType)}`))
     }
     // Generate granular changes against base to ensure downstream consumers have fine ops
@@ -663,7 +666,7 @@ export async function startCollab(options) {
   const watcher = chokidar.watch(distDir, {
     ignored: (p) => {
       // Ignore hidden files, build output directory, and temporary files
-      if (/(^|[\/\\])\./.test(p)) return true
+      if (/(^|[/\\])\./.test(p)) return true
       if (p.includes(`${path.sep}dist${path.sep}`) || p.endsWith(`${path.sep}dist`)) return true
       return false
     },
@@ -703,5 +706,3 @@ program
   .option('-d, --debounce-ms <ms>', 'Local changes debounce milliseconds', (v) => parseInt(v, 10), 200)
   .option('-v, --verbose', 'Show verbose output', false)
   .action(startCollab)
-
-
