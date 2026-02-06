@@ -3,13 +3,14 @@
 import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
+import inquirer from 'inquirer'
 import { program } from './program.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
-import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
+import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges, threeWayRebase } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
 import { normalizeKeys } from '../helpers/compareUtils.js'
@@ -27,6 +28,20 @@ async function importDeps() {
     import('chokidar')
   ])
   return { io, chokidar }
+}
+
+function clonePlain(obj) {
+  try {
+    // Node 18+ typically supports structuredClone
+    // eslint-disable-next-line no-undef
+    if (typeof structuredClone === 'function') return structuredClone(obj)
+  } catch (_) {}
+  try {
+    return JSON.parse(JSON.stringify(obj || {}))
+  } catch (_) {
+    // Best effort; at least return a shallow copy
+    return { ...(obj || {}) }
+  }
 }
 
 function toExportNameFromFileStem(stem) {
@@ -65,6 +80,118 @@ function debounce(fn, wait) {
   return debounced
 }
 
+/**
+ * Augment the loaded project object with any new items that exist as filesystem
+ * files (e.g. newly created component/page/method/function/snippet files) but
+ * are not yet present in the in-memory data object.
+ *
+ * This bridges the gap between the one-way createFs → files mapping so that
+ * adding a new file like components/MainFooter.js is seen as a new
+ * `components.MainFooter` data item and can be sent/merged.
+ */
+async function augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase, options }) {
+  if (!local || typeof local !== 'object') return
+
+  const TYPES = ['components', 'pages', 'snippets', 'methods', 'functions']
+
+  for (let i = 0; i < TYPES.length; i++) {
+    const type = TYPES[i]
+    const srcDir = path.join(distDir, type)
+
+    let entries
+    try {
+      entries = await fs.promises.readdir(srcDir)
+    } catch {
+      continue
+    }
+    if (!Array.isArray(entries) || !entries.length) continue
+
+    const container = local[type] && typeof local[type] === 'object' && !Array.isArray(local[type])
+      ? local[type]
+      : (local[type] = {})
+    const baseSection = currentBase && currentBase[type] && typeof currentBase[type] === 'object'
+      ? currentBase[type]
+      : {}
+
+    for (let j = 0; j < entries.length; j++) {
+      const filename = entries[j]
+      if (!filename.endsWith('.js') || filename === 'index.js') continue
+
+      const fileStem = filename.slice(0, -3)
+      const key = type === 'pages'
+        ? toPagesRouteKeyFromFileStem(fileStem)
+        : fileStem
+      const altKey = type === 'pages' ? fileStem : null
+
+      // Skip if already present (support legacy/broken non-slash page keys too)
+      if (Object.prototype.hasOwnProperty.call(container, key)) continue
+      if (altKey && Object.prototype.hasOwnProperty.call(container, altKey)) continue
+      if (Object.prototype.hasOwnProperty.call(baseSection, key)) continue
+      if (altKey && Object.prototype.hasOwnProperty.call(baseSection, altKey)) continue
+
+      const compiledPath = path.join(outputDir, type, filename)
+      let mod
+      try {
+        const { loadModule } = await import('./require.js')
+        mod = await loadModule(compiledPath, { silent: true })
+      } catch {
+        if (options?.verbose) {
+          console.error(`Failed to load new ${type} item from`, compiledPath)
+        }
+        continue
+      }
+
+      if (!mod) continue
+
+      let value = null
+      if (mod && typeof mod === 'object') {
+        const exportName = toExportNameFromFileStem(fileStem)
+        value =
+          mod.default ||
+          mod[exportName] ||
+          mod[fileStem] ||
+          mod[key] ||
+          (altKey ? mod[altKey] : null) ||
+          null
+      }
+      if (!value || typeof value !== 'object') continue
+
+      container[key] = value
+    }
+  }
+}
+
+async function resolveTopLevelConflicts(conflictsKeys, ours, theirs) {
+  const choices = conflictsKeys.map((key) => {
+    const ourChange = ours.find((c) => c[1][0] === key)
+    const theirChange = theirs.find((c) => c[1][0] === key)
+    return {
+      name: `${chalk.cyan(key)}  ${chalk.green('Local')} vs ${chalk.red('Remote')}`,
+      value: key,
+      short: key,
+      description: `${chalk.green('+ Local:')} ${JSON.stringify(ourChange?.[2])}
+${chalk.red('- Remote:')} ${JSON.stringify(theirChange?.[2])}`
+    }
+  })
+
+  const { selected } = await inquirer.prompt([{
+    type: 'checkbox',
+    name: 'selected',
+    message: 'Conflicts detected. Select the keys to keep from Local (unchecked will keep Remote):',
+    choices,
+    pageSize: 10
+  }])
+
+  const final = conflictsKeys.map((key) => {
+    if (selected.includes(key)) {
+      return ours.find((c) => c[1][0] === key)
+    }
+    return theirs.find((c) => c[1][0] === key)
+  }).filter(Boolean)
+
+  return final
+}
+
 export async function startCollab(options) {
   const symbolsConfig = await loadSymbolsConfig()
   const cliConfig = loadCliConfig()
@@ -96,10 +223,14 @@ export async function startCollab(options) {
   console.log(chalk.dim(`\nConnecting to realtime collab on ${baseUrl} ...`))
 
   // Maintain in-memory base state and a guard to suppress local echoes
+  // `remoteBase` tracks the latest known server snapshot (used for safe merges)
   let currentBase = {}
+  let remoteBase = {}
   let suppressLocalChanges = false
   let suppressUntil = 0
   const suppressionWindowMs = Math.max(1500, (options.debounceMs || 200) * 8)
+  let pendingInitialOps = null
+  let skipRemoteWrites = false
 
   function isSuppressed() {
     return suppressLocalChanges || Date.now() < suppressUntil
@@ -203,35 +334,146 @@ export async function startCollab(options) {
     }
   }
 
-  // Prime local base with latest snapshot
+  // Load last persisted snapshot (base) before touching the filesystem.
+  const baseSnapshot = (() => {
+    try {
+      const { projectPath } = getConfigPaths()
+      const raw = fs.readFileSync(projectPath, 'utf8')
+      return JSON.parse(raw)
+    } catch (_) {
+      return {}
+    }
+  })()
+
+  // Prime remote snapshot from server (but do NOT overwrite local files yet).
   const prime = await getCurrentProjectData(
     { projectKey: appKey, projectId: lock.projectId },
     authToken,
     { branch, includePending: true }
   )
-  const initialData = prime?.data || {}
+  const initialDataRaw = prime?.data || {}
+  const initialData = stringifyFunctionsForTransport(initialDataRaw)
   try {
     ensureSchemaDependencies(initialData)
     if (packageJsonPath && initialData?.dependencies) {
       syncPackageJsonDependencies(packageJsonPath, initialData.dependencies, { overwriteExisting: true })
     }
   } catch (_) {}
+  remoteBase = clonePlain(initialData)
+
+  // Build local project for merge detection. If it fails, we will avoid any destructive overwrite.
+  const outputDir = path.join(distDir, 'dist')
+  const outputFile = path.join(outputDir, 'index.js')
+  async function buildLocalForStartup() {
+    try {
+      const { buildDirectory } = await import('../helpers/fileUtils.js')
+      const { loadModule } = await import('./require.js')
+      await buildDirectory(distDir, outputDir)
+      const loaded = await loadModule(outputFile, { silent: true, noCache: true })
+      let local = normalizeKeys(loaded)
+      await augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase: baseSnapshot, options })
+      local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
+      return stringifyFunctionsForTransport(local)
+    } catch (e) {
+      if (options.verbose) {
+        console.error(chalk.yellow('Startup build failed; will not overwrite local files:'), e?.message || e)
+      }
+      return null
+    }
+  }
+
+  const localBuilt = await buildLocalForStartup()
+  if (localBuilt == null) {
+    // Safest path: keep local filesystem as-is; treat currentBase as what we last knew.
+    currentBase = stringifyFunctionsForTransport(baseSnapshot || {})
+    skipRemoteWrites = true
+    console.log(chalk.yellow('Local project build failed; remote changes will not be applied to avoid overwriting local files. Fix the build and restart `smbls collab`.'))
+  } else {
+    const base = stringifyFunctionsForTransport(baseSnapshot || {})
+    const local = localBuilt
+    const remote = remoteBase
+    const { ours, theirs, conflicts } = threeWayRebase(base, local, remote)
+
+    if (ours.length) {
+      // Local changes exist; prompt user to merge vs discard.
+      const conflictNote = conflicts.length ? chalk.yellow(` (${conflicts.length} conflicts)`) : ''
+      const isInteractive = !!(process.stdin && process.stdin.isTTY && process.stdout && process.stdout.isTTY)
+      let action = 'merge'
+      if (isInteractive) {
+        const answer = await inquirer.prompt([{
+          type: 'list',
+          name: 'action',
+          message: `Local changes detected${conflictNote}. How should collab start?`,
+          choices: [
+            { name: 'Merge: keep local changes (recommended)', value: 'merge' },
+            { name: 'Discard: overwrite local files with remote snapshot', value: 'discard' },
+            { name: 'Cancel', value: 'cancel' }
+          ],
+          default: 0
+        }])
+        action = answer.action
+      } else {
+        console.log(chalk.yellow(`Local changes detected${conflictNote}. Non-interactive mode: defaulting to merge (keep local).`))
+      }
+
+      if (action === 'cancel') {
+        console.log(chalk.yellow('Collab cancelled'))
+        process.exit(0)
+      }
+
+      if (action === 'discard') {
+        currentBase = clonePlain(remoteBase)
+        await writeProjectAndFs(currentBase)
+      } else {
+        // Merge local onto remote; for conflicts ask user to choose per top-level key.
+        let toApply = ours
+        if (conflicts.length) {
+          const chosen = isInteractive
+            ? await resolveTopLevelConflicts(conflicts, ours, theirs)
+            // Non-interactive: prefer local for conflicting top-level keys
+            : conflicts.map((k) => ours.find((c) => c[1][0] === k)).filter(Boolean)
+          const nonConflictOurs = ours.filter(([_, [k]]) => !conflicts.includes(k))
+          toApply = [...nonConflictOurs, ...chosen]
+        }
+
+        const merged = clonePlain(remoteBase)
+        applyTuples(merged, toApply)
+        currentBase = merged
+        await writeProjectAndFs(currentBase)
+
+        // Queue initial ops to push local changes up to the server once connected.
+        try {
+          const changes = computeCoarseChanges(remoteBase, currentBase)
+          if (changes.length) {
+            const { granularChanges } = preprocessChanges(remoteBase, changes)
+            const orders = computeOrdersForTuples(currentBase, granularChanges)
+            pendingInitialOps = { changes, granularChanges, orders }
+          }
+        } catch (_) {}
+      }
+    } else {
+      // No local changes; safe to materialize remote snapshot.
+      currentBase = clonePlain(remoteBase)
+      await writeProjectAndFs(currentBase)
+    }
+  }
+
+  // Update lock after we’ve safely established an initial local state.
   const etag = prime?.etag || null
   writeLock({
     etag,
-    version: initialData.version,
+    version: initialDataRaw.version,
     branch,
-    projectId: initialData?.projectInfo?.id || lock.projectId,
+    projectId: initialDataRaw?.projectInfo?.id || lock.projectId,
     pulledAt: new Date().toISOString()
   })
 
-  // Persist base snapshot
+  // Persist current base snapshot (so restart won’t drop local merged state).
   try {
     const { projectPath } = getConfigPaths()
     await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
-    await fs.promises.writeFile(projectPath, JSON.stringify(applyOrderFields(initialData), null, 2))
+    await fs.promises.writeFile(projectPath, JSON.stringify(applyOrderFields(currentBase), null, 2))
   } catch (_) {}
-  currentBase = { ...(initialData || {}) }
 
   // Connect to the collab namespace with required auth fields
   const socket = io(`${baseUrl}`, {
@@ -257,6 +499,23 @@ export async function startCollab(options) {
 
   socket.on('connect', () => {
     console.log(chalk.green('Connected to collab server'))
+    if (pendingInitialOps && pendingInitialOps.changes && pendingInitialOps.changes.length) {
+      try {
+        socket.emit('ops', {
+          changes: pendingInitialOps.changes,
+          granularChanges: pendingInitialOps.granularChanges,
+          orders: pendingInitialOps.orders,
+          branch
+        })
+        if (options.verbose) {
+          console.log(chalk.gray('Pushed startup local changes to server'))
+        }
+      } catch (e) {
+        if (options.verbose) console.error('Failed to push startup ops:', e?.message || e)
+      } finally {
+        pendingInitialOps = null
+      }
+    }
   })
 
   socket.on('disconnect', (reason) => {
@@ -269,12 +528,36 @@ export async function startCollab(options) {
 
   // Receive snapshot and update local files + lock/base
   socket.on('snapshot', async ({ version, branch: srvBranch, data, schema }) => {
-    const full = { ...(data || {}), schema: schema || {}, version, branch: srvBranch }
-    currentBase = full
-    await writeProjectAndFs(currentBase)
-    // Update lock’s version; ETag will change next pull
-    writeLock({ version, branch: srvBranch, pulledAt: new Date().toISOString() })
-    console.log(chalk.gray(`Snapshot applied. Version: ${chalk.cyan(version)}`))
+    if (skipRemoteWrites) {
+      // Do not overwrite local files when startup build failed.
+      // Still track server state for later retries/restarts.
+      try {
+        const incomingRaw = { ...(data || {}), schema: schema || {}, version, branch: srvBranch }
+        remoteBase = stringifyFunctionsForTransport(incomingRaw)
+        writeLock({ version, branch: srvBranch, pulledAt: new Date().toISOString() })
+      } catch (_) {}
+      return
+    }
+    const incomingRaw = { ...(data || {}), schema: schema || {}, version, branch: srvBranch }
+    const incoming = stringifyFunctionsForTransport(incomingRaw)
+    // Merge snapshot with any local edits since the last server base, preferring local.
+    try {
+      const base = remoteBase || {}
+      const local = currentBase || {}
+      const remote = incoming
+      const { ours } = threeWayRebase(base, local, remote)
+      const merged = clonePlain(remote)
+      // Apply local changes over remote snapshot (local wins on conflicts)
+      applyTuples(merged, ours)
+      remoteBase = clonePlain(remote)
+      currentBase = merged
+      await writeProjectAndFs(currentBase)
+      writeLock({ version, branch: srvBranch, pulledAt: new Date().toISOString() })
+      console.log(chalk.gray(`Snapshot applied (merged). Version: ${chalk.cyan(version)}`))
+    } catch (e) {
+      // Fallback: do not clobber local state on snapshot errors.
+      if (options.verbose) console.error('Failed to merge snapshot:', e?.message || e)
+    }
   })
 
   // Receive granular ops from other clients/commits and apply to local files
@@ -288,6 +571,9 @@ export async function startCollab(options) {
         ? payload.granularChanges
         : preprocessChanges(currentBase || {}, payload?.changes || []).granularChanges
       if (!Array.isArray(tuples) || !tuples.length) return
+      // Track server-side evolution separately for safer snapshot merges
+      try { applyTuples(remoteBase, tuples) } catch (_) {}
+      if (skipRemoteWrites) return
       applyTuples(currentBase, tuples)
       // Apply server-provided ordering metadata so newly added keys don't just
       // append to the end locally.
@@ -312,9 +598,6 @@ export async function startCollab(options) {
   })
 
   // Watch local dist output and push coarse per-key changes
-  const outputDir = path.join(distDir, 'dist')
-  const outputFile = path.join(outputDir, 'index.js')
-
   // Build loader
   async function loadLocalProject() {
     try {
@@ -331,92 +614,11 @@ export async function startCollab(options) {
     }
   }
 
-  /**
-   * Augment the loaded project object with any new items that exist as
-   * filesystem files (e.g. newly created component/page/method/function/snippet
-   * files) but are not yet present in the in‑memory data object.
-   *
-   * This bridges the gap between the one‑way createFs → files mapping so that
-   * adding a new file like components/MainFooter.js is seen as a new
-   * `components.MainFooter` data item and can be sent to the server.
-   */
-  async function augmentLocalWithNewFsItems(local) {
-    if (!local || typeof local !== 'object') return
-
-    const TYPES = ['components', 'pages', 'snippets', 'methods', 'functions']
-
-    for (let i = 0; i < TYPES.length; i++) {
-      const type = TYPES[i]
-      const srcDir = path.join(distDir, type)
-
-      let entries
-      try {
-        entries = await fs.promises.readdir(srcDir)
-      } catch {
-        continue
-      }
-      if (!Array.isArray(entries) || !entries.length) continue
-
-      const container = local[type] && typeof local[type] === 'object' && !Array.isArray(local[type])
-        ? local[type]
-        : (local[type] = {})
-      const baseSection = currentBase && currentBase[type] && typeof currentBase[type] === 'object'
-        ? currentBase[type]
-        : {}
-
-      for (let j = 0; j < entries.length; j++) {
-        const filename = entries[j]
-        if (!filename.endsWith('.js') || filename === 'index.js') continue
-
-        const fileStem = filename.slice(0, -3)
-        const key = type === 'pages'
-          ? toPagesRouteKeyFromFileStem(fileStem)
-          : fileStem
-        const altKey = type === 'pages' ? fileStem : null
-
-        // Skip if already present (support legacy/broken non-slash page keys too)
-        if (Object.prototype.hasOwnProperty.call(container, key)) continue
-        if (altKey && Object.prototype.hasOwnProperty.call(container, altKey)) continue
-        if (Object.prototype.hasOwnProperty.call(baseSection, key)) continue
-        if (altKey && Object.prototype.hasOwnProperty.call(baseSection, altKey)) continue
-
-        const compiledPath = path.join(outputDir, type, filename)
-        let mod
-        try {
-          const { loadModule } = await import('./require.js')
-          mod = await loadModule(compiledPath, { silent: true })
-        } catch {
-          if (options.verbose) {
-            console.error(`Failed to load new ${type} item from`, compiledPath)
-          }
-          continue
-        }
-
-        if (!mod) continue
-
-        let value = null
-        if (mod && typeof mod === 'object') {
-          const exportName = toExportNameFromFileStem(fileStem)
-          value =
-            mod.default ||
-            mod[exportName] ||
-            mod[fileStem] ||
-            mod[key] ||
-            (altKey ? mod[altKey] : null) ||
-            null
-        }
-        if (!value || typeof value !== 'object') continue
-
-        container[key] = value
-      }
-    }
-  }
-
   const sendLocalChanges = debounce(async () => {
     if (suppressLocalChanges) return
     let local = await loadLocalProject()
     if (!local) return
-    await augmentLocalWithNewFsItems(local)
+    await augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase, options })
     // Include package.json deps into local snapshot so dependency edits can be synced
     local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
     // Prepare safe, JSON-serialisable snapshots for diffing & transport
