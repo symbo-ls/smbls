@@ -21,6 +21,41 @@ import {
   syncPackageJsonDependencies
 } from '../helpers/dependenciesUtils.js'
 
+function getCollabStatePath () {
+  const { symbolsDir } = getConfigPaths()
+  return path.join(symbolsDir, 'collab.json')
+}
+
+function isPidAlive (pid) {
+  if (!pid || typeof pid !== 'number') return false
+  try {
+    process.kill(pid, 0)
+    return true
+  } catch (_) {
+    return false
+  }
+}
+
+async function writeCollabState (partial) {
+  const statePath = getCollabStatePath()
+  const next = {
+    pid: process.pid,
+    startedAt: new Date().toISOString(),
+    ...(partial || {})
+  }
+  try {
+    await fs.promises.mkdir(path.dirname(statePath), { recursive: true })
+    await fs.promises.writeFile(statePath, JSON.stringify(next, null, 2))
+  } catch (_) {}
+}
+
+async function clearCollabState () {
+  const statePath = getCollabStatePath()
+  try {
+    if (fs.existsSync(statePath)) await fs.promises.unlink(statePath)
+  } catch (_) {}
+}
+
 // Lazy import socket.io-client and chokidar to avoid adding cost for non-collab users
 async function importDeps () {
   const [{ default: io }, { default: chokidar }] = await Promise.all([
@@ -206,6 +241,19 @@ export async function startCollab (options) {
   const branch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
   const appKey = cliConfig.projectKey || symbolsConfig.key
 
+  // Write a runtime marker so other CLI commands can avoid double-syncing
+  // when collab is running. Clear any stale marker (e.g. after a crash).
+  try {
+    const statePath = getCollabStatePath()
+    if (fs.existsSync(statePath)) {
+      const raw = await fs.promises.readFile(statePath, 'utf8')
+      const prev = JSON.parse(raw)
+      if (!isPidAlive(prev?.pid)) {
+        await clearCollabState()
+      }
+    }
+  } catch (_) {}
+
   const distDir =
     resolveDistDir(symbolsConfig) ||
     path.join(process.cwd(), 'smbls')
@@ -221,6 +269,26 @@ export async function startCollab (options) {
   const baseUrl = cliConfig.apiBaseUrl
 
   console.log(chalk.dim(`\nConnecting to realtime collab on ${baseUrl} ...`))
+
+  await writeCollabState({
+    branch,
+    projectKey: appKey,
+    projectId: lock.projectId || null,
+    apiBaseUrl: baseUrl
+  })
+
+  const cleanup = async () => {
+    await clearCollabState()
+  }
+  // Best-effort cleanup on normal exit and signals.
+  process.once('exit', () => {
+    try {
+      const statePath = getCollabStatePath()
+      if (fs.existsSync(statePath)) fs.unlinkSync(statePath)
+    } catch (_) {}
+  })
+  process.once('SIGINT', () => cleanup().finally(() => process.exit(0)))
+  process.once('SIGTERM', () => cleanup().finally(() => process.exit(0)))
 
   // Maintain in-memory base state and a guard to suppress local echoes
   // `remoteBase` tracks the latest known server snapshot (used for safe merges)
