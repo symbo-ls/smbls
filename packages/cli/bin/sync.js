@@ -18,6 +18,7 @@ import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
 import { applyOrderFields, stripOrderFields } from '../helpers/orderUtils.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
+import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 import {
   augmentProjectWithLocalPackageDependencies,
   ensureSchemaDependencies,
@@ -309,6 +310,9 @@ export async function syncProjectChanges(options) {
       { branch: localBranch, includePending: true }
     )
     const updatedServerData = updated?.data || {}
+    if (options.verbose) {
+      logDesignSystemFlags('sync: updatedServerData raw (from API)', updatedServerData?.designSystem, { enabled: true })
+    }
 
     // Ensure fetched snapshot has dependency schema and sync deps into local package.json
     try {
@@ -321,6 +325,9 @@ export async function syncProjectChanges(options) {
     // Apply changes to local files
     console.log(chalk.dim('Updating local files...'))
     const orderedUpdatedServerData = applyOrderFields(updatedServerData)
+    if (options.verbose) {
+      logDesignSystemFlags('sync: after applyOrderFields (before createFs)', orderedUpdatedServerData?.designSystem, { enabled: true })
+    }
     await createFs(orderedUpdatedServerData, distDir, { update: true, metadata: false })
     console.log(chalk.gray('Local files updated successfully'))
 

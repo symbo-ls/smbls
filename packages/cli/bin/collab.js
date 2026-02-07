@@ -14,6 +14,7 @@ import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges, threeW
 import { createFs } from './fs.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
 import { normalizeKeys } from '../helpers/compareUtils.js'
+import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 import {
   augmentProjectWithLocalPackageDependencies,
   ensureSchemaDependencies,
@@ -375,6 +376,9 @@ export async function startCollab (options) {
   async function writeProjectAndFs (fullObj) {
     // Apply platform ordering while avoiding persisting `__order` locally
     const persistedObj = applyOrderFields(fullObj)
+    if (options.verbose) {
+      logDesignSystemFlags('collab: after applyOrderFields (before createFs)', persistedObj?.designSystem, { enabled: true })
+    }
     // Keep schema.dependencies consistent and sync dependencies into local package.json
     try {
       ensureSchemaDependencies(persistedObj)
@@ -420,6 +424,9 @@ export async function startCollab (options) {
     { branch, includePending: true }
   )
   const initialDataRaw = prime?.data || {}
+  if (options.verbose) {
+    logDesignSystemFlags('collab: prime raw snapshot (from API)', initialDataRaw?.designSystem, { enabled: true })
+  }
   const initialData = stringifyFunctionsForTransport(initialDataRaw)
   try {
     ensureSchemaDependencies(initialData)

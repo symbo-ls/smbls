@@ -242,6 +242,14 @@ export async function createFs (
           const { consent } = await askForConsent()
           if (consent) {
             await overrideFiles(cacheDir, targetDir)
+            // When the user consents to overriding, also remove stale files that
+            // are no longer produced by the current body snapshot. This is
+            // crucial for split directories like `designSystem/` where a previous
+            // run might have produced per-flag files (e.g. useReset.js) that
+            // should not persist once the value is a primitive.
+            try {
+              await removeStaleFiles(body, targetDir)
+            } catch (_) {}
             console.log('Files overridden successfully.')
           } else {
             console.log('Files not overridden.')
@@ -316,6 +324,69 @@ export async function createFs (
     return !!val && typeof val === 'object' && !Array.isArray(val)
   }
 
+  function safeDeepDestringify (val) {
+    // `deepDestringifyFunctions` expects plain objects. If called with a primitive
+    // (e.g. boolean) it can coerce it into `{}`; if called with an array it can
+    // coerce it into an object with numeric keys. We must preserve primitives
+    // and arrays as-is.
+    if (val === null || val === undefined) return val
+    if (Array.isArray(val)) return val.map(safeDeepDestringify)
+    if (typeof val !== 'object') return val
+    return deepDestringifyFunctions(val)
+  }
+
+  function normalizeDesignSystemOptionFlags (root) {
+    // Normalize boolean-like designSystem flags when they are explicitly
+    // provided as booleans or boolean strings. We intentionally DO NOT coerce
+    // empty objects `{}` into booleans, because `{}` is a valid "object bucket"
+    // value that should be split into its own file and populated later.
+    if (!root || typeof root !== 'object') return root
+
+    const FLAG_KEYS = new Set([
+      'useReset',
+      'useVariable',
+      'useFontImport',
+      'useIconSprite',
+      'useSvgSprite',
+      'useDefaultConfig',
+      'useDocumentTheme',
+      'useDefaultIcons',
+      'verbose'
+    ])
+
+    for (const flagKey of FLAG_KEYS) {
+      if (!Object.prototype.hasOwnProperty.call(root, flagKey)) continue
+
+      const cur = root[flagKey]
+      if (typeof cur === 'boolean') continue
+
+      if (typeof cur === 'string') {
+        const lowered = cur.trim().toLowerCase()
+        if (lowered === 'true') { root[flagKey] = true; continue }
+        if (lowered === 'false') { root[flagKey] = false; continue }
+      }
+
+      if (isPlainObjectValue(cur) && Object.prototype.hasOwnProperty.call(cur, 'value')) {
+        const v = cur.value
+        if (typeof v === 'boolean') { root[flagKey] = v; continue }
+        if (typeof v === 'string') {
+          const lowered = v.trim().toLowerCase()
+          if (lowered === 'true') { root[flagKey] = true; continue }
+          if (lowered === 'false') { root[flagKey] = false; continue }
+        }
+      }
+    }
+
+    return root
+  }
+
+  function renderInlineValue (val) {
+    // `objectToString` only quotes strings reliably when they are within an
+    // object/array. For top-level primitive strings, it returns the raw string.
+    if (typeof val === 'string') return JSON.stringify(val)
+    return objectToString(val)
+  }
+
   function isValidIdentifierName (name) {
     return typeof name === 'string' && /^[A-Za-z_$][A-Za-z0-9_$]*$/u.test(name) && !isReservedIdentifier(name)
   }
@@ -348,7 +419,10 @@ export async function createFs (
     await fs.promises.mkdir(dirPath, { recursive: true })
 
     // Normalize ordering and decode any stringified functions.
-    const contentRoot = reorderWithOrderKeys(deepDestringifyFunctions(section || {}))
+    const contentRootRaw = reorderWithOrderKeys(deepDestringifyFunctions(section || {}))
+    const contentRoot = key === 'designSystem'
+      ? normalizeDesignSystemOptionFlags(contentRootRaw)
+      : contentRootRaw
 
     const usedImportNames = new Set()
     const objectEntries = []
@@ -400,7 +474,9 @@ export async function createFs (
 
     // Then primitives/arrays/etc inline
     for (const [entryKey, value] of simpleEntries) {
-      const rendered = objectToString(reorderWithOrderKeys(deepDestringifyFunctions(value)))
+      const decoded = safeDeepDestringify(value)
+      const normalized = reorderWithOrderKeys(decoded)
+      const rendered = renderInlineValue(normalized)
       const rhs = indentMultiline(rendered, '  ')
       if (isValidIdentifierName(entryKey)) {
         propLines.push(`${entryKey}: ${rhs},`)
@@ -499,9 +575,10 @@ async function findDiff (targetDir, distDir) {
 
     const targetFiles = await fs.promises.readdir(targetDirPath)
     for (const file of targetFiles) {
-      if (file === 'index.js') {
-        continue // Skip comparing index.js files
-      }
+      // Historically we skipped directory index.js diffs, but for split-object
+      // directories like `designSystem/` and `files/` the index.js content is
+      // the canonical mapping (and needs to update when primitives move in/out).
+      if (file === 'index.js' && !splitObjectKeys.includes(key)) continue
 
       const targetFilePath = path.join(targetDirPath, file)
       const distFilePath = path.join(distDirPath, file)
