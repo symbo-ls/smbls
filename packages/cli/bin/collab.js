@@ -13,7 +13,6 @@ import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges, threeWayRebase } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
-import { normalizeKeys } from '../helpers/compareUtils.js'
 import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 import {
   augmentProjectWithLocalPackageDependencies,
@@ -300,6 +299,10 @@ export async function startCollab (options) {
   const suppressionWindowMs = Math.max(1500, (options.debounceMs || 200) * 8)
   let pendingInitialOps = null
   let skipRemoteWrites = false
+  // Debounced sender is initialized later (after startup merge/write),
+  // but we may need to cancel it during startup writes.
+  // Declare early to avoid TDZ crashes.
+  let sendLocalChanges = null
 
   function isSuppressed () {
     return suppressLocalChanges || Date.now() < suppressUntil
@@ -394,7 +397,7 @@ export async function startCollab (options) {
     // Avoid echoing the changes we are about to materialize
     suppressLocalChanges = true
     // Cancel any pending local send
-    if (typeof sendLocalChanges.cancel === 'function') {
+    if (typeof sendLocalChanges?.cancel === 'function') {
       sendLocalChanges.cancel()
     }
     try {
@@ -445,7 +448,7 @@ export async function startCollab (options) {
       const { loadModule } = await import('./require.js')
       await buildDirectory(distDir, outputDir)
       const loaded = await loadModule(outputFile, { silent: true, noCache: true })
-      let local = normalizeKeys(loaded)
+      let local = loaded
       await augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase: baseSnapshot, options })
       local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
       return stringifyFunctionsForTransport(local)
@@ -639,7 +642,7 @@ export async function startCollab (options) {
   socket.on('ops', async (payload) => {
     // Apply incoming tuples directly to local base; do not re-emit builds triggered by this apply
     try {
-      if (typeof sendLocalChanges.cancel === 'function') {
+      if (typeof sendLocalChanges?.cancel === 'function') {
         sendLocalChanges.cancel()
       }
       const tuples = Array.isArray(payload?.granularChanges) && payload.granularChanges.length
@@ -681,15 +684,15 @@ export async function startCollab (options) {
       const { loadModule } = await import('./require.js')
       await buildDirectory(distDir, outputDir)
       const loaded = await loadModule(outputFile, { silent: true, noCache: true })
-      // Ensure a plain, mutable object (avoid getter-only export objects)
-      return normalizeKeys(loaded)
+      // `loadModule` returns the module's default export (a plain object)
+      return loaded
     } catch (e) {
       if (options.verbose) console.error('Build failed while watching:', e.message)
       return null
     }
   }
 
-  const sendLocalChanges = debounce(async () => {
+  sendLocalChanges = debounce(async () => {
     if (suppressLocalChanges) return
     let local = await loadLocalProject()
     if (!local) return
@@ -750,7 +753,7 @@ export async function startCollab (options) {
   })
   const onFsEvent = () => {
     if (isSuppressed()) return
-    sendLocalChanges()
+    if (typeof sendLocalChanges === 'function') sendLocalChanges()
   }
   watcher
     .on('add', onFsEvent)

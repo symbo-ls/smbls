@@ -9,7 +9,6 @@ import { program } from './program.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { buildDirectory } from '../helpers/fileUtils.js'
 import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
-import { normalizeKeys } from '../helpers/compareUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { threeWayRebase, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
@@ -31,7 +30,7 @@ async function buildLocalProject(distDir) {
     const outputDirectory = path.join(distDir, 'dist')
     await buildDirectory(distDir, outputDirectory)
     const outputFile = path.join(outputDirectory, 'index.js')
-    return normalizeKeys(await loadModule(outputFile, { silent: false }))
+    return await loadModule(outputFile, { silent: false })
   } catch (error) {
     // Enhance error with build context
     error.buildContext = {
@@ -230,9 +229,9 @@ export async function syncProjectChanges(options) {
 
     // Generate coarse local and remote changes via simple three-way rebase
     // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)
-    const base = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(baseSnapshot || {})))
-    const local = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(localProject || {})))
-    const remote = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(serverProject || {})))
+    const base = stringifyFunctionsForTransport(stripOrderFields(baseSnapshot || {}))
+    const local = stringifyFunctionsForTransport(stripOrderFields(localProject || {}))
+    const remote = stringifyFunctionsForTransport(stripOrderFields(serverProject || {}))
     const { ours, theirs, conflicts, finalChanges } = threeWayRebase(base, local, remote)
 
     const localChanges = ours

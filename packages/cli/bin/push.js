@@ -7,7 +7,6 @@ import { loadModule } from './require.js'
 import { program } from './program.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { buildDirectory } from '../helpers/fileUtils.js'
-import { normalizeKeys } from '../helpers/compareUtils.js'
 import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
@@ -25,7 +24,7 @@ async function buildLocalProject (distDir) {
 
     await buildDirectory(distDir, outputDirectory)
     const outputFile = path.join(outputDirectory, 'index.js')
-    return normalizeKeys(await loadModule(outputFile, { silent: false }))
+    return await loadModule(outputFile, { silent: false })
   } catch (error) {
     // Enhance error with build context
     error.buildContext = {
@@ -155,8 +154,8 @@ export async function pushProjectChanges(options) {
 
     // Calculate coarse local changes vs server snapshot (or base)
     // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)
-    const base = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(serverProject || {})))
-    const local = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(localProject)))
+    const base = stringifyFunctionsForTransport(stripOrderFields(serverProject || {}))
+    const local = stringifyFunctionsForTransport(stripOrderFields(localProject))
     const changes = computeCoarseChanges(base, local)
 
     if (!changes.length) {
