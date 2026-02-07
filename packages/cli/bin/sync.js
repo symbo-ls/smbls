@@ -25,6 +25,38 @@ import {
   syncPackageJsonDependencies
 } from '../helpers/dependenciesUtils.js'
 
+// The platform may omit empty designSystem buckets. The CLI filesystem
+// representation uses per-bucket files under `designSystem/`, so we keep
+// these keys present (at least as `{}`) to avoid treating missing buckets as
+// deletions and to prevent `createFs(update)` from removing local bucket files.
+const DESIGN_SYSTEM_BUCKET_KEYS = [
+  'ANIMATION',
+  'CASES',
+  'CLASS',
+  'COLOR',
+  'FONT',
+  'FONT_FAMILY',
+  'GRADIENT',
+  'GRID',
+  'ICONS',
+  'MEDIA',
+  'RESET',
+  'SHAPE',
+  'SPACING',
+  'THEME',
+  'TIMING',
+  'TYPOGRAPHY'
+]
+
+function ensureDesignSystemBuckets (designSystem) {
+  if (!designSystem || typeof designSystem !== 'object' || Array.isArray(designSystem)) return designSystem
+  for (let i = 0; i < DESIGN_SYSTEM_BUCKET_KEYS.length; i++) {
+    const k = DESIGN_SYSTEM_BUCKET_KEYS[i]
+    if (!Object.prototype.hasOwnProperty.call(designSystem, k)) designSystem[k] = {}
+  }
+  return designSystem
+}
+
 async function buildLocalProject(distDir) {
   try {
     const outputDirectory = path.join(distDir, 'dist')
@@ -226,6 +258,9 @@ export async function syncProjectChanges(options) {
     ensureSchemaDependencies(baseSnapshot)
     ensureSchemaDependencies(serverProject)
     ensureSchemaDependencies(localProject)
+    try { ensureDesignSystemBuckets(baseSnapshot?.designSystem) } catch (_) {}
+    try { ensureDesignSystemBuckets(serverProject?.designSystem) } catch (_) {}
+    try { ensureDesignSystemBuckets(localProject?.designSystem) } catch (_) {}
 
     // Generate coarse local and remote changes via simple three-way rebase
     // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)

@@ -79,6 +79,37 @@ function clonePlain (obj) {
   }
 }
 
+// The platform may omit empty designSystem buckets. The CLI filesystem
+// representation uses per-bucket files under `designSystem/`, so we keep
+// these keys present (at least as `{}`) to avoid removing local bucket files.
+const DESIGN_SYSTEM_BUCKET_KEYS = [
+  'ANIMATION',
+  'CASES',
+  'CLASS',
+  'COLOR',
+  'FONT',
+  'FONT_FAMILY',
+  'GRADIENT',
+  'GRID',
+  'ICONS',
+  'MEDIA',
+  'RESET',
+  'SHAPE',
+  'SPACING',
+  'THEME',
+  'TIMING',
+  'TYPOGRAPHY'
+]
+
+function ensureDesignSystemBuckets (designSystem) {
+  if (!designSystem || typeof designSystem !== 'object' || Array.isArray(designSystem)) return designSystem
+  for (let i = 0; i < DESIGN_SYSTEM_BUCKET_KEYS.length; i++) {
+    const k = DESIGN_SYSTEM_BUCKET_KEYS[i]
+    if (!Object.prototype.hasOwnProperty.call(designSystem, k)) designSystem[k] = {}
+  }
+  return designSystem
+}
+
 function toExportNameFromFileStem (stem) {
   // Mirror fs.js behavior loosely: kebab/snake/path -> camelCase export name.
   // e.g. "add-network" -> "addNetwork"
@@ -382,6 +413,7 @@ export async function startCollab (options) {
     if (options.verbose) {
       logDesignSystemFlags('collab: after applyOrderFields (before createFs)', persistedObj?.designSystem, { enabled: true })
     }
+    try { ensureDesignSystemBuckets(persistedObj?.designSystem) } catch (_) {}
     // Keep schema.dependencies consistent and sync dependencies into local package.json
     try {
       ensureSchemaDependencies(persistedObj)
@@ -419,6 +451,7 @@ export async function startCollab (options) {
       return {}
     }
   })()
+  try { ensureDesignSystemBuckets(baseSnapshot?.designSystem) } catch (_) {}
 
   // Prime remote snapshot from server (but do NOT overwrite local files yet).
   const prime = await getCurrentProjectData(
@@ -431,6 +464,7 @@ export async function startCollab (options) {
     logDesignSystemFlags('collab: prime raw snapshot (from API)', initialDataRaw?.designSystem, { enabled: true })
   }
   const initialData = stringifyFunctionsForTransport(initialDataRaw)
+  try { ensureDesignSystemBuckets(initialData?.designSystem) } catch (_) {}
   try {
     ensureSchemaDependencies(initialData)
     if (packageJsonPath && initialData?.dependencies) {
@@ -618,6 +652,7 @@ export async function startCollab (options) {
     }
     const incomingRaw = { ...(data || {}), schema: schema || {}, version, branch: srvBranch }
     const incoming = stringifyFunctionsForTransport(incomingRaw)
+    try { ensureDesignSystemBuckets(incoming?.designSystem) } catch (_) {}
     // Merge snapshot with any local edits since the last server base, preferring local.
     try {
       const base = remoteBase || {}
@@ -627,6 +662,7 @@ export async function startCollab (options) {
       const merged = clonePlain(remote)
       // Apply local changes over remote snapshot (local wins on conflicts)
       applyTuples(merged, ours)
+      try { ensureDesignSystemBuckets(merged?.designSystem) } catch (_) {}
       remoteBase = clonePlain(remote)
       currentBase = merged
       await writeProjectAndFs(currentBase)
