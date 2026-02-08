@@ -57,7 +57,7 @@ function ensureDesignSystemBuckets (designSystem) {
   return designSystem
 }
 
-async function buildLocalProject(distDir) {
+async function buildLocalProject (distDir) {
   try {
     const outputDirectory = path.join(distDir, 'dist')
     await buildDirectory(distDir, outputDirectory)
@@ -73,7 +73,7 @@ async function buildLocalProject(distDir) {
   }
 }
 
-async function resolveTopLevelConflicts(conflictsKeys, ours, theirs) {
+async function resolveTopLevelConflicts (conflictsKeys, ours, theirs) {
   const choices = conflictsKeys.map((key) => {
     const ourChange = ours.find((c) => c[1][0] === key)
     const theirChange = theirs.find((c) => c[1][0] === key)
@@ -104,7 +104,7 @@ ${chalk.red('- Remote:')} ${JSON.stringify(theirChange?.[2])}`
   return final
 }
 
-function getAt(obj, pathArr = []) {
+function getAt (obj, pathArr = []) {
   try {
     return pathArr.reduce((acc, k) => (acc == null ? undefined : acc[k]), obj)
   } catch (_) {
@@ -112,7 +112,7 @@ function getAt(obj, pathArr = []) {
   }
 }
 
-function buildDiffsFromChanges(changes, base, target) {
+function buildDiffsFromChanges (changes, base, target) {
   const diffs = []
   for (const [op, path, value] of changes) {
     const oldVal = getAt(base, path)
@@ -126,7 +126,7 @@ function buildDiffsFromChanges(changes, base, target) {
   return diffs
 }
 
-async function confirmChanges(localChanges, remoteChanges, base, local, remote) {
+async function confirmChanges (localChanges, remoteChanges, base, local, remote) {
   if (localChanges.length === 0 && remoteChanges.length === 0) {
     console.log(chalk.bold.yellow('No changes detected'))
     return false
@@ -185,7 +185,7 @@ async function confirmChanges(localChanges, remoteChanges, base, local, remote) 
   return proceed
 }
 
-export async function syncProjectChanges(options) {
+export async function syncProjectChanges (options) {
   try {
     // Load configuration
     const symbolsConfig = await loadSymbolsConfig()
@@ -201,7 +201,7 @@ export async function syncProjectChanges(options) {
     const { projectPath } = getConfigPaths()
     const { key: legacyKey } = symbolsConfig
     const appKey = cliConfig.projectKey || legacyKey
-    const localBranch = cliConfig.branch || symbolsConfig.branch || 'main'
+    const localBranch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
 
     const distDir =
       resolveDistDir(symbolsConfig) ||
@@ -279,14 +279,20 @@ export async function syncProjectChanges(options) {
 
     // Show change summaries
     if (localChanges.length) {
-      const byType = localChanges.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+      const byType = localChanges.reduce((acc, [t]) => {
+        acc[t] = (acc[t] || 0) + 1
+        return acc
+      }, {})
       console.log(chalk.cyan('\nLocal changes:'))
       Object.entries(byType).forEach(([type, count]) => {
         console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
       })
     }
     if (remoteChanges.length) {
-      const byType = remoteChanges.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+      const byType = remoteChanges.reduce((acc, [t]) => {
+        acc[t] = (acc[t] || 0) + 1
+        return acc
+      }, {})
       console.log(chalk.cyan('\nRemote changes:'))
       Object.entries(byType).forEach(([type, count]) => {
         console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
@@ -380,7 +386,6 @@ export async function syncProjectChanges(options) {
       const { projectPath } = getConfigPaths()
       await fs.promises.writeFile(projectPath, JSON.stringify(orderedUpdatedServerData, null, 2))
     } catch (_) {}
-
   } catch (error) {
     console.error(chalk.bold.red('\nSync failed:'), chalk.white(error.message))
     if (options.verbose && error.stack) {
@@ -394,6 +399,7 @@ export async function syncProjectChanges(options) {
 program
   .command('sync')
   .description('Sync local changes with remote server')
+  .option('-b, --branch <branch>', 'Branch to sync')
   .option('-m, --message <message>', 'Specify a commit message')
   .option('-d, --dev', 'Run against local server')
   .option('-v, --verbose', 'Show verbose output')

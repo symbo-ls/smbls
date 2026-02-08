@@ -3,13 +3,12 @@
 import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
-import inquirer from 'inquirer'
 import { program } from './program.js'
+import { syncProjectChanges } from './sync.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
-import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges, threeWayRebase } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
@@ -227,37 +226,6 @@ async function augmentLocalWithNewFsItems ({ local, distDir, outputDir, currentB
   }
 }
 
-async function resolveTopLevelConflicts (conflictsKeys, ours, theirs) {
-  const choices = conflictsKeys.map((key) => {
-    const ourChange = ours.find((c) => c[1][0] === key)
-    const theirChange = theirs.find((c) => c[1][0] === key)
-    return {
-      name: `${chalk.cyan(key)}  ${chalk.green('Local')} vs ${chalk.red('Remote')}`,
-      value: key,
-      short: key,
-      description: `${chalk.green('+ Local:')} ${JSON.stringify(ourChange?.[2])}
-${chalk.red('- Remote:')} ${JSON.stringify(theirChange?.[2])}`
-    }
-  })
-
-  const { selected } = await inquirer.prompt([{
-    type: 'checkbox',
-    name: 'selected',
-    message: 'Conflicts detected. Select the keys to keep from Local (unchecked will keep Remote):',
-    choices,
-    pageSize: 10
-  }])
-
-  const final = conflictsKeys.map((key) => {
-    if (selected.includes(key)) {
-      return ours.find((c) => c[1][0] === key)
-    }
-    return theirs.find((c) => c[1][0] === key)
-  }).filter(Boolean)
-
-  return final
-}
-
 export async function startCollab (options) {
   const symbolsConfig = await loadSymbolsConfig()
   const cliConfig = loadCliConfig()
@@ -268,7 +236,6 @@ export async function startCollab (options) {
     process.exit(1)
   }
 
-  const lock = readLock()
   const branch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
   const appKey = cliConfig.projectKey || symbolsConfig.key
 
@@ -295,6 +262,19 @@ export async function startCollab (options) {
     console.log(chalk.red('Missing project key. Add it to symbols.json or .symbols/config.json'))
     process.exit(1)
   }
+
+  // Optionally run a full `sync` first. This keeps `collab` focused on realtime
+  // socket + filesystem watching, and delegates all startup reconciliation to
+  // the battle-tested sync logic.
+  if (options.syncFirst !== false) {
+    console.log(chalk.dim('\nRunning initial sync before starting collab...'))
+    // `syncProjectChanges` manages its own prompts and will exit on fatal errors.
+    // We pass the branch so startup sync aligns with the collab branch.
+    await syncProjectChanges({ ...options, branch })
+  }
+
+  // Re-read lock after sync (it may have updated projectId/version/etag).
+  const lock = readLock()
 
   const { io, chokidar } = await importDeps()
   const baseUrl = cliConfig.apiBaseUrl
@@ -328,8 +308,6 @@ export async function startCollab (options) {
   let suppressLocalChanges = false
   let suppressUntil = 0
   const suppressionWindowMs = Math.max(1500, (options.debounceMs || 200) * 8)
-  let pendingInitialOps = null
-  let skipRemoteWrites = false
   // Debounced sender is initialized later (after startup merge/write),
   // but we may need to cancel it during startup writes.
   // Declare early to avoid TDZ crashes.
@@ -441,7 +419,8 @@ export async function startCollab (options) {
     }
   }
 
-  // Load last persisted snapshot (base) before touching the filesystem.
+  // Load the last persisted snapshot (the same snapshot `sync` writes).
+  // This is our initial base for both local diffs and socket snapshot merges.
   const baseSnapshot = (() => {
     try {
       const { projectPath } = getConfigPaths()
@@ -452,140 +431,19 @@ export async function startCollab (options) {
     }
   })()
   try { ensureDesignSystemBuckets(baseSnapshot?.designSystem) } catch (_) {}
-
-  // Prime remote snapshot from server (but do NOT overwrite local files yet).
-  const prime = await getCurrentProjectData(
-    { projectKey: appKey, projectId: lock.projectId },
-    authToken,
-    { branch, includePending: true }
-  )
-  const initialDataRaw = prime?.data || {}
-  if (options.verbose) {
-    logDesignSystemFlags('collab: prime raw snapshot (from API)', initialDataRaw?.designSystem, { enabled: true })
-  }
-  const initialData = stringifyFunctionsForTransport(initialDataRaw)
-  try { ensureDesignSystemBuckets(initialData?.designSystem) } catch (_) {}
   try {
-    ensureSchemaDependencies(initialData)
-    if (packageJsonPath && initialData?.dependencies) {
-      syncPackageJsonDependencies(packageJsonPath, initialData.dependencies, { overwriteExisting: true })
+    ensureSchemaDependencies(baseSnapshot)
+    if (packageJsonPath && baseSnapshot?.dependencies) {
+      syncPackageJsonDependencies(packageJsonPath, baseSnapshot.dependencies, { overwriteExisting: true })
     }
   } catch (_) {}
-  remoteBase = clonePlain(initialData)
 
-  // Build local project for merge detection. If it fails, we will avoid any destructive overwrite.
+  currentBase = stringifyFunctionsForTransport(baseSnapshot || {})
+  remoteBase = clonePlain(currentBase)
+
+  // Paths for local build/watch loop
   const outputDir = path.join(distDir, 'dist')
   const outputFile = path.join(outputDir, 'index.js')
-  async function buildLocalForStartup () {
-    try {
-      const { buildDirectory } = await import('../helpers/fileUtils.js')
-      const { loadModule } = await import('./require.js')
-      await buildDirectory(distDir, outputDir)
-      const loaded = await loadModule(outputFile, { silent: true, noCache: true })
-      let local = loaded
-      await augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase: baseSnapshot, options })
-      local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
-      return stringifyFunctionsForTransport(local)
-    } catch (e) {
-      if (options.verbose) {
-        console.error(chalk.yellow('Startup build failed; will not overwrite local files:'), e?.message || e)
-      }
-      return null
-    }
-  }
-
-  const localBuilt = await buildLocalForStartup()
-  if (localBuilt == null) {
-    // Safest path: keep local filesystem as-is; treat currentBase as what we last knew.
-    currentBase = stringifyFunctionsForTransport(baseSnapshot || {})
-    skipRemoteWrites = true
-    console.log(chalk.yellow('Local project build failed; remote changes will not be applied to avoid overwriting local files. Fix the build and restart `smbls collab`.'))
-  } else {
-    const base = stringifyFunctionsForTransport(baseSnapshot || {})
-    const local = localBuilt
-    const remote = remoteBase
-    const { ours, theirs, conflicts } = threeWayRebase(base, local, remote)
-
-    if (ours.length) {
-      // Local changes exist; prompt user to merge vs discard.
-      const conflictNote = conflicts.length ? chalk.yellow(` (${conflicts.length} conflicts)`) : ''
-      const isInteractive = !!(process.stdin && process.stdin.isTTY && process.stdout && process.stdout.isTTY)
-      let action = 'merge'
-      if (isInteractive) {
-        const answer = await inquirer.prompt([{
-          type: 'list',
-          name: 'action',
-          message: `Local changes detected${conflictNote}. How should collab start?`,
-          choices: [
-            { name: 'Merge: keep local changes (recommended)', value: 'merge' },
-            { name: 'Discard: overwrite local files with remote snapshot', value: 'discard' },
-            { name: 'Cancel', value: 'cancel' }
-          ],
-          default: 0
-        }])
-        action = answer.action
-      } else {
-        console.log(chalk.yellow(`Local changes detected${conflictNote}. Non-interactive mode: defaulting to merge (keep local).`))
-      }
-
-      if (action === 'cancel') {
-        console.log(chalk.yellow('Collab cancelled'))
-        process.exit(0)
-      }
-
-      if (action === 'discard') {
-        currentBase = clonePlain(remoteBase)
-        await writeProjectAndFs(currentBase)
-      } else {
-        // Merge local onto remote; for conflicts ask user to choose per top-level key.
-        let toApply = ours
-        if (conflicts.length) {
-          const chosen = isInteractive
-            ? await resolveTopLevelConflicts(conflicts, ours, theirs)
-            // Non-interactive: prefer local for conflicting top-level keys
-            : conflicts.map((k) => ours.find((c) => c[1][0] === k)).filter(Boolean)
-          const nonConflictOurs = ours.filter(([_, [k]]) => !conflicts.includes(k))
-          toApply = [...nonConflictOurs, ...chosen]
-        }
-
-        const merged = clonePlain(remoteBase)
-        applyTuples(merged, toApply)
-        currentBase = merged
-        await writeProjectAndFs(currentBase)
-
-        // Queue initial ops to push local changes up to the server once connected.
-        try {
-          const changes = computeCoarseChanges(remoteBase, currentBase)
-          if (changes.length) {
-            const { granularChanges } = preprocessChanges(remoteBase, changes)
-            const orders = computeOrdersForTuples(currentBase, granularChanges)
-            pendingInitialOps = { changes, granularChanges, orders }
-          }
-        } catch (_) {}
-      }
-    } else {
-      // No local changes; safe to materialize remote snapshot.
-      currentBase = clonePlain(remoteBase)
-      await writeProjectAndFs(currentBase)
-    }
-  }
-
-  // Update lock after we’ve safely established an initial local state.
-  const etag = prime?.etag || null
-  writeLock({
-    etag,
-    version: initialDataRaw.version,
-    branch,
-    projectId: initialDataRaw?.projectInfo?.id || lock.projectId,
-    pulledAt: new Date().toISOString()
-  })
-
-  // Persist current base snapshot (so restart won’t drop local merged state).
-  try {
-    const { projectPath } = getConfigPaths()
-    await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
-    await fs.promises.writeFile(projectPath, JSON.stringify(applyOrderFields(currentBase), null, 2))
-  } catch (_) {}
 
   // Connect to the collab namespace with required auth fields
   const socket = io(`${baseUrl}`, {
@@ -611,23 +469,6 @@ export async function startCollab (options) {
 
   socket.on('connect', () => {
     console.log(chalk.green('Connected to collab server'))
-    if (pendingInitialOps && pendingInitialOps.changes && pendingInitialOps.changes.length) {
-      try {
-        socket.emit('ops', {
-          changes: pendingInitialOps.changes,
-          granularChanges: pendingInitialOps.granularChanges,
-          orders: pendingInitialOps.orders,
-          branch
-        })
-        if (options.verbose) {
-          console.log(chalk.gray('Pushed startup local changes to server'))
-        }
-      } catch (e) {
-        if (options.verbose) console.error('Failed to push startup ops:', e?.message || e)
-      } finally {
-        pendingInitialOps = null
-      }
-    }
   })
 
   socket.on('disconnect', (reason) => {
@@ -640,16 +481,6 @@ export async function startCollab (options) {
 
   // Receive snapshot and update local files + lock/base
   socket.on('snapshot', async ({ version, branch: srvBranch, data, schema }) => {
-    if (skipRemoteWrites) {
-      // Do not overwrite local files when startup build failed.
-      // Still track server state for later retries/restarts.
-      try {
-        const incomingRaw = { ...(data || {}), schema: schema || {}, version, branch: srvBranch }
-        remoteBase = stringifyFunctionsForTransport(incomingRaw)
-        writeLock({ version, branch: srvBranch, pulledAt: new Date().toISOString() })
-      } catch (_) {}
-      return
-    }
     const incomingRaw = { ...(data || {}), schema: schema || {}, version, branch: srvBranch }
     const incoming = stringifyFunctionsForTransport(incomingRaw)
     try { ensureDesignSystemBuckets(incoming?.designSystem) } catch (_) {}
@@ -687,7 +518,6 @@ export async function startCollab (options) {
       if (!Array.isArray(tuples) || !tuples.length) return
       // Track server-side evolution separately for safer snapshot merges
       try { applyTuples(remoteBase, tuples) } catch (_) {}
-      if (skipRemoteWrites) return
       applyTuples(currentBase, tuples)
       // Apply server-provided ordering metadata so newly added keys don't just
       // append to the end locally.
@@ -816,6 +646,7 @@ program
   .command('collab')
   .description('Connect to realtime collaboration socket and live-sync changes')
   .option('-b, --branch <branch>', 'Branch to collaborate on')
+  .option('--no-sync-first', 'Skip initial sync (not recommended)')
   .option('-l, --live', 'Enable live collaboration mode', false)
   .option('-d, --debounce-ms <ms>', 'Local changes debounce milliseconds', (v) => parseInt(v, 10), 200)
   .option('-v, --verbose', 'Show verbose output', false)
