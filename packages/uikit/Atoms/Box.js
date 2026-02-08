@@ -346,6 +346,32 @@ export const Box = {
   },
 
   class: {
+    // flex
+    ...{
+      flow: ({ props }) => {
+        const { flow, reverse } = props
+        if (!isString(flow)) return
+        let [direction, wrap] = (flow || 'row').split(' ')
+        if (flow.startsWith('x') || flow === 'row') direction = 'row'
+        if (flow.startsWith('y') || flow === 'column') direction = 'column'
+        return {
+          display: 'flex',
+          flexFlow:
+            (direction || '') +
+            (!direction.includes('-reverse') && reverse ? '-reverse' : '') +
+            ' ' +
+            (wrap || '')
+        }
+      },
+      wrap: ({ props }) =>
+        props.wrap && { display: 'flex', flexWrap: props.wrap },
+      align: ({ props }) => {
+        if (!isString(props.align)) return
+        const [alignItems, justifyContent] = props.align.split(' ')
+        return { display: 'flex', alignItems, justifyContent }
+      }
+    },
+
     // block
     ...{
       show: (el, s, ctx) =>
@@ -1273,5 +1299,11 @@ export const Ol = {
 export const Gutter = {
   props: {
     size: 'C1'
+  }
+}
+
+export const Flex = {
+  props: {
+    display: 'flex'
   }
 }

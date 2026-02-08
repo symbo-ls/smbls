@@ -23,7 +23,8 @@ import {
   preparePages,
   prepareState,
   prepareUtils,
-  prepareMethods
+  prepareMethods,
+  prepareSharedLibs
 } from './prepare.js'
 
 import { temporaryDomqlHackReverse } from '@symbo.ls/utils'
@@ -49,6 +50,10 @@ export const prepareContext = async (app, context = {}) => {
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
   context.version = version
+
+  if (context.sharedLibraries) {
+    prepareSharedLibs(context)
+  }
 
   // Iterate over components and pages to run domql3hack
   if (context.forceDomql3) {

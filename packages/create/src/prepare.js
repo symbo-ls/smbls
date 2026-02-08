@@ -6,7 +6,8 @@ import {
   deepClone,
   merge,
   checkIfKeyIsComponent,
-  isDevelopment
+  isDevelopment,
+  overwriteShallow
 } from '@domql/utils'
 import { initEmotion } from './initEmotion.js'
 
@@ -34,7 +35,8 @@ function onlyDotsAndNumbers(str) {
 const CDN_PROVIDERS = {
   skypack: {
     url: 'https://cdn.skypack.dev',
-    formatUrl: (pkg, version) => `${CDN_PROVIDERS.skypack.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
+    formatUrl: (pkg, version) =>
+      `${CDN_PROVIDERS.skypack.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
   },
   symbols: {
     url: 'https://pkg.symbo.ls',
@@ -47,17 +49,21 @@ const CDN_PROVIDERS = {
   }
 }
 
-export const getCDNUrl = (packageName, version = 'latest', provider = 'skypack') => {
+export const getCDNUrl = (
+  packageName,
+  version = 'latest',
+  provider = 'skypack'
+) => {
   const cdnConfig = CDN_PROVIDERS[provider] || CDN_PROVIDERS.skypack
   return cdnConfig.formatUrl(packageName, version)
 }
 
-export const UIkitWithPrefix = () => {
+const UIkitWithPrefix = (prefix = 'smbls') => {
   const newObj = {}
   for (const key in uikit) {
     if (Object.prototype.hasOwnProperty.call(uikit, key)) {
       if (checkIfKeyIsComponent(key)) {
-        newObj[`smbls.${key}`] = uikit[key]
+        newObj[`${prefix}.${key}`] = uikit[key]
       } else {
         newObj[key] = uikit[key]
       }
@@ -114,7 +120,7 @@ export const prepareDependencies = async ({
     try {
       if (cachedDeps[dependency]) return
       cachedDeps[dependency] = true
-      await utils.loadRemoteScript(url, { document, type: "module" })
+      await utils.loadRemoteScript(url, { document, type: 'module' })
     } catch (e) {
       console.error(`Failed to load ${dependency} from ${cdnProvider}:`, e)
 
@@ -122,9 +128,14 @@ export const prepareDependencies = async ({
         try {
           const fallbackUrl = getCDNUrl(dependency, version, 'symbols') + random
           await utils.loadRemoteScript(fallbackUrl, { document })
-          console.log(`Successfully loaded ${dependency} from fallback (symbols.ls)`)
+          console.log(
+            `Successfully loaded ${dependency} from fallback (symbols.ls)`
+          )
         } catch (fallbackError) {
-          console.error(`Failed to load ${dependency} from fallback:`, fallbackError)
+          console.error(
+            `Failed to load ${dependency} from fallback:`,
+            fallbackError
+          )
         }
       }
     }
@@ -137,62 +148,63 @@ export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
   const defaultProvider = ctx.cdnProvider || 'skypack'
 
-  const initRequire = async ctx => async (key, provider) => {
+  const initRequire = async (ctx) => async (key, provider) => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
     if (typeof pkg === 'function') return pkg()
     return pkg
   }
 
-  const initRequireOnDemand = async ctx => async (key, provider = defaultProvider) => {
-    const { dependenciesOnDemand } = ctx
-    const documentOpts = ctx.document || document
-    const windowOpts = ctx.window || window
-    if (!windowOpts.packages[key]) {
-      const random = isDevelopment() ? `?${Math.random()}` : ''
-      if (dependenciesOnDemand && dependenciesOnDemand[key]) {
-        const version = dependenciesOnDemand[key]
-        const url = getCDNUrl(key, version, provider) + random
-        try {
-          await ctx.utils.loadRemoteScript(url, {
-            window: windowOpts,
-            document: documentOpts,
-            
-          })
-        } catch (e) {
-          console.error(`Failed to load ${key} from ${provider}:`, e)
-          // Fallback to symbo if not already using it
-          if (provider !== 'symbols') {
-            const fallbackUrl = getCDNUrl(key, version, 'symbols') + random
-            await ctx.utils.loadRemoteScript(fallbackUrl, {
+  const initRequireOnDemand =
+    async (ctx) =>
+    async (key, provider = defaultProvider) => {
+      const { dependenciesOnDemand } = ctx
+      const documentOpts = ctx.document || document
+      const windowOpts = ctx.window || window
+      if (!windowOpts.packages[key]) {
+        const random = isDevelopment() ? `?${Math.random()}` : ''
+        if (dependenciesOnDemand && dependenciesOnDemand[key]) {
+          const version = dependenciesOnDemand[key]
+          const url = getCDNUrl(key, version, provider) + random
+          try {
+            await ctx.utils.loadRemoteScript(url, {
               window: windowOpts,
               document: documentOpts
             })
+          } catch (e) {
+            console.error(`Failed to load ${key} from ${provider}:`, e)
+            // Fallback to symbo if not already using it
+            if (provider !== 'symbols') {
+              const fallbackUrl = getCDNUrl(key, version, 'symbols') + random
+              await ctx.utils.loadRemoteScript(fallbackUrl, {
+                window: windowOpts,
+                document: documentOpts
+              })
+            }
           }
-        }
-      } else {
-        const url = getCDNUrl(key, 'latest', provider) + random
-        try {
-          await ctx.utils.loadRemoteScript(url, {
-            window: windowOpts,
-            document: documentOpts,
-          })
-        } catch (e) {
-          console.error(`Failed to load ${key} from ${provider}:`, e)
-          // Fallback to symbo if not already using it
-          if (provider !== 'symbols') {
-            const fallbackUrl = getCDNUrl(key, 'latest', 'symbols') + random
-            await ctx.utils.loadRemoteScript(fallbackUrl, {
+        } else {
+          const url = getCDNUrl(key, 'latest', provider) + random
+          try {
+            await ctx.utils.loadRemoteScript(url, {
               window: windowOpts,
               document: documentOpts
             })
+          } catch (e) {
+            console.error(`Failed to load ${key} from ${provider}:`, e)
+            // Fallback to symbo if not already using it
+            if (provider !== 'symbols') {
+              const fallbackUrl = getCDNUrl(key, 'latest', 'symbols') + random
+              await ctx.utils.loadRemoteScript(fallbackUrl, {
+                window: windowOpts,
+                document: documentOpts
+              })
+            }
           }
+          windowOpts.packages[key] = 'loadedOnDeman'
         }
-        windowOpts.packages[key] = 'loadedOnDeman'
       }
+      return await windowOpts.require(key, provider)
     }
-    return await windowOpts.require(key, provider)
-  }
 
   if (windowOpts.packages) {
     windowOpts.packages = merge(windowOpts.packages, packages)
@@ -236,4 +248,17 @@ export const preparePages = (app, context) => {
       delete pages[v]
       return pages
     }, pages)
+}
+
+export const prepareSharedLibs = (context) => {
+  const sharedLibraries = context.sharedLibraries
+  for (let i = 0; i < sharedLibraries.length; i++) {
+    const sharedLib = sharedLibraries[i]
+    if (context.type === 'template') {
+      overwriteShallow(context.designSystem, sharedLib.designSystem)
+      deepMerge(context, sharedLib, ['designSystem'], 1)
+    } else {
+      deepMerge(context, sharedLib, [], 1)
+    }
+  }
 }

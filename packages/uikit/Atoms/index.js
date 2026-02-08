@@ -1,7 +1,6 @@
 'use strict'
 
 export * from './Box.js'
-export * from './Flex.js'
 export * from './Grid.js'
 export * from './Img.js'
 export * from './Form.js'
