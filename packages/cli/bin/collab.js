@@ -9,7 +9,7 @@ import { CredentialManager } from '../helpers/credentialManager.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
-import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges, threeWayRebase } from '../helpers/changesUtils.js'
+import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
 import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
@@ -143,6 +143,43 @@ function debounce (fn, wait) {
     t = null
   }
   return debounced
+}
+
+function debugDesignSystemBuckets (label, designSystem, { enabled }) {
+  if (!enabled) return
+  const ds = designSystem && typeof designSystem === 'object' ? designSystem : null
+  const spacing = ds?.SPACING
+  const theme = ds?.THEME
+  const typography = ds?.TYPOGRAPHY
+  const summary = {
+    hasDesignSystem: !!ds,
+    SPACING: spacing && typeof spacing === 'object' ? Object.keys(spacing).length : null,
+    THEME: theme && typeof theme === 'object' ? Object.keys(theme).length : null,
+    TYPOGRAPHY: typography && typeof typography === 'object' ? Object.keys(typography).length : null
+  }
+  console.log(chalk.gray(`${label} designSystem bucket summary: ${JSON.stringify(summary)}`))
+}
+
+async function debugDesignSystemFiles (label, distDir, { enabled }) {
+  if (!enabled) return
+  const dir = path.join(distDir, 'designSystem')
+  const files = ['SPACING.js', 'THEME.js', 'TYPOGRAPHY.js']
+  const out = []
+  for (const f of files) {
+    const fp = path.join(dir, f)
+    try {
+      const stat = await fs.promises.stat(fp)
+      const content = await fs.promises.readFile(fp, 'utf8')
+      const isEmptyObject =
+        content.includes('export default {}') ||
+        content.includes('export default {\n}') ||
+        content.includes('export default {\n  \n}')
+      out.push({ file: f, bytes: stat.size, empty: !!isEmptyObject })
+    } catch (e) {
+      out.push({ file: f, missing: true, error: e?.code || e?.message || String(e) })
+    }
+  }
+  console.log(chalk.gray(`${label} local designSystem files: ${JSON.stringify(out)}`))
 }
 
 /**
@@ -279,6 +316,9 @@ export async function startCollab (options) {
   const { io, chokidar } = await importDeps()
   const baseUrl = cliConfig.apiBaseUrl
 
+  if (options.verbose) {
+    console.log(chalk.gray(`collab: distDir=${distDir}`))
+  }
   console.log(chalk.dim(`\nConnecting to realtime collab on ${baseUrl} ...`))
 
   await writeCollabState({
@@ -390,6 +430,7 @@ export async function startCollab (options) {
     const persistedObj = applyOrderFields(fullObj)
     if (options.verbose) {
       logDesignSystemFlags('collab: after applyOrderFields (before createFs)', persistedObj?.designSystem, { enabled: true })
+      debugDesignSystemBuckets('collab: after applyOrderFields (before createFs)', persistedObj?.designSystem, { enabled: true })
     }
     try { ensureDesignSystemBuckets(persistedObj?.designSystem) } catch (_) {}
     // Keep schema.dependencies consistent and sync dependencies into local package.json
@@ -417,6 +458,7 @@ export async function startCollab (options) {
       suppressUntil = Date.now() + suppressionWindowMs
       suppressLocalChanges = false
     }
+    await debugDesignSystemFiles('collab: after createFs', distDir, { enabled: !!options.verbose })
   }
 
   // Load the last persisted snapshot (the same snapshot `sync` writes).
@@ -484,18 +526,52 @@ export async function startCollab (options) {
     const incomingRaw = { ...(data || {}), schema: schema || {}, version, branch: srvBranch }
     const incoming = stringifyFunctionsForTransport(incomingRaw)
     try { ensureDesignSystemBuckets(incoming?.designSystem) } catch (_) {}
-    // Merge snapshot with any local edits since the last server base, preferring local.
+    if (options.verbose) {
+      debugDesignSystemBuckets('collab: incoming snapshot', incoming?.designSystem, { enabled: true })
+      debugDesignSystemBuckets('collab: currentBase before snapshot apply', currentBase?.designSystem, { enabled: true })
+      debugDesignSystemBuckets('collab: remoteBase before snapshot apply', remoteBase?.designSystem, { enabled: true })
+    }
+    // Defensive snapshot application:
+    // Some servers can send incomplete snapshots (especially for split objects like designSystem).
+    // We therefore avoid treating missing/empty buckets as deletions. We only apply
+    // non-destructive updates from the snapshot onto our in-memory bases.
     try {
       const base = remoteBase || {}
-      const local = currentBase || {}
       const remote = incoming
-      const { ours } = threeWayRebase(base, local, remote)
-      const merged = clonePlain(remote)
-      // Apply local changes over remote snapshot (local wins on conflicts)
-      applyTuples(merged, ours)
-      try { ensureDesignSystemBuckets(merged?.designSystem) } catch (_) {}
-      remoteBase = clonePlain(remote)
-      currentBase = merged
+      const theirChanges = computeCoarseChanges(base, remote)
+
+      const isPlainObjectValue = (v) => !!v && typeof v === 'object' && !Array.isArray(v)
+      const safeRemoteChanges = (theirChanges || []).filter(([op, p, value]) => {
+        // Never apply deletions from snapshots (ops stream should handle explicit deletes).
+        if (op === 'delete' || op === 'del') return false
+
+        // Guard: don't allow snapshot to zero out populated designSystem buckets.
+        if (
+          op === 'update' &&
+          Array.isArray(p) &&
+          p.length === 2 &&
+          p[0] === 'designSystem' &&
+          DESIGN_SYSTEM_BUCKET_KEYS.includes(p[1]) &&
+          isPlainObjectValue(value) &&
+          Object.keys(value).length === 0
+        ) {
+          const existing = pathArrGet(currentBase || {}, p)
+          if (existing && typeof existing === 'object' && !Array.isArray(existing) && Object.keys(existing).length > 0) {
+            return false
+          }
+        }
+
+        return true
+      })
+
+      // Update remoteBase incrementally (don't drop keys due to incomplete snapshots)
+      applyTuples(remoteBase, safeRemoteChanges)
+      // Apply remote updates to currentBase (local). This can still overwrite, but
+      // will not delete or zero out populated buckets due to the guards above.
+      applyTuples(currentBase, safeRemoteChanges)
+      ensureSchemaDependencies(currentBase)
+      try { ensureDesignSystemBuckets(currentBase?.designSystem) } catch (_) {}
+
       await writeProjectAndFs(currentBase)
       writeLock({ version, branch: srvBranch, pulledAt: new Date().toISOString() })
       console.log(chalk.gray(`Snapshot applied (merged). Version: ${chalk.cyan(version)}`))
