@@ -16,6 +16,7 @@ import './push.js'
 import './link-packages.js'
 import './collab.js'
 import './servers.js'
+import './files.js'
 
 const args = process.argv
 program.parse(args)

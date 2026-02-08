@@ -14,6 +14,7 @@ import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies } from '../helpers/dependenciesUtils.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
+import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 const { isObjectLike } = (utils.default || utils)
 
 const debugMsg = chalk.dim(
@@ -55,6 +56,7 @@ export const fetchFromCli = async (opts) => {
 
       payload = result.data || {}
       const etag = result.etag || null
+      logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
 
       // Update lock.json
       writeLock({
@@ -86,6 +88,7 @@ export const fetchFromCli = async (opts) => {
       // Ensure schema.dependencies exists for payload.dependencies
       ensureSchemaDependencies(payload)
       const persisted = applyOrderFields(payload)
+      logDesignSystemFlags('fetch: after applyOrderFields (persisted)', persisted?.designSystem, { enabled: !!verbose })
       await fs.promises.writeFile(projectPath, JSON.stringify(persisted, null, 2))
     } catch (e) {
       console.error(chalk.bold.red('\nError writing file'))
@@ -135,9 +138,13 @@ export const fetchFromCli = async (opts) => {
     }
 
     if (update || force) {
-      createFs(applyOrderFields(payload), distDir, { update: true, metadata: false })
+      const ordered = applyOrderFields(payload)
+      logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
+      createFs(ordered, distDir, { update: true, metadata: false })
     } else {
-      createFs(applyOrderFields(payload), distDir, { metadata: false })
+      const ordered = applyOrderFields(payload)
+      logDesignSystemFlags('fetch: before createFs (update=false)', ordered?.designSystem, { enabled: !!verbose })
+      createFs(ordered, distDir, { metadata: false })
     }
 }
 

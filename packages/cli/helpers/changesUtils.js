@@ -1,5 +1,4 @@
 import * as utils from '@domql/utils'
-import { normalizeKeys } from './compareUtils.js'
 
 const { objectToString } = utils.default || utils
 
@@ -31,16 +30,7 @@ function stripMetaDeep(val) {
 
 function asPlain(obj) {
   // Ensure consistent comparison and strip meta keys (like __order)
-  return stripMetaDeep(normalizeKeys(obj || {}))
-}
-
-function getPropCaseInsensitive(obj, key) {
-  if (!obj || typeof obj !== 'object') return undefined
-  // Prefer exact key first to avoid surprises.
-  if (Object.prototype.hasOwnProperty.call(obj, key)) return obj[key]
-  const lower = typeof key === 'string' ? key.toLowerCase() : key
-  if (typeof lower === 'string' && Object.prototype.hasOwnProperty.call(obj, lower)) return obj[lower]
-  return obj[key]
+  return stripMetaDeep(obj || {})
 }
 
 function equal(a, b) {
@@ -58,8 +48,8 @@ export function computeChangedKeys(base, local, keys = DATA_KEYS) {
   const b = asPlain(local)
   // Only consider top-level data keys; ignore 'schema' entirely
   for (const key of [...keys]) {
-    const ak = getPropCaseInsensitive(a, key)
-    const bk = getPropCaseInsensitive(b, key)
+    const ak = a?.[key]
+    const bk = b?.[key]
     if (bk === undefined && ak !== undefined) {
       changed.push(key)
       continue
@@ -81,16 +71,17 @@ export function computeCoarseChanges(base, local, keys = DATA_KEYS) {
   const baseSchema = a?.schema || {}
 
   for (const typeKey of [...keys]) {
-    const aSection = getPropCaseInsensitive(a, typeKey) || {}
-    const bSection = getPropCaseInsensitive(b, typeKey) || {}
-    const aSchemaSection = getPropCaseInsensitive(baseSchema, typeKey) || {}
+    const hasA = Object.prototype.hasOwnProperty.call(a, typeKey)
+    const hasB = Object.prototype.hasOwnProperty.call(b, typeKey)
+
+    const aSection = hasA ? a[typeKey] : {}
+    const bSection = hasB ? b[typeKey] : {}
+    const aSchemaSection = baseSchema?.[typeKey] || {}
 
     // If sections are not plain objects (or are arrays), fallback to coarse replacement on the section itself
     const aIsObject = aSection && typeof aSection === 'object' && !Array.isArray(aSection)
     const bIsObject = bSection && typeof bSection === 'object' && !Array.isArray(bSection)
     if (!aIsObject || !bIsObject) {
-      const hasB = Object.prototype.hasOwnProperty.call(b, typeKey) || Object.prototype.hasOwnProperty.call(b, typeKey.toLowerCase())
-      const hasA = Object.prototype.hasOwnProperty.call(a, typeKey) || Object.prototype.hasOwnProperty.call(a, typeKey.toLowerCase())
       if (!hasB && hasA) {
         changes.push(['delete', [typeKey]])
       } else if (!equal(aSection, bSection)) {

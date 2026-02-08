@@ -5,6 +5,7 @@
     "start": "npm run clean:dist; parcel example/index.html --no-cache --port 4321",
     "build": "npm run clean:dist; parcel build example/index.html --no-cache",
     "build:packages": "lerna run build",
+    "update:smbls": "npm run build:packages && npm -w @symbo.ls/cli link",
     "postinstall": "npx lerna run build && npx lerna run copy:package:cjs",
     "update-linkable-list": "npx smbls link-packages -c",
     "test:lint": "npx standard \"packages/**/*.js\"",

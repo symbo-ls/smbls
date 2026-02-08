@@ -18,7 +18,15 @@ const {
 } = utils.default || utils
 
 let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies']
+// Keys that are materialized as directories with per-entry files.
 const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
+
+// Keys that used to be single files, but are now split into a directory with:
+// - `index.js` exporting a default object
+// - per-entry `*.js` files for object values (primitives stay in index.js)
+const splitObjectKeys = ['designSystem', 'files']
+
+const ALL_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys]
 
 const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema']
 
@@ -70,23 +78,39 @@ function reorderWithOrderKeys (input) {
   return out
 }
 
-async function removeStaleFiles(body, targetDir) {
-  for (const key of directoryKeys) {
+async function removeStaleFiles (body, targetDir) {
+  for (const key of ALL_DIRECTORY_KEYS) {
     const dirPath = path.join(targetDir, key)
     if (!fs.existsSync(dirPath)) continue
 
     const existingFiles = await fs.promises.readdir(dirPath)
-    const currentEntries = body[key] ? Object.keys(body[key])
-      // Drop meta/reserved identifiers like "__order" and "default"
-      .filter(entry => !shouldSkipEntryKey(entry))
-      .map(entry => {
-      // Apply the same transformations as in createKeyDirectoryAndFiles
-      let fileName = entry
-      if (fileName.startsWith('/')) fileName = fileName.slice(1)
-      if (fileName === '') fileName = 'main'
-      if (fileName.includes('*')) fileName = 'fallback'
-      return `${fileName.replace('/', '-')}.js`
-    }) : []
+    const currentEntries = (() => {
+      if (!body[key] || typeof body[key] !== 'object') return []
+
+      // For splitObjectKeys we only materialize object-valued entries as files
+      if (splitObjectKeys.includes(key)) {
+        const entries = []
+        for (const [entryKey, value] of Object.entries(body[key] || {})) {
+          if (!value || typeof value !== 'object' || Array.isArray(value)) continue
+          const safeStem = String(entryKey).replace(/[/\\]/g, '-')
+          if (!safeStem) continue
+          entries.push(`${safeStem}.js`)
+        }
+        return entries
+      }
+
+      return Object.keys(body[key])
+        // Drop meta/reserved identifiers like "__order" and "default"
+        .filter(entry => !shouldSkipEntryKey(entry))
+        .map(entry => {
+          // Apply the same transformations as in createKeyDirectoryAndFiles
+          let fileName = entry
+          if (fileName.startsWith('/')) fileName = fileName.slice(1)
+          if (fileName === '') fileName = 'main'
+          if (fileName.includes('*')) fileName = 'fallback'
+          return `${fileName.replace('/', '-')}.js`
+        })
+    })()
 
     // Don't remove index.js
     const filesToCheck = existingFiles.filter(file => file !== 'index.js')
@@ -113,6 +137,8 @@ export async function createFs (
 
   const { update, metadata } = opts
 
+  // `designSystem` and `files` are now directories (splitObjectKeys)
+  singleFileKeys = ['state', 'dependencies']
   singleFileKeys = removeValueFromArray(singleFileKeys, 'schema')
   if (metadata) singleFileKeys.push('schema')
 
@@ -123,10 +149,30 @@ export async function createFs (
   if (!filesExist || update) {
     await fs.promises.mkdir(targetDir, { recursive: true })
 
+    // Migration: `designSystem.js` and `files.js` used to be generated as single files.
+    // Now that they're directories, remove legacy single files to avoid ambiguity.
+    for (const k of splitObjectKeys) {
+      const legacyPath = path.join(targetDir, `${k}.js`)
+      try {
+        if (fs.existsSync(legacyPath)) await fs.promises.unlink(legacyPath)
+      } catch (_) {}
+    }
+
     const promises = [
       ...directoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, targetDir, update)
       ),
+      ...splitObjectKeys.map((key) => {
+        if (body[key] && typeof body[key] === 'object') {
+          return createSplitObjectDirectoryAndFiles(
+            key,
+            body[key],
+            targetDir,
+            update
+          )
+        }
+        return undefined
+      }),
       ...singleFileKeys.map((key) => {
         if (body[key] && typeof body[key] === 'object') {
           return createSingleFileFolderAndFile(
@@ -142,7 +188,7 @@ export async function createFs (
 
     await Promise.all(promises)
     await generateIndexjsFile(
-      joinArrays(singleFileKeys, directoryKeys),
+      joinArrays(singleFileKeys, ALL_DIRECTORY_KEYS),
       targetDir,
       'root'
     )
@@ -162,6 +208,12 @@ export async function createFs (
         ...directoryKeys.map((key) =>
           createKeyDirectoryAndFiles(key, body, cacheDir, true)
         ),
+        ...splitObjectKeys.map((key) => {
+          if (body[key] && typeof body[key] === 'object') {
+            return createSplitObjectDirectoryAndFiles(key, body[key], cacheDir, true)
+          }
+          return undefined
+        }),
         ...singleFileKeys.map((key) => {
           if (body[key] && typeof body[key] === 'object') {
             return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
@@ -172,7 +224,7 @@ export async function createFs (
 
       await Promise.all(cachePromises)
       await generateIndexjsFile(
-        joinArrays(directoryKeys, singleFileKeys),
+        joinArrays(ALL_DIRECTORY_KEYS, singleFileKeys),
         cacheDir,
         'root'
       )
@@ -190,6 +242,14 @@ export async function createFs (
           const { consent } = await askForConsent()
           if (consent) {
             await overrideFiles(cacheDir, targetDir)
+            // When the user consents to overriding, also remove stale files that
+            // are no longer produced by the current body snapshot. This is
+            // crucial for split directories like `designSystem/` where a previous
+            // run might have produced per-flag files (e.g. useReset.js) that
+            // should not persist once the value is a primitive.
+            try {
+              await removeStaleFiles(body, targetDir)
+            } catch (_) {}
             console.log('Files overridden successfully.')
           } else {
             console.log('Files not overridden.')
@@ -219,7 +279,7 @@ export async function createFs (
     }
   }
 
-  async function createKeyDirectoryAndFiles(key, body, distDir, update) {
+  async function createKeyDirectoryAndFiles (key, body, distDir, update) {
     const dirPath = path.join(distDir, key)
     await fs.promises.mkdir(dirPath, { recursive: true })
 
@@ -260,7 +320,179 @@ export async function createFs (
     await generateIndexjsFile(Array.from(new Set(dirs)), dirPath, key)
   }
 
-  async function createOrUpdateFile(dirPath, childKey, value, update) {
+  function isPlainObjectValue (val) {
+    return !!val && typeof val === 'object' && !Array.isArray(val)
+  }
+
+  function safeDeepDestringify (val) {
+    // `deepDestringifyFunctions` expects plain objects. If called with a primitive
+    // (e.g. boolean) it can coerce it into `{}`; if called with an array it can
+    // coerce it into an object with numeric keys. We must preserve primitives
+    // and arrays as-is.
+    if (val === null || val === undefined) return val
+    if (Array.isArray(val)) return val.map(safeDeepDestringify)
+    if (typeof val !== 'object') return val
+    return deepDestringifyFunctions(val)
+  }
+
+  function normalizeDesignSystemOptionFlags (root) {
+    // Normalize boolean-like designSystem flags when they are explicitly
+    // provided as booleans or boolean strings. We intentionally DO NOT coerce
+    // empty objects `{}` into booleans, because `{}` is a valid "object bucket"
+    // value that should be split into its own file and populated later.
+    if (!root || typeof root !== 'object') return root
+
+    const FLAG_KEYS = new Set([
+      'useReset',
+      'useVariable',
+      'useFontImport',
+      'useIconSprite',
+      'useSvgSprite',
+      'useDefaultConfig',
+      'useDocumentTheme',
+      'useDefaultIcons',
+      'verbose'
+    ])
+
+    for (const flagKey of FLAG_KEYS) {
+      if (!Object.prototype.hasOwnProperty.call(root, flagKey)) continue
+
+      const cur = root[flagKey]
+      if (typeof cur === 'boolean') continue
+
+      if (typeof cur === 'string') {
+        const lowered = cur.trim().toLowerCase()
+        if (lowered === 'true') { root[flagKey] = true; continue }
+        if (lowered === 'false') { root[flagKey] = false; continue }
+      }
+
+      if (isPlainObjectValue(cur) && Object.prototype.hasOwnProperty.call(cur, 'value')) {
+        const v = cur.value
+        if (typeof v === 'boolean') { root[flagKey] = v; continue }
+        if (typeof v === 'string') {
+          const lowered = v.trim().toLowerCase()
+          if (lowered === 'true') { root[flagKey] = true; continue }
+          if (lowered === 'false') { root[flagKey] = false; continue }
+        }
+      }
+    }
+
+    return root
+  }
+
+  function renderInlineValue (val) {
+    // `objectToString` only quotes strings reliably when they are within an
+    // object/array. For top-level primitive strings, it returns the raw string.
+    if (typeof val === 'string') return JSON.stringify(val)
+    return objectToString(val)
+  }
+
+  function isValidIdentifierName (name) {
+    return typeof name === 'string' && /^[A-Za-z_$][A-Za-z0-9_$]*$/u.test(name) && !isReservedIdentifier(name)
+  }
+
+  function toSafeImportName (key, used = new Set()) {
+    const base =
+      (key && (removeChars(toCamelCase(String(key))) || '').trim()) ||
+      'item'
+    let name = base
+    // Identifiers cannot start with a digit
+    if (!/^[A-Za-z_$]/u.test(name)) name = `_${name}`
+    if (isReservedIdentifier(name) || !isValidIdentifierName(name)) {
+      // Last resort: remove anything unsafe, prefix underscore
+      name = `_${name.replace(/[^A-Za-z0-9_$]/gu, '') || 'item'}`
+    }
+    let i = 2
+    while (used.has(name)) {
+      name = `${base}_${i++}`
+    }
+    used.add(name)
+    return name
+  }
+
+  function indentMultiline (str, indent = '  ') {
+    return String(str).replaceAll('\n', `\n${indent}`)
+  }
+
+  async function createSplitObjectDirectoryAndFiles (key, section, distDir, update) {
+    const dirPath = path.join(distDir, key)
+    await fs.promises.mkdir(dirPath, { recursive: true })
+
+    // Normalize ordering and decode any stringified functions.
+    const contentRootRaw = reorderWithOrderKeys(deepDestringifyFunctions(section || {}))
+    const contentRoot = key === 'designSystem'
+      ? normalizeDesignSystemOptionFlags(contentRootRaw)
+      : contentRootRaw
+
+    const usedImportNames = new Set()
+    const objectEntries = []
+    const simpleEntries = []
+
+    for (const [entryKey, value] of Object.entries(contentRoot || {})) {
+      // Only split plain objects into individual files.
+      if (isPlainObjectValue(value)) {
+        const safeStem = String(entryKey).replace(/[/\\]/g, '-')
+        if (!safeStem) continue
+        objectEntries.push({
+          entryKey,
+          value,
+          fileStem: safeStem,
+          importName: toSafeImportName(entryKey, usedImportNames)
+        })
+      } else {
+        simpleEntries.push([entryKey, value])
+      }
+    }
+
+    // Write per-entry object files.
+    const fileWrites = objectEntries.map(async ({ fileStem, value }) => {
+      const filePath = path.join(dirPath, `${fileStem}.js`)
+      if (!update && fs.existsSync(filePath)) return
+      const objectValue = reorderWithOrderKeys(deepDestringifyFunctions(value))
+      const stringified = `export default ${objectToString(objectValue)};`
+      await fs.promises.writeFile(filePath, stringified, 'utf8')
+    })
+    await Promise.all(fileWrites)
+
+    // Write index.js as a default-exported object that references split modules
+    const importLines = objectEntries
+      .map(({ importName, fileStem }) => `import ${importName} from './${fileStem}.js'`)
+      .join('\n')
+
+    const propLines = []
+
+    // Object entries first (in order)
+    for (const { entryKey, importName } of objectEntries) {
+      if (isValidIdentifierName(entryKey) && entryKey === importName) {
+        propLines.push(`${entryKey},`)
+      } else if (isValidIdentifierName(entryKey)) {
+        propLines.push(`${entryKey}: ${importName},`)
+      } else {
+        propLines.push(`${JSON.stringify(entryKey)}: ${importName},`)
+      }
+    }
+
+    // Then primitives/arrays/etc inline
+    for (const [entryKey, value] of simpleEntries) {
+      const decoded = safeDeepDestringify(value)
+      const normalized = reorderWithOrderKeys(decoded)
+      const rendered = renderInlineValue(normalized)
+      const rhs = indentMultiline(rendered, '  ')
+      if (isValidIdentifierName(entryKey)) {
+        propLines.push(`${entryKey}: ${rhs},`)
+      } else {
+        propLines.push(`${JSON.stringify(entryKey)}: ${rhs},`)
+      }
+    }
+
+    const indexContent =
+      (importLines ? `${importLines}\n\n` : '') +
+      `export default {\n  ${propLines.join('\n  ')}\n}\n`
+
+    await fs.promises.writeFile(path.join(dirPath, 'index.js'), indexContent, 'utf8')
+  }
+
+  async function createOrUpdateFile (dirPath, childKey, value, update) {
     const itemKey =
       childKey.includes('-') || childKey.includes('/')
         ? removeChars(toCamelCase(childKey))
@@ -297,7 +529,7 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
   }
 
-  async function createSingleFileFolderAndFile(key, data, distDir, update) {
+  async function createSingleFileFolderAndFile (key, data, distDir, update) {
     const filePath = path.join(distDir, `${key}.js`)
 
     if (!update && fs.existsSync(filePath)) {
@@ -330,10 +562,10 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
   // }
 }
 
-async function findDiff(targetDir, distDir) {
+async function findDiff (targetDir, distDir) {
   const diffs = []
 
-  for (const key of directoryKeys) {
+  for (const key of ALL_DIRECTORY_KEYS) {
     const targetDirPath = path.join(targetDir, key)
     const distDirPath = path.join(distDir, key)
 
@@ -343,9 +575,10 @@ async function findDiff(targetDir, distDir) {
 
     const targetFiles = await fs.promises.readdir(targetDirPath)
     for (const file of targetFiles) {
-      if (file === 'index.js') {
-        continue // Skip comparing index.js files
-      }
+      // Historically we skipped directory index.js diffs, but for split-object
+      // directories like `designSystem/` and `files/` the index.js content is
+      // the canonical mapping (and needs to update when primitives move in/out).
+      if (file === 'index.js' && !splitObjectKeys.includes(key)) continue
 
       const targetFilePath = path.join(targetDirPath, file)
       const distFilePath = path.join(distDirPath, file)
@@ -405,7 +638,7 @@ async function findDiff(targetDir, distDir) {
   return diffs
 }
 
-async function generateIndexjsFile(dirs, dirPath, key) {
+async function generateIndexjsFile (dirs, dirPath, key) {
   let indexContent
   if (key === 'pages') {
     indexContent =
@@ -438,7 +671,7 @@ async function generateIndexjsFile(dirs, dirPath, key) {
     indexContent =
       dirs
         .map((d) => {
-          const dirOrSingleJs = directoryKeys.includes(d)
+          const dirOrSingleJs = ALL_DIRECTORY_KEYS.includes(d)
             ? d + '/index.js'
             : d + '.js'
           if (defaultExports.includes(d)) {
@@ -454,8 +687,8 @@ async function generateIndexjsFile(dirs, dirPath, key) {
   await fs.promises.writeFile(indexFilePath, indexContent, 'utf8')
 }
 
-async function overrideFiles(targetDir, distDir) {
-  for (const key of directoryKeys) {
+async function overrideFiles (targetDir, distDir) {
+  for (const key of ALL_DIRECTORY_KEYS) {
     const targetDirPath = path.join(targetDir, key)
     const distDirPath = path.join(distDir, key)
 
@@ -484,7 +717,7 @@ async function overrideFiles(targetDir, distDir) {
   }
 }
 
-async function askForConsent() {
+async function askForConsent () {
   const questions = [
     {
       type: 'confirm',
