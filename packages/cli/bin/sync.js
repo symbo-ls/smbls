@@ -9,7 +9,6 @@ import { program } from './program.js'
 import { CredentialManager } from '../helpers/credentialManager.js'
 import { buildDirectory } from '../helpers/fileUtils.js'
 import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
-import { normalizeKeys } from '../helpers/compareUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { threeWayRebase, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
@@ -18,6 +17,7 @@ import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
 import { applyOrderFields, stripOrderFields } from '../helpers/orderUtils.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
+import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 import {
   augmentProjectWithLocalPackageDependencies,
   ensureSchemaDependencies,
@@ -25,12 +25,44 @@ import {
   syncPackageJsonDependencies
 } from '../helpers/dependenciesUtils.js'
 
-async function buildLocalProject(distDir) {
+// The platform may omit empty designSystem buckets. The CLI filesystem
+// representation uses per-bucket files under `designSystem/`, so we keep
+// these keys present (at least as `{}`) to avoid treating missing buckets as
+// deletions and to prevent `createFs(update)` from removing local bucket files.
+const DESIGN_SYSTEM_BUCKET_KEYS = [
+  'ANIMATION',
+  'CASES',
+  'CLASS',
+  'COLOR',
+  'FONT',
+  'FONT_FAMILY',
+  'GRADIENT',
+  'GRID',
+  'ICONS',
+  'MEDIA',
+  'RESET',
+  'SHAPE',
+  'SPACING',
+  'THEME',
+  'TIMING',
+  'TYPOGRAPHY'
+]
+
+function ensureDesignSystemBuckets (designSystem) {
+  if (!designSystem || typeof designSystem !== 'object' || Array.isArray(designSystem)) return designSystem
+  for (let i = 0; i < DESIGN_SYSTEM_BUCKET_KEYS.length; i++) {
+    const k = DESIGN_SYSTEM_BUCKET_KEYS[i]
+    if (!Object.prototype.hasOwnProperty.call(designSystem, k)) designSystem[k] = {}
+  }
+  return designSystem
+}
+
+async function buildLocalProject (distDir) {
   try {
     const outputDirectory = path.join(distDir, 'dist')
     await buildDirectory(distDir, outputDirectory)
     const outputFile = path.join(outputDirectory, 'index.js')
-    return normalizeKeys(await loadModule(outputFile, { silent: false }))
+    return await loadModule(outputFile, { silent: false })
   } catch (error) {
     // Enhance error with build context
     error.buildContext = {
@@ -41,7 +73,7 @@ async function buildLocalProject(distDir) {
   }
 }
 
-async function resolveTopLevelConflicts(conflictsKeys, ours, theirs) {
+async function resolveTopLevelConflicts (conflictsKeys, ours, theirs) {
   const choices = conflictsKeys.map((key) => {
     const ourChange = ours.find((c) => c[1][0] === key)
     const theirChange = theirs.find((c) => c[1][0] === key)
@@ -72,7 +104,7 @@ ${chalk.red('- Remote:')} ${JSON.stringify(theirChange?.[2])}`
   return final
 }
 
-function getAt(obj, pathArr = []) {
+function getAt (obj, pathArr = []) {
   try {
     return pathArr.reduce((acc, k) => (acc == null ? undefined : acc[k]), obj)
   } catch (_) {
@@ -80,7 +112,7 @@ function getAt(obj, pathArr = []) {
   }
 }
 
-function buildDiffsFromChanges(changes, base, target) {
+function buildDiffsFromChanges (changes, base, target) {
   const diffs = []
   for (const [op, path, value] of changes) {
     const oldVal = getAt(base, path)
@@ -94,7 +126,7 @@ function buildDiffsFromChanges(changes, base, target) {
   return diffs
 }
 
-async function confirmChanges(localChanges, remoteChanges, base, local, remote) {
+async function confirmChanges (localChanges, remoteChanges, base, local, remote) {
   if (localChanges.length === 0 && remoteChanges.length === 0) {
     console.log(chalk.bold.yellow('No changes detected'))
     return false
@@ -153,7 +185,7 @@ async function confirmChanges(localChanges, remoteChanges, base, local, remote) 
   return proceed
 }
 
-export async function syncProjectChanges(options) {
+export async function syncProjectChanges (options) {
   try {
     // Load configuration
     const symbolsConfig = await loadSymbolsConfig()
@@ -169,7 +201,7 @@ export async function syncProjectChanges(options) {
     const { projectPath } = getConfigPaths()
     const { key: legacyKey } = symbolsConfig
     const appKey = cliConfig.projectKey || legacyKey
-    const localBranch = cliConfig.branch || symbolsConfig.branch || 'main'
+    const localBranch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
 
     const distDir =
       resolveDistDir(symbolsConfig) ||
@@ -226,12 +258,15 @@ export async function syncProjectChanges(options) {
     ensureSchemaDependencies(baseSnapshot)
     ensureSchemaDependencies(serverProject)
     ensureSchemaDependencies(localProject)
+    try { ensureDesignSystemBuckets(baseSnapshot?.designSystem) } catch (_) {}
+    try { ensureDesignSystemBuckets(serverProject?.designSystem) } catch (_) {}
+    try { ensureDesignSystemBuckets(localProject?.designSystem) } catch (_) {}
 
     // Generate coarse local and remote changes via simple three-way rebase
     // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)
-    const base = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(baseSnapshot || {})))
-    const local = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(localProject || {})))
-    const remote = normalizeKeys(stringifyFunctionsForTransport(stripOrderFields(serverProject || {})))
+    const base = stringifyFunctionsForTransport(stripOrderFields(baseSnapshot || {}))
+    const local = stringifyFunctionsForTransport(stripOrderFields(localProject || {}))
+    const remote = stringifyFunctionsForTransport(stripOrderFields(serverProject || {}))
     const { ours, theirs, conflicts, finalChanges } = threeWayRebase(base, local, remote)
 
     const localChanges = ours
@@ -244,14 +279,20 @@ export async function syncProjectChanges(options) {
 
     // Show change summaries
     if (localChanges.length) {
-      const byType = localChanges.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+      const byType = localChanges.reduce((acc, [t]) => {
+        acc[t] = (acc[t] || 0) + 1
+        return acc
+      }, {})
       console.log(chalk.cyan('\nLocal changes:'))
       Object.entries(byType).forEach(([type, count]) => {
         console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
       })
     }
     if (remoteChanges.length) {
-      const byType = remoteChanges.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+      const byType = remoteChanges.reduce((acc, [t]) => {
+        acc[t] = (acc[t] || 0) + 1
+        return acc
+      }, {})
       console.log(chalk.cyan('\nRemote changes:'))
       Object.entries(byType).forEach(([type, count]) => {
         console.log(chalk.gray(`- ${type}: ${chalk.cyan(count)} changes`))
@@ -275,40 +316,123 @@ export async function syncProjectChanges(options) {
       return
     }
 
-    // Update server
-    console.log(chalk.dim('\nUpdating server...'))
+    const isInteractive = !!(process.stdin && process.stdin.isTTY && process.stdout && process.stdout.isTTY)
+    let mode = 'merge' // merge | remote | local
+    if (isInteractive && localChanges.length && remoteChanges.length) {
+      const ans = await inquirer.prompt([{
+        type: 'list',
+        name: 'mode',
+        message: 'Remote changes detected. How should sync proceed?',
+        choices: [
+          { name: 'Merge: pull remote + push local changes (recommended)', value: 'merge' },
+          { name: 'Accept Remote only: overwrite local, discard local changes', value: 'remote' },
+          { name: 'Keep Local only: push local, ignore remote updates locally', value: 'local' },
+          { name: 'Cancel', value: 'cancel' }
+        ],
+        default: 0
+      }])
+      mode = ans.mode
+      if (mode === 'cancel') {
+        console.log(chalk.yellow('Sync cancelled'))
+        return
+      }
+      if (mode === 'remote') {
+        // Discard local changes for this sync run.
+        toApply = []
+      }
+    }
+
     const projectId = lock.projectId || serverProject?.projectInfo?.id
     if (!projectId) {
       console.log(chalk.red('Unable to resolve projectId. Please fetch first to initialize lock.'))
       process.exit(1)
     }
-    const operationId = `cli-${Date.now()}`
-    // Expand into granular changes against remote/server state, compute orders from local
-    const { granularChanges } = preprocessChanges(remote, toApply)
-    const orders = computeOrdersForTuples(local, granularChanges)
-    const result = await postProjectChanges(projectId, authToken, {
-      branch: localBranch,
-      type: options.type || 'patch',
-      operationId,
-      changes: toApply,
-      granularChanges,
-      orders
-    })
-    const { id: versionId, value: version } = result.noOp ? {} : (result.data || {})
 
-    // Update symbols.json with new version
-    if (version) {
-      updateLegacySymbolsJson({ ...(symbolsConfig || {}), version, branch: localBranch, versionId })
+    let versionId
+    let version
+    let updated
+    let updatedServerData
+
+    if (toApply.length) {
+      // Update server (push local changes)
+      console.log(chalk.dim('\nUpdating server...'))
+      const operationId = `cli-${Date.now()}`
+      // Expand into granular changes against remote/server state, compute orders from local
+      const { granularChanges } = preprocessChanges(remote, toApply)
+      const orders = computeOrdersForTuples(local, granularChanges)
+      const result = await postProjectChanges(projectId, authToken, {
+        branch: localBranch,
+        type: options.type || 'patch',
+        operationId,
+        changes: toApply,
+        granularChanges,
+        orders
+      })
+      const info = result.noOp ? {} : (result.data || {})
+      versionId = info.id
+      version = info.value
+
+      // Update symbols.json with new version
+      if (version) {
+        updateLegacySymbolsJson({ ...(symbolsConfig || {}), version, branch: localBranch, versionId })
+      }
+
+      // Get latest project data after sync
+      console.log(chalk.dim('Fetching latest project data...'))
+      updated = await getCurrentProjectData(
+        { projectKey: appKey, projectId },
+        authToken,
+        { branch: localBranch, includePending: true }
+      )
+      updatedServerData = updated?.data || {}
+    } else {
+      // No local changes to push (or user chose Remote-only). Avoid posting an
+      // empty patch; just use the already-fetched server snapshot.
+      updated = serverResp
+      updatedServerData = serverProject
+      version = serverProject?.version || lock.version || null
     }
 
-    // Get latest project data after sync
-    console.log(chalk.dim('Fetching latest project data...'))
-    const updated = await getCurrentProjectData(
-      { projectKey: appKey, projectId },
-      authToken,
-      { branch: localBranch, includePending: true }
-    )
-    const updatedServerData = updated?.data || {}
+    if (options.verbose) {
+      logDesignSystemFlags('sync: updatedServerData raw (from API)', updatedServerData?.designSystem, { enabled: true })
+    }
+
+    const debugDesignSystemBuckets = (label, designSystem) => {
+      if (!options.verbose) return
+      const ds = designSystem && typeof designSystem === 'object' ? designSystem : null
+      const spacing = ds?.SPACING
+      const theme = ds?.THEME
+      const typography = ds?.TYPOGRAPHY
+      const summary = {
+        hasDesignSystem: !!ds,
+        SPACING: spacing && typeof spacing === 'object' ? Object.keys(spacing).length : null,
+        THEME: theme && typeof theme === 'object' ? Object.keys(theme).length : null,
+        TYPOGRAPHY: typography && typeof typography === 'object' ? Object.keys(typography).length : null
+      }
+      console.log(chalk.gray(`${label} designSystem bucket summary: ${JSON.stringify(summary)}`))
+    }
+
+    const debugDesignSystemFiles = async (label) => {
+      if (!options.verbose) return
+      const dir = path.join(distDir, 'designSystem')
+      const files = ['SPACING.js', 'THEME.js', 'TYPOGRAPHY.js']
+      const out = []
+      for (const f of files) {
+        const fp = path.join(dir, f)
+        try {
+          const stat = await fs.promises.stat(fp)
+          const content = await fs.promises.readFile(fp, 'utf8')
+          const isEmptyObject =
+            content.includes('export default {}') ||
+            content.includes('export default {\n}') ||
+            content.includes('export default {\n  \n}')
+          out.push({ file: f, bytes: stat.size, empty: !!isEmptyObject })
+        } catch (e) {
+          out.push({ file: f, missing: true, error: e?.code || e?.message || String(e) })
+        }
+      }
+      console.log(chalk.gray(`${label} local designSystem files: ${JSON.stringify(out)}`))
+    }
 
     // Ensure fetched snapshot has dependency schema and sync deps into local package.json
     try {
@@ -320,8 +444,15 @@ export async function syncProjectChanges(options) {
 
     // Apply changes to local files
     console.log(chalk.dim('Updating local files...'))
-    const orderedUpdatedServerData = applyOrderFields(updatedServerData)
+    const snapshotForLocal = mode === 'local' ? localProject : updatedServerData
+    debugDesignSystemBuckets('sync: snapshotForLocal (pre-order)', snapshotForLocal?.designSystem)
+    const orderedUpdatedServerData = applyOrderFields(snapshotForLocal)
+    debugDesignSystemBuckets('sync: orderedUpdatedServerData (post-order)', orderedUpdatedServerData?.designSystem)
+    if (options.verbose) {
+      logDesignSystemFlags('sync: after applyOrderFields (before createFs)', orderedUpdatedServerData?.designSystem, { enabled: true })
+    }
     await createFs(orderedUpdatedServerData, distDir, { update: true, metadata: false })
+    await debugDesignSystemFiles('sync: after createFs')
     console.log(chalk.gray('Local files updated successfully'))
 
     console.log(chalk.bold.green('\nProject synced successfully!'))
@@ -329,8 +460,8 @@ export async function syncProjectChanges(options) {
 
     // Update lock and base snapshot
     writeLock({
-      etag: updated.etag || null,
-      version: version || (lock.version || null),
+      etag: updated?.etag || null,
+      version: (mode === 'local' ? (lock.version || null) : (version || (lock.version || null))),
       branch: localBranch,
       projectId,
       pulledAt: new Date().toISOString()
@@ -339,7 +470,6 @@ export async function syncProjectChanges(options) {
       const { projectPath } = getConfigPaths()
       await fs.promises.writeFile(projectPath, JSON.stringify(orderedUpdatedServerData, null, 2))
     } catch (_) {}
-
   } catch (error) {
     console.error(chalk.bold.red('\nSync failed:'), chalk.white(error.message))
     if (options.verbose && error.stack) {
@@ -353,6 +483,7 @@ export async function syncProjectChanges(options) {
 program
   .command('sync')
   .description('Sync local changes with remote server')
+  .option('-b, --branch <branch>', 'Branch to sync')
   .option('-m, --message <message>', 'Specify a commit message')
   .option('-d, --dev', 'Run against local server')
   .option('-v, --verbose', 'Show verbose output')

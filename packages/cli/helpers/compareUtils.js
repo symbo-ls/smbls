@@ -10,20 +10,6 @@ export const ALLOWED_FIELDS = [
   'snippets'
 ]
 
-export function normalizeKeys (obj) {
-  if (!obj || typeof obj !== 'object') return obj
-
-  if (Array.isArray(obj)) {
-    return obj.map(item => normalizeKeys(item))
-  }
-
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    const normalizedKey = key.toLowerCase()
-    acc[normalizedKey] = value
-    return acc
-  }, {})
-}
-
 export function generateDefaultSchema(key, type) {
   // Base schema for components and pages
   const baseSchema = {
