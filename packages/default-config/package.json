@@ -1,12 +1,12 @@
 {
   "name": "@symbo.ls/default-config",
-  "version": "2.34.21",
+  "version": "2.34.22",
   "source": "src/index.js",
   "main": "src/index.js",
   "type": "module",
   "dependencies": {
-    "@symbo.ls/default-icons": "^2.34.21"
+    "@symbo.ls/default-icons": "^2.34.22"
   },
   "license": "MIT",
-  "gitHead": "8c318e71480bdf0638a2543c4ba84b34778fea9c"
+  "gitHead": "7c230f00e3044681e6ab652e1f638eeea8dac1ec"
 }
