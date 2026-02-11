@@ -13,6 +13,7 @@ import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from 
 import { createFs } from './fs.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
 import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
+import { stripEmptyDefaultNamespaceEntries } from '../helpers/projectNormalization.js'
 import {
   augmentProjectWithLocalPackageDependencies,
   ensureSchemaDependencies,
@@ -641,6 +642,7 @@ export async function startCollab (options) {
     await augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase, options })
     // Include package.json deps into local snapshot so dependency edits can be synced
     local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
+    stripEmptyDefaultNamespaceEntries(local)
     // Prepare safe, JSON-serialisable snapshots for diffing & transport
     const base = currentBase || {}
     const safeBase = stringifyFunctionsForTransport(base)

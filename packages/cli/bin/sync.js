@@ -17,6 +17,7 @@ import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
 import { applyOrderFields, stripOrderFields } from '../helpers/orderUtils.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
+import { stripEmptyDefaultNamespaceEntries } from '../helpers/projectNormalization.js'
 import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 import {
   augmentProjectWithLocalPackageDependencies,
@@ -228,6 +229,7 @@ export async function syncProjectChanges (options) {
       localProject = augmentProjectWithLocalPackageDependencies(localProject, packageJsonPath) || localProject
       // Never sync/persist `__order` (platform metadata)
       localProject = stripOrderFields(localProject)
+      localProject = stripEmptyDefaultNamespaceEntries(localProject)
       console.log(chalk.gray('Local project built successfully'))
     } catch (buildError) {
       showBuildErrorMessages(buildError)
@@ -258,6 +260,8 @@ export async function syncProjectChanges (options) {
     ensureSchemaDependencies(baseSnapshot)
     ensureSchemaDependencies(serverProject)
     ensureSchemaDependencies(localProject)
+    stripEmptyDefaultNamespaceEntries(baseSnapshot)
+    stripEmptyDefaultNamespaceEntries(serverProject)
     try { ensureDesignSystemBuckets(baseSnapshot?.designSystem) } catch (_) {}
     try { ensureDesignSystemBuckets(serverProject?.designSystem) } catch (_) {}
     try { ensureDesignSystemBuckets(localProject?.designSystem) } catch (_) {}
