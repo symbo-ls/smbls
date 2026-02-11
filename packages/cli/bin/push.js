@@ -1,5 +1,6 @@
 'use strict'
 
+import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
@@ -12,11 +13,11 @@ import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.j
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { showAuthRequiredMessages, showProjectNotFoundMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
-import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
+import { getConfigPaths, loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
 import { stripOrderFields } from '../helpers/orderUtils.js'
 import { augmentProjectWithLocalPackageDependencies, findNearestPackageJson } from '../helpers/dependenciesUtils.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
-
+import { stripEmptyDefaultNamespaceEntries } from '../helpers/projectNormalization.js'
 
 async function buildLocalProject (distDir) {
   try {
@@ -35,7 +36,37 @@ async function buildLocalProject (distDir) {
   }
 }
 
-function getAt(obj, pathArr = []) {
+// The platform may omit empty designSystem buckets. `sync` normalizes these
+// buckets before diffing, so `push` should do the same to avoid noisy `{}` diffs.
+const DESIGN_SYSTEM_BUCKET_KEYS = [
+  'ANIMATION',
+  'CASES',
+  'CLASS',
+  'COLOR',
+  'FONT',
+  'FONT_FAMILY',
+  'GRADIENT',
+  'GRID',
+  'ICONS',
+  'MEDIA',
+  'RESET',
+  'SHAPE',
+  'SPACING',
+  'THEME',
+  'TIMING',
+  'TYPOGRAPHY'
+]
+
+function ensureDesignSystemBuckets (designSystem) {
+  if (!designSystem || typeof designSystem !== 'object' || Array.isArray(designSystem)) return designSystem
+  for (let i = 0; i < DESIGN_SYSTEM_BUCKET_KEYS.length; i++) {
+    const k = DESIGN_SYSTEM_BUCKET_KEYS[i]
+    if (!Object.prototype.hasOwnProperty.call(designSystem, k)) designSystem[k] = {}
+  }
+  return designSystem
+}
+
+function getAt (obj, pathArr = []) {
   try {
     return pathArr.reduce((acc, k) => (acc == null ? undefined : acc[k]), obj)
   } catch (_) {
@@ -43,7 +74,7 @@ function getAt(obj, pathArr = []) {
   }
 }
 
-function buildDiffsFromChanges(changes, base, local) {
+function buildDiffsFromChanges (changes, base, local) {
   const diffs = []
   for (const [op, path, value] of changes) {
     const oldVal = getAt(base, path)
@@ -98,8 +129,8 @@ async function confirmChanges (changes, base, local) {
   return proceed
 }
 
-export async function pushProjectChanges(options) {
-  const { verbose, message, type = 'patch' } = options
+export async function pushProjectChanges (options) {
+  const { verbose, type = 'patch' } = options
   try {
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
@@ -114,6 +145,7 @@ export async function pushProjectChanges(options) {
     const lock = readLock()
     const appKey = cliConfig.projectKey || symbolsConfig.key
     const branch = cliConfig.branch || symbolsConfig.branch || 'main'
+    const { projectPath } = getConfigPaths()
 
     const distDir =
       resolveDistDir(symbolsConfig) ||
@@ -129,6 +161,7 @@ export async function pushProjectChanges(options) {
       localProject = augmentProjectWithLocalPackageDependencies(localProject, packageJsonPath) || localProject
       // Never push `__order` (platform metadata) from local files
       localProject = stripOrderFields(localProject)
+      localProject = stripEmptyDefaultNamespaceEntries(localProject)
       console.log(chalk.gray('Local project built successfully'))
     } catch (buildError) {
       showBuildErrorMessages(buildError)
@@ -142,7 +175,32 @@ export async function pushProjectChanges(options) {
       authToken,
       { branch, includePending: true, etag: lock.etag }
     )
-    const serverProject = serverResp.notModified ? null : serverResp.data
+    // If the server returns 304, we must *not* diff against `{}`; use the last
+    // pulled snapshot on disk. This keeps `push` consistent with `sync`, and
+    // prevents false positives (e.g. designSystem buckets) when the server data
+    // is unchanged.
+    let serverProject = null
+    if (serverResp.notModified) {
+      try {
+        const raw = fs.readFileSync(projectPath, 'utf8')
+        serverProject = stripOrderFields(JSON.parse(raw))
+      } catch (_) {
+        serverProject = null
+      }
+
+      // If we can't load a local snapshot (e.g. first run), fall back to a
+      // non-ETag fetch so we always diff against the real server state.
+      if (!serverProject) {
+        const freshResp = await getCurrentProjectData(
+          { projectKey: appKey, projectId: lock.projectId },
+          authToken,
+          { branch, includePending: true }
+        )
+        serverProject = freshResp.data || {}
+      }
+    } else {
+      serverProject = serverResp.data || {}
+    }
 
     // Check if server project is empty (not found or no access)
     if (serverProject && Object.keys(serverProject).length === 0) {
@@ -154,8 +212,10 @@ export async function pushProjectChanges(options) {
 
     // Calculate coarse local changes vs server snapshot (or base)
     // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)
-    const base = stringifyFunctionsForTransport(stripOrderFields(serverProject || {}))
-    const local = stringifyFunctionsForTransport(stripOrderFields(localProject))
+    const base = stringifyFunctionsForTransport(stripOrderFields(stripEmptyDefaultNamespaceEntries(serverProject || {})))
+    const local = stringifyFunctionsForTransport(stripOrderFields(stripEmptyDefaultNamespaceEntries(localProject)))
+    try { ensureDesignSystemBuckets(base?.designSystem) } catch (_) {}
+    try { ensureDesignSystemBuckets(local?.designSystem) } catch (_) {}
     const changes = computeCoarseChanges(base, local)
 
     if (!changes.length) {
@@ -165,7 +225,10 @@ export async function pushProjectChanges(options) {
 
     // Show change summary
     console.log('\nLocal changes to push:')
-    const byType = changes.reduce((acc, [t]) => ((acc[t] = (acc[t] || 0) + 1), acc), {})
+    const byType = changes.reduce((acc, [t]) => {
+      acc[t] = (acc[t] || 0) + 1
+      return acc
+    }, {})
     Object.entries(byType).forEach(([t, c]) => {
       console.log(chalk.gray(`- ${t}: ${chalk.cyan(c)} changes`))
     })
@@ -222,7 +285,6 @@ export async function pushProjectChanges(options) {
       projectId,
       pulledAt: new Date().toISOString()
     })
-
   } catch (error) {
     console.error(chalk.bold.red('\nPush failed:'), chalk.white(error.message))
     if (verbose) console.error(error.stack)
