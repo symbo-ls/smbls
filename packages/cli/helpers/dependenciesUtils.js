@@ -88,6 +88,57 @@ export function syncPackageJsonDependencies(packageJsonPath, depsMap, { overwrit
   return { ok, changed: ok }
 }
 
+/**
+ * Apply a dependency patch to package.json:
+ * - upsert: add/update these dependencies
+ * - remove: delete these dependency keys if present
+ *
+ * This intentionally only touches `dependencies` (not devDependencies/peerDependencies).
+ */
+export function patchPackageJsonDependencies(
+  packageJsonPath,
+  { upsert = {}, remove = [], overwriteExisting = true } = {}
+) {
+  if (!packageJsonPath) return { ok: false, reason: 'missing_package_json_path' }
+  const pkg = readPackageJson(packageJsonPath)
+  if (!pkg) return { ok: false, reason: 'invalid_package_json' }
+
+  const existing = isPlainObject(pkg.dependencies) ? { ...pkg.dependencies } : {}
+  let changed = false
+
+  if (Array.isArray(remove) && remove.length) {
+    for (let i = 0; i < remove.length; i++) {
+      const name = remove[i]
+      if (typeof name !== 'string' || !name) continue
+      if (Object.prototype.hasOwnProperty.call(existing, name)) {
+        delete existing[name]
+        changed = true
+      }
+    }
+  }
+
+  if (isPlainObject(upsert) && Object.keys(upsert).length) {
+    for (const [name, ver] of Object.entries(upsert)) {
+      if (typeof name !== 'string' || !name) continue
+      if (typeof ver !== 'string' || !ver) continue
+      if (!Object.prototype.hasOwnProperty.call(existing, name)) {
+        existing[name] = ver
+        changed = true
+        continue
+      }
+      if (overwriteExisting && existing[name] !== ver) {
+        existing[name] = ver
+        changed = true
+      }
+    }
+  }
+
+  if (!changed) return { ok: true, changed: false }
+  pkg.dependencies = sortObjectKeys(existing)
+  const ok = writePackageJson(packageJsonPath, pkg)
+  return { ok, changed: ok }
+}
+
 function ensureSchemaContainer(project) {
   if (!project || typeof project !== 'object') return null
   if (!isPlainObject(project.schema)) project.schema = {}

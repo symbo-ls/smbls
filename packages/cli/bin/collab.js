@@ -18,7 +18,8 @@ import {
   augmentProjectWithLocalPackageDependencies,
   ensureSchemaDependencies,
   findNearestPackageJson,
-  syncPackageJsonDependencies
+  syncPackageJsonDependencies,
+  patchPackageJsonDependencies
 } from '../helpers/dependenciesUtils.js'
 
 function getCollabStatePath () {
@@ -348,6 +349,16 @@ export async function startCollab (options) {
   let remoteBase = {}
   let suppressLocalChanges = false
   let suppressUntil = 0
+  // Track which dependency keys we consider "managed" by Symbols for package.json
+  // pruning. This prevents collab from deleting unrelated package.json deps.
+  let lastManagedDepsForPackageJson = {}
+  // Track what triggered the debounced send.
+  // We only merge `package.json` deps into the project snapshot when *only*
+  // package.json changed. If any `smbls/*` file changed too (e.g. `dependencies.js`),
+  // we prefer the Symbols project files so deletions are not masked by stale
+  // package.json entries.
+  let sawPkgJsonChange = false
+  let sawNonPkgJsonChange = false
   const suppressionWindowMs = Math.max(1500, (options.debounceMs || 200) * 8)
   // Debounced sender is initialized later (after startup merge/write),
   // but we may need to cancel it during startup writes.
@@ -437,8 +448,27 @@ export async function startCollab (options) {
     // Keep schema.dependencies consistent and sync dependencies into local package.json
     try {
       ensureSchemaDependencies(persistedObj)
+      // Avoid echoing package.json writes (and other local materials) back to the server.
+      // This is especially important for dependencies: package.json updates are derived
+      // from project dependencies, and should not trigger a local diff push.
+      suppressLocalChanges = true
+      if (typeof sendLocalChanges?.cancel === 'function') {
+        sendLocalChanges.cancel()
+      }
       if (packageJsonPath && persistedObj?.dependencies) {
-        syncPackageJsonDependencies(packageJsonPath, persistedObj.dependencies, { overwriteExisting: true })
+        const nextDeps = persistedObj.dependencies && typeof persistedObj.dependencies === 'object'
+          ? persistedObj.dependencies
+          : {}
+        const prevDeps = lastManagedDepsForPackageJson && typeof lastManagedDepsForPackageJson === 'object'
+          ? lastManagedDepsForPackageJson
+          : {}
+        const remove = Object.keys(prevDeps).filter((k) => !Object.prototype.hasOwnProperty.call(nextDeps, k))
+        patchPackageJsonDependencies(packageJsonPath, {
+          upsert: nextDeps,
+          remove,
+          overwriteExisting: true
+        })
+        lastManagedDepsForPackageJson = clonePlain(nextDeps)
       }
     } catch (_) {}
 
@@ -447,11 +477,6 @@ export async function startCollab (options) {
       await fs.promises.writeFile(projectPath, JSON.stringify(persistedObj, null, 2))
     } catch (_) {}
     // Avoid echoing the changes we are about to materialize
-    suppressLocalChanges = true
-    // Cancel any pending local send
-    if (typeof sendLocalChanges?.cancel === 'function') {
-      sendLocalChanges.cancel()
-    }
     try {
       await createFs(persistedObj, distDir, { update: true, metadata: false })
     } finally {
@@ -483,6 +508,11 @@ export async function startCollab (options) {
 
   currentBase = stringifyFunctionsForTransport(baseSnapshot || {})
   remoteBase = clonePlain(currentBase)
+  try {
+    lastManagedDepsForPackageJson = clonePlain(currentBase?.dependencies || {})
+  } catch (_) {
+    lastManagedDepsForPackageJson = {}
+  }
 
   // Paths for local build/watch loop
   const outputDir = path.join(distDir, 'dist')
@@ -640,13 +670,57 @@ export async function startCollab (options) {
     let local = await loadLocalProject()
     if (!local) return
     await augmentLocalWithNewFsItems({ local, distDir, outputDir, currentBase, options })
-    // Include package.json deps into local snapshot so dependency edits can be synced
-    local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
-    stripEmptyDefaultNamespaceEntries(local)
+    // Only treat package.json as a source of dependency truth when it was the file
+    // that actually changed. This prevents stale package.json deps (which may not
+    // get pruned on remote removal) from masking deletions made in `smbls/dependencies.js`.
+    const shouldUsePackageJsonDeps = !!(packageJsonPath && sawPkgJsonChange && !sawNonPkgJsonChange)
+    sawPkgJsonChange = false
+    sawNonPkgJsonChange = false
+    if (shouldUsePackageJsonDeps) {
+      local = augmentProjectWithLocalPackageDependencies(local, packageJsonPath) || local
+    }
     // Prepare safe, JSON-serialisable snapshots for diffing & transport
     const base = currentBase || {}
     const safeBase = stringifyFunctionsForTransport(base)
     const safeLocal = stringifyFunctionsForTransport(local)
+    // Strip empty `default` module-namespace artifacts *after* transport stringification.
+    // In some builds, the loaded project sections can be non-extensible/module-namespace
+    // objects where in-place deletion fails; stringification produces a plain object.
+    stripEmptyDefaultNamespaceEntries(safeBase)
+    stripEmptyDefaultNamespaceEntries(safeLocal)
+
+    // If the change originated from `smbls/*` (not solely package.json), treat
+    // the Symbols project dependencies as canonical and keep package.json in sync,
+    // including pruning deps that Symbols previously managed but are now removed.
+    //
+    // This addresses: removing a dep from `smbls/dependencies.js` should remove it
+    // from package.json as well.
+    if (packageJsonPath && !shouldUsePackageJsonDeps) {
+      try {
+        const nextDeps = safeLocal?.dependencies && typeof safeLocal.dependencies === 'object'
+          ? safeLocal.dependencies
+          : {}
+        const prevDeps = lastManagedDepsForPackageJson && typeof lastManagedDepsForPackageJson === 'object'
+          ? lastManagedDepsForPackageJson
+          : {}
+        const remove = Object.keys(prevDeps).filter((k) => !Object.prototype.hasOwnProperty.call(nextDeps, k))
+
+        // Avoid echoing the package.json write back into the send loop.
+        suppressLocalChanges = true
+        if (typeof sendLocalChanges?.cancel === 'function') sendLocalChanges.cancel()
+        patchPackageJsonDependencies(packageJsonPath, {
+          upsert: nextDeps,
+          remove,
+          overwriteExisting: true
+        })
+        lastManagedDepsForPackageJson = clonePlain(nextDeps)
+      } catch (_) {
+        // ignore
+      } finally {
+        suppressUntil = Date.now() + suppressionWindowMs
+        suppressLocalChanges = false
+      }
+    }
     // Base snapshot is our last pulled .symbols/project.json
     const changes = computeCoarseChanges(safeBase, safeLocal)
     if (!changes.length) return
@@ -671,6 +745,11 @@ export async function startCollab (options) {
         ? granularChanges
         : changes
       applyTuples(currentBase, tuplesToApply)
+      // Our local base is the source of truth for which deps we manage.
+      // This also captures package.json-originated changes after optimistic apply.
+      try {
+        lastManagedDepsForPackageJson = clonePlain(currentBase?.dependencies || {})
+      } catch (_) {}
     } catch (e) {
       if (options.verbose) {
         console.error('Failed to apply local ops to in-memory base', e)
@@ -695,7 +774,13 @@ export async function startCollab (options) {
     ignoreInitial: true,
     persistent: true
   })
-  const onFsEvent = () => {
+  const onFsEvent = (p) => {
+    const resolved = p ? path.resolve(p) : ''
+    if (packageJsonPath && resolved && resolved === path.resolve(packageJsonPath)) {
+      sawPkgJsonChange = true
+    } else {
+      sawNonPkgJsonChange = true
+    }
     if (isSuppressed()) return
     if (typeof sendLocalChanges === 'function') sendLocalChanges()
   }
