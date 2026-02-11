@@ -21,8 +21,45 @@ export function stripEmptyDefaultNamespaceEntries (project) {
       Object.keys(def).length === 0
 
     if (defIsEmptyObject) {
-      delete section.default
-      if (Object.keys(section).length === 0) delete project[sectionKey]
+      // Some module namespace objects (or frozen objects) have a non-configurable
+      // `default` property, so `delete section.default` throws in strict mode.
+      // In that case, clone into a plain object without `default` and replace.
+      try {
+        const desc = Object.getOwnPropertyDescriptor(section, 'default')
+        const canDelete = !desc || desc.configurable
+        if (canDelete) {
+          delete section.default
+        } else {
+          throw new TypeError('Non-configurable default')
+        }
+      } catch (_) {
+        const clone = {}
+        const keys = Object.getOwnPropertyNames(section)
+        for (let j = 0; j < keys.length; j++) {
+          const k = keys[j]
+          if (k === 'default') continue
+          clone[k] = section[k]
+        }
+        try {
+          project[sectionKey] = clone
+        } catch (_) {
+          // If project is unexpectedly immutable, leave it as-is.
+        }
+      }
+
+      const updatedSection = project[sectionKey]
+      if (
+        updatedSection &&
+        typeof updatedSection === 'object' &&
+        !Array.isArray(updatedSection) &&
+        Object.keys(updatedSection).length === 0
+      ) {
+        try {
+          delete project[sectionKey]
+        } catch (_) {
+          // ignore
+        }
+      }
     }
   }
 
