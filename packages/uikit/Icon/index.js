@@ -128,6 +128,7 @@ export const IconText = {
   props: {
     align: 'center center',
     lineHeight: 1,
+    gap: 'X',
 
     '.reversed': {
       flow: 'row-reverse'

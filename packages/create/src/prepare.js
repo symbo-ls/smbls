@@ -252,6 +252,8 @@ export const preparePages = (app, context) => {
 
 export const prepareSharedLibs = (context) => {
   const sharedLibraries = context.sharedLibraries
+  console.log(sharedLibraries)
+  console.log(context.type)
   for (let i = 0; i < sharedLibraries.length; i++) {
     const sharedLib = sharedLibraries[i]
     if (context.type === 'template') {

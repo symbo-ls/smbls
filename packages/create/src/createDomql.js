@@ -33,6 +33,11 @@ export const prepareContext = async (app, context = {}) => {
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
   context.window = prepareWindow(context)
+
+  if (context.sharedLibraries) {
+    prepareSharedLibs(context)
+  }
+
   const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(
     key,
     context
@@ -50,10 +55,6 @@ export const prepareContext = async (app, context = {}) => {
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
   context.version = version
-
-  if (context.sharedLibraries) {
-    prepareSharedLibs(context)
-  }
 
   // Iterate over components and pages to run domql3hack
   if (context.forceDomql3) {

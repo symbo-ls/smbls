@@ -59,7 +59,7 @@ export const applySpacingSequence = () => {
 const getSequence = (sequenceProps) => {
   const CONFIG = getActiveConfig()
   const { SPACING } = CONFIG
-  if (!sequenceProps) return SPACING
+  if (!sequenceProps || !sequenceProps.sequence) return SPACING
   const hasGenerated = Object.keys(sequenceProps.sequence).length > 0
   return hasGenerated ? sequenceProps : generateSequence(sequenceProps)
 }
