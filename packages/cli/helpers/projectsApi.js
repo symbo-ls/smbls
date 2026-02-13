@@ -375,3 +375,172 @@ export async function acceptProjectInvite (token, authToken) {
   const json = await res.json()
   return json?.data || json
 }
+
+export async function listProjectVersions (projectId, query = {}, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/versions`, query)
+  const res = await fetchImpl(url, { method: 'GET', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to list project versions (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function getLatestProjectVersion (projectId, query = {}, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/versions/latest`, query)
+  const res = await fetchImpl(url, { method: 'GET', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to fetch latest version (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function getProjectVersion (projectId, versionId, query = {}, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!versionId) throw new Error('Missing versionId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`,
+    query
+  )
+  const res = await fetchImpl(url, { method: 'GET', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to fetch version (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function createProjectVersion (projectId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/versions`)
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to create version (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function updateProjectVersion (projectId, versionId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!versionId) throw new Error('Missing versionId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`
+  )
+  const res = await fetchImpl(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to update version (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function createProjectVersionSnapshot (projectId, versionId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!versionId) throw new Error('Missing versionId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}/snapshot`
+  )
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to create snapshot (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function publishProjectVersion (projectId, versionId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!versionId) throw new Error('Missing versionId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}/publish`
+  )
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to publish version (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function restoreProjectToVersion (projectId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/restore`)
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (res.status === 204) return { success: true }
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to restore project (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json
+}

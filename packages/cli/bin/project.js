@@ -9,6 +9,8 @@ import { registerProjectListCommand } from './project/commands/list.js'
 import { registerProjectLibsCommand } from './project/commands/libs/index.js'
 import { registerProjectDuplicateCommand } from './project/commands/duplicate.js'
 import { registerProjectMembersCommand } from './project/commands/members/index.js'
+import { registerProjectVersionsCommand } from './project/commands/versions/index.js'
+import { registerProjectRestoreCommand } from './project/commands/restore.js'
 
 const projectCmd = program
   .command('project')
@@ -22,3 +24,5 @@ registerProjectListCommand(projectCmd)
 registerProjectLibsCommand(projectCmd)
 registerProjectDuplicateCommand(projectCmd)
 registerProjectMembersCommand(projectCmd)
+registerProjectVersionsCommand(projectCmd)
+registerProjectRestoreCommand(projectCmd)
