@@ -235,3 +235,143 @@ export async function duplicateProject (projectId, body, authToken) {
   const json = await res.json()
   return json?.data || json
 }
+
+export async function listProjectMembers (projectId, query = {}, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/members`, query)
+  const res = await fetchImpl(url, { method: 'GET', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to list project members (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function addProjectMember (projectId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/members`)
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to add project member (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function removeProjectMember (projectId, memberId, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!memberId) throw new Error('Missing memberId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(memberId)}`
+  )
+  const res = await fetchImpl(url, { method: 'DELETE', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to remove project member (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json || { success: true }
+}
+
+export async function updateProjectMemberRole (projectId, memberId, role, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!memberId) throw new Error('Missing memberId')
+  if (!role) throw new Error('Missing role')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/members/${encodeURIComponent(memberId)}`
+  )
+  const res = await fetchImpl(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify({ role })
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to update member role (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function inviteProjectMember (projectId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/invite`)
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to invite member (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function createProjectMagicInviteLink (projectId, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/invite-link`)
+  const res = await fetchImpl(url, { method: 'POST', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to create invite link (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function acceptProjectInvite (token, authToken) {
+  if (!token) throw new Error('Missing token')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl('/core/projects/accept-invite')
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify({ token })
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to accept invite (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
