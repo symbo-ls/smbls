@@ -4,7 +4,7 @@ This guide matches the CLI commands implemented in `packages/cli/bin/*`.
 
 ### What you’ll get
 
-- **A local starter project** (DOMQL / React / Angular / Vue2 / Vue3) cloned from an official starter repo.
+- **A local starter project** (DOMQL) cloned from an official starter repo.
 - **A working dev server** you can run with `npm start` (or `yarn start`).
 - **Optional platform linking** so you can sync, collaborate, and manage project files with the Symbols platform.
 
@@ -41,12 +41,9 @@ npm start
 
 ### 2) Pick your framework template
 
-By default the CLI prefers DOMQL unless you pass a framework flag.
+Currently the CLI scaffolding supports **DOMQL only**.
 
 ```bash
-# React starter
-smbls project create my-app --local-only --react
-
 # DOMQL starter
 smbls project create my-app --local-only --domql
 ```
@@ -54,15 +51,15 @@ smbls project create my-app --local-only --domql
 ### 3) Choose a package manager
 
 ```bash
-smbls project create my-app --local-only --react --package-manager npm
+smbls project create my-app --local-only --package-manager npm
 # or
-smbls project create my-app --local-only --react --package-manager yarn
+smbls project create my-app --local-only --package-manager yarn
 ```
 
 ### 4) Skip dependency install (optional)
 
 ```bash
-smbls project create my-app --local-only --react --no-dependencies
+smbls project create my-app --local-only --no-dependencies
 cd my-app
 npm i
 npm start
@@ -189,7 +186,7 @@ smbls files rm
 If you only want the starter project and don’t care about platform linking yet:
 
 ```bash
-smbls create my-app --react
+smbls create my-app
 cd my-app
 npm start
 ```

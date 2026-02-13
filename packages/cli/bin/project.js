@@ -56,15 +56,6 @@ function resolveMaybeAuth () {
   return { cliConfig, authToken }
 }
 
-function parseFrameworkFromOptions (options = {}) {
-  let framework = 'domql'
-  if (options.react) framework = 'react'
-  else if (options.angular) framework = 'angular'
-  else if (options.vue2) framework = 'vue2'
-  else if (options.vue3) framework = 'vue3'
-  return framework
-}
-
 function parseJsonArg (raw) {
   if (raw === undefined || raw === null) return null
   if (typeof raw !== 'string') return null
@@ -196,10 +187,13 @@ export async function runProjectCreate (destArg, options = {}) {
   }
 
   if (mode === 'local_only') {
-    const framework = parseFrameworkFromOptions(options)
+    if (options.domql === false) {
+      console.error(chalk.red('Only DOMQL templates are supported right now.'))
+      process.exit(1)
+    }
     await createLocalTemplate({
       destDir: absDest,
-      framework,
+      framework: 'domql',
       packageManager: options.packageManager || 'npm',
       clone: options.clone !== false,
       remote: options.remote !== false,
@@ -247,10 +241,13 @@ export async function runProjectCreate (destArg, options = {}) {
   const createdKey = normalizeProjectKey(pickProjectKey(created) || projectKey)
   const createdId = pickProjectId(created)
 
-  const framework = parseFrameworkFromOptions(options)
+  if (options.domql === false) {
+    console.error(chalk.red('Only DOMQL templates are supported right now.'))
+    process.exit(1)
+  }
   await createLocalTemplate({
     destDir: absDest,
-    framework,
+    framework: 'domql',
     packageManager: options.packageManager || 'npm',
     clone: options.clone !== false,
     remote: options.remote !== false,
@@ -294,11 +291,7 @@ projectCmd
   .option('--branch <branch>', 'Local branch for .symbols/config.json', 'main')
   .option('--verbose', 'Verbose output', false)
   .option('--remote', 'Clone feature/remote branch when cloning templates', true)
-  .option('--domql', 'Use DOMQL template', true)
-  .option('--react', 'Use React template')
-  .option('--angular', 'Use Angular template')
-  .option('--vue2', 'Use Vue2 template')
-  .option('--vue3', 'Use Vue3 template')
+  .option('--domql', 'Use DOMQL template (default)', true)
   .option('--template <gitUrl>', 'Override template git repo URL')
   .option('--package-manager <manager>', 'Choose the package manager (npm/yarn)', 'npm')
   .option('--clean-from-git', 'Remove starter-kit git repository', true)
@@ -459,11 +452,7 @@ projectCmd
   .option('--no-local', 'Do not create/link a local folder', false)
   .option('--verbose', 'Verbose output', false)
   .option('--remote', 'Clone feature/remote branch when cloning templates', true)
-  .option('--domql', 'Use DOMQL template', true)
-  .option('--react', 'Use React template')
-  .option('--angular', 'Use Angular template')
-  .option('--vue2', 'Use Vue2 template')
-  .option('--vue3', 'Use Vue3 template')
+  .option('--domql', 'Use DOMQL template (default)', true)
   .option('--template <gitUrl>', 'Override template git repo URL')
   .option('--package-manager <manager>', 'Choose the package manager (npm/yarn)', 'npm')
   .option('--clean-from-git', 'Remove starter-kit git repository', true)
@@ -502,10 +491,13 @@ projectCmd
     const dest = dir || (newKey ? newKey.replace(/\.symbo\.ls$/iu, '') : 'symbols-project')
     const absDest = path.resolve(dest)
 
-    const framework = parseFrameworkFromOptions(opts)
+    if (opts.domql === false) {
+      console.error(chalk.red('Only DOMQL templates are supported right now.'))
+      process.exit(1)
+    }
     await createLocalTemplate({
       destDir: absDest,
-      framework,
+      framework: 'domql',
       packageManager: opts.packageManager || 'npm',
       clone: opts.clone !== false,
       remote: opts.remote !== false,
