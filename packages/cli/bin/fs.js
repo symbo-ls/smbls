@@ -20,15 +20,18 @@ const {
 let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies']
 // Keys that are materialized as directories with per-entry files.
 const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
+// Local-only directories that should be written/synced, but NOT exported from root `index.js`.
+const localOnlyDirectoryKeys = ['libs']
 
 // Keys that used to be single files, but are now split into a directory with:
 // - `index.js` exporting a default object
 // - per-entry `*.js` files for object values (primitives stay in index.js)
 const splitObjectKeys = ['designSystem', 'files']
 
-const ALL_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys]
+const ALL_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys, ...localOnlyDirectoryKeys]
+const ROOT_EXPORT_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys]
 
-const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema']
+const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema', 'sharedLibraries']
 
 // Minimal reserved identifier set to avoid invalid named exports like "export const default"
 const RESERVED_IDENTIFIERS = new Set(['default'])
@@ -85,6 +88,13 @@ async function removeStaleFiles (body, targetDir) {
 
     const existingFiles = await fs.promises.readdir(dirPath)
     const currentEntries = (() => {
+      if (key === 'libs') {
+        const libs = Array.isArray(body?.sharedLibraries) ? body.sharedLibraries : []
+        return libs
+          .map((lib, idx) => toLibFileStem(lib, idx))
+          .filter(Boolean)
+          .map((stem) => `${stem}.js`)
+      }
       if (!body[key] || typeof body[key] !== 'object') return []
 
       // For splitObjectKeys we only materialize object-valued entries as files
@@ -125,6 +135,23 @@ async function removeStaleFiles (body, targetDir) {
   }
 }
 
+function sanitizeFileStem (raw) {
+  const s = String(raw || '').trim()
+  if (!s) return ''
+  // Keep it filesystem friendly and deterministic.
+  return s
+    .replace(/[/\\]/g, '-')
+    .replace(/[^\w.-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+function toLibFileStem (lib, idx) {
+  const key = lib?.key ? sanitizeFileStem(lib.key) : ''
+  const id = lib?.id || lib?._id ? sanitizeFileStem(lib.id || lib._id) : ''
+  return key || id || `lib-${idx}`
+}
+
 export async function createFs (
   body,
   distDir = path.join(process.cwd(), 'smbls'),
@@ -135,10 +162,15 @@ export async function createFs (
     return
   }
 
+  // Normalize shared libs so the filesystem shape is stable for consumers/diffing.
+  if (!Array.isArray(body.sharedLibraries)) {
+    body = { ...(body || {}), sharedLibraries: [] }
+  }
+
   const { update, metadata } = opts
 
   // `designSystem` and `files` are now directories (splitObjectKeys)
-  singleFileKeys = ['state', 'dependencies']
+  singleFileKeys = ['state', 'dependencies', 'sharedLibraries']
   singleFileKeys = removeValueFromArray(singleFileKeys, 'schema')
   if (metadata) singleFileKeys.push('schema')
 
@@ -159,6 +191,8 @@ export async function createFs (
     }
 
     const promises = [
+      // Local-only, derived data
+      createLibsDirectoryAndFiles(body?.sharedLibraries, targetDir, update),
       ...directoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, targetDir, update)
       ),
@@ -174,7 +208,7 @@ export async function createFs (
         return undefined
       }),
       ...singleFileKeys.map((key) => {
-        if (body[key] && typeof body[key] === 'object') {
+        if (body[key] !== undefined) {
           return createSingleFileFolderAndFile(
             key,
             body[key],
@@ -188,7 +222,7 @@ export async function createFs (
 
     await Promise.all(promises)
     await generateIndexjsFile(
-      joinArrays(singleFileKeys, ALL_DIRECTORY_KEYS),
+      joinArrays(singleFileKeys, ROOT_EXPORT_DIRECTORY_KEYS),
       targetDir,
       'root'
     )
@@ -205,6 +239,8 @@ export async function createFs (
       }
 
       const cachePromises = [
+        // Local-only, derived data
+        createLibsDirectoryAndFiles(body?.sharedLibraries, cacheDir, true),
         ...directoryKeys.map((key) =>
           createKeyDirectoryAndFiles(key, body, cacheDir, true)
         ),
@@ -215,7 +251,7 @@ export async function createFs (
           return undefined
         }),
         ...singleFileKeys.map((key) => {
-          if (body[key] && typeof body[key] === 'object') {
+          if (body[key] !== undefined) {
             return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
           }
           return undefined
@@ -224,7 +260,7 @@ export async function createFs (
 
       await Promise.all(cachePromises)
       await generateIndexjsFile(
-        joinArrays(ALL_DIRECTORY_KEYS, singleFileKeys),
+        joinArrays(ROOT_EXPORT_DIRECTORY_KEYS, singleFileKeys),
         cacheDir,
         'root'
       )
@@ -427,6 +463,47 @@ export async function createFs (
     return String(str).replaceAll('\n', `\n${indent}`)
   }
 
+  async function createLibsDirectoryAndFiles (sharedLibraries, distDir, update) {
+    const libs = Array.isArray(sharedLibraries) ? sharedLibraries : []
+    const dirPath = path.join(distDir, 'libs')
+    await fs.promises.mkdir(dirPath, { recursive: true })
+
+    const usedImportNames = new Set()
+    const entries = libs.map((lib, idx) => {
+      const stem = toLibFileStem(lib, idx)
+      const importName = toSafeImportName(stem, usedImportNames)
+      return { lib, stem, importName }
+    })
+
+    // Write per-lib files (default export for easy consumption).
+    await Promise.all(entries.map(async ({ stem, lib }) => {
+      const filePath = path.join(dirPath, `${stem}.js`)
+      if (!update && fs.existsSync(filePath)) return
+      const decoded = safeDeepDestringify(lib)
+      const content = reorderWithOrderKeys(decoded)
+      const stringified = `export default ${objectToString(content)};`
+      await fs.promises.writeFile(filePath, stringified, 'utf8')
+    }))
+
+    // Write libs/index.js for convenience. This is local-only (root index does not export it).
+    const importLines = entries
+      .map(({ importName, stem }) => `import ${importName} from './${stem}.js'`)
+      .join('\n')
+    const defaultMapLines = entries
+      .map(({ stem, importName }) => `${JSON.stringify(stem)}: ${importName},`)
+      .join('\n  ')
+    const namedExportLines = entries
+      .map(({ importName }) => `export { ${importName} };`)
+      .join('\n')
+
+    const indexContent =
+      (importLines ? `${importLines}\n\n` : '') +
+      `export default {\n  ${defaultMapLines}\n}\n` +
+      (namedExportLines ? `\n${namedExportLines}\n` : '')
+
+    await fs.promises.writeFile(path.join(dirPath, 'index.js'), indexContent, 'utf8')
+  }
+
   async function createSplitObjectDirectoryAndFiles (key, section, distDir, update) {
     const dirPath = path.join(distDir, key)
     await fs.promises.mkdir(dirPath, { recursive: true })
@@ -549,8 +626,13 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
       return
     }
 
-    if (isString(data)) data = { default: data }
-    const content = reorderWithOrderKeys(deepDestringifyFunctions(data))
+    // Preserve arrays/primitives as-is while decoding stringified functions inside objects.
+    let content = safeDeepDestringify(data)
+    if (isString(content)) {
+      // `objectToString` can omit quotes for top-level strings; enforce proper quoting.
+      content = { default: content }
+    }
+    content = reorderWithOrderKeys(content)
     const stringifiedContent = `export default ${objectToString(content)};`
 
     await fs.promises.writeFile(filePath, stringifiedContent, 'utf8')
@@ -591,7 +673,7 @@ async function findDiff (targetDir, distDir) {
       // Historically we skipped directory index.js diffs, but for split-object
       // directories like `designSystem/` and `files/` the index.js content is
       // the canonical mapping (and needs to update when primitives move in/out).
-      if (file === 'index.js' && !splitObjectKeys.includes(key)) continue
+      if (file === 'index.js' && !splitObjectKeys.includes(key) && key !== 'libs') continue
 
       const targetFilePath = path.join(targetDirPath, file)
       const distFilePath = path.join(distDirPath, file)

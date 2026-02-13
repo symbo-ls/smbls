@@ -1,4 +1,7 @@
 import { registerProjectLibsAvailableCommand } from './available.js'
+import { registerProjectLibsListCommand } from './list.js'
+import { registerProjectLibsAddCommand } from './add.js'
+import { registerProjectLibsRemoveCommand } from './remove.js'
 
 export function registerProjectLibsCommand (projectCmd) {
   const libsCmd = projectCmd
@@ -6,4 +9,7 @@ export function registerProjectLibsCommand (projectCmd) {
     .description('Project libraries')
 
   registerProjectLibsAvailableCommand(libsCmd)
+  registerProjectLibsListCommand(libsCmd)
+  registerProjectLibsAddCommand(libsCmd)
+  registerProjectLibsRemoveCommand(libsCmd)
 }

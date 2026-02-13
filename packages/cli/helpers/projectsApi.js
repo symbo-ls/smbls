@@ -57,6 +57,68 @@ export async function listAvailableLibraries (query = {}, authToken) {
   return json?.data || json
 }
 
+export async function listProjectLibraries (projectId, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/libraries`)
+  const res = await fetchImpl(url, { method: 'GET', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to list project libraries (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function addProjectLibraries (projectId, libraryIds = [], authToken, opts = {}) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/libraries`,
+    { allowDeprecated: opts.allowDeprecated ? 'true' : undefined }
+  )
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify({ libraryIds })
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to add project libraries (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function removeProjectLibraries (projectId, libraryIds = [], authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/libraries`)
+  const res = await fetchImpl(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify({ libraryIds })
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to remove project libraries (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
 export async function checkProjectKey (key, authToken, opts = {}) {
   if (!key) throw new Error('Missing key')
   const fetchImpl = await getFetchImpl()
