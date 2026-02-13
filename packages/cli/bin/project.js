@@ -10,6 +10,8 @@ import { registerProjectLibsCommand } from './project/commands/libs/index.js'
 import { registerProjectDuplicateCommand } from './project/commands/duplicate.js'
 import { registerProjectMembersCommand } from './project/commands/members/index.js'
 import { registerProjectVersionsCommand } from './project/commands/versions/index.js'
+import { registerProjectEnvironmentsCommand } from './project/commands/environments/index.js'
+import { registerProjectPipelineCommand } from './project/commands/pipeline/index.js'
 import { registerProjectRestoreCommand } from './project/commands/restore.js'
 
 const projectCmd = program
@@ -25,4 +27,6 @@ registerProjectLibsCommand(projectCmd)
 registerProjectDuplicateCommand(projectCmd)
 registerProjectMembersCommand(projectCmd)
 registerProjectVersionsCommand(projectCmd)
+registerProjectEnvironmentsCommand(projectCmd)
+registerProjectPipelineCommand(projectCmd)
 registerProjectRestoreCommand(projectCmd)

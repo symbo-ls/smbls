@@ -544,3 +544,153 @@ export async function restoreProjectToVersion (projectId, body, authToken) {
   const json = await safeJson(res)
   return json?.data || json
 }
+
+// ===== Environments & pipeline management =====
+export async function listProjectEnvironments (projectId, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/environments`)
+  const res = await fetchImpl(url, { method: 'GET', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to list environments (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await res.json()
+  return json?.data || json
+}
+
+export async function activateMultipleEnvironments (projectId, body, authToken, query = {}) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/environments/activate`, query)
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to activate environments (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json
+}
+
+export async function upsertProjectEnvironment (projectId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/environments`)
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to upsert environment (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json
+}
+
+export async function updateProjectEnvironment (projectId, envKey, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!envKey) throw new Error('Missing envKey')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/environments/${encodeURIComponent(envKey)}`
+  )
+  const res = await fetchImpl(url, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to update environment (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json
+}
+
+export async function publishProjectToEnvironment (projectId, envKey, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!envKey) throw new Error('Missing envKey')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/environments/${encodeURIComponent(envKey)}/publish`
+  )
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to publish environment (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json
+}
+
+export async function deleteProjectEnvironment (projectId, envKey, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  if (!envKey) throw new Error('Missing envKey')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(
+    `/core/projects/${encodeURIComponent(projectId)}/environments/${encodeURIComponent(envKey)}`
+  )
+  const res = await fetchImpl(url, { method: 'DELETE', headers: authHeaders(authToken) })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to delete environment (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json || { success: true }
+}
+
+export async function promoteProjectEnvironment (projectId, body, authToken) {
+  if (!projectId) throw new Error('Missing projectId')
+  const fetchImpl = await getFetchImpl()
+  const url = buildUrl(`/core/projects/${encodeURIComponent(projectId)}/pipeline/promote`)
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(authToken)
+    },
+    body: JSON.stringify(body || {})
+  })
+  if (!res.ok) {
+    const data = await safeJson(res)
+    const err = new Error(data?.message || `Failed to promote environment (${res.status})`)
+    err.response = { status: res.status, data }
+    throw err
+  }
+  const json = await safeJson(res)
+  return json?.data || json
+}
