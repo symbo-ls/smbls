@@ -6,7 +6,7 @@ export function stripEmptyDefaultNamespaceEntries (project) {
   // that as a real `*.default` entry to push/sync over the platform.
   if (!project || typeof project !== 'object') return project
 
-  const SECTIONS = ['functions', 'methods', 'snippets']
+  const SECTIONS = ['functions', 'methods', 'snippets', 'pages', 'components', 'files', 'dependencies']
   for (let i = 0; i < SECTIONS.length; i++) {
     const sectionKey = SECTIONS[i]
     const section = project[sectionKey]

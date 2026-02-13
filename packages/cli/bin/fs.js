@@ -391,9 +391,22 @@ export async function createFs (
     return typeof name === 'string' && /^[A-Za-z_$][A-Za-z0-9_$]*$/u.test(name) && !isReservedIdentifier(name)
   }
 
+  function upperSnakeToLowerCamel (input) {
+    const str = String(input || '')
+    // Only convert strict UPPER_SNAKE_CASE / ALLCAPS tokens (designSystem sections).
+    if (!/^[A-Z0-9_]+$/u.test(str) || !/[A-Z]/u.test(str)) return null
+    const parts = str
+      .split('_')
+      .filter(Boolean)
+      .map(p => p.toLowerCase())
+    if (parts.length === 0) return null
+    return parts[0] + parts.slice(1).map(p => (p ? p[0].toUpperCase() + p.slice(1) : '')).join('')
+  }
+
   function toSafeImportName (key, used = new Set()) {
+    const asToken = upperSnakeToLowerCamel(key)
     const base =
-      (key && (removeChars(toCamelCase(String(key))) || '').trim()) ||
+      (key && (removeChars(asToken || toCamelCase(String(key))) || '').trim()) ||
       'item'
     let name = base
     // Identifiers cannot start with a digit
