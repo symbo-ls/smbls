@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk'
-import { loadModule } from './require.js'
 import { exec } from 'child_process'
 import { program } from './program.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
-const PACKAGE_PATH = process.cwd() + '/package.json'
-
-const pkg = await loadModule(PACKAGE_PATH, { json: true, silent: true })
 
 const makeCommand = (packageManager, packageName) => {
   return packageManager === 'yarn'
@@ -48,9 +44,6 @@ export const installFromCli = async (options) => {
     )
   })
 }
-
-program
-  .version(pkg && pkg.version ? pkg.version : 'unknown')
 
 program
   .command('install')

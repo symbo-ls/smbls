@@ -22,7 +22,7 @@ const debugMsg = chalk.dim(
 )
 
 export const fetchFromCli = async (opts) => {
-  const { dev, verbose, prettify, convert: convertOpt, metadata: metadataOpt, update, force } = opts
+  const { verbose, convert: convertOpt, update, force, ignoreEtag } = opts
 
   const symbolsConfig = await loadSymbolsConfig()
   const cliConfig = loadCliConfig()
@@ -38,114 +38,114 @@ export const fetchFromCli = async (opts) => {
   const branch = cliConfig.branch || symbolsConfig.branch || 'main'
   const { framework } = symbolsConfig
 
-    console.log('\nFetching project data...\n')
+  console.log('\nFetching project data...\n')
 
-    let payload
-    try {
-      const lock = readLock()
-      const result = await getCurrentProjectData(
-        { projectKey, projectId: lock.projectId },
-        authToken,
-        { branch, includePending: true, etag: lock.etag }
-      )
+  let payload
+  try {
+    const lock = readLock()
+    const result = await getCurrentProjectData(
+      { projectKey, projectId: lock.projectId },
+      authToken,
+      { branch, includePending: true, etag: ignoreEtag ? undefined : lock.etag }
+    )
 
-      if (result.notModified) {
-        console.log(chalk.bold.green('Already up to date (ETag matched)'))
-        return
+    if (result.notModified) {
+      console.log(chalk.bold.green('Already up to date (ETag matched)'))
+      return
+    }
+
+    payload = result.data || {}
+    const etag = result.etag || null
+    logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
+
+    // Update lock.json
+    writeLock({
+      etag,
+      version: payload.version,
+      branch,
+      projectId: payload?.projectInfo?.id || lock.projectId,
+      pulledAt: new Date().toISOString()
+    })
+
+    // Update legacy symbols.json with version and branch
+    updateLegacySymbolsJson({ ...(symbolsConfig || {}), version: payload.version, branch })
+
+    if (verbose) {
+      console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
+      console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+    }
+  } catch (e) {
+    console.log(chalk.red('Failed to fetch:'), projectKey)
+    if (verbose) console.error(e)
+    else console.log(debugMsg)
+    process.exit(1)
+  }
+
+  // Persist base snapshot for future rebases
+  try {
+    const { projectPath } = getConfigPaths()
+    await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
+    // Ensure schema.dependencies exists for payload.dependencies
+    ensureSchemaDependencies(payload)
+    const persisted = applyOrderFields(payload)
+    logDesignSystemFlags('fetch: after applyOrderFields (persisted)', persisted?.designSystem, { enabled: !!verbose })
+    await fs.promises.writeFile(projectPath, JSON.stringify(persisted, null, 2))
+  } catch (e) {
+    console.error(chalk.bold.red('\nError writing file'))
+    if (verbose) console.error(e)
+    else console.log(debugMsg)
+    process.exit(1)
+  }
+
+  // Sync project dependencies into local package.json
+  try {
+    const packageJsonPath = findNearestPackageJson(process.cwd())
+    if (packageJsonPath && payload?.dependencies) {
+      const res = syncPackageJsonDependencies(packageJsonPath, payload.dependencies, { overwriteExisting: true })
+      if (verbose && res?.ok && res.changed) {
+        console.log(chalk.gray('Updated package.json dependencies from fetched project data'))
       }
+    }
+  } catch (e) {
+    if (verbose) console.error('Failed updating package.json dependencies', e)
+  }
 
-      payload = result.data || {}
-      const etag = result.etag || null
-      logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
+  const { version: fetchedVersion, ...config } = payload
 
-      // Update lock.json
-      writeLock({
-        etag,
-        version: payload.version,
-        branch,
-        projectId: payload?.projectInfo?.id || lock.projectId,
-        pulledAt: new Date().toISOString()
-      })
-
-      // Update legacy symbols.json with version and branch
-      updateLegacySymbolsJson({ ...(symbolsConfig || {}), version: payload.version, branch })
-
-      if (verbose) {
-        console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
-        console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+  for (const t in config) {
+    const type = config[t]
+    const arr = []
+    if (isObjectLike(type)) {
+      for (const v in type) arr.push(v)
+      if (arr.length) {
+        console.log(chalk.dim(t + ':'))
+        console.log(chalk.bold(arr.join(', ')))
+      } else {
+        console.log(chalk.dim(t + ':'), chalk.dim('- empty -'))
       }
-    } catch (e) {
-      console.log(chalk.red('Failed to fetch:'), projectKey)
-      if (verbose) console.error(e)
-      else console.log(debugMsg)
-      process.exit(1)
-    }
+    } else console.log(chalk.dim(t + ':'), chalk.bold(type))
+  }
 
-    // Persist base snapshot for future rebases
-    try {
-      const { projectPath } = getConfigPaths()
-      await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
-      // Ensure schema.dependencies exists for payload.dependencies
-      ensureSchemaDependencies(payload)
-      const persisted = applyOrderFields(payload)
-      logDesignSystemFlags('fetch: after applyOrderFields (persisted)', persisted?.designSystem, { enabled: !!verbose })
-      await fs.promises.writeFile(projectPath, JSON.stringify(persisted, null, 2))
-    } catch (e) {
-      console.error(chalk.bold.red('\nError writing file'))
-      if (verbose) console.error(e)
-      else console.log(debugMsg)
-      process.exit(1)
-    }
+  // Resolve effective distDir from CLI flag or symbols.json, with a sane default
+  const distDir =
+    resolveDistDir(symbolsConfig, {
+      distDirOverride: opts.distDir
+    }) ||
+    path.join(process.cwd(), 'smbls')
 
-    // Sync project dependencies into local package.json
-    try {
-      const packageJsonPath = findNearestPackageJson(process.cwd())
-      if (packageJsonPath && payload?.dependencies) {
-        const res = syncPackageJsonDependencies(packageJsonPath, payload.dependencies, { overwriteExisting: true })
-        if (verbose && res?.ok && res.changed) {
-          console.log(chalk.gray(`Updated package.json dependencies from fetched project data`))
-        }
-      }
-    } catch (e) {
-      if (verbose) console.error('Failed updating package.json dependencies', e)
-    }
+  if (payload.components && convertOpt && framework) {
+    convertFromCli(payload.components, { ...opts, framework })
+  }
 
-    const { version: fetchedVersion, ...config } = payload
-
-    for (const t in config) {
-      const type = config[t]
-      const arr = []
-      if (isObjectLike(type)) {
-        for (const v in type) arr.push(v)
-        if (arr.length) {
-          console.log(chalk.dim(t + ':'))
-          console.log(chalk.bold(arr.join(', ')))
-        } else {
-          console.log(chalk.dim(t + ':'), chalk.dim('- empty -'))
-        }
-      } else console.log(chalk.dim(t + ':'), chalk.bold(type))
-    }
-
-    // Resolve effective distDir from CLI flag or symbols.json, with a sane default
-    const distDir =
-      resolveDistDir(symbolsConfig, {
-        distDirOverride: opts.distDir
-      }) ||
-      path.join(process.cwd(), 'smbls')
-
-    if (payload.components && convertOpt && framework) {
-      convertFromCli(payload.components, { ...opts, framework })
-    }
-
-    if (update || force) {
-      const ordered = applyOrderFields(payload)
-      logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
-      createFs(ordered, distDir, { update: true, metadata: false })
-    } else {
-      const ordered = applyOrderFields(payload)
-      logDesignSystemFlags('fetch: before createFs (update=false)', ordered?.designSystem, { enabled: !!verbose })
-      createFs(ordered, distDir, { metadata: false })
-    }
+  if (update || force) {
+    const ordered = applyOrderFields(payload)
+    logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
+    createFs(ordered, distDir, { update: true, metadata: false })
+  } else {
+    const ordered = applyOrderFields(payload)
+    logDesignSystemFlags('fetch: before createFs (update=false)', ordered?.designSystem, { enabled: !!verbose })
+    createFs(ordered, distDir, { metadata: false })
+  }
 }
 
 program
