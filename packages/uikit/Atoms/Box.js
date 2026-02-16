@@ -1252,6 +1252,50 @@ export const Box = {
       }
     },
 
+    // grid
+    ...{
+      gridTemplate: ({ props }) =>
+        !isUndefined(props.gridTemplate) && {
+          gridTemplate: props.gridTemplate
+        },
+      gridTemplateColumns: ({ props }) =>
+        !isUndefined(props.gridTemplateColumns) && {
+          gridTemplateColumns: props.gridTemplateColumns
+        },
+      gridTemplateRows: ({ props }) =>
+        !isUndefined(props.gridTemplateRows) && {
+          gridTemplateRows: props.gridTemplateRows
+        },
+      gridTemplateAreas: ({ props }) =>
+        !isUndefined(props.gridTemplateAreas) && {
+          gridTemplateAreas: props.gridTemplateAreas
+        },
+      gridAutoColumns: ({ props }) =>
+        !isUndefined(props.gridAutoColumns) && {
+          gridAutoColumns: props.gridAutoColumns
+        },
+      gridAutoRows: ({ props }) =>
+        !isUndefined(props.gridAutoRows) && {
+          gridAutoRows: props.gridAutoRows
+        },
+      gridAutoFlow: ({ props }) =>
+        !isUndefined(props.gridAutoFlow) && {
+          gridAutoFlow: props.gridAutoFlow
+        },
+      grid: ({ props }) =>
+        !isUndefined(props.grid) && {
+          grid: props.grid
+        },
+      gridColumnEnd: ({ props }) =>
+        !isUndefined(props.gridColumnEnd) && {
+          gridColumnEnd: props.gridColumnEnd
+        },
+      gridRowEnd: ({ props }) =>
+        !isUndefined(props.gridRowEnd) && {
+          gridRowEnd: props.gridRowEnd
+        }
+    },
+
     // container queries
     ...{
       container: ({ props }) =>
