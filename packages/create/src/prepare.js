@@ -93,7 +93,8 @@ export const prepareMethods = (context) => {
   return {
     ...(context.methods || {}),
     require: context.utils.require,
-    requireOnDemand: context.utils.requireOnDemand
+    requireOnDemand: context.utils.requireOnDemand,
+    router: context.utils.router
   }
 }
 
@@ -232,6 +233,7 @@ export const prepareState = (app, context) => {
   const state = {}
   if (context.state) utils.deepMerge(state, context.state)
   if (app && app.state) deepMerge(state, app.state)
+  state.isRootState = true
   return deepClone(state)
 }
 
@@ -252,8 +254,6 @@ export const preparePages = (app, context) => {
 
 export const prepareSharedLibs = (context) => {
   const sharedLibraries = context.sharedLibraries
-  console.log(sharedLibraries)
-  console.log(context.type)
   for (let i = 0; i < sharedLibraries.length; i++) {
     const sharedLib = sharedLibraries[i]
     if (context.type === 'template') {
