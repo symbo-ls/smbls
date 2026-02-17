@@ -137,10 +137,10 @@ export async function runProjectCreate (destArg, options = {}) {
   projectKey = await ensureAvailableKeyOrExit({ projectKey, authToken })
 
   // Shared libraries: default foundation library or blank.
-  // Non-interactive mode preserves existing behavior (blank) unless we add a flag later.
-  const sharedLibsMode = interactive
-    ? await promptProjectSharedLibrariesMode({ defaultMode: 'default' })
-    : 'blank'
+  // Non-interactive defaults to "default" unless explicitly opted out.
+  const sharedLibsMode = options.blankSharedLibraries
+    ? 'blank'
+    : (interactive ? await promptProjectSharedLibrariesMode({ defaultMode: 'default' }) : 'default')
 
   const created = await createProject({
     name,
@@ -229,6 +229,7 @@ export function registerProjectCreateCommand (projectCmd) {
     .option('--clean-from-git', 'Remove starter-kit git repository', true)
     .option('--no-dependencies', 'Skip installing dependencies')
     .option('--no-clone', 'Create folder instead of cloning from git')
+    .option('--blank-shared-libraries', 'Create project with blank shared libraries', false)
     .action(async (dir, opts) => {
       await runProjectCreate(dir, {
         ...opts,
