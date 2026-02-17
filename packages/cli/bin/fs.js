@@ -836,8 +836,14 @@ async function overrideFiles (targetDir, distDir, { allDirectoryKeys, singleFile
       continue
     }
 
-    const targetFiles = await fs.promises.readdir(targetDirPath)
-    for (const file of targetFiles) {
+    // Ensure destination directory exists (e.g. new local-only dirs like `libs/`)
+    await fs.promises.mkdir(distDirPath, { recursive: true })
+
+    const targetEntries = await fs.promises.readdir(targetDirPath, { withFileTypes: true })
+    for (const ent of targetEntries) {
+      // Only copy files; ignore directories/symlinks to keep behavior predictable.
+      if (!ent.isFile()) continue
+      const file = ent.name
       const targetFilePath = path.join(targetDirPath, file)
       const distFilePath = path.join(distDirPath, file)
 
@@ -853,6 +859,7 @@ async function overrideFiles (targetDir, distDir, { allDirectoryKeys, singleFile
       continue
     }
 
+    await fs.promises.mkdir(distDir, { recursive: true })
     await fs.promises.copyFile(targetFilePath, distFilePath)
   }
 }
