@@ -1611,46 +1611,46 @@ export const Box = {
       },
       WebkitBoxOrient: (element) => {
         const { props, deps } = element
-        const val = deps.exec.call(element, props.WebkitBoxOrient)
+        const val = deps.exec.call(element, props.webkitBoxOrient)
         if (isUndefined(val)) return
         return { WebkitBoxOrient: val }
       },
       WebkitLineClamp: (element) => {
         const { props, deps } = element
-        const val = deps.exec.call(element, props.WebkitLineClamp)
+        const val = deps.exec.call(element, props.webkitLineClamp)
         if (isUndefined(val)) return
         return { WebkitLineClamp: val }
       },
       WebkitBackgroundClip: (element) => {
         const { props, deps } = element
-        const val = deps.exec.call(element, props.WebkitBackgroundClip)
+        const val = deps.exec.call(element, props.webkitBackgroundClip)
         if (isUndefined(val)) return
         return { WebkitBackgroundClip: val }
       },
       WebkitTextFillColor: (element) => {
         const { props, deps } = element
-        if (!props.WebkitTextFillColor) return
+        if (!props.webkitTextFillColor) return
         const globalTheme = deps.getSystemGlobalTheme(element)
-        const val = deps.exec.call(element, props.WebkitTextFillColor)
+        const val = deps.exec.call(element, props.webkitTextFillColor)
         return { WebkitTextFillColor: deps.getMediaColor(val, globalTheme) }
       },
       WebkitOverflowScrolling: (element) => {
         const { props, deps } = element
-        const val = deps.exec.call(element, props.WebkitOverflowScrolling)
+        const val = deps.exec.call(element, props.webkitOverflowScrolling)
         if (isUndefined(val)) return
         return { WebkitOverflowScrolling: val }
       },
       WebkitFontSmoothing: (element) => {
         const { props, deps } = element
-        const val = deps.exec.call(element, props.WebkitFontSmoothing)
+        const val = deps.exec.call(element, props.webkitFontSmoothing)
         if (isUndefined(val)) return
         return { WebkitFontSmoothing: val }
       },
       WebkitTapHighlightColor: (element) => {
         const { props, deps } = element
-        if (!props.WebkitTapHighlightColor) return
+        if (!props.webkitTapHighlightColor) return
         const globalTheme = deps.getSystemGlobalTheme(element)
-        const val = deps.exec.call(element, props.WebkitTapHighlightColor)
+        const val = deps.exec.call(element, props.webkitTapHighlightColor)
         return {
           WebkitTapHighlightColor: deps.getMediaColor(val, globalTheme)
         }
