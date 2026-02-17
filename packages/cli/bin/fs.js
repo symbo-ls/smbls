@@ -34,7 +34,7 @@ const ROOT_EXPORT_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys]
 const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema', 'sharedLibraries']
 
 // Minimal reserved identifier set to avoid invalid named exports like "export const default"
-const RESERVED_IDENTIFIERS = new Set(['default'])
+const RESERVED_IDENTIFIERS = new Set(['default', 'class'])
 function isReservedIdentifier (name) {
   return RESERVED_IDENTIFIERS.has(name)
 }
