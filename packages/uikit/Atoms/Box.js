@@ -348,8 +348,10 @@ export const Box = {
   class: {
     // flex
     ...{
-      flow: ({ props }) => {
-        const { flow, reverse } = props
+      flow: (element) => {
+        const { props, deps } = element
+        const flow = deps.exec.call(element, props.flow)
+        const reverse = deps.exec.call(element, props.reverse)
         if (!isString(flow)) return
         let [direction, wrap] = (flow || 'row').split(' ')
         if (flow.startsWith('x') || flow === 'row') direction = 'row'
@@ -363,11 +365,17 @@ export const Box = {
             (wrap || '')
         }
       },
-      wrap: ({ props }) =>
-        props.wrap && { display: 'flex', flexWrap: props.wrap },
-      align: ({ props }) => {
-        if (!isString(props.align)) return
-        const [alignItems, justifyContent] = props.align.split(' ')
+      wrap: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.wrap)
+        if (!val) return
+        return { display: 'flex', flexWrap: val }
+      },
+      align: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.align)
+        if (!isString(val)) return
+        const [alignItems, justifyContent] = val.split(' ')
         return { display: 'flex', alignItems, justifyContent }
       }
     },
@@ -393,15 +401,19 @@ export const Box = {
         return deps.transformSizeRatio.call(el, 'width', props)
       },
 
-      boxSizing: ({ props, deps }) =>
-        !deps.isUndefined(props.boxSizing)
-          ? { boxSizing: props.boxSizing }
-          : { boxSizing: 'border-box' },
+      boxSizing: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.boxSizing)
+        return !deps.isUndefined(val)
+          ? { boxSizing: val }
+          : { boxSizing: 'border-box' }
+      },
 
       boxSize: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.boxSize)) return
-        const [height, width] = props.boxSize.split(' ')
+        const val = deps.exec.call(el, props.boxSize)
+        if (!deps.isString(val)) return
+        const [height, width] = val.split(' ')
         return {
           ...deps.transformSize.call(el, 'height', height),
           ...deps.transformSize.call(el, 'width', width || height)
@@ -427,8 +439,9 @@ export const Box = {
       },
       widthRange: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.widthRange)) return
-        const [minWidth, maxWidth] = props.widthRange.split(' ')
+        const val = deps.exec.call(el, props.widthRange)
+        if (!deps.isString(val)) return
+        const [minWidth, maxWidth] = val.split(' ')
         return {
           ...deps.transformSize.call(el, 'minWidth', minWidth),
           ...deps.transformSize.call(el, 'maxWidth', maxWidth || minWidth)
@@ -445,8 +458,9 @@ export const Box = {
       },
       heightRange: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.heightRange)) return
-        const [minHeight, maxHeight] = props.heightRange.split(' ')
+        const val = deps.exec.call(el, props.heightRange)
+        if (!deps.isString(val)) return
+        const [minHeight, maxHeight] = val.split(' ')
         return {
           ...deps.transformSize.call(el, 'minHeight', minHeight),
           ...deps.transformSize.call(el, 'maxHeight', maxHeight || minHeight)
@@ -455,8 +469,9 @@ export const Box = {
 
       size: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.size)) return
-        const [inlineSize, blockSize] = props.size.split(' ')
+        const val = deps.exec.call(el, props.size)
+        if (!deps.isString(val)) return
+        const [inlineSize, blockSize] = val.split(' ')
         return {
           ...deps.transformSizeRatio.call(el, 'inlineSize', inlineSize),
           ...deps.transformSizeRatio.call(
@@ -487,8 +502,9 @@ export const Box = {
 
       minSize: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.minSize)) return
-        const [minInlineSize, minBlockSize] = props.minSize.split(' ')
+        const val = deps.exec.call(el, props.minSize)
+        if (!deps.isString(val)) return
+        const [minInlineSize, minBlockSize] = val.split(' ')
         return {
           ...deps.transformSize.call(el, 'minInlineSize', minInlineSize),
           ...deps.transformSize.call(
@@ -501,8 +517,9 @@ export const Box = {
 
       maxSize: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.maxSize)) return
-        const [maxInlineSize, maxBlockSize] = props.maxSize.split(' ')
+        const val = deps.exec.call(el, props.maxSize)
+        if (!deps.isString(val)) return
+        const [maxInlineSize, maxBlockSize] = val.split(' ')
         return {
           ...deps.transformSize.call(el, 'maxInlineSize', maxInlineSize),
           ...deps.transformSize.call(
@@ -528,9 +545,9 @@ export const Box = {
       },
       paddingInline: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.paddingInline)) return
-        const [paddingInlineStart, paddingInlineEnd] =
-          props.paddingInline.split(' ')
+        const val = deps.exec.call(el, props.paddingInline)
+        if (!deps.isString(val)) return
+        const [paddingInlineStart, paddingInlineEnd] = val.split(' ')
         return {
           ...deps.transformSize.call(
             el,
@@ -545,9 +562,9 @@ export const Box = {
       },
       paddingBlock: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.paddingBlock)) return
-        const [paddingBlockStart, paddingBlockEnd] =
-          props.paddingBlock.split(' ')
+        const val = deps.exec.call(el, props.paddingBlock)
+        if (!deps.isString(val)) return
+        const [paddingBlockStart, paddingBlockEnd] = val.split(' ')
         return {
           ...deps.transformSize.call(
             el,
@@ -583,9 +600,9 @@ export const Box = {
       },
       marginInline: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.marginInline)) return
-        const [marginInlineStart, marginInlineEnd] =
-          props.marginInline.split(' ')
+        const val = deps.exec.call(el, props.marginInline)
+        if (!deps.isString(val)) return
+        const [marginInlineStart, marginInlineEnd] = val.split(' ')
         return {
           ...deps.transformSize.call(
             el,
@@ -600,8 +617,9 @@ export const Box = {
       },
       marginBlock: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.marginBlock)) return
-        const [marginBlockStart, marginBlockEnd] = props.marginBlock.split(' ')
+        const val = deps.exec.call(el, props.marginBlock)
+        if (!deps.isString(val)) return
+        const [marginBlockStart, marginBlockEnd] = val.split(' ')
         return {
           ...deps.transformSize.call(el, 'marginBlockStart', marginBlockStart),
           ...deps.transformSize(
@@ -627,28 +645,42 @@ export const Box = {
         return deps.transformSizeRatio.call(el, 'marginBlockEnd', props)
       },
 
-      gap: ({ props, deps }) =>
-        !deps.isUndefined(props.gap) && {
-          gap: transfromGap(props.gap)
-        },
+      gap: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gap)
+        if (deps.isUndefined(val)) return
+        return { gap: transfromGap(val) }
+      },
 
-      columnGap: ({ props, deps }) =>
-        !deps.isUndefined(props.columnGap)
-          ? deps.getSpacingBasedOnRatio(props, 'columnGap')
-          : null,
-      rowGap: ({ props, deps }) =>
-        !deps.isUndefined(props.rowGap)
-          ? deps.getSpacingBasedOnRatio(props, 'rowGap')
-          : null,
+      columnGap: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columnGap)
+        if (deps.isUndefined(val)) return
+        return deps.getSpacingBasedOnRatio(
+          { ...props, columnGap: val },
+          'columnGap'
+        )
+      },
+      rowGap: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.rowGap)
+        if (deps.isUndefined(val)) return
+        return deps.getSpacingBasedOnRatio({ ...props, rowGap: val }, 'rowGap')
+      },
 
-      flexWrap: ({ props, deps }) =>
-        !deps.isUndefined(props.flexWrap) && {
+      flexWrap: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.flexWrap)
+        if (deps.isUndefined(val)) return
+        return {
           display: 'flex',
-          flexFlow:
-            (props.flexFlow || 'row').split(' ')[0] + ' ' + props.flexWrap
-        },
-      flexFlow: ({ props, deps }) => {
-        const { flexFlow, reverse } = props
+          flexFlow: (props.flexFlow || 'row').split(' ')[0] + ' ' + val
+        }
+      },
+      flexFlow: (element) => {
+        const { props, deps } = element
+        const flexFlow = deps.exec.call(element, props.flexFlow)
+        const reverse = deps.exec.call(element, props.reverse)
         if (!deps.isString(flexFlow)) return
         let [direction, wrap] = (flexFlow || 'row').split(' ')
         if (flexFlow.startsWith('x') || flexFlow === 'row') direction = 'row'
@@ -665,8 +697,9 @@ export const Box = {
       },
       flexAlign: (el) => {
         const { props, deps } = el
-        if (!deps.isString(props.flexAlign)) return
-        const [alignItems, justifyContent] = props.flexAlign.split(' ')
+        const val = deps.exec.call(el, props.flexAlign)
+        if (!deps.isString(val)) return
+        const [alignItems, justifyContent] = val.split(' ')
         return {
           display: 'flex',
           alignItems,
@@ -675,130 +708,195 @@ export const Box = {
       },
 
       // block:css
-      display: ({ props, deps }) =>
-        !deps.isUndefined(props.display) && {
-          display: props.display
-        },
+      display: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.display)
+        if (deps.isUndefined(val)) return
+        return { display: val }
+      },
 
-      direction: ({ props, deps }) =>
-        !deps.isUndefined(props.direction) && {
-          direction: props.direction
-        },
+      direction: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.direction)
+        if (deps.isUndefined(val)) return
+        return { direction: val }
+      },
 
-      objectFit: ({ props, deps }) =>
-        !deps.isUndefined(props.objectFit) && {
-          objectFit: props.objectFit
-        },
+      objectFit: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.objectFit)
+        if (deps.isUndefined(val)) return
+        return { objectFit: val }
+      },
 
-      aspectRatio: ({ props, deps }) =>
-        !deps.isUndefined(props.aspectRatio) && {
-          aspectRatio: props.aspectRatio
-        },
+      aspectRatio: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.aspectRatio)
+        if (deps.isUndefined(val)) return
+        return { aspectRatio: val }
+      },
 
-      gridArea: ({ props, deps }) =>
-        props.gridArea && { gridArea: props.gridArea },
+      gridArea: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridArea)
+        if (!val) return
+        return { gridArea: val }
+      },
 
-      float: ({ props, deps }) =>
-        !deps.isUndefined(props.float) && {
-          float: props.float
-        },
+      float: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.float)
+        if (deps.isUndefined(val)) return
+        return { float: val }
+      },
 
-      flex: ({ props, deps }) =>
-        !deps.isUndefined(props.flex) && {
-          flex: props.flex
-        },
-      flexDirection: ({ props, deps }) =>
-        !deps.isUndefined(props.flexDirection) && {
-          flexDirection: props.flexDirection
-        },
-      alignItems: ({ props, deps }) =>
-        !deps.isUndefined(props.alignItems) && {
-          alignItems: props.alignItems
-        },
-      alignContent: ({ props, deps }) =>
-        !deps.isUndefined(props.alignContent) && {
-          alignContent: props.alignContent
-        },
-      justifyContent: ({ props, deps }) =>
-        !deps.isUndefined(props.justifyContent) && {
-          justifyContent: props.justifyContent
-        },
-      justifyItems: ({ props, deps }) =>
-        !deps.isUndefined(props.justifyItems) && {
-          justifyItems: props.justifyItems
-        },
-      alignSelf: ({ props, deps }) =>
-        !deps.isUndefined(props.alignSelf) && {
-          alignSelf: props.alignSelf
-        },
-      order: ({ props, deps }) =>
-        !deps.isUndefined(props.order) && {
-          order: props.order
-        },
+      flex: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.flex)
+        if (deps.isUndefined(val)) return
+        return { flex: val }
+      },
+      flexDirection: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.flexDirection)
+        if (deps.isUndefined(val)) return
+        return { flexDirection: val }
+      },
+      alignItems: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.alignItems)
+        if (deps.isUndefined(val)) return
+        return { alignItems: val }
+      },
+      alignContent: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.alignContent)
+        if (deps.isUndefined(val)) return
+        return { alignContent: val }
+      },
+      justifyContent: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.justifyContent)
+        if (deps.isUndefined(val)) return
+        return { justifyContent: val }
+      },
+      justifyItems: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.justifyItems)
+        if (deps.isUndefined(val)) return
+        return { justifyItems: val }
+      },
+      alignSelf: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.alignSelf)
+        if (deps.isUndefined(val)) return
+        return { alignSelf: val }
+      },
+      order: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.order)
+        if (deps.isUndefined(val)) return
+        return { order: val }
+      },
 
-      gridColumn: ({ props, deps }) =>
-        !deps.isUndefined(props.gridColumn) && {
-          gridColumn: props.gridColumn
-        },
-      gridColumnStart: ({ props, deps }) =>
-        !deps.isUndefined(props.gridColumnStart) && {
-          gridColumnStart: props.gridColumnStart
-        },
-      gridRow: ({ props, deps }) =>
-        !deps.isUndefined(props.gridRow) && {
-          gridRow: props.gridRow
-        },
-      gridRowStart: ({ props, deps }) =>
-        !deps.isUndefined(props.gridRowStart) && {
-          gridRowStart: props.gridRowStart
-        },
+      gridColumn: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridColumn)
+        if (deps.isUndefined(val)) return
+        return { gridColumn: val }
+      },
+      gridColumnStart: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridColumnStart)
+        if (deps.isUndefined(val)) return
+        return { gridColumnStart: val }
+      },
+      gridRow: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridRow)
+        if (deps.isUndefined(val)) return
+        return { gridRow: val }
+      },
+      gridRowStart: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridRowStart)
+        if (deps.isUndefined(val)) return
+        return { gridRowStart: val }
+      },
 
-      resize: ({ props, deps }) =>
-        !deps.isUndefined(props.resize) && {
-          resize: props.resize
-        },
+      resize: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.resize)
+        if (deps.isUndefined(val)) return
+        return { resize: val }
+      },
 
-      verticalAlign: ({ props, deps }) =>
-        !deps.isUndefined(props.verticalAlign) && {
-          verticalAlign: props.verticalAlign
-        },
+      verticalAlign: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.verticalAlign)
+        if (deps.isUndefined(val)) return
+        return { verticalAlign: val }
+      },
 
-      columns: ({ props, deps }) =>
-        !deps.isUndefined(props.columns) && {
-          columns: props.columns
-        },
-      columnRule: ({ props, deps }) =>
-        !deps.isUndefined(props.columnRule) && {
-          columnRule: props.columnRule
-        },
-      columnWidth: ({ props, deps }) =>
-        !deps.isUndefined(props.columnWidth) && {
-          columnWidth: props.columnWidth
-        },
-      columnSpan: ({ props, deps }) =>
-        !deps.isUndefined(props.columnSpan) && {
-          columnSpan: props.columnSpan
-        },
-      columnFill: ({ props, deps }) =>
-        !deps.isUndefined(props.columnFill) && {
-          columnFill: props.columnFill
-        },
-      columnCount: ({ props, deps }) =>
-        !deps.isUndefined(props.columnCount) && {
-          columnCount: props.columnCount
-        }
+      columns: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columns)
+        if (deps.isUndefined(val)) return
+        return { columns: val }
+      },
+      columnRule: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columnRule)
+        if (deps.isUndefined(val)) return
+        return { columnRule: val }
+      },
+      columnWidth: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columnWidth)
+        if (deps.isUndefined(val)) return
+        return { columnWidth: val }
+      },
+      columnSpan: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columnSpan)
+        if (deps.isUndefined(val)) return
+        return { columnSpan: val }
+      },
+      columnFill: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columnFill)
+        if (deps.isUndefined(val)) return
+        return { columnFill: val }
+      },
+      columnCount: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columnCount)
+        if (deps.isUndefined(val)) return
+        return { columnCount: val }
+      }
     },
 
     // direction
-    direction: ({ props }) => props.direction && { direction: props.direction },
+    direction: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.direction)
+      if (!val) return
+      return { direction: val }
+    },
 
     // position
     ...{
-      position: ({ props }) => props.position && { position: props.position },
-      inset: ({ props, deps, context }) => {
-        const { inset } = props
-        if (context.utils.isNumber(inset)) return { inset }
-        if (!context.utils.isString(inset)) return
+      position: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.position)
+        if (!val) return
+        return { position: val }
+      },
+      inset: (element, s, ctx) => {
+        const { props, deps } = element
+        const inset = deps.exec.call(element, props.inset)
+        if (ctx.utils.isNumber(inset)) return { inset }
+        if (!ctx.utils.isString(inset)) return
         return {
           inset: inset
             .split(' ')
@@ -807,13 +905,34 @@ export const Box = {
         }
       },
 
-      left: ({ props, deps }) => deps.getSpacingByKey(props.left, 'left'),
-      top: ({ props, deps }) => deps.getSpacingByKey(props.top, 'top'),
-      right: ({ props, deps }) => deps.getSpacingByKey(props.right, 'right'),
-      bottom: ({ props, deps }) => deps.getSpacingByKey(props.bottom, 'bottom'),
+      left: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.left)
+        if (deps.isUndefined(val)) return
+        return deps.getSpacingByKey(val, 'left')
+      },
+      top: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.top)
+        if (deps.isUndefined(val)) return
+        return deps.getSpacingByKey(val, 'top')
+      },
+      right: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.right)
+        if (deps.isUndefined(val)) return
+        return deps.getSpacingByKey(val, 'right')
+      },
+      bottom: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.bottom)
+        if (deps.isUndefined(val)) return
+        return deps.getSpacingByKey(val, 'bottom')
+      },
 
-      verticalInset: ({ props, deps }) => {
-        const { verticalInset } = props
+      verticalInset: (element) => {
+        const { props, deps } = element
+        const verticalInset = deps.exec.call(element, props.verticalInset)
         if (typeof verticalInset !== 'string') return
         const vi = verticalInset
           .split(' ')
@@ -824,8 +943,9 @@ export const Box = {
         }
       },
 
-      horizontalInset: ({ props, deps }) => {
-        const { horizontalInset } = props
+      horizontalInset: (element) => {
+        const { props, deps } = element
+        const horizontalInset = deps.exec.call(element, props.horizontalInset)
         if (typeof horizontalInset !== 'string') return
         const vi = horizontalInset
           .split(' ')
@@ -839,33 +959,48 @@ export const Box = {
 
     // overflow
     ...{
-      overflow: ({ props, deps }) =>
-        !deps.isUndefined(props.overflow) && {
-          overflow: props.overflow,
-          scrollBehavior: 'smooth'
-        },
-      overflowX: ({ props, deps }) =>
-        !deps.isUndefined(props.overflowX) && {
-          overflowX: props.overflowX
-        },
-      overflowY: ({ props, deps }) =>
-        !deps.isUndefined(props.overflowY) && {
-          overflowY: props.overflowY
-        },
-      overscrollBehavior: ({ props, deps }) =>
-        !deps.isUndefined(props.overscrollBehavior) && {
-          overscrollBehavior: props.overscrollBehavior
-        }
+      overflow: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.overflow)
+        if (deps.isUndefined(val)) return
+        return { overflow: val, scrollBehavior: 'smooth' }
+      },
+      overflowX: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.overflowX)
+        if (deps.isUndefined(val)) return
+        return { overflowX: val }
+      },
+      overflowY: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.overflowY)
+        if (deps.isUndefined(val)) return
+        return { overflowY: val }
+      },
+      overscrollBehavior: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.overscrollBehavior)
+        if (deps.isUndefined(val)) return
+        return { overscrollBehavior: val }
+      }
     },
 
     // interaction
     ...{
-      userSelect: ({ props }) =>
-        props.userSelect && { userSelect: props.userSelect },
-      pointerEvents: ({ props }) =>
-        props.pointerEvents && { pointerEvents: props.pointerEvents },
+      userSelect: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.userSelect)
+        if (!val) return
+        return { userSelect: val }
+      },
+      pointerEvents: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.pointerEvents)
+        if (!val) return
+        return { pointerEvents: val }
+      },
       cursor: (el, s, ctx) => {
-        let val = el.props.cursor
+        let val = el.deps.exec.call(el, el.props.cursor)
         if (!val) return
 
         const file = ctx.files && ctx.files[val]
@@ -877,71 +1012,112 @@ export const Box = {
 
     // pseudo
     ...{
-      content: ({ props }) => props.content && { content: props.content }
+      content: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.content)
+        if (!val) return
+        return { content: val }
+      }
     },
 
     // timing
     ...{
-      transition: ({ props, deps }) =>
-        !isUndefined(props.transition) && {
-          transition: deps.splitTransition(props.transition)
-        },
-      willChange: ({ props }) =>
-        !isUndefined(props.willChange) && {
-          willChange: props.willChange
-        },
-      transitionDuration: ({ props, deps }) =>
-        !isUndefined(props.transitionDuration) && {
-          transitionDuration: deps.transformDuration(props.transitionDuration)
-        },
-      transitionDelay: ({ props, deps }) =>
-        !isUndefined(props.transitionDelay) && {
-          transitionDelay: deps.transformDuration(props.transitionDelay)
-        },
-      transitionTimingFunction: ({ props, deps }) =>
-        !isUndefined(props.transitionTimingFunction) && {
-          transitionTimingFunction: deps.getTimingFunction(
-            props.transitionTimingFunction
-          )
-        },
-      transitionProperty: ({ props }) =>
-        !isUndefined(props.transitionProperty) && {
-          transitionProperty: props.transitionProperty,
-          willChange: props.transitionProperty
-        }
+      transition: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.transition)
+        if (isUndefined(val)) return
+        return { transition: deps.splitTransition(val) }
+      },
+      willChange: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.willChange)
+        if (isUndefined(val)) return
+        return { willChange: val }
+      },
+      transitionDuration: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.transitionDuration)
+        if (isUndefined(val)) return
+        return { transitionDuration: deps.transformDuration(val) }
+      },
+      transitionDelay: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.transitionDelay)
+        if (isUndefined(val)) return
+        return { transitionDelay: deps.transformDuration(val) }
+      },
+      transitionTimingFunction: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.transitionTimingFunction)
+        if (isUndefined(val)) return
+        return { transitionTimingFunction: deps.getTimingFunction(val) }
+      },
+      transitionProperty: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.transitionProperty)
+        if (isUndefined(val)) return
+        return { transitionProperty: val, willChange: val }
+      }
     },
 
     // transform
     ...{
-      zoom: ({ props }) => !isUndefined(props.zoom) && { zoom: props.zoom },
-      transform: ({ props }) =>
-        !isUndefined(props.transform) && { transform: props.transform },
-      transformOrigin: ({ props }) =>
-        !isUndefined(props.transformOrigin) && {
-          transformOrigin: props.transformOrigin
-        },
-      backfaceVisibility: ({ props }) =>
-        !isUndefined(props.backfaceVisibility) && {
-          backfaceVisibility: props.backfaceVisibility
-        }
+      zoom: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.zoom)
+        if (isUndefined(val)) return
+        return { zoom: val }
+      },
+      transform: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.transform)
+        if (isUndefined(val)) return
+        return { transform: val }
+      },
+      transformOrigin: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.transformOrigin)
+        if (isUndefined(val)) return
+        return { transformOrigin: val }
+      },
+      backfaceVisibility: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.backfaceVisibility)
+        if (isUndefined(val)) return
+        return { backfaceVisibility: val }
+      }
     },
 
     // xyz
     ...{
-      zIndex: ({ props }) =>
-        !isUndefined(props.zIndex) && { zIndex: props.zIndex },
-      perspective: ({ props }) =>
-        !isUndefined(props.perspective) && { perspective: props.perspective },
-      perspectiveOrigin: ({ props }) =>
-        !isUndefined(props.perspectiveOrigin) && {
-          perspectiveOrigin: props.perspectiveOrigin
-        }
+      zIndex: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.zIndex)
+        if (isUndefined(val)) return
+        return { zIndex: val }
+      },
+      perspective: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.perspective)
+        if (isUndefined(val)) return
+        return { perspective: val }
+      },
+      perspectiveOrigin: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.perspectiveOrigin)
+        if (isUndefined(val)) return
+        return { perspectiveOrigin: val }
+      }
     },
 
     // theme
     ...{
-      depth: ({ props, deps }) =>
-        !isUndefined(props.depth) && deps.depth[props.depth],
+      depth: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.depth)
+        if (isUndefined(val)) return
+        return deps.depth[val]
+      },
 
       theme: (element) => {
         const { props, deps } = element
@@ -1006,82 +1182,98 @@ export const Box = {
           backgroundImage: deps.transformBackgroundImage(val, globalTheme)
         }
       },
-      backgroundSize: ({ props }) =>
-        !isUndefined(props.backgroundSize)
-          ? {
-              backgroundSize: props.backgroundSize
-            }
-          : null,
-      backgroundPosition: ({ props }) =>
-        !isUndefined(props.backgroundPosition)
-          ? {
-              backgroundPosition: props.backgroundPosition
-            }
-          : null,
-      backgroundRepeat: ({ props }) =>
-        !isUndefined(props.backgroundRepeat)
-          ? {
-              backgroundRepeat: props.backgroundRepeat
-            }
-          : null,
+      backgroundSize: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.backgroundSize)
+        if (isUndefined(val)) return
+        return { backgroundSize: val }
+      },
+      backgroundPosition: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.backgroundPosition)
+        if (isUndefined(val)) return
+        return { backgroundPosition: val }
+      },
+      backgroundRepeat: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.backgroundRepeat)
+        if (isUndefined(val)) return
+        return { backgroundRepeat: val }
+      },
 
-      textStroke: ({ props, deps }) =>
-        !isUndefined(props.textStroke)
-          ? {
-              WebkitTextStroke: deps.transformTextStroke(props.textStroke)
-            }
-          : null,
+      textStroke: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.textStroke)
+        if (isUndefined(val)) return
+        return { WebkitTextStroke: deps.transformTextStroke(val) }
+      },
 
-      outline: ({ props, deps }) =>
-        !isUndefined(props.outline) && {
-          outline: deps.transformBorder(props.outline)
-        },
+      outline: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.outline)
+        if (isUndefined(val)) return
+        return { outline: deps.transformBorder(val) }
+      },
       outlineOffset: (el) => {
         const { props, deps } = el
         return deps.transformSizeRatio.call(el, 'outlineOffset', props)
       },
 
-      border: ({ props, deps }) =>
-        (isString(props.border) || isNumber(props.border)) && {
-          border: deps.transformBorder(props.border)
-        },
+      border: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.border)
+        if (!isString(val) && !isNumber(val)) return
+        return { border: deps.transformBorder(val) }
+      },
 
       borderColor: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
         if (!props.borderColor) return
+        const val = deps.exec.call(element, props.borderColor)
         return {
-          borderColor: deps.getMediaColor(props.borderColor, globalTheme)
+          borderColor: deps.getMediaColor(val, globalTheme)
         }
       },
-      borderStyle: ({ props }) =>
-        !isUndefined(props.borderStyle) && {
-          borderStyle: props.borderStyle
-        },
+      borderStyle: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.borderStyle)
+        if (isUndefined(val)) return
+        return { borderStyle: val }
+      },
 
-      borderLeft: ({ props, deps }) =>
-        !isUndefined(props.borderLeft) && {
-          borderLeft: deps.transformBorder(props.borderLeft)
-        },
-      borderTop: ({ props, deps }) =>
-        !isUndefined(props.borderTop) && {
-          borderTop: deps.transformBorder(props.borderTop)
-        },
-      borderRight: ({ props, deps }) =>
-        !isUndefined(props.borderRight) && {
-          borderRight: deps.transformBorder(props.borderRight)
-        },
-      borderBottom: ({ props, deps }) =>
-        !isUndefined(props.borderBottom) && {
-          borderBottom: deps.transformBorder(props.borderBottom)
-        },
+      borderLeft: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.borderLeft)
+        if (isUndefined(val)) return
+        return { borderLeft: deps.transformBorder(val) }
+      },
+      borderTop: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.borderTop)
+        if (isUndefined(val)) return
+        return { borderTop: deps.transformBorder(val) }
+      },
+      borderRight: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.borderRight)
+        if (isUndefined(val)) return
+        return { borderRight: deps.transformBorder(val) }
+      },
+      borderBottom: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.borderBottom)
+        if (isUndefined(val)) return
+        return { borderBottom: deps.transformBorder(val) }
+      },
 
       shadow: (element) => {
         const { props, deps } = element
         const globalTheme = deps.getSystemGlobalTheme(element)
-        if (!props.backgroundImage) return
+        const val = deps.exec.call(element, props.shadow)
+        if (!val) return
         return {
-          boxShadow: deps.transformShadow(props.shadow, globalTheme)
+          boxShadow: deps.transformShadow(val, globalTheme)
         }
       },
 
@@ -1091,8 +1283,9 @@ export const Box = {
 
       boxShadow: (element, state, context) => {
         const { props, deps } = element
-        if (!isString(props.boxShadow)) return
-        const [val, hasImportant] = props.boxShadow.split('!importan')
+        const boxShadow = deps.exec.call(element, props.boxShadow)
+        if (!isString(boxShadow)) return
+        const [val, hasImportant] = boxShadow.split('!importan')
         const globalTheme = getSystemGlobalTheme(element)
         const important = hasImportant ? ' !important' : ''
         return {
@@ -1101,147 +1294,196 @@ export const Box = {
         }
       },
 
-      textShadow: ({ props, deps, context }) =>
-        !isUndefined(props.textShadow) && {
+      textShadow: (element) => {
+        const { props, deps, context } = element
+        const val = deps.exec.call(element, props.textShadow)
+        if (isUndefined(val)) return
+        return {
           textShadow: deps.transformBoxShadow(
-            props.textShadow,
+            val,
             context.designSystem.globalTheme
           )
-        },
-
-      backdropFilter: ({ props, deps }) =>
-        !isUndefined(props.backdropFilter) && {
-          backdropFilter: props.backdropFilter
-        },
-
-      caretColor: ({ props }) =>
-        !isUndefined(props.caretColor) && {
-          caretColor: props.caretColor
-        },
-
-      opacity: ({ props }) =>
-        !isUndefined(props.opacity) && {
-          opacity: props.opacity
-        },
-      visibility: ({ props }) =>
-        !isUndefined(props.visibility) && {
-          visibility: props.visibility
-        },
-
-      columnRule: ({ props, deps }) =>
-        !isUndefined(props.columnRule) && {
-          columnRule: deps.transformBorder(props.columnRule)
-        },
-
-      filter: ({ props, deps }) =>
-        !isUndefined(props.filter) && {
-          filter: props.filter
-        },
-
-      mixBlendMode: ({ props, deps }) =>
-        !isUndefined(props.mixBlendMode) && {
-          mixBlendMode: props.mixBlendMode
-        },
-
-      appearance: ({ props }) =>
-        !isUndefined(props.appearance) && {
-          appearance: props.appearance
         }
+      },
+
+      backdropFilter: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.backdropFilter)
+        if (isUndefined(val)) return
+        return { backdropFilter: val }
+      },
+
+      caretColor: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.caretColor)
+        if (isUndefined(val)) return
+        return { caretColor: val }
+      },
+
+      opacity: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.opacity)
+        if (isUndefined(val)) return
+        return { opacity: val }
+      },
+      visibility: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.visibility)
+        if (isUndefined(val)) return
+        return { visibility: val }
+      },
+
+      columnRule: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.columnRule)
+        if (isUndefined(val)) return
+        return { columnRule: deps.transformBorder(val) }
+      },
+
+      filter: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.filter)
+        if (isUndefined(val)) return
+        return { filter: val }
+      },
+
+      mixBlendMode: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.mixBlendMode)
+        if (isUndefined(val)) return
+        return { mixBlendMode: val }
+      },
+
+      appearance: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.appearance)
+        if (isUndefined(val)) return
+        return { appearance: val }
+      }
     },
 
     // animation
     ...{
-      animation: (el) =>
-        el.props.animation && {
-          animationName: el.deps.applyAnimationProps(el.props.animation, el),
-          animationDuration: el.deps.getTimingByKey(
-            el.props.animationDuration || 'A'
+      animation: (el) => {
+        const { props, deps } = el
+        const val = deps.exec.call(el, props.animation)
+        if (!val) return
+        return {
+          animationName: deps.applyAnimationProps(val, el),
+          animationDuration: deps.getTimingByKey(
+            deps.exec.call(el, props.animationDuration) || 'A'
           ).timing,
-          animationDelay: el.deps.getTimingByKey(
-            el.props.animationDelay || '0s'
+          animationDelay: deps.getTimingByKey(
+            deps.exec.call(el, props.animationDelay) || '0s'
           ).timing,
-          animationTimingFunction: el.deps.getTimingFunction(
-            el.props.animationTimingFunction || 'ease'
-          ),
-          animationFillMode: el.props.animationFillMode || 'both',
-          animationPlayState: el.props.animationPlayState,
-          animationDirection: el.props.animationDirection
-        },
-      animationName: (el) =>
-        el.props.animationName && {
-          animationName: el.deps.applyAnimationProps(el.props.animationName, el)
-        },
-      animationDuration: ({ props, deps }) =>
-        props.animationDuration && {
-          animationDuration: deps.getTimingByKey(props.animationDuration).timing
-        },
-      animationDelay: ({ props, deps }) =>
-        props.animationDelay && {
-          animationDelay: deps.getTimingByKey(props.animationDelay).timing
-        },
-      animationTimingFunction: ({ props, deps }) =>
-        props.animationTimingFunction && {
           animationTimingFunction: deps.getTimingFunction(
-            props.animationTimingFunction
-          )
-        },
-      // animation:css
-      animationFillMode: ({ props }) =>
-        props.animationFillMode && {
-          animationFillMode: props.animationFillMode
-        },
-      animationPlayState: ({ props }) =>
-        props.animationPlayState && {
-          animationPlayState: props.animationPlayState
-        },
-      animationIterationCount: ({ props }) =>
-        props.animationIterationCount && {
-          animationIterationCount: props.animationIterationCount || 1
-        },
-      animationDirection: ({ props }) =>
-        props.animationDirection && {
-          animationDirection: props.animationDirection
+            deps.exec.call(el, props.animationTimingFunction) || 'ease'
+          ),
+          animationFillMode:
+            deps.exec.call(el, props.animationFillMode) || 'both',
+          animationPlayState: deps.exec.call(el, props.animationPlayState),
+          animationDirection: deps.exec.call(el, props.animationDirection)
         }
+      },
+      animationName: (el) => {
+        const { props, deps } = el
+        const val = deps.exec.call(el, props.animationName)
+        if (!val) return
+        return { animationName: deps.applyAnimationProps(val, el) }
+      },
+      animationDuration: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.animationDuration)
+        if (!val) return
+        return { animationDuration: deps.getTimingByKey(val).timing }
+      },
+      animationDelay: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.animationDelay)
+        if (!val) return
+        return { animationDelay: deps.getTimingByKey(val).timing }
+      },
+      animationTimingFunction: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.animationTimingFunction)
+        if (!val) return
+        return { animationTimingFunction: deps.getTimingFunction(val) }
+      },
+      // animation:css
+      animationFillMode: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.animationFillMode)
+        if (!val) return
+        return { animationFillMode: val }
+      },
+      animationPlayState: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.animationPlayState)
+        if (!val) return
+        return { animationPlayState: val }
+      },
+      animationIterationCount: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.animationIterationCount)
+        if (!val) return
+        return { animationIterationCount: val || 1 }
+      },
+      animationDirection: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.animationDirection)
+        if (!val) return
+        return { animationDirection: val }
+      }
     },
 
     // shape
     ...{
-      shape: ({ props, deps }) => {
-        const { shape } = props
+      shape: (element) => {
+        const { props, deps } = element
+        const shape = deps.exec.call(element, props.shape)
         return deps.exec(SHAPES[shape], { props, deps })
       },
-      shapeDirection: ({ props }) => {
-        const { shape, shapeDirection } = props
+      shapeDirection: (element) => {
+        const { props, deps } = element
+        const shape = deps.exec.call(element, props.shape)
+        const shapeDirection = deps.exec.call(element, props.shapeDirection)
         if (!shape || !shapeDirection) return
         const shapeDir = SHAPES[shape + 'Direction']
         return shape && shapeDir ? shapeDir[shapeDirection || 'left'] : null
       },
-      shapeDirectionColor: ({ props, deps }) => {
-        const { background, backgroundColor } = props
+      shapeDirectionColor: (element) => {
+        const { props, deps } = element
+        const background = deps.exec.call(element, props.background)
+        const backgroundColor = deps.exec.call(element, props.backgroundColor)
         const borderColor = {
           borderColor: deps.getMediaColor(background || backgroundColor)
         }
-        return props.shapeDirection ? borderColor : null
+        const shapeDirection = deps.exec.call(element, props.shapeDirection)
+        return shapeDirection ? borderColor : null
       },
 
-      round: ({ props, key, deps, ...el }) =>
-        deps.transformBorderRadius(
-          props.round || props.borderRadius,
-          props,
-          'round'
-        ),
-      borderRadius: ({ props, key, deps, ...el }) =>
-        deps.transformBorderRadius(
-          props.borderRadius || props.round,
+      round: (element) => {
+        const { props, deps } = element
+        const round = deps.exec.call(element, props.round)
+        const borderRadius = deps.exec.call(element, props.borderRadius)
+        return deps.transformBorderRadius(round || borderRadius, props, 'round')
+      },
+      borderRadius: (element) => {
+        const { props, deps } = element
+        const borderRadius = deps.exec.call(element, props.borderRadius)
+        const round = deps.exec.call(element, props.round)
+        return deps.transformBorderRadius(
+          borderRadius || round,
           props,
           'borderRadius'
-        ),
-      clip: ({ props }) =>
-        !isUndefined(props.clip)
-          ? {
-              clip: props.clip
-            }
-          : null
+        )
+      },
+      clip: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.clip)
+        if (isUndefined(val)) return
+        return { clip: val }
+      }
     },
 
     // scrollbar
@@ -1254,62 +1496,88 @@ export const Box = {
 
     // grid
     ...{
-      gridTemplate: ({ props }) =>
-        !isUndefined(props.gridTemplate) && {
-          gridTemplate: props.gridTemplate
-        },
-      gridTemplateColumns: ({ props }) =>
-        !isUndefined(props.gridTemplateColumns) && {
-          gridTemplateColumns: props.gridTemplateColumns
-        },
-      gridTemplateRows: ({ props }) =>
-        !isUndefined(props.gridTemplateRows) && {
-          gridTemplateRows: props.gridTemplateRows
-        },
-      gridTemplateAreas: ({ props }) =>
-        !isUndefined(props.gridTemplateAreas) && {
-          gridTemplateAreas: props.gridTemplateAreas
-        },
-      gridAutoColumns: ({ props }) =>
-        !isUndefined(props.gridAutoColumns) && {
-          gridAutoColumns: props.gridAutoColumns
-        },
-      gridAutoRows: ({ props }) =>
-        !isUndefined(props.gridAutoRows) && {
-          gridAutoRows: props.gridAutoRows
-        },
-      gridAutoFlow: ({ props }) =>
-        !isUndefined(props.gridAutoFlow) && {
-          gridAutoFlow: props.gridAutoFlow
-        },
-      grid: ({ props }) =>
-        !isUndefined(props.grid) && {
-          grid: props.grid
-        },
-      gridColumnEnd: ({ props }) =>
-        !isUndefined(props.gridColumnEnd) && {
-          gridColumnEnd: props.gridColumnEnd
-        },
-      gridRowEnd: ({ props }) =>
-        !isUndefined(props.gridRowEnd) && {
-          gridRowEnd: props.gridRowEnd
-        }
+      gridTemplate: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridTemplate)
+        if (isUndefined(val)) return
+        return { gridTemplate: val }
+      },
+      gridTemplateColumns: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridTemplateColumns)
+        if (isUndefined(val)) return
+        return { gridTemplateColumns: val }
+      },
+      gridTemplateRows: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridTemplateRows)
+        if (isUndefined(val)) return
+        return { gridTemplateRows: val }
+      },
+      gridTemplateAreas: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridTemplateAreas)
+        if (isUndefined(val)) return
+        return { gridTemplateAreas: val }
+      },
+      gridAutoColumns: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridAutoColumns)
+        if (isUndefined(val)) return
+        return { gridAutoColumns: val }
+      },
+      gridAutoRows: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridAutoRows)
+        if (isUndefined(val)) return
+        return { gridAutoRows: val }
+      },
+      gridAutoFlow: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridAutoFlow)
+        if (isUndefined(val)) return
+        return { gridAutoFlow: val }
+      },
+      grid: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.grid)
+        if (isUndefined(val)) return
+        return { grid: val }
+      },
+      gridColumnEnd: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridColumnEnd)
+        if (isUndefined(val)) return
+        return { gridColumnEnd: val }
+      },
+      gridRowEnd: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.gridRowEnd)
+        if (isUndefined(val)) return
+        return { gridRowEnd: val }
+      }
     },
 
     // container queries
     ...{
-      container: ({ props }) =>
-        props.container && {
-          container: props.container
-        },
-      containerName: ({ props }) =>
-        props.containerName && {
-          containerName: props.containerName || 1
-        },
-      containerType: ({ props }) =>
-        props.containerType && {
-          containerType: props.containerType
-        }
+      container: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.container)
+        if (!val) return
+        return { container: val }
+      },
+      containerName: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.containerName)
+        if (!val) return
+        return { containerName: val || 1 }
+      },
+      containerType: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.containerType)
+        if (!val) return
+        return { containerType: val }
+      }
     }
   },
 

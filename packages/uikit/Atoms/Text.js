@@ -6,15 +6,22 @@ import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 const props = {
   fontSize: (el) => {
     const { props, deps } = el
-    return props.fontSize ? deps.getFontSizeByKey(props.fontSize) : null
+    const val = deps.exec.call(el, props.fontSize)
+    return val ? deps.getFontSizeByKey(val) : null
   },
-  fontFamily: ({ props, deps }) => ({
-    fontFamily: deps.getFontFamily(props.fontFamily) || props.fontFamily
-  }),
-  fontWeight: ({ props }) => ({
-    fontWeight: props.fontWeight,
-    fontVariationSettings: '"wght" ' + props.fontWeight
-  })
+  fontFamily: (element) => {
+    const { props, deps } = element
+    const val = deps.exec.call(element, props.fontFamily)
+    return { fontFamily: deps.getFontFamily(val) || val }
+  },
+  fontWeight: (element) => {
+    const { props, deps } = element
+    const val = deps.exec.call(element, props.fontWeight)
+    return {
+      fontWeight: val,
+      fontVariationSettings: '"wght" ' + val
+    }
+  }
 }
 
 export const Text = {
@@ -28,39 +35,84 @@ export const Text = {
   },
 
   class: {
-    font: ({ props }) => !isUndefined(props.font) && { font: props.font },
-    lineHeight: ({ props }) =>
-      !isUndefined(props.lineHeight) && { lineHeight: props.lineHeight },
-    textDecoration: ({ props }) =>
-      !isUndefined(props.textDecoration) && {
-        textDecoration: props.textDecoration
-      },
-    textTransform: ({ props }) =>
-      !isUndefined(props.textTransform) && {
-        textTransform: props.textTransform
-      },
-    wordBreak: ({ props }) =>
-      !isUndefined(props.wordBreak) && { wordBreak: props.wordBreak },
-    whiteSpace: ({ props }) =>
-      !isUndefined(props.whiteSpace) && { whiteSpace: props.whiteSpace },
-    wordWrap: ({ props }) =>
-      !isUndefined(props.wordWrap) && { wordWrap: props.wordWrap },
-    letterSpacing: ({ props }) =>
-      !isUndefined(props.letterSpacing) && {
-        letterSpacing: props.letterSpacing
-      },
-    textOverflow: ({ props }) =>
-      !isUndefined(props.textOverflow) && { textOverflow: props.textOverflow },
-    textAlign: ({ props }) =>
-      !isUndefined(props.textAlign) && { textAlign: props.textAlign },
-    writingMode: ({ props }) =>
-      !isUndefined(props.writingMode) && { writingMode: props.writingMode },
-    textOrientation: ({ props }) =>
-      !isUndefined(props.textOrientation) && {
-        textOrientation: props.textOrientation
-      },
-    textIndent: ({ props }) =>
-      !isUndefined(props.textIndent) && { textIndent: props.textIndent },
+    font: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.font)
+      if (isUndefined(val)) return
+      return { font: val }
+    },
+    lineHeight: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.lineHeight)
+      if (isUndefined(val)) return
+      return { lineHeight: val }
+    },
+    textDecoration: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.textDecoration)
+      if (isUndefined(val)) return
+      return { textDecoration: val }
+    },
+    textTransform: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.textTransform)
+      if (isUndefined(val)) return
+      return { textTransform: val }
+    },
+    wordBreak: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.wordBreak)
+      if (isUndefined(val)) return
+      return { wordBreak: val }
+    },
+    whiteSpace: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.whiteSpace)
+      if (isUndefined(val)) return
+      return { whiteSpace: val }
+    },
+    wordWrap: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.wordWrap)
+      if (isUndefined(val)) return
+      return { wordWrap: val }
+    },
+    letterSpacing: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.letterSpacing)
+      if (isUndefined(val)) return
+      return { letterSpacing: val }
+    },
+    textOverflow: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.textOverflow)
+      if (isUndefined(val)) return
+      return { textOverflow: val }
+    },
+    textAlign: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.textAlign)
+      if (isUndefined(val)) return
+      return { textAlign: val }
+    },
+    writingMode: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.writingMode)
+      if (isUndefined(val)) return
+      return { writingMode: val }
+    },
+    textOrientation: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.textOrientation)
+      if (isUndefined(val)) return
+      return { textOrientation: val }
+    },
+    textIndent: (element) => {
+      const { props, deps } = element
+      const val = deps.exec.call(element, props.textIndent)
+      if (isUndefined(val)) return
+      return { textIndent: val }
+    },
     ...props
   }
 }

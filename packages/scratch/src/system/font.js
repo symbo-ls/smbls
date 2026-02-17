@@ -7,7 +7,9 @@ import { getActiveConfig } from '../factory.js'
 import {
   getDefaultOrFirstKey,
   getFontFaceEach,
-  setCustomFontMedia
+  isGoogleFontsUrl,
+  setCustomFontMedia,
+  setFontImport
 } from '../utils'
 
 export const setFont = (val, key) => {
@@ -15,9 +17,21 @@ export const setFont = (val, key) => {
 
   if (!val || (isArray(val) && !val[0])) return
 
-  const fontFace = val[0]
-    ? getFontFaceEach(key, val)
-    : setCustomFontMedia(key, val.url)
+  let fontFace
+  if (val.isVariable) {
+    if (isGoogleFontsUrl(val.url)) {
+      fontFace = setFontImport(val.url)
+    } else {
+      fontFace = setCustomFontMedia(key, val.url, val.fontWeight, {
+        fontStretch: val.fontStretch,
+        fontDisplay: val.fontDisplay || 'swap'
+      })
+    }
+  } else if (val[0]) {
+    fontFace = getFontFaceEach(key, val)
+  } else {
+    fontFace = setCustomFontMedia(key, val.url)
+  }
 
   return { var: CSSvar, value: val, fontFace }
 }
