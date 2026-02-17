@@ -152,36 +152,58 @@ export const fetchFromCli = async (opts) => {
   try {
     const lock = readLock()
     prevPulledAt = lock?.pulledAt || null
+
+    // `--force` must bypass ETag short-circuiting so it can re-materialize local files
+    // even when the remote project data hasn't changed.
+    const effectiveIgnoreEtag = !!(ignoreEtag || force)
     const result = await getCurrentProjectData(
       { projectKey, projectId: lock.projectId },
       authToken,
-      { branch, includePending: true, etag: ignoreEtag ? undefined : lock.etag }
+      { branch, includePending: true, etag: effectiveIgnoreEtag ? undefined : lock.etag }
     )
 
     if (result.notModified) {
-      console.log(chalk.bold.green('Already up to date (ETag matched)'))
-      return
+      // If the user asked us to override local files, still try to re-apply the
+      // last persisted snapshot to repair local drift (even when ETag matched).
+      if (update || force) {
+        try {
+          const { projectPath } = getConfigPaths()
+          const raw = await fs.promises.readFile(projectPath, 'utf8')
+          payload = JSON.parse(raw || '{}') || {}
+          if (verbose) {
+            console.log(chalk.gray('Remote unchanged (ETag matched); re-applying last saved snapshot to local files.\n'))
+          }
+        } catch (_) {
+          console.log(chalk.bold.green('Already up to date (ETag matched)'))
+          return
+        }
+      } else {
+        console.log(chalk.bold.green('Already up to date (ETag matched)'))
+        return
+      }
     }
 
-    payload = result.data || {}
-    const etag = result.etag || null
-    logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
+    if (!result.notModified) {
+      payload = result.data || {}
+      const etag = result.etag || null
+      logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
 
-    // Update lock.json
-    writeLock({
-      etag,
-      version: payload.version,
-      branch,
-      projectId: payload?.projectInfo?.id || lock.projectId,
-      pulledAt: new Date().toISOString()
-    })
+      // Update lock.json
+      writeLock({
+        etag,
+        version: payload.version,
+        branch,
+        projectId: payload?.projectInfo?.id || lock.projectId,
+        pulledAt: new Date().toISOString()
+      })
 
-    // Update legacy symbols.json with version and branch
-    updateLegacySymbolsJson({ ...(symbolsConfig || {}), version: payload.version, branch })
+      // Update legacy symbols.json with version and branch
+      updateLegacySymbolsJson({ ...(symbolsConfig || {}), version: payload.version, branch })
 
-    if (verbose) {
-      console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
-      console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+      if (verbose) {
+        console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
+        console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+      }
     }
   } catch (e) {
     console.log(chalk.red('Failed to fetch:'), projectKey)
