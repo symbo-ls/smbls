@@ -1578,6 +1578,207 @@ export const Box = {
         if (!val) return
         return { containerType: val }
       }
+    },
+
+    // clip
+    ...{
+      backgroundClip: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.backgroundClip)
+        if (isUndefined(val)) return
+        return { backgroundClip: val, WebkitBackgroundClip: val }
+      },
+      clipPath: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.clipPath)
+        if (isUndefined(val)) return
+        return { clipPath: val }
+      }
+    },
+
+    // webkit
+    ...{
+      lineClamp: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.lineClamp)
+        if (isUndefined(val)) return
+        return {
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: val,
+          overflow: 'hidden'
+        }
+      },
+      WebkitBoxOrient: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.WebkitBoxOrient)
+        if (isUndefined(val)) return
+        return { WebkitBoxOrient: val }
+      },
+      WebkitLineClamp: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.WebkitLineClamp)
+        if (isUndefined(val)) return
+        return { WebkitLineClamp: val }
+      },
+      WebkitBackgroundClip: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.WebkitBackgroundClip)
+        if (isUndefined(val)) return
+        return { WebkitBackgroundClip: val }
+      },
+      WebkitTextFillColor: (element) => {
+        const { props, deps } = element
+        if (!props.WebkitTextFillColor) return
+        const globalTheme = deps.getSystemGlobalTheme(element)
+        const val = deps.exec.call(element, props.WebkitTextFillColor)
+        return { WebkitTextFillColor: deps.getMediaColor(val, globalTheme) }
+      },
+      WebkitOverflowScrolling: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.WebkitOverflowScrolling)
+        if (isUndefined(val)) return
+        return { WebkitOverflowScrolling: val }
+      },
+      WebkitFontSmoothing: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.WebkitFontSmoothing)
+        if (isUndefined(val)) return
+        return { WebkitFontSmoothing: val }
+      },
+      WebkitTapHighlightColor: (element) => {
+        const { props, deps } = element
+        if (!props.WebkitTapHighlightColor) return
+        const globalTheme = deps.getSystemGlobalTheme(element)
+        const val = deps.exec.call(element, props.WebkitTapHighlightColor)
+        return {
+          WebkitTapHighlightColor: deps.getMediaColor(val, globalTheme)
+        }
+      }
+    },
+
+    // missing standard props
+    ...{
+      objectPosition: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.objectPosition)
+        if (isUndefined(val)) return
+        return { objectPosition: val }
+      },
+      isolation: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.isolation)
+        if (isUndefined(val)) return
+        return { isolation: val }
+      },
+      touchAction: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.touchAction)
+        if (isUndefined(val)) return
+        return { touchAction: val }
+      },
+      flexGrow: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.flexGrow)
+        if (isUndefined(val)) return
+        return { flexGrow: val }
+      },
+      flexShrink: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.flexShrink)
+        if (isUndefined(val)) return
+        return { flexShrink: val }
+      },
+      flexBasis: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.flexBasis)
+        if (isUndefined(val)) return
+        return { flexBasis: val }
+      },
+      justifySelf: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.justifySelf)
+        if (isUndefined(val)) return
+        return { justifySelf: val }
+      },
+      placeSelf: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.placeSelf)
+        if (isUndefined(val)) return
+        return { placeSelf: val }
+      },
+      placeItems: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.placeItems)
+        if (isUndefined(val)) return
+        return { placeItems: val }
+      },
+      placeContent: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.placeContent)
+        if (isUndefined(val)) return
+        return { placeContent: val }
+      },
+      scrollSnapType: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.scrollSnapType)
+        if (isUndefined(val)) return
+        return { scrollSnapType: val }
+      },
+      scrollSnapAlign: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.scrollSnapAlign)
+        if (isUndefined(val)) return
+        return { scrollSnapAlign: val }
+      },
+      writingMode: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.writingMode)
+        if (isUndefined(val)) return
+        return { writingMode: val }
+      },
+      tabSize: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.tabSize)
+        if (isUndefined(val)) return
+        return { tabSize: val }
+      },
+      listStyle: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.listStyle)
+        if (isUndefined(val)) return
+        return { listStyle: val }
+      },
+      listStyleType: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.listStyleType)
+        if (isUndefined(val)) return
+        return { listStyleType: val }
+      },
+      accentColor: (element) => {
+        const { props, deps } = element
+        if (!props.accentColor) return
+        const globalTheme = deps.getSystemGlobalTheme(element)
+        const val = deps.exec.call(element, props.accentColor)
+        return { accentColor: deps.getMediaColor(val, globalTheme) }
+      },
+      outlineColor: (element) => {
+        const { props, deps } = element
+        if (!props.outlineColor) return
+        const globalTheme = deps.getSystemGlobalTheme(element)
+        const val = deps.exec.call(element, props.outlineColor)
+        return { outlineColor: deps.getMediaColor(val, globalTheme) }
+      },
+      outlineStyle: (element) => {
+        const { props, deps } = element
+        const val = deps.exec.call(element, props.outlineStyle)
+        if (isUndefined(val)) return
+        return { outlineStyle: val }
+      },
+      outlineWidth: (el) => {
+        const { props, deps } = el
+        return deps.transformSizeRatio.call(el, 'outlineWidth', props)
+      }
     }
   },
 
