@@ -88,13 +88,16 @@ export async function resolveLibraryIdsOrExit (rawArgs = [], authToken) {
 }
 
 export async function refreshWorkspaceProjectFiles ({ verbose } = {}) {
-  // Always update local materialized files after library changes.
+  // After library changes we only need to refresh shared libraries locally.
+  // Avoid doing a full project overwrite (components/pages/etc) which can clobber local edits.
   await fetchFromCli({
     update: true,
     force: true,
     convert: false,
     metadata: false,
     ignoreEtag: true,
-    verbose: !!verbose
+    verbose: !!verbose,
+    scope: 'libs',
+    skipConfirm: true
   })
 }

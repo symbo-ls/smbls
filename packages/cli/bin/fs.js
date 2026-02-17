@@ -17,7 +17,6 @@ const {
   removeValueFromArray
 } = utils.default || utils
 
-let singleFileKeys = ['designSystem', 'state', 'files', 'dependencies']
 // Keys that are materialized as directories with per-entry files.
 const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
 // Local-only directories that should be written/synced, but NOT exported from root `index.js`.
@@ -29,12 +28,11 @@ const localOnlyDirectoryKeys = ['libs']
 const splitObjectKeys = ['designSystem', 'files']
 
 const ALL_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys, ...localOnlyDirectoryKeys]
-const ROOT_EXPORT_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys]
 
 const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema', 'sharedLibraries']
 
 // Minimal reserved identifier set to avoid invalid named exports like "export const default"
-const RESERVED_IDENTIFIERS = new Set(['default'])
+const RESERVED_IDENTIFIERS = new Set(['default', 'class'])
 function isReservedIdentifier (name) {
   return RESERVED_IDENTIFIERS.has(name)
 }
@@ -81,8 +79,11 @@ function reorderWithOrderKeys (input) {
   return out
 }
 
-async function removeStaleFiles (body, targetDir) {
-  for (const key of ALL_DIRECTORY_KEYS) {
+async function removeStaleFiles (body, targetDir, { allDirectoryKeys, splitObjectKeys } = {}) {
+  const dirs = Array.isArray(allDirectoryKeys) ? allDirectoryKeys : ALL_DIRECTORY_KEYS
+  const splitKeys = Array.isArray(splitObjectKeys) ? splitObjectKeys : []
+
+  for (const key of dirs) {
     const dirPath = path.join(targetDir, key)
     if (!fs.existsSync(dirPath)) continue
 
@@ -98,7 +99,7 @@ async function removeStaleFiles (body, targetDir) {
       if (!body[key] || typeof body[key] !== 'object') return []
 
       // For splitObjectKeys we only materialize object-valued entries as files
-      if (splitObjectKeys.includes(key)) {
+      if (splitKeys.includes(key)) {
         const entries = []
         for (const [entryKey, value] of Object.entries(body[key] || {})) {
           if (!value || typeof value !== 'object' || Array.isArray(value)) continue
@@ -170,9 +171,25 @@ export async function createFs (
   const { update, metadata } = opts
 
   // `designSystem` and `files` are now directories (splitObjectKeys)
-  singleFileKeys = ['state', 'dependencies', 'sharedLibraries']
-  singleFileKeys = removeValueFromArray(singleFileKeys, 'schema')
-  if (metadata) singleFileKeys.push('schema')
+  const scope = String(opts.scope || 'full')
+  const isLibsScope = scope === 'libs' || scope === 'sharedLibraries'
+
+  const scopedDirectoryKeys = isLibsScope ? [] : directoryKeys
+  const scopedSplitObjectKeys = isLibsScope ? [] : splitObjectKeys
+  const scopedLocalOnlyDirectoryKeys = ['libs']
+  const scopedAllDirectoryKeys = [...scopedDirectoryKeys, ...scopedSplitObjectKeys, ...scopedLocalOnlyDirectoryKeys]
+
+  // Root exports should never include local-only directories like `libs/`.
+  const scopedRootExportDirectoryKeys = isLibsScope ? [] : [...scopedDirectoryKeys, ...scopedSplitObjectKeys]
+
+  const singleFileKeys = isLibsScope
+    ? ['sharedLibraries']
+    : (() => {
+        let keys = ['state', 'dependencies', 'sharedLibraries']
+        keys = removeValueFromArray(keys, 'schema')
+        if (metadata) keys.push('schema')
+        return keys
+      })()
 
   const targetDir = distDir
 
@@ -181,22 +198,24 @@ export async function createFs (
   if (!filesExist || update) {
     await fs.promises.mkdir(targetDir, { recursive: true })
 
-    // Migration: `designSystem.js` and `files.js` used to be generated as single files.
-    // Now that they're directories, remove legacy single files to avoid ambiguity.
-    for (const k of splitObjectKeys) {
-      const legacyPath = path.join(targetDir, `${k}.js`)
-      try {
-        if (fs.existsSync(legacyPath)) await fs.promises.unlink(legacyPath)
-      } catch (_) {}
+    if (!isLibsScope) {
+      // Migration: `designSystem.js` and `files.js` used to be generated as single files.
+      // Now that they're directories, remove legacy single files to avoid ambiguity.
+      for (const k of splitObjectKeys) {
+        const legacyPath = path.join(targetDir, `${k}.js`)
+        try {
+          if (fs.existsSync(legacyPath)) await fs.promises.unlink(legacyPath)
+        } catch (_) {}
+      }
     }
 
     const promises = [
       // Local-only, derived data
       createLibsDirectoryAndFiles(body?.sharedLibraries, targetDir, update),
-      ...directoryKeys.map((key) =>
+      ...scopedDirectoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, targetDir, update)
       ),
-      ...splitObjectKeys.map((key) => {
+      ...scopedSplitObjectKeys.map((key) => {
         if (body[key] && typeof body[key] === 'object') {
           return createSplitObjectDirectoryAndFiles(
             key,
@@ -221,11 +240,13 @@ export async function createFs (
     ]
 
     await Promise.all(promises)
-    await generateIndexjsFile(
-      joinArrays(singleFileKeys, ROOT_EXPORT_DIRECTORY_KEYS),
-      targetDir,
-      'root'
-    )
+    if (!isLibsScope) {
+      await generateIndexjsFile(
+        joinArrays(singleFileKeys, scopedRootExportDirectoryKeys),
+        targetDir,
+        'root'
+      )
+    }
   }
 
   if (filesExist) {
@@ -235,16 +256,19 @@ export async function createFs (
       await fs.promises.mkdir(cacheDir, { recursive: true })
 
       if (update) {
-        await removeStaleFiles(body, targetDir)
+        await removeStaleFiles(body, targetDir, {
+          allDirectoryKeys: scopedAllDirectoryKeys,
+          splitObjectKeys: scopedSplitObjectKeys
+        })
       }
 
       const cachePromises = [
         // Local-only, derived data
         createLibsDirectoryAndFiles(body?.sharedLibraries, cacheDir, true),
-        ...directoryKeys.map((key) =>
+        ...scopedDirectoryKeys.map((key) =>
           createKeyDirectoryAndFiles(key, body, cacheDir, true)
         ),
-        ...splitObjectKeys.map((key) => {
+        ...scopedSplitObjectKeys.map((key) => {
           if (body[key] && typeof body[key] === 'object') {
             return createSplitObjectDirectoryAndFiles(key, body[key], cacheDir, true)
           }
@@ -259,13 +283,19 @@ export async function createFs (
       ]
 
       await Promise.all(cachePromises)
-      await generateIndexjsFile(
-        joinArrays(ROOT_EXPORT_DIRECTORY_KEYS, singleFileKeys),
-        cacheDir,
-        'root'
-      )
+      if (!isLibsScope) {
+        await generateIndexjsFile(
+          joinArrays(scopedRootExportDirectoryKeys, singleFileKeys),
+          cacheDir,
+          'root'
+        )
+      }
 
-      const diffs = await findDiff(cacheDir, targetDir)
+      const diffs = await findDiff(cacheDir, targetDir, {
+        allDirectoryKeys: scopedAllDirectoryKeys,
+        singleFileKeys,
+        splitObjectKeys: scopedSplitObjectKeys
+      })
       if (diffs.length > 0) {
         console.log('Differences found:')
         diffs.forEach((diff) => {
@@ -277,21 +307,30 @@ export async function createFs (
         if (!update) {
           const { consent } = await askForConsent()
           if (consent) {
-            await overrideFiles(cacheDir, targetDir)
+            await overrideFiles(cacheDir, targetDir, {
+              allDirectoryKeys: scopedAllDirectoryKeys,
+              singleFileKeys
+            })
             // When the user consents to overriding, also remove stale files that
             // are no longer produced by the current body snapshot. This is
             // crucial for split directories like `designSystem/` where a previous
             // run might have produced per-flag files (e.g. useReset.js) that
             // should not persist once the value is a primitive.
             try {
-              await removeStaleFiles(body, targetDir)
+              await removeStaleFiles(body, targetDir, {
+                allDirectoryKeys: scopedAllDirectoryKeys,
+                splitObjectKeys: scopedSplitObjectKeys
+              })
             } catch (_) {}
             console.log('Files overridden successfully.')
           } else {
             console.log('Files not overridden.')
           }
         } else {
-          await overrideFiles(cacheDir, targetDir)
+          await overrideFiles(cacheDir, targetDir, {
+            allDirectoryKeys: scopedAllDirectoryKeys,
+            singleFileKeys
+          })
           console.log('Files overridden successfully.')
           console.log()
           console.log(chalk.dim('\n----------------\n'))
@@ -657,10 +696,13 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
   // }
 }
 
-async function findDiff (targetDir, distDir) {
+async function findDiff (targetDir, distDir, { allDirectoryKeys, singleFileKeys, splitObjectKeys } = {}) {
   const diffs = []
+  const dirs = Array.isArray(allDirectoryKeys) ? allDirectoryKeys : ALL_DIRECTORY_KEYS
+  const singles = Array.isArray(singleFileKeys) ? singleFileKeys : []
+  const splitKeys = Array.isArray(splitObjectKeys) ? splitObjectKeys : []
 
-  for (const key of ALL_DIRECTORY_KEYS) {
+  for (const key of dirs) {
     const targetDirPath = path.join(targetDir, key)
     const distDirPath = path.join(distDir, key)
 
@@ -673,7 +715,7 @@ async function findDiff (targetDir, distDir) {
       // Historically we skipped directory index.js diffs, but for split-object
       // directories like `designSystem/` and `files/` the index.js content is
       // the canonical mapping (and needs to update when primitives move in/out).
-      if (file === 'index.js' && !splitObjectKeys.includes(key) && key !== 'libs') continue
+      if (file === 'index.js' && !splitKeys.includes(key) && key !== 'libs') continue
 
       const targetFilePath = path.join(targetDirPath, file)
       const distFilePath = path.join(distDirPath, file)
@@ -702,7 +744,7 @@ async function findDiff (targetDir, distDir) {
     }
   }
 
-  for (const key of singleFileKeys) {
+  for (const key of singles) {
     const targetFilePath = path.join(targetDir, `${key}.js`)
     const distFilePath = path.join(distDir, `${key}.js`)
 
@@ -782,8 +824,11 @@ async function generateIndexjsFile (dirs, dirPath, key) {
   await fs.promises.writeFile(indexFilePath, indexContent, 'utf8')
 }
 
-async function overrideFiles (targetDir, distDir) {
-  for (const key of ALL_DIRECTORY_KEYS) {
+async function overrideFiles (targetDir, distDir, { allDirectoryKeys, singleFileKeys } = {}) {
+  const dirs = Array.isArray(allDirectoryKeys) ? allDirectoryKeys : ALL_DIRECTORY_KEYS
+  const singles = Array.isArray(singleFileKeys) ? singleFileKeys : []
+
+  for (const key of dirs) {
     const targetDirPath = path.join(targetDir, key)
     const distDirPath = path.join(distDir, key)
 
@@ -800,7 +845,7 @@ async function overrideFiles (targetDir, distDir) {
     }
   }
 
-  for (const key of singleFileKeys) {
+  for (const key of singles) {
     const targetFilePath = path.join(targetDir, `${key}.js`)
     const distFilePath = path.join(distDir, `${key}.js`)
 
