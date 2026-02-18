@@ -65,6 +65,21 @@ export async function promptProjectKey ({ defaultKey } = {}) {
   return String(res.projectKey || '').trim()
 }
 
+export async function promptProjectSharedLibrariesMode ({ defaultMode } = {}) {
+  const res = await inquirer.prompt([{
+    name: 'mode',
+    type: 'list',
+    message: 'Shared libraries:',
+    choices: [
+      { name: chalk.bold('Default') + chalk.dim(' (recommended: add default.symbo.ls)'), value: 'default' },
+      { name: 'Blank', value: 'blank' }
+    ],
+    default: defaultMode || 'default',
+    pageSize: 10
+  }])
+  return res.mode
+}
+
 export async function confirmPrompt (message, defaultValue = false) {
   const res = await inquirer.prompt([{
     name: 'ok',

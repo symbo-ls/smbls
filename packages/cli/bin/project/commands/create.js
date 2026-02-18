@@ -3,12 +3,13 @@ import chalk from 'chalk'
 import { createLocalTemplate } from '../../../helpers/localTemplateCreate.js'
 import { linkWorkspaceToProject } from '../../../helpers/projectConfigLink.js'
 import { normalizeProjectKey, suggestProjectKeyFromName, isProbablyProjectId } from '../../../helpers/projectKeyUtils.js'
-import { createProject } from '../../../helpers/projectsApi.js'
+import { createProject, addProjectLibraries, listAvailableLibraries } from '../../../helpers/projectsApi.js'
 import {
   promptProjectCreateMode,
   promptProjectName,
   promptProjectType,
   promptProjectKey,
+  promptProjectSharedLibrariesMode,
   selectProjectPaged
 } from '../../../helpers/projectPrompts.js'
 import {
@@ -20,6 +21,20 @@ import {
   resolveProjectIdOrExit,
   ensureAvailableKeyOrExit
 } from '../shared.js'
+
+function pickLibId (lib) {
+  return lib?.id || lib?._id || null
+}
+
+async function resolveAvailableLibraryIdByKey ({ libraryKey, authToken }) {
+  const payload = await listAvailableLibraries({ search: libraryKey, page: 1, limit: 50 }, authToken)
+  const items = Array.isArray(payload?.items)
+    ? payload.items
+    : (Array.isArray(payload) ? payload : (payload?.data || payload?.libraries || []))
+
+  const exact = items.find((lib) => String(lib?.key || '').toLowerCase() === String(libraryKey || '').toLowerCase())
+  return pickLibId(exact)
+}
 
 export async function runProjectCreate (destArg, options = {}) {
   const dest = destArg || 'symbols-starter-kit'
@@ -121,6 +136,12 @@ export async function runProjectCreate (destArg, options = {}) {
 
   projectKey = await ensureAvailableKeyOrExit({ projectKey, authToken })
 
+  // Shared libraries: default foundation library or blank.
+  // Non-interactive defaults to "default" unless explicitly opted out.
+  const sharedLibsMode = options.blankSharedLibraries
+    ? 'blank'
+    : (interactive ? await promptProjectSharedLibrariesMode({ defaultMode: 'default' }) : 'default')
+
   const created = await createProject({
     name,
     projectType,
@@ -132,6 +153,28 @@ export async function runProjectCreate (destArg, options = {}) {
 
   const createdKey = normalizeProjectKey(pickProjectKey(created) || projectKey)
   const createdId = pickProjectId(created)
+
+  if (sharedLibsMode === 'default') {
+    const defaultLibraryKey = 'default.symbo.ls'
+    try {
+      const libId = await resolveAvailableLibraryIdByKey({ libraryKey: defaultLibraryKey, authToken })
+      if (!libId) {
+        console.log(chalk.yellow(`Warning: shared library "${defaultLibraryKey}" not found in this environment.`))
+        console.log(chalk.dim('Continuing with blank shared libraries.'))
+      } else if (!createdId) {
+        console.log(chalk.yellow('Warning: project created, but unable to attach shared libraries (missing project id).'))
+        console.log(chalk.dim('Continuing with blank shared libraries.'))
+      } else {
+        await addProjectLibraries(createdId, [String(libId)], authToken)
+        console.log(chalk.gray(`Shared library added: ${chalk.cyan(defaultLibraryKey)}`))
+      }
+    } catch (err) {
+      console.log(chalk.yellow(`Warning: failed to add shared library "${defaultLibraryKey}".`))
+      const msg = String(err?.message || '').trim()
+      if (msg) console.log(chalk.dim(msg))
+      console.log(chalk.dim('Continuing with blank shared libraries.'))
+    }
+  }
 
   if (options.domql === false) {
     console.error(chalk.red('Only DOMQL templates are supported right now.'))
@@ -186,6 +229,7 @@ export function registerProjectCreateCommand (projectCmd) {
     .option('--clean-from-git', 'Remove starter-kit git repository', true)
     .option('--no-dependencies', 'Skip installing dependencies')
     .option('--no-clone', 'Create folder instead of cloning from git')
+    .option('--blank-shared-libraries', 'Create project with blank shared libraries', false)
     .action(async (dir, opts) => {
       await runProjectCreate(dir, {
         ...opts,
