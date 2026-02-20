@@ -119,7 +119,7 @@ async function removeStaleFiles (body, targetDir, { allDirectoryKeys, splitObjec
           if (fileName.startsWith('/')) fileName = fileName.slice(1)
           if (fileName === '') fileName = 'main'
           if (fileName.includes('*')) fileName = 'fallback'
-          return `${fileName.replace('/', '-')}.js`
+          return `${fileName.replaceAll('/', '-').replaceAll('\\', '-')}.js`
         })
     })()
 
@@ -628,7 +628,8 @@ export async function createFs (
         : childKey
     // Avoid reserved identifiers that break ESM syntax, e.g. "export const default"
     const safeItemKey = isReservedIdentifier(itemKey) ? `_${itemKey}` : itemKey
-    const filePath = path.join(dirPath, `${childKey.replace('/', '-')}.js`)
+    const fileStem = String(childKey).replaceAll('/', '-').replaceAll('\\', '-')
+    const filePath = path.join(dirPath, `${fileStem}.js`)
 
     if (!update && fs.existsSync(filePath)) {
       return
