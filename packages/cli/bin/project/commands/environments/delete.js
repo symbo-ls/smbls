@@ -12,7 +12,7 @@ export function registerProjectEnvironmentsDeleteCommand (envCmd) {
     .option('--yes', 'Skip confirmation prompt', false)
     .option('--json', 'Output raw JSON', false)
     .action(async (envKey, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       if (!opts.yes) {

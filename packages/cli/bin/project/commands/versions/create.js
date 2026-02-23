@@ -15,7 +15,7 @@ export function registerProjectVersionsCreateCommand (versionsCmd) {
     .option('--body-file <path>', 'JSON file to merge into request')
     .option('--json', 'Output raw JSON', false)
     .action(async (opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const fromFile = opts.bodyFile ? readJsonFile(opts.bodyFile) : null

@@ -30,7 +30,7 @@ export function registerProjectMembersRemoveCommand (membersCmd) {
     .option('--project <projectKeyOrId>', 'Override project (defaults to linked workspace)')
     .option('--json', 'Output raw JSON', false)
     .action(async (memberIdOrEmail, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const memberId = isEmail(memberIdOrEmail)

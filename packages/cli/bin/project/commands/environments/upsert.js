@@ -29,7 +29,7 @@ export function registerProjectEnvironmentsUpsertCommand (envCmd) {
     .option('--config-file <path>', 'Config JSON file (merged with flags)')
     .option('--json', 'Output raw JSON', false)
     .action(async (envKey, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const fromFile = opts.configFile ? readJsonFile(opts.configFile) : null

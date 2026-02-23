@@ -11,7 +11,7 @@ export function registerProjectListCommand (projectCmd) {
     .option('--search <q>', 'Search query')
     .option('--json', 'Output raw JSON', false)
     .action(async (opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const payload = await listProjects({ page: opts.page, limit: opts.limit, search: opts.search }, authToken)
       if (opts.json) {
         console.log(JSON.stringify(payload, null, 2))

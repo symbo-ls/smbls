@@ -8,7 +8,7 @@ export function registerProjectMembersAcceptInviteCommand (membersCmd) {
     .description('Accept a project invite token (requires being logged in)')
     .option('--json', 'Output raw JSON', false)
     .action(async (token, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const payload = await acceptProjectInvite(token, authToken)
       if (opts.json) {
         console.log(JSON.stringify(payload, null, 2))

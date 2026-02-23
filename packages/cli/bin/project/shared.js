@@ -4,6 +4,7 @@ import path from 'path'
 import { CredentialManager } from '../../helpers/credentialManager.js'
 import { loadCliConfig } from '../../helpers/config.js'
 import { showAuthRequiredMessages } from '../../helpers/buildMessages.js'
+import { ensureAuthenticated, isAuthError } from '../../helpers/authEnsure.js'
 import { normalizeProjectKey, isProbablyProjectId } from '../../helpers/projectKeyUtils.js'
 import { checkProjectKey, getProjectByKey } from '../../helpers/projectsApi.js'
 import { promptProjectKey } from '../../helpers/projectPrompts.js'
@@ -16,15 +17,22 @@ export function ensureDir (dir) {
   }
 }
 
-export function resolveAuthOrExit () {
+export async function resolveAuthOrExit (options = {}) {
   const cliConfig = loadCliConfig()
-  const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
-  if (!authToken) {
-    showAuthRequiredMessages()
+  try {
+    const resolved = await ensureAuthenticated({
+      apiBaseUrl: cliConfig.apiBaseUrl,
+      nonInteractive: options.nonInteractive
+    })
+    return { cliConfig: resolved.cliConfig, authToken: resolved.authToken }
+  } catch (err) {
+    if (isAuthError(err)) {
+      showAuthRequiredMessages()
+      process.exit(1)
+    }
+    console.error(chalk.red('Failed to verify authentication:'), err?.message || String(err))
     process.exit(1)
   }
-  return { cliConfig, authToken }
 }
 
 export function resolveMaybeAuth () {
@@ -98,10 +106,25 @@ export async function resolveProjectIdOrExit ({ value, authToken }) {
   process.exit(1)
 }
 
-export async function ensureAvailableKeyOrExit ({ projectKey, authToken }) {
+export async function ensureAvailableKeyOrExit ({ projectKey, authToken, cliConfig, nonInteractive }) {
+  let effectiveConfig = cliConfig || loadCliConfig()
   for (;;) {
-    const info = await checkProjectKey(projectKey, authToken)
-    if (info?.available) return projectKey
+    let info
+    try {
+      info = await checkProjectKey(projectKey, authToken)
+    } catch (err) {
+      if (isAuthError(err)) {
+        const resolved = await ensureAuthenticated({
+          apiBaseUrl: effectiveConfig.apiBaseUrl,
+          nonInteractive
+        })
+        effectiveConfig = resolved.cliConfig
+        authToken = resolved.authToken
+        continue
+      }
+      throw err
+    }
+    if (info?.available) return { projectKey, authToken, cliConfig: effectiveConfig }
     console.log(chalk.yellow(`Key is not available: ${projectKey}`))
     const next = await promptProjectKey({ defaultKey: projectKey })
     projectKey = normalizeProjectKey(next)

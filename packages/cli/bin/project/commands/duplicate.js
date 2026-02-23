@@ -31,7 +31,7 @@ export function registerProjectDuplicateCommand (projectCmd) {
     .option('--no-dependencies', 'Skip installing dependencies')
     .option('--no-clone', 'Create folder instead of cloning from git')
     .action(async (source, dir, opts) => {
-      const { cliConfig, authToken } = resolveAuthOrExit()
+      let { cliConfig, authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const sourceId = await resolveProjectIdOrExit({ value: source, authToken })
 
       const interactive = !!process.stdin.isTTY && !!process.stdout.isTTY && !opts.nonInteractive
@@ -43,7 +43,17 @@ export function registerProjectDuplicateCommand (projectCmd) {
         key = normalizeProjectKey(entered)
       }
 
-      if (key) key = await ensureAvailableKeyOrExit({ projectKey: key, authToken })
+      if (key) {
+        const ensured = await ensureAvailableKeyOrExit({
+          projectKey: key,
+          authToken,
+          cliConfig,
+          nonInteractive: opts.nonInteractive
+        })
+        key = ensured.projectKey
+        authToken = ensured.authToken
+        cliConfig = ensured.cliConfig
+      }
 
       const body = {}
       if (name) body.name = name

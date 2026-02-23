@@ -24,7 +24,7 @@ export function registerProjectVersionsListCommand (versionsCmd) {
     .option('--limit <n>', 'Page size', (v) => parseInt(v, 10), 20)
     .option('--json', 'Output raw JSON', false)
     .action(async (opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const payload = await listProjectVersions(

@@ -6,12 +6,12 @@ import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { loadModule } from './require.js'
 import { program } from './program.js'
-import { CredentialManager } from '../helpers/credentialManager.js'
 import { buildDirectory } from '../helpers/fileUtils.js'
 import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { showAuthRequiredMessages, showProjectNotFoundMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
+import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { getConfigPaths, loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
 import { stripOrderFields } from '../helpers/orderUtils.js'
@@ -134,12 +134,16 @@ export async function pushProjectChanges (options) {
   try {
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
-    const credManager = new CredentialManager()
-    const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
-
-    if (!authToken) {
-      showAuthRequiredMessages()
-      process.exit(1)
+    let authToken
+    try {
+      const ensured = await ensureAuthenticated({ apiBaseUrl: cliConfig.apiBaseUrl, nonInteractive: options.nonInteractive })
+      authToken = ensured.authToken
+    } catch (err) {
+      if (isAuthError(err)) {
+        showAuthRequiredMessages()
+        process.exit(1)
+      }
+      throw err
     }
 
     const lock = readLock()
