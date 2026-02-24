@@ -5,12 +5,12 @@ import path from 'path'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { program } from './program.js'
-import { CredentialManager } from '../helpers/credentialManager.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { uploadFile, downloadFile, listFiles as listFilesApi } from '../helpers/filesApiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
+import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { createFs } from './fs.js'
 import { preprocessChanges } from '../helpers/changesUtils.js'
 import { applyOrderFields, stripOrderFields } from '../helpers/orderUtils.js'
@@ -91,13 +91,16 @@ function sanitizeFilename (name) {
 
 async function resolveAuthOrExit () {
   const cliConfig = loadCliConfig()
-  const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
-  if (!authToken) {
-    showAuthRequiredMessages()
-    process.exit(1)
+  try {
+    const ensured = await ensureAuthenticated({ apiBaseUrl: cliConfig.apiBaseUrl })
+    return { cliConfig: ensured.cliConfig, authToken: ensured.authToken }
+  } catch (err) {
+    if (isAuthError(err)) {
+      showAuthRequiredMessages()
+      process.exit(1)
+    }
+    throw err
   }
-  return { cliConfig, authToken }
 }
 
 async function resolveProjectIdOrExit ({ authToken, projectKey, branch }) {

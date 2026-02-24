@@ -11,7 +11,7 @@ export function registerProjectEnvironmentsActivateCommand (envCmd) {
     .option('--force', 'Force reconfiguration even if already active', false)
     .option('--json', 'Output raw JSON', false)
     .action(async (opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const payload = await activateMultipleEnvironments(

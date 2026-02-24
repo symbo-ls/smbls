@@ -11,7 +11,7 @@ export function registerProjectUpdateCommand (projectCmd) {
     .option('--changes <json>', 'JSON for POST /projects/:id/changes')
     .option('--changes-file <path>', 'JSON file for POST /projects/:id/changes')
     .action(async (value, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveProjectIdOrExit({ value, authToken })
 
       const meta = opts.metaFile ? readJsonFile(opts.metaFile) : parseJsonArg(opts.meta)

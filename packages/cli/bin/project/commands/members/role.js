@@ -10,7 +10,7 @@ export function registerProjectMembersRoleCommand (membersCmd) {
     .option('--project <projectKeyOrId>', 'Override project (defaults to linked workspace)')
     .option('--json', 'Output raw JSON', false)
     .action(async (memberId, role, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const payload = await updateProjectMemberRole(projectId, memberId, role, authToken)

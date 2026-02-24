@@ -5,9 +5,9 @@ import path from 'path'
 import chalk from 'chalk'
 import { program } from './program.js'
 import { syncProjectChanges } from './sync.js'
-import { CredentialManager } from '../helpers/credentialManager.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
+import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { createFs } from './fs.js'
@@ -268,11 +268,16 @@ async function augmentLocalWithNewFsItems ({ local, distDir, outputDir, currentB
 export async function startCollab (options) {
   const symbolsConfig = await loadSymbolsConfig()
   const cliConfig = loadCliConfig()
-  const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
-  if (!authToken) {
-    console.log(chalk.yellow('\nAuthentication required. Please run: smbls login\n'))
-    process.exit(1)
+  let authToken
+  try {
+    const ensured = await ensureAuthenticated({ apiBaseUrl: cliConfig.apiBaseUrl, nonInteractive: options.nonInteractive })
+    authToken = ensured.authToken
+  } catch (err) {
+    if (isAuthError(err)) {
+      console.log(chalk.yellow('\nAuthentication required. Please run: smbls login\n'))
+      process.exit(1)
+    }
+    throw err
   }
 
   const branch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'

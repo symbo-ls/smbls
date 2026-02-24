@@ -11,7 +11,7 @@ export function registerProjectMembersAddCommand (membersCmd) {
     .option('--role <role>', 'Member role (guest/editor/admin/owner)', 'guest')
     .option('--json', 'Output raw JSON', false)
     .action(async (email, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const payload = await addProjectMember(projectId, { email, role: opts.role }, authToken)

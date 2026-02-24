@@ -9,9 +9,9 @@ import { program } from './program.js'
 import * as utils from '@domql/utils'
 import { convertFromCli } from './convert.js'
 import { createFs } from './fs.js'
-import { CredentialManager } from '../helpers/credentialManager.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
+import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies } from '../helpers/dependenciesUtils.js'
@@ -126,12 +126,16 @@ export const fetchFromCli = async (opts) => {
 
   const symbolsConfig = await loadSymbolsConfig()
   const cliConfig = loadCliConfig()
-  const credManager = new CredentialManager()
-  const authToken = credManager.ensureAuthToken(cliConfig.apiBaseUrl)
-
-  if (!authToken) {
-    showAuthRequiredMessages()
-    process.exit(1)
+  let authToken
+  try {
+    const ensured = await ensureAuthenticated({ apiBaseUrl: cliConfig.apiBaseUrl, nonInteractive: opts.nonInteractive })
+    authToken = ensured.authToken
+  } catch (err) {
+    if (isAuthError(err)) {
+      showAuthRequiredMessages()
+      process.exit(1)
+    }
+    throw err
   }
 
   const projectKey = cliConfig.projectKey || symbolsConfig.key

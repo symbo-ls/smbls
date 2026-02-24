@@ -11,7 +11,7 @@ export function registerProjectLibsRemoveCommand (libsCmd) {
     .option('--no-refresh', 'Do not fetch latest project data after updating libs')
     .option('--json', 'Output raw JSON', false)
     .action(async (libraries, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
       const libraryIds = await resolveLibraryIdsOrExit(libraries, authToken)
 

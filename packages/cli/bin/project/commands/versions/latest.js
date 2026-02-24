@@ -62,7 +62,7 @@ export function registerProjectVersionsLatestCommand (versionsCmd) {
     .option('--fields <fields>', 'Fields projection (comma-separated)', DEFAULT_FIELDS)
     .option('--json', 'Output raw JSON', false)
     .action(async (opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       let payload = await getLatestProjectVersion(

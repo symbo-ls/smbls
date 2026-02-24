@@ -12,7 +12,7 @@ export function registerProjectMembersInviteCommand (membersCmd) {
     .option('--name <name>', 'Invitee name (optional)')
     .option('--json', 'Output raw JSON', false)
     .action(async (email, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const payload = await inviteProjectMember(projectId, { email, role: opts.role, name: opts.name }, authToken)

@@ -14,7 +14,7 @@ export function registerProjectRestoreCommand (projectCmd) {
     .option('--message <message>', 'Custom restore message')
     .option('--json', 'Output raw JSON', false)
     .action(async (opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const payload = await restoreProjectToVersion(projectId, {

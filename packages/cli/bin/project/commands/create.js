@@ -48,7 +48,9 @@ export async function runProjectCreate (destArg, options = {}) {
   }
   if (!mode) mode = 'local_only'
 
-  const { cliConfig, authToken } = (mode === 'local_only') ? resolveMaybeAuth() : resolveAuthOrExit()
+  let { cliConfig, authToken } = (mode === 'local_only')
+    ? resolveMaybeAuth()
+    : await resolveAuthOrExit({ nonInteractive: options.nonInteractive })
 
   if (mode === 'link_existing') {
     ensureDir(absDest)
@@ -134,7 +136,17 @@ export async function runProjectCreate (destArg, options = {}) {
     projectKey = normalizeProjectKey(entered)
   }
 
-  projectKey = await ensureAvailableKeyOrExit({ projectKey, authToken })
+  {
+    const ensured = await ensureAvailableKeyOrExit({
+      projectKey,
+      authToken,
+      cliConfig,
+      nonInteractive: options.nonInteractive
+    })
+    projectKey = ensured.projectKey
+    authToken = ensured.authToken
+    cliConfig = ensured.cliConfig
+  }
 
   // Shared libraries: default foundation library or blank.
   // Non-interactive defaults to "default" unless explicitly opted out.

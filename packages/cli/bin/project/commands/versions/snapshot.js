@@ -12,7 +12,7 @@ export function registerProjectVersionsSnapshotCommand (versionsCmd) {
     .option('--body-file <path>', 'JSON file body for POST (optional)')
     .option('--json', 'Output raw JSON', false)
     .action(async (versionId, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
       const fromFile = opts.bodyFile ? readJsonFile(opts.bodyFile) : null

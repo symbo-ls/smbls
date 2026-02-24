@@ -9,7 +9,7 @@ export function registerProjectDeleteCommand (projectCmd) {
     .description('Delete a platform project')
     .option('--yes', 'Skip confirmation prompt', false)
     .action(async (value, opts) => {
-      const { authToken } = resolveAuthOrExit()
+      const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveProjectIdOrExit({ value, authToken })
       if (!opts.yes) {
         const ok = await confirmPrompt(`Delete project ${projectId}?`, false)
