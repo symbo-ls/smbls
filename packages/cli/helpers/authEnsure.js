@@ -22,6 +22,28 @@ async function safeJson (res) {
   }
 }
 
+function base64UrlToUtf8 (input) {
+  const s = String(input || '')
+    .replace(/-/g, '+')
+    .replace(/_/g, '/')
+  const padLen = (4 - (s.length % 4)) % 4
+  const padded = s + '='.repeat(padLen)
+  return Buffer.from(padded, 'base64').toString('utf8')
+}
+
+function tryGetJwtExpDate (token) {
+  try {
+    const parts = String(token || '').split('.')
+    if (parts.length < 2) return null
+    const payload = JSON.parse(base64UrlToUtf8(parts[1]))
+    const exp = payload && typeof payload.exp === 'number' ? payload.exp : null
+    if (!exp || !Number.isFinite(exp)) return null
+    return new Date(exp * 1000)
+  } catch (_) {
+    return null
+  }
+}
+
 async function fetchMe ({ apiBaseUrl, authToken }) {
   const fetchImpl = await getFetchImpl()
   const candidates = [
@@ -71,6 +93,83 @@ function isAuthFailure (err) {
   return msg.includes('invalid token') || msg.includes('jwt expired') || msg.includes('token expired')
 }
 
+function extractTokensFromResponse (data) {
+  const tokens = data?.data?.tokens || data?.tokens || {}
+  const accessToken =
+    tokens?.accessToken ||
+    data?.token ||
+    data?.accessToken ||
+    data?.jwt ||
+    data?.data?.token ||
+    data?.data?.accessToken ||
+    data?.data?.jwt
+  const refreshToken = tokens?.refreshToken || null
+  const accessTokenExp = tokens?.accessTokenExp?.expiresAt || tokens?.accessTokenExp || null
+  const refreshTokenExp = tokens?.refreshTokenExp?.expiresAt || tokens?.refreshTokenExp || null
+  return { accessToken, refreshToken, accessTokenExp, refreshTokenExp }
+}
+
+export async function refreshAuthTokens ({ apiBaseUrl, credManager } = {}) {
+  const cm = credManager || new CredentialManager()
+  const state = cm.loadState ? cm.loadState() : {}
+  const baseUrl = apiBaseUrl || state.currentApiBaseUrl
+  if (!baseUrl) {
+    const err = new Error('API base URL is required to refresh tokens')
+    err.code = 'NO_API_BASE_URL'
+    throw err
+  }
+
+  const refreshToken = cm.getRefreshToken(baseUrl)
+  if (!refreshToken) {
+    const err = new Error('Refresh token missing')
+    err.code = 'NO_REFRESH_TOKEN'
+    throw err
+  }
+
+  const fetchImpl = await getFetchImpl()
+  const url = `${baseUrl.replace(/\/+$/, '')}/core/auth/refresh`
+  const res = await fetchImpl(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken })
+  })
+  const data = await safeJson(res)
+
+  if (res.status === 404) {
+    const err = new Error('Unable to refresh token (missing /core/auth/refresh endpoint)')
+    err.response = { status: res.status, data, url }
+    throw err
+  }
+
+  if (!res.ok) {
+    const err = new Error(data?.message || data?.error || `Failed to refresh token (${res.status})`)
+    err.response = { status: res.status, data, url }
+    throw err
+  }
+
+  const tokens = extractTokensFromResponse(data)
+  const nextAccess = tokens.accessToken
+  const nextRefresh = tokens.refreshToken || refreshToken
+  if (!nextAccess) {
+    throw new Error('Token refresh succeeded but no access token was returned by the server')
+  }
+
+  cm.saveCredentials({
+    apiBaseUrl: baseUrl,
+    authToken: nextAccess,
+    refreshToken: nextRefresh,
+    authTokenExpiresAt: tokens.accessTokenExp || null,
+    refreshTokenExpiresAt: tokens.refreshTokenExp || null
+  })
+
+  return {
+    apiBaseUrl: baseUrl,
+    authToken: nextAccess,
+    refreshToken: nextRefresh,
+    authTokenExpiresAt: tokens.accessTokenExp || null
+  }
+}
+
 async function runLoginSubprocess () {
   const indexPath = fileURLToPath(new URL('../bin/index.js', import.meta.url))
   return await new Promise((resolve, reject) => {
@@ -86,9 +185,13 @@ async function runLoginSubprocess () {
   })
 }
 
-function shouldForceReloginByExpiry ({ credManager, apiBaseUrl }) {
+function getBestEffortTokenExpiresAt ({ credManager, apiBaseUrl, authToken }) {
+  return getAuthTokenExpiresAt({ credManager, apiBaseUrl }) || tryGetJwtExpDate(authToken)
+}
+
+function shouldRefreshOrReloginByExpiry ({ credManager, apiBaseUrl, authToken }) {
   try {
-    const exp = getAuthTokenExpiresAt({ credManager, apiBaseUrl })
+    const exp = getBestEffortTokenExpiresAt({ credManager, apiBaseUrl, authToken })
     if (!exp) return false
     const ms = exp.getTime()
     if (!Number.isFinite(ms)) return false
@@ -137,9 +240,20 @@ async function ensureTokenPresent ({ apiBaseUrl, nonInteractive }) {
   const interactive = isInteractive({ nonInteractive })
 
   let token = credManager.getAuthToken(apiBaseUrl)
-  const isExpiredSoon = token && shouldForceReloginByExpiry({ credManager, apiBaseUrl })
+  const refreshToken = credManager.getRefreshToken(apiBaseUrl)
+  const isExpiredSoon = token && shouldRefreshOrReloginByExpiry({ credManager, apiBaseUrl, authToken: token })
 
   if (!token || isExpiredSoon) {
+    if (refreshToken) {
+      try {
+        const refreshed = await refreshAuthTokens({ apiBaseUrl, credManager })
+        token = refreshed.authToken
+        return { authToken: token, apiBaseUrl: refreshed.apiBaseUrl, cliConfig: loadCliConfig() }
+      } catch (_) {
+        // Fall back to login (interactive) or AUTH_REQUIRED (non-interactive)
+      }
+    }
+
     if (!interactive) {
       const err = new Error('Authentication required')
       err.code = 'AUTH_REQUIRED'
@@ -148,7 +262,7 @@ async function ensureTokenPresent ({ apiBaseUrl, nonInteractive }) {
     }
 
     if (isExpiredSoon) {
-      console.log(chalk.yellow('\nYour session is about to expire. Please sign in again.'))
+      console.log(chalk.yellow('\nYour session is about to expire. Refreshing failed; please sign in again.'))
     }
     await runLoginSubprocess()
     const updatedConfig = loadCliConfig()
@@ -176,6 +290,25 @@ export async function ensureAuthenticated ({ apiBaseUrl, nonInteractive } = {}) 
     const me = await fetchMe({ apiBaseUrl: first.apiBaseUrl, authToken: first.authToken })
     return { cliConfig: first.cliConfig, apiBaseUrl: first.apiBaseUrl, authToken: first.authToken, user: me.user }
   } catch (err) {
+    if (isAuthFailure(err)) {
+      const credManager = new CredentialManager()
+      const refreshToken = credManager.getRefreshToken(first.apiBaseUrl)
+      if (refreshToken) {
+        try {
+          const refreshed = await refreshAuthTokens({ apiBaseUrl: first.apiBaseUrl, credManager })
+          const me = await fetchMe({ apiBaseUrl: refreshed.apiBaseUrl, authToken: refreshed.authToken })
+          return {
+            cliConfig: loadCliConfig(),
+            apiBaseUrl: refreshed.apiBaseUrl,
+            authToken: refreshed.authToken,
+            user: me.user
+          }
+        } catch (_) {
+          // Fall back to re-login below (interactive) or surface original error (non-interactive)
+        }
+      }
+    }
+
     if (!interactive || !isAuthFailure(err)) throw err
 
     console.log(chalk.yellow('\nYour session is expired or invalid. Please sign in again.'))
