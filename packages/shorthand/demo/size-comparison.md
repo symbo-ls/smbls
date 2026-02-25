@@ -23,11 +23,11 @@
 
 ### Incremental savings (each step)
 
-| Step | From | To | Chars saved | Additional reduction |
-|------|------|----|------------|---------------------|
+| Step | From | To | Chars saved | Reduction vs Original |
+|------|------|----|------------|----------------------|
 | shorten | Original | Shortened | 5,173 | 10.7% |
-| stringify | Shortened | Stringified | 9,829 | 22.7% of shortened |
-| stringifyFurther | Stringified | StringifiedFurther | 2,767 | 8.3% of stringified |
+| stringify | Shortened | Stringified | 9,829 | 31.0% |
+| stringifyFurther | Stringified | StringifiedFurther | 2,767 | 36.7% |
 
 ---
 
