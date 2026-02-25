@@ -13,22 +13,6 @@
 | Stringified (stringify) | 33,454 | 1,109 | 8,364 | 0.69x |
 | StringifiedFurther (stringifyFurther) | 30,687 | 928 | 7,672 | 0.63x |
 
-### Savings vs Original
-
-| Transform | Chars saved | Tokens saved | Reduction |
-|-----------|------------|-------------|-----------|
-| shorten | 5,173 | 1,293 | 10.7% |
-| stringify | 15,002 | 3,750 | 31.0% |
-| stringifyFurther | 17,769 | 4,442 | 36.7% |
-
-### Incremental savings (each step)
-
-| Step | From | To | Chars saved | Reduction vs Original |
-|------|------|----|------------|----------------------|
-| shorten | Original | Shortened | 5,173 | 10.7% |
-| stringify | Shortened | Stringified | 9,829 | 31.0% |
-| stringifyFurther | Stringified | StringifiedFurther | 2,767 | 36.7% |
-
 ---
 
 ## examples/default — 123 components
@@ -40,12 +24,6 @@
 | Stringified | 37,324 | 9,331 | 0.81x | 18.7% |
 | StringifiedFurther | 35,192 | 8,798 | 0.77x | 23.4% |
 
-| Transform | Chars saved | Reduction |
-|-----------|------------|-----------|
-| shorten | 5,049 | 11.0% |
-| stringify | 8,595 | 18.7% |
-| stringifyFurther | 10,727 | 23.4% |
-
 ---
 
 ## examples/landing — 74 components
@@ -56,23 +34,6 @@
 | Shortened | 132,482 | 33,121 | 0.91x | 9.0% |
 | Stringified | 121,166 | 30,292 | 0.83x | 16.8% |
 | StringifiedFurther | 110,870 | 27,718 | 0.76x | 23.9% |
-
-| Transform | Chars saved | Reduction |
-|-----------|------------|-----------|
-| shorten | 13,137 | 9.0% |
-| stringify | 24,453 | 16.8% |
-| stringifyFurther | 34,749 | 23.9% |
-
----
-
-## All 193 components — Aggregate
-
-| Variant | Characters | ~Tokens | Ratio | Reduction |
-|---------|-----------|---------|-------|-----------|
-| Original | 190,498 | 47,625 | 1.00x | — |
-| Shortened | 172,472 | 43,118 | 0.91x | 9.5% |
-| Stringified | 157,685 | 39,422 | 0.83x | 17.2% |
-| StringifiedFurther | 145,349 | 36,338 | 0.76x | 23.7% |
 
 ---
 
