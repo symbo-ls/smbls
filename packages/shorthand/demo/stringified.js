@@ -41,13 +41,13 @@ export const Stars = {
 export const Pills = {
   cp: {
     tx: '',
-    ".isActive": {
+    '.isActive': {
       in: 'thm:primary'
     },
-    "!isActive": {
+    '!isActive': {
       in: 'thm:tertiary'
     },
-    ":active": {
+    ':active': {
       in: 'thm:primary'
     },
     in: 'bsz:Z rnd:100% cur:pointer'
@@ -107,12 +107,12 @@ export const NumberPicker = {
     Icon: {
       in: 'nm:minus'
     },
-    "@ck": (event, element, state) => {
-          if (state.currentValue <= 0) return
-          state.update({
-            currentValue: state.currentValue - 1
-          })
-        },
+    '@ck': (event, element, state) => {
+      if (state.currentValue <= 0) return
+      state.update({
+        currentValue: state.currentValue - 1
+      })
+    },
     in: 'ext:IconButton'
   },
   Value: {
@@ -122,14 +122,14 @@ export const NumberPicker = {
     Icon: {
       in: 'nm:plus'
     },
-    "@ck": (event, element, state) => {
-          state.update({
-            currentValue: state.currentValue + 1
-          })
-        },
+    '@ck': (event, element, state) => {
+      state.update({
+        currentValue: state.currentValue + 1
+      })
+    },
     in: 'ext:IconButton'
   },
-  "> button": {
+  '> button': {
     in: 'thm:transparent'
   },
   in: 'ext:Flex aln:center_flex-start g:Z'
@@ -141,19 +141,18 @@ export const Accordion = {
     activeAccordion: false
   },
   ButtonParagraph: {
-    "@ck": (event, element, state) => {
-          state.update({
-            activeAccordion: !state.activeAccordion
-          })
-    
-        },
+    '@ck': (event, element, state) => {
+      state.update({
+        activeAccordion: !state.activeAccordion
+      })
+    },
     P: {
       tx: 'Question text one here'
     },
     Button: {
       tx: '',
       Icon: {
-        ".activeAccordion": {
+        '.activeAccordion': {
           in: 'tf:rotate(-180deg)'
         },
         in: 'nm:chevronDown trn:transform_.3s_ease'
@@ -164,10 +163,10 @@ export const Accordion = {
   P: {
     tx: 'Use a checkbox when users can select one option, multiple options, or no option from a list of a possible options',
     trn: 'min-height .3s ease, max-height .3s ease, opacity .3s ease',
-    ".activeAccordion": {
+    '.activeAccordion': {
       in: 'mnh:4em mxh:10em op:1'
     },
-    "!activeAccordion": {
+    '!activeAccordion': {
       in: 'mnh:0 mxh:0 op:0'
     },
     in: 'm:0 mxw:H mnw:H pos:absolute lft:0 tp:2em ov:hidden'
@@ -179,7 +178,7 @@ export const Accordion = {
 export const AvatarChatPreview = {
   Avatar: {},
   Flex: {
-    "> *": {
+    '> *': {
       in: 'mnw:100%'
     },
     ValueHeading: {
@@ -210,37 +209,33 @@ export const SearchDropdown = {
   st: {
     isOpen: false,
     selected: 'Search and Select',
-    data: [
-      'Los Angeles',
-      'New York',
-      'San Fransisco',
-      'San Diego'
-    ],
+    data: ['Los Angeles', 'New York', 'San Fransisco', 'San Diego'],
     filtered: [],
     searchValue: ''
   },
   SelectedContainer: {
     tx: '{{ selected }}',
     isSelected: (el, s) => s.selected !== 'Search and Select',
-    ".isSelected": {
+    '.isSelected': {
       in: 'c:blue'
     },
-    "@ck": (e, el, s) => s.toggle('isOpen'),
+    '@ck': (e, el, s) => s.toggle('isOpen'),
     in: 'p:Z_A2 mnh:B2 pos:relative cur:pointer c:caption'
   },
   Options: {
     shw: (el, s) => s.isOpen,
     Input: {
       phd: 'Search and Select',
-      "@ip": (e, el, state) => {
-                const value = e.target.value.trim().toLowerCase()
-                const filtered = state.data.filter(item =>
-                  item.toLowerCase().includes(value))
-                state.replace({
-                  searchValue: value,
-                  filtered: filtered
-                })
-              },
+      '@ip': (e, el, state) => {
+        const value = e.target.value.trim().toLowerCase()
+        const filtered = state.data.filter((item) =>
+          item.toLowerCase().includes(value)
+        )
+        state.replace({
+          searchValue: value,
+          filtered: filtered
+        })
+      },
       in: 'thm:field-dialog p:Y2_A m:-_-Y d:block mnw: bxs:border-box bd:none ol:none'
     },
     Results: {
@@ -248,14 +243,14 @@ export const SearchDropdown = {
       ch: (el, s) => s.filtered,
       cp: {
         tx: '{{ value }}',
-        "@ck": (ev, el, s) => {
-                    s.parent.update({
-                      selected: s.value,
-                      isOpen: false,
-                      searchValue: '',
-                      //filtered: []
-                    })
-                  },
+        '@ck': (ev, el, s) => {
+          s.parent.update({
+            selected: s.value,
+            isOpen: false,
+            searchValue: ''
+            //filtered: []
+          })
+        },
         in: 'p:Z'
       },
       in: 'mt:X cha:state'
@@ -284,39 +279,49 @@ export const Badge = {
 // ── Breadcrumb ──
 export const Breadcrumb = {
   cp: {
-    "&[href]": {
-      "&:hover": {
+    '&[href]': {
+      '&:hover': {
         in: 'td:underline'
       },
       in: 'c:title'
     },
-    "&:not([href])": {
+    '&:not([href])': {
       in: 'cur:default'
     },
-    "&:not(:first-child):before": {
+    '&:not(:first-child):before': {
       cnt: '""',
       in: 'd:inline-block w:2px h:2px bdr:100% bg:white va:0.2em marginInline:.65em op:.5'
     },
     in: 'fw:400 td:none !scrollToTop c:white_0.35'
   },
   ch: (el, s, ctx) => {
-    const routeArr = (s.root.route || window.top.location.pathname).split('/').slice(1)
+    const routeArr = (s.root.route || window.top.location.pathname)
+      .split('/')
+      .slice(1)
     return routeArr
-      .map((text, i) => text === 'page' ? ({
-        href: '/pages',
-        text: 'Page'
-      }) : el.getData('pages')['/' + text] ? ({
-        href: '/' + routeArr.slice(0, i + 1).join('/'),
-        text: '/' + text
-      }) : ({
-        href: '/' + routeArr.slice(0, i + 1).join('/'),
-        text: i === 0 ? ctx.utils.toTitleCase(text) : text
-      }))
+      .map((text, i) =>
+        text === 'page'
+          ? {
+              href: '/pages',
+              text: 'Page'
+            }
+          : el.getData('pages')['/' + text]
+            ? {
+                href: '/' + routeArr.slice(0, i + 1).join('/'),
+                text: '/' + text
+              }
+            : {
+                href: '/' + routeArr.slice(0, i + 1).join('/'),
+                text: i === 0 ? ctx.utils.toTitleCase(text) : text
+              }
+      )
       .filter((_, k) => {
         const v = routeArr[k]
-        return !v.includes('-') && !v.includes('editor') && !v.includes('preview')
+        return (
+          !v.includes('-') && !v.includes('editor') && !v.includes('preview')
+        )
       })
-    },
+  },
   in: 'tg:nav cex:Link d:flex aln:center'
 }
 
@@ -333,7 +338,7 @@ export const TabSet = {
   ],
   cp: {
     Icon: null,
-    ".isActive": {
+    '.isActive': {
       in: 'thm:document'
     },
     in: 'rnd:D fw:400 p:Z_B1 tt:capitalize thm:transparent'
@@ -344,24 +349,18 @@ export const TabSet = {
 // ── CircleProgress ──
 export const CircleProgress = {
   at: {
-    max: ({
-          props
-        }) => props.max,
-    progress: ({
-          props
-        }) => props.progress,
-    value: ({
-          props
-        }) => props.value
+    max: ({ props }) => props.max,
+    progress: ({ props }) => props.progress,
+    value: ({ props }) => props.value
   },
   val: 0.73,
-  "&::-webkit-progress-bar": {
+  '&::-webkit-progress-bar': {
     in: 'bg:gray'
   },
-  "&::-webkit-progress-value": {
+  '&::-webkit-progress-value': {
     in: 'thm:primary'
   },
-  ":after": {
+  ':after': {
     cnt: '""',
     tf: 'translate(-50%, -50%)',
     in: 'pos:absolute w:B+B2 h:B+B2 rnd:100% tp:50% lft:50% bg:codGray'
@@ -375,15 +374,15 @@ export const Pagination = {
     Icon: {
       in: 'nm:chevronLeft'
     },
-    "@ck": (event, element, state) => {
-          state.update({})
-        },
+    '@ck': (event, element, state) => {
+      state.update({})
+    },
     in: 'ext:IconButton'
   },
   Flex: {
     cp: {
       isActive: (element, state) => state.active === parseInt(element.key),
-      ".isActive": {
+      '.isActive': {
         in: 'thm:primary'
       },
       in: 'ar:1_/_1 bsz:C+Y2_C+Y2 rnd:100% p:A thm:field'
@@ -411,9 +410,9 @@ export const Pagination = {
     Icon: {
       in: 'nm:chevronRight'
     },
-    "@ck": (event, element, state) => {
-          state.update({})
-        },
+    '@ck': (event, element, state) => {
+      state.update({})
+    },
     in: 'ext:IconButton'
   },
   in: 'ext:Flex g:A aln:center_fllex-start'
@@ -479,25 +478,19 @@ export const StoryCard = {
 // ── Progress ──
 export const Progress = {
   at: {
-    max: ({
-          props
-        }) => props.max,
-    progress: ({
-          props
-        }) => props.progress,
-    value: ({
-          props
-        }) => props.value
+    max: ({ props }) => props.max,
+    progress: ({ props }) => props.progress,
+    value: ({ props }) => props.value
   },
-  "::-webkit-progress-bar": {
-    "@dark": {
+  '::-webkit-progress-bar': {
+    '@dark': {
       in: 'bg:gray'
     },
-    "@light": {
+    '@light': {
       in: 'bg:hurricane'
     }
   },
-  "::-webkit-progress-value": {
+  '::-webkit-progress-value': {
     in: 'bdr:Y thm:primary'
   },
   in: 'tg:progress ext:Flex h:X mnw:F3 rnd:Y ov:hidden'
@@ -511,7 +504,7 @@ export const ToggleCaption = {
   Toggle: {
     Input: {},
     Flex: {
-      ":after": {}
+      ':after': {}
     }
   },
   in: 'ext:Flex aln:center_flex-start g:Z'
@@ -520,22 +513,22 @@ export const ToggleCaption = {
 // ── LandingNavbar ──
 export const LandingNavbar = {
   zi: 9999999,
-  "@tabletS": {
+  '@tabletS': {
     in: 'w:100% p:X2_B jc:space-between'
   },
   thm: null,
   Logo: {
-    "@tabletS": {
+    '@tabletS': {
       in: 'fs:E m:-_0_-_- p:0'
     },
     in: 'pos:relative ico:logo tp:auto lft:auto thm:transparent m:-_B_-_-'
   },
   Nav_2: {
-    "@tabletS": {
+    '@tabletS': {
       in: 'd:none'
     },
     cp: {
-      ":hover": {
+      ':hover': {
         in: 'op:1 c:title'
       },
       in: 'c:caption fw:400 op:.8'
@@ -565,10 +558,10 @@ export const LandingNavbar = {
     in: 'fxf:x g:B cex:DocsLink'
   },
   MenuIcon: {
-    "@tabletS": {
+    '@tabletS': {
       in: 'd:flex'
     },
-    "@ck": (event, element, state) => state.toggle('activeMenu'),
+    '@ck': (event, element, state) => state.toggle('activeMenu'),
     in: 'd:none'
   },
   in: 'ext:Navbar g:A2 jc:flex-start aln:center lft:0 w:50% p:Y1_D_Y1_A fs:Z2 us:none pos:absolute tp:W1 bd:0'
@@ -589,15 +582,15 @@ export const CTAButtons = {
 // ── FeatureItem ──
 export const FeatureItem = {
   trnp: 'color, background, border',
-  "@mobileS": {
+  '@mobileS': {
     sy: {
       minWidth: '100% !important',
       maxWidth: '100% !important',
       scrollSnapAlign: 'start'
     }
   },
-  ":hover": {
-    "& span": {
+  ':hover': {
+    '& span': {
       in: 'c:highlight_.9'
     },
     in: 'c:title bdc:line-highlight'
@@ -616,7 +609,7 @@ export const FeatureItem = {
 
 // ── TestimonialCard ──
 export const TestimonialCard = {
-  "@mobileL": {
+  '@mobileL': {
     sy: {
       scrollSnapAlign: 'start'
     },
@@ -649,31 +642,31 @@ export const TestimonialCard = {
 
 // ── Banner ──
 export const Banner = {
-  "@heightM": {},
-  "@heightL": {
+  '@heightM': {},
+  '@heightL': {
     in: 'p:D2_-_-_-'
   },
-  ":after": {
+  ':after': {
     cnt: '""',
     in: 'bsz:60%_100% pos:absolute bot:0 lft:0 zi:2'
   },
-  "@dark": {
-    ":after": {
+  '@dark': {
+    ':after': {
       bg: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%,rgba(0, 0, 0, 0) 100%)'
     }
   },
-  "@light": {
-    ":after": {
+  '@light': {
+    ':after': {
       bg: 'linear-gradient(to top, rgba(241, 241, 243, 1) 0%,rgba(241, 241, 243, 0) 100%)'
     },
     in: 'bg:gray15'
   },
-  "> *:not(:first-child)": {
+  '> *:not(:first-child)': {
     in: 'zi:2'
   },
   Scene: {
-    "@light": {
-      ":after": {
+    '@light': {
+      ':after': {
         cnt: '""',
         in: 'bsz:100%_100% pos:absolute tp:0 lft:0 bg:gray15_.75'
       },
@@ -685,7 +678,7 @@ export const Banner = {
     in: 'zi:2'
   },
   TabSet: {
-    "@heightM": {
+    '@heightM': {
       in: 'm:C2_-_B2+W_-'
     },
     in: 'm:D2+Y2_-_B2+W_- bg:black_.25'
@@ -695,11 +688,11 @@ export const Banner = {
   },
   TabSetTwo: {
     cp: {
-      ":first-child": {
+      ':first-child': {
         bg: 'linear-gradient(to right,  #00A2E7, #185DF3, #1E54F0, #8B4CCA, #8B4CCA)'
       },
-      "@light": {
-        ":first-child": {
+      '@light': {
+        ':first-child': {
           in: 'c:white'
         }
       }
@@ -708,4 +701,3 @@ export const Banner = {
   },
   in: 'p:F+X2_-_-_- fl:y pos:relative ai:center w:100% mxh:100%'
 }
-
