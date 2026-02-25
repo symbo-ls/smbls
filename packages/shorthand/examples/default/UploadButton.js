@@ -1,0 +1,20 @@
+export const UploadButton = {
+  text: 'Choose file',
+  Input: {
+    type: 'file',
+    padding: '0',
+    inset: '0 0 0 0',
+    position: 'absolute',
+    boxSize: '100% 100%',
+    cursor: 'pointer',
+    top: '0',
+    left: '0',
+    opacity: '0',
+  },
+  extends: 'Button',
+  position: 'relative',
+  padding: '0',
+  cursor: 'pointer',
+  theme: 'transparent',
+  color: 'blue',
+};
