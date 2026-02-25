@@ -16,9 +16,7 @@ export const Accordion = {
     Button: {
       tx: '',
       Icon: {
-        ".activeAccordion": {
-          in: 'tf:rotate(-180deg)'
-        },
+        ".activeAccordion": 'tf:rotate(-180deg)',
         in: 'nm:chevronDown trn:transform_.3s_ease'
       }
     },
@@ -26,14 +24,9 @@ export const Accordion = {
   },
   P: {
     tx: 'Use a checkbox when users can select one option, multiple options, or no option from a list of a possible options',
-    trn: 'min-height .3s ease, max-height .3s ease, opacity .3s ease',
-    ".activeAccordion": {
-      in: 'mnh:4em mxh:10em op:1'
-    },
-    "!activeAccordion": {
-      in: 'mnh:0 mxh:0 op:0'
-    },
-    in: 'm:0 mxw:H mnw:H pos:absolute lft:0 tp:2em ov:hidden'
+    ".activeAccordion": 'mnh:4em mxh:10em op:1',
+    "!activeAccordion": 'mnh:0 mxh:0 op:0',
+    in: 'm:0 mxw:H mnw:H pos:absolute lft:0 tp:2em trn:min-height_.3s_ease\,_max-height_.3s_ease\,_opacity_.3s_ease ov:hidden'
   },
   in: 'ext:Flex fl:y g:Y2 pos:relative'
 }
@@ -61,9 +54,7 @@ export const AvatarBadgeHgroup = {
 export const AvatarChatPreview = {
   Avatar: {},
   Flex: {
-    "> *": {
-      in: 'mnw:100%'
-    },
+    "> *": 'mnw:100%',
     ValueHeading: {
       H: {},
       UnitValue: {
@@ -77,9 +68,7 @@ export const AvatarChatPreview = {
       }
     },
     NotCounterParagraph: {
-      P: {
-        in: 'ws:nowrap ov:hidden mxw:F2'
-      },
+      P: 'ws:nowrap ov:hidden mxw:F2',
       NotificationCounter: {}
     },
     in: 'fl:y fx:1'
@@ -99,13 +88,9 @@ export const AvatarHeading = {
 
 // ── AvatarHgroup ──
 export const AvatarHgroup = {
-  Avatar: {
-    in: 'm:-X_-_-_-'
-  },
+  Avatar: 'm:-X_-_-_-',
   Hgroup: {
-    H: {
-      in: 'tg:h6'
-    },
+    H: 'tg:h6',
     P: {},
     in: 'g:W2'
   },
@@ -116,15 +101,11 @@ export const AvatarHgroup = {
 export const AvatarHgroupIconButton = {
   Avatar: {},
   Hgroup: {
-    H: {
-      in: 'tg:h6'
-    },
+    H: 'tg:h6',
     P: {}
   },
   IconButton: {
-    Icon: {
-      in: 'nm:copy'
-    },
+    Icon: 'nm:copy',
     in: 'm:-_-_-_auto'
   },
   in: 'ext:AvatarHgroup mnw:G+Z2'
@@ -153,9 +134,7 @@ export const AvatarHgroupSelect = {
 
 // ── AvatarParagraph ──
 export const AvatarParagraph = {
-  Avatar: {
-    in: 'bsz:B1'
-  },
+  Avatar: 'bsz:B1',
   P: {
     tx: 'Can you join us today?',
     in: 'm:0'
@@ -167,10 +146,7 @@ export const AvatarParagraph = {
 export const AvatarSelectPicker = {
   Avatar: {},
   Select: {
-    lh: 1,
-    ":focus-visible": {
-      in: 'ol:none'
-    },
+    ":focus-visible": 'ol:none',
     ch: [
       {
         tx: 'Nikoloza',
@@ -184,25 +160,18 @@ export const AvatarSelectPicker = {
     cp: {
       in: 'tg:option'
     },
-    in: 'ext:Flex fs:A bsz:100% p:-_B+V2_-_Z cur:pointer ol:none appearance:none fx:1 zi:2 bd:none bg:none pe:All c:title'
+    in: 'ext:Flex fs:A bsz:100% p:-_B+V2_-_Z cur:pointer ol:none appearance:none fx:1 zi:2 lh:#1 bd:none bg:none pe:All c:title'
   },
-  Icon: {
-    in: 'nm:chevronDown pos:absolute rgt:0 m:V_-_-_- fs:B'
-  },
+  Icon: 'nm:chevronDown pos:absolute rgt:0 m:V_-_-_- fs:B',
   in: 'tg:label ext:Flex rnd:0 aln:center_flex-start pos:relative'
 }
 
 // ── AvatarSet ──
 export const AvatarSet = {
   cp: {
-    bd: 'solid, codGray',
-    ":first-child": {
-      in: 'm:0_-Z1_0_0'
-    },
-    ":nth-child(2)": {
-      in: 'm:0_-Z1_0_0'
-    },
-    in: 'bdw:X+W'
+    ":first-child": 'm:0_-Z1_0_0',
+    ":nth-child(2)": 'm:0_-Z1_0_0',
+    in: 'bd:solid\,_codGray bdw:X+W'
   },
   ch: [
     {},
@@ -216,24 +185,15 @@ export const AvatarSet = {
 export const AvatarSetChatPreview = {
   AvatarSet: {
     cp: {
-      tf: 'translate(-50%, -50%)',
-      ":first-child": {
-        in: 'm:Z2_0_0_0'
-      },
-      ":nth-child(2)": {
-        in: 'm:0_0_0_Z1'
-      },
-      ":nth-child(3)": {
-        in: 'm:-W_0_0_-Z1'
-      },
-      in: 'bsz:C_C bdw:W d:block pos:absolute tp:50% lft:50%'
+      ":first-child": 'm:Z2_0_0_0',
+      ":nth-child(2)": 'm:0_0_0_Z1',
+      ":nth-child(3)": 'm:-W_0_0_-Z1',
+      in: 'bsz:C_C bdw:W d:block pos:absolute tp:50% lft:50% tf:translate(-50%\,_-50%)'
     },
     in: 'pos:relative bsz:fit-content_C2 bd:1px_solid_red m:-Y2_-_-_-'
   },
   Flex: {
-    "> *": {
-      in: 'mnw:100%'
-    },
+    "> *": 'mnw:100%',
     ValueHeading: {
       H: {
         tx: 'Design'
@@ -255,9 +215,7 @@ export const AvatarSetChatPreview = {
         in: 'c:paragraph'
       },
       NotCounterParagraph: {
-        P: {
-          in: 'mxw:F2 ws:nowrap ov:hidden'
-        },
+        P: 'mxw:F2 ws:nowrap ov:hidden',
         NotificationCounter: {},
         in: 'fx:1 jc:space-between'
       },
@@ -271,9 +229,7 @@ export const AvatarSetChatPreview = {
 // ── AvatarStatus ──
 export const AvatarStatus = {
   Avatar: {},
-  StatusDot: {
-    in: 'pos:absolute bot:W2 rgt:0'
-  },
+  StatusDot: 'pos:absolute bot:W2 rgt:0',
   in: 'ext:Flex pos:relative'
 }
 
@@ -284,9 +240,7 @@ export const AvatarStatusChatPreview = {
     StatusDot: {}
   },
   Flex: {
-    "> *": {
-      in: 'mnw:100%'
-    },
+    "> *": 'mnw:100%',
     ValueHeading: {
       H: {},
       UnitValue: {
@@ -337,14 +291,10 @@ export const BadgeParagraph = {
 export const Breadcrumb = {
   cp: {
     "&[href]": {
-      "&:hover": {
-        in: 'td:underline'
-      },
+      "&:hover": 'td:underline',
       in: 'c:title'
     },
-    "&:not([href])": {
-      in: 'cur:default'
-    },
+    "&:not([href])": 'cur:default',
     "&:not(:first-child):before": {
       cnt: '""',
       in: 'd:inline-block w:2px h:2px bdr:100% bg:white va:0.2em marginInline:.65em op:.5'
@@ -467,9 +417,7 @@ export const CardNumberField = {
             }
             return inputValue.join('')
           },
-      ":focus-visible": {
-        in: 'ol:none'
-      },
+      ":focus-visible": 'ol:none',
       "@up": (el, s) => {
             el.node.value = el.props.value(el, s)
           },
@@ -522,12 +470,8 @@ export const CardNumberField = {
           },
       in: 'ta:center p:X2_X rnd:0 ol:none'
     },
-    ":first-child input": {
-      in: 'p:X2_X_X2_A1 rnd:A_0_0_A'
-    },
-    ":last-child input": {
-      in: 'p:X2_A1_X2_X rnd:0_A_A_0'
-    }
+    ":first-child input": 'p:X2_X_X2_A1 rnd:A_0_0_A',
+    ":last-child input": 'p:X2_A1_X2_X rnd:0_A_A_0'
   },
   ch: [
     {},
@@ -546,9 +490,7 @@ export const CheckCaption = {
   Checkbox: {
     Input: {},
     Flex: {
-      Icon: {
-        in: 'nm:check'
-      }
+      Icon: 'nm:check'
     }
   },
   in: 'ext:Flex aln:center_flex-start g:Z'
@@ -561,9 +503,7 @@ export const CheckCaptionList = {
     Checkbox: {
       Input: {},
       Flex: {
-        Icon: {
-          in: 'nm:check'
-        }
+        Icon: 'nm:check'
       }
     }
   },
@@ -577,18 +517,14 @@ export const CheckCaptionList = {
 // ── CheckHgroup ──
 export const CheckHgroup = {
   Hgroup: {
-    H: {
-      in: 'tg:h6'
-    },
+    H: 'tg:h6',
     P: {},
     in: 'g:W2'
   },
   Checkbox: {
     Input: {},
     Flex: {
-      Icon: {
-        in: 'nm:check'
-      }
+      Icon: 'nm:check'
     }
   },
   in: 'ext:Flex g:Z'
@@ -598,18 +534,14 @@ export const CheckHgroup = {
 export const CheckHgroupList = {
   cp: {
     Hgroup: {
-      H: {
-        in: 'tg:h6'
-      },
+      H: 'tg:h6',
       P: {},
       in: 'g:W2'
     },
     Checkbox: {
       Input: {},
       Flex: {
-        Icon: {
-          in: 'nm:check'
-        }
+        Icon: 'nm:check'
       }
     }
   },
@@ -622,18 +554,13 @@ export const CheckHgroupList = {
 
 // ── CheckStep ──
 export const CheckStep = {
-  Icon: {
-    in: 'nm:check thm:dialog d:block bxs:content-box p:Y2 rnd:100%'
-  },
+  Icon: 'nm:check thm:dialog d:block bxs:content-box p:Y2 rnd:100%',
   H6: {
     tx: 'Step'
   },
   Progress: {
-    val: 0,
-    ".isActive": {
-      val: 1
-    },
-    in: 'mnw:E mxw:E h:V'
+    ".isActive": 'val:#1',
+    in: 'mnw:E mxw:E val:#0 h:V'
   },
   in: 'ext:Flex aln:center_flex-start g:Z'
 }
@@ -642,20 +569,14 @@ export const CheckStep = {
 export const CheckStepSet = {
   cp: {
     Icon: {
-      ".isActive": {
-        in: 'thm:primary'
-      }
+      ".isActive": 'thm:primary'
     },
     Progress: {},
-    ":last-child > progress": {
-      in: 'hd'
-    }
+    ":last-child > progress": 'hd'
   },
   ch: [
     {
-      Icon: {
-        in: 'isActive'
-      }
+      Icon: 'isActive'
     },
     {}
   ],
@@ -675,19 +596,13 @@ export const CircleProgress = {
           props
         }) => props.value
   },
-  val: 0.73,
-  "&::-webkit-progress-bar": {
-    in: 'bg:gray'
-  },
-  "&::-webkit-progress-value": {
-    in: 'thm:primary'
-  },
+  "&::-webkit-progress-bar": 'bg:gray',
+  "&::-webkit-progress-value": 'thm:primary',
   ":after": {
     cnt: '""',
-    tf: 'translate(-50%, -50%)',
-    in: 'pos:absolute w:B+B2 h:B+B2 rnd:100% tp:50% lft:50% bg:codGray'
+    in: 'pos:absolute w:B+B2 h:B+B2 rnd:100% tp:50% lft:50% tf:translate(-50%\,_-50%) bg:codGray'
   },
-  in: 'tg:progress bsz:D_D rnd:100% ov:hidden pos:relative'
+  in: 'tg:progress bsz:D_D val:#0.73 rnd:100% ov:hidden pos:relative'
 }
 
 // ── ConfirmationButtons ──
@@ -719,12 +634,8 @@ export const CounterButton = {
 
 // ── CounterIconButton ──
 export const CounterIconButton = {
-  Icon: {
-    in: 'nm:smile'
-  },
-  NotificationCounter: {
-    in: 'pos:absolute rgt:-Y tp:-W2'
-  },
+  Icon: 'nm:smile',
+  NotificationCounter: 'pos:absolute rgt:-Y tp:-W2',
   in: 'ext:IconButton pos:relative'
 }
 
@@ -734,9 +645,7 @@ export const Field = {
     phd: 'Placeholder',
     in: 'rnd:C p:Z2_C_Z2_A2 mnw:100%'
   },
-  Icon: {
-    in: 'ico:info fs:A2 lh:1em pos:absolute rgt:Z2 op:.45'
-  },
+  Icon: 'ico:info fs:A2 lh:1em pos:absolute rgt:Z2 op:.45',
   in: 'tg:label ext:Flex thm:field aln:center_flex-start rnd:D pos:relative'
 }
 
@@ -897,9 +806,7 @@ export const HrLegend = {
 
 // ── IconButton ──
 export const IconButton = {
-  Icon: {
-    in: 'nm:smile fs:A2'
-  },
+  Icon: 'nm:smile fs:A2',
   in: 'ext:Button p:A ar:1_/_1 bsz:fit-content_fit-content rnd:100% bxs:content-box aln:center_center thm:dialog'
 }
 
@@ -923,9 +830,7 @@ export const IconButtonHgroup = {
     P: {},
     in: 'g:X2'
   },
-  IconButton: {
-    in: 'thm:dialog'
-  },
+  IconButton: 'thm:dialog',
   in: 'ext:Flex aln:flex-start_flex-start g:Z'
 }
 
@@ -936,14 +841,10 @@ export const IconButtonSet = {
   },
   ch: [
     {
-      Icon: {
-        in: 'nm:sun'
-      }
+      Icon: 'nm:sun'
     },
     {
-      Icon: {
-        in: 'nm:moon'
-      }
+      Icon: 'nm:moon'
     }
   ],
   in: 'ext:Flex cex:IconButton g:Z'
@@ -951,9 +852,7 @@ export const IconButtonSet = {
 
 // ── IconCounterButton ──
 export const IconCounterButton = {
-  Icon: {
-    in: 'd:block nm:info'
-  },
+  Icon: 'd:block nm:info',
   Span: {
     tx: 'Button'
   },
@@ -966,9 +865,7 @@ export const IconCounterButton = {
 
 // ── IconHeading ──
 export const IconHeading = {
-  Icon: {
-    in: 'nm:logo fs:C'
-  },
+  Icon: 'nm:logo fs:C',
   H: {
     tx: 'Heading',
     in: 'tg:h5 lh:1em fw:700'
@@ -978,13 +875,9 @@ export const IconHeading = {
 
 // ── IconHgroup ──
 export const IconHgroup = {
-  Icon: {
-    in: 'nm:logo d:block c:blue m:-_X_-_- fs:E'
-  },
+  Icon: 'nm:logo d:block c:blue m:-_X_-_- fs:E',
   Hgroup: {
-    H: {
-      in: 'tg:h2'
-    },
+    H: 'tg:h2',
     P: {},
     in: 'g:Y'
   },
@@ -997,9 +890,7 @@ export const IconInput = {
     phd: 'Placeholder',
     in: 'fx:1 rnd:C p:Z2_C_Z2_A2 mxh:100%'
   },
-  Icon: {
-    in: 'nm:info pos:absolute zi:2 rgt:Z2'
-  },
+  Icon: 'nm:info pos:absolute zi:2 rgt:Z2',
   in: 'tg:label ext:Flex mnw:G aln:center_flex-start rnd:D pos:relative'
 }
 
@@ -1011,15 +902,11 @@ export const IconTextSet = {
   },
   ch: [
     {
-      Icon: {
-        in: 'nm:smile'
-      },
+      Icon: 'nm:smile',
       tx: '+1 (555) 123-4567'
     },
     {
-      Icon: {
-        in: 'nm:logo'
-      },
+      Icon: 'nm:logo',
       tx: 'example@mail.com'
     }
   ],
@@ -1029,9 +916,7 @@ export const IconTextSet = {
 // ── IcontextLink ──
 export const IcontextLink = {
   tx: 'Follow Symbols',
-  Icon: {
-    in: 'fs:B nm:logo'
-  },
+  Icon: 'fs:B nm:logo',
   in: 'ext:Link,IconText g:Y mxh:3em cur:pointer rnd:D fw:500'
 }
 
@@ -1077,9 +962,7 @@ export const ImgHgroup = {
     in: 'bsz:C+Y1_C2 rnd:Z m:-Y_-_-_-'
   },
   Hgroup: {
-    H: {
-      in: 'tg:h5'
-    },
+    H: 'tg:h5',
     P: {},
     in: 'g:W2'
   },
@@ -1096,9 +979,7 @@ export const InputButton = {
     tx: 'Sign up',
     in: 'thm:primary'
   },
-  "> *": {
-    in: 'h:100% mnh:100% mxh:100%'
-  },
+  "> *": 'h:100% mnh:100% mxh:100%',
   in: 'ext:Flex g:Y2 aln:center_flex-start h:C+X'
 }
 
@@ -1118,12 +999,8 @@ export const LayerSimple = {
       in: 'g:X flexAlign:center'
     },
     cex: {
-      Icon: {
-        in: 'c:inactive g:Y1'
-      },
-      Span: {
-        in: 'c:white p:-_-_-_X2'
-      }
+      Icon: 'c:inactive g:Y1',
+      Span: 'c:white p:-_-_-_X2'
     },
     ch: () => [{
             Icon: {
@@ -1204,15 +1081,11 @@ export const LinkSet = {
 export const ListingItem = {
   IconText: {
     Icon: {
-      ".isActive": {
-        in: 'c:orange'
-      },
+      ".isActive": 'c:orange',
       in: 'nm:check c:dim'
     },
     "!isActive": {
-      ":hover svg": {
-        in: 'c:disabled'
-      }
+      ":hover svg": 'c:disabled'
     },
     "@ck": (ev, el, s) => {
           const isActive = s.isActive
@@ -1261,10 +1134,7 @@ export const ListingItem = {
 // ── LoadingGif ──
 export const LoadingGif = {
   src: 'https://assets.symbo.ls/loading.gif',
-  ".inCenter": {
-    tf: 'translate3d(-50%, -50%, 0)',
-    in: 'pos:absolute tp:50% lft:50%'
-  },
+  ".inCenter": 'pos:absolute tp:50% lft:50% tf:translate3d(-50%\,_-50%\,_0)',
   in: 'ext:Img w:3.2em pe:none op:.35 zi:-1 inCenter'
 }
 
@@ -1280,9 +1150,7 @@ export const MessageModal = {
     in: 'g:A'
   },
   IconButton: {
-    Icon: {
-      in: 'nm:x'
-    }
+    Icon: 'nm:x'
   },
   in: 'ext:Modal mxw:H'
 }
@@ -1290,19 +1158,13 @@ export const MessageModal = {
 // ── Modal ──
 export const Modal = {
   Hgroup: {
-    H: {
-      in: 'tg:h5 fw:700'
-    },
+    H: 'tg:h5 fw:700',
     P: {},
     in: 'g:X1'
   },
   IconButton: {
-    $isSafari: {
-      in: 'tp:Z2 rgt:Z2'
-    },
-    Icon: {
-      in: 'nm:x'
-    },
+    $isSafari: 'tp:Z2 rgt:Z2',
+    Icon: 'nm:x',
     in: 'pos:absolute rgt:X2 tp:X2 rnd:100%'
   },
   in: 'ext:Flex bsz:fit-content aln:stretch_flex-start mnw:G+B pos:relative rnd:B thm:dialog fl:y p:A2_A2_A1_A2 bdst:none'
@@ -1315,14 +1177,10 @@ export const NavigationArrows = {
   },
   ch: [
     {
-      Icon: {
-        in: 'nm:chevronLeft'
-      }
+      Icon: 'nm:chevronLeft'
     },
     {
-      Icon: {
-        in: 'nm:chevronRight'
-      }
+      Icon: 'nm:chevronRight'
     }
   ],
   in: 'ext:Flex cex:IconButton g:Z'
@@ -1332,12 +1190,8 @@ export const NavigationArrows = {
 export const NavigationDots = {
   cp: {
     tx: '',
-    ".isActive": {
-      in: 'thm:primary'
-    },
-    ":active": {
-      in: 'thm:primary'
-    },
+    ".isActive": 'thm:primary',
+    ":active": 'thm:primary',
     in: 'bsz:Z thm:dialog rnd:100% cur:pointer'
   },
   ch: [
@@ -1371,9 +1225,7 @@ export const NumberPicker = {
     currentValue: 0
   },
   Minus: {
-    Icon: {
-      in: 'nm:minus'
-    },
+    Icon: 'nm:minus',
     "@ck": (event, element, state) => {
           if (state.currentValue <= 0) return
           state.update({
@@ -1386,9 +1238,7 @@ export const NumberPicker = {
     tx: '{{ currentValue }}'
   },
   Plus: {
-    Icon: {
-      in: 'nm:plus'
-    },
+    Icon: 'nm:plus',
     "@ck": (event, element, state) => {
           state.update({
             currentValue: state.currentValue + 1
@@ -1396,9 +1246,7 @@ export const NumberPicker = {
         },
     in: 'ext:IconButton'
   },
-  "> button": {
-    in: 'thm:transparent'
-  },
+  "> button": 'thm:transparent',
   in: 'ext:Flex aln:center_flex-start g:Z'
 }
 
@@ -1411,17 +1259,12 @@ export const P = {
 // ── PackageFeatureItem ──
 export const PackageFeatureItem = {
   Input: {
-    ":checked + hgroup": {
-      in: 'ol:1.5px_solid_#0079FD'
-    },
+    ":checked + hgroup": 'ol:1.5px_solid_#0079FD',
     in: 'd:none typ:checkbox'
   },
   Hgroup: {
-    ol: '1.5px, solid, --color-line-dark',
-    Icon: {
-      in: 'od:-1 m:-_-_A2 nm:logo'
-    },
-    in: 'w:100% p:A1 rnd:A1'
+    Icon: 'od:-1 m:-_-_A2 nm:logo',
+    in: 'w:100% p:A1 rnd:A1 ol:1.5px\,_solid\,_--color-line-dark'
   },
   in: 'tg:label ext:Flex cur:pointer'
 }
@@ -1429,9 +1272,7 @@ export const PackageFeatureItem = {
 // ── Pagination ──
 export const Pagination = {
   Left: {
-    Icon: {
-      in: 'nm:chevronLeft'
-    },
+    Icon: 'nm:chevronLeft',
     "@ck": (event, element, state) => {
           state.update({})
         },
@@ -1440,9 +1281,7 @@ export const Pagination = {
   Flex: {
     cp: {
       isActive: (element, state) => state.active === parseInt(element.key),
-      ".isActive": {
-        in: 'thm:primary'
-      },
+      ".isActive": 'thm:primary',
       in: 'ar:1_/_1 bsz:C+Y2_C+Y2 rnd:100% p:A thm:field'
     },
     ch: [
@@ -1465,9 +1304,7 @@ export const Pagination = {
     in: 'g:Z cex:Button'
   },
   Right: {
-    Icon: {
-      in: 'nm:chevronRight'
-    },
+    Icon: 'nm:chevronRight',
     "@ck": (event, element, state) => {
           state.update({})
         },
@@ -1490,16 +1327,10 @@ export const Progress = {
         }) => props.value
   },
   "::-webkit-progress-bar": {
-    "@dark": {
-      in: 'bg:gray'
-    },
-    "@light": {
-      in: 'bg:hurricane'
-    }
+    "@dark": 'bg:gray',
+    "@light": 'bg:hurricane'
   },
-  "::-webkit-progress-value": {
-    in: 'bdr:Y thm:primary'
-  },
+  "::-webkit-progress-value": 'bdr:Y thm:primary',
   in: 'tg:progress ext:Flex h:X mnw:F3 rnd:Y ov:hidden'
 }
 
@@ -1510,7 +1341,7 @@ export const ProgressStepSet = {
   },
   ch: [
     {
-      val: 0.7
+      in: 'val:#0.7'
     },
     {}
   ],
@@ -1554,9 +1385,7 @@ export const RadioCaptionList = {
 // ── RadioHgroup ──
 export const RadioHgroup = {
   Hgroup: {
-    H: {
-      in: 'tg:h6'
-    },
+    H: 'tg:h6',
     P: {},
     in: 'g:W2'
   },
@@ -1573,9 +1402,7 @@ export const RadioHgroup = {
 export const RadioHgroupList = {
   cp: {
     Hgroup: {
-      H: {
-        in: 'tg:h6'
-      },
+      H: 'tg:h6',
       P: {},
       in: 'g:W2'
     },
@@ -1605,9 +1432,7 @@ export const RadioMark = {
 // ── RadioStep ──
 export const RadioStep = {
   RadioMark: {
-    ".isActive": {
-      in: 'thm:primary'
-    },
+    ".isActive": 'thm:primary',
     ":after": {},
     in: 'thm:field'
   },
@@ -1615,11 +1440,8 @@ export const RadioStep = {
     tx: 'Step'
   },
   Progress: {
-    val: 0,
-    ".isActive": {
-      val: 1
-    },
-    in: 'mnw:E mxw:E h:V m:-_-_-_W'
+    ".isActive": 'val:#1',
+    in: 'mnw:E mxw:E val:#0 h:V m:-_-_-_W'
   },
   in: 'ext:Flex aln:center_flex-start g:Y2'
 }
@@ -1629,15 +1451,11 @@ export const RadioSteps = {
   cp: {
     RadioMark: {},
     Progress: {},
-    ":last-child > progress": {
-      in: 'hd'
-    }
+    ":last-child > progress": 'hd'
   },
   ch: [
     {
-      RadioMark: {
-        in: 'isActive'
-      }
+      RadioMark: 'isActive'
     },
     {}
   ],
@@ -1654,9 +1472,7 @@ export const ScrollableList = {
       }
     },
     cp: {
-      ":hover": {
-        in: 'thm:dialog-elevated'
-      },
+      ":hover": 'thm:dialog-elevated',
       in: 'p:Y1_A cur:pointer aln:flrx-start ta:left fw:700 rnd:0 thm:dialog fs:C'
     },
     ch: [
@@ -1674,21 +1490,13 @@ export const ScrollableList = {
     in: 'pos:absolute bsz:B_100% zi:2 lft:0 pe:none'
   },
   ":before": {
-    "@light": {
-      bg: 'linear-gradient(to bottom,  #ebecf2 0%, transparent 100%)'
-    },
-    "@dark": {
-      bg: 'linear-gradient(to bottom, #171717 0%, transparent 100%)'
-    },
+    "@light": 'bg:linear-gradient(to_bottom\,__#ebecf2_0%\,_transparent_100%)',
+    "@dark": 'bg:linear-gradient(to_bottom\,_#171717_0%\,_transparent_100%)',
     in: 'tp:0'
   },
   ":after": {
-    "@light": {
-      bg: 'linear-gradient(to top,  #ebecf2 0%, transparent 100%)'
-    },
-    "@dark": {
-      bg: 'linear-gradient(to top, #171717 0%, transparent 100%)'
-    },
+    "@light": 'bg:linear-gradient(to_top\,__#ebecf2_0%\,_transparent_100%)',
+    "@dark": 'bg:linear-gradient(to_top\,_#171717_0%\,_transparent_100%)',
     in: 'bot:-3px'
   },
   in: 'tg:nav pos:relative ov:hidden thm:field rnd:A2 mnw:F1'
@@ -1697,17 +1505,12 @@ export const ScrollableList = {
 // ── Scrollbar ──
 export const Scrollbar = {
   TrackContainer: {
-    op: 1,
-    Track: {
-      in: 'pos:absolute thm:field rnd:A h:2px bg:#d9d7d7_.5 lft:0 tfo:left w:15%'
-    },
-    in: 'trn:A_defaultBezier_opacity fx:1 m:-_C1_-_- pos:relative bg:red h:fit-content as:center'
+    Track: 'pos:absolute thm:field rnd:A h:2px bg:#d9d7d7_.5 lft:0 tfo:left w:15%',
+    in: 'op:#1 trn:A_defaultBezier_opacity fx:1 m:-_C1_-_- pos:relative bg:red h:fit-content as:center'
   },
   NavigationArrows: {
     cp: {
-      Icon: {
-        in: 'fs:B1'
-      },
+      Icon: 'fs:B1',
       in: 'p:Z_Z'
     }
   },
@@ -1718,14 +1521,10 @@ export const Scrollbar = {
 export const Search = {
   Input: {
     phd: 'Type a command or search',
-    ":focus ~ button": {
-      in: 'op:1'
-    },
+    ":focus ~ button": 'op:1',
     in: 'typ:search w:100% p:Z2_C+W2_Z2_A2 thm:transparent'
   },
-  Icon: {
-    in: 'nm:search pos:absolute rgt:Z+W2 fs:B'
-  },
+  Icon: 'nm:search pos:absolute rgt:Z+W2 fs:B',
   in: 'tg:search ext:Flex mnw:G+A2 g:Z thm:field rnd:D2 aln:center_flex-start pos:relative'
 }
 
@@ -1746,9 +1545,7 @@ export const SearchDropdown = {
   SelectedContainer: {
     tx: '{{ selected }}',
     isSelected: (el, s) => s.selected !== 'Search and Select',
-    ".isSelected": {
-      in: 'c:blue'
-    },
+    ".isSelected": 'c:blue',
     "@ck": (e, el, s) => s.toggle('isOpen'),
     in: 'p:Z_A2 mnh:B2 pos:relative cur:pointer c:caption'
   },
@@ -1816,9 +1613,7 @@ export const SearchDropdown_copy = {
   SelectedContainer: {
     tx: '{{ selected }}',
     isSelected: (el, s) => s.selected !== 'Search and Select',
-    ".isSelected": {
-      in: 'c:title'
-    },
+    ".isSelected": 'c:title',
     "@ck": (e, el, s) => s.toggle('isOpen'),
     in: 'p:Z_A2 bg:#f5f5f5 c:black bdb:1px_solid_#ccc mnh:B2 pos:relative cur:pointer'
   },
@@ -1899,18 +1694,14 @@ export const SelectField = {
       }
     ]
   },
-  Icon: {
-    in: 'm:-_Z2_-_-'
-  },
+  Icon: 'm:-_Z2_-_-',
   in: 'ext:SelectPicker thm:field mnw:G p:A_A1 rnd:D'
 }
 
 // ── SelectHgroup ──
 export const SelectHgroup = {
   Hgroup: {
-    H: {
-      in: 'tg:h6'
-    },
+    H: 'tg:h6',
     P: {},
     in: 'g:V2'
   },
@@ -1932,10 +1723,7 @@ export const SelectHgroup = {
 // ── SelectPicker ──
 export const SelectPicker = {
   Select: {
-    lh: 1,
-    ":focus-visible": {
-      in: 'ol:none'
-    },
+    ":focus-visible": 'ol:none',
     ch: [
       {
         tx: 'Nikoloza',
@@ -1949,11 +1737,9 @@ export const SelectPicker = {
     cp: {
       in: 'tg:option'
     },
-    in: 'ext:Flex fs:A bsz:100% p:-_B+V2_-_- cur:pointer ol:none appearance:none fx:1 zi:2 bd:none bg:none pe:All c:title'
+    in: 'ext:Flex fs:A bsz:100% p:-_B+V2_-_- cur:pointer ol:none appearance:none fx:1 zi:2 lh:#1 bd:none bg:none pe:All c:title'
   },
-  Icon: {
-    in: 'nm:chevronDown pos:absolute rgt:0 m:V_-_-_- fs:B'
-  },
+  Icon: 'nm:chevronDown pos:absolute rgt:0 m:V_-_-_- fs:B',
   in: 'tg:label ext:Flex rnd:0 aln:center_flex-start pos:relative'
 }
 
@@ -1981,14 +1767,8 @@ export const Stars = {
 
 // ── StatusDot ──
 export const StatusDot = {
-  "@light": {
-    bd: 'solid, gray 1 +170',
-    in: 'bdw:X'
-  },
-  "@dark": {
-    bd: 'solid, black',
-    in: 'bdw:X'
-  },
+  "@light": 'bd:solid\,_gray_1_+170 bdw:X',
+  "@dark": 'bd:solid\,_black bdw:X',
   in: 'wr:A ar:1/1 rnd:100% thm:success'
 }
 
@@ -1998,18 +1778,13 @@ export const StoryCard = {
     src: 'https://files-production-symbols-platform-development-en-d5-u3-p7x0.based.dev/fibd6dc13e/64be440c-ae12-4942-8da7-d772e06cb76c-b3013bf0-701c-4aff-b439-55d412265b2a-25215bc5-652d-40a7-8c99-af865865b74e.jpeg',
     in: 'bsz:100% zi:2 rnd:A'
   },
-  Icon: {
-    tf: 'translate(-50%, -50%)',
-    in: 'ico:smile pos:absolute zi:2 tp:35% lft:50% fs:J1+F1 c:white'
-  },
+  Icon: 'ico:smile pos:absolute zi:2 tp:35% lft:50% fs:J1+F1 tf:translate(-50%\,_-50%) c:white',
   HgroupSteps: {
     Hgroup: {
       H: {
         tx: 'Symbols'
       },
-      P: {
-        in: 'c:white_.65'
-      }
+      P: 'c:white_.65'
     },
     ProgressStepSet: {
       cp: {
@@ -2055,9 +1830,7 @@ export const TabSet = {
   ],
   cp: {
     Icon: null,
-    ".isActive": {
-      in: 'thm:document'
-    },
+    ".isActive": 'thm:document',
     "@ck": null,
     in: 'rnd:D thm:transparent p:Z_B1 tt:capitalize'
   },
@@ -2066,13 +1839,9 @@ export const TabSet = {
 
 // ── TextareaIconButton ──
 export const TextareaIconButton = {
-  Textarea: {
-    in: 'mnh:C+Y mxh:C+Y mnw:G1 rnd:D p:A_A_A_A2'
-  },
+  Textarea: 'mnh:C+Y mxh:C+Y mnw:G1 rnd:D p:A_A_A_A2',
   IconButton: {
-    Icon: {
-      in: 'nm:send'
-    },
+    Icon: 'nm:send',
     in: 'thm:primary'
   },
   in: 'ext:Flex g:Y1'
@@ -2115,9 +1884,7 @@ export const ToggleCaptionList = {
 // ── ToggleHgroup ──
 export const ToggleHgroup = {
   Hgroup: {
-    H: {
-      in: 'tg:h6'
-    },
+    H: 'tg:h6',
     P: {},
     in: 'g:W2'
   },
@@ -2135,9 +1902,7 @@ export const ToggleHgroup = {
 export const ToggleHgroupList = {
   cp: {
     Hgroup: {
-      H: {
-        in: 'tg:h6'
-      },
+      H: 'tg:h6',
       P: {},
       in: 'g:W2'
     },
@@ -2179,20 +1944,14 @@ export const UnitValue = {
 // ── UploadButton ──
 export const UploadButton = {
   tx: 'Choose file',
-  Input: {
-    in: 'typ:file p:0 ist:0_0_0_0 pos:absolute bsz:100%_100% cur:pointer tp:0 lft:0 op:0'
-  },
+  Input: 'typ:file p:0 ist:0_0_0_0 pos:absolute bsz:100%_100% cur:pointer tp:0 lft:0 op:0',
   in: 'ext:Button pos:relative p:0 cur:pointer thm:transparent c:blue'
 }
 
 // ── UploadIconButton ──
 export const UploadIconButton = {
-  Icon: {
-    in: 'nm:upload'
-  },
-  Input: {
-    in: 'typ:file p:0 ist:0_0_0_0 pos:absolute bsz:100%_100% cur:pointer tp:0 lft:0 op:0'
-  },
+  Icon: 'nm:upload',
+  Input: 'typ:file p:0 ist:0_0_0_0 pos:absolute bsz:100%_100% cur:pointer tp:0 lft:0 op:0',
   in: 'ext:IconButton pos:relative p:0 cur:pointer'
 }
 
@@ -2229,14 +1988,13 @@ export const ValueCircleProgress = {
     ":after": {}
   },
   UnitValue: {
-    tf: 'translate(-50%, -50%)',
     Value: {
       tx: '73'
     },
     Unit: {
       tx: '%'
     },
-    in: 'pos:absolute tp:50% lft:50% fl:row-reverse zi:5 g:V'
+    in: 'pos:absolute tp:50% lft:50% tf:translate(-50%\,_-50%) fl:row-reverse zi:5 g:V'
   },
   in: 'bd:2'
 }
@@ -2257,10 +2015,7 @@ export const ValueHeading = {
 
 // ── ValueProgress ──
 export const ValueProgress = {
-  Progress: {
-    val: 0.73,
-    in: 'mxw:100% fx:1'
-  },
+  Progress: 'mxw:100% fx:1 val:#0.73',
   UnitValue: {
     Value: {
       tx: '73'
@@ -2797,27 +2552,19 @@ export const AsteriskParagraph = {
 // ── Banner ──
 export const Banner = {
   "@heightM": {},
-  "@heightL": {
-    in: 'p:D2_-_-_-'
-  },
+  "@heightL": 'p:D2_-_-_-',
   ":after": {
     cnt: '""',
     in: 'bsz:60%_100% pos:absolute bot:0 lft:0 zi:2'
   },
   "@dark": {
-    ":after": {
-      bg: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%,rgba(0, 0, 0, 0) 100%)'
-    }
+    ":after": 'bg:linear-gradient(to_top\,_rgba(0\,_0\,_0\,_1)_0%\,rgba(0\,_0\,_0\,_0)_100%)'
   },
   "@light": {
-    ":after": {
-      bg: 'linear-gradient(to top, rgba(241, 241, 243, 1) 0%,rgba(241, 241, 243, 0) 100%)'
-    },
+    ":after": 'bg:linear-gradient(to_top\,_rgba(241\,_241\,_243\,_1)_0%\,rgba(241\,_241\,_243\,_0)_100%)',
     in: 'bg:gray15'
   },
-  "> *:not(:first-child)": {
-    in: 'zi:2'
-  },
+  "> *:not(:first-child)": 'zi:2',
   Scene: {
     "@light": {
       ":after": {
@@ -2828,27 +2575,17 @@ export const Banner = {
     },
     in: 'pos:absolute tp:0 lft:0 zi:1'
   },
-  BannerHgroup: {
-    in: 'zi:2'
-  },
+  BannerHgroup: 'zi:2',
   TabSet: {
-    "@heightM": {
-      in: 'm:C2_-_B2+W_-'
-    },
+    "@heightM": 'm:C2_-_B2+W_-',
     in: 'm:D2+Y2_-_B2+W_- bg:black_.25'
   },
-  BannerImg: {
-    in: 'w:96%'
-  },
+  BannerImg: 'w:96%',
   TabSetTwo: {
     cp: {
-      ":first-child": {
-        bg: 'linear-gradient(to right,  #00A2E7, #185DF3, #1E54F0, #8B4CCA, #8B4CCA)'
-      },
+      ":first-child": 'bg:linear-gradient(to_right\,__#00A2E7\,_#185DF3\,_#1E54F0\,_#8B4CCA\,_#8B4CCA)',
       "@light": {
-        ":first-child": {
-          in: 'c:white'
-        }
+        ":first-child": 'c:white'
       }
     },
     in: 'pos:absolute bot:C zi:10_!important'
@@ -2858,20 +2595,11 @@ export const Banner = {
 
 // ── BannerButton ──
 export const BannerButton = {
-  "@tabletS": {
-    in: 'm:F1_-_-'
-  },
-  "@mobileS": {
-    in: 'm:D_-_D_- p:C_B_B2_B'
-  },
-  "@mobileXS": {
-    in: 'p:C_A_B2_A'
-  },
+  "@tabletS": 'm:F1_-_-',
+  "@mobileS": 'm:D_-_D_- p:C_B_B2_B',
+  "@mobileXS": 'p:C_A_B2_A',
   ":hover, &:focus-within": {
-    "> h1": {
-      txsh: 'gray1, 6px, 6px',
-      tf: 'translate3d(-0.5%, -1%, 1px)'
-    }
+    "> h1": 'txsh:gray1\,_6px\,_6px tf:translate3d(-0.5%\,_-1%\,_1px)'
   },
   Icon: {
     sy: {
@@ -2882,85 +2610,53 @@ export const BannerButton = {
     in: 'nm:arrowUpRight pos:absolute tp:-E2+B2 rgt:-F+A2 bsz:I1+A_ op:.4'
   },
   H1: {
-    trnp: 'text-shadow, transform',
-    "@mobileS": {
-      in: 'ta:center lh:1.2em p:-_Z'
-    },
+    "@mobileS": 'ta:center lh:1.2em p:-_Z',
     tx: 'Join the waitlist',
-    in: 'lh:1em p:-_-_X2_- c:white fw:700 fs:K trn:A_defaultBezier txsh:none tf:none'
+    in: 'lh:1em p:-_-_X2_- c:white fw:700 fs:K trn:A_defaultBezier trnp:text-shadow\,_transform txsh:none tf:none'
   },
   Flex: {
-    "@tabletS": {
-      in: 'fl:y aln:start_space-between g:D'
-    },
+    "@tabletS": 'fl:y aln:start_space-between g:D',
     Flex_1: {
       JoinWaitlist: {
         Button: {
-          "@mobileS": {
-            in: 'aln:center_center mnw:100%'
-          },
+          "@mobileS": 'aln:center_center mnw:100%',
           in: 'thm:'
         },
-        "@mobileS": {
-          in: 'm:0 fl:y rnd:B g:A mnw:100% aln:center_flex-start'
-        },
+        "@mobileS": 'm:0 fl:y rnd:B g:A mnw:100% aln:center_flex-start',
         in: 'pos:relative thm:document m:-_-_-_-Z'
       },
       Asterisk: {
-        "@mobileS": {
-          in: 'ta:center p:-_Z'
-        },
+        "@mobileS": 'ta:center p:-_Z',
         tx: '* We\'ll only email you about invitation'
       },
-      "@mobileS": {
-        in: 'aln:center_flex-start mnw:100%'
-      },
+      "@mobileS": 'aln:center_flex-start mnw:100%',
       in: 'fl:y g:A'
     },
     Flex_2: {
-      "@tabletS": {
-        in: 'as:flex-end'
-      },
-      "@mobileL": {
-        in: 'as:flex-start'
-      },
-      "@mobileS": {
-        in: 'fl:y aln:center_flex-start g:B as:center'
-      },
+      "@tabletS": 'as:flex-end',
+      "@mobileL": 'as:flex-start',
+      "@mobileS": 'fl:y aln:center_flex-start g:B as:center',
       P: {
         tx: 'Want to skip the queue?',
-        "@mobileS": {
-          in: 'm:0'
-        },
+        "@mobileS": 'm:0',
         in: 'm:0 fw:400 c:title'
       },
       Link: {
-        "@tabletS": {
-          in: 'p:0'
-        },
+        "@tabletS": 'p:0',
         tx: 'Book a demo',
         hrf: 'https://cal.com/symbols-josh/early-access',
-        tgt: '_blank',
         thm: null,
-        ":hover": {
-          in: 'td:underline'
-        },
-        Icon: {
-          in: 'nm:arrowUpRight'
-        },
-        "@mobileM": {
-          in: 'p:0'
-        },
+        ":hover": 'td:underline',
+        Icon: 'nm:arrowUpRight',
+        "@mobileM": 'p:0',
         sy: {
           color: 'white'
         },
-        in: 'ext:Link,Button g:X bg:none c:title td:none'
+        in: 'ext:Link,Button g:X tgt:\_blank bg:none c:title td:none'
       },
       in: 'g:A2 aln:center pos:relative'
     },
-    "@mobileS": {
-      in: 'aln:flex-start_flex-start'
-    },
+    "@mobileS": 'aln:flex-start_flex-start',
     in: 'aln:end_space-between'
   },
   in: 'tg:label fl:y w:95% thm:primary pos:relative ov:hidden mnh:fit-content p:B1_B2_B_C mxw:J1 g:C rnd:A2'
@@ -2969,57 +2665,36 @@ export const BannerButton = {
 // ── BannerButtonCopy ──
 export const BannerButtonCopy = {
   hrf: '/pricing',
-  "@tabletS": {
-    in: 'm:F1_-_-'
-  },
-  "@mobileS": {
-    in: 'm:D_-_D_-'
-  },
-  "@mobileXS": {
-    in: 'p:C_B_B2_B'
-  },
+  "@tabletS": 'm:F1_-_-',
+  "@mobileS": 'm:D_-_D_-',
+  "@mobileXS": 'p:C_B_B2_B',
   ":hover": {
-    "> h1": {
-      txsh: 'gray1, 10px, 10px',
-      tf: 'translate3d(-1%, -2%, 1px)'
-    }
+    "> h1": 'txsh:gray1\,_10px\,_10px tf:translate3d(-1%\,_-2%\,_1px)'
   },
   "@mobileL": {},
   H1: {
-    trnp: 'text-shadow, transform',
     tx: 'Get lifetime access now',
     "@mobileL": {},
-    in: 'lh:1em p:-_-_X_- c:white fw:700 fs:K mxw:D3 trn:A_defaultBezier'
+    in: 'lh:1em p:-_-_X_- c:white fw:700 fs:K mxw:D3 trn:A_defaultBezier trnp:text-shadow\,_transform'
   },
   Flex: {
-    "@mobileS": {
-      in: 'fl:y aln:flex-start_flex-start g:A'
-    },
+    "@mobileS": 'fl:y aln:flex-start_flex-start g:A',
     P: {
       tx: 'Need a personalized invite?',
-      "@mobileS": {
-        in: 'm:0'
-      },
+      "@mobileS": 'm:0',
       in: 'fw:400'
     },
     DocsLink: {
       tx: 'Book a demo',
       hrf: 'https://cal.com/symbols-josh/early-access',
-      tgt: '_blank',
-      Icon: {
-        in: 'nm:arrowUpRight'
-      },
-      "@mobileM": {
-        in: 'p:0'
-      },
-      in: 'ext:DocsLink,Button g:X bg:none c:white td:none'
+      Icon: 'nm:arrowUpRight',
+      "@mobileM": 'p:0',
+      in: 'ext:DocsLink,Button g:X tgt:\_blank bg:none c:white td:none'
     },
     in: 'g:A2 p:B_-_-_-'
   },
   Icon: {
-    "@mobileL": {
-      in: 'op:.4'
-    },
+    "@mobileL": 'op:.4',
     sy: {
       color: 'transparent',
       stroke: 'white',
@@ -3055,8 +2730,7 @@ export const BannerImg = {
   },
   Img_2: {
     src: 'play.svg',
-    tf: 'translate(-50%, -50%)',
-    in: 'pos:absolute tp:50% lft:50% m:-B_-_-_-'
+    in: 'pos:absolute tp:50% lft:50% tf:translate(-50%\,_-50%) m:-B_-_-_-'
   },
   in: 'mxh:H+B ov:hidden pos:relative w:100%'
 }
@@ -3086,12 +2760,9 @@ export const CTAButtonsCampaign = {
         'DocsLink'
       ],
       hrf: 'https://cal.com/symbols-josh/early-access',
-      tgt: '_blank',
       tx: 'Book a demo',
-      Icon: {
-        in: 'nm:arrowUpRight fs:A m:-_-_-W2_X1'
-      },
-      in: 'thm:transparent fw:400 fl:row-reverse c:title g:Z'
+      Icon: 'nm:arrowUpRight fs:A m:-_-_-W2_X1',
+      in: 'tgt:\_blank thm:transparent fw:400 fl:row-reverse c:title g:Z'
     }
   ],
   in: 'g:D aln:center'
@@ -3149,15 +2820,9 @@ export const CalBooking = {
 export const CaseItem = {
   props: {
     ":hover": {
-      "> div > div": {
-        in: 'op:1'
-      },
-      "> div > div:after": {
-        in: 'w:75% op:1'
-      },
-      "> div > div > svg": {
-        in: 'tf:rotate(90deg)'
-      }
+      "> div > div": 'op:1',
+      "> div > div:after": 'w:75% op:1',
+      "> div > div > svg": 'tf:rotate(90deg)'
     },
     in: 'g:B2 cur:pointer'
   },
@@ -3171,14 +2836,11 @@ export const CaseItem = {
       in: 'fw:100 fs:B2+X1 mnw:F+B mxw:F+B lh:1.3em c:title'
     },
     IconText: {
-      Icon: {
-        in: 'nm:chevronUp trn:transform_.5s_ease tf:rotate(45deg)'
-      },
+      Icon: 'nm:chevronUp trn:transform_.5s_ease tf:rotate(45deg)',
       tx: 'Read more',
       ":after": {
         cnt: '""',
-        trn: 'width .3s ease, opacity .5s ease',
-        in: 'h:.5px w:0 op:0 bg:white_.75 pos:absolute bot:0 lft:B-V'
+        in: 'h:.5px w:0 op:0 trn:width_.3s_ease\,_opacity_.5s_ease bg:white_.75 pos:absolute bot:0 lft:B-V'
       },
       in: 'aln:center_flex-start fs:A1 fw:100 g:Y2 pos:relative mxw:fit-content p:-_-_X2_- op:.8'
     },
@@ -3189,31 +2851,21 @@ export const CaseItem = {
 
 // ── CompaniesUsing ──
 export const CompaniesUsing = {
-  "@tabletS": {
-    in: 'fl:y g:C2 aln:center'
-  },
+  "@tabletS": 'fl:y g:C2 aln:center',
   "@light": {},
   Caption: {
     tx: 'By team that previously contributed to:',
     in: 'c:caption fs:Z ws:nowrap'
   },
   Flex: {
-    "@mobileS": {
-      in: 'p:-_C2'
-    },
-    "@tabletL": {
-      in: 'fxw:wrap p:-_C2 aln:center_center'
-    },
+    "@mobileS": 'p:-_C2',
+    "@tabletL": 'fxw:wrap p:-_C2 aln:center_center',
     cp: {
       "@light": {
-        ":nth-child(odd)": {
-          in: 'd:none'
-        }
+        ":nth-child(odd)": 'd:none'
       },
       "@dark": {
-        ":nth-child(even)": {
-          in: 'd:none'
-        }
+        ":nth-child(even)": 'd:none'
       }
     },
     ch: [
@@ -3299,12 +2951,8 @@ export const CompaniesUsing = {
 export const CreateFeature = {
   Flex: {
     cp: {
-      "@mobileL": {
-        in: 'p:D'
-      },
-      "@mobileM": {
-        in: 'p:C_B_C_B'
-      },
+      "@mobileL": 'p:D',
+      "@mobileM": 'p:C_B_C_B',
       ":before": {
         cnt: '""',
         in: 'bsz:1px_200% pos:absolute tp:0 lft:0 bg:line zi:0'
@@ -3317,14 +2965,10 @@ export const CreateFeature = {
       },
       Img: {},
       Hgroup: {
-        "@mobileS": {
-          in: 'fs:Z1'
-        }
+        "@mobileS": 'fs:Z1'
       },
       Button: {
-        "@mobileXS": {
-          in: 'mnw:100% mxw:100%'
-        }
+        "@mobileXS": 'mnw:100% mxw:100%'
       },
       in: 'p:D2_-_D2_D2 bxs:border-box pos:relative'
     },
@@ -3378,9 +3022,7 @@ export const CreateFeature = {
     in: 'fl:y mnw:50% cex:CreateFeatureItem'
   },
   Box: {
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     Img: {
       src: 'landing.gif',
       in: 'obf:scale-down bsz:100%'
@@ -3431,9 +3073,7 @@ export const CreateFeatureItem = {
     hrf: '/signup',
     tx: 'Create features',
     thm: null,
-    Icon: {
-      in: 'nm:chevronUp fs:B tf:rotate(45deg) m:-W_-_-_-'
-    },
+    Icon: 'nm:chevronUp fs:B tf:rotate(45deg) m:-W_-_-_-',
     in: 'ext:DocsLink,Button fw:700 fl:row-reverse aln:center_center g:A2 p:Z2_- mnw:F3+B2 mxw:F3+B2 c:highlight-reversed bg:highlight m:E_-_-_- bd:0'
   },
   P: {
@@ -3445,7 +3085,6 @@ export const CreateFeatureItem = {
 
 // ── FeatureItem ──
 export const FeatureItem = {
-  trnp: 'color, background, border',
   "@mobileS": {
     sy: {
       minWidth: '100% !important',
@@ -3454,21 +3093,15 @@ export const FeatureItem = {
     }
   },
   ":hover": {
-    "& span": {
-      in: 'c:highlight_.9'
-    },
+    "& span": 'c:highlight_.9',
     in: 'c:title bdc:line-highlight'
   },
   H3: {
-    Span: {
-      in: 'trn:A_defaultBezier_color fw:100'
-    },
+    Span: 'trn:A_defaultBezier_color fw:100',
     in: 'trn:A_defaultBezier_color fw:700 c:title fs:A2+X'
   },
-  Icon: {
-    in: 'pos:absolute fs:D1 tp:A1 lft:A1'
-  },
-  in: 'ext:Link bdst:solid bdw:1px bdc:line pos:relative wr:G1 trn:A_defaultBezier p:F1_B1_C1 rnd:B2'
+  Icon: 'pos:absolute fs:D1 tp:A1 lft:A1',
+  in: 'ext:Link bdst:solid bdw:1px bdc:line pos:relative wr:G1 trn:A_defaultBezier trnp:color\,_background\,_border p:F1_B1_C1 rnd:B2'
 }
 
 // ── FeatureStory ──
@@ -3477,9 +3110,7 @@ export const FeatureStory = {
     in: 'fl:y aln:center_flex-start mnw:320px m:-_auto w:100% mxw:J1'
   },
   Hgroup: {
-    "@tabletS": {
-      in: 'p:-_B_C2_B'
-    },
+    "@tabletS": 'p:-_B_C2_B',
     H: {
       tx: 'Turning ideas into',
       Strong: {
@@ -3494,122 +3125,60 @@ export const FeatureStory = {
     in: 'ta:center aln:center_flex-start g:Z p:-_-_C2_-'
   },
   Grid: {
-    col: 'repeat(3, 1fr)',
-    "@tabletL": {
-      in: 'col:100% p:C g:D1'
-    },
-    "@mobileM": {
-      in: 'p:0 g:0'
-    },
+    "@tabletL": 'col:100% p:C g:D1',
+    "@mobileM": 'p:0 g:0',
     cp: {
-      "@tabletL": {
-        in: 'bsz:H2_100% g:B1 p:0_0_D_C'
-      },
-      "@tabletS": {
-        in: 'bsz:H_100% p:0_0_B1_B1'
-      },
-      "@mobileL": {
-        in: 'bsz:G1_100% p:0_0_A1_B'
-      },
-      "@mobileM": {
-        in: 'p:C_B1 bsz:fit-content_100%'
-      },
-      "@mobileS": {
-        in: 'p:B'
-      },
+      "@tabletL": 'bsz:H2_100% g:B1 p:0_0_D_C',
+      "@tabletS": 'bsz:H_100% p:0_0_B1_B1',
+      "@mobileL": 'bsz:G1_100% p:0_0_A1_B',
+      "@mobileM": 'p:C_B1 bsz:fit-content_100%',
+      "@mobileS": 'p:B',
       ":before": {
         cnt: '""',
-        "@tabletL": {
-          in: 'd:block'
-        },
-        "@mobileM": {
-          in: 'd:none'
-        },
+        "@tabletL": 'd:block',
+        "@mobileM": 'd:none',
         in: 'bsz:.8px_130% bg:line zi:4 pos:absolute tp:-C lft:-D1 d:none'
       },
       ":after": {
         cnt: '""',
-        bg: 'linear-gradient(to top, rgba(0, 0, 0, 1) 20%, rgba(0, 0, 0, 0) 80%)',
-        "@tabletL": {
-          in: 'd:block'
-        },
-        "@mobileM": {
-          in: 'd:none'
-        },
-        in: 'bsz:100%_100% pos:absolute tp:0 lft:0 d:none zi:2'
+        "@tabletL": 'd:block',
+        "@mobileM": 'd:none',
+        in: 'bsz:100%_100% pos:absolute tp:0 lft:0 d:none bg:linear-gradient(to_top\,_rgba(0\,_0\,_0\,_1)_20%\,_rgba(0\,_0\,_0\,_0)_80%) zi:2'
       },
-      ":hover": {
-        in: 'bg:line_.35'
-      },
+      ":hover": 'bg:line_.35',
       ":first-child": {
-        ":before": {
-          in: 'd:none'
-        }
+        ":before": 'd:none'
       },
       ":not(:last-child)": {
-        "@tabletL": {
-          in: 'bdw:0_0_0_0'
-        },
-        "@mobileM": {
-          in: 'bdw:0_0_1px_0'
-        },
+        "@tabletL": 'bdw:0_0_0_0',
+        "@mobileM": 'bdw:0_0_1px_0',
         in: 'bdw:0_1px_0_0 bdst:solid bdc:line'
       },
       Box: {
-        "@tabletL": {
-          in: 'bsz:100%_100% pos:absolute tp:0 lft:0'
-        },
-        "@mobileM": {
-          in: 'pos:relative bsz:F1_100%'
-        },
-        "@mobileXS": {
-          in: 'bsz:F_100%'
-        },
+        "@tabletL": 'bsz:100%_100% pos:absolute tp:0 lft:0',
+        "@mobileM": 'pos:relative bsz:F1_100%',
+        "@mobileXS": 'bsz:F_100%',
         Img: {
-          "@tabletL": {
-            in: 'op:.7'
-          },
-          "@mobileM": {
-            in: 'op:1'
-          }
+          "@tabletL": 'op:.7',
+          "@mobileM": 'op:1'
         },
         Icon: {
-          "@tabletL": {
-            in: 'fs:E2 tp:40%'
-          },
-          "@mobileL": {
-            in: 'fs:E tp:38%'
-          },
-          "@mobileM": {
-            in: 'fs:C tp:50%'
-          }
+          "@tabletL": 'fs:E2 tp:40%',
+          "@mobileL": 'fs:E tp:38%',
+          "@mobileM": 'fs:C tp:50%'
         }
       },
       H3: {
-        "@tabletL": {
-          in: 'zi:3 fs:F1 lh:1.4em m:auto_0_0_0 mxw:F+B1'
-        },
-        "@tabletS": {
-          in: 'fs:E2'
-        },
-        "@mobileL": {
-          in: 'fs:D mxw:F+A'
-        },
-        "@mobileM": {
-          in: 'fs:B2+X1 mxw:F m:Z2_-_B2_- lh:1.3em'
-        },
-        "@mobileS": {
-          in: 'fs:D m:0_-_B_-'
-        },
-        "@mobileXS": {
-          in: 'p:-_A_-_-'
-        }
+        "@tabletL": 'zi:3 fs:F1 lh:1.4em m:auto_0_0_0 mxw:F+B1',
+        "@tabletS": 'fs:E2',
+        "@mobileL": 'fs:D mxw:F+A',
+        "@mobileM": 'fs:B2+X1 mxw:F m:Z2_-_B2_- lh:1.3em',
+        "@mobileS": 'fs:D m:0_-_B_-',
+        "@mobileXS": 'p:-_A_-_-'
       },
       IconText: {
         "@tabletL": {
-          ":after": {
-            in: 'd:none'
-          },
+          ":after": 'd:none',
           in: 'zi:3'
         }
       },
@@ -3647,7 +3216,7 @@ export const FeatureStory = {
         }
       }
     ],
-    in: 'bdst:solid bdc:line bdw:1px m:C_-_-_- w:100% ov:hidden cex:StoryItem'
+    in: 'bdst:solid bdc:line bdw:1px m:C_-_-_- w:100% ov:hidden col:repeat(3\,_1fr) cex:StoryItem'
   },
   CaseStudies: {
     H6: {
@@ -3655,22 +3224,13 @@ export const FeatureStory = {
       in: 'fs:A2 fw:100'
     },
     Box: {
-      "@tabletS": {
-        in: 'p:Z_-_-_-'
-      },
-      "@mobileM": {
-        in: 'p:A2_-_-_-'
-      },
-      "@mobileS": {
-        in: 'p:A_-_A1_-'
-      },
+      "@tabletS": 'p:Z_-_-_-',
+      "@mobileM": 'p:A2_-_-_-',
+      "@mobileS": 'p:A_-_A1_-',
       ":after": {
         cnt: '""',
-        bg: 'linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-        "@mobileM": {
-          in: 'd:none'
-        },
-        in: 'bsz:100%_C1 pos:absolute tp:0 rgt:0 pe:none'
+        "@mobileM": 'd:none',
+        in: 'bsz:100%_C1 bg:linear-gradient(to_left\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%) pos:absolute tp:0 rgt:0 pe:none'
       },
       Flex: {
         "@tabletS": {
@@ -3679,12 +3239,8 @@ export const FeatureStory = {
           },
           in: 'g:B2 p:-_B2 spd:B2'
         },
-        "@mobileS": {
-          in: 'p:-_A spd:A'
-        },
-        "::-webkit-scrollbar": {
-          in: 'd:none'
-        },
+        "@mobileS": 'p:-_A spd:A',
+        "::-webkit-scrollbar": 'd:none',
         cp: {
           "@tabletS": {
             sy: {
@@ -3693,32 +3249,18 @@ export const FeatureStory = {
             in: 'mnw:100% mxw:100% fl:y g:0 aln:flex-start_flex-start'
           },
           Img: {
-            "@tabletS": {
-              in: 'bsz:G1_H'
-            },
-            "@mobileL": {
-              in: 'bsz:G_G2'
-            },
-            "@mobileM": {
-              in: 'bsz:auto_100%'
-            }
+            "@tabletS": 'bsz:G1_H',
+            "@mobileL": 'bsz:G_G2',
+            "@mobileM": 'bsz:auto_100%'
           },
           Flex: {
             H2: {
-              "@tabletS": {
-                in: 'mnw:D mxw:G2 p:-_A_B_-'
-              },
-              "@mobileM": {
-                in: 'fs:D p:A_A_C_Y'
-              },
-              "@mobileXS": {
-                in: 'fs:C1 p:A_Y_C_Y'
-              }
+              "@tabletS": 'mnw:D mxw:G2 p:-_A_B_-',
+              "@mobileM": 'fs:D p:A_A_C_Y',
+              "@mobileXS": 'fs:C1 p:A_Y_C_Y'
             },
             IconText: {
-              "@mobileM": {
-                in: 'p:-_-_-_Z m:A_-_-_-'
-              }
+              "@mobileM": 'p:-_-_-_Z m:A_-_-_-'
             }
           },
           in: 'fl:x p:0'
@@ -3740,9 +3282,7 @@ export const FeatureStory = {
         in: 'g:D mxw:100% ov:auto p:-_B cex:CaseItem'
       },
       Scrollbar: {
-        "@mobileS": {
-          in: 'm:A2_-_-_- p:-_A_-_B'
-        },
+        "@mobileS": 'm:A2_-_-_- p:-_A_-_B',
         TrackContainer: {
           Track: {
             onFrame: el => {
@@ -3804,44 +3344,28 @@ export const FeatureStory = {
 
 // ── Feedbacks ──
 export const Feedbacks = {
-  "@tabletS": {
-    in: 'ov:hidden'
-  },
-  "@mobileM": {
-    in: 'g:D1'
-  },
+  "@tabletS": 'ov:hidden',
+  "@mobileM": 'g:D1',
   ":before": {
     cnt: '""',
-    bg: 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-    "@tabletS": {
-      in: 'd:block'
-    },
-    in: 'bsz:100%_B2 pos:absolute tp:0 lft:0 zi:2 pe:none d:none'
+    "@tabletS": 'd:block',
+    in: 'bsz:100%_B2 pos:absolute tp:0 lft:0 zi:2 pe:none bg:linear-gradient(to_right\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%) d:none'
   },
   ":after": {
     cnt: '""',
-    bg: 'linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-    "@tabletS": {
-      in: 'd:block'
-    },
-    in: 'bsz:100%_D1 pos:absolute tp:0 rgt:-X pe:none zi:2 d:none'
+    "@tabletS": 'd:block',
+    in: 'bsz:100%_D1 pos:absolute tp:0 rgt:-X pe:none zi:2 bg:linear-gradient(to_left\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%) d:none'
   },
   "@dark": {
-    ":after": {
-      bg: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%,rgba(0, 0, 0, 0) 100%)'
-    }
+    ":after": 'bg:linear-gradient(to_top\,_rgba(0\,_0\,_0\,_1)_0%\,rgba(0\,_0\,_0\,_0)_100%)'
   },
   "@light": {
-    ":after": {
-      bg: 'linear-gradient(to top, rgba(241, 241, 243, 1) 0%,rgba(241, 241, 243, 0) 100%)'
-    },
+    ":after": 'bg:linear-gradient(to_top\,_rgba(241\,_241\,_243\,_1)_0%\,rgba(241\,_241\,_243\,_0)_100%)',
     in: 'bg:gray15 c:gray1'
   },
   Hgroup: {
     H: {
-      "@mobileM": {
-        in: 'p:-_B1 ta:center lh:1.3em'
-      },
+      "@mobileM": 'p:-_B1 ta:center lh:1.3em',
       ":before, &:after": {
         cnt: '\'"\'',
         in: 'fw:400'
@@ -3860,44 +3384,23 @@ export const Feedbacks = {
     in: 'aln:center_flex-start g:A2'
   },
   Grid: {
-    col: 'repeat(3, 1fr)',
-    "@screenL": {
-      in: 'g:F2 fs:A2'
-    },
-    "@screenM": {
-      in: 'g:F1 fs:A1'
-    },
-    "@tabletM": {
-      col: 'repeat(2, 1fr)',
-      in: 'g:E'
-    },
+    "@screenL": 'g:F2 fs:A2',
+    "@screenM": 'g:F1 fs:A1',
+    "@tabletM": 'col:repeat(2\,_1fr) g:E',
     "@tabletS": {
-      "::-webkit-scrollbar": {
-        in: 'd:none'
-      },
+      "::-webkit-scrollbar": 'd:none',
       in: 'd:flex ai:center jc:flex-start mxw:100% ovx:auto p:-_B2 g:D1'
     },
-    "@mobileM": {
-      in: 'g:C p:-_B'
-    },
+    "@mobileM": 'g:C p:-_B',
     ch: [
       {
-        "@tabletM": {
-          in: 'tf:translateX(0px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translateX(0px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         in: 'tf:translateX(100px)'
       },
       {
-        tf: 'translate(-30px, 105px)',
-        "@tabletM": {
-          tf: 'translate(0, 70px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(0\,_70px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'arthur.svg'
         },
@@ -3911,16 +3414,12 @@ export const Feedbacks = {
           P: {
             tx: 'This would defintely streamline the process for my web dev agency.'
           }
-        }
+        },
+        in: 'tf:translate(-30px\,_105px)'
       },
       {
-        tf: 'translate(-200px, -54px)',
-        "@tabletM": {
-          tf: 'translate(50px, 0px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(50px\,_0px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'joe.svg'
         },
@@ -3934,16 +3433,12 @@ export const Feedbacks = {
           P: {
             tx: 'This would defintely streamline the process for my web dev agency.'
           }
-        }
+        },
+        in: 'tf:translate(-200px\,_-54px)'
       },
       {
-        tf: 'translate(130px, -50px)',
-        "@tabletM": {
-          tf: 'translate(100px, 50px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(100px\,_50px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'mike.svg'
         },
@@ -3957,16 +3452,12 @@ export const Feedbacks = {
           P: {
             tx: 'What you guys have built is really cool. I definitely see a use for this.'
           }
-        }
+        },
+        in: 'tf:translate(130px\,_-50px)'
       },
       {
-        tf: 'translate(60px, -24px)',
-        "@tabletM": {
-          tf: 'translate(-50px, 30px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(-50px\,_30px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'derek.svg'
         },
@@ -3980,16 +3471,12 @@ export const Feedbacks = {
           P: {
             tx: 'Symbols is definitely more advanced than Storybook'
           }
-        }
+        },
+        in: 'tf:translate(60px\,_-24px)'
       },
       {
-        tf: 'translate(-110px, -170px)',
-        "@tabletM": {
-          tf: 'translate(0, -10px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(0\,_-10px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'aaron.svg'
         },
@@ -4003,16 +3490,12 @@ export const Feedbacks = {
           P: {
             tx: 'Symbols is miles ahead of what my company uses to manage UIkits'
           }
-        }
+        },
+        in: 'tf:translate(-110px\,_-170px)'
       },
       {
-        tf: 'translate(100px, -50px)',
-        "@tabletM": {
-          tf: 'translate(0px, 0)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(0px\,_0)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'matt.svg'
         },
@@ -4026,16 +3509,12 @@ export const Feedbacks = {
           P: {
             tx: 'I just watched the video, really like the execution of the idea! Its what Storybook should have been.'
           }
-        }
+        },
+        in: 'tf:translate(100px\,_-50px)'
       },
       {
-        tf: 'translate(-20px, -135px)',
-        "@tabletM": {
-          tf: 'translate(70px, -30px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(70px\,_-30px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'chirag.svg'
         },
@@ -4049,16 +3528,12 @@ export const Feedbacks = {
           P: {
             tx: '👍  Great product. I will for sure be a customr. Also excited to see where you guys take it.'
           }
-        }
+        },
+        in: 'tf:translate(-20px\,_-135px)'
       },
       {
-        tf: 'translate(-100px, -230px)',
-        "@tabletM": {
-          tf: 'translate(0, 0)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(0\,_0)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'enes.svg'
         },
@@ -4072,16 +3547,12 @@ export const Feedbacks = {
           P: {
             tx: 'I’m very impressed with the overall product. Very useful.'
           }
-        }
+        },
+        in: 'tf:translate(-100px\,_-230px)'
       },
       {
-        "@tabletM": {
-          tf: 'translate(30px, -30px)',
-          in: 'pos:initial rgt:initial bot:initial'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'pos:initial tf:translate(30px\,_-30px) rgt:initial bot:initial',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'andrew.svg'
         },
@@ -4099,54 +3570,36 @@ export const Feedbacks = {
         in: 'pos:absolute rgt:E1 bot:-C'
       }
     ],
-    "@screenS": {
-      in: 'fs:A'
-    },
-    in: 'mxw:100% m:-_auto g:F_G pos:relative cex:UserFeedBack'
+    "@screenS": 'fs:A',
+    in: 'mxw:100% m:-_auto col:repeat(3\,_1fr) g:F_G pos:relative cex:UserFeedBack'
   },
   in: 'fl:y g:E bxs:content-box pos:relative aln:center_flex-start mnh:fit-content mxw:100%'
 }
 
 // ── FeedbacksShort ──
 export const FeedbacksShort = {
-  "@tabletS": {
-    in: 'ov:hidden'
-  },
-  "@mobileM": {
-    in: 'g:D1'
-  },
+  "@tabletS": 'ov:hidden',
+  "@mobileM": 'g:D1',
   ":before": {
     cnt: '""',
-    bg: 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-    "@tabletS": {
-      in: 'd:block'
-    },
-    in: 'bsz:100%_B2 pos:absolute tp:0 lft:0 zi:2 pe:none d:none'
+    "@tabletS": 'd:block',
+    in: 'bsz:100%_B2 pos:absolute tp:0 lft:0 zi:2 pe:none bg:linear-gradient(to_right\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%) d:none'
   },
   ":after": {
     cnt: '""',
-    bg: 'linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-    "@tabletS": {
-      in: 'd:block'
-    },
-    in: 'bsz:100%_D1 pos:absolute tp:0 rgt:-X pe:none zi:2 d:none'
+    "@tabletS": 'd:block',
+    in: 'bsz:100%_D1 pos:absolute tp:0 rgt:-X pe:none zi:2 bg:linear-gradient(to_left\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%) d:none'
   },
   "@dark": {
-    ":after": {
-      bg: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%,rgba(0, 0, 0, 0) 100%)'
-    }
+    ":after": 'bg:linear-gradient(to_top\,_rgba(0\,_0\,_0\,_1)_0%\,rgba(0\,_0\,_0\,_0)_100%)'
   },
   "@light": {
-    ":after": {
-      bg: 'linear-gradient(to top, rgba(241, 241, 243, 1) 0%,rgba(241, 241, 243, 0) 100%)'
-    },
+    ":after": 'bg:linear-gradient(to_top\,_rgba(241\,_241\,_243\,_1)_0%\,rgba(241\,_241\,_243\,_0)_100%)',
     in: 'bg:gray15 c:gray1'
   },
   Hgroup: {
     H: {
-      "@mobileM": {
-        in: 'p:-_B1 ta:center lh:1.3em'
-      },
+      "@mobileM": 'p:-_B1 ta:center lh:1.3em',
       ":before, &:after": {
         cnt: '\'"\'',
         in: 'fw:400'
@@ -4165,44 +3618,23 @@ export const FeedbacksShort = {
     in: 'aln:center_flex-start g:A2'
   },
   Grid: {
-    col: 'repeat(3, 1fr)',
-    "@screenL": {
-      in: 'g:F2 fs:A2'
-    },
-    "@screenM": {
-      in: 'g:F1 fs:A1'
-    },
-    "@tabletM": {
-      col: 'repeat(2, 1fr)',
-      in: 'g:E'
-    },
+    "@screenL": 'g:F2 fs:A2',
+    "@screenM": 'g:F1 fs:A1',
+    "@tabletM": 'col:repeat(2\,_1fr) g:E',
     "@tabletS": {
-      "::-webkit-scrollbar": {
-        in: 'd:none'
-      },
+      "::-webkit-scrollbar": 'd:none',
       in: 'd:flex ai:center jc:flex-start mxw:100% ovx:auto p:-_B2 g:D1'
     },
-    "@mobileM": {
-      in: 'g:C p:-_B'
-    },
+    "@mobileM": 'g:C p:-_B',
     ch: [
       {
-        tf: 'translate(110px, -25px)',
-        "@tabletM": {
-          in: 'tf:translateX(0px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        }
+        "@tabletM": 'tf:translateX(0px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
+        in: 'tf:translate(110px\,_-25px)'
       },
       {
-        tf: 'translate(-30px, 65px)',
-        "@tabletM": {
-          tf: 'translate(0, 70px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(0\,_70px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'arthur.svg'
         },
@@ -4216,16 +3648,12 @@ export const FeedbacksShort = {
           P: {
             tx: 'This would defintely streamline the process for my web dev agency.'
           }
-        }
+        },
+        in: 'tf:translate(-30px\,_65px)'
       },
       {
-        tf: 'translate(-220px, -34px)',
-        "@tabletM": {
-          tf: 'translate(50px, 0px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(50px\,_0px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'joe.svg'
         },
@@ -4239,16 +3667,12 @@ export const FeedbacksShort = {
           P: {
             tx: 'This would defintely streamline the process for my web dev agency.'
           }
-        }
+        },
+        in: 'tf:translate(-220px\,_-34px)'
       },
       {
-        tf: 'translate(230px, -180px)',
-        "@tabletM": {
-          tf: 'translate(100px, 50px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(100px\,_50px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'mike.svg'
         },
@@ -4262,16 +3686,12 @@ export const FeedbacksShort = {
           P: {
             tx: 'What you guys have built is really cool. I definitely see a use for this.'
           }
-        }
+        },
+        in: 'tf:translate(230px\,_-180px)'
       },
       {
-        tf: 'translate(360px, -150px)',
-        "@tabletM": {
-          tf: 'translate(-50px, 30px)'
-        },
-        "@tabletS": {
-          tf: 'translate(0px, 0px)'
-        },
+        "@tabletM": 'tf:translate(-50px\,_30px)',
+        "@tabletS": 'tf:translate(0px\,_0px)',
         Avatar: {
           src: 'derek.svg'
         },
@@ -4285,41 +3705,32 @@ export const FeedbacksShort = {
           P: {
             tx: 'Symbols is definitely more advanced than Storybook'
           }
-        }
+        },
+        in: 'tf:translate(360px\,_-150px)'
       }
     ],
-    "@screenS": {
-      in: 'fs:A'
-    },
+    "@screenS": 'fs:A',
     cp: {
       in: 'fs:Z2'
     },
-    in: 'mxw:100% m:-_auto g:F_G pos:relative cex:UserFeedBack'
+    in: 'mxw:100% m:-_auto col:repeat(3\,_1fr) g:F_G pos:relative cex:UserFeedBack'
   },
   in: 'fl:y g:D3 bxs:content-box pos:relative aln:center_flex-start mnh:fit-content mxw:100%'
 }
 
 // ── FooteLanding ──
 export const FooteLanding = {
-  "@mobileL": {
-    in: 'fl:column aln:center_center g:B2'
-  },
+  "@mobileL": 'fl:column aln:center_center g:B2',
   cp: {
-    "@mobileL": {
-      in: 'aln:center_center ta:center w:100% p:0'
-    }
+    "@mobileL": 'aln:center_center ta:center w:100% p:0'
   },
   Copy: {
-    "@dark": {
-      in: 'c:gray8'
-    },
-    "@light": {
-      in: 'c:gray5'
-    },
+    "@dark": 'c:gray8',
+    "@light": 'c:gray5',
     DocsLink: {
-      tgt: '_blank',
       hrf: 'https://symbols.app',
-      tx: 'Symbols'
+      tx: 'Symbols',
+      in: 'tgt:\_blank'
     },
     Year: {
       tx: ' © Since 2021'
@@ -4328,24 +3739,20 @@ export const FooteLanding = {
   },
   Flex: {
     Discord: {
-      tgt: '_blank',
       hrf: 'https://discord.com/invite/crdFSkapFY',
-      in: 'ico:discord'
+      in: 'tgt:\_blank ico:discord'
     },
     Github: {
-      tgt: '_blank',
       hrf: 'https://github.com/symbo-ls/',
-      in: 'ico:github'
+      in: 'tgt:\_blank ico:github'
     },
     X: {
-      tgt: '_blank',
       hrf: 'https://twitter.com/symbo_ls',
-      in: 'ico:xcom'
+      in: 'tgt:\_blank ico:xcom'
     },
     Linkedin: {
-      tgt: '_blank',
       hrf: 'https://www.linkedin.com/company/symbo-ls/',
-      in: 'ico:linkedin'
+      in: 'tgt:\_blank ico:linkedin'
     },
     in: 'tg:nav cex:MenuItem g:Z'
   },
@@ -4355,25 +3762,17 @@ export const FooteLanding = {
 // ── FrontendUnified ──
 export const FrontendUnified = {
   Flex: {
-    "@mobileL": {
-      in: 'g:B'
-    },
+    "@mobileL": 'g:B',
     H1: {
       tx: null,
-      "@mobileL": {
-        in: 'd:flex fxf:y lh:1em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'd:flex fxf:y lh:1em',
+      "@mobileS": 'fs:J2',
       Strong: {
         tx: 'Make Reusable Features'
       },
       Text: {
         tx: 'in minutes',
-        "@mobileL": {
-          in: 'd:none'
-        },
+        "@mobileL": 'd:none',
         in: 'fw:300'
       },
       in: 'c:title fs:G+X lh:1em'
@@ -4384,37 +3783,25 @@ export const FrontendUnified = {
     },
     in: 'zi:2 fxf:y flexAlign:center ta:center c:title g:A'
   },
-  WatchVideo: {
-    in: 'bd:0 bdst:none m:E1_auto_D3 p:X2_X1'
-  },
-  WhatIsSymbols: {
-    in: 'm:E3_auto'
-  },
+  WatchVideo: 'bd:0 bdst:none m:E1_auto_D3 p:X2_X1',
+  WhatIsSymbols: 'm:E3_auto',
   in: 'mxw:J2 m:-_auto'
 }
 
 // ── FrontendUnifiedCopy ──
 export const FrontendUnifiedCopy = {
   Flex: {
-    "@mobileL": {
-      in: 'g:B'
-    },
+    "@mobileL": 'g:B',
     H1: {
       tx: null,
-      "@mobileL": {
-        in: 'd:flex fxf:y lh:1em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'd:flex fxf:y lh:1em',
+      "@mobileS": 'fs:J2',
       Strong: {
         tx: 'Make Reusable Features'
       },
       Text: {
         tx: 'in minutes',
-        "@mobileL": {
-          in: 'd:none'
-        },
+        "@mobileL": 'd:none',
         in: 'fw:300'
       },
       in: 'c:title fs:G+X lh:1em'
@@ -4425,30 +3812,20 @@ export const FrontendUnifiedCopy = {
     },
     in: 'zi:2 fl:y ta:center c:title g:A aln:center'
   },
-  WatchVideo: {
-    in: 'bd:0 bdst:none m:E1_auto_D3 p:X2_X1'
-  }
+  WatchVideo: 'bd:0 bdst:none m:E1_auto_D3 p:X2_X1'
 }
 
 // ── Hero ──
 export const Hero = {
   Main: {
-    "@tabletS": {
-      in: 'fl:y h:auto'
-    },
+    "@tabletS": 'fl:y h:auto',
     Flex: {
-      "@tabletS": {
-        in: 'w:100% p:E_B h:auto'
-      },
+      "@tabletS": 'w:100% p:E_B h:auto',
       Header: {
         H1: {
           tx: null,
-          "@tabletS": {
-            in: 'fs:G'
-          },
-          "@mobileM": {
-            in: 'fs:F'
-          },
+          "@tabletS": 'fs:G',
+          "@mobileM": 'fs:F',
           Span: {
             tx: 'Infra and workspace for',
             in: 'fw:300 d:block'
@@ -4472,56 +3849,39 @@ export const Hero = {
         },
         Flex: {
           cp: {
-            trn: 'opacity .3s ease, border .3s ease',
-            in: 'aln:center g:Z2 p:Y1_Z2 rnd:C cur:pointer fs:Y2 fw:500 fx:1 jc:space-between thm:quaternary ws:nowrap'
+            in: 'aln:center g:Z2 p:Y1_Z2 rnd:C cur:pointer fs:Y2 fw:500 fx:1 jc:space-between trn:opacity_.3s_ease\,_border_.3s_ease thm:quaternary ws:nowrap'
           },
           ch: [
             {
-              Icon: {
-                in: 'nm:claude fs:B1 c:#D97757'
-              },
+              Icon: 'nm:claude fs:B1 c:#D97757',
               Text: {
                 tx: 'Claude Code'
               },
-              Icon_2: {
-                in: 'nm:downloadOutline fs:Z c:gray6'
-              },
+              Icon_2: 'nm:downloadOutline fs:Z c:gray6',
               hrf: '/docs/claude-code'
             },
             {
-              Icon: {
-                in: 'nm:vscode fs:A c:#007ACC'
-              },
+              Icon: 'nm:vscode fs:A c:#007ACC',
               Text: {
                 tx: 'VSCode'
               },
-              Icon_2: {
-                in: 'nm:downloadOutline fs:Z c:gray6'
-              },
+              Icon_2: 'nm:downloadOutline fs:Z c:gray6',
               hrf: '/docs/vscode'
             },
             {
-              Icon: {
-                in: 'nm:cursorEditor fs:B'
-              },
+              Icon: 'nm:cursorEditor fs:B',
               Text: {
                 tx: 'Cursor'
               },
-              Icon_2: {
-                in: 'nm:downloadOutline fs:Z c:gray6'
-              },
+              Icon_2: 'nm:downloadOutline fs:Z c:gray6',
               hrf: '/docs/cursor'
             },
             {
-              Icon: {
-                in: 'nm:symbols fs:B c:blue'
-              },
+              Icon: 'nm:symbols fs:B c:blue',
               Text: {
                 tx: 'Web'
               },
-              Icon_2: {
-                in: 'nm:arrowUpRight fs:Z c:gray6'
-              },
+              Icon_2: 'nm:arrowUpRight fs:Z c:gray6',
               hrf: '/signup'
             }
           ],
@@ -4532,9 +3892,7 @@ export const Hero = {
       in: 'fl:y fx:1 w:50% p:G_D_E jc:center d:flex g:D mxw:I2 m:-_-_-_auto h:100%'
     },
     CanvasEmbed: {
-      "@tabletS": {
-        in: 'w:100% h:50vh'
-      },
+      "@tabletS": 'w:100% h:50vh',
       in: 'fx:1 w:50% mxw:50% h:100% bg:gray6 rnd:0 p:0 project:/nikoloza/default-flattened'
     },
     in: 'fl:x w:100% h:70dvh aln:stretch'
@@ -4544,40 +3902,23 @@ export const Hero = {
 
 // ── HeroTitle ──
 export const HeroTitle = {
-  "@mobileL": {
-    in: 'g:B p:-_B2'
-  },
+  "@mobileL": 'g:B p:-_B2',
   H1: {
     Writing: {
-      speed: 30,
-      "@mobileS": {
-        in: 'lh:1.1em'
-      },
+      "@mobileS": 'lh:1.1em',
       tx: 'Interface Engineering ',
-      in: 'lh:0.9 h:A+X mnw:X'
+      in: 'speed:#30 lh:0.9 h:A+X mnw:X'
     },
     Writing_2: {
-      "@mobileS": {
-        in: 'm:A2_-_-_-'
-      },
-      speed: 30,
-      delay: 1200,
-      in: 'tg:span lh:0.9 h:A+X mnw:X fw:200 afterText:starts_here'
+      "@mobileS": 'm:A2_-_-_-',
+      in: 'tg:span speed:#30 delay:#1200 lh:0.9 h:A+X mnw:X fw:200 afterText:starts_here'
     },
-    "@mobileS": {
-      in: 'mxw:E'
-    },
+    "@mobileS": 'mxw:E',
     tx: null,
-    "@mobileM": {
-      in: 'fs:J2'
-    },
+    "@mobileM": 'fs:J2',
     in: 'fxf:column c:title fs:K'
   },
-  H6: {
-    delay: 2000,
-    speed: 5,
-    in: 'm:X_-_- h:C ext:Writing c:title fw:400 mxw:H3 afterText:Symbols_Suite_helps_you_expand_your_skills_to_build_and_manage_entire_interfaces_—_from_design_systems_to_delivery_and_integrations.'
-  },
+  H6: 'm:X_-_- h:C ext:Writing delay:#2000 speed:#5 c:title fw:400 mxw:H3 afterText:Symbols_Suite_helps_you_expand_your_skills_to_build_and_manage_entire_interfaces_—_from_design_systems_to_delivery_and_integrations.',
   props: {},
   in: 'fl:y aln:center ta:center c:title g:A'
 }
@@ -4586,17 +3927,11 @@ export const HeroTitle = {
 export const HeroTitleCopy = {
   props: {},
   Flex: {
-    "@mobileL": {
-      in: 'g:B p:-_B2'
-    },
+    "@mobileL": 'g:B p:-_B2',
     H1: {
       tx: null,
-      "@mobileL": {
-        in: 'lh:1.3em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'lh:1.3em',
+      "@mobileS": 'fs:J2',
       ch: [
         {
           tx: 'Your browser tab is now ',
@@ -4620,17 +3955,11 @@ export const HeroTitleCopy = {
 export const HeroTitleCopyCopy1 = {
   props: {},
   Flex: {
-    "@mobileL": {
-      in: 'g:B p:-_B2'
-    },
+    "@mobileL": 'g:B p:-_B2',
     H1: {
       tx: null,
-      "@mobileL": {
-        in: 'lh:1.3em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'lh:1.3em',
+      "@mobileS": 'fs:J2',
       Span: {
         tx: 'Instantly turn your ideas',
         in: 'fw:300'
@@ -4664,17 +3993,11 @@ export const HeroTitleCopyCopy1 = {
 export const HeroTitleCopyCopy1Copy2 = {
   props: {},
   Flex: {
-    "@mobileL": {
-      in: 'g:B p:-_B2'
-    },
+    "@mobileL": 'g:B p:-_B2',
     H1: {
       tx: null,
-      "@mobileL": {
-        in: 'lh:1.3em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'lh:1.3em',
+      "@mobileS": 'fs:J2',
       Span: {
         tx: 'Extend your apps with features,',
         in: 'fw:300'
@@ -4706,30 +4029,18 @@ export const HeroTitleCopyCopy1Copy2 = {
 // ── HgroupImg ──
 export const HgroupImg = {
   props: {
-    "@tabletM": {
-      in: 'g:C'
-    },
-    "@tabletS": {
-      in: 'fl:y g:D aln:center_flex-start'
-    },
-    "@mobileM": {
-      in: 'g:F mxw:100%'
-    },
+    "@tabletM": 'g:C',
+    "@tabletS": 'fl:y g:D aln:center_flex-start',
+    "@mobileM": 'g:F mxw:100%',
     in: 'g:F1+X mxw:fit-content'
   },
   Hgroup: {
     "@tabletS": {},
-    "@mobileM": {
-      in: 'p:-_B2'
-    },
+    "@mobileM": 'p:-_B2',
     H: {
       tx: 'Lifetime access is available now',
-      "@tabletM": {
-        in: 'fs:G'
-      },
-      "@mobileL": {
-        in: 'fs:F'
-      },
+      "@tabletM": 'fs:G',
+      "@mobileL": 'fs:F',
       in: 'tg:h1 fs:G1 fw:700 mxw:E+A lh:1.2em'
     },
     P: {
@@ -4748,9 +4059,7 @@ export const HgroupImg = {
   },
   Img: {
     src: 'infinite.svg',
-    "@mobileM": {
-      in: 'tf:rotate(90deg)'
-    },
+    "@mobileM": 'tf:rotate(90deg)',
     in: 'd:block mxh:fit-content'
   },
   in: 'extend:Flex'
@@ -4762,10 +4071,7 @@ export const Investors = {
     tx: 'Investors:'
   },
   Grid: {
-    tcol: 'repeat(3, 1fr)',
-    "@tabletM": {
-      tcol: 'repeat(2, 1fr)'
-    },
+    "@tabletM": 'tcol:repeat(2\,_1fr)',
     cex: [
       'AvatarHgroup'
     ],
@@ -4788,33 +4094,26 @@ export const Investors = {
     },
     ch: [
       {
-        avatar: 'https://media.licdn.com/dms/image/v2/C5603AQG6VLe-hAv2HA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1621306128570?e=1759363200&v=beta&t=Z4SUlB9y2OqIjf9LbU7n0AH94wsMaTpvDsrm4qcb7bg',
-        ttl: 'Innovative Product Design Leader | ex Apple, Nook, Suki',
-        in: 'nm:Matt_Pallakoff'
+        in: 'avatar:https://media.licdn.com/dms/image/v2/C5603AQG6VLe-hAv2HA/profile-displayphoto-shrink\_200\_200/profile-displayphoto-shrink\_200\_200/0/1621306128570?e=1759363200&v=beta&t=Z4SUlB9y2OqIjf9LbU7n0AH94wsMaTpvDsrm4qcb7bg nm:Matt_Pallakoff ttl:Innovative_Product_Design_Leader_|_ex_Apple\,_Nook\,_Suki'
       },
       {
-        avatar: 'https://media.licdn.com/dms/image/v2/C4D03AQFbQdWExHLa6w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1581961324261?e=1759363200&v=beta&t=0SudX05ax6HYAjQSOLkoC_wIXtRjC-TmjVzjwZe1eqE',
-        in: 'nm:Irakli_Janiashvili ttl:Software_Engineer_at_Lightdash_⚡️'
+        in: 'avatar:https://media.licdn.com/dms/image/v2/C4D03AQFbQdWExHLa6w/profile-displayphoto-shrink\_200\_200/profile-displayphoto-shrink\_200\_200/0/1581961324261?e=1759363200&v=beta&t=0SudX05ax6HYAjQSOLkoC\_wIXtRjC-TmjVzjwZe1eqE nm:Irakli_Janiashvili ttl:Software_Engineer_at_Lightdash_⚡️'
       },
       {
-        avatar: 'https://media.licdn.com/dms/image/v2/C5603AQFUHNpe3mba6A/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1606841237051?e=1759363200&v=beta&t=Qt6Hy2Z0ZP69PxSknUmHhrP_xNJjy0ag8k-Hw7ftwpE',
-        in: 'nm:Tamar_Chkhaidze ttl:Senior_Tax_Consultant_at_PwC'
+        in: 'avatar:https://media.licdn.com/dms/image/v2/C5603AQFUHNpe3mba6A/profile-displayphoto-shrink\_200\_200/profile-displayphoto-shrink\_200\_200/0/1606841237051?e=1759363200&v=beta&t=Qt6Hy2Z0ZP69PxSknUmHhrP\_xNJjy0ag8k-Hw7ftwpE nm:Tamar_Chkhaidze ttl:Senior_Tax_Consultant_at_PwC'
       },
       {
         in: 'avatar:https://static.licdn.com/aero-v1/sc/h/1c5u578iilxfi4m4dvc4q810q nm:Natia_Tsintsadze ttl:Co-founder_at_Archy'
       },
       {
-        avatar: 'https://media.licdn.com/dms/image/v2/C5103AQExz0EA26jyFA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1517614662229?e=2147483647&v=beta&t=RnmXzUwXGyhJkn1UiYbAmPfOULfSnyqk6FWqqweSnMw',
-        in: 'nm:Revaz_Zakalashvili ttl:Tech_Lead_&_Senior_Software_Engineer'
+        in: 'avatar:https://media.licdn.com/dms/image/v2/C5103AQExz0EA26jyFA/profile-displayphoto-shrink\_200\_200/profile-displayphoto-shrink\_200\_200/0/1517614662229?e=2147483647&v=beta&t=RnmXzUwXGyhJkn1UiYbAmPfOULfSnyqk6FWqqweSnMw nm:Revaz_Zakalashvili ttl:Tech_Lead_&_Senior_Software_Engineer'
       },
       {
         in: 'avatar:https://static.licdn.com/aero-v1/sc/h/1c5u578iilxfi4m4dvc4q810q nm:Revaz_Maisashvili ttl:Financial_Director'
       }
     ],
-    "@mobileL": {
-      tcol: 'repeat(1, 1fr)'
-    },
-    in: 'g:B cha:state'
+    "@mobileL": 'tcol:repeat(1\,_1fr)',
+    in: 'tcol:repeat(3\,_1fr) g:B cha:state'
   },
   in: 'fl:y g:B'
 }
@@ -4875,30 +4174,18 @@ export const JoinWaitlist = {
   },
   LoadingGifSection: {
     isActive: (el, s) => s.status === 'loading',
-    trn: 'C, defaultBezier',
-    trnp: 'opacity, visibility',
-    "!isActive": {
-      op: 0,
-      in: 'vis:hidden'
-    },
-    in: 'pos:absolute ist:0 thm:document'
+    "!isActive": 'op:#0 vis:hidden',
+    in: 'pos:absolute ist:0 thm:document trn:C\,_defaultBezier trnp:opacity\,_visibility'
   },
   Success: {
     isActive: (el, s) => s.status === 'success',
-    trn: 'C, defaultBezier',
-    trnp: 'opacity, visibility',
-    "!isActive": {
-      op: 0,
-      in: 'vis:hidden'
-    },
+    "!isActive": 'op:#0 vis:hidden',
     IconText: {
       tx: 'Thanks for registering your interest.',
-      Icon: {
-        in: 'c:green'
-      },
+      Icon: 'c:green',
       in: 'g:Z ico:check c:title'
     },
-    in: 'pos:absolute ist:0 thm:document flexAlign:center_center'
+    in: 'pos:absolute ist:0 thm:document flexAlign:center_center trn:C\,_defaultBezier trnp:opacity\,_visibility'
   },
   Input: {
     phd: 'Enter your email',
@@ -4911,10 +4198,7 @@ export const JoinWaitlist = {
   },
   Button: {
     tx: 'Get notified',
-    Icon: {
-      od: 2,
-      in: 'fs:B'
-    },
+    Icon: 'od:#2 fs:B',
     in: 'thm:primary ico:checkmark g:X2 p:Z2_B_Z2_B2 aln:center typ:submit'
   },
   in: 'tg:form fl:x thm:field rnd:C1 ov:hidden p:X2 g:X2 pos:relative mxw:G3+C1 w:100%'
@@ -4924,14 +4208,13 @@ export const JoinWaitlist = {
 export const LandingAIPrompt = {
   Box: {
     Textarea: {
-      val: 'As an user, I need...',
       at: {
         placeholder: '"As an user, I need..."'
       },
       sy: {
         borderWidth: '0'
       },
-      in: 'mnw:100% mnh:100% mxh:100% thm:transparent bd:0 bdw:0 p:B_-_-_B1'
+      in: 'mnw:100% mnh:100% mxh:100% thm:transparent bd:0 bdw:0 val:As_an_user\,_I_need... p:B_-_-_B1'
     },
     Flex: {
       cp: {
@@ -4939,23 +4222,17 @@ export const LandingAIPrompt = {
       },
       ch: [
         {
-          Icon: {
-            in: 'nm:upload'
-          }
+          Icon: 'nm:upload'
         },
         {
-          Icon: {
-            in: 'nm:chevronUp'
-          }
+          Icon: 'nm:chevronUp'
         }
       ],
       in: 'pos:absolute tp:A1 rgt:B1 g:A2 cex:IconButton'
     },
     Button: {
       tx: 'Create a feature',
-      Icon: {
-        in: 'nm:chevronUp fs:B tf:rotate(45deg) m:-W_-_-_-'
-      },
+      Icon: 'nm:chevronUp fs:B tf:rotate(45deg) m:-W_-_-_-',
       in: 'pos:absolute p:Z2_C+X1 rgt:A1 bot:A1 fl:row-reverse g:Y2 thm:blackWhite fw:600'
     },
     in: 'bsz:E2_100% mnh:E2 ov:hidden bdst:solid bdc:line bdw:1px pos:relative rnd:A2'
@@ -4963,16 +4240,12 @@ export const LandingAIPrompt = {
   Flex: {
     Button: {
       tx: 'Explore Marketplace',
-      Icon: {
-        in: 'nm:chevronUp tf:rotate(45deg) fs:B'
-      },
+      Icon: 'nm:chevronUp tf:rotate(45deg) fs:B',
       in: 'thm:transparent p:0 g:X2 fw:500 c:title'
     },
     Button_2: {
       tx: 'More Ideas',
-      Icon: {
-        in: 'nm:chevronDown fs:B'
-      },
+      Icon: 'nm:chevronDown fs:B',
       in: 'thm:transparent p:0 g:W2 fw:400 m:-_auto_-_B'
     },
     P: {
@@ -4989,23 +4262,15 @@ export const LandingCampaignHeader = {
   "@screenL": {},
   "@screenM": {},
   "@screenS": {},
-  "@tabletS": {
-    in: 'p:A1_A'
-  },
+  "@tabletS": 'p:A1_A',
   "@mobileM": {},
-  "@mobileXS": {
-    in: 'p:A1_Z'
-  },
+  "@mobileXS": 'p:A1_Z',
   Logo: {
-    "@tabletS": {
-      in: 'fs:E m:-_0_-_- p:0'
-    },
+    "@tabletS": 'fs:E m:-_0_-_- p:0',
     in: 'pos:relative ico:logo tp:auto lft:auto thm:transparent m:-_B_-_-'
   },
   Nav: {
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     cp: {
       in: 'c:title fw:400'
     },
@@ -5047,9 +4312,7 @@ export const LandingCampaignHeader = {
     in: 'ext:Flex fw:100 c:title fl:row-reverse m:0_auto g:W2'
   },
   Nav_2: {
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     cp: {
       in: 'c:title fw:400'
     },
@@ -5076,9 +4339,7 @@ export const LandingCampaignHeader = {
     in: 'fxf:x g:C cex:DocsLink'
   },
   MenuIcon: {
-    "@tabletS": {
-      in: 'd:flex'
-    },
+    "@tabletS": 'd:flex',
     "@ck": (event, element, state) => state.toggle('activeMenu'),
     in: 'd:none'
   },
@@ -5095,9 +4356,7 @@ export const LandingFeatures = {
     src: 'https://framerusercontent.com/assets/AxeBFuMTUKWY0EUAoFYNtp3KbaI.mp4?'
   },
   Grid: {
-    col: 'repeat(4, 1fr)',
     cp: {
-      fx: 1,
       isActive: (el, s) => el.props.src === s.src,
       Text: {
         tx: '{{ text }}'
@@ -5109,7 +4368,7 @@ export const LandingFeatures = {
                 src: el.props.src
               })
             },
-      in: 'fs:Z2 rnd:Z2 aln:center p:Z2_A2 g:Z'
+      in: 'fs:Z2 rnd:Z2 aln:center p:Z2_A2 g:Z fx:#1'
     },
     ch: [
       {
@@ -5139,15 +4398,11 @@ export const LandingFeatures = {
         tx: 'Rewind changes instantly'
       }
     ],
-    in: 'cex:Flex,CanvasButton g:0_W2'
+    in: 'col:repeat(4\,_1fr) cex:Flex,CanvasButton g:0_W2'
   },
   Box: {
-    ".isVisible": {
-      in: 'h:H3'
-    },
-    "!isVisible": {
-      in: 'h:F1'
-    },
+    ".isVisible": 'h:H3',
+    "!isVisible": 'h:F1',
     "@rn": el => {
           window.requestAnimationFrame(() => {
             const height = el.Video.node.scrollHeight
@@ -5157,12 +4412,8 @@ export const LandingFeatures = {
     "@ck": (ev, el, s) => {
           if (!s.isVisible) s.toggle('isVisible')
         },
-    "@dark": {
-      in: 'c:white bgc:gray4_.9'
-    },
-    "@light": {
-      in: 'c:black bgc:gray13_.95'
-    },
+    "@dark": 'c:white bgc:gray4_.9',
+    "@light": 'c:black bgc:gray13_.95',
     Video: {
       src: '{{ src }}',
       onMouseenter: (ev, el) => {
@@ -5175,9 +4426,7 @@ export const LandingFeatures = {
     },
     ":after": {
       cnt: '""',
-      bg: 'linear-gradient(to top, var(--theme-document-dark-background) 0%, rgba(0, 0, 0, 0) 100%)',
-      trnp: 'opacity, transform',
-      in: 'pos:absolute bot:0 lft:0 bsz:50%_100% zi:2 trn:Z_defaultBezier pe:none'
+      in: 'pos:absolute bot:0 lft:0 bsz:50%_100% zi:2 bg:linear-gradient(to_top\,_var(--theme-document-dark-background)_0%\,_rgba(0\,_0\,_0\,_0)_100%) trn:Z_defaultBezier trnp:opacity\,_transform pe:none'
     },
     in: 'thm:dialog rnd:A ov:hidden trn:C1_defaultBezier_height p:Y pos:relative'
   },
@@ -5187,8 +4436,7 @@ export const LandingFeatures = {
 // ── LandingGetstarted ──
 export const LandingGetstarted = {
   cp: {
-    fx: 1,
-    in: 'aln:center p:Z_A cur:pointer rnd:Z2 g:A'
+    in: 'aln:center p:Z_A cur:pointer rnd:Z2 g:A fx:#1'
   },
   Create: {
     Img: {
@@ -5200,9 +4448,7 @@ export const LandingGetstarted = {
     },
     hrf: '/signup'
   },
-  VerticalLine: {
-    in: 'ignoreChildProps icex m:A1_0'
-  },
+  VerticalLine: 'ignoreChildProps icex m:A1_0',
   Demos: {
     hrf: '/docs/examples',
     Img: {
@@ -5213,9 +4459,7 @@ export const LandingGetstarted = {
       tx: 'Explore examples'
     }
   },
-  VerticalLine_2: {
-    in: 'ignoreChildProps icex m:A1_0'
-  },
+  VerticalLine_2: 'ignoreChildProps icex m:A1_0',
   Chrome: {
     hrf: '/docs/chrome-extension',
     Img: {
@@ -5235,16 +4479,10 @@ export const LandingHeader = {
   "@screenM": {},
   "@screenS": {},
   "@mobileM": {},
-  "@mobileXS": {
-    in: 'p:A1_Z'
-  },
-  "@tabletS": {
-    in: 'p:A1_A'
-  },
+  "@mobileXS": 'p:A1_Z',
+  "@tabletS": 'p:A1_A',
   Logo: {
-    "@tabletS": {
-      in: 'fs:E m:-_0_-_- p:0'
-    },
+    "@tabletS": 'fs:E m:-_0_-_- p:0',
     in: 'pos:relative ico:logo tp:auto lft:auto m:-_B_-_- thm:transparent'
   },
   Nav: {
@@ -5277,9 +4515,7 @@ export const LandingHeader = {
         }
       }
     ],
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     in: 'fxf:x g:C cex:DocsLink'
   },
   P: {
@@ -5295,9 +4531,7 @@ export const LandingHeader = {
     cp: {
       in: 'c:title fw:400'
     },
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     ch: [
       {
         hrf: '/docs/resources',
@@ -5321,9 +4555,7 @@ export const LandingHeader = {
     in: 'fxf:x g:C cex:DocsLink'
   },
   MenuIcon: {
-    "@tabletS": {
-      in: 'd:flex'
-    },
+    "@tabletS": 'd:flex',
     "@ck": (event, element, state) => state.toggle('activeMenu'),
     in: 'd:none'
   },
@@ -5332,25 +4564,16 @@ export const LandingHeader = {
 
 // ── LandingNavbar ──
 export const LandingNavbar = {
-  zi: 9999999,
-  "@tabletS": {
-    in: 'w:100% p:X2_B jc:space-between'
-  },
+  "@tabletS": 'w:100% p:X2_B jc:space-between',
   thm: null,
   Logo: {
-    "@tabletS": {
-      in: 'fs:E m:-_0_-_- p:0'
-    },
+    "@tabletS": 'fs:E m:-_0_-_- p:0',
     in: 'pos:relative ico:logo tp:auto lft:auto thm:transparent m:-_B_-_-'
   },
   Nav_2: {
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     cp: {
-      ":hover": {
-        in: 'op:1 c:title'
-      },
+      ":hover": 'op:1 c:title',
       in: 'c:caption fw:400 op:.8'
     },
     ch: [
@@ -5378,28 +4601,21 @@ export const LandingNavbar = {
     in: 'fxf:x g:B cex:DocsLink'
   },
   MenuIcon: {
-    "@tabletS": {
-      in: 'd:flex'
-    },
+    "@tabletS": 'd:flex',
     "@ck": (event, element, state) => state.toggle('activeMenu'),
     in: 'd:none'
   },
-  in: 'ext:Navbar g:A2 jc:flex-start aln:center lft:0 w:50% p:Y1_D_Y1_A fs:Z2 us:none pos:absolute tp:W1 bd:0'
+  in: 'ext:Navbar g:A2 jc:flex-start aln:center lft:0 w:50% p:Y1_D_Y1_A fs:Z2 us:none pos:absolute tp:W1 zi:#9999999 bd:0'
 }
 
 // ── LandingNavbarCopy ──
 export const LandingNavbarCopy = {
-  zi: 9999999,
   Logo: {
-    "@tabletS": {
-      in: 'fs:E m:-_0_-_- p:0'
-    },
+    "@tabletS": 'fs:E m:-_0_-_- p:0',
     in: 'pos:relative ico:logo tp:auto lft:auto thm:transparent m:-_B_-_-'
   },
   Nav: {
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     cp: {
       in: 'c:title fw:400'
     },
@@ -5441,9 +4657,7 @@ export const LandingNavbarCopy = {
     in: 'ext:Flex fw:100 c:title fl:row-reverse m:0_auto g:W2'
   },
   Nav_2: {
-    "@tabletS": {
-      in: 'd:none'
-    },
+    "@tabletS": 'd:none',
     cp: {
       in: 'c:title fw:400'
     },
@@ -5470,88 +4684,49 @@ export const LandingNavbarCopy = {
     in: 'fxf:x g:C cex:DocsLink'
   },
   MenuIcon: {
-    "@tabletS": {
-      in: 'd:flex'
-    },
+    "@tabletS": 'd:flex',
     "@ck": (event, element, state) => state.toggle('activeMenu'),
     in: 'd:none'
   },
-  in: 'ext:Navbar g:A2 rnd:C1 p:X2_Z2 fs:Z2 us:none thm:common-box pos:absolute tp:W1 lft:X rgt:X'
+  in: 'ext:Navbar g:A2 rnd:C1 p:X2_Z2 fs:Z2 us:none thm:common-box pos:absolute tp:W1 lft:X rgt:X zi:#9999999'
 }
 
 // ── Layout ──
 export const Layout = {
   props: {
-    "@dark": {
-      in: 'bg:black'
-    },
-    "@light": {
-      in: 'bg:gray15'
-    },
-    "@screenL": {
-      in: 'fs:A2'
-    },
-    "@screenM": {
-      in: 'fs:A1'
-    },
-    "@screenS": {
-      in: 'fs:A'
-    },
-    "@tabletL": {
-      in: 'fs:Z2'
-    },
-    "@tabletM": {
-      in: 'fs:Z1'
-    },
+    "@dark": 'bg:black',
+    "@light": 'bg:gray15',
+    "@screenL": 'fs:A2',
+    "@screenM": 'fs:A1',
+    "@screenS": 'fs:A',
+    "@tabletL": 'fs:Z2',
+    "@tabletM": 'fs:Z1',
     in: 'fl:y ov:hidden ovy:auto mxh:100% p:-_-_C2_- mnw:J+F1 w:100% aln:start_start'
   },
   Header: {},
-  Banner: {
-    in: 'mxh:100% mnw:100% mxw:100%'
-  },
-  Feedbacks: {
-    in: 'p:F1_-_D2_- mnw:100% mxw:100%'
-  },
-  BuiltScale: {
-    in: 'm:D_-_-_- mnw:100% mxw:100%'
-  },
-  GameChanging: {
-    in: 'p:E1_-_E1_- mnw:100% mxw:100%'
-  },
-  OpenSource: {
-    in: 'mnw:100% mxw:100%'
-  },
-  Products: {
-    in: 'm:E2_auto'
-  },
-  Footer: {
-    in: 'm:-_auto'
-  },
+  Banner: 'mxh:100% mnw:100% mxw:100%',
+  Feedbacks: 'p:F1_-_D2_- mnw:100% mxw:100%',
+  BuiltScale: 'm:D_-_-_- mnw:100% mxw:100%',
+  GameChanging: 'p:E1_-_E1_- mnw:100% mxw:100%',
+  OpenSource: 'mnw:100% mxw:100%',
+  Products: 'm:E2_auto',
+  Footer: 'm:-_auto',
   in: 'extend:Flex'
 }
 
 // ── MakeDesignWithCode ──
 export const MakeDesignWithCode = {
   Flex: {
-    "@mobileL": {
-      in: 'g:B p:-_B2'
-    },
+    "@mobileL": 'g:B p:-_B2',
     H1: {
       tx: null,
-      lh: 1.2,
-      "@mobileL": {
-        in: 'd:flex fxf:y lh:1.2em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'd:flex fxf:y lh:1.2em',
+      "@mobileS": 'fs:J2',
       Strong: {
         tx: 'Engineering the interface layer',
-        "@mobileL": {
-          in: 'd:none'
-        }
+        "@mobileL": 'd:none'
       },
-      in: 'c:title fs:G+X m:-_-_-'
+      in: 'c:title fs:G+X m:-_-_- lh:#1.2'
     },
     H6: {
       tx: 'Symbols is all-in-one solution to build pages, design systems, component libraries, widgets and apps in one go.',
@@ -5565,25 +4740,17 @@ export const MakeDesignWithCode = {
 export const MakeDesignWithCodeCopy = {
   props: {},
   Flex: {
-    "@mobileL": {
-      in: 'g:B p:-_B2'
-    },
+    "@mobileL": 'g:B p:-_B2',
     H1: {
       tx: null,
-      "@mobileL": {
-        in: 'd:flex fxf:y lh:1.2em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'd:flex fxf:y lh:1.2em',
+      "@mobileS": 'fs:J2',
       Strong: {
         tx: 'The Most Advanced Front-end Editor'
       },
       Text: {
         tx: 'with no-code, marketplace and AI',
-        "@mobileL": {
-          in: 'd:none'
-        },
+        "@mobileL": 'd:none',
         in: 'fw:300 m:W_-_X'
       },
       in: 'c:title fs:G+X lh:1em'
@@ -5600,21 +4767,13 @@ export const MakeDesignWithCodeCopy = {
 export const MenuIcon = {
   cp: {
     ":first-child": {
-      ".activeMenu": {
-        tf: 'rotate(45deg) translate(2px, 0px)'
-      },
-      "!activeMenu": {
-        in: 'tf:rotate(0deg)'
-      },
+      ".activeMenu": 'tf:rotate(45deg)_translate(2px\,_0px)',
+      "!activeMenu": 'tf:rotate(0deg)',
       in: 'w:B'
     },
     ":last-child": {
-      ".activeMenu": {
-        tf: 'rotate(-45deg) translate(5px, -5px)'
-      },
-      "!activeMenu": {
-        in: 'tf:rotate(0deg)'
-      },
+      ".activeMenu": 'tf:rotate(-45deg)_translate(5px\,_-5px)',
+      "!activeMenu": 'tf:rotate(0deg)',
       in: 'w:B'
     },
     in: 'mnh:V2 mxh:V2 h:V2 bg:white rnd:C trn:transform_.3s_ease'
@@ -5632,13 +4791,8 @@ export const Numbers = {
     tx: 'Quick stats:'
   },
   Grid: {
-    col: 'repeat(4, 1fr)',
-    "@mobileM": {
-      col: 'repeat(1, 1fr)'
-    },
-    "@tabletM": {
-      col: 'repeat(2, 1fr)'
-    },
+    "@mobileM": 'col:repeat(1\,_1fr)',
+    "@tabletM": 'col:repeat(2\,_1fr)',
     cex: [
       'Hgroup'
     ],
@@ -5664,11 +4818,10 @@ export const Numbers = {
         in: 'ttl:AI_Models val:7'
       },
       {
-        val: '3,184',
-        in: 'ttl:Marketplace_items'
+        in: 'ttl:Marketplace_items val:3\,184'
       }
     ],
-    in: 'fl:y g:C m:B_0_A cha:state'
+    in: 'fl:y g:C m:B_0_A col:repeat(4\,_1fr) cha:state'
   },
   in: 'fl:y g:A2'
 }
@@ -5688,9 +4841,7 @@ export const OpenSource = {
   },
   TabSetTwo: {
     cp: {
-      ":first-child": {
-        in: 'thm:primary'
-      }
+      ":first-child": 'thm:primary'
     }
   },
   in: 'fl:y aln:center_flex-start g:D'
@@ -5700,9 +4851,7 @@ export const OpenSource = {
 export const PackageIncludes = {
   props: {
     cp: {
-      Icon: {
-        in: 'nm:check fs:Z'
-      },
+      Icon: 'nm:check fs:Z',
       in: 'ws:nowrap fw:300 g:Y fs:A'
     },
     ch: [
@@ -5747,56 +4896,33 @@ export const Packages = {
   props: {
     ":before": {
       cnt: '\'\'',
-      bg: 'linear-gradient(to right, rgba(0, 0, 0, 1) 0%,rgba(0, 0, 0, 0) 100%)',
-      "@tabletS": {
-        in: 'd:block'
-      },
-      in: 'bsz:100%_D pos:absolute tp:0 lft:0 pe:none d:none'
+      "@tabletS": 'd:block',
+      in: 'bsz:100%_D pos:absolute tp:0 lft:0 bg:linear-gradient(to_right\,_rgba(0\,_0\,_0\,_1)_0%\,rgba(0\,_0\,_0\,_0)_100%) pe:none d:none'
     },
     ":after": {
       cnt: '\'\'',
-      bg: 'linear-gradient(to left, rgba(0, 0, 0, 1) 0%,rgba(0, 0, 0, 0) 100%)',
-      "@tabletS": {
-        in: 'd:block'
-      },
-      in: 'bsz:100%_D pos:absolute tp:0 rgt:0 pe:none d:none'
+      "@tabletS": 'd:block',
+      in: 'bsz:100%_D bg:linear-gradient(to_left\,_rgba(0\,_0\,_0\,_1)_0%\,rgba(0\,_0\,_0\,_0)_100%) pos:absolute tp:0 rgt:0 pe:none d:none'
     },
-    "@tabletS": {
-      in: 'ovx:hidden'
-    },
+    "@tabletS": 'ovx:hidden',
     in: 'mnw:100% mxw:100% mnh:fit-content pos:relative'
   },
   Grid: {
-    "@tabletL": {
-      col: 'repeat(2, auto)',
-      in: 'rg:E'
-    },
-    "@tabletS": {
-      in: 'd:flex ov:auto p:-_E_-_D'
-    },
-    "@mobileM": {
-      in: 'p:-_C'
-    },
-    "@mobileS": {
-      in: 'p:-_B2_-_B2'
-    },
+    "@tabletL": 'col:repeat(2\,_auto) rg:E',
+    "@tabletS": 'd:flex ov:auto p:-_E_-_D',
+    "@mobileM": 'p:-_C',
+    "@mobileS": 'p:-_B2_-_B2',
     cp: {
       Hgroup: {
-        H: {
-          in: 'tg:h6 fs:C1 fw:700'
-        },
-        P: {
-          in: 'c:title'
-        },
+        H: 'tg:h6 fs:C1 fw:700',
+        P: 'c:title',
         in: 'g:Z1'
       },
       in: 'tg:form fl:y aln:flex-start_flex-start'
     },
     ch: [
       {
-        "@mobileS": {
-          in: 'p:-_B2_-_-'
-        },
+        "@mobileS": 'p:-_B2_-_-',
         Hgroup: {
           H: {
             tx: 'Free'
@@ -5824,15 +4950,9 @@ export const Packages = {
         in: 'p:-_D_-_-'
       },
       {
-        "@tabletL": {
-          in: 'bdw:0_0_0_1px'
-        },
-        "@tabletS": {
-          in: 'bdw:0_1px_0'
-        },
-        "@mobileS": {
-          in: 'p:-_B2_-_B2'
-        },
+        "@tabletL": 'bdw:0_0_0_1px',
+        "@tabletS": 'bdw:0_1px_0',
+        "@mobileS": 'p:-_B2_-_B2',
         "@sm": null,
         Hgroup: {
           H: {
@@ -5843,15 +4963,11 @@ export const Packages = {
           }
         },
         PriceOptions: {
-          "@mobileM": {
-            in: 'fl:y g:B'
-          },
+          "@mobileM": 'fl:y g:B',
           cp: {
             Radio: {
               chk: null,
-              Input: {
-                in: 'nm:starter'
-              },
+              Input: 'nm:starter',
               in: 'nm:starter'
             }
           },
@@ -5859,30 +4975,20 @@ export const Packages = {
         },
         Button: {
           tx: 'Upgrade',
-          Icon: {
-            in: 'nm:chevronUp'
-          },
+          Icon: 'nm:chevronUp',
           in: 'thm:primary fl:row-reverse p:Z1_C fw:700 g:Y1 typ:submit'
         },
         PackageIncludes: {
           ch: null,
           in: 'm:B2+W1_-_-_-'
         },
-        AsteriskParagraph: {
-          in: 'm:C_-_0_-'
-        },
+        AsteriskParagraph: 'm:C_-_0_-',
         in: 'p:-_D_-_C1 bdst:solid bdc:blue_.25 bdw:0_1px_0'
       },
       {
-        "@tabletL": {
-          in: 'p:-_-_-_0 gc:span_2 mxw:fit-content'
-        },
-        "@tabletS": {
-          in: 'p:-_-_-_C1'
-        },
-        "@mobileS": {
-          in: 'p:-_-_-_B2'
-        },
+        "@tabletL": 'p:-_-_-_0 gc:span_2 mxw:fit-content',
+        "@tabletS": 'p:-_-_-_C1',
+        "@mobileS": 'p:-_-_-_B2',
         "@sm": null,
         Hgroup: {
           H: {
@@ -5893,15 +4999,11 @@ export const Packages = {
           }
         },
         PriceOptions: {
-          "@mobileM": {
-            in: 'fl:y g:B'
-          },
+          "@mobileM": 'fl:y g:B',
           cp: {
             Radio: {
               chk: null,
-              Input: {
-                in: 'nm:experts'
-              },
+              Input: 'nm:experts',
               in: 'nm:experts'
             }
           },
@@ -5909,21 +5011,11 @@ export const Packages = {
           in: 'm:C_-_B2_-'
         },
         IconButton: {
-          "@screenMS": {
-            in: 'm:-D+Z1_-B2_C1+Y_A2'
-          },
-          "@screenS": {
-            in: 'm:-D+Z1_-A1_C1+Y_A2'
-          },
-          "@tabletL": {
-            in: 'm:-D+Z1_0_C1+Y_A2'
-          },
-          "@tabletS": {
-            in: 'm:-D+Z1_-C_C1+Y_A2'
-          },
-          "@mobileM": {
-            in: 'm:-D+Z1_C_C1+Y_A2'
-          },
+          "@screenMS": 'm:-D+Z1_-B2_C1+Y_A2',
+          "@screenS": 'm:-D+Z1_-A1_C1+Y_A2',
+          "@tabletL": 'm:-D+Z1_0_C1+Y_A2',
+          "@tabletS": 'm:-D+Z1_-C_C1+Y_A2',
+          "@mobileM": 'm:-D+Z1_C_C1+Y_A2',
           Icon: {
             nm: null,
             in: 'fs:B'
@@ -5933,14 +5025,10 @@ export const Packages = {
         },
         PriceOptions_2: {
           hd: null,
-          "@mobileM": {
-            in: 'fl:y g:B'
-          },
+          "@mobileM": 'fl:y g:B',
           cp: {
             Radio: {
-              Input: {
-                in: 'nm:experts'
-              },
+              Input: 'nm:experts',
               in: 'nm:experts'
             }
           },
@@ -5949,9 +5037,7 @@ export const Packages = {
         },
         Button: {
           tx: 'Hire Experts',
-          Icon: {
-            in: 'nm:chevronUp tf:rotate(45deg) d:block m:-W2_-_-_-'
-          },
+          Icon: 'nm:chevronUp tf:rotate(45deg) d:block m:-W2_-_-_-',
           in: 'thm:primary fl:row-reverse p:Z1_C typ:submit fw:700 g:Y1'
         },
         PackageIncludes: {
@@ -5959,12 +5045,8 @@ export const Packages = {
           in: 'm:B2+W1_-_-_-'
         },
         Flex: {
-          "@tabletL": {
-            in: 'm:D_-_-_-'
-          },
-          "@mobileM": {
-            in: 'fl:y g:B1'
-          },
+          "@tabletL": 'm:D_-_-_-',
+          "@mobileM": 'fl:y g:B1',
           AsteriskParagraph: {
             Span: {},
             Span_2: {
@@ -5976,14 +5058,9 @@ export const Packages = {
           Link: {
             hrf: 'https://cal.com/symbols-josh/early-access',
             tx: 'Contact sales',
-            tgt: '_blank',
-            "@mobileS": {
-              in: 'm:-_-_-_Z1'
-            },
-            ":hover": {
-              in: 'td:underline'
-            },
-            in: 'ws:nowrap p:0 fw:700 c:title'
+            "@mobileS": 'm:-_-_-_Z1',
+            ":hover": 'td:underline',
+            in: 'ws:nowrap p:0 fw:700 tgt:\_blank c:title'
           },
           in: 'aln:flex-start_flex-start g:D2 m:auto_-_-_-'
         },
@@ -5997,9 +5074,7 @@ export const Packages = {
 
 // ── ParagraphTransparency ──
 export const ParagraphTransparency = {
-  "@mobileM": {
-    in: 'p:-_B'
-  },
+  "@mobileM": 'p:-_B',
   Strong: {
     tx: 'Whatever you create in Symbols'
   },
@@ -6019,14 +5094,10 @@ export const PartnerSet = {
   Flex: {
     cp: {
       "@light": {
-        ":nth-child(odd)": {
-          in: 'd:none'
-        }
+        ":nth-child(odd)": 'd:none'
       },
       "@dark": {
-        ":nth-child(even)": {
-          in: 'd:none'
-        }
+        ":nth-child(even)": 'd:none'
       },
       ":nth-child(odd)": {},
       ":nth-child(even)": {}
@@ -6059,9 +5130,7 @@ export const PartnerSet = {
 // ── PerksInclude ──
 export const PerksInclude = {
   props: {
-    "@tabletS": {
-      in: 'p:-_B2 g:D as:center'
-    },
+    "@tabletS": 'p:-_B2 g:D as:center',
     in: 'fl:y aln:flex-start_flex-start g:C mxw:fit-content'
   },
   H6: {
@@ -6069,26 +5138,13 @@ export const PerksInclude = {
     in: 'fw:300 fs:A'
   },
   Grid: {
-    col: 'repeat(3, 1fr)',
-    "@tabletM": {
-      in: 'cg:E1'
-    },
-    "@tabletS": {
-      col: 'repeat(2, 1fr)',
-      in: 'rg:D'
-    },
-    "@mobileL": {
-      in: 'cg:D2'
-    },
-    "@mobileM": {
-      col: 'repeat(1, 1fr)',
-      in: 'cg:0 rg:C1'
-    },
+    "@tabletM": 'cg:E1',
+    "@tabletS": 'col:repeat(2\,_1fr) rg:D',
+    "@mobileL": 'cg:D2',
+    "@mobileM": 'col:repeat(1\,_1fr) cg:0 rg:C1',
     cp: {
       cp: {
-        Icon: {
-          in: 'nm:check'
-        },
+        Icon: 'nm:check',
         in: 'ws:nowrap g:Z'
       },
       in: 'fl:y g:B aln:flex-start_flex-start cex:IconText'
@@ -6134,7 +5190,7 @@ export const PerksInclude = {
         ]
       }
     ],
-    in: 'cg:F+B cex:Flex'
+    in: 'col:repeat(3\,_1fr) cg:F+B cex:Flex'
   },
   in: 'extend:Flex'
 }
@@ -6150,20 +5206,13 @@ export const PriceOptions = {
           },
           val: null,
           "@cg": null,
-          ":checked + div": {
-            in: 'thm:transparent'
-          },
-          ":checked + div > svg": {
-            in: 'op:1'
-          }
+          ":checked + div": 'thm:transparent',
+          ":checked + div > svg": 'op:1'
         },
         Flex: {
-          bd: 'solid, gray .5',
-          Icon: {
-            in: 'nm:check op:0 fs:Z2'
-          },
+          Icon: 'nm:check op:0 fs:Z2',
           ":after": null,
-          in: 'bdw:.5px thm:transparent p:V'
+          in: 'bd:solid\,_gray_.5 bdw:.5px thm:transparent p:V'
         },
         in: 'm:-W_-_-_-'
       },
@@ -6182,16 +5231,13 @@ export const PriceOptions = {
     },
     ch: [
       {
-        price: 29,
-        in: 'term:Monthly'
+        in: 'term:Monthly price:#29'
       },
       {
-        price: 199,
-        in: 'term:Annual'
+        in: 'term:Annual price:#199'
       },
       {
-        price: 299,
-        in: 'term:Lifetime'
+        in: 'term:Lifetime price:#299'
       }
     ],
     in: 'g:C1 cha:state'
@@ -6202,17 +5248,11 @@ export const PriceOptions = {
 // ── QuickHeroTitle ──
 export const QuickHeroTitle = {
   Flex: {
-    "@mobileL": {
-      in: 'g:B p:-_B2'
-    },
+    "@mobileL": 'g:B p:-_B2',
     H1: {
       tx: null,
-      "@mobileL": {
-        in: 'lh:1.3em'
-      },
-      "@mobileS": {
-        in: 'fs:J2'
-      },
+      "@mobileL": 'lh:1.3em',
+      "@mobileS": 'fs:J2',
       Span: {
         tx: 'Build reusable ',
         in: 'fw:300'
@@ -6242,8 +5282,7 @@ export const QuickHeroTitle = {
 export const RemainingLine = {
   ":before": {
     cnt: '""',
-    bg: 'linear-gradient(to right, var(--theme-document-dark-background) 0%, rgba(0, 0, 0, 0) 100%)',
-    in: 'pos:absolute bsz:C_G2'
+    in: 'pos:absolute bsz:C_G2 bg:linear-gradient(to_right\,_var(--theme-document-dark-background)_0%\,_rgba(0\,_0\,_0\,_0)_100%)'
   },
   Flex: {
     "@rn": (el, s) => {
@@ -6251,18 +5290,13 @@ export const RemainingLine = {
             width: s.percent + '%'
           })
         },
-    Line: {
-      bg: 'linear-gradient(to right, #0015FF, #0009FE)',
-      in: 'bsz:2px_100%'
-    },
+    Line: 'bsz:2px_100% bg:linear-gradient(to_right\,_#0015FF\,_#0009FE)',
     Dot: {
-      bg: 'rgba(0, 9, 254, .35)',
       ":after": {
         cnt: '""',
-        tf: 'translate(-50%, -50%)',
-        in: 'bsz:X1_X1 bg:#0085FE pos:absolute tp:50% lft:50% rnd:100% op:1 zi:100'
+        in: 'bsz:X1_X1 bg:#0085FE pos:absolute tp:50% lft:50% tf:translate(-50%\,_-50%) rnd:100% op:1 zi:100'
       },
-      in: 'bsz:A2_A2 rnd:100% m:-_-_-_-X pos:relative'
+      in: 'bsz:A2_A2 bg:rgba(0\,_9\,_254\,_.35) rnd:100% m:-_-_-_-X pos:relative'
     },
     in: 'aln:center_flex-start w:65%'
   },
@@ -6275,17 +5309,10 @@ export const RemainingLine = {
 
 // ── SideMenu ──
 export const SideMenu = {
-  bg: 'linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-  ".activeMenu": {
-    in: 'mnw:100% op:1 trn:min-width_.15s_ease'
-  },
+  ".activeMenu": 'mnw:100% op:1 trn:min-width_.15s_ease',
   "!activeMenu": {},
-  "> nav > a": {
-    in: 'fs:F2 fw:100'
-  },
-  "@mobileM": {
-    in: 'ai:center ta:center'
-  },
+  "> nav > a": 'fs:F2 fw:100',
+  "@mobileM": 'ai:center ta:center',
   cp: {
     cp: {
       "@ck": (event, element, state) => {
@@ -6297,52 +5324,34 @@ export const SideMenu = {
   },
   Logo: null,
   Nav: {
-    "@tabletS": {
-      in: 'd:flex'
-    },
-    "@mobileM": {
-      in: 'p:-_0_-_-'
-    },
+    "@tabletS": 'd:flex',
+    "@mobileM": 'p:-_0_-_-',
     cp: {
-      Strong: {
-        in: 'fw:100'
-      }
+      Strong: 'fw:100'
     },
     in: 'fxf:column g:B p:-_E_-_-'
   },
   P: null,
   Nav_2: {
-    "@tabletS": {
-      in: 'd:flex'
-    },
-    "@mobileM": {
-      in: 'p:0_0_0_0'
-    },
+    "@tabletS": 'd:flex',
+    "@mobileM": 'p:0_0_0_0',
     cp: {
-      Strong: {
-        in: 'fw:100'
-      },
+      Strong: 'fw:100',
       in: 'fw:100'
     },
     in: 'fxf:column p:-_C_-_- g:B'
   },
   MenuIcon: null,
-  in: 'ext:LandingCampaignHeader mnw:0 fl:y g:B p:F1_0_0_0 ai:flex-end pos:fixed bdf:blur(5px) tp:0 rgt:0 zi:99999998 mnh:100% mxh:100% ov:hidden mxw:0 op:0 tg:aside'
+  in: 'ext:LandingCampaignHeader mnw:0 fl:y g:B p:F1_0_0_0 ai:flex-end bg:linear-gradient(to_left\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%) pos:fixed bdf:blur(5px) tp:0 rgt:0 zi:99999998 mnh:100% mxh:100% ov:hidden mxw:0 op:0 tg:aside'
 }
 
 // ── StoryItem ──
 export const StoryItem = {
   props: {
     ":hover": {
-      "> h3 + div": {
-        in: 'op:1'
-      },
-      "> h3 + div:after": {
-        in: 'w:75% op:1'
-      },
-      "> h3 + div > svg": {
-        in: 'tf:rotate(90deg)'
-      }
+      "> h3 + div": 'op:1',
+      "> h3 + div:after": 'w:75% op:1',
+      "> h3 + div > svg": 'tf:rotate(90deg)'
     },
     in: 'fl:y cur:pointer'
   },
@@ -6351,10 +5360,7 @@ export const StoryItem = {
       src: 'Frame.svg',
       in: 'bsz:100%_100% obf:cover'
     },
-    Icon: {
-      tf: 'translate(-50%, -50%)',
-      in: 'nm:play fs:C rnd:100% pos:absolute tp:50% lft:50% zi:3 bg:black_.8 bxs:content-box p:Z'
-    },
+    Icon: 'nm:play fs:C rnd:100% pos:absolute tp:50% lft:50% tf:translate(-50%\,_-50%) zi:3 bg:black_.8 bxs:content-box p:Z',
     in: 'pos:relative bsz:E3_F3 ov:hidden'
   },
   H3: {
@@ -6363,13 +5369,10 @@ export const StoryItem = {
   },
   IconText: {
     tx: 'Get started',
-    Icon: {
-      in: 'nm:chevronUp trn:transform_.5s_ease tf:rotate(45deg)'
-    },
+    Icon: 'nm:chevronUp trn:transform_.5s_ease tf:rotate(45deg)',
     ":after": {
       cnt: '""',
-      trn: 'width .3s ease, opacity .5s ease',
-      in: 'h:.5px w:0 op:0 bg:white_.75 pos:absolute bot:0 lft:B-V'
+      in: 'h:.5px w:0 op:0 trn:width_.3s_ease\,_opacity_.5s_ease bg:white_.75 pos:absolute bot:0 lft:B-V'
     },
     in: 'aln:center_flex-start fs:A1 fw:600 g:Y2 thm:transparent pos:relative mxw:fit-content p:0_0_X2_0 op:.8 c:white'
   },
@@ -6378,28 +5381,20 @@ export const StoryItem = {
 
 // ── SupportedBy ──
 export const SupportedBy = {
-  "@mobileL": {
-    in: 'fl:y aln:center_center p:-_B'
-  },
+  "@mobileL": 'fl:y aln:center_center p:-_B',
   "@light": {},
   Caption: {
     tx: 'Supported by',
     in: 'fw:200'
   },
   Flex: {
-    "@mobileL": {
-      in: 'fxw:wrap'
-    },
+    "@mobileL": 'fxw:wrap',
     cp: {
       "@light": {
-        ":nth-child(odd)": {
-          in: 'd:none'
-        }
+        ":nth-child(odd)": 'd:none'
       },
       "@dark": {
-        ":nth-child(even)": {
-          in: 'd:none'
-        }
+        ":nth-child(even)": 'd:none'
       },
       ":nth-child(odd)": {},
       ":nth-child(even)": {}
@@ -6437,18 +5432,12 @@ export const SupportedBy = {
 
 // ── SurveyBanner ──
 export const SurveyBanner = {
-  bd: '1px, solid',
-  "@dark": {
-    in: 'bdc:gray4'
-  },
-  "@light": {
-    in: 'bgc:white bdc:gray10'
-  },
+  "@dark": 'bdc:gray4',
+  "@light": 'bgc:white bdc:gray10',
   Box: {
     H1: {
       tx: 'Only e2e tooling for Interface Engineers',
-      lh: 1.3,
-      in: 'mxw:F'
+      in: 'mxw:F lh:#1.3'
     },
     P: {
       tx: 'AI driven, realtime and centralized platform to build products as easily as filling Typeform and Airtable, also as powerful as Bubble and Figma.',
@@ -6456,14 +5445,12 @@ export const SurveyBanner = {
     },
     in: 'as:flex-end p:C2_D'
   },
-  in: 'fl:x mnh:G1 bgi:banner.png bgr:no-repeat bgs:cover ar:1149_/_432 m:A_0'
+  in: 'fl:x mnh:G1 bgi:banner.png bgr:no-repeat bgs:cover ar:1149_/_432 bd:1px\,_solid m:A_0'
 }
 
 // ── SurveyForm ──
 export const SurveyForm = {
-  "@mobileM": {
-    in: 'rg:C p:B_0'
-  },
+  "@mobileM": 'rg:C p:B_0',
   at: {
     action: 'https://formsubmit.co/hello@symbols.app',
     method: 'POST'
@@ -6495,35 +5482,27 @@ export const SurveyForm = {
     Title: {
       tx: 'Investor (Legal entity name)'
     },
-    Input: {
-      in: 'val:{{_name_}}'
-    }
+    Input: 'val:{{_name_}}'
   },
   "SurveyInput.email": {
     Title: {
       tx: 'Investor email'
     },
-    Input: {
-      in: 'val:{{_email_}}'
-    },
+    Input: 'val:{{_email_}}',
     in: 'typ:email'
   },
   "SurveyTextarea.note": {
     Title: {
       tx: 'Note (optional)'
     },
-    Textarea: {
-      in: 'bd:0'
-    }
+    Textarea: 'bd:0'
   },
   ContinueButton: {
     tx: 'Book a call',
     sy: {
       justifySelf: 'start'
     },
-    "@mobileL": {
-      in: 'w:100%'
-    },
+    "@mobileL": 'w:100%',
     in: 'ext:Button,ContinueButton typ:submit p:Z2_D m:-_-Z fw:700'
   },
   in: 'ext:Grid tg:form pos:relative cg:C p:C2 rg:B2'
@@ -6643,14 +5622,10 @@ export const SurveySelect = {
                 }
       }
     },
-    Buttons: {
-      in: 'pos:absolute rgt:Z pe:none'
-    },
+    Buttons: 'pos:absolute rgt:Z pe:none',
     in: 'p:0 rnd:C1 tbi:-1 m:-_-Z'
   },
-  SurveyOtherInput: {
-    in: 'm:0_-Z'
-  },
+  SurveyOtherInput: 'm:0_-Z',
   in: 'ext:SurveyLabel'
 }
 
@@ -6688,44 +5663,25 @@ export const SurveyTextarea = {
 
 // ── SymbolsEditor ──
 export const SymbolsEditor = {
-  MakeDesignWithCode: {
-    in: 'm:-_auto'
-  },
+  MakeDesignWithCode: 'm:-_auto',
   Grid: {
-    col: 'repeat(3, 1fr)',
-    "@tabletL": {
-      col: 'repeat(2, 1fr)'
-    },
-    "@mobileL": {
-      in: 'col:100%'
-    },
-    "@mobileS": {
-      in: 'p:-_A'
-    },
+    "@tabletL": 'col:repeat(2\,_1fr)',
+    "@mobileL": 'col:100%',
+    "@mobileS": 'p:-_A',
     cp: {
       Hgroup: {
-        H: {
-          in: 'c:title fs:A'
-        },
-        P: {
-          in: 'c:caption'
-        },
+        H: 'c:title fs:A',
+        P: 'c:caption',
         in: 'pos:absolute zi:3 g:Y p:-_B_-_-'
       },
-      Img: {
-        in: 'd:block pos:absolute zi:1'
-      },
+      Img: 'd:block pos:absolute zi:1',
       in: 'h:G3+X mxh:G3+X pos:relative ov:hidden rnd:A bg:gray3_.3'
     },
     ch: [
       {
-        "@mobileL": {
-          in: 'gc:span_1'
-        },
+        "@mobileL": 'gc:span_1',
         Hgroup: {
-          "@mobileS": {
-            in: 'tp:A2 lft:A2'
-          },
+          "@mobileS": 'tp:A2 lft:A2',
           H: {
             tx: 'Voice and text input'
           },
@@ -6736,35 +5692,20 @@ export const SymbolsEditor = {
         },
         Img: {
           src: 'ai.svg',
-          tf: 'translate(-50%, 0)',
-          in: 'pos:absolute bot:0 lft:50%'
+          in: 'pos:absolute bot:0 lft:50% tf:translate(-50%\,_0)'
         },
         Download: {
           tx: 'Download',
-          tf: 'translate(-50%, -50%)',
-          "@mobileS": {
-            in: 'tp:42% fs:Z1'
-          },
-          in: 'pos:absolute tp:52% lft:50% bg:electricBlue c:title p:Z_B rnd:D pointerEvent:none'
+          "@mobileS": 'tp:42% fs:Z1',
+          in: 'pos:absolute tp:52% lft:50% tf:translate(-50%\,_-50%) bg:electricBlue c:title p:Z_B rnd:D pointerEvent:none'
         },
         Flex: {
-          tf: 'translate(-50%, -50%)',
-          "@mobileL": {
-            in: 'fl:y bot:B'
-          },
-          "@mobileM": {
-            in: 'bot:Y g:A'
-          },
+          "@mobileL": 'fl:y bot:B',
+          "@mobileM": 'bot:Y g:A',
           IconText: {
-            "@mobileM": {
-              in: 'fl:y g:Y2 aln:center_flex-start ta:center p:-_B lh:1.3em'
-            },
-            "@mobileS": {
-              in: 'fs:A2'
-            },
-            Icon: {
-              in: 'nm:microphone fs:C'
-            },
+            "@mobileM": 'fl:y g:Y2 aln:center_flex-start ta:center p:-_B lh:1.3em',
+            "@mobileS": 'fs:A2',
+            Icon: 'nm:microphone fs:C',
             tx: '"Make this component wider, pink and add magic icon"',
             in: 'g:Y c:title fw:500'
           },
@@ -6772,15 +5713,13 @@ export const SymbolsEditor = {
             tx: 'Try it (soon)',
             in: 'thm:transparent p:0 c:title fw:300 cur:pointer'
           },
-          in: 'pos:absolute bot:B lft:50% mnw:100% mxw:100% aln:center_center g:A2'
+          in: 'pos:absolute bot:B lft:50% tf:translate(-50%\,_-50%) mnw:100% mxw:100% aln:center_center g:A2'
         },
         in: 'gc:span_2'
       },
       {
         Hgroup: {
-          "@mobileS": {
-            in: 'bot:A2 lft:A2'
-          },
+          "@mobileS": 'bot:A2 lft:A2',
           H: {
             tx: 'Branding as Design System'
           },
@@ -6791,56 +5730,36 @@ export const SymbolsEditor = {
         },
         Img: {
           src: 'designSystem.svg',
-          "@mobileL": {
-            in: 'op:.5'
-          },
-          "@mobileM": {
-            in: 'op:1'
-          },
-          "@mobileS": {
-            in: 'tp:C'
-          },
+          "@mobileL": 'op:.5',
+          "@mobileM": 'op:1',
+          "@mobileS": 'tp:C',
           in: 'w:100% tp:B1'
         }
       },
       {
         Hgroup: {
-          "@mobileS": {
-            in: 'bot:A2 lft:A2'
-          },
+          "@mobileS": 'bot:A2 lft:A2',
           H: {
             tx: 'Version history'
           },
           P: {
             tx: 'Time travel and individually compare your changes',
-            "@screenS": {
-              in: 'mxw:G'
-            },
-            "@mobileL": {
-              in: 'mxw:fit-content'
-            },
-            "@mobileS": {
-              in: 'mxw:F3'
-            }
+            "@screenS": 'mxw:G',
+            "@mobileL": 'mxw:fit-content',
+            "@mobileS": 'mxw:F3'
           },
           in: 'bot:B lft:B'
         },
         Img: {
           src: 'versioning.svg',
-          "@mobileS": {
-            in: 'tp:B1 rgt:B1'
-          },
+          "@mobileS": 'tp:B1 rgt:B1',
           in: 'tp:B2 rgt:B2'
         }
       },
       {
-        "@mobileL": {
-          in: 'gc:span_1'
-        },
+        "@mobileL": 'gc:span_1',
         Hgroup: {
-          "@mobileL": {
-            in: 'tp:A2 lft:A2'
-          },
+          "@mobileL": 'tp:A2 lft:A2',
           H: {
             tx: 'Infinite Canvas'
           },
@@ -6851,21 +5770,15 @@ export const SymbolsEditor = {
         },
         Img: {
           src: 'canvas.svg',
-          "@mobileL": {
-            in: 'tp:F'
-          },
-          "@mobileM": {
-            in: 'tp:F'
-          },
+          "@mobileL": 'tp:F',
+          "@mobileM": 'tp:F',
           in: 'w:100% tf:scale(1.12) tp:E+A1'
         },
         in: 'bgi:scene.svg bgs:cover bgr:no-repeat bgp:center_center gc:span_2'
       },
       {
         Hgroup: {
-          "@mobileL": {
-            in: 'tp:A1 lft:A'
-          },
+          "@mobileL": 'tp:A1 lft:A',
           H: {
             tx: 'Customize without code'
           },
@@ -6876,23 +5789,15 @@ export const SymbolsEditor = {
         },
         Img: {
           src: 'calculate.svg',
-          "@mobileL": {
-            in: 'tf:scale(1.3) tp:E3 rgt:0'
-          },
-          "@mobileM": {
-            in: 'tf:scale(1.2) rgt:-Z1'
-          },
-          "@mobileS": {
-            in: 'tf:scale(1) rgt:-D1 tp:E1'
-          },
+          "@mobileL": 'tf:scale(1.3) tp:E3 rgt:0',
+          "@mobileM": 'tf:scale(1.2) rgt:-Z1',
+          "@mobileS": 'tf:scale(1) rgt:-D1 tp:E1',
           in: 'tp:E+Z rgt:-C tf:scale(1.12)'
         }
       },
       {
         Hgroup: {
-          "@mobileL": {
-            in: 'tp:A1 lft:A'
-          },
+          "@mobileL": 'tp:A1 lft:A',
           H: {
             tx: 'Synchronisation'
           },
@@ -6904,38 +5809,20 @@ export const SymbolsEditor = {
         },
         Img: {
           src: 'rock.svg',
-          "@screenS": {
-            in: 'lft:C2'
-          },
-          "@tabletL": {
-            in: 'lft:E2'
-          },
-          "@tabletM": {
-            in: 'lft:E'
-          },
-          "@tabletS": {
-            in: 'lft:C1'
-          },
-          "@mobileL": {
-            in: 'lft:E3'
-          },
-          "@mobileM": {
-            in: 'lft:D2'
-          },
-          "@mobileS": {
-            in: 'lft:0 tf:scale(.8)'
-          },
-          "@mobileXS": {
-            in: 'lft:-B1'
-          },
+          "@screenS": 'lft:C2',
+          "@tabletL": 'lft:E2',
+          "@tabletM": 'lft:E',
+          "@tabletS": 'lft:C1',
+          "@mobileL": 'lft:E3',
+          "@mobileM": 'lft:D2',
+          "@mobileS": 'lft:0 tf:scale(.8)',
+          "@mobileXS": 'lft:-B1',
           in: 'tp:E+A1 lft:D1'
         }
       },
       {
         Hgroup: {
-          "@mobileL": {
-            in: 'bot:A2 lft:A2'
-          },
+          "@mobileL": 'bot:A2 lft:A2',
           H: {
             tx: 'Cross Delivery'
           },
@@ -6947,22 +5834,17 @@ export const SymbolsEditor = {
         },
         ":after": {
           cnt: '""',
-          bg: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-          in: 'pos:absolute bsz:100%_100% zi:2'
+          in: 'pos:absolute bsz:100%_100% zi:2 bg:linear-gradient(to_top\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%)'
         },
         Img: {
           src: 'platforms.svg',
-          "@mobileL": {
-            in: 'tf:scale(1.2) tp:D lft:E'
-          },
-          "@mobileM": {
-            in: 'tf:scale(1) tp:B lft:B'
-          },
+          "@mobileL": 'tf:scale(1.2) tp:D lft:E',
+          "@mobileM": 'tf:scale(1) tp:B lft:B',
           in: 'tp:B lft:B'
         }
       }
     ],
-    in: 'w:100% mxw:100% cex:Box m:0_auto g:B p:-_B'
+    in: 'w:100% mxw:100% col:repeat(3\,_1fr) cex:Box m:0_auto g:B p:-_B'
   },
   in: 'fl:y aln:flex-start_flex-start mnw:320px w:100% m:-_auto mxw:1560px mxh:100% g:D'
 }
@@ -6975,21 +5857,13 @@ export const SymbolsFeatures = {
       tx: ', can all be fully exported away from the platform with the source code. Giving you absolute peace of mind for whatever you build, you fully own.',
       in: 'fw:100'
     },
-    "@tabletS": {
-      in: 'p:D2_B1'
-    },
-    "@mobileL": {
-      in: 'fs:B2'
-    },
+    "@tabletS": 'p:D2_B1',
+    "@mobileL": 'fs:B2',
     in: 'fs:A2+X ta:center mxw:H+C fw:700 p:D2_- c:title m:-_auto'
   },
   Scrollable: {
-    "::-webkit-scrollbar": {
-      in: 'd:none'
-    },
-    "@tabletS": {
-      in: 'p:B'
-    },
+    "::-webkit-scrollbar": 'd:none',
+    "@tabletS": 'p:B',
     "@mobileS": {
       sy: {
         scrollSnapType: 'x mandatory'
@@ -6997,25 +5871,17 @@ export const SymbolsFeatures = {
       in: 'g:B1 p:A1 spd:A1'
     },
     cp: {
-      "@mobileS": {
-        in: 'p:E2_B_B_B'
-      },
+      "@mobileS": 'p:E2_B_B_B',
       Icon: {},
       H3: {
-        "@mobileS": {
-          in: 'fs:D2'
-        }
+        "@mobileS": 'fs:D2'
       }
     },
     ch: [
       {
         hrf: '/docs/components',
-        ":hover": {
-          in: 'bg:#1E2397'
-        },
-        Icon: {
-          in: 'nm:grid'
-        },
+        ":hover": 'bg:#1E2397',
+        Icon: 'nm:grid',
         H3: {
           tx: 'Building reusable cloud components',
           Span: {
@@ -7026,17 +5892,11 @@ export const SymbolsFeatures = {
       {
         hrf: '/docs/design-system',
         ":hover": {
-          "& h3": {
-            in: 'c:highlight-reversed'
-          },
-          "& span": {
-            in: 'c:highlight-reversed'
-          },
+          "& h3": 'c:highlight-reversed',
+          "& span": 'c:highlight-reversed',
           in: 'bg:#FFF263 c:highlight-reversed'
         },
-        Icon: {
-          in: 'nm:tree'
-        },
+        Icon: 'nm:tree',
         H3: {
           tx: 'Advanced design system ',
           Span: {
@@ -7047,17 +5907,11 @@ export const SymbolsFeatures = {
       {
         hrf: '/docs/functions',
         ":hover": {
-          "& h3": {
-            in: 'c:highlight-reversed'
-          },
-          "& span": {
-            in: 'c:highlight-reversed'
-          },
+          "& h3": 'c:highlight-reversed',
+          "& span": 'c:highlight-reversed',
           in: 'bg:#5FCCD6 c:highlight-reversed'
         },
-        Icon: {
-          in: 'nm:fn_outline'
-        },
+        Icon: 'nm:fn_outline',
         H3: {
           tx: 'Frontend functions and dependencies ',
           Span: {
@@ -7067,12 +5921,8 @@ export const SymbolsFeatures = {
       },
       {
         hrf: '/docs/files',
-        ":hover": {
-          in: 'bg:#2127A7'
-        },
-        Icon: {
-          in: 'nm:folder_outline'
-        },
+        ":hover": 'bg:#2127A7',
+        Icon: 'nm:folder_outline',
         H3: {
           tx: 'Files and assets on the cloud - ',
           Span: {
@@ -7083,17 +5933,11 @@ export const SymbolsFeatures = {
       },
       {
         ":hover": {
-          "& h3": {
-            in: 'c:title-reversed'
-          },
-          "& span": {
-            in: 'c:title-reversed_.9'
-          },
+          "& h3": 'c:title-reversed',
+          "& span": 'c:title-reversed_.9',
           in: 'c:title-reversed bg:#FFFFFF'
         },
-        Icon: {
-          in: 'nm:state'
-        },
+        Icon: 'nm:state',
         H3: {
           tx: 'Content and state management - in one',
           Span: {
@@ -7104,12 +5948,8 @@ export const SymbolsFeatures = {
       },
       {
         hrf: '/docs/pages',
-        ":hover": {
-          in: 'bg:#A823F6'
-        },
-        Icon: {
-          in: 'nm:content'
-        },
+        ":hover": 'bg:#A823F6',
+        Icon: 'nm:content',
         H3: {
           tx: 'SEO-friendly pages and flows',
           Span: {
@@ -7119,12 +5959,8 @@ export const SymbolsFeatures = {
       },
       {
         hrf: '/docs/testing',
-        ":hover": {
-          in: 'bg:#BC0025'
-        },
-        Icon: {
-          in: 'nm:bug'
-        },
+        ":hover": 'bg:#BC0025',
+        Icon: 'nm:bug',
         H3: {
           tx: 'Visual testing',
           Span: {
@@ -7134,12 +5970,8 @@ export const SymbolsFeatures = {
       },
       {
         hrf: '/docs/framework',
-        ":hover": {
-          in: 'bg:line'
-        },
-        Icon: {
-          in: 'nm:api'
-        },
+        ":hover": 'bg:line',
+        Icon: 'nm:api',
         H3: {
           tx: 'Symbols is an ecosystem ',
           Span: {
@@ -7152,9 +5984,7 @@ export const SymbolsFeatures = {
     in: 'mxw:100% ovx:auto g:B2 p:-_B_A_B aln:start cex:FeatureItem'
   },
   Scrollbar: {
-    "@mobileS": {
-      in: 'mxw:88% mnw:88%'
-    },
+    "@mobileS": 'mxw:88% mnw:88%',
     in: 'ext:Scrollbar.scrollable mxw:95% mnw:95% m:-_auto'
   },
   in: 'mxw:100% bd:1px_solid_transparent p:0_!important'
@@ -7196,9 +6026,7 @@ export const TestimonialCard = {
 // ── Testimonials ──
 export const Testimonials = {
   Hgroup: {
-    "@mobileL": {
-      in: 'p:-_B'
-    },
+    "@mobileL": 'p:-_B',
     H: {
       tx: 'What people say',
       in: 'tg:h6 fw:600 m:0 c:title'
@@ -7407,11 +6235,9 @@ export const Testimonials = {
 export const ThankYou = {
   H2: {
     tx: 'Thank you',
-    lh: 1,
-    in: 'fw:300'
+    in: 'fw:300 lh:#1'
   },
   Grid: {
-    col: 'repeat(2, 1fr)',
     cp: {
       in: 'm:0'
     },
@@ -7420,7 +6246,7 @@ export const ThankYou = {
         tx: 'Thanks for scrolling that far. We are open to answer your questions. Just talk to us to personalise your experience.'
       }
     ],
-    in: 'm:B_0_D g:B_7% cex:P'
+    in: 'm:B_0_D g:B_7% col:repeat(2\,_1fr) cex:P'
   },
   in: 'p:C2'
 }
@@ -7451,15 +6277,11 @@ export const UserFeedBack = {
 
 // ── UserStoryDone ──
 export const UserStoryDone = {
-  "@mobileM": {
-    in: 'p:F_B1_E_B1'
-  },
+  "@mobileM": 'p:F_B1_E_B1',
   Hgroup: {
     H: {
       tx: 'User Story?',
-      "@mobileXS": {
-        in: 'd:flex fxf:column g:Y'
-      },
+      "@mobileXS": 'd:flex fxf:column g:Y',
       Strong: {
         tx: ' boom, done!'
       },
@@ -7474,8 +6296,7 @@ export const UserStoryDone = {
   Button: {
     hrf: '/signup',
     tx: 'Try it out',
-    bd: 'solid, gray, 1px',
-    in: 'ext:DocsLink,Button fw:700 thm:field p:Z1_D+Y2'
+    in: 'ext:DocsLink,Button fw:700 thm:field bd:solid\,_gray\,_1px p:Z1_D+Y2'
   },
   in: 'fl:y aln:center_flex-start g:D'
 }
@@ -7533,10 +6354,7 @@ export const WaitlistForm = {
   },
   Button: {
     tx: 'Get notified',
-    Icon: {
-      od: 2,
-      in: 'fs:B'
-    },
+    Icon: 'od:#2 fs:B',
     in: 'thm:primary ico:arrow_up_right g:X2 p:Z2_B_Z2_B2'
   },
   in: 'tg:form thm:field rnd:C1 fl:x p:X'
@@ -7556,20 +6374,11 @@ export const WhatIsSymbols = {
     in: 'ta:center m:-_auto_A c:title lh:1.3em'
   },
   Grid: {
-    tcol: 'repeat(3, 1fr)',
-    "@tabletM": {
-      tcol: 'repeat(2, 1fr)'
-    },
-    "@mobileL": {
-      tcol: 'repeat(1, 1fr)'
-    },
+    "@tabletM": 'tcol:repeat(2\,_1fr)',
+    "@mobileL": 'tcol:repeat(1\,_1fr)',
     cp: {
-      fx: 1,
       ":hover": {
-        "& h5, &:after": {
-          op: 0,
-          tf: 'translate3d(0, 35%, 0)'
-        }
+        "& h5, &:after": 'op:#0 tf:translate3d(0\,_35%\,_0)'
       },
       Video: {
         src: '{{ src }}',
@@ -7583,16 +6392,13 @@ export const WhatIsSymbols = {
       },
       ":after": {
         cnt: '""',
-        bg: 'linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%)',
-        trnp: 'opacity, transform',
-        in: 'pos:absolute bot:0 bsz:50%_100% zi:2 trn:Z_defaultBezier pe:none'
+        in: 'pos:absolute bot:0 bsz:50%_100% zi:2 bg:linear-gradient(to_top\,_rgba(0\,_0\,_0\,_1)_0%\,_rgba(0\,_0\,_0\,_0)_100%) trn:Z_defaultBezier trnp:opacity\,_transform pe:none'
       },
       H5: {
         tx: '{{ text }}',
-        trnp: 'opacity, transform',
-        in: 'pos:absolute bot:0 w:90% c:title fw:bold zi:3 p:A trn:Z_defaultBezier pe:none'
+        in: 'pos:absolute bot:0 w:90% c:title fw:bold zi:3 p:A trn:Z_defaultBezier trnp:opacity\,_transform pe:none'
       },
-      in: 'pos:relative fl:y'
+      in: 'pos:relative fl:y fx:#1'
     },
     ch: [
       {
@@ -7620,15 +6426,13 @@ export const WhatIsSymbols = {
         tx: 'Publish as a website. Or export to your existing tech stack.'
       }
     ],
-    in: 'g:A m:0_auto aln:center_center cex:Flex cha:state'
+    in: 'g:A m:0_auto aln:center_center tcol:repeat(3\,_1fr) cex:Flex cha:state'
   },
   in: 'fl:y aln:center_center g:B2'
 }
 
 // ── Writing ──
 export const Writing = {
-  delay: 0,
-  speed: 25,
   onAttachNode: (el) => {
       const text = el.props.text || el.props.afterText || el.text
       // text = 'Interface Engineering'
@@ -7646,6 +6450,7 @@ export const Writing = {
         typeCharacter()
         clearTimeout(t)
       }, el.props.delay)
-    }
+    },
+  in: 'delay:#0 speed:#25'
 }
 

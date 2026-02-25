@@ -5,6 +5,8 @@ import {
   expand,
   stringify,
   parse,
+  stringifyFurther,
+  parseFurther,
   propToAbbr,
   abbrToProp
 } from '../src/index.js'
@@ -1331,5 +1333,624 @@ describe('stringify/parse round-trip', () => {
       round: 'A2'
     }
     expect(parse(stringify(original))).toEqual(original)
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────
+// stringifyFurther / parseFurther tests
+// ────────────────────────────────────────────────────────────────────────────
+
+describe('stringifyFurther', () => {
+  test('encodes flat component into in string', () => {
+    const result = stringifyFurther({ extends: 'Flex', boxSize: 'C2' })
+    expect(result).toEqual({ in: 'ext:Flex bsz:C2' })
+  })
+
+  test('inlines numbers with # prefix', () => {
+    const result = stringifyFurther({ zIndex: 99, opacity: 0.5 })
+    expect(result).toEqual({ in: 'zi:#99 op:#0.5' })
+  })
+
+  test('inlines strings with commas using escape', () => {
+    const result = stringifyFurther({
+      boxShadow: 'black .10, 0px, 2px, 8px, 0px'
+    })
+    expect(result.in).toBe('bxsh:black_.10\\,_0px\\,_2px\\,_8px\\,_0px')
+  })
+
+  test('inlines strings with underscores using escape', () => {
+    const result = stringifyFurther({ background: 'my_custom_token' })
+    expect(result.in).toBe('bg:my\\_custom\\_token')
+  })
+
+  test('inlines strings with backslashes using escape', () => {
+    const result = stringifyFurther({ content: '"\\\\"' })
+    // content is skip-inline, stays as separate key
+    expect(result.cnt).toBe('"\\\\"')
+  })
+
+  test('collapses leaf children to strings', () => {
+    const result = stringifyFurther({
+      Icon: { name: 'search', boxSize: 'A' }
+    })
+    expect(result.Icon).toBe('nm:search bsz:A')
+  })
+
+  test('collapses selector-only objects to strings', () => {
+    const result = stringifyFurther({
+      '@mobile': { padding: 'Y2 A' },
+      ':hover': { background: 'gray2 1 +2' }
+    })
+    expect(result['@mobile']).toBe('p:Y2_A')
+    expect(result[':hover']).toBe('bg:gray2_1_+2')
+  })
+
+  test('does NOT collapse children with mixed content', () => {
+    const fn = () => {}
+    const result = stringifyFurther({
+      Button: { padding: 'A', onClick: fn }
+    })
+    expect(typeof result.Button).toBe('object')
+    expect(result.Button['@ck']).toBe(fn)
+    expect(result.Button.in).toBe('p:A')
+  })
+
+  test('does NOT collapse selectors with nested children', () => {
+    const result = stringifyFurther({
+      ':hover': { background: 'blue', Icon: { color: 'white' } }
+    })
+    expect(typeof result[':hover']).toBe('object')
+    expect(result[':hover'].in).toBe('bg:blue')
+    expect(result[':hover'].Icon).toBe('c:white')
+  })
+
+  test('preserves empty child objects', () => {
+    expect(stringifyFurther({ Avatar: {} })).toEqual({ Avatar: {} })
+  })
+
+  test('preserves null child values', () => {
+    expect(stringifyFurther({ Input: null })).toEqual({ Input: null })
+  })
+
+  test('preserves state as-is', () => {
+    const result = stringifyFurther({ state: { count: 0 }, padding: 'A' })
+    expect(result).toEqual({ st: { count: 0 }, in: 'p:A' })
+  })
+
+  test('preserves functions with shortened key', () => {
+    const fn = (e, el, s) => {}
+    const result = stringifyFurther({ onClick: fn })
+    expect(result['@ck']).toBe(fn)
+  })
+
+  test('keeps skip-inline keys as separate', () => {
+    const result = stringifyFurther({ text: 'Hello', padding: 'A' })
+    expect(result.tx).toBe('Hello')
+    expect(result.in).toBe('p:A')
+  })
+
+  test('handles booleans', () => {
+    const result = stringifyFurther({ hidden: true, disabled: false })
+    expect(result).toEqual({ in: 'hid !dis' })
+  })
+
+  test('handles arrays', () => {
+    const result = stringifyFurther({ extends: ['Flex', 'Box'] })
+    expect(result).toEqual({ in: 'ext:Flex,Box' })
+  })
+
+  test('handles single-element arrays as separate keys', () => {
+    const result = stringifyFurther({ extends: ['Flex'] })
+    expect(result).toEqual({ ext: ['Flex'] })
+  })
+
+  test('handles null/undefined input', () => {
+    expect(stringifyFurther(null)).toBe(null)
+    expect(stringifyFurther(undefined)).toBe(undefined)
+  })
+
+  test('handles empty object', () => {
+    expect(stringifyFurther({})).toEqual({})
+  })
+
+  test('collapses case keys with only inline props', () => {
+    const result = stringifyFurther({
+      '.isActive': { background: 'blue', color: 'white' },
+      '!isActive': { background: 'gray' }
+    })
+    expect(result['.isActive']).toBe('bg:blue c:white')
+    expect(result['!isActive']).toBe('bg:gray')
+  })
+
+  test('collapses $case keys', () => {
+    const result = stringifyFurther({
+      $ios: { color: 'black' }
+    })
+    expect(result.$ios).toBe('c:black')
+  })
+
+  test('collapses dark/light mode', () => {
+    const result = stringifyFurther({
+      '@dark': { background: 'gray1', color: 'white' }
+    })
+    expect(result['@dark']).toBe('bg:gray1 c:white')
+  })
+
+  test('deep nesting with collapse', () => {
+    const result = stringifyFurther({
+      Logo: {
+        extends: 'Flex',
+        align: 'center',
+        Icon: { name: 'logo', boxSize: 'B1' },
+        Title: {
+          tag: 'strong',
+          text: 'Dashboard',
+          '@mobile': { display: 'none' }
+        }
+      }
+    })
+    expect(result.Logo.Icon).toBe('nm:logo bsz:B1')
+    expect(result.Logo.Title.tx).toBe('Dashboard')
+    expect(result.Logo.Title['@mobile']).toBe('d:none')
+    expect(result.Logo.in).toBe('ext:Flex aln:center')
+  })
+
+  test('transition with commas gets inlined', () => {
+    const result = stringifyFurther({
+      transition: 'background 0.15s ease, border-color 0.15s ease'
+    })
+    expect(result.in).toBe(
+      'trn:background_0.15s_ease\\,_border-color_0.15s_ease'
+    )
+  })
+})
+
+describe('parseFurther', () => {
+  test('decodes in string to full props', () => {
+    const result = parseFurther({ in: 'ext:Flex bsz:C2' })
+    expect(result).toEqual({ extends: 'Flex', boxSize: 'C2' })
+  })
+
+  test('decodes # numbers back to actual numbers', () => {
+    const result = parseFurther({ in: 'zi:#99 op:#0.5' })
+    expect(result).toEqual({ zIndex: 99, opacity: 0.5 })
+  })
+
+  test('decodes escaped commas back to literal commas', () => {
+    const result = parseFurther({
+      in: 'bxsh:black_.10\\,_0px\\,_2px\\,_8px\\,_0px'
+    })
+    expect(result).toEqual({
+      boxShadow: 'black .10, 0px, 2px, 8px, 0px'
+    })
+  })
+
+  test('decodes escaped underscores back to literal underscores', () => {
+    const result = parseFurther({ in: 'bg:my\\_custom\\_token' })
+    expect(result).toEqual({ background: 'my_custom_token' })
+  })
+
+  test('decodes collapsed child strings to objects', () => {
+    const result = parseFurther({ Icon: 'nm:search bsz:A' })
+    expect(result).toEqual({
+      Icon: { name: 'search', boxSize: 'A' }
+    })
+  })
+
+  test('decodes collapsed selector strings to objects', () => {
+    const result = parseFurther({
+      '@mobile': 'p:Y2_A',
+      ':hover': 'bg:gray2_1_+2'
+    })
+    expect(result).toEqual({
+      '@mobile': { padding: 'Y2 A' },
+      ':hover': { background: 'gray2 1 +2' }
+    })
+  })
+
+  test('decodes children with object values normally', () => {
+    const fn = () => {}
+    const result = parseFurther({
+      Button: { '@ck': fn, in: 'p:A' }
+    })
+    expect(result).toEqual({
+      Button: { padding: 'A', onClick: fn }
+    })
+  })
+
+  test('decodes booleans', () => {
+    const result = parseFurther({ in: 'hid !dis' })
+    expect(result).toEqual({ hidden: true, disabled: false })
+  })
+
+  test('decodes comma-separated arrays', () => {
+    const result = parseFurther({ in: 'ext:Flex,Box' })
+    expect(result).toEqual({ extends: ['Flex', 'Box'] })
+  })
+
+  test('decodes case key strings', () => {
+    const result = parseFurther({
+      '.isActive': 'bg:blue c:white',
+      '!isActive': 'bg:gray'
+    })
+    expect(result).toEqual({
+      '.isActive': { background: 'blue', color: 'white' },
+      '!isActive': { background: 'gray' }
+    })
+  })
+
+  test('preserves state', () => {
+    const result = parseFurther({ st: { count: 0 }, in: 'p:A' })
+    expect(result).toEqual({ state: { count: 0 }, padding: 'A' })
+  })
+
+  test('expands event abbreviations', () => {
+    const fn = () => {}
+    const result = parseFurther({ '@ck': fn, in: 'p:A' })
+    expect(result).toEqual({ padding: 'A', onClick: fn })
+  })
+
+  test('handles empty object', () => {
+    expect(parseFurther({})).toEqual({})
+  })
+
+  test('handles null/undefined input', () => {
+    expect(parseFurther(null)).toBe(null)
+    expect(parseFurther(undefined)).toBe(undefined)
+  })
+
+  test('handles empty child objects', () => {
+    expect(parseFurther({ Avatar: {} })).toEqual({ Avatar: {} })
+  })
+
+  test('handles null child values', () => {
+    expect(parseFurther({ Input: null })).toEqual({ Input: null })
+  })
+})
+
+// ────────────────────────────────────────────────────────────────────────────
+// stringifyFurther/parseFurther round-trip
+// ────────────────────────────────────────────────────────────────────────────
+
+describe('stringifyFurther/parseFurther round-trip', () => {
+  test('flat component', () => {
+    const original = { extends: 'Flex', boxSize: 'C2' }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('component with numbers', () => {
+    const original = { zIndex: 99, opacity: 0.5, padding: 'A' }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('component with commas in values', () => {
+    const original = {
+      boxShadow: 'black .10, 0px, 2px, 8px, 0px',
+      transition: 'background 0.15s ease, border-color 0.15s ease'
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('component with underscores in values', () => {
+    const original = { background: 'my_custom_token' }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('component with backslash in values', () => {
+    const original = { background: 'test\\value' }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('component with booleans', () => {
+    const original = { hidden: true, disabled: false }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('component with arrays', () => {
+    const original = { extends: ['Flex', 'Box'] }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('leaf child components collapse and restore', () => {
+    const original = {
+      Icon: { name: 'search', boxSize: 'A' },
+      Badge: { background: 'red', color: 'white' }
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('selector collapse and restore', () => {
+    const original = {
+      '@mobile': { padding: 'Y2 A' },
+      '@tablet': { padding: 'Z A1' },
+      ':hover': { background: 'gray2 1 +2' },
+      '.isActive': { background: 'blue', color: 'white' },
+      '!isActive': { background: 'gray' }
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('component with functions preserves them', () => {
+    const fn = (e, el, s) => {}
+    const original = { padding: 'A', onClick: fn }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('state preserved', () => {
+    const original = { state: { count: 0, items: [] }, padding: 'A' }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('ButtonSet component', () => {
+    const original = {
+      extends: 'Flex',
+      childExtends: 'Button',
+      gap: 'Z',
+      align: 'center flex-start',
+      childProps: { theme: 'dialog', padding: 'A1 B2' },
+      children: [{ text: 'BUTTON 1' }, { text: 'BUTTEN 2' }]
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('NumberPicker with functions, state, selectors', () => {
+    const minusFn = (event, element, state) => {}
+    const plusFn = (event, element, state) => {}
+    const original = {
+      state: { currentValue: 0 },
+      Minus: {
+        extends: 'IconButton',
+        Icon: { name: 'minus' },
+        onClick: minusFn
+      },
+      Value: { text: '{{ currentValue }}' },
+      Plus: {
+        extends: 'IconButton',
+        Icon: { name: 'plus' },
+        onClick: plusFn
+      },
+      extends: 'Flex',
+      align: 'center flex-start',
+      gap: 'Z',
+      '> button': { theme: 'transparent' }
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('Modal with $case and nested children', () => {
+    const original = {
+      Hgroup: {
+        gap: 'X1',
+        H: { tag: 'h5', fontWeight: 700 },
+        P: {}
+      },
+      IconButton: {
+        position: 'absolute',
+        right: 'X2',
+        top: 'X2',
+        round: '100%',
+        $isSafari: { top: 'Z2', right: 'Z2' },
+        Icon: { name: 'x' }
+      },
+      extends: 'Flex',
+      boxSize: 'fit-content',
+      align: 'stretch flex-start',
+      minWidth: 'G+B',
+      position: 'relative',
+      round: 'B',
+      theme: 'dialog',
+      flow: 'y',
+      padding: 'A2 A2 A1 A2',
+      borderStyle: 'none'
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('SearchDropdown with deep nesting and functions', () => {
+    const isSelectedFn = (el, s) => s.selected !== 'Search and Select'
+    const toggleFn = (e, el, s) => s.toggle('isOpen')
+    const showFn = (el, s) => s.isOpen
+    const onInputFn = (e, el, state) => {}
+    const showSearchFn = (el, s) => !!s.searchValue && s.filtered.length
+    const childrenFn = (el, s) => s.filtered
+    const childClickFn = (ev, el, s) => {}
+    const showNoSearchFn = (el, s) => !s.searchValue
+    const showNoResultsFn = (el, s) => !!s.searchValue && !s.filtered.length
+
+    const original = {
+      state: {
+        isOpen: false,
+        selected: 'Search and Select',
+        data: ['Los Angeles', 'New York'],
+        filtered: [],
+        searchValue: ''
+      },
+      SelectedContainer: {
+        text: '{{ selected }}',
+        padding: 'Z A2',
+        minHeight: 'B2',
+        position: 'relative',
+        cursor: 'pointer',
+        color: 'caption',
+        isSelected: isSelectedFn,
+        '.isSelected': { color: 'blue' },
+        onClick: toggleFn
+      },
+      Options: {
+        show: showFn,
+        borderWidth: '1px 0 0 0',
+        borderStyle: 'solid',
+        borderColor: 'line .35',
+        padding: 'Z Z2',
+        theme: 'dialog',
+        flexFlow: 'y',
+        round: '0 0 A2 A2',
+        Input: {
+          theme: 'field-dialog',
+          placeholder: 'Search and Select',
+          padding: 'Y2 A',
+          margin: '- -Y',
+          display: 'block',
+          minWidth: '',
+          boxSizing: 'border-box',
+          border: 'none',
+          outline: 'none',
+          onInput: onInputFn
+        },
+        Results: {
+          marginTop: 'X',
+          show: showSearchFn,
+          children: childrenFn,
+          childrenAs: 'state',
+          childProps: {
+            padding: 'Z',
+            text: '{{ value }}',
+            onClick: childClickFn
+          }
+        },
+        Placeholder: {
+          padding: 'Z',
+          show: showNoSearchFn,
+          text: 'Enter name to search',
+          color: 'disabled'
+        },
+        NoResults: {
+          padding: 'Z',
+          show: showNoResultsFn,
+          text: 'No results found',
+          color: 'disabled'
+        }
+      },
+      position: 'relative',
+      width: 'G3',
+      theme: 'field',
+      round: 'A2'
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('complex TopNav with all feature types', () => {
+    const clickFn = (e, el, s) => s.update({ sidebarOpen: !s.sidebarOpen })
+    const original = {
+      extends: 'Flex',
+      tag: 'header',
+      padding: 'Z2 A2',
+      background: 'gray2',
+      align: 'center space-between',
+      position: 'sticky',
+      top: '0',
+      zIndex: 100,
+      borderWidth: '0 0 1px 0',
+      borderStyle: 'solid',
+      borderColor: 'line',
+      transition: 'background 0.2s ease',
+      boxShadow: 'black .10, 0px, 2px, 8px, 0px',
+      '@mobile': { padding: 'Y2 A' },
+      '@tablet': { padding: 'Z A1' },
+      ':hover': { background: 'gray2 1 +2' },
+      LeftSection: {
+        extends: 'Flex',
+        align: 'center',
+        gap: 'A',
+        MenuButton: {
+          extends: 'IconButton',
+          icon: 'menu',
+          theme: 'transparent',
+          padding: 'Y2',
+          borderRadius: 'Z',
+          cursor: 'pointer',
+          display: 'none',
+          '@tablet': { display: 'flex' },
+          onClick: clickFn
+        }
+      }
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('Pills with childProps containing selectors', () => {
+    const original = {
+      extends: 'Flex',
+      childExtends: 'Link',
+      gap: 'C1',
+      childProps: {
+        boxSize: 'Z',
+        round: '100%',
+        cursor: 'pointer',
+        text: '',
+        '.isActive': { theme: 'primary' },
+        '!isActive': { theme: 'tertiary' },
+        ':active': { theme: 'primary' }
+      },
+      children: [{}, { isActive: true }],
+      tag: 'nav'
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('Accordion with state, functions, and case selectors', () => {
+    const clickFn = (event, element, state) => {
+      state.update({ activeAccordion: !state.activeAccordion })
+    }
+    const original = {
+      state: { activeAccordion: false },
+      ButtonParagraph: {
+        cursor: 'pointer',
+        gap: 'D1',
+        onClick: clickFn,
+        P: { text: 'Question text' },
+        Button: {
+          text: '',
+          Icon: {
+            name: 'chevronDown',
+            '.activeAccordion': { transform: 'rotate(-180deg)' },
+            transition: 'transform .3s ease'
+          }
+        }
+      },
+      P: {
+        text: 'Answer text',
+        margin: 0,
+        '.activeAccordion': {
+          minHeight: '4em',
+          maxHeight: '10em',
+          opacity: 1
+        },
+        '!activeAccordion': { minHeight: 0, maxHeight: 0, opacity: 0 }
+      },
+      extends: 'Flex',
+      flow: 'y',
+      gap: 'Y2',
+      position: 'relative'
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
+  })
+
+  test('AvatarChatPreview with deep nesting', () => {
+    const original = {
+      Avatar: {},
+      Flex: {
+        flow: 'y',
+        flex: 1,
+        '> *': { minWidth: '100%' },
+        ValueHeading: {
+          H: {},
+          UnitValue: {
+            flow: 'row-reverse',
+            Unit: { text: 'am' },
+            Value: { text: '2:20' }
+          }
+        },
+        NotCounterParagraph: {
+          P: { whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 'F2' },
+          NotificationCounter: {}
+        }
+      },
+      extends: 'Flex',
+      gap: 'Z1',
+      minWidth: 'G3',
+      align: 'center flex-start'
+    }
+    expect(parseFurther(stringifyFurther(original))).toEqual(original)
   })
 })
