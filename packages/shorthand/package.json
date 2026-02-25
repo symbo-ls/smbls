@@ -2,7 +2,7 @@
   "name": "@symbo.ls/shorthand",
   "description": "Shorthand syntax transpiler for Symbols properties",
   "author": "symbo.ls",
-  "version": "2.34.32",
+  "version": "2.34.33",
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
   "module": "src/index.js",
@@ -23,5 +23,5 @@
     "docs"
   ],
   "license": "ISC",
-  "gitHead": "99bd991fb87c092bcfd045ad358c15064a8b8c30"
+  "gitHead": "a7ecaaa2792aea530bf0b4cef625904c63a0272a"
 }
