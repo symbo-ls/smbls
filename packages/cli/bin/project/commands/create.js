@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import { createLocalTemplate } from '../../../helpers/localTemplateCreate.js'
 import { linkWorkspaceToProject } from '../../../helpers/projectConfigLink.js'
 import { normalizeProjectKey, suggestProjectKeyFromName, isProbablyProjectId } from '../../../helpers/projectKeyUtils.js'
-import { createProject, addProjectLibraries, listAvailableLibraries } from '../../../helpers/projectsApi.js'
+import { createProject, addProjectLibraries, listAvailableLibraries, getLatestProjectVersion } from '../../../helpers/projectsApi.js'
 import {
   promptProjectCreateMode,
   promptProjectName,
@@ -34,6 +34,18 @@ async function resolveAvailableLibraryIdByKey ({ libraryKey, authToken }) {
 
   const exact = items.find((lib) => String(lib?.key || '').toLowerCase() === String(libraryKey || '').toLowerCase())
   return pickLibId(exact)
+}
+
+function pickVersionValue (v) {
+  const raw = v?.value || v?.version || v?.versionNumber || ''
+  const s = String(raw || '').trim()
+  return s || ''
+}
+
+function pickVersionId (v) {
+  const raw = v?.id || v?._id || ''
+  const s = String(raw || '').trim()
+  return s || ''
 }
 
 export async function runProjectCreate (destArg, options = {}) {
@@ -116,6 +128,7 @@ export async function runProjectCreate (destArg, options = {}) {
 
   // mode === create_new
   const defaultName = path.basename(absDest)
+  const branch = options.branch || 'main'
   const name = options.name || (interactive ? await promptProjectName({ defaultName }) : null)
   const projectType = options.type || (interactive ? await promptProjectType() : null)
   if (!name) {
@@ -166,6 +179,32 @@ export async function runProjectCreate (destArg, options = {}) {
   const createdKey = normalizeProjectKey(pickProjectKey(created) || projectKey)
   const createdId = pickProjectId(created)
 
+  let latestVersion
+  let latestVersionId
+  if (createdId) {
+    try {
+      const payload = await getLatestProjectVersion(
+        createdId,
+        { branch, fields: 'value,version,versionNumber,createdAt' },
+        authToken
+      )
+      const v = payload?.data || payload
+      latestVersion = pickVersionValue(v) || undefined
+      latestVersionId = pickVersionId(v) || undefined
+    } catch (err) {
+      console.log(chalk.yellow('Warning: unable to resolve initial project version from platform.'))
+      const msg = String(err?.message || '').trim()
+      if (msg) console.log(chalk.dim(msg))
+      latestVersion = undefined
+      latestVersionId = undefined
+    }
+  } else {
+    // If we can't resolve the created project id, avoid leaving starter-template
+    // versions in symbols.json (write as undefined to remove on JSON stringify).
+    latestVersion = undefined
+    latestVersionId = undefined
+  }
+
   if (sharedLibsMode === 'default') {
     const defaultLibraryKey = 'default.symbo.ls'
     try {
@@ -209,7 +248,12 @@ export async function runProjectCreate (destArg, options = {}) {
     apiBaseUrl: cliConfig.apiBaseUrl,
     projectKey: createdKey,
     projectId: createdId,
-    branch: options.branch || 'main'
+    branch,
+    legacyPatch: {
+      key: createdKey,
+      version: latestVersion,
+      versionId: latestVersionId
+    }
   })
 
   console.log(chalk.green('Platform project created and linked:'))
