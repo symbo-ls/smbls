@@ -3,6 +3,7 @@
 import 'v8-compile-cache'
 
 import { program } from './program.js'
+import { maybeShowCompletionHint } from '../helpers/onboarding.js'
 import './completion.js'
 import './install.js'
 import './init.js'
@@ -23,4 +24,7 @@ import './files.js'
 import './github.js'
 
 const args = process.argv
+program.hook('preAction', (_thisCommand, actionCommand) => {
+  maybeShowCompletionHint(actionCommand)
+})
 program.parse(args)

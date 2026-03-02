@@ -30,6 +30,28 @@ const isBorderStyle = (str) =>
     'initial'
   ].some((v) => str.includes(v))
 
+const splitTopLevelCommas = (value) => {
+  const result = []
+  let current = ''
+  let depth = 0
+
+  for (const char of value) {
+    if (char === '(') depth += 1
+    else if (char === ')' && depth > 0) depth -= 1
+
+    if (char === ',' && depth === 0) {
+      result.push(current)
+      current = ''
+      continue
+    }
+
+    current += char
+  }
+
+  if (current.length || !result.length) result.push(current)
+  return result
+}
+
 export const transformBorder = (border) => {
   const arr = (border + '').split(', ')
   return arr
@@ -63,8 +85,7 @@ export const transformBoxShadow = (shadows, globalTheme) =>
   shadows
     .split('|')
     .map((shadow) => {
-      return shadow
-        .split(',')
+      return splitTopLevelCommas(shadow)
         .map((v) => {
           v = v.trim()
           if (v.slice(0, 2) === '--') return `var(${v})`
