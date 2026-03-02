@@ -40,7 +40,8 @@ export function linkWorkspaceToProject ({
   apiBaseUrl,
   projectKey,
   projectId,
-  branch = 'main'
+  branch = 'main',
+  legacyPatch
 }) {
   const paths = getProjectConfigPaths(baseDir)
   const currentConfig = readJsonSafe(paths.configPath) || {}
@@ -57,7 +58,8 @@ export function linkWorkspaceToProject ({
   const nextLegacy = {
     ...legacy,
     key: projectKey || legacy.key,
-    branch: branch || legacy.branch || 'main'
+    branch: branch || legacy.branch || 'main',
+    ...(legacyPatch || {})
   }
   writeJsonSafe(paths.legacySymbolsJson, nextLegacy)
 
