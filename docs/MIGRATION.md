@@ -294,3 +294,51 @@ export const DataView = {
   }
 }
 ```
+
+---
+
+## Part 6: Color/Border/Shadow Syntax Migration (v3.1)
+
+### Color tokens: space-separated to dot-notation
+
+| Old | New | Notes |
+|---|---|---|
+| `'white .1'` | `'white.1'` | Opacity 0.1 |
+| `'gray 0.85'` | `'gray.85'` | Opacity 0.85 |
+| `'gray .92 +8'` | `'gray.92+8'` | Opacity + relative tone |
+| `'gray 1 +16'` | `'gray+16'` | Alpha 1 = default, omit |
+| `'gray 1 -68'` | `'gray-68'` | Relative tone |
+| `'gray 1 90'` | `'gray=90'` | Absolute lightness (=prefix) |
+| `'white 1 -78'` | `'white-78'` | Tone only |
+
+### border: comma-separated to space-separated (CSS order)
+
+| Old | New |
+|---|---|
+| `'solid, gray, 1px'` | `'1px solid gray'` |
+| `'gray6 .1, solid, 1px'` | `'1px solid gray6.1'` |
+| `'solid, mediumGrey'` | `'solid mediumGrey'` |
+| `'1px, solid'` | `'1px solid'` |
+
+### boxShadow: commas to spaces within shadow, pipe to comma between shadows
+
+| Old | New |
+|---|---|
+| `'white .1, 0, A, C, C'` | `'white.1 0 A C C'` |
+| `'black .10, 0px, 2px, 8px, 0px'` | `'black.1 0px 2px 8px 0px'` |
+| `'a, b \| c, d'` | `'a b, c d'` |
+
+### textStroke/textShadow: comma-separated to space-separated
+
+| Old | New |
+|---|---|
+| `'1px, gray6'` | `'1px gray6'` |
+| `'gray1, 6px, 6px'` | `'gray1 6px 6px'` |
+
+### CSS fallback
+
+Raw CSS values now pass through unchanged:
+```js
+boxShadow: '0 2px 8px rgba(0,0,0,0.1)'  // passes through as-is
+border: '1px solid #333'                  // passes through as-is
+```

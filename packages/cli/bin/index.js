@@ -21,6 +21,9 @@ import './link-packages.js'
 import './collab.js'
 import './servers.js'
 import './files.js'
+import './start.js'
+import './build.js'
+import './eject.js'
 
 const args = process.argv
 program.hook('preAction', (_thisCommand, actionCommand) => {

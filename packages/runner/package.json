@@ -1,0 +1,52 @@
+{
+  "name": "@symbo.ls/runner",
+  "version": "3.2.3",
+  "description": "Build runner and toolchain for Symbols projects",
+  "main": "index.js",
+  "type": "module",
+  "author": "Symbols",
+  "license": "MIT",
+  "scripts": {
+    "vpush": "git add . && git commit -am 'version update' && git push",
+    "vpatch": "npm version patch && npm publish"
+  },
+  "dependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/eslint-parser": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "eslint": "^9.37.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.32.0",
+    "standard": "^17.1.2"
+  },
+  "peerDependencies": {
+    "parcel": ">=2.0.0",
+    "vite": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "parcel": { "optional": true },
+    "vite": { "optional": true }
+  },
+  "bundlers": {
+    "parcel": {
+      "@parcel/babel-preset-env": "^2.16.0",
+      "@parcel/transformer-inline-string": "^2.16.0",
+      "@parcel/transformer-raw": "^2.16.0",
+      "buffer": "^6.0.3",
+      "parcel": "^2.16.0"
+    },
+    "vite": {
+      "vite": "^6.0.0"
+    },
+    "browser": {}
+  },
+  "buildDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/eslint-parser": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "eslint": "^9.37.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.32.0",
+    "standard": "^17.1.2"
+  }
+}

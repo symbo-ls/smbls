@@ -129,13 +129,55 @@ export const transformBoxShadow = (shadows, globalTheme) => {
     .join(', ')
 }
 
+/**
+ * Resolve Symbols color tokens inside a CSS gradient string.
+ * e.g. 'linear-gradient(to bottom, white.97 65%, white.0 100%)'
+ * →    'linear-gradient(to bottom, rgba(255, 255, 255, 0.97) 65%, rgba(255, 255, 255, 0.0) 100%)'
+ */
+export const resolveColorsInGradient = (gradient, globalTheme) => {
+  // Find the opening paren after the gradient type
+  const parenStart = gradient.indexOf('(')
+  if (parenStart === -1) return gradient
+
+  const prefix = gradient.slice(0, parenStart + 1)
+  const inner = gradient.slice(parenStart + 1, gradient.lastIndexOf(')'))
+  const suffix = ')'
+
+  // Split by top-level commas (respects nested rgba() etc.)
+  const segments = splitTopLevelCommas(inner)
+
+  const resolved = segments.map((segment) => {
+    segment = segment.trim()
+    // Split segment into space-separated tokens
+    const tokens = segment.split(/\s+/)
+
+    return tokens.map((token) => {
+      if (!token) return token
+      // Skip CSS values: percentages, degrees, direction keywords, native colors
+      if (/^\d/.test(token) || token === '0') return token
+      if (['to', 'top', 'bottom', 'left', 'right', 'center', 'at', 'circle', 'ellipse', 'closest-side', 'farthest-side', 'closest-corner', 'farthest-corner'].includes(token)) return token
+      if (token === 'transparent') return token
+      if (CSS_NATIVE_COLOR_REGEX.test(token)) return token
+
+      // Try to resolve as a Symbols color token
+      const color = getColor(token)
+      if (isResolvedColor(color)) return color
+
+      return token
+    }).join(' ')
+  })
+
+  return prefix + resolved.join(', ') + suffix
+}
+
 export const transformBackgroundImage = (backgroundImage, globalTheme) => {
   const CONFIG = getActiveConfig()
   return backgroundImage
     .split(', ')
     .map((v) => {
       if (v.slice(0, 2) === '--') return `var(${v})`
-      if (v.includes('url') || v.includes('gradient')) return v
+      if (v.includes('url')) return v
+      if (v.includes('gradient')) return resolveColorsInGradient(v, globalTheme)
       else if (CONFIG.GRADIENT[backgroundImage]) {
         return {
           backgroundImage: getMediaColor(

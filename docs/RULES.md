@@ -163,37 +163,48 @@ Define shared styles as a named component in `components/`, register in `compone
 
 ---
 
-## Rule 11 — Color tokens — NO opacity modifier syntax in component props
+## Rule 11 — Color token syntax (dot-notation)
 
-`color: 'white .7'` is NOT valid — renders as raw text content. Define named tokens in `designSystem/COLOR.js`:
+Color tokens use **dot-notation** for opacity and `+`/`-`/`=` for tone modifiers:
 
 ```js
-// ✅ CORRECT — define in designSystem/COLOR.js
-export default {
-  whiteMuted: 'rgba(255,255,255,0.7)',
-}
-// Then use: color: 'whiteMuted'
+// ✅ CORRECT — dot-notation opacity
+{ color: 'white.7' }
+{ background: 'black.5' }
+{ background: 'gray.92+8' }      // opacity 0.92, tone +8
+{ color: 'gray+16' }             // full opacity, tone +16
+{ color: 'gray=90' }             // absolute lightness 90%
 
-// ❌ WRONG — renders as literal text
+// ❌ WRONG — old space-separated syntax (no longer supported)
 { color: 'white .7' }
-{ color: 'black .5' }
+{ color: 'gray 1 +16' }
 ```
+
+For rarely-used colors, define named tokens in `designSystem/COLOR.js` instead.
 
 ---
 
-## Rule 12 — Border shorthand — split into individual props
+## Rule 12 — Border, boxShadow, textShadow — space-separated (CSS-like)
 
-`border: '2px solid transparent'` renders the raw string as text content. Always split:
+These properties use **space-separated** syntax matching CSS conventions:
 
 ```js
-// ✅ CORRECT
-{ borderWidth: '2px', borderStyle: 'solid', borderColor: 'transparent' }
+// ✅ CORRECT — space-separated, CSS order
+{ border: '1px solid gray.1' }
+{ border: 'solid mediumGrey' }
+{ boxShadow: 'black.1 0 A C C' }
+{ textShadow: 'gray1 6px 6px' }
 
-// ❌ WRONG — raw string appears as visible text
-{ border: '2px solid transparent' }
+// Multiple shadows use commas (CSS standard)
+{ boxShadow: 'black.1 0 A C C, white.5 0 B D D' }
+
+// Raw CSS passes through unchanged
+{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }
+
+// ❌ WRONG — old comma-separated syntax (no longer supported)
+{ border: 'solid, gray, 1px' }
+{ boxShadow: 'black .1, 0, A, C, C' }
 ```
-
-`border: 'none'` is the only safe shorthand.
 
 ---
 

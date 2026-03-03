@@ -8,6 +8,7 @@ import {
   transformBoxShadow,
   transformBorder,
   transformBackgroundImage,
+  resolveColorsInGradient,
   transformSizeRatio
 } from '@symbo.ls/scratch'
 
@@ -46,6 +47,9 @@ export const THEME_PROPS = {
   background: (val, element) => {
     const globalTheme = getSystemGlobalTheme(element)
     if (!val) return
+    if (isString(val) && val.includes('gradient')) {
+      return { background: resolveColorsInGradient(val, globalTheme) }
+    }
     return {
       background: getMediaColor(val, globalTheme)
     }

@@ -2536,7 +2536,7 @@ export const StatusDot = {
   rnd: '100%',
   thm: 'success',
   "@light": {
-    bd: 'solid, gray 1 +170',
+    bd: 'solid, gray+170',
     bdw: 'X'
   },
   "@dark": {

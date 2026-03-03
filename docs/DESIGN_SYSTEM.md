@@ -31,7 +31,7 @@ Props accept design tokens as strings. The system resolves them into CSS values 
 ```js
 Card: {
   padding: 'B C',          // spacing token
-  background: 'primary 0.08', // color + opacity
+  background: 'primary.08', // color + opacity
   borderRadius: 'B',       // spacing token
   shadow: 'soft',          // shadow token
   fontSize: 'B',           // typography token
@@ -68,15 +68,24 @@ Card: {
 | `disabled`  | dimmer-gray        | dimmer-gray        | Disabled state     |
 | `line`      | subtle-gray        | subtle-gray        | Borders/dividers   |
 
-### Color modifier syntax
+### Color modifier syntax (dot-notation)
+
+Color tokens use dot-notation for opacity and `+`/`-` for relative tone shifts, `=` for absolute lightness:
 
 ```js
-'gray 0.95 -68'   // gray at 95% opacity, darkened 68 steps
-'gray 1 +168'     // gray at full opacity, lightened 168 steps
-'white 1 -78'     // white darkened 78 steps
-'primary 0.5'     // primary at 50% opacity
-'primary +5'      // shifted tone
+'gray.95-68'      // gray at 95% opacity, darkened 68 steps
+'gray+168'        // gray at full opacity, lightened 168 steps
+'white-78'        // white darkened 78 steps
+'primary.5'       // primary at 50% opacity
+'primary+5'       // shifted tone
+'gray=90'         // gray at absolute 90% lightness
+'gray.5+15'       // 50% opacity + 15 shade lighter
 ```
+
+Opacity rules:
+- `.XX` always means `0.XX` — e.g., `.1` = 0.1, `.35` = 0.35, `.0` = 0.0
+- Full opacity (1.0) = no modifier needed (just the color name)
+- Raw CSS values (`rgba()`, `hsl()`, `#hex`) pass through unchanged
 
 ### Usage in components
 
@@ -88,7 +97,10 @@ Text: { color: 'blue' }
 Caption: { color: 'caption' }
 
 // Inline tint
-Box: { background: 'gray 0.1' }
+Box: { background: 'gray.1' }
+
+// With tone modifier
+Card: { background: 'gray.92+8' }
 ```
 
 ---
@@ -413,4 +425,4 @@ Default icon set includes: `symbols`, `logo`, arrow variants, `check`, `checkCir
 - Use `font_family` instead of `fontFamily`
 - Define `typography` and `spacing` if you use tokens like `A`, `B2`, or `C+Z`
 - Use named color tokens, not raw hex, for all interactive/semantic colors
-- `color: 'white .7'` is NOT valid in component props — define named token in `COLOR.js`
+- Use dot-notation for color opacity: `color: 'white.7'` (not `'white .7'`)
