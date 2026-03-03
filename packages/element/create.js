@@ -19,8 +19,8 @@ import {
   createRoot
 } from '@domql/utils'
 
-import { applyAnimationFrame, triggerEventOn } from '@domql/event'
-import { assignNode } from '@domql/render'
+import { applyAnimationFrame, triggerEventOn } from './event/index.js'
+import { assignNode } from './render/index.js'
 import { createState } from '@domql/state'
 
 import { REGISTRY } from './mixins/index.js'

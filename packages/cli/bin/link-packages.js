@@ -6,7 +6,7 @@ import { program } from './program.js'
 
 import packages from './linking/packages.js'
 
-const DOMQL = ['@domql/utils', '@domql/performance', '@domql/report', '@domql/emotion', '@domql/event', '@domql/router', '@domql/render', '@domql/state', '@domql/element', '@domql/parse', 'domql']
+const DOMQL = ['@domql/utils', '@domql/performance', '@domql/report', '@domql/emotion', '@domql/router', '@domql/state', '@domql/element', '@domql/parse', 'domql']
 
 const COMMAND = 'npx lerna exec -- cat package.json | jq \'.name\''
 const capture = (opts) => {

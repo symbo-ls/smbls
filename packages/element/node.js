@@ -1,8 +1,8 @@
 'use strict'
 
 import { isFunction, isMethod, isObject, isUndefined } from '@domql/utils'
-import { applyEventsOnNode, triggerEventOn } from '@domql/event'
-import { cacheNode } from '@domql/render'
+import { applyEventsOnNode, triggerEventOn } from './event/index.js'
+import { cacheNode } from './render/index.js'
 import { create } from './create.js'
 
 import {

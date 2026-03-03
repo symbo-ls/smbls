@@ -15,3 +15,6 @@ export {
   update,
   set
 }
+
+export * from './event/index.js'
+export * from './render/index.js'

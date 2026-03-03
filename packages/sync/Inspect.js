@@ -2,7 +2,7 @@
 
 import * as smblsUI from '@symbo.ls/uikit'
 import { isObject, isString, isArray } from '@domql/utils'
-import { send } from '@symbo.ls/socket/client'
+import { send } from './client.js'
 
 function returnStringExtend (_extends) {
   return isString(_extends) ? _extends : isArray(_extends) ? _extends.find(extItem => isString(extItem)) : ''

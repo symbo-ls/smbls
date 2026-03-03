@@ -19,6 +19,16 @@
       "browser": "./dist/iife/index.js",
       "default": "./dist/esm/index.js"
     },
+    "./client": {
+      "import": "./dist/esm/client.js",
+      "require": "./dist/cjs/client.js",
+      "default": "./dist/esm/client.js"
+    },
+    "./server": {
+      "import": "./dist/esm/server.js",
+      "require": "./dist/cjs/server.js",
+      "default": "./dist/esm/server.js"
+    },
     "./*.js": {
       "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
@@ -42,11 +52,16 @@
   },
   "dependencies": {
     "@domql/router": "^3.2.3",
+
     "@domql/utils": "^3.2.3",
     "@symbo.ls/init": "^3.2.3",
     "@symbo.ls/scratch": "^3.2.3",
-    "@symbo.ls/socket": "^3.2.3",
-    "@symbo.ls/uikit": "^3.2.3"
+    "@symbo.ls/uikit": "^3.2.3",
+    "chalk": "^5.4.1",
+    "express": "^4.21.2",
+    "http": "^0.0.1-security",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0"

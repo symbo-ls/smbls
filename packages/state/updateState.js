@@ -1,7 +1,7 @@
 'use strict'
 
 import { report } from '@domql/report'
-import { triggerEventOnUpdate } from '@domql/event'
+import { triggerEventOnUpdate } from '@domql/element'
 import {
   checkIfInherits,
   createNestedObjectByKeyPath,

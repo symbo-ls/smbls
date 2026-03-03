@@ -1,7 +1,7 @@
 'use strict'
 
 import { report } from '@domql/report'
-import { canRenderTag } from '@domql/event'
+import { canRenderTag } from '../event/index.js'
 import { exec, isObject, isString, isValidHtmlTag, document } from '@domql/utils'
 
 export const createHTMLNode = (element) => {

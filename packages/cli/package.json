@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@symbo.ls/fetch": "^3.2.3",
-    "@symbo.ls/init": "^3.2.3",
-    "@symbo.ls/socket": "^3.2.3",
+    "smbls": "^3.2.3",
+    "@symbo.ls/sync": "^3.2.3",
     "chalk": "^5.4.1",
     "chokidar": "^4.0.3",
     "commander": "^13.1.0",

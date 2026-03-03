@@ -21,7 +21,7 @@ import {
   propertizeUpdate
 } from '@domql/utils'
 
-import { applyEvent, triggerEventOn, triggerEventOnUpdate } from '@domql/event'
+import { applyEvent, triggerEventOn, triggerEventOnUpdate } from './event/index.js'
 import { createState } from '@domql/state'
 
 import { create } from './create.js'

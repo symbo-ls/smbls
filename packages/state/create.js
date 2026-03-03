@@ -1,6 +1,6 @@
 'use strict'
 
-import { triggerEventOn } from '@domql/event'
+import { triggerEventOn } from '@domql/element'
 import {
   applyDependentState,
   checkForStateTypes,

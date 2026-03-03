@@ -7,7 +7,7 @@
   "dependencies": {
     "@domql/state": "^3.2.3",
     "@domql/utils": "^3.2.3",
-    "@symbo.ls/emotion": "^3.2.3",
+    "smbls": "^3.2.3",
     "@symbo.ls/scratch": "^3.2.3"
   },
   "source": "index.js",

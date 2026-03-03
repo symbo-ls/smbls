@@ -1,7 +1,7 @@
 'use strict'
 
 import { create } from '@domql/element'
-import { assignNode } from '@domql/render'
+import { assignNode } from '@domql/element'
 
 export const parse = element => {
   const virtualTree = {

@@ -8,7 +8,7 @@ import { onpopstateRouter } from './router.js'
 import { fetchAsync, fetchSync } from './ferchOnCreate.js'
 
 import DEFAULT_CREATE_OPTIONS from './options.js'
-import DYNAMIC_JSON from '@symbo.ls/init/dynamic.json' with { type: 'json' }
+import DYNAMIC_JSON from '../dynamic.json' with { type: 'json' }
 import { createDomqlElement } from './createDomql.js'
 
 const mergeWithLocalFile = (options, optionsExternalFile) =>

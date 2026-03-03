@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@domql/utils": "^3.0.111",
-    "@symbo.ls/create": "^3.0.111",
+    "smbls": "^3.2.3",
     "jsdom": "^26.0.0"
   },
   "peerDependencies": {

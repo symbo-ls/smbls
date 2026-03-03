@@ -2,7 +2,7 @@
 
 import { deepContains, exec, isFunction, OPTIONS } from '@domql/utils'
 import { create } from './create.js'
-import { triggerEventOn, triggerEventOnUpdate } from '@domql/event'
+import { triggerEventOn, triggerEventOnUpdate } from './event/index.js'
 
 export const setContentKey = (element, opts = {}) => {
   const { __ref: ref } = element

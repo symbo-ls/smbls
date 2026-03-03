@@ -28,8 +28,6 @@
   },
   "dependencies": {
     "@domql/element": "^3.2.3",
-    "@domql/event": "^3.2.3",
-    "@domql/render": "^3.2.3",
     "@domql/state": "^3.2.3",
     "@domql/utils": "^3.2.3"
   },

@@ -39,7 +39,7 @@
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/event": "^3.2.3",
+    "@domql/element": "^3.2.3",
     "@domql/report": "^3.2.3",
     "@domql/utils": "^3.2.3"
   },

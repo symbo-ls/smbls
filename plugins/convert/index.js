@@ -97,7 +97,7 @@ function generatePackageJsonFile (
     'css-in-props': 'latest',
     [`@emotion/${desiredFormat}`]: '^11.11.0',
     '@emotion/css': '^11.11.0',
-    '@symbo.ls/create': 'latest',
+    'smbls': 'latest',
     '@symbo.ls/react': 'latest'
   }
   globusaStruct.imports

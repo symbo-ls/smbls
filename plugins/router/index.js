@@ -1,6 +1,6 @@
 'use strict'
 
-import { triggerEventOn } from '@domql/event'
+import { triggerEventOn } from '@domql/element'
 import { document, window } from '@domql/utils'
 import { setContentKey } from '@domql/element/set'
 

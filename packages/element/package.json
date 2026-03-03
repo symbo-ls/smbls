@@ -12,6 +12,16 @@
       "browser": "./dist/iife/index.js",
       "default": "./dist/esm/index.js"
     },
+    "./event": {
+      "import": "./dist/esm/event/index.js",
+      "require": "./dist/cjs/event/index.js",
+      "default": "./dist/esm/event/index.js"
+    },
+    "./render": {
+      "import": "./dist/esm/render/index.js",
+      "require": "./dist/cjs/render/index.js",
+      "default": "./dist/esm/render/index.js"
+    },
     "./*.js": {
       "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
@@ -30,15 +40,14 @@
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js methods/*.js mixins/*.js utils/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js methods/*.js mixins/*.js utils/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js methods/*.js mixins/*.js utils/*.js event/*.js render/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js methods/*.js mixins/*.js utils/*.js event/*.js render/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
     "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
     "prepublish": "npm run build && npm run copy:package:cjs",
     "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --bundle --target=es2020 --format=iife --global-name=DomqlElement --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV"
   },
   "dependencies": {
-    "@domql/event": "^3.2.3",
-    "@domql/render": "^3.2.3",
+    "@domql/report": "^3.2.3",
     "@domql/state": "^3.2.3",
     "@domql/utils": "^3.2.3"
   },

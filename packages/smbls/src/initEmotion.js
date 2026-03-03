@@ -1,8 +1,8 @@
 'use strict'
 
 import { transformDOMQLEmotion } from '@domql/emotion'
-import { emotion as defaultEmotion } from '@symbo.ls/emotion'
-import { init } from '@symbo.ls/init'
+import { emotion as defaultEmotion } from '../emotion.js'
+import { init } from '../init.js'
 import { deepClone, deepMerge } from '@domql/utils'
 
 import { DESIGN_SYSTEM_OPTIONS } from './options.js'

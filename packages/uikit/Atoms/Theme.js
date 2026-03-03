@@ -1,6 +1,6 @@
 'use strict'
 
-import { depth } from './Shape/style'
+import { depth } from './Shape'
 import { isUndefined } from '@domql/utils'
 
 export const getSystemGlobalTheme = ({ context, state }) => {

@@ -10,7 +10,7 @@ import * as utils from '@domql/utils'
 const { overwriteDeep } = utils.default || utils
 
 const require = createRequire(import.meta.url) // construct the require method
-const DES_SYS_DEFAULT_FILE = require('@symbo.ls/init/dynamic.json') // Bring in the ability to create the 'require' method
+const DES_SYS_DEFAULT_FILE = require('./dynamic.json') // Bring in the ability to create the 'require' method
 
 const app = express()
 let io
@@ -21,7 +21,7 @@ const debugMsg = chalk.dim(
 
 export const updateDynamycFile = (changes, options = {}) => {
   const { verbose, prettify, verboseCode } = options
-  const file = require('@symbo.ls/init/dynamic.json')
+  const file = require('./dynamic.json')
 
   const newMerge = overwriteDeep(file, changes)
   const mergeStr = JSON.stringify(newMerge, null, 2)

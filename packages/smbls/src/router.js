@@ -1,6 +1,7 @@
 'use strict'
 
 import { window, deepMerge, merge, isUndefined } from '@domql/utils'
+import { router as defaultRouter } from '@domql/router'
 import { Link } from 'smbls'
 
 const DEFAULT_ROUTING_OPTIONS = {
@@ -19,7 +20,7 @@ export const initRouter = (element, context) => {
   const onRouterRenderDefault = async (el, s) => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    if (el.routes) await router(url, el, {}, { initialRender: true })
+    if (el.routes) await defaultRouter(url, el, {}, { initialRender: true })
   }
 
   const hasRenderRouter =

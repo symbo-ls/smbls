@@ -1,6 +1,6 @@
 'use strict'
 
-import { triggerEventOn } from '@domql/event'
+import { triggerEventOn } from '@domql/element'
 import { DOMQ_PROPERTIES, METHODS, PARSED_DOMQ_PROPERTIES } from './keys.js'
 import { isDefined, isFunction, isObject, isObjectLike } from './types.js'
 import { deepClone } from './object.js'

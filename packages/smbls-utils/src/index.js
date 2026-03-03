@@ -8,7 +8,6 @@ export * from './date.js'
 export * from './fibonacci.js'
 export * from './load.js'
 export * from './files.js'
-export * from './domqlv3hacks.js'
 
 export const copyStringToClipboard = async (str) => {
   try {

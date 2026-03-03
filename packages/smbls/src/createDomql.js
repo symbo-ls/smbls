@@ -4,7 +4,7 @@ import DOM from 'domql'
 import * as uikit from '@symbo.ls/uikit'
 
 import { isString, isNode, isObject } from '@domql/utils'
-import { initAnimationFrame } from '@domql/event'
+import { initAnimationFrame } from '@domql/element'
 import { defaultDefine } from './define.js'
 import { initRouter } from './router.js'
 import { version } from '../package.json' with { type: 'json' }
@@ -27,7 +27,6 @@ import {
   prepareSharedLibs
 } from './prepare.js'
 
-import { temporaryDomqlHackReverse } from '@symbo.ls/utils'
 
 export const prepareContext = async (app, context = {}) => {
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
@@ -69,9 +68,6 @@ export const createDomqlElement = async (app, ctx) => {
     ctx.key = app
   } else if (!isObject(app)) {
     app = {}
-  } else if (ctx.forceDomql3 && ctx.forceDomql3OnInit) {
-    app = temporaryDomqlHackReverse(app)
-  }
 
   await prepareContext(app, ctx)
 

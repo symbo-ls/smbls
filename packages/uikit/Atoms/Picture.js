@@ -1,6 +1,6 @@
 'use strict'
 
-import { getSystemGlobalTheme } from './Box.js'
+import { getSystemGlobalTheme } from './Theme.js'
 
 export const Picture = {
   deps: { getSystemGlobalTheme },
