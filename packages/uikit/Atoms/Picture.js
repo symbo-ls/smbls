@@ -21,7 +21,6 @@ export const Picture = {
 
         return MEDIA[mediaName]
       },
-      srcset: ({ props }) => props.srcset
     }
   },
 

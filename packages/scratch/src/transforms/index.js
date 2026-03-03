@@ -13,7 +13,13 @@ import {
   checkIfBoxSize,
   splitSpacedValue
 } from '../system'
-import { getFnPrefixAndValue } from '../utils'
+import {
+  getFnPrefixAndValue,
+  isResolvedColor,
+  CSS_NATIVE_COLOR_REGEX,
+  splitTopLevelCommas,
+  parseColorToken
+} from '../utils'
 
 const isBorderStyle = (str) =>
   [
@@ -30,50 +36,49 @@ const isBorderStyle = (str) =>
     'initial'
   ].some((v) => str.includes(v))
 
-const splitTopLevelCommas = (value) => {
-  const result = []
-  let current = ''
-  let depth = 0
-
-  for (const char of value) {
-    if (char === '(') depth += 1
-    else if (char === ')' && depth > 0) depth -= 1
-
-    if (char === ',' && depth === 0) {
-      result.push(current)
-      current = ''
-      continue
-    }
-
-    current += char
-  }
-
-  if (current.length || !result.length) result.push(current)
-  return result
-}
-
 export const transformBorder = (border) => {
-  const arr = (border + '').split(', ')
-  return arr
+  const str = border + ''
+
+  // CSS passthrough: native CSS color syntax
+  if (CSS_NATIVE_COLOR_REGEX.test(str)) return str
+
+  // Simple CSS keywords
+  if (['none', '0', 'initial', 'inherit', 'unset'].includes(str.trim())) return str
+
+  // Space-separated tokens (CSS-like syntax)
+  const tokens = str.split(/\s+/)
+
+  return tokens
     .map((v) => {
       v = v.trim()
+      if (!v) return ''
       if (v.slice(0, 2) === '--') return `var(${v})`
-      else if (isBorderStyle(v)) return v || 'solid'
-      else if (v.slice(-2) === 'px' || v.slice(-2) === 'em')
-        return v // TODO: add map spacing
-      else if (getColor(v).length > 2) return getColor(v)
-      return getSpacingByKey(v, 'border').border
+      if (isBorderStyle(v)) return v
+      if (/^\d/.test(v) || v === '0') return v
+      // Try color resolution
+      const color = getColor(v)
+      if (isResolvedColor(color)) return color
+      // Try spacing key
+      const spacing = getSpacingByKey(v, 'border')
+      if (spacing && spacing.border) return spacing.border
+      return v
     })
     .join(' ')
 }
 
 export const transformTextStroke = (stroke) => {
+  // CSS passthrough
+  if (CSS_NATIVE_COLOR_REGEX.test(stroke)) return stroke
+
   return stroke
-    .split(', ')
+    .split(/\s+/)
     .map((v) => {
+      v = v.trim()
+      if (!v) return ''
       if (v.slice(0, 2) === '--') return `var(${v})`
-      if (v.includes('px')) return v
-      else if (getColor(v)) return getColor(v)
+      if (/^\d/.test(v) || v.includes('px') || v === '0') return v
+      const color = getColor(v)
+      if (isResolvedColor(color)) return color
       return v
     })
     .join(' ')
@@ -81,30 +86,48 @@ export const transformTextStroke = (stroke) => {
 
 export const transformShadow = (sh, globalTheme) => getShadow(sh, globalTheme)
 
-export const transformBoxShadow = (shadows, globalTheme) =>
-  shadows
-    .split('|')
+export const transformBoxShadow = (shadows, globalTheme) => {
+  // CSS passthrough: native CSS color syntax
+  if (CSS_NATIVE_COLOR_REGEX.test(shadows)) return shadows
+
+  // Split multiple shadows by commas (CSS standard), respecting parentheses
+  return splitTopLevelCommas(shadows)
     .map((shadow) => {
-      return splitTopLevelCommas(shadow)
+      shadow = shadow.trim()
+      if (!shadow) return ''
+
+      // Each shadow: space-separated tokens
+      return shadow.split(/\s+/)
         .map((v) => {
           v = v.trim()
+          if (!v) return ''
           if (v.slice(0, 2) === '--') return `var(${v})`
-          if (getColor(v).length > 2) {
-            const color = getMediaColor(v, globalTheme)
-            if (isObject(color))
-              return Object.values(color).filter((v) =>
-                v.includes(': ' + globalTheme)
+          if (v === 'inset' || v === 'none') return v
+
+          // Try color resolution
+          const color = getColor(v)
+          if (isResolvedColor(color)) {
+            const mediaColor = getMediaColor(v, globalTheme)
+            if (isObject(mediaColor))
+              return Object.values(mediaColor).filter((c) =>
+                c.includes(': ' + globalTheme)
               )[0]
-            return color
+            return mediaColor
           }
-          if (v.includes('px') || v.slice(-2) === 'em') return v
-          const arr = v.split(' ')
-          if (!arr.length) return v
-          return arr.map((v) => getSpacingByKey(v, 'shadow').shadow).join(' ')
+
+          // CSS unit values
+          if (/^\d/.test(v) || v === '0' || v.includes('px') || v.slice(-2) === 'em') return v
+
+          // Spacing key
+          const spacing = getSpacingByKey(v, 'shadow')
+          if (spacing && spacing.shadow) return spacing.shadow
+
+          return v
         })
         .join(' ')
     })
-    .join(',')
+    .join(', ')
+}
 
 export const transformBackgroundImage = (backgroundImage, globalTheme) => {
   const CONFIG = getActiveConfig()
@@ -120,7 +143,7 @@ export const transformBackgroundImage = (backgroundImage, globalTheme) => {
             globalTheme || CONFIG.globalTheme
           )
         }
-      } else if (v.includes('/') || v.startsWith('http') || v.includes('.'))
+      } else if (v.includes('/') || v.startsWith('http') || (v.includes('.') && !parseColorToken(v)))
         return `url(${v})`
       return v
     })

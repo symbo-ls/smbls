@@ -18,7 +18,6 @@ export const Img = {
       const file = context.files && context.files[src]
       if (file) return file.content && file.content.src
     },
-    alt: ({ props }) => props.alt,
     title: ({ props }) => props.title || props.alt
   }
 }

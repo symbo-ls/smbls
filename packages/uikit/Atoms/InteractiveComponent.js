@@ -48,7 +48,6 @@ export const Focusable = {
   },
 
   attr: {
-    placeholder: ({ props }) => props.placeholder,
     tabIndex: ({ props }) => props.tabIndex
   }
 }
@@ -63,8 +62,5 @@ export const FocusableComponent = {
   lineHeight: '1',
   whiteSpace: 'nowrap',
   fontFamily: 'inherit',
-  style,
-  attr: {
-    type: ({ props }) => props.type
-  }
+  style
 }

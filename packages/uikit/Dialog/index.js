@@ -56,7 +56,7 @@ export const DialogFooter = {
       theme: 'tertiary'
     },
     ':active': {
-      background: 'white .1'
+      background: 'white.1'
     }
   },
 

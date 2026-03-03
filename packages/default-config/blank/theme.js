@@ -26,10 +26,10 @@ const PRIORITIES = {
   tertiary: {
     '@dark': {
       color: 'white',
-      background: 'gray .92 +8'
+      background: 'gray.92+8'
     },
     '@light': {
-      background: 'gray .1'
+      background: 'gray.1'
     }
   },
 
@@ -46,7 +46,7 @@ const PRIORITIES = {
 
   quinary: {
     '@dark': {
-      color: 'gray 1 90',
+      color: 'gray=90',
       background: 'gradient-light'
     },
 
@@ -84,37 +84,37 @@ const UI = {
   field: {
     '@light': {
       color: 'black',
-      background: 'gray .975 +144',
-      borderColor: 'gray .975 +144',
-      '::placeholder': { color: 'gray 1 -68' }
+      background: 'gray.975+144',
+      borderColor: 'gray.975+144',
+      '::placeholder': { color: 'gray-68' }
     },
     '@dark': {
       color: 'white',
-      background: 'gray .975 -52',
-      borderColor: 'gray .975 -52',
-      '::placeholder': { color: 'gray 1 +68' }
+      background: 'gray.975-52',
+      borderColor: 'gray.975-52',
+      '::placeholder': { color: 'gray+68' }
     }
   },
 
   label: {
     '@dark': {
       color: 'white',
-      background: 'gray .92 +8'
+      background: 'gray.92+8'
     },
 
     '@light': {
-      background: 'gray .1'
+      background: 'gray.1'
     }
   },
 
   dialog: {
     '@dark': {
       color: 'white',
-      background: 'gray .92'
+      background: 'gray.92'
     },
     '@light': {
       color: 'currentColor',
-      background: 'gray .1'
+      background: 'gray.1'
     }
   }
 }

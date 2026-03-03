@@ -51,8 +51,8 @@ export const DropdownList = {
     },
 
     ':not(:first-child)': {
-      '@dark': { border: 'gray4 .65, solid' },
-      '@light': { border: 'gray11, solid' },
+      '@dark': { border: 'solid gray4.65' },
+      '@light': { border: 'solid gray11' },
       borderWidth: '1px 0 0'
     }
   }

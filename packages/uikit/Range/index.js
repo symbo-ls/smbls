@@ -42,7 +42,7 @@ export const Range = {
   '::-webkit-slider-runnable-track': {},
 
   '@dark': {
-    background: 'white 0.2',
+    background: 'white.2',
 
     '::-webkit-slider-thumb': {
       background: '#232526',

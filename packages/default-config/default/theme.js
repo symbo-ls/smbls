@@ -9,7 +9,7 @@ const PRIORITIES = {
         color: 'blue'
       },
       '.inactive': {
-        background: 'gray 1 +16'
+        background: 'gray+16'
       },
       '.gradient': {
         color: 'white',
@@ -51,10 +51,10 @@ const PRIORITIES = {
   tertiary: {
     '@dark': {
       color: 'white',
-      background: 'gray .92 +8'
+      background: 'gray.92+8'
     },
     '@light': {
-      background: 'gray .1'
+      background: 'gray.1'
     }
   },
 
@@ -71,26 +71,26 @@ const PRIORITIES = {
 
   quinary: {
     '@dark': {
-      color: 'gray 1 90',
+      color: 'gray=90',
       background: 'gradient-light',
 
       ':hover': {
-        color: 'gray 1 95',
+        color: 'gray=95',
         background: 'gradient-light-active'
       },
 
       ':focus': {
-        color: 'gray 1 120',
+        color: 'gray=120',
         background: 'gradient-light-active'
       },
 
       ':active': {
-        color: 'gray 1 120',
+        color: 'gray=120',
         background: 'gradient-light-active'
       },
 
       '.active': {
-        color: 'gray 1 120',
+        color: 'gray=120',
         background: 'gradient-light-active'
       }
     },
@@ -144,26 +144,26 @@ const UI = {
   field: {
     '@light': {
       color: 'black',
-      background: 'gray .975 +144',
-      borderColor: 'gray .975 +144',
-      '::placeholder': { color: 'gray 1 -68' }
+      background: 'gray.975+144',
+      borderColor: 'gray.975+144',
+      '::placeholder': { color: 'gray-68' }
     },
     '@dark': {
       color: 'white',
-      background: 'gray .975 -52',
-      borderColor: 'gray .975 -52',
-      '::placeholder': { color: 'gray 1 +68' }
+      background: 'gray.975-52',
+      borderColor: 'gray.975-52',
+      '::placeholder': { color: 'gray+68' }
     }
   },
 
   label: {
     '@dark': {
       color: 'white',
-      background: 'gray .92 +8'
+      background: 'gray.92+8'
     },
 
     '@light': {
-      background: 'gray .1'
+      background: 'gray.1'
     },
 
     '.light': {
@@ -173,18 +173,18 @@ const UI = {
 
     '.dark': {
       color: 'white',
-      background: 'black .35'
+      background: 'black.35'
     }
   },
 
   card: {
     '@light': {
-      background: 'gray .975 +150'
+      background: 'gray.975+150'
     },
 
     '@dark': {
       color: 'white',
-      background: 'gray .975 -56'
+      background: 'gray.975-56'
     },
 
     '.child': {
@@ -198,7 +198,7 @@ const UI = {
 
       '.child': {
         color: 'white',
-        background: 'black .35'
+        background: 'black.35'
       }
     }
   },
@@ -206,7 +206,7 @@ const UI = {
   dialog: {
     '@dark': {
       color: 'white',
-      background: 'gray .92',
+      background: 'gray.92',
       '.helper': {
         color: 'white',
         background: 'black'
@@ -214,7 +214,7 @@ const UI = {
     },
     '@light': {
       color: 'currentColor',
-      background: 'gray .1'
+      background: 'gray.1'
     }
   }
 }

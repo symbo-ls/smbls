@@ -197,7 +197,13 @@ export const HTML_ATTRIBUTES = {
   ],
 
   audio: [
-
+    'autoplay',
+    'controls',
+    'crossorigin',
+    'loop',
+    'muted',
+    'preload',
+    'src'
   ],
 
   area: [
@@ -305,6 +311,7 @@ export const HTML_ATTRIBUTES = {
     'loading',
     'marginheight',
     'marginwidth',
+    'mozallowfullscreen',
     'name',
     'referrerpolicy',
     'sandbox',
@@ -312,6 +319,7 @@ export const HTML_ATTRIBUTES = {
     'seamless',
     'src',
     'srcdoc',
+    'webkitallowfullscreen',
     'width'
   ],
 
@@ -605,12 +613,19 @@ export const HTML_ATTRIBUTES = {
   ],
 
   video: [
+    'autoplay',
+    'controls',
+    'crossorigin',
+    'disablepictureinpicture',
+    'disableremoteplayback',
     'height',
+    'loop',
+    'muted',
     'playsinline',
     'poster',
-    'width',
-    'disablepictureinpicture',
-    'disableremoteplayback'
+    'preload',
+    'src',
+    'width'
   ],
 
   svg: [

@@ -28,6 +28,27 @@ import { REGISTRY } from './mixins/index.js'
 import { addMethods } from './methods/set.js'
 import { assignKeyAsClassname } from './mixins/classList.js'
 import { throughInitialExec, throughInitialDefine } from './iterate.js'
+import { filterAttributesByTagName } from 'attrs-in-props'
+
+const EXCLUDED_ATTRS = new Set(['class', 'style'])
+
+const applyPropsAsAttrs = (element) => {
+  const { tag, props } = element
+  if (!tag || !props) return
+
+  const autoAttrs = filterAttributesByTagName(tag, props)
+  const filtered = {}
+  for (const key in autoAttrs) {
+    if (!EXCLUDED_ATTRS.has(key)) filtered[key] = autoAttrs[key]
+  }
+  if (!Object.keys(filtered).length) return
+
+  if (!element.attr) {
+    element.attr = filtered
+  } else if (typeof element.attr === 'object') {
+    element.attr = { ...filtered, ...element.attr }
+  }
+}
 
 const ENV = process.env.NODE_ENV
 
@@ -75,6 +96,8 @@ export const create = (
   initProps(element, parent, options)
   // Re-pickup component-named properties that entered props via childProps/inheritParentProps
   pickupElementFromProps.call(element, element, { cachedKeys: [] })
+  // Populate element.attr from props matching the tag's HTML spec
+  applyPropsAsAttrs(element)
   if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
   }

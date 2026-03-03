@@ -28,7 +28,7 @@ export const ComponentsPage = {
         left: '0',
         top: '-C',
         fontSize: '14px',
-        color: 'white .35',
+        color: 'white.35',
         text: ({ parent }) => parent.key
       }
     },

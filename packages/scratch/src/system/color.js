@@ -5,7 +5,8 @@ import { getActiveConfig } from '../factory.js'
 
 import {
   colorStringToRgbaArray,
-  getRgbTone
+  getRgbTone,
+  parseColorToken
 } from '../utils'
 
 export const getColor = (value, key, config) => {
@@ -18,7 +19,20 @@ export const getColor = (value, key, config) => {
   if (value.slice(0, 2) === '--') return `var(${value})`
 
   if (key && value[key]) value = value[key]
-  const [name, alpha, tone] = isArray(value) ? value : value.split(' ')
+
+  let name, alpha, tone
+  if (isArray(value)) {
+    [name, alpha, tone] = value
+  } else {
+    const parsed = parseColorToken(value)
+    if (!parsed) return value
+    if (parsed.passthrough) return parsed.passthrough
+    if (parsed.cssVar) return `var(${parsed.cssVar})`
+    name = parsed.name
+    alpha = parsed.alpha
+    tone = parsed.tone
+  }
+
   const { COLOR, GRADIENT } = CONFIG
 
   let val = (COLOR[name] || GRADIENT[name])
@@ -60,7 +74,16 @@ export const getMediaColor = (value, globalTheme, config) => {
 
   if (value.slice(0, 2) === '--') return `var(${value})`
 
-  const [name] = isArray(value) ? value : value.split(' ')
+  let name
+  if (isArray(value)) {
+    name = value[0]
+  } else {
+    const parsed = parseColorToken(value)
+    if (!parsed) return value
+    if (parsed.passthrough) return parsed.passthrough
+    if (parsed.cssVar) return `var(${parsed.cssVar})`
+    name = parsed.name
+  }
 
   const { COLOR, GRADIENT } = CONFIG
   const val = COLOR[name] || GRADIENT[name]

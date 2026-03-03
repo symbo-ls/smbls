@@ -13,7 +13,7 @@ export const Component = {
     align: 'center space-between',
     position: 'absolute',
     inset: '0 0 auto 0',
-    background: 'black 0.15',
+    background: 'black.15',
     padding: 'Z A',
     'Link+SquareButton': {
       Icon: { name: 'symbols', fontSize: 'B' },
