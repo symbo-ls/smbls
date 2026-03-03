@@ -21,6 +21,7 @@ import './link-packages.js'
 import './collab.js'
 import './servers.js'
 import './files.js'
+import './github.js'
 
 const args = process.argv
 program.hook('preAction', (_thisCommand, actionCommand) => {
