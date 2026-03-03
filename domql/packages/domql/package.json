@@ -1,0 +1,35 @@
+{
+  "name": "domql",
+  "version": "3.2.3",
+  "license": "MIT",
+  "type": "module",
+  "module": "index.js",
+  "main": "index.js",
+  "exports": {
+    ".": {
+      "kalduna": "./index.js",
+      "default": "./dist/cjs/index.js"
+    }
+  },
+  "source": "index.js",
+  "files": [
+    "*/**.js",
+    "*.js",
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
+  },
+  "dependencies": {
+    "@domql/element": "^3.2.3",
+    "@domql/event": "^3.2.3",
+    "@domql/render": "^3.2.3",
+    "@domql/state": "^3.2.3",
+    "@domql/utils": "^3.2.3"
+  },
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681"
+}
