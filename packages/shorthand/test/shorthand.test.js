@@ -214,7 +214,7 @@ describe('round-trip (encode → decode)', () => {
       align: 'center center',
       padding: 'C1',
       background: 'softBlack',
-      color: 'white 0.65',
+      color: 'white.65',
       borderRadius: 'C2',
       theme: 'primary',
       hidden: false
@@ -245,9 +245,9 @@ describe('edge cases', () => {
   })
 
   test('color with opacity syntax', () => {
-    const original = { background: 'black .001', color: 'white 0.65' }
+    const original = { background: 'black.001', color: 'white.65' }
     const encoded = encode(original)
-    expect(encoded).toBe('bg:black_.001 c:white_0.65')
+    expect(encoded).toBe('bg:black.001 c:white.65')
     expect(decode(encoded)).toEqual(original)
   })
 })
@@ -626,7 +626,7 @@ describe('shorten/expand round-trip', () => {
         show: showOpenFn,
         borderWidth: '1px 0 0 0',
         borderStyle: 'solid',
-        borderColor: 'line .35',
+        borderColor: 'line.35',
         padding: 'Z Z2',
         theme: 'dialog',
         flexFlow: 'y',
@@ -746,12 +746,12 @@ describe('shorten/expand round-trip', () => {
   test('multiple pseudo selectors', () => {
     const original = {
       ':hover': { background: 'deepFir' },
-      ':active': { background: 'deepFir 1 +5' },
+      ':active': { background: 'deepFir+5' },
       '::after': { content: '""', position: 'absolute' }
     }
     const shortened = shorten(original)
     expect(shortened[':hover']).toEqual({ bg: 'deepFir' })
-    expect(shortened[':active']).toEqual({ bg: 'deepFir 1 +5' })
+    expect(shortened[':active']).toEqual({ bg: 'deepFir+5' })
     expect(shortened['::after']).toEqual({ cnt: '""', pos: 'absolute' })
     expect(expand(shortened)).toEqual(original)
   })
@@ -1286,7 +1286,7 @@ describe('stringify/parse round-trip', () => {
         show: showFn,
         borderWidth: '1px 0 0 0',
         borderStyle: 'solid',
-        borderColor: 'line .35',
+        borderColor: 'line.35',
         padding: 'Z Z2',
         theme: 'dialog',
         flexFlow: 'y',
@@ -1353,9 +1353,9 @@ describe('stringifyFurther', () => {
 
   test('inlines strings with commas using escape', () => {
     const result = stringifyFurther({
-      boxShadow: 'black .10, 0px, 2px, 8px, 0px'
+      boxShadow: 'black.1 0px 2px 8px 0px'
     })
-    expect(result.in).toBe('bxsh:black_.10\\,_0px\\,_2px\\,_8px\\,_0px')
+    expect(result.in).toBe('bxsh:black.1_0px_2px_8px_0px')
   })
 
   test('inlines strings with underscores using escape', () => {
@@ -1379,10 +1379,10 @@ describe('stringifyFurther', () => {
   test('collapses selector-only objects to strings', () => {
     const result = stringifyFurther({
       '@mobile': { padding: 'Y2 A' },
-      ':hover': { background: 'gray2 1 +2' }
+      ':hover': { background: 'gray2+2' }
     })
     expect(result['@mobile']).toBe('p:Y2_A')
-    expect(result[':hover']).toBe('bg:gray2_1_+2')
+    expect(result[':hover']).toBe('bg:gray2+2')
   })
 
   test('does NOT collapse children with mixed content', () => {
@@ -1518,10 +1518,10 @@ describe('parseFurther', () => {
 
   test('decodes escaped commas back to literal commas', () => {
     const result = parseFurther({
-      in: 'bxsh:black_.10\\,_0px\\,_2px\\,_8px\\,_0px'
+      in: 'bxsh:black.1_0px_2px_8px_0px'
     })
     expect(result).toEqual({
-      boxShadow: 'black .10, 0px, 2px, 8px, 0px'
+      boxShadow: 'black.1 0px 2px 8px 0px'
     })
   })
 
@@ -1540,11 +1540,11 @@ describe('parseFurther', () => {
   test('decodes collapsed selector strings to objects', () => {
     const result = parseFurther({
       '@mobile': 'p:Y2_A',
-      ':hover': 'bg:gray2_1_+2'
+      ':hover': 'bg:gray2+2'
     })
     expect(result).toEqual({
       '@mobile': { padding: 'Y2 A' },
-      ':hover': { background: 'gray2 1 +2' }
+      ':hover': { background: 'gray2+2' }
     })
   })
 
@@ -1625,7 +1625,7 @@ describe('stringifyFurther/parseFurther round-trip', () => {
 
   test('component with commas in values', () => {
     const original = {
-      boxShadow: 'black .10, 0px, 2px, 8px, 0px',
+      boxShadow: 'black.1 0px 2px 8px 0px',
       transition: 'background 0.15s ease, border-color 0.15s ease'
     }
     expect(parseFurther(stringifyFurther(original))).toEqual(original)
@@ -1663,7 +1663,7 @@ describe('stringifyFurther/parseFurther round-trip', () => {
     const original = {
       '@mobile': { padding: 'Y2 A' },
       '@tablet': { padding: 'Z A1' },
-      ':hover': { background: 'gray2 1 +2' },
+      ':hover': { background: 'gray2+2' },
       '.isActive': { background: 'blue', color: 'white' },
       '!isActive': { background: 'gray' }
     }
@@ -1780,7 +1780,7 @@ describe('stringifyFurther/parseFurther round-trip', () => {
         show: showFn,
         borderWidth: '1px 0 0 0',
         borderStyle: 'solid',
-        borderColor: 'line .35',
+        borderColor: 'line.35',
         padding: 'Z Z2',
         theme: 'dialog',
         flexFlow: 'y',
@@ -1844,10 +1844,10 @@ describe('stringifyFurther/parseFurther round-trip', () => {
       borderStyle: 'solid',
       borderColor: 'line',
       transition: 'background 0.2s ease',
-      boxShadow: 'black .10, 0px, 2px, 8px, 0px',
+      boxShadow: 'black.1 0px 2px 8px 0px',
       '@mobile': { padding: 'Y2 A' },
       '@tablet': { padding: 'Z A1' },
-      ':hover': { background: 'gray2 1 +2' },
+      ':hover': { background: 'gray2+2' },
       LeftSection: {
         extends: 'Flex',
         align: 'center',

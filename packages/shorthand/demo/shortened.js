@@ -435,7 +435,7 @@ export const Breadcrumb = {
     fw: '400',
     td: 'none',
     scrollToTop: false,
-    c: 'white 0.35',
+    c: 'white.35',
     "&[href]": {
       c: 'title',
       "&:hover": {
@@ -2231,7 +2231,7 @@ export const SearchDropdown = {
     shw: (el, s) => s.isOpen,
     bdw: '1px 0 0 0',
     bdst: 'solid',
-    bdc: 'line .35',
+    bdc: 'line.35',
     p: 'Z Z2',
     thm: 'dialog',
     fxf: 'y',
@@ -2326,7 +2326,7 @@ export const SearchDropdown_copy = {
     shw: (el, s) => s.isOpen,
     bdw: '1px 0 0 0',
     bdst: 'solid',
-    bdc: 'line .35',
+    bdc: 'line.35',
     p: 'Z Z2',
     thm: 'dialog',
     fxf: 'y',
@@ -2578,7 +2578,7 @@ export const StoryCard = {
         tx: 'Symbols'
       },
       P: {
-        c: 'white .65'
+        c: 'white.65'
       }
     },
     ProgressStepSet: {
@@ -2622,7 +2622,7 @@ export const TabSet = {
   cex: 'Button',
   p: 'V2+V2',
   rnd: 'D',
-  bg: 'gray .1',
+  bg: 'gray.1',
   w: 'fit-content',
   ch: [
     {
@@ -3506,7 +3506,7 @@ export const Banner = {
         pos: 'absolute',
         tp: '0',
         lft: '0',
-        bg: 'gray15 .75'
+        bg: 'gray15.75'
       }
     }
   },
@@ -3515,7 +3515,7 @@ export const Banner = {
   },
   TabSet: {
     m: 'D2+Y2 - B2+W -',
-    bg: 'black .25',
+    bg: 'black.25',
     "@heightM": {
       m: 'C2 - B2+W -'
     }
@@ -4017,7 +4017,7 @@ export const CaseItem = {
         w: '0',
         op: '0',
         trn: 'width .3s ease, opacity .5s ease',
-        bg: 'white .75',
+        bg: 'white.75',
         pos: 'absolute',
         bot: '0',
         lft: 'B-V'
@@ -4373,7 +4373,7 @@ export const FeatureItem = {
     c: 'title',
     bdc: 'line-highlight',
     "& span": {
-      c: 'highlight .9'
+      c: 'highlight.9'
     }
   },
   H3: {
@@ -4504,7 +4504,7 @@ export const FeatureStory = {
         }
       },
       ":hover": {
-        bg: 'line .35'
+        bg: 'line.35'
       },
       ":first-child": {
         ":before": {
@@ -6587,11 +6587,11 @@ export const LandingFeatures = {
         },
     "@dark": {
       c: 'white',
-      bgc: 'gray4 .9'
+      bgc: 'gray4.9'
     },
     "@light": {
       c: 'black',
-      bgc: 'gray13 .95'
+      bgc: 'gray13.95'
     },
     Video: {
       src: '{{ src }}',
@@ -7478,7 +7478,7 @@ export const Packages = {
       {
         p: '- D - C1',
         bdst: 'solid',
-        bdc: 'blue .25',
+        bdc: 'blue.25',
         bdw: '0 1px 0',
         "@tabletL": {
           bdw: '0 0 0 1px'
@@ -7868,7 +7868,7 @@ export const PriceOptions = {
           }
         },
         Flex: {
-          bd: 'solid, gray .5',
+          bd: 'solid, gray.5',
           bdw: '.5px',
           thm: 'transparent',
           p: 'V',
@@ -8135,7 +8135,7 @@ export const StoryItem = {
       lft: '50%',
       tf: 'translate(-50%, -50%)',
       zi: '3',
-      bg: 'black .8',
+      bg: 'black.8',
       bxs: 'content-box',
       p: 'Z'
     }
@@ -8171,7 +8171,7 @@ export const StoryItem = {
       w: '0',
       op: '0',
       trn: 'width .3s ease, opacity .5s ease',
-      bg: 'white .75',
+      bg: 'white.75',
       pos: 'absolute',
       bot: '0',
       lft: 'B-V'
@@ -8571,7 +8571,7 @@ export const SymbolsEditor = {
       pos: 'relative',
       ov: 'hidden',
       rnd: 'A',
-      bg: 'gray3 .3',
+      bg: 'gray3.3',
       Hgroup: {
         pos: 'absolute',
         zi: '3',

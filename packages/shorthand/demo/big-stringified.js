@@ -28,7 +28,7 @@ export const DashboardPage = {
   },
   TopNav: {
     zi: 100,
-    bxsh: 'black .10, 0px, 2px, 8px, 0px',
+    bxsh: 'black.1 0px 2px 8px 0px',
     "@mobile": {
       in: 'p:Y2_A'
     },
@@ -36,7 +36,7 @@ export const DashboardPage = {
       in: 'p:Z_A1'
     },
     ":hover": {
-      in: 'bg:gray2_1_+2'
+      in: 'bg:gray2+2'
     },
     LeftSection: {
       MenuButton: {
@@ -68,7 +68,7 @@ export const DashboardPage = {
       SearchBar: {
         trn: 'background 0.15s ease, border-color 0.15s ease',
         ":focus-within": {
-          in: 'bg:gray3_0.8 bdc:blue_0.5'
+          in: 'bg:gray3.8 bdc:blue.5'
         },
         Icon: {
           in: 'nm:search bsz:A c:caption op:0.6'
@@ -80,16 +80,16 @@ export const DashboardPage = {
         },
         Shortcut: {
           tx: '⌘K',
-          in: 'ext:Text fs:Y2 p:X_Y2 bg:gray3_0.3 bdr:Y c:caption'
+          in: 'ext:Text fs:Y2 p:X_Y2 bg:gray3.3 bdr:Y c:caption'
         },
-        in: 'ext:Flex w:100% bg:gray3_0.5 bdr:A p:Y2_A aln:center g:Y2 bd:gray3_1px_solid'
+        in: 'ext:Flex w:100% bg:gray3.5 bdr:A p:Y2_A aln:center g:Y2 bd:gray3_1px_solid'
       },
       in: 'ext:Flex fx:1 mxw:G m:-_A2'
     },
     RightSection: {
       NotificationBell: {
         ":hover": {
-          in: 'bg:gray3_0.5'
+          in: 'bg:gray3.5'
         },
         Badge: {
           tx: (el, s) => String(s.root.notifications?.length || 0),
@@ -101,7 +101,7 @@ export const DashboardPage = {
       ThemeToggle: {
         ico: (el, s) => (s.root.theme === 'dark' ? 'sun' : 'moon'),
         ":hover": {
-          in: 'bg:gray3_0.5'
+          in: 'bg:gray3.5'
         },
         "@ck": (e, el, s) => {
                   s.root.update({ theme: s.root.theme === 'dark' ? 'light' : 'dark' })
@@ -110,7 +110,7 @@ export const DashboardPage = {
       },
       UserMenu: {
         ":hover": {
-          in: 'bg:gray3_0.3'
+          in: 'bg:gray3.3'
         },
         Avatar: {
           src: 'user-avatar.png',
@@ -137,7 +137,7 @@ export const DashboardPage = {
       trn: 'transform 0.25s ease, width 0.25s ease',
       zi: 50,
       "@tablet": {
-        bxsh: 'black .20, 4px, 0, 16px, 0',
+        bxsh: 'black.2 4px 0 16px 0',
         in: 'pos:absolute tp:0 lft:0 h:100%'
       },
       hd: (el, s) => {
@@ -154,7 +154,7 @@ export const DashboardPage = {
         cp: {
           trn: 'background 0.15s ease, color 0.15s ease',
           ":hover": {
-            in: 'bg:gray3_0.3 c:title'
+            in: 'bg:gray3.3 c:title'
           },
           in: 'aln:center g:Z p:Z_A bdr:Z cur:pointer c:caption fs:Z2 fw:500'
         },
@@ -167,7 +167,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'overview',
           ".isActive": {
-            in: 'bg:blue_0.15 c:blue'
+            in: 'bg:blue.15 c:blue'
           },
           "@ck": (e, el, s) => s.update({ activeTab: 'overview' })
         },
@@ -180,7 +180,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'analytics',
           ".isActive": {
-            in: 'bg:blue_0.15 c:blue'
+            in: 'bg:blue.15 c:blue'
           },
           "@ck": (e, el, s) => s.update({ activeTab: 'analytics' })
         },
@@ -193,7 +193,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'projects',
           ".isActive": {
-            in: 'bg:blue_0.15 c:blue'
+            in: 'bg:blue.15 c:blue'
           },
           "@ck": (e, el, s) => s.update({ activeTab: 'projects' })
         },
@@ -206,7 +206,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'team',
           ".isActive": {
-            in: 'bg:blue_0.15 c:blue'
+            in: 'bg:blue.15 c:blue'
           },
           "@ck": (e, el, s) => s.update({ activeTab: 'team' })
         },
@@ -219,7 +219,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'messages',
           ".isActive": {
-            in: 'bg:blue_0.15 c:blue'
+            in: 'bg:blue.15 c:blue'
           },
           "@ck": (e, el, s) => s.update({ activeTab: 'messages' })
         },
@@ -232,7 +232,7 @@ export const DashboardPage = {
         },
         ProfileLink: {
           ":hover": {
-            in: 'bg:gray3_0.3 c:title'
+            in: 'bg:gray3.3 c:title'
           },
           Icon: {
             in: 'nm:user bsz:A'
@@ -244,7 +244,7 @@ export const DashboardPage = {
         },
         BillingLink: {
           ":hover": {
-            in: 'bg:gray3_0.3 c:title'
+            in: 'bg:gray3.3 c:title'
           },
           Icon: {
             in: 'nm:creditCard bsz:A'
@@ -256,7 +256,7 @@ export const DashboardPage = {
         },
         SecurityLink: {
           ":hover": {
-            in: 'bg:gray3_0.3 c:title'
+            in: 'bg:gray3.3 c:title'
           },
           Icon: {
             in: 'nm:shield bsz:A'
@@ -317,7 +317,7 @@ export const DashboardPage = {
           ExportButton: {
             tx: 'Export',
             ":hover": {
-              in: 'bg:gray3_0.3'
+              in: 'bg:gray3.3'
             },
             in: 'ext:Button ico:download thm:transparent p:Y2_A fs:Z2 bdr:Z g:Y2'
           },
@@ -342,8 +342,8 @@ export const DashboardPage = {
         cp: {
           trn: 'border-color 0.15s ease, box-shadow 0.15s ease',
           ":hover": {
-            bxsh: 'blue .05, 0px, 0px, 0px, 4px',
-            in: 'bdc:blue_0.3'
+            bxsh: 'blue.05 0px 0px 0px 4px',
+            in: 'bdc:blue.3'
           },
           in: 'fl:y p:A1 bg:gray2 bdr:A g:Z bd:line_1px_solid'
         },
@@ -490,7 +490,7 @@ export const DashboardPage = {
                 tx: '90d',
                 "@ck": (e, el, s) => s.update({ chartPeriod: '90d' })
               },
-              in: 'ext:Flex g:X bg:gray3_0.3 p:X bdr:Y2 cex:Button'
+              in: 'ext:Flex g:X bg:gray3.3 p:X bdr:Y2 cex:Button'
             },
             in: 'ext:Flex aln:center_space-between p:A1 bdw:0_0_1px_0 bdst:solid bdc:line'
           },
@@ -551,7 +551,7 @@ export const DashboardPage = {
           Items: {
             cp: {
               ":hover": {
-                in: 'bg:gray3_0.2'
+                in: 'bg:gray3.2'
               },
               in: 'aln:center_space-between p:Z bdr:Y2'
             },
@@ -645,7 +645,7 @@ export const DashboardPage = {
             },
             SearchInput: {
               ":focus-within": {
-                in: 'bdc:blue_0.5'
+                in: 'bdc:blue.5'
               },
               Icon: {
                 in: 'nm:search bsz:Z2 c:caption'
@@ -654,7 +654,7 @@ export const DashboardPage = {
                 phd: 'Search transactions...',
                 in: 'bg:transparent bd:none ol:none c:title fs:Z w:D'
               },
-              in: 'ext:Flex bg:gray3_0.3 bdr:Z p:Y2_Z2 aln:center g:Y bd:line_1px_solid'
+              in: 'ext:Flex bg:gray3.3 bdr:Z p:Y2_Z2 aln:center g:Y bd:line_1px_solid'
             },
             in: 'ext:Flex aln:center g:Z'
           },
@@ -692,7 +692,7 @@ export const DashboardPage = {
                 tx: 'Actions',
                 in: 'ta:right'
               },
-              in: 'tg:tr bg:gray3_0.15 cex:Text'
+              in: 'tg:tr bg:gray3.15 cex:Text'
             },
             in: 'tg:thead'
           },
@@ -700,7 +700,7 @@ export const DashboardPage = {
             ch: (el, s) => s.root.transactions || [],
             cex: {
               ":hover": {
-                in: 'bg:gray3_0.15'
+                in: 'bg:gray3.15'
               },
               cp: {
                 in: 'tg:td p:Z_A1 bdw:1px_0_0_0 bdst:solid bdc:line va:middle'
@@ -708,7 +708,7 @@ export const DashboardPage = {
               NameCell: {
                 Avatar: {
                   tx: (el, s) => s.name?.charAt(0) || '?',
-                  in: 'bsz:B bdr:Z bg:blue_0.15 c:blue ext:Flex aln:center_center fs:Z fw:600'
+                  in: 'bsz:B bdr:Z bg:blue.15 c:blue ext:Flex aln:center_center fs:Z fw:600'
                 },
                 Text: {
                   tx: (el, s) => s.name,
@@ -731,13 +731,13 @@ export const DashboardPage = {
                   isPending: (el, s) => s.status === 'Pending',
                   isFailed: (el, s) => s.status === 'Failed',
                   ".isCompleted": {
-                    in: 'bg:green_0.15 c:green'
+                    in: 'bg:green.15 c:green'
                   },
                   ".isPending": {
-                    in: 'bg:orange_0.15 c:orange'
+                    in: 'bg:orange.15 c:orange'
                   },
                   ".isFailed": {
-                    in: 'bg:red_0.15 c:red'
+                    in: 'bg:red.15 c:red'
                   },
                   in: 'ext:Text p:X_Y2 bdr:Y fs:Y2 fw:500'
                 },
@@ -750,19 +750,19 @@ export const DashboardPage = {
               ActionsCell: {
                 ViewButton: {
                   ":hover": {
-                    in: 'bg:blue_0.1'
+                    in: 'bg:blue.1'
                   },
                   in: 'ext:IconButton ico:eye thm:transparent p:X bdr:Y'
                 },
                 EditButton: {
                   ":hover": {
-                    in: 'bg:green_0.1'
+                    in: 'bg:green.1'
                   },
                   in: 'ext:IconButton ico:edit thm:transparent p:X bdr:Y'
                 },
                 DeleteButton: {
                   ":hover": {
-                    in: 'bg:red_0.1'
+                    in: 'bg:red.1'
                   },
                   "@ck": (e, el, s) => {
                                       el.call('deleteTransaction', s.id)
@@ -843,7 +843,7 @@ export const DashboardPage = {
         Feed: {
           cp: {
             ":hover": {
-              in: 'bg:gray3_0.15'
+              in: 'bg:gray3.15'
             },
             in: 'g:Z p:Z bdr:Z'
           },
@@ -852,7 +852,7 @@ export const DashboardPage = {
               Icon: {
                 in: 'nm:check bsz:Z2 c:green'
               },
-              in: 'bsz:B bdr:Z bg:green_0.15 ext:Flex aln:center_center fxs:0'
+              in: 'bsz:B bdr:Z bg:green.15 ext:Flex aln:center_center fxs:0'
             },
             Details: {
               Title: {
@@ -875,7 +875,7 @@ export const DashboardPage = {
               Icon: {
                 in: 'nm:userPlus bsz:Z2 c:blue'
               },
-              in: 'bsz:B bdr:Z bg:blue_0.15 ext:Flex aln:center_center fxs:0'
+              in: 'bsz:B bdr:Z bg:blue.15 ext:Flex aln:center_center fxs:0'
             },
             Details: {
               Title: {
@@ -894,7 +894,7 @@ export const DashboardPage = {
               Icon: {
                 in: 'nm:alertTriangle bsz:Z2 c:orange'
               },
-              in: 'bsz:B bdr:Z bg:orange_0.15 ext:Flex aln:center_center fxs:0'
+              in: 'bsz:B bdr:Z bg:orange.15 ext:Flex aln:center_center fxs:0'
             },
             Details: {
               Title: {
@@ -913,7 +913,7 @@ export const DashboardPage = {
               Icon: {
                 in: 'nm:gitBranch bsz:Z2 c:purple'
               },
-              in: 'bsz:B bdr:Z bg:purple_0.15 ext:Flex aln:center_center fxs:0'
+              in: 'bsz:B bdr:Z bg:purple.15 ext:Flex aln:center_center fxs:0'
             },
             Details: {
               Title: {
@@ -932,7 +932,7 @@ export const DashboardPage = {
               Icon: {
                 in: 'nm:xCircle bsz:Z2 c:red'
               },
-              in: 'bsz:B bdr:Z bg:red_0.15 ext:Flex aln:center_center fxs:0'
+              in: 'bsz:B bdr:Z bg:red.15 ext:Flex aln:center_center fxs:0'
             },
             Details: {
               Title: {
@@ -965,7 +965,7 @@ export const DashboardPage = {
     trn: 'opacity 0.2s ease, visibility 0.2s ease',
     "@ck": (e, el, s) => s.root.update({ modalOpen: false }),
     ModalContent: {
-      bxsh: 'black .30, 0px, 16px, 48px, 0px',
+      bxsh: 'black.3 0px 16px 48px 0px',
       "@ck": (e) => e.stopPropagation(),
       ModalHeader: {
         Title: {
@@ -974,7 +974,7 @@ export const DashboardPage = {
         },
         CloseButton: {
           ":hover": {
-            in: 'bg:gray3_0.5'
+            in: 'bg:gray3.5'
           },
           "@ck": (e, el, s) => s.root.update({ modalOpen: false }),
           in: 'ext:IconButton ico:x thm:transparent p:Y bdr:Y2'
@@ -990,9 +990,9 @@ export const DashboardPage = {
           Input: {
             phd: 'Enter name...',
             ":focus": {
-              in: 'bdc:blue_0.5'
+              in: 'bdc:blue.5'
             },
-            in: 'p:Z_A bg:gray3_0.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none'
+            in: 'p:Z_A bg:gray3.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none'
           },
           in: 'ext:Flex fl:y g:Y'
         },
@@ -1004,9 +1004,9 @@ export const DashboardPage = {
           Input: {
             phd: 'Enter email...',
             ":focus": {
-              in: 'bdc:blue_0.5'
+              in: 'bdc:blue.5'
             },
-            in: 'p:Z_A bg:gray3_0.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none typ:email'
+            in: 'p:Z_A bg:gray3.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none typ:email'
           },
           in: 'ext:Flex fl:y g:Y'
         },
@@ -1030,7 +1030,7 @@ export const DashboardPage = {
                 in: 'tg:option val:inactive'
               }
             ],
-            in: 'tg:select p:Z_A bg:gray3_0.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none cur:pointer'
+            in: 'tg:select p:Z_A bg:gray3.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none cur:pointer'
           },
           in: 'ext:Flex fl:y g:Y'
         },
@@ -1042,9 +1042,9 @@ export const DashboardPage = {
           Textarea: {
             phd: 'Add notes...',
             ":focus": {
-              in: 'bdc:blue_0.5'
+              in: 'bdc:blue.5'
             },
-            in: 'tg:textarea p:Z_A bg:gray3_0.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none mnh:C2 rsz:vertical'
+            in: 'tg:textarea p:Z_A bg:gray3.3 bd:line_1px_solid bdr:Z c:title fs:Z2 ol:none mnh:C2 rsz:vertical'
           },
           in: 'ext:Flex fl:y g:Y'
         },
@@ -1068,7 +1068,7 @@ export const DashboardPage = {
       },
       in: 'ext:Flex fl:y bg:gray2 bdr:A w:G2 mxw:90vw mxh:80vh ov:auto bd:line_1px_solid'
     },
-    in: 'ext:Flex pos:fixed ist:0 bg:black_0.6 aln:center_center bdf:blur(4px)'
+    in: 'ext:Flex pos:fixed ist:0 bg:black.6 aln:center_center bdf:blur(4px)'
   },
   Footer: {
     "@mobile": {

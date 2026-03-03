@@ -50,7 +50,7 @@ export const DashboardPage = {
     borderStyle: 'solid',
     borderColor: 'line',
     transition: 'background 0.2s ease',
-    boxShadow: 'black .10, 0px, 2px, 8px, 0px',
+    boxShadow: 'black.1 0px 2px 8px 0px',
     "@mobile": {
       padding: 'Y2 A'
     },
@@ -58,7 +58,7 @@ export const DashboardPage = {
       padding: 'Z A1'
     },
     ":hover": {
-      background: 'gray2 1 +2'
+      background: 'gray2+2'
     },
     LeftSection: {
       extends: 'Flex',
@@ -109,7 +109,7 @@ export const DashboardPage = {
       SearchBar: {
         extends: 'Flex',
         width: '100%',
-        background: 'gray3 0.5',
+        background: 'gray3.5',
         borderRadius: 'A',
         padding: 'Y2 A',
         align: 'center',
@@ -117,8 +117,8 @@ export const DashboardPage = {
         transition: 'background 0.15s ease, border-color 0.15s ease',
         border: 'gray3 1px solid',
         ":focus-within": {
-          background: 'gray3 0.8',
-          borderColor: 'blue 0.5'
+          background: 'gray3.8',
+          borderColor: 'blue.5'
         },
         Icon: {
           name: 'search',
@@ -141,7 +141,7 @@ export const DashboardPage = {
           text: '⌘K',
           fontSize: 'Y2',
           padding: 'X Y2',
-          background: 'gray3 0.3',
+          background: 'gray3.3',
           borderRadius: 'Y',
           color: 'caption'
         }
@@ -159,7 +159,7 @@ export const DashboardPage = {
         padding: 'Y2',
         borderRadius: 'Z',
         ":hover": {
-          background: 'gray3 0.5'
+          background: 'gray3.5'
         },
         Badge: {
           extends: 'Text',
@@ -184,7 +184,7 @@ export const DashboardPage = {
         padding: 'Y2',
         borderRadius: 'Z',
         ":hover": {
-          background: 'gray3 0.5'
+          background: 'gray3.5'
         },
         onClick: (e, el, s) => {
                   s.root.update({ theme: s.root.theme === 'dark' ? 'light' : 'dark' })
@@ -198,7 +198,7 @@ export const DashboardPage = {
         padding: 'X Y2',
         borderRadius: 'Z',
         ":hover": {
-          background: 'gray3 0.3'
+          background: 'gray3.3'
         },
         Avatar: {
           src: 'user-avatar.png',
@@ -246,7 +246,7 @@ export const DashboardPage = {
         top: '0',
         left: '0',
         height: '100%',
-        boxShadow: 'black .20, 4px, 0, 16px, 0'
+        boxShadow: 'black.2 4px 0 16px 0'
       },
       hide: (el, s) => {
               if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -281,7 +281,7 @@ export const DashboardPage = {
           fontWeight: '500',
           transition: 'background 0.15s ease, color 0.15s ease',
           ":hover": {
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             color: 'title'
           }
         },
@@ -295,7 +295,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'overview',
           ".isActive": {
-            background: 'blue 0.15',
+            background: 'blue.15',
             color: 'blue'
           },
           onClick: (e, el, s) => s.update({ activeTab: 'overview' })
@@ -310,7 +310,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'analytics',
           ".isActive": {
-            background: 'blue 0.15',
+            background: 'blue.15',
             color: 'blue'
           },
           onClick: (e, el, s) => s.update({ activeTab: 'analytics' })
@@ -325,7 +325,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'projects',
           ".isActive": {
-            background: 'blue 0.15',
+            background: 'blue.15',
             color: 'blue'
           },
           onClick: (e, el, s) => s.update({ activeTab: 'projects' })
@@ -340,7 +340,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'team',
           ".isActive": {
-            background: 'blue 0.15',
+            background: 'blue.15',
             color: 'blue'
           },
           onClick: (e, el, s) => s.update({ activeTab: 'team' })
@@ -355,7 +355,7 @@ export const DashboardPage = {
           },
           isActive: (el, s) => s.activeTab === 'messages',
           ".isActive": {
-            background: 'blue 0.15',
+            background: 'blue.15',
             color: 'blue'
           },
           onClick: (e, el, s) => s.update({ activeTab: 'messages' })
@@ -389,7 +389,7 @@ export const DashboardPage = {
           fontWeight: '500',
           transition: 'background 0.15s ease',
           ":hover": {
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             color: 'title'
           },
           Icon: {
@@ -412,7 +412,7 @@ export const DashboardPage = {
           fontWeight: '500',
           transition: 'background 0.15s ease',
           ":hover": {
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             color: 'title'
           },
           Icon: {
@@ -435,7 +435,7 @@ export const DashboardPage = {
           fontWeight: '500',
           transition: 'background 0.15s ease',
           ":hover": {
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             color: 'title'
           },
           Icon: {
@@ -531,7 +531,7 @@ export const DashboardPage = {
             borderRadius: 'Z',
             gap: 'Y2',
             ":hover": {
-              background: 'gray3 0.3'
+              background: 'gray3.3'
             }
           },
           CreateButton: {
@@ -569,8 +569,8 @@ export const DashboardPage = {
           border: 'line 1px solid',
           transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
           ":hover": {
-            borderColor: 'blue 0.3',
-            boxShadow: 'blue .05, 0px, 0px, 0px, 4px'
+            borderColor: 'blue.3',
+            boxShadow: 'blue.05 0px 0px 0px 4px'
           }
         },
         RevenueCard: {
@@ -766,7 +766,7 @@ export const DashboardPage = {
             PeriodTabs: {
               extends: 'Flex',
               gap: 'X',
-              background: 'gray3 0.3',
+              background: 'gray3.3',
               padding: 'X',
               borderRadius: 'Y2',
               childExtends: 'Button',
@@ -877,7 +877,7 @@ export const DashboardPage = {
               padding: 'Z',
               borderRadius: 'Y2',
               ":hover": {
-                background: 'gray3 0.2'
+                background: 'gray3.2'
               }
             },
             DirectItem: {
@@ -1024,14 +1024,14 @@ export const DashboardPage = {
             },
             SearchInput: {
               extends: 'Flex',
-              background: 'gray3 0.3',
+              background: 'gray3.3',
               borderRadius: 'Z',
               padding: 'Y2 Z2',
               align: 'center',
               gap: 'Y',
               border: 'line 1px solid',
               ":focus-within": {
-                borderColor: 'blue 0.5'
+                borderColor: 'blue.5'
               },
               Icon: {
                 name: 'search',
@@ -1063,7 +1063,7 @@ export const DashboardPage = {
             tag: 'thead',
             Row: {
               tag: 'tr',
-              background: 'gray3 0.15',
+              background: 'gray3.15',
               childExtends: 'Text',
               childProps: {
                 tag: 'th',
@@ -1109,7 +1109,7 @@ export const DashboardPage = {
               tag: 'tr',
               transition: 'background 0.1s ease',
               ":hover": {
-                background: 'gray3 0.15'
+                background: 'gray3.15'
               },
               childProps: {
                 tag: 'td',
@@ -1131,7 +1131,7 @@ export const DashboardPage = {
                 Avatar: {
                   boxSize: 'B',
                   borderRadius: 'Z',
-                  background: 'blue 0.15',
+                  background: 'blue.15',
                   color: 'blue',
                   extends: 'Flex',
                   align: 'center center',
@@ -1171,15 +1171,15 @@ export const DashboardPage = {
                   isPending: (el, s) => s.status === 'Pending',
                   isFailed: (el, s) => s.status === 'Failed',
                   ".isCompleted": {
-                    background: 'green 0.15',
+                    background: 'green.15',
                     color: 'green'
                   },
                   ".isPending": {
-                    background: 'orange 0.15',
+                    background: 'orange.15',
                     color: 'orange'
                   },
                   ".isFailed": {
-                    background: 'red 0.15',
+                    background: 'red.15',
                     color: 'red'
                   }
                 }
@@ -1206,7 +1206,7 @@ export const DashboardPage = {
                   padding: 'X',
                   borderRadius: 'Y',
                   ":hover": {
-                    background: 'blue 0.1'
+                    background: 'blue.1'
                   }
                 },
                 EditButton: {
@@ -1216,7 +1216,7 @@ export const DashboardPage = {
                   padding: 'X',
                   borderRadius: 'Y',
                   ":hover": {
-                    background: 'green 0.1'
+                    background: 'green.1'
                   }
                 },
                 DeleteButton: {
@@ -1226,7 +1226,7 @@ export const DashboardPage = {
                   padding: 'X',
                   borderRadius: 'Y',
                   ":hover": {
-                    background: 'red 0.1'
+                    background: 'red.1'
                   },
                   onClick: (e, el, s) => {
                                       el.call('deleteTransaction', s.id)
@@ -1349,14 +1349,14 @@ export const DashboardPage = {
             padding: 'Z',
             borderRadius: 'Z',
             ":hover": {
-              background: 'gray3 0.15'
+              background: 'gray3.15'
             }
           },
           Activity_1: {
             Indicator: {
               boxSize: 'B',
               borderRadius: 'Z',
-              background: 'green 0.15',
+              background: 'green.15',
               extends: 'Flex',
               align: 'center center',
               flexShrink: '0',
@@ -1394,7 +1394,7 @@ export const DashboardPage = {
             Indicator: {
               boxSize: 'B',
               borderRadius: 'Z',
-              background: 'blue 0.15',
+              background: 'blue.15',
               extends: 'Flex',
               align: 'center center',
               flexShrink: '0',
@@ -1425,7 +1425,7 @@ export const DashboardPage = {
             Indicator: {
               boxSize: 'B',
               borderRadius: 'Z',
-              background: 'orange 0.15',
+              background: 'orange.15',
               extends: 'Flex',
               align: 'center center',
               flexShrink: '0',
@@ -1456,7 +1456,7 @@ export const DashboardPage = {
             Indicator: {
               boxSize: 'B',
               borderRadius: 'Z',
-              background: 'purple 0.15',
+              background: 'purple.15',
               extends: 'Flex',
               align: 'center center',
               flexShrink: '0',
@@ -1487,7 +1487,7 @@ export const DashboardPage = {
             Indicator: {
               boxSize: 'B',
               borderRadius: 'Z',
-              background: 'red 0.15',
+              background: 'red.15',
               extends: 'Flex',
               align: 'center center',
               flexShrink: '0',
@@ -1529,7 +1529,7 @@ export const DashboardPage = {
     extends: 'Flex',
     position: 'fixed',
     inset: '0',
-    background: 'black 0.6',
+    background: 'black.6',
     zIndex: 200,
     align: 'center center',
     opacity: (el, s) => (s.root.modalOpen ? '1' : '0'),
@@ -1547,7 +1547,7 @@ export const DashboardPage = {
       maxHeight: '80vh',
       overflow: 'auto',
       border: 'line 1px solid',
-      boxShadow: 'black .30, 0px, 16px, 48px, 0px',
+      boxShadow: 'black.3 0px 16px 48px 0px',
       onClick: (e) => e.stopPropagation(),
       ModalHeader: {
         extends: 'Flex',
@@ -1569,7 +1569,7 @@ export const DashboardPage = {
           padding: 'Y',
           borderRadius: 'Y2',
           ":hover": {
-            background: 'gray3 0.5'
+            background: 'gray3.5'
           },
           onClick: (e, el, s) => s.root.update({ modalOpen: false })
         }
@@ -1592,7 +1592,7 @@ export const DashboardPage = {
           },
           Input: {
             padding: 'Z A',
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             border: 'line 1px solid',
             borderRadius: 'Z',
             color: 'title',
@@ -1600,7 +1600,7 @@ export const DashboardPage = {
             outline: 'none',
             placeholder: 'Enter name...',
             ":focus": {
-              borderColor: 'blue 0.5'
+              borderColor: 'blue.5'
             }
           }
         },
@@ -1617,7 +1617,7 @@ export const DashboardPage = {
           },
           Input: {
             padding: 'Z A',
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             border: 'line 1px solid',
             borderRadius: 'Z',
             color: 'title',
@@ -1626,7 +1626,7 @@ export const DashboardPage = {
             type: 'email',
             placeholder: 'Enter email...',
             ":focus": {
-              borderColor: 'blue 0.5'
+              borderColor: 'blue.5'
             }
           }
         },
@@ -1644,7 +1644,7 @@ export const DashboardPage = {
           Select: {
             tag: 'select',
             padding: 'Z A',
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             border: 'line 1px solid',
             borderRadius: 'Z',
             color: 'title',
@@ -1684,7 +1684,7 @@ export const DashboardPage = {
           Textarea: {
             tag: 'textarea',
             padding: 'Z A',
-            background: 'gray3 0.3',
+            background: 'gray3.3',
             border: 'line 1px solid',
             borderRadius: 'Z',
             color: 'title',
@@ -1694,7 +1694,7 @@ export const DashboardPage = {
             resize: 'vertical',
             placeholder: 'Add notes...',
             ":focus": {
-              borderColor: 'blue 0.5'
+              borderColor: 'blue.5'
             }
           }
         }

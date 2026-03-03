@@ -435,7 +435,7 @@ export const Breadcrumb = {
     fontWeight: '400',
     textDecoration: 'none',
     scrollToTop: false,
-    color: 'white 0.35',
+    color: 'white.35',
     "&[href]": {
       color: 'title',
       "&:hover": {
@@ -2231,7 +2231,7 @@ export const SearchDropdown = {
     show: (el, s) => s.isOpen,
     borderWidth: '1px 0 0 0',
     borderStyle: 'solid',
-    borderColor: 'line .35',
+    borderColor: 'line.35',
     padding: 'Z Z2',
     theme: 'dialog',
     flexFlow: 'y',
@@ -2326,7 +2326,7 @@ export const SearchDropdown_copy = {
     show: (el, s) => s.isOpen,
     borderWidth: '1px 0 0 0',
     borderStyle: 'solid',
-    borderColor: 'line .35',
+    borderColor: 'line.35',
     padding: 'Z Z2',
     theme: 'dialog',
     flexFlow: 'y',
@@ -2578,7 +2578,7 @@ export const StoryCard = {
         text: 'Symbols'
       },
       P: {
-        color: 'white .65'
+        color: 'white.65'
       }
     },
     ProgressStepSet: {
@@ -2622,7 +2622,7 @@ export const TabSet = {
   childExtends: 'Button',
   padding: 'V2+V2',
   round: 'D',
-  background: 'gray .1',
+  background: 'gray.1',
   width: 'fit-content',
   children: [
     {
@@ -3506,7 +3506,7 @@ export const Banner = {
         position: 'absolute',
         top: '0',
         left: '0',
-        background: 'gray15 .75'
+        background: 'gray15.75'
       }
     }
   },
@@ -3515,7 +3515,7 @@ export const Banner = {
   },
   TabSet: {
     margin: 'D2+Y2 - B2+W -',
-    background: 'black .25',
+    background: 'black.25',
     "@heightM": {
       margin: 'C2 - B2+W -'
     }
@@ -4017,7 +4017,7 @@ export const CaseItem = {
         width: '0',
         opacity: '0',
         transition: 'width .3s ease, opacity .5s ease',
-        background: 'white .75',
+        background: 'white.75',
         position: 'absolute',
         bottom: '0',
         left: 'B-V'
@@ -4373,7 +4373,7 @@ export const FeatureItem = {
     color: 'title',
     borderColor: 'line-highlight',
     "& span": {
-      color: 'highlight .9'
+      color: 'highlight.9'
     }
   },
   H3: {
@@ -4504,7 +4504,7 @@ export const FeatureStory = {
         }
       },
       ":hover": {
-        background: 'line .35'
+        background: 'line.35'
       },
       ":first-child": {
         ":before": {
@@ -6587,11 +6587,11 @@ export const LandingFeatures = {
         },
     "@dark": {
       color: 'white',
-      backgroundColor: 'gray4 .9'
+      backgroundColor: 'gray4.9'
     },
     "@light": {
       color: 'black',
-      backgroundColor: 'gray13 .95'
+      backgroundColor: 'gray13.95'
     },
     Video: {
       src: '{{ src }}',
@@ -7478,7 +7478,7 @@ export const Packages = {
       {
         padding: '- D - C1',
         borderStyle: 'solid',
-        borderColor: 'blue .25',
+        borderColor: 'blue.25',
         borderWidth: '0 1px 0',
         "@tabletL": {
           borderWidth: '0 0 0 1px'
@@ -7868,7 +7868,7 @@ export const PriceOptions = {
           }
         },
         Flex: {
-          border: 'solid, gray .5',
+          border: 'solid, gray.5',
           borderWidth: '.5px',
           theme: 'transparent',
           padding: 'V',
@@ -8135,7 +8135,7 @@ export const StoryItem = {
       left: '50%',
       transform: 'translate(-50%, -50%)',
       zIndex: '3',
-      background: 'black .8',
+      background: 'black.8',
       boxSizing: 'content-box',
       padding: 'Z'
     }
@@ -8171,7 +8171,7 @@ export const StoryItem = {
       width: '0',
       opacity: '0',
       transition: 'width .3s ease, opacity .5s ease',
-      background: 'white .75',
+      background: 'white.75',
       position: 'absolute',
       bottom: '0',
       left: 'B-V'
@@ -8571,7 +8571,7 @@ export const SymbolsEditor = {
       position: 'relative',
       overflow: 'hidden',
       round: 'A',
-      background: 'gray3 .3',
+      background: 'gray3.3',
       Hgroup: {
         position: 'absolute',
         zIndex: '3',
