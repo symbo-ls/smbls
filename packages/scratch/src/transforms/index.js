@@ -169,7 +169,7 @@ export const splitTransition = (transition) => {
 export function transformSize(propertyName, val, props = {}, opts = {}) {
   let value = exec.call(this, val || props[propertyName])
 
-  if (isUndefined(value) && isNull(value)) return
+  if (isUndefined(value) || isNull(value)) return
 
   let fnPrefix
   if (isString(value)) {

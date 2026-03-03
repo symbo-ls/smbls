@@ -34,7 +34,6 @@ export const Button = {
   fontFamily: 'inherit',
   round: 'C2',
 
-  type: ({ props }) => props.type,
   disabled: (el) => el.call('exec', el.props.disabled)
 }
 

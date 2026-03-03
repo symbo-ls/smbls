@@ -1,0 +1,62 @@
+{
+  "name": "domql-intellisense",
+  "displayName": "DOMQL IntelliSense",
+  "description": "IntelliSense for DOMQL / Symbols.app syntax — properties, events, components, element methods, state and more",
+  "version": "0.1.0",
+  "publisher": "symbo-ls",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/symbo-ls/smbls"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other", "Programming Languages"],
+  "keywords": ["domql", "smbls", "symbols", "intellisense", "autocomplete"],
+  "icon": "icon.png",
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "domqlIntelliSense.toggle",
+        "title": "Toggle DOMQL IntelliSense",
+        "category": "DOMQL"
+      }
+    ],
+    "configuration": {
+      "title": "DOMQL IntelliSense",
+      "properties": {
+        "domqlIntelliSense.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable DOMQL IntelliSense"
+        },
+        "domqlIntelliSense.detectByImports": {
+          "type": "boolean",
+          "default": true,
+          "description": "Activate only in files importing from domql/smbls packages. When false, activates in all JS/TS files."
+        },
+        "domqlIntelliSense.completeCssProps": {
+          "type": "boolean",
+          "default": true,
+          "description": "Suggest CSS properties as top-level element keys (they get promoted to props automatically)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "compile": "npm run esbuild-base",
+    "watch": "npm run esbuild-base -- --watch",
+    "package": "vsce package",
+    "install-vsce": "npm install -g @vscode/vsce"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.0"
+  }
+}

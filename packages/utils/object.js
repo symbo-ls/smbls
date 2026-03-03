@@ -20,6 +20,7 @@ const ENV = process.env.NODE_ENV
 
 export const exec = (param, element, state, context) => {
   if (isFunction(param)) {
+    if (!element) return
     const result = param.call(
       element,
       element,

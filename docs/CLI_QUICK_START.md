@@ -198,3 +198,8 @@ npm start
 - **Commit `symbols.json`**: it’s the minimal project identity/config used by the CLI.
 - **Decide on committing `.symbols/config.json`**: it contains the project link (`projectId`, `projectKey`, `apiBaseUrl`, `branch`). Some teams commit it for consistency; others treat it as local-only.
 
+---
+
+## Symbols Feedback Conventions
+
+Supplemental conventions are merged into [CLAUDE.md](CLAUDE.md).

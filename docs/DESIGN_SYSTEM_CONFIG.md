@@ -171,37 +171,37 @@ Define a single config object with top-level keys. Scratch merges it into defaul
 ```js
 const designSystemConfig = {
   color: {
-    primary: '#1f6feb',
-    text: ['#0b0b0b', '#f5f5f5']
+    primary: "#1f6feb",
+    text: ["#0b0b0b", "#f5f5f5"],
   },
   theme: {
-    document: { color: 'text', background: 'primary 0.02' },
-    button: { color: 'text', background: 'primary' }
+    document: { color: "text", background: "primary 0.02" },
+    button: { color: "text", background: "primary" },
   },
   typography: { base: 16, ratio: 1.25 },
   spacing: { base: 16, ratio: 1.618 },
   timing: { base: 150, ratio: 1.4 },
   font: {
     inter: {
-      400: { url: 'https://example.com/Inter-Regular.woff2', fontWeight: 400 },
-      700: { url: 'https://example.com/Inter-Bold.woff2', fontWeight: 700 }
-    }
+      400: { url: "https://example.com/Inter-Regular.woff2", fontWeight: 400 },
+      700: { url: "https://example.com/Inter-Bold.woff2", fontWeight: 700 },
+    },
   },
   font_family: {
-    primary: { value: ['Inter'], type: 'sans', isDefault: true }
+    primary: { value: ["Inter"], type: "sans", isDefault: true },
   },
-  icons: { search: '<svg>...</svg>' },
-  svg: { logo: '<svg>...</svg>' },
-  shadow: { soft: 'black 0.15, 0px 10px 30px 0px' },
+  icons: { search: "<svg>...</svg>" },
+  svg: { logo: "<svg>...</svg>" },
+  shadow: { soft: "black 0.15, 0px 10px 30px 0px" },
   media: {
-    mobile: '(max-width: 768px)',
-    desktop: '(min-width: 1024px)'
+    mobile: "(max-width: 768px)",
+    desktop: "(min-width: 1024px)",
   },
-  grid: { columns: 12, gutter: 'A' },
+  grid: { columns: 12, gutter: "A" },
   reset: {},
-  unit: { default: 'em' },
-  animation: {}
-}
+  unit: { default: "em" },
+  animation: {},
+};
 ```
 
 ### Config keys
@@ -468,9 +468,9 @@ Example:
 const designSystemConfig = {
   useVariable: true,
   useReset: true,
-  globalTheme: 'dark',
-  color: { primary: '#1f6feb' }
-}
+  globalTheme: "dark",
+  color: { primary: "#1f6feb" },
+};
 ```
 
 ## Common mistakes
@@ -479,3 +479,9 @@ const designSystemConfig = {
 - Use `font_family` instead of `fontFamily`.
 - Define `typography` and `spacing` if you plan to use tokens like `A`, `B2`, or `C+Z`.
 - When `useVariable` is on, consumers should expect `var(--...)` output.
+
+---
+
+## Symbols Feedback Conventions
+
+Supplemental conventions are merged into [CLAUDE.md](CLAUDE.md).

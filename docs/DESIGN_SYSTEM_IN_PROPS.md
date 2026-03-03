@@ -56,13 +56,13 @@ Examples:
 
 ```js
 Text: {
-  color: 'primary'
+  color: "primary";
 }
 Box: {
-  background: 'primary 0.2'
+  background: "primary 0.2";
 }
 Box: {
-  background: 'primary +6'
+  background: "primary +6";
 }
 ```
 
@@ -72,10 +72,10 @@ Use `theme` to apply a theme object from the design system.
 
 ```js
 Button: {
-  theme: 'primary'
+  theme: "primary";
 }
 Button: {
-  theme: 'primary .active'
+  theme: "primary .active";
 }
 ```
 
@@ -87,7 +87,7 @@ Use `shadow` with named values from the design system:
 
 ```js
 Box: {
-  shadow: 'soft'
+  shadow: "soft";
 }
 ```
 
@@ -97,7 +97,7 @@ Use timing tokens in transitions and animations:
 
 ```js
 Box: {
-  transition: 'opacity, defaultBezier, B'
+  transition: "opacity, defaultBezier, B";
 }
 ```
 
@@ -128,3 +128,9 @@ Button: { icon: 'search', text: 'Search' }
 - Always keep props flat (no `props` wrapper).
 - Use `onX` for events, not `on` objects.
 - Use token strings for sizing and colors instead of hardcoded values whenever possible.
+
+---
+
+## Symbols Feedback Conventions
+
+Supplemental conventions are merged into [CLAUDE.md](CLAUDE.md).
