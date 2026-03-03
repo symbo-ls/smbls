@@ -4,10 +4,7 @@
   "main": "./dist/cjs/index.js",
   "license": "MIT",
   "dependencies": {
-    "@domql/utils": "3.2.3"
-  },
-  "peerDependencies": {
-    "@emotion/css": "*"
+    "@symbo.ls/emotion": "3.2.3"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "source": "index.js",

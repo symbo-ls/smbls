@@ -34,10 +34,8 @@ export const Button = {
   fontFamily: 'inherit',
   round: 'C2',
 
-  attr: {
-    type: ({ props }) => props.type,
-    disabled: (el) => el.call('exec', el.props.disabled)
-  }
+  type: ({ props }) => props.type,
+  disabled: (el) => el.call('exec', el.props.disabled)
 }
 
 export const SquareButton = {

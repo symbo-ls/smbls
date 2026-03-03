@@ -13,7 +13,7 @@ const DEFAULT_ROUTING_OPTIONS = {
 export const initRouter = (element, context) => {
   if (context.router === false) return
   else if (context.router === true) context.router = DEFAULT_ROUTING_OPTIONS
-  else merge(context.router || {}, DEFAULT_ROUTING_OPTIONS)
+  else context.router = merge(context.router || {}, DEFAULT_ROUTING_OPTIONS)
 
   const routerOptions = context.router
 

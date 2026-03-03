@@ -1,12 +1,21 @@
 'use strict'
 
-import { transformDOMQLEmotion } from '@domql/emotion'
-import { emotion as defaultEmotion } from '../emotion.js'
-import { init } from '../init.js'
+import { transformDOMQLEmotion, emotion as defaultEmotion } from './index.js'
+import { init } from 'smbls'
 import { deepClone, deepMerge } from '@domql/utils'
 
-import { DESIGN_SYSTEM_OPTIONS } from './options.js'
 import { DEFAULT_CONFIG } from '@symbo.ls/default-config'
+
+const DESIGN_SYSTEM_OPTIONS = {
+  useReset: true,
+  useVariable: true,
+  useIconSprite: true,
+  useSvgSprite: true,
+  useDocumentTheme: true,
+  useDefaultIcons: true,
+  useFontImport: true,
+  useDefaultConfig: true
+}
 
 export const initEmotion = (key, options = {}) => {
   const doc = options.parent || options.document || document

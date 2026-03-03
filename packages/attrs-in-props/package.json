@@ -35,5 +35,8 @@
     "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "prepublish": "npm run build && npm run copy:package:cjs"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0"
   }
 }

@@ -5,7 +5,7 @@ import { deepMerge, isObject, isUndefined } from '@domql/utils'
 import * as utils from './utilImports.js'
 
 import { onpopstateRouter } from './router.js'
-import { fetchAsync, fetchSync } from './ferchOnCreate.js'
+import { fetchAsync, fetchSync } from './fetchOnCreate.js'
 
 import DEFAULT_CREATE_OPTIONS from './options.js'
 import DYNAMIC_JSON from '../dynamic.json' with { type: 'json' }
@@ -102,3 +102,5 @@ export const createSkeleton = (
 }
 
 export default create
+
+export * from './init.js'

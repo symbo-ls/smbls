@@ -24,11 +24,10 @@
     "src"
   ],
   "dependencies": {
-    "@domql/emotion": "3.2.3",
+    "@symbo.ls/emotion": "3.2.3",
     "@domql/report": "3.2.3",
     "@domql/router": "3.2.3",
     "@domql/utils": "3.2.3",
-    "@emotion/css": "^11.10.0",
     "@symbo.ls/cli": "3.2.3",
     "@symbo.ls/default-config": "3.2.3",
     "@symbo.ls/fetch": "3.2.3",

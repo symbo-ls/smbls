@@ -28,7 +28,7 @@ export const Link = {
 }
 
 export const A = {
-  extend: 'Link'
+  extends: 'Link'
 }
 
 export const RouterLink = {
