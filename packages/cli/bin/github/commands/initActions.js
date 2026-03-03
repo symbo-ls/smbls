@@ -45,7 +45,8 @@ jobs:
 
       - name: Debug (sync endpoint)
         if: \${{ failure() }}
-        run: echo "Sync endpoint was: ${syncUrl} (repo=${repository})"
+        run: |
+          echo "Sync endpoint was: ${syncUrl} (repo=${repository})"
 `
 }
 
