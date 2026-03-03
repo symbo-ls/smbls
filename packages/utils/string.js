@@ -35,13 +35,13 @@ const getNestedValue = (obj, path) => {
   }, obj)
 }
 
-export function replaceLiteralsWithObjectFields (str, state = {}, options = {}) {
+export function replaceLiteralsWithObjectFields (str, state, options = {}) {
   const { bracketsLength = 2 } = options
   const bracketPattern = bracketsLength === 3 ? '{{{' : '{{'
   if (!str.includes(bracketPattern)) return str
 
   const reg = brackRegex[bracketsLength]
-  const obj = state || {}
+  const obj = state || this.state || {}
 
   return str.replace(reg, (_, parentPath, variable) => {
     if (parentPath) {

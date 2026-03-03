@@ -219,7 +219,32 @@ export const update = function (params = {}, opts) {
     // Update existing content element if it's a live DOMQL element
     const contentKey = ref.contentElementKey || 'content'
     const existingContent = element[contentKey]
-    if (existingContent && existingContent.__ref && isFunction(existingContent.update)) {
+
+    // Re-evaluate children if the element has a children property
+    const childrenProp = params.children || element.children
+    if (childrenProp) {
+      const content = setChildren(childrenProp, element, opts)
+      if (content && !ref.__noChildrenDifference) {
+        setContent(content, element, options)
+      } else if (existingContent && existingContent.__ref && isFunction(existingContent.update)) {
+        const lazyLoad = element.props?.lazyLoad || options.lazyLoad
+        const contentUpdateCall = () =>
+          update.call(existingContent, params[contentKey], {
+            ...options,
+            currentSnapshot: snapshotOnCallee,
+            calleeElement
+          })
+
+        if (lazyLoad) {
+          window.requestAnimationFrame(() => {
+            contentUpdateCall()
+            if (!options.preventUpdateListener) {
+              triggerEventOn('lazyLoad', element, options)
+            }
+          })
+        } else contentUpdateCall()
+      }
+    } else if (existingContent && existingContent.__ref && isFunction(existingContent.update)) {
       const lazyLoad = element.props?.lazyLoad || options.lazyLoad
       const contentUpdateCall = () =>
         update.call(existingContent, params[contentKey], {
@@ -237,11 +262,7 @@ export const update = function (params = {}, opts) {
         })
       } else contentUpdateCall()
     } else {
-      const children = params.children || element.children
-      const content = children
-        ? setChildren(children, element, opts)
-        : element.children || params.content
-
+      const content = element.children || params.content
       if (content) {
         setContent(content, element, options)
       }

@@ -79,9 +79,10 @@ export function pickupElementFromProps (obj = this, opts) {
       // Don't overwrite if root already has this property explicitly set
       if (obj[key] === undefined) {
         obj[key] = value
+        if (obj.props) delete obj.props[key]
       }
-
-      if (obj.props) delete obj.props[key]
+      // If root already has the property (e.g. from extends), keep it in props
+      // so functions like `text: ({ props }) => props.text` can still access it
     }
   }
 
