@@ -1,0 +1,10 @@
+{
+  "packages": [
+    "packages/*",
+    "packages/*/*",
+    "plugins/*"
+  ],
+  "npmClient": "npm",
+  "version": "2.25.1",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
+}

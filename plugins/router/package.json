@@ -1,0 +1,32 @@
+{
+  "name": "@domql/router",
+  "version": "3.2.3",
+  "license": "MIT",
+  "type": "module",
+  "module": "dist/esm/index.js",
+  "unpkg": "dist/iife/index.js",
+  "jsdelivr": "dist/iife/index.js",
+  "main": "dist/esm/index.js",
+  "exports": "./dist/cjs/index.js",
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "dist"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
+    "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
+    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
+  },
+  "dependencies": {
+    "@domql/event": "^3.2.3",
+    "@domql/utils": "^3.2.3"
+  },
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "devDependencies": {
+    "@babel/core": "^7.26.0"
+  }
+}
