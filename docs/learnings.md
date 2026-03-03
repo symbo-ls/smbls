@@ -328,3 +328,289 @@ cd smbls/packages/element && npm run build:esm
 ```
 
 Packages export `dist/esm/index.js`. Parcel resolves via `"exports"."import"` in package.json.
+
+---
+
+## 13. CSS-in-Props Override Precedence
+
+**Key rule**: `props` block CSS **cannot** override base component-level CSS properties. Sub-component overrides must match the declaration level of the base component.
+
+### How it works
+
+When a base component defines a CSS property at the component level (which gets promoted to `props` by `propertizeElement`), an override in a `props: {}` block will NOT win — the base component-level value takes precedence in the extends merge.
+
+```js
+// Base component (uikit)
+export const Link = {
+  color: 'currentColor',   // component level → promoted to props
+  tag: 'a',
+}
+
+// ❌ WRONG — props.color cannot override Link's component-level color
+export const MyLink = {
+  extends: 'Link',
+  props: {
+    color: 'mediumBlue',   // LOSES to Link's color: 'currentColor'
+  }
+}
+
+// ✅ CORRECT — component-level overrides component-level
+export const MyLink = {
+  extends: 'Link',
+  color: 'mediumBlue',     // WINS — same level as Link's color declaration
+}
+```
+
+### Same rule for sub-component overrides
+
+When overriding a child component that has CSS at component level in its base definition, the override must also use component level:
+
+```js
+// Base ImgHgroup has Img with boxSize at component level
+export const ImgHgroup = {
+  Img: {
+    boxSize: 'C+Y1 C2',    // component level
+  }
+}
+
+// ❌ WRONG — putting sub-component CSS in props
+ModalCard: {
+  ImgHgroup: {
+    Img: {
+      props: { boxSize: '- 100%' }   // won't override base
+    }
+  }
+}
+
+// ✅ CORRECT — component level matches component level
+ModalCard: {
+  ImgHgroup: {
+    Img: {
+      boxSize: '- 100%',             // overrides properly
+    }
+  }
+}
+```
+
+---
+
+## 14. Emotion CSS Transitions & Forced Reflow
+
+**Problem**: When `state.root.update()` applies all Emotion CSS classes in a single JS execution block, the browser never paints the intermediate state. CSS transitions require the browser to see a "before" state to animate from.
+
+### The forced reflow trick
+
+```js
+// Set inline opacity to force "before" state
+modalNode.style.opacity = '0'
+modalNode.style.visibility = 'visible'
+
+// Trigger DOMQL state update (adds Emotion class with opacity:1)
+state.root.update({ activeModal: true }, { onlyUpdate: 'ModalCard' })
+
+// Force browser to paint the opacity:0 state
+modalNode.style.opacity = '0'
+modalNode.offsetHeight               // ← forces reflow/paint
+
+// Release inline style — Emotion class opacity:1 kicks in, triggering transition
+modalNode.style.opacity = ''
+```
+
+### FadeOut pattern
+
+```js
+// Set inline opacity:0 (transitions from Emotion class opacity:1 to inline opacity:0)
+modalNode.style.opacity = '0'
+
+// After transition duration, clean up
+setTimeout(() => {
+  modalNode.style.opacity = ''
+  modalNode.style.visibility = ''
+  state.root.update({ activeModal: false }, { onlyUpdate: 'ModalCard' })
+}, 280)  // match CSS transition duration
+```
+
+**Why `requestAnimationFrame` is unreliable**: Double rAF (`rAF(() => rAF(() => ...))`) doesn't fire reliably in all contexts. The synchronous `offsetHeight` trick is more dependable for forcing reflow.
+
+**Why `transitionend` is unreliable**: If the element starts with `visibility: hidden` or `display: none`, the transition may never fire, so `transitionend` never triggers. Use `setTimeout` matching the transition duration instead.
+
+---
+
+## 15. v3 Conditional Props Pattern (isActive / .isActive)
+
+Instead of using a `props` function with conditional spreads, use the v3 conditional pattern:
+
+```js
+// ❌ OLD — props function with conditional spread (deprecated)
+export const ModalCard = {
+  props: (el, s) => ({
+    opacity: '0',
+    ...(s.root.activeModal ? {
+      opacity: '1',
+      visibility: 'visible',
+    } : {
+      opacity: '0',
+      visibility: 'hidden',
+    })
+  }),
+}
+
+// ✅ NEW — v3 conditional props pattern
+export const ModalCard = {
+  opacity: '0',
+  visibility: 'hidden',
+  pointerEvents: 'none',
+
+  isActive: (el, s) => s.root.activeModal,
+  '.isActive': {
+    opacity: '1',
+    visibility: 'visible',
+    pointerEvents: 'initial',
+  },
+}
+```
+
+### How it works
+
+1. `isActive: (el, s) => boolean` — a computed boolean property evaluated on state changes
+2. `'.isActive': { ... }` — conditional CSS-in-props applied when `isActive` is truthy
+3. The base properties define the "default/inactive" state
+4. The `.isActive` block defines overrides for the "active" state
+
+### Pattern used across the codebase
+
+```js
+// Tab button active state
+childProps: {
+  isActive: (el, s) => s.root.activeCategory === s.value,
+  '.isActive': {
+    textDecoration: 'underline',
+    fontWeight: 'bold',
+  },
+}
+
+// Georgian language conditional
+isGeorgian: (el, s) => s.root.activeLanguage === 'ge',
+'.isGeorgian': {
+  '@tabletL': { gap: 'B2', fontSize: 'Z2' },
+}
+
+// Menu open state
+'.activeMenu': {
+  transform: 'translateX(0)',
+  opacity: '1',
+}
+```
+
+---
+
+## 16. Button `type` Attribute — Dynamic Attrs Must Use `attr` Block
+
+**Problem**: Functions at the component level that are NOT event handlers get stringified as HTML attribute values instead of being executed.
+
+```js
+// ❌ BUG — renders as type="({ props })=>props.type" in HTML
+export const Button = {
+  type: 'button',                         // static value (correct)
+  type: ({ props }) => props.type,        // function at component level → STRINGIFIED
+}
+```
+
+When JS objects have duplicate keys, only the last one survives. The function replaces the static `'button'` value, but at the component level, DOMQL doesn't execute it as a function — it gets treated as a property value and stringified into the HTML attribute.
+
+```js
+// ✅ CORRECT — use attr block for dynamic HTML attributes
+export const FocusableComponent = {
+  type: 'button',                         // default value at component level
+  attr: {
+    type: ({ props }) => props.type,      // dynamic resolution via attr system
+  }
+}
+```
+
+**Rule**: Component-level properties are for CSS-in-props and static values. Dynamic HTML attribute functions must go in the `attr: {}` block where DOMQL's attribute system properly executes them.
+
+---
+
+## 17. Component Key Auto-Extending
+
+When a child element's key matches a registered component name, DOMQL automatically extends from that component:
+
+```js
+// The key "Hgroup" auto-extends the registered Hgroup component
+export const MyCard = {
+  Hgroup: {         // ← auto-extends: 'Hgroup' because key matches
+    gap: '0',       // ← override properties merge with base Hgroup
+  }
+}
+
+// Equivalent to:
+export const MyCard = {
+  Hgroup: {
+    extends: 'Hgroup',
+    gap: '0',
+  }
+}
+```
+
+**Important**: The auto-extend happens by key name. If you need a different base, explicitly set `extends`:
+
+```js
+ScrollBar: {
+  extends: 'Scrollbar',   // explicit — key is "ScrollBar" but base is "Scrollbar"
+}
+```
+
+---
+
+## 18. `state.root.update()` with `onlyUpdate`
+
+Update root state but limit re-rendering to a specific component:
+
+```js
+state.root.update({
+  activeModal: true
+}, {
+  onlyUpdate: 'ModalCard'   // only ModalCard subtree re-renders
+})
+```
+
+This is a performance optimization — avoids re-rendering the entire app tree when only one component needs to react to the state change.
+
+---
+
+## 19. Finding DOMQL Elements in the Browser DOM
+
+DOMQL elements don't use human-readable class names. Class names are generated Emotion hashes like `smbls-1qivi7x-position`.
+
+### Using `node.ref`
+
+Every DOMQL-managed DOM node has a `.ref` property pointing to its DOMQL element:
+
+```js
+// Find by key
+const all = document.querySelectorAll('*')
+for (const node of all) {
+  if (node.ref && node.ref.key === 'ModalCard') {
+    const domqlEl = node.ref
+    console.log(domqlEl.ImgHgroup.Hgroup.P)  // traverse DOMQL tree
+    break
+  }
+}
+```
+
+### Inspecting element state
+
+```js
+const ref = someNode.ref
+ref.key              // element key name
+ref.props            // current props object
+ref.__ref.__class    // CSS object (input to Emotion)
+ref.__ref.__classNames // generated Emotion class names
+ref.state            // element state
+ref.parent           // parent DOMQL element
+
+// Computed DOM styles
+window.getComputedStyle(ref.node).display
+window.getComputedStyle(ref.node).opacity
+```

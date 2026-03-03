@@ -906,3 +906,227 @@ onRender: async (el, state) => {
 // ❌ DON'T — mutate state directly (bypasses reactivity)
 state.count = 5
 ```
+
+### Conditional Props
+
+```js
+// ✅ DO — v3 conditional pattern
+export const Modal = {
+  opacity: '0',
+  visibility: 'hidden',
+
+  isActive: (el, s) => s.root.showModal,
+  '.isActive': {
+    opacity: '1',
+    visibility: 'visible',
+  },
+}
+
+// ❌ DON'T — props function with conditional spread (deprecated)
+export const Modal = {
+  props: (el, s) => ({
+    ...(s.root.showModal ? { opacity: '1' } : { opacity: '0' })
+  }),
+}
+```
+
+### CSS Override Levels
+
+```js
+// ✅ DO — override at component level to match base component level
+export const MyLink = {
+  extends: 'Link',
+  color: 'mediumBlue',     // component level overrides Link's component-level color
+}
+
+// ❌ DON'T — try to override component-level CSS via props block
+export const MyLink = {
+  extends: 'Link',
+  props: {
+    color: 'mediumBlue',   // loses to base component-level color
+  }
+}
+```
+
+### Dynamic HTML Attributes
+
+```js
+// ✅ DO — use attr block for dynamic attribute functions
+export const Input = {
+  tag: 'input',
+  type: 'text',              // static default
+  attr: {
+    type: ({ props }) => props.type,   // dynamic resolution
+  }
+}
+
+// ❌ DON'T — put function at component level for HTML attributes
+export const Input = {
+  type: ({ props }) => props.type,     // gets stringified: type="(el)=>el.props.type"
+}
+```
+
+---
+
+## 22. CSS Transitions with DOMQL State Changes
+
+### Problem
+When DOMQL updates state and Emotion generates new CSS classes, everything happens in one JS execution block. The browser never paints the "before" state, so CSS transitions have nothing to animate from.
+
+### Solution: Forced Reflow
+
+```js
+// FadeIn — force browser to paint opacity:0 before transition to opacity:1
+export const showModal = function showModal(path) {
+  const modalEl = this.lookup('ModalCard')
+  const modalNode = modalEl.node
+
+  // 1. Set inline styles for "before" state
+  modalNode.style.opacity = '0'
+  modalNode.style.visibility = 'visible'
+
+  // 2. Update DOMQL state (adds Emotion class with opacity:1)
+  this.state.root.update({ activeModal: true }, { onlyUpdate: 'ModalCard' })
+
+  // 3. Force reflow — browser paints opacity:0
+  modalNode.style.opacity = '0'
+  modalNode.offsetHeight
+
+  // 4. Release inline style — Emotion class takes over, transition fires
+  modalNode.style.opacity = ''
+}
+```
+
+### FadeOut Pattern
+
+```js
+export const closeModal = function closeModal() {
+  const modalEl = this.lookup('ModalCard')
+  const modalNode = modalEl.node
+
+  // 1. Override with inline opacity:0 (CSS transitions from class opacity:1 → inline opacity:0)
+  modalNode.style.opacity = '0'
+
+  // 2. After transition completes, clean up
+  setTimeout(() => {
+    modalNode.style.opacity = ''
+    modalNode.style.visibility = ''
+    this.state.root.update({ activeModal: false }, { onlyUpdate: 'ModalCard' })
+  }, 280)  // match transition duration
+}
+```
+
+### Key Rules
+- Use `node.offsetHeight` to force reflow (synchronous, reliable)
+- Don't use `requestAnimationFrame` — unreliable across contexts
+- Don't use `transitionend` — may never fire if element starts hidden
+- Use `setTimeout` matching CSS transition duration for fadeOut cleanup
+
+---
+
+## 23. Modal Component Pattern (v3)
+
+Complete v3 modal pattern using conditional props:
+
+```js
+export const ModalCard = {
+  state: {},
+
+  // Default (hidden) styles
+  position: 'absolute',
+  flexAlign: 'center center',
+  top: 0,
+  left: 0,
+  boxSize: '100% 100%',
+  background: 'white .35',
+  backdropFilter: 'blur(15px)',
+  transition: 'all C defaultBezier',
+  opacity: '0',
+  visibility: 'hidden',
+  pointerEvents: 'none',
+  zIndex: '-1',
+
+  // Conditional active state
+  isActive: (el, s) => s.root.activeModal,
+  '.isActive': {
+    opacity: '1',
+    zIndex: 999999,
+    visibility: 'visible',
+    pointerEvents: 'initial',
+  },
+
+  // Close on backdrop click
+  onClick: (event, element, state) => {
+    element.call('closeModal')
+  },
+  // Prevent close when clicking modal content
+  childProps: {
+    onClick: (ev) => { ev.stopPropagation() },
+  },
+
+  // Modal content
+  ImgHgroup: {
+    // ... content structure
+  },
+}
+```
+
+---
+
+## 24. `state.root.update()` with `onlyUpdate`
+
+Limit re-rendering to a specific component for performance:
+
+```js
+// Only re-render ModalCard, not the entire app tree
+this.state.root.update({
+  activeModal: true
+}, {
+  onlyUpdate: 'ModalCard'
+})
+```
+
+Use this when a state change only affects one component. Avoids unnecessary re-renders of the full component tree.
+
+---
+
+## 25. Finding DOMQL Elements in the DOM
+
+DOMQL elements use generated Emotion class names (`smbls-xxx`), not human-readable ones.
+
+### Access via `node.ref`
+
+```js
+// Every DOMQL-managed DOM node has a .ref property
+const domqlElement = someNode.ref
+domqlElement.key           // element key name
+domqlElement.props         // current props
+domqlElement.state         // element state
+domqlElement.parent        // parent DOMQL element
+domqlElement.node          // back to DOM node
+
+// Traverse the DOMQL tree
+domqlElement.ImgHgroup.Hgroup.P    // named children
+```
+
+### Find by key
+
+```js
+const all = document.querySelectorAll('*')
+for (const node of all) {
+  if (node.ref?.key === 'ModalCard') {
+    const modalEl = node.ref
+    // inspect...
+    break
+  }
+}
+```
+
+### Debug CSS state
+
+```js
+const ref = someNode.ref
+ref.__ref.__class       // CSS object input to Emotion
+ref.__ref.__classNames  // generated Emotion class names
+window.getComputedStyle(ref.node).display  // computed DOM style
+```
