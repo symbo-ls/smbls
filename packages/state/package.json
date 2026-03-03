@@ -3,34 +3,47 @@
   "version": "3.2.3",
   "license": "MIT",
   "type": "module",
-  "module": "index.js",
-  "main": "index.js",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
+  "module": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
+      "browser": "./dist/iife/index.js",
       "default": "./dist/esm/index.js"
+    },
+    "./*.js": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/esm/*.js"
+    },
+    "./*": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/esm/*.js"
     }
   },
   "source": "index.js",
   "files": [
-    "*.js",
-    "dist"
+    "dist",
+    "*.js"
   ],
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=iife --outdir=dist/iife",
-    "build": "npx rimraf -I dist; npm run build:cjs; npm run build:esm",
-    "prepublish": "npx rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --bundle --target=es2020 --format=iife --global-name=DomqlState --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
+    "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
     "@domql/event": "^3.2.3",
     "@domql/report": "^3.2.3",
     "@domql/utils": "^3.2.3"
   },
-  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681"
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "browser": "./dist/iife/index.js",
+  "sideEffects": false
 }

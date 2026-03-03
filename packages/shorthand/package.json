@@ -5,23 +5,36 @@
   "version": "2.34.35",
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
-  "module": "src/index.js",
-  "main": "src/index.js",
-  "exports": "./src/index.js",
+  "module": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "browser": "./dist/iife/index.js",
+      "default": "./dist/esm/index.js"
+    }
+  },
   "source": "src/index.js",
   "publishConfig": {},
   "scripts": {
     "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js --target=node16 --format=cjs --outdir=dist/cjs",
-    "build": "npm run build:cjs",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
+    "prepublish": "npm run build && npm run copy:package:cjs",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/index.js --bundle --target=es2020 --format=iife --global-name=SmblsShorthand --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV"
   },
   "files": [
-    "src",
     "dist",
-    "docs"
+    "*.js",
+    "src"
   ],
   "license": "ISC",
-  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc"
+  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc",
+  "browser": "./dist/iife/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
+  "sideEffects": false
 }

@@ -3,29 +3,39 @@
   "version": "3.2.3",
   "author": "symbo.ls",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "*.js",
+    "src"
   ],
-  "main": "src/index.js",
+  "main": "./dist/cjs/index.js",
   "type": "module",
-  "module": "src/index.js",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
-  "exports": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "browser": "./dist/iife/index.js",
+      "default": "./dist/esm/index.js"
+    }
+  },
   "source": "src/index.js",
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "npm run build:cjs",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/index.js --bundle --target=es2020 --format=iife --global-name=SmblsSmblsUtils --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
+    "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "license": "ISC",
   "dependencies": {
     "@domql/event": "^3.2.3",
     "@domql/utils": "^3.2.3"
   },
-  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681"
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "browser": "./dist/iife/index.js",
+  "sideEffects": false
 }

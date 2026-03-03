@@ -4,5 +4,7 @@
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
-  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681"
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "type": "module",
+  "source": "index.js"
 }

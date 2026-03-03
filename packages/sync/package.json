@@ -1,32 +1,44 @@
 {
   "name": "@symbo.ls/sync",
   "version": "3.2.3",
-  "main": "index.js",
-  "module": "index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "files": [
-    "*.js",
-    "dist"
+    "dist",
+    "*.js"
   ],
   "repository": "https://github.com/symbo-ls/scratch",
   "type": "module",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "require": "./dist/cjs/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "browser": "./dist/iife/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./*.js": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/esm/*.js"
+    },
+    "./*": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/esm/*.js"
     }
   },
   "source": "index.js",
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
-    "build": "npm run build:esm; npm run build:cjs",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --bundle --target=es2020 --format=iife --global-name=SmblsSync --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
+    "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
     "@domql/router": "^3.2.3",
@@ -38,5 +50,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0"
-  }
+  },
+  "browser": "./dist/iife/index.js",
+  "sideEffects": false
 }

@@ -7,5 +7,7 @@
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.15.1"
-  }
+  },
+  "type": "module",
+  "source": "index.js"
 }

@@ -11,5 +11,12 @@
     "@emotion/css": "^11.10.0"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681"
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  }
 }

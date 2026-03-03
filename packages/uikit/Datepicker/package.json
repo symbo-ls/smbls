@@ -10,5 +10,13 @@
     "@symbo.ls/dialog": "^3.2.3",
     "headless-datepicker": "^1.0.1"
   },
-  "source": "src/index.js"
+  "source": "index.js",
+  "type": "module",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  }
 }

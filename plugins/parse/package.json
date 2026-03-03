@@ -8,5 +8,13 @@
     "@domql/render": "^3.2.3"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
-  "source": "index.js"
+  "source": "index.js",
+  "type": "module",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  }
 }

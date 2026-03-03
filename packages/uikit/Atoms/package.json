@@ -10,8 +10,16 @@
     "@symbo.ls/emotion": "^3.2.3",
     "@symbo.ls/scratch": "^3.2.3"
   },
-  "source": "src/index.js",
+  "source": "index.js",
   "devDependencies": {
     "@babel/core": "^7.26.0"
+  },
+  "type": "module",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "default": "./index.js"
+    }
   }
 }
