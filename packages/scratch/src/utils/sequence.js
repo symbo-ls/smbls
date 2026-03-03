@@ -3,7 +3,7 @@
 import { isString } from '@domql/utils'
 import { toDashCase } from '@symbo.ls/utils'
 import { getActiveConfig } from '../factory.js'
-import { isScalingUnit } from './unit.js'
+import { CSS_UNITS, isScalingUnit } from './unit.js'
 
 export const numToLetterMap = {
   '-6': 'U',
@@ -39,7 +39,7 @@ const setSequenceValue = (props, sequenceProps) => {
   sequenceProps.sequence[key] = {
     key,
     decimal: ~~(value * 100) / 100,
-    val: ~~(value),
+    val: ~~value,
     scaling,
     index,
     scalingVariable,
@@ -47,6 +47,13 @@ const setSequenceValue = (props, sequenceProps) => {
   }
   sequenceProps.scales[key] = scaling
   sequenceProps.vars[variable] = scaling + sequenceProps.unit
+}
+
+export const getFnPrefixAndValue = (val) => {
+  if (!val.includes('(')) return val
+  const prefix = val.split('(')[0]
+  const value = val.slice(val.indexOf('(') + 1, val.lastIndexOf(')'))
+  return [prefix, value]
 }
 
 export const setScalingVar = (key, sequenceProps) => {
@@ -81,16 +88,16 @@ export const setSubScalingVar = (index, arr, variable, sequenceProps) => {
 }
 
 export const getSubratioDifference = (base, ratio) => {
-  const diff = (base * ratio - base)
+  const diff = base * ratio - base
   const subRatio = diff / 1.618
-  const first = (base * ratio - subRatio)
+  const first = base * ratio - subRatio
   const second = base + subRatio
   const middle = (first + second) / 2
   return [first, middle, second]
 }
 
 export const getSubratio = (base, ratio) => {
-  return getSubratioDifference(base, ratio).map(v => v / base)
+  return getSubratioDifference(base, ratio).map((v) => v / base)
 }
 
 export const generateSubSequence = (props, sequenceProps) => {
@@ -105,10 +112,15 @@ export const generateSubSequence = (props, sequenceProps) => {
   else arr = [first, second]
 
   arr.forEach((v, k) => {
-    const scaling = ~~(v / base * 1000) / 1000
+    const scaling = ~~((v / base) * 1000) / 1000
     const newVar = variable + (k + 1)
     const newIndex = index + (k + 1) / 10
-    const scalingVariable = setSubScalingVar(k + 1, arr, variable, sequenceProps)
+    const scalingVariable = setSubScalingVar(
+      k + 1,
+      arr,
+      variable,
+      sequenceProps
+    )
 
     const props = {
       key: key + (k + 1),
@@ -146,7 +158,7 @@ export const generateSequence = (sequenceProps) => {
     const key = range[1] - i
     const letterKey = numToLetterMap[key]
     const value = switchSequenceOnNegative(key, base, ratio)
-    const scaling = ~~(value / base * 100) / 100
+    const scaling = ~~((value / base) * 100) / 100
     const variable = prefix + letterKey
     const scalingVariable = setScalingVar(key, sequenceProps)
 
@@ -176,7 +188,7 @@ export const generateSequencePosition = (sequenceProps, position = 0) => {
         ([, value]) => value === position
       )?.[0]
     : position
-  
+
   if (!letterKey) {
     console.warn(`Position ${position} is out of range in numToLetterMap`)
     return null
@@ -219,32 +231,31 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   const CONFIG = getActiveConfig()
   const { UNIT } = CONFIG
 
-  const {
-    sequence,
-    unit = UNIT.default,
-    useVariable
-  } = sequenceProps
-
   if (isString(value) && value.slice(0, 2) === '--') return `var(${value})`
 
-  const prefix = `--${toDashCase(sequenceProps.type.replace('.', '-'))}-`
+  const { sequence, unit = UNIT.default, useVariable } = sequenceProps
 
   const startsWithDashOrLetterRegex = /^-?[a-zA-Z]/i
   const startsWithDashOrLetter = startsWithDashOrLetterRegex.test(value)
 
-  if (
-    value === 'none' ||
-    value === 'auto' ||
-    value === 'unset' ||
-    value === 'inherit' ||
-    value === 'fit-content' ||
-    value === 'min-content' ||
-    value === 'max-content' ||
-    value.includes('calc') ||
-    value.includes('var') ||
-    !startsWithDashOrLetter
-  ) return value
+  const hasUnits = CSS_UNITS.some((unit) => value.includes(unit))
+  if (hasUnits || !startsWithDashOrLetter) return value
 
+  const skipArr = [
+    'none',
+    'auto',
+    'max-content',
+    'min-content',
+    'fit-content',
+    'inherit',
+    'initial',
+    'unset',
+    'revert',
+    'revert-layer'
+  ]
+  if (skipArr.includes(value)) return value
+
+  const prefix = `--${toDashCase(sequenceProps.type.replace('.', '-'))}-`
   const letterVal = value.toUpperCase()
   const isNegative = letterVal.slice(0, 1) === '-' ? '-' : ''
   let absValue = isNegative ? letterVal.slice(1) : letterVal
@@ -255,7 +266,8 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
     absValue = absValue.split('_')[0]
   }
 
-  const varValue = v => startsWithDashOrLetterRegex.test(v) ? `var(${prefix}${v}${mediaName})` : v
+  const varValue = (v) =>
+    startsWithDashOrLetterRegex.test(v) ? `var(${prefix}${v}${mediaName})` : v
   if (absValue.includes('+')) {
     const [first, second] = absValue.split('+')
     const joint = `${varValue(first)} + ${varValue(second)}`
@@ -274,7 +286,11 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
 
   // if subsequence is not set but value is applied
   if (!sequence[absValue] && absValue.length === 2) {
-    if (CONFIG.verbose) console.warn(absValue, '- value is not found because `subSequence` is set to false')
+    if (CONFIG.verbose)
+      console.warn(
+        absValue,
+        '- value is not found because `subSequence` is set to false'
+      )
     absValue = absValue.slice(0, 1)
   }
 
@@ -284,7 +300,7 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   }
 
   const sequenceItem = sequence ? sequence[absValue] : null
-  if (!sequenceItem) return console.warn('can\'t find', sequence, absValue)
+  if (!sequenceItem) return console.warn("can't find", sequence, absValue)
 
   if (unit === 'ms' || unit === 's') {
     return isNegative + sequenceItem.val + unit
@@ -293,19 +309,57 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   return isNegative + sequenceItem.scaling + unit
 }
 
-export const getSequenceValuePropertyPair = (value, propertyName, sequenceProps) => {
+export const getSequenceValueBySymbols = (value, sequenceProps) => {
+  const mathArr = ['+', '-', '*', '/', ','].filter((v) =>
+    value.includes(v + ' ')
+  )
+  if (!mathArr.length) return value
+
+  return mathArr
+    .map((symbol) => {
+      const valuesArr = value.split(symbol + ' ').map((v) => v.trim())
+      const transformedValues = valuesArr.map((v) => {
+        return getSequenceValue(v, sequenceProps)
+      })
+      return transformedValues.join(' ' + symbol + ' ')
+    })
+    .join('')
+}
+
+export const getSequenceValuePropertyPair = (
+  value,
+  propertyName,
+  sequenceProps,
+  fnPrefix
+) => {
   if (typeof value !== 'string') {
     const CONFIG = getActiveConfig()
     if (CONFIG.verbose) console.warn(propertyName, value, 'is not a string')
-    return ({ [propertyName]: value })
+    return { [propertyName]: value }
   }
-  if (value === '-' || value === '') return ({})
-  return { [propertyName]: getSequenceValue(value, sequenceProps) }
+
+  if (value === '-' || value === '') return {}
+
+  if (!fnPrefix && value.includes('(')) {
+    const fnArr = getFnPrefixAndValue(value)
+    fnPrefix = fnArr[0]
+    value = fnArr[1]
+  }
+
+  const mathArr = ['+', '-', '*', '/', ','].filter((v) =>
+    value.includes(v + ' ')
+  )
+  if (mathArr.length) {
+    value = getSequenceValueBySymbols(value, sequenceProps)
+  } else value = getSequenceValue(value, sequenceProps)
+
+  return { [propertyName]: fnPrefix ? `${fnPrefix}(${value})` : value }
 }
 
-export const findHeadingLetter = (h1Matches, index) => numToLetterMap[h1Matches - index]
+export const findHeadingLetter = (h1Matches, index) =>
+  numToLetterMap[h1Matches - index]
 
-export const findHeadings = propertyNames => {
+export const findHeadings = (propertyNames) => {
   const { h1Matches, sequence } = propertyNames
   return new Array(6).fill(null).map((_, i) => {
     const findLetter = findHeadingLetter(h1Matches, i)

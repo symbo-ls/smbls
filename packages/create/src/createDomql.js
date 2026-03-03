@@ -7,9 +7,9 @@ import { isString, isNode, isObject } from '@domql/utils'
 import { initAnimationFrame } from '@domql/event'
 import { defaultDefine } from './define.js'
 import { initRouter } from './router.js'
+import { version } from '../package.json' with { type: 'json' }
 import {
   initializeExtend,
-  initializeInspect,
   initializeNotifications,
   initializeSync
 } from './syncExtend.js'
@@ -23,14 +23,21 @@ import {
   preparePages,
   prepareState,
   prepareUtils,
-  prepareMethods
+  prepareMethods,
+  prepareSharedLibs
 } from './prepare.js'
 
+import { temporaryDomqlHackReverse } from '@symbo.ls/utils'
+
 export const prepareContext = async (app, context = {}) => {
-  // const rcFileKey = process?.env?.SYMBOLS_KEY
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
   context.window = prepareWindow(context)
+
+  if (context.sharedLibraries) {
+    prepareSharedLibs(context)
+  }
+
   const [scratcDesignSystem, emotion, registry] = prepareDesignSystem(
     key,
     context
@@ -57,13 +64,13 @@ export const createDomqlElement = async (app, ctx) => {
   if (isNode(app)) {
     app = {}
     ctx.parent = app
-  }
-  if (isString(app)) {
+  } else if (isString(app)) {
     app = {}
     ctx.key = app
-  }
-  if (!isObject(app)) {
+  } else if (!isObject(app)) {
     app = {}
+  } else if (ctx.forceDomql3 && ctx.forceDomql3OnInit) {
+    app = temporaryDomqlHackReverse(app)
   }
 
   await prepareContext(app, ctx)
@@ -86,7 +93,7 @@ export const createDomqlElement = async (app, ctx) => {
   )
 
   initializeSync(app, ctx)
-  initializeInspect(app, ctx)
+  // initializeInspect(app, ctx)
   initializeNotifications(app, ctx)
 
   const parentNode = ctx.parent || ctx.document.body

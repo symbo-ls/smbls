@@ -25,7 +25,7 @@ export const updateDynamycFile = (changes, options = {}) => {
 
   const newMerge = overwriteDeep(file, changes)
   const mergeStr = JSON.stringify(newMerge, null, 2)
-  const initPath = process.cwd() + '/node_modules/@symbo.ls/init/dynamic.json'
+  const initPath = `${process.cwd()}/node_modules/@symbo.ls/init/dynamic.json`
 
   console.log(chalk.dim('\n----------------\n'))
 
@@ -42,14 +42,18 @@ export const updateDynamycFile = (changes, options = {}) => {
   } catch (e) {
     console.log('')
     console.log(chalk.bold.red('Error writing file'))
-    if (verbose) console.error(e)
-    else console.log(debugMsg)
+    if (verbose) {
+      console.error(e)
+    } else {
+      console.log(debugMsg)
+    }
   }
 }
 
-export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
+// eslint-disable-next-line no-unused-vars
+export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, opts = {}) => {
   const server = http.createServer(app)
-  const { key } = options
+  const { key } = opts
 
   io = new Server(server, {
     transports: ['websocket', 'polling', 'flashsocket'],
@@ -84,6 +88,7 @@ export const sync = (desSysFile = DES_SYS_DEFAULT_FILE, options = {}) => {
 
     socket.on('change', updateDynamycFile)
 
+    // eslint-disable-next-line no-unused-vars
     socket.on('disconnect', (changes, options) => {
       const { clientsCount } = io.engine
       socket.to(key).emit('clientsCount', clientsCount)

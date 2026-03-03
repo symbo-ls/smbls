@@ -1,5 +1,3 @@
-'use strict'
-
 import * as utils from '@domql/utils'
 import io from 'socket.io-client'
 
@@ -66,10 +64,12 @@ export const connect = (key, options = {}) => {
     }
   })
 
-  socket.on('connect_error', err => {
+  socket.on('connect_error', (err) => {
     console.log(`event: connect_error | reason: ${err.message}`)
     try {
-      if (isFunction(options.onError)) options.onError(err, socket)
+      if (isFunction(options.onError)) {
+        options.onError(err, socket)
+      }
 
       if (CONNECT_ATTEPT < CONNECT_ATTEPT_MAX_ALLOWED) {
         CONNECT_ATTEPT++
@@ -78,10 +78,9 @@ export const connect = (key, options = {}) => {
 
         if (utils.isNotProduction()) {
           console.log(
-            'Could not connect to %c' +
-              primaryUrl +
-              '%c, reconnecting to %c' +
-              secondaryUrl,
+            `Could not connect to %c${primaryUrl}%c, reconnecting to %c${
+              secondaryUrl
+            }`,
             'font-weight: bold; color: red;',
             '',
             'font-weight: bold; color: green;'
@@ -95,17 +94,21 @@ export const connect = (key, options = {}) => {
     }
   })
 
-  socket.on('disconnect', reason => {
+  socket.on('disconnect', (reason) => {
     console.log(`event: disconnect | reason: ${reason}`)
     try {
-      if (isFunction(options.onDisconnect)) options.onDisconnect(reason, socket)
+      if (isFunction(options.onDisconnect)) {
+        options.onDisconnect(reason, socket)
+      }
     } catch (e) {
       console.error(e)
     }
   })
 
   socket.onAny((event, ...args) => {
-    if (event === 'connect') return
+    if (event === 'connect') {
+      return
+    }
 
     try {
       if (isFunction(options.onChange)) {
@@ -119,10 +122,10 @@ export const connect = (key, options = {}) => {
   return socket
 }
 
-export function send (event = 'change', changes, options) {
+export function send(event = 'change', changes, options) {
   this.emit(event, changes, { ...options, ...defautlOpts })
 }
 
-export function disconnect () {
+export function disconnect() {
   this.disconnect()
 }

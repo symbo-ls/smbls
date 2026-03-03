@@ -1,0 +1,82 @@
+export const StoryItem = {
+  extend: [
+    'Link',
+    'Flex',
+  ],
+  props: {
+    flow: 'y',
+    cursor: 'pointer',
+    ':hover': {
+      '> h3 + div': {
+        opacity: '1',
+      },
+      '> h3 + div:after': {
+        width: '75%',
+        opacity: '1',
+      },
+      '> h3 + div > svg': {
+        transform: 'rotate(90deg)',
+      },
+    },
+  },
+  Box: {
+    position: 'relative',
+    boxSize: 'E3 F3',
+    overflow: 'hidden',
+    Img: {
+      src: 'Frame.svg',
+      boxSize: '100% 100%',
+      objectFit: 'cover',
+    },
+    Icon: {
+      name: 'play',
+      fontSize: 'C',
+      round: '100%',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      zIndex: '3',
+      background: 'black .8',
+      boxSizing: 'content-box',
+      padding: 'Z',
+    },
+  },
+  H3: {
+    text: 'Start creating features for your apps',
+    fontSize: 'B2+X1',
+    fontWeight: '100',
+    maxWidth: 'F',
+    margin: 'Z2 - B2 -',
+    lineHeight: '1.3em',
+  },
+  IconText: {
+    align: 'center flex-start',
+    fontSize: 'A1',
+    fontWeight: '600',
+    gap: 'Y2',
+    theme: 'transparent',
+    position: 'relative',
+    maxWidth: 'fit-content',
+    padding: '0 0 X2 0',
+    opacity: '.8',
+    color: 'white',
+    text: 'Get started',
+    Icon: {
+      name: 'chevronUp',
+      transition: 'transform .5s ease',
+      transform: 'rotate(45deg)',
+    },
+    ':after': {
+      content: '""',
+      height: '.5px',
+      width: '0',
+      opacity: '0',
+      transition: 'width .3s ease, opacity .5s ease',
+      background: 'white .75',
+      position: 'absolute',
+      bottom: '0',
+      left: 'B-V',
+    },
+  },
+};

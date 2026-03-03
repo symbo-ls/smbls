@@ -15,7 +15,9 @@ export const applyReset = (reset = {}) => {
       const configTemplates = TYPOGRAPHY.templates
 
       configReset.body = {
-        ...(CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {}),
+        ...(CONFIG.useDocumentTheme
+          ? getMediaTheme('document', `@${CONFIG.globalTheme}`)
+          : {}),
         ...configTemplates.body
       }
       configReset.h1 = configTemplates.h1
@@ -27,7 +29,9 @@ export const applyReset = (reset = {}) => {
     }
 
     const { body, ...templates } = TYPOGRAPHY.templates
-    const globalTheme = (CONFIG.useDocumentTheme ? getMediaTheme('document', `@${CONFIG.globalTheme}`) : {})
+    const globalTheme = CONFIG.useDocumentTheme
+      ? getMediaTheme('document', `@${CONFIG.globalTheme}`)
+      : {}
     if (RESET.html) overwriteDeep(RESET.html, globalTheme)
 
     return deepMerge(merge(RESET, reset), {
@@ -56,10 +60,15 @@ export const applyReset = (reset = {}) => {
         margin: 0,
         fontFamily: DOCUMENT.fontFamily,
 
-        fontSize: TYPOGRAPHY.base / TYPOGRAPHY.browserDefault + CONFIG.UNIT.default,
+        fontSize:
+          TYPOGRAPHY.base / TYPOGRAPHY.browserDefault + CONFIG.UNIT.default,
 
         ...templates,
         ...body
+      },
+
+      a: {
+        color: 'currentColor'
       },
 
       // form elements

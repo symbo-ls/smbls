@@ -14,6 +14,7 @@ export const Strong = {
   tag: 'strong',
   fontWeight: '700'
 }
+export const U = { tag: 'u' }
 export const Underline = { tag: 'u' }
 export const Italic = { tag: 'i' }
 

@@ -1,6 +1,5 @@
 'use strict'
 
-import { router as defaultRouter } from '@domql/router'
 import { window, deepMerge, merge, isUndefined } from '@domql/utils'
 import { Link } from 'smbls'
 
@@ -16,8 +15,6 @@ export const initRouter = (element, context) => {
   else merge(context.router || {}, DEFAULT_ROUTING_OPTIONS)
 
   const routerOptions = context.router
-  const router =
-    context.utils && context.utils.router ? context.utils.router : defaultRouter
 
   const onRouterRenderDefault = async (el, s) => {
     const { pathname, search, hash } = window.location
@@ -44,7 +41,7 @@ export const initRouter = (element, context) => {
 }
 
 let popStateFired
-export const popStateRouter = (element, context) => {
+export const onpopstateRouter = (element, context) => {
   if (popStateFired) return
   popStateFired = true
   const routerOptions = context.router || DEFAULT_ROUTING_OPTIONS
@@ -54,7 +51,8 @@ export const popStateRouter = (element, context) => {
   window.onpopstate = async e => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    await router(
+    await element.call(
+      'router',
       url,
       element,
       {},

@@ -16,7 +16,7 @@ import * as routerUtils from '@domql/router'
 
 // @preserve-env
 
-export const prepareWindow = context => {
+export const prepareWindow = (context) => {
   if (typeof window === 'undefined') window = globalThis || {} // eslint-disable-line
   if (typeof document === 'undefined') {
     if (!window.document) window.document = globalThis.document || { body: {} }
@@ -27,11 +27,37 @@ export const prepareWindow = context => {
   return context.window
 }
 
-function onlyDotsAndNumbers (str) {
+function onlyDotsAndNumbers(str) {
   return /^[0-9.]+$/.test(str) && str !== ''
 }
 
-export const UIkitWithPrefix = () => {
+const CDN_PROVIDERS = {
+  skypack: {
+    url: 'https://cdn.skypack.dev',
+    formatUrl: (pkg, version) =>
+      `${CDN_PROVIDERS.skypack.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
+  },
+  symbols: {
+    url: 'https://pkg.symbo.ls',
+    formatUrl: (pkg, version) => {
+      if (pkg.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
+        return `${CDN_PROVIDERS.symbols.url}/${pkg}`
+      }
+      return `${CDN_PROVIDERS.symbols.url}/${pkg}/${version}.js`
+    }
+  }
+}
+
+export const getCDNUrl = (
+  packageName,
+  version = 'latest',
+  provider = 'skypack'
+) => {
+  const cdnConfig = CDN_PROVIDERS[provider] || CDN_PROVIDERS.skypack
+  return cdnConfig.formatUrl(packageName, version)
+}
+
+const UIkitWithPrefix = (prefix = 'smbls') => {
   const newObj = {}
   for (const key in uikit) {
     if (Object.prototype.hasOwnProperty.call(uikit, key)) {
@@ -45,13 +71,13 @@ export const UIkitWithPrefix = () => {
   return newObj
 }
 
-export const prepareComponents = context => {
+export const prepareComponents = (context) => {
   return context.components
     ? { ...UIkitWithPrefix(), ...context.components }
     : UIkitWithPrefix()
 }
 
-export const prepareUtils = context => {
+export const prepareUtils = (context) => {
   return {
     ...utils,
     ...routerUtils,
@@ -62,11 +88,12 @@ export const prepareUtils = context => {
   }
 }
 
-export const prepareMethods = context => {
+export const prepareMethods = (context) => {
   return {
     ...(context.methods || {}),
     require: context.utils.require,
-    requireOnDemand: context.utils.requireOnDemand
+    requireOnDemand: context.utils.requireOnDemand,
+    router: context.utils.router
   }
 }
 
@@ -75,7 +102,8 @@ export const prepareDependencies = async ({
   dependencies,
   dependenciesOnDemand,
   document,
-  preventCaching = false
+  preventCaching = false,
+  cdnProvider = 'skypack'
 }) => {
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null
@@ -87,18 +115,29 @@ export const prepareDependencies = async ({
     }
 
     const random = isDevelopment() && preventCaching ? `?${Math.random()}` : ''
-    let url = `https://pkg.symbo.ls/${dependency}/${version}.js${random}`
-
-    if (dependency.split('/').length > 2 || !onlyDotsAndNumbers(version)) {
-      url = `https://pkg.symbo.ls/${dependency}${random}`
-    }
+    const url = getCDNUrl(dependency, version, cdnProvider) + random
 
     try {
       if (cachedDeps[dependency]) return
       cachedDeps[dependency] = true
-      await utils.loadRemoteScript(url, { document })
+      await utils.loadRemoteScript(url, { document, type: 'module' })
     } catch (e) {
-      console.error(`Failed to load ${dependency}:`, e)
+      console.error(`Failed to load ${dependency} from ${cdnProvider}:`, e)
+
+      if (cdnProvider !== 'symbols') {
+        try {
+          const fallbackUrl = getCDNUrl(dependency, version, 'symbols') + random
+          await utils.loadRemoteScript(fallbackUrl, { document })
+          console.log(
+            `Successfully loaded ${dependency} from fallback (symbols.ls)`
+          )
+        } catch (fallbackError) {
+          console.error(
+            `Failed to load ${dependency} from fallback:`,
+            fallbackError
+          )
+        }
+      }
     }
   }
 
@@ -107,38 +146,65 @@ export const prepareDependencies = async ({
 
 export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
+  const defaultProvider = ctx.cdnProvider || 'skypack'
 
-  const initRequire = async ctx => async key => {
+  const initRequire = async (ctx) => async (key, provider) => {
     const windowOpts = ctx.window || window
     const pkg = windowOpts.packages[key]
     if (typeof pkg === 'function') return pkg()
     return pkg
   }
 
-  const initRequireOnDemand = async ctx => async key => {
-    const { dependenciesOnDemand } = ctx
-    const documentOpts = ctx.document || document
-    const windowOpts = ctx.window || window
-    if (!windowOpts.packages[key]) {
-      const random = isDevelopment() ? `?${Math.random()}` : ''
-      if (dependenciesOnDemand && dependenciesOnDemand[key]) {
-        const version = dependenciesOnDemand[key]
-        const url = `https://pkg.symbo.ls/${key}/${version}.js${random}`
-        await ctx.utils.loadRemoteScript(url, {
-          window: windowOpts,
-          document: documentOpts
-        })
-      } else {
-        const url = `https://pkg.symbo.ls/${key}${random}`
-        await ctx.utils.loadRemoteScript(url, {
-          window: windowOpts,
-          document: documentOpts
-        })
-        windowOpts.packages[key] = 'loadedOnDeman'
+  const initRequireOnDemand =
+    async (ctx) =>
+    async (key, provider = defaultProvider) => {
+      const { dependenciesOnDemand } = ctx
+      const documentOpts = ctx.document || document
+      const windowOpts = ctx.window || window
+      if (!windowOpts.packages[key]) {
+        const random = isDevelopment() ? `?${Math.random()}` : ''
+        if (dependenciesOnDemand && dependenciesOnDemand[key]) {
+          const version = dependenciesOnDemand[key]
+          const url = getCDNUrl(key, version, provider) + random
+          try {
+            await ctx.utils.loadRemoteScript(url, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          } catch (e) {
+            console.error(`Failed to load ${key} from ${provider}:`, e)
+            // Fallback to symbo if not already using it
+            if (provider !== 'symbols') {
+              const fallbackUrl = getCDNUrl(key, version, 'symbols') + random
+              await ctx.utils.loadRemoteScript(fallbackUrl, {
+                window: windowOpts,
+                document: documentOpts
+              })
+            }
+          }
+        } else {
+          const url = getCDNUrl(key, 'latest', provider) + random
+          try {
+            await ctx.utils.loadRemoteScript(url, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          } catch (e) {
+            console.error(`Failed to load ${key} from ${provider}:`, e)
+            // Fallback to symbo if not already using it
+            if (provider !== 'symbols') {
+              const fallbackUrl = getCDNUrl(key, 'latest', 'symbols') + random
+              await ctx.utils.loadRemoteScript(fallbackUrl, {
+                window: windowOpts,
+                document: documentOpts
+              })
+            }
+          }
+          windowOpts.packages[key] = 'loadedOnDeman'
+        }
       }
+      return await windowOpts.require(key, provider)
     }
-    return await windowOpts.require(key)
-  }
 
   if (windowOpts.packages) {
     windowOpts.packages = merge(windowOpts.packages, packages)
@@ -166,6 +232,7 @@ export const prepareState = (app, context) => {
   const state = {}
   if (context.state) utils.deepMerge(state, context.state)
   if (app && app.state) deepMerge(state, app.state)
+  state.isRootState = true
   return deepClone(state)
 }
 
@@ -175,11 +242,24 @@ export const preparePages = (app, context) => {
   }
   const pages = app.routes || context.pages || {}
   return Object.keys(pages)
-    .filter(v => !v.startsWith('/'))
+    .filter((v) => !v.startsWith('/'))
     .reduce((pages, v) => {
       const index = v === 'index' ? '' : v
       pages['/' + index] = pages[v]
       delete pages[v]
       return pages
     }, pages)
+}
+
+export const prepareSharedLibs = (context) => {
+  const sharedLibraries = context.sharedLibraries
+  for (let i = 0; i < sharedLibraries.length; i++) {
+    const sharedLib = sharedLibraries[i]
+    if (context.type === 'template') {
+      overwriteShallow(context.designSystem, sharedLib.designSystem)
+      deepMerge(context, sharedLib, ['designSystem'], 1)
+    } else {
+      deepMerge(context, sharedLib, [], 1)
+    }
+  }
 }

@@ -1,7 +1,5 @@
 'use strict'
 
-import { router as defaultRouter } from '@domql/router'
-
 export const Link = {
   extends: 'Focusable',
   tag: 'a',
@@ -27,6 +25,10 @@ export const Link = {
     'aria-label': ({ props }) => (props.aria ? props.aria.label : props.text),
     draggable: ({ props }) => props.draggable
   }
+}
+
+export const A = {
+  extend: 'Link'
 }
 
 export const RouterLink = {

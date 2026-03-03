@@ -17,11 +17,7 @@ function folderExists (path) {
 }
 
 const REPO_URLS = {
-  domql: 'https://github.com/symbo-ls/starter-kit',
-  react: 'https://github.com/symbo-ls/create-react-app.git',
-  angular: 'https://github.com/symbo-ls/create-angular-app.git',
-  vue2: 'https://github.com/symbo-ls/create-vue2-app.git',
-  vue3: 'https://github.com/symbo-ls/create-vue3-app.git'
+  domql: 'https://github.com/symbo-ls/starter-kit'
 }
 
 program
@@ -30,11 +26,7 @@ program
   .argument('dest', 'Project directory')
   .option('--verbose', 'Verbose output')
   .option('--remote', 'Fetch from platform', true)
-  .option('--domql', 'Use DOMQL in the project', true)
-  .option('--react', 'Use React in the project (default)')
-  .option('--angular', 'Use Angular in the project')
-  .option('--vue2', 'Use Vue2 in the project')
-  .option('--vue3', 'Use Vue3 in the project')
+  .option('--domql', 'Use DOMQL template (default)', true)
   .option(
     '--package-manager <manager>',
     'Choose the package manager (e.g., npm, yarn)',
@@ -44,18 +36,12 @@ program
   .option('--no-dependencies', 'Skip installing dependencies')
   .option('--no-clone', 'Create folder instead of cloning from git')
   .action(async (dest = 'symbols-starter-kit', options) => {
-    // Determine framework
-    let framework = 'domql'
-    if (options.react) {
-      framework = 'react'
-    } else if (options.angular) {
-      framework = 'angular'
-    } else if (options.vue2) {
-      framework = 'vue2'
-    } else if (options.vue3) {
-      framework = 'vue3'
+    if (options.domql === false) {
+      console.error(chalk.red('Only DOMQL templates are supported right now.'))
+      process.exit(1)
     }
-    const cloneUrl = REPO_URLS[framework]
+
+    const cloneUrl = REPO_URLS.domql
     const packageManager = options.packageManager || 'npm'
 
     if (folderExists(dest)) {
@@ -83,7 +69,7 @@ program
     if (!options.clone) {
       const initialSymbolsJson = {
         key: `${dest}.symbo.ls`,
-        packageManager: packageManager
+        packageManager
       }
       fs.writeFileSync(
         SYMBOLS_FILE_PATH,

@@ -19,7 +19,6 @@ export const Select = {
   },
 
   attr: {
-    required: ({ props }) => props.required,
     name: ({ props }) => props.name,
     disabled: ({ props }) => props.disabled,
     value: el => {

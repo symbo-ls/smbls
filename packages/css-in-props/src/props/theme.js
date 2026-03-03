@@ -11,11 +11,13 @@ import {
   transformSizeRatio
 } from '@symbo.ls/scratch'
 
-import { isString } from '@domql/utils'
+import { isDefined, isString } from '@domql/utils'
 
 export const getSystemGlobalTheme = ({ context, state }) => {
   const rootState = state && state.root
-  return rootState && rootState.globalTheme ? rootState.globalTheme : context.designSystem && context.designSystem.globalTheme
+  return rootState && rootState.globalTheme
+    ? rootState.globalTheme
+    : context.designSystem && context.designSystem.globalTheme
 }
 
 export const THEME_PROPS = {
@@ -62,9 +64,9 @@ export const THEME_PROPS = {
     if (!val) return
     const file = ctx.files && ctx.files[val]
     if (file && file.content) val = file.content.src
-    return ({
+    return {
       backgroundImage: transformBackgroundImage(val, globalTheme)
-    })
+    }
   },
 
   textStroke: (val) => ({

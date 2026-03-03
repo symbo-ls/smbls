@@ -18,8 +18,9 @@ export const fetchAsync = (app, key, options, callback) => {
     try {
       if (options.editor.async) {
         fetchProjectAsync(key, options, callback || ((data) => {
-          if (isObject(data.designSystem)) {
-            options.utils.init(data.designSystem)
+          const designSystem = data.designSystem
+          if (isObject(designSystem)) {
+            options.utils.init(designSystem)
           }
           if (isObject(data.state)) {
             app.state.set(data.state)

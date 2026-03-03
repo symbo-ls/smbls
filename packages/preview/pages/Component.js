@@ -28,8 +28,9 @@ export const Component = {
         extends: ['Link', 'Button'],
         target: '_blank',
         padding: 'Z A',
-        href: `https://symbols.app/?activeProject=${activeProject}&selected=${key}`,
-        // href: () => `https://symbols.app/?activeProject=${window.location.host.split('.')[0]}&selected=${key}`,
+        fontSize: 'Z2',
+        href: () =>
+          `https://symbols.app/?activeProject=${activeProject}&selected=${key}`,
         text: screenshot ? window.location.host : 'Open in Symbols'
       }
     }

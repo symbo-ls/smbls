@@ -35,7 +35,8 @@ export const Button = {
   round: 'C2',
 
   attr: {
-    type: ({ props }) => props.type
+    type: ({ props }) => props.type,
+    disabled: (el) => el.call('exec', el.props.disabled)
   }
 }
 

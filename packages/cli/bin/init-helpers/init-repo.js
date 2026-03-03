@@ -48,14 +48,22 @@ export async function initRepo (dest, framework) {
   // Copy design system file
   console.log()
   const dsfilePath = path.join(dest, 'DesignSystem.js')
-  console.log('Creating', chalk.bold(dsfilePath))
-  await fs.promises.copyFile(DESIGN_SYSTEM_FILE_PATH, dsfilePath)
+  if (fs.existsSync(dsfilePath)) {
+    console.log(chalk.yellow('Skipping existing'), chalk.bold(dsfilePath))
+  } else {
+    console.log('Creating', chalk.bold(dsfilePath))
+    await fs.promises.copyFile(DESIGN_SYSTEM_FILE_PATH, dsfilePath)
+  }
 
   // Copy design system file
   const rcfilePath = path.join(dest, 'symbols.json')
-  console.log('Creating', chalk.bold(rcfilePath))
-  await fs.promises.copyFile(SYMBOLS_FILE_PATH, rcfilePath)
-  if (framework !== 'domql') addToJson(SYMBOLS_FILE_PATH, 'framework', framework)
+  if (fs.existsSync(rcfilePath)) {
+    console.log(chalk.yellow('Skipping existing'), chalk.bold(rcfilePath))
+  } else {
+    console.log('Creating', chalk.bold(rcfilePath))
+    await fs.promises.copyFile(SYMBOLS_FILE_PATH, rcfilePath)
+  }
+  if (framework !== 'domql') addToJson(rcfilePath, 'framework', framework)
   console.log()
 
   console.log(chalk.green.bold('Initialized project successfully.'))
