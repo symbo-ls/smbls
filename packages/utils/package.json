@@ -7,9 +7,18 @@
   "main": "index.js",
   "exports": {
     ".": {
-      "default": "./dist/esm/index.js",
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./methods": {
+      "import": "./dist/esm/methods.js",
+      "require": "./dist/cjs/methods.js",
+      "default": "./dist/esm/methods.js"
+    },
+    "./*.js": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js"
     }
   },
   "source": "index.js",
