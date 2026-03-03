@@ -168,7 +168,7 @@ export const update = function (params = {}, opts) {
       isInPreventDefineUpdate ||
       preventDefineUpdate === true ||
       preventDefineUpdate === param ||
-      (preventStateUpdate && param) === 'state' ||
+      (preventStateUpdate && param === 'state') ||
       isMethod(param, element) ||
       isObject(REGISTRY[param])
     ) {

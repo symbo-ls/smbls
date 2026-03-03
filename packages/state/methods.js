@@ -122,7 +122,7 @@ export const toggle = function (key, options = {}) {
 export const remove = function (key, options = {}) {
   const state = this
   if (isArray(state)) removeFromArray(state, key)
-  if (isObject(state)) removeFromObject(state, key)
+  else if (isObject(state)) removeFromObject(state, key)
   if (options.applyReset) {
     return state.set(state.parse(), { replace: true, ...options })
   }
@@ -147,8 +147,7 @@ export const setByPath = function (path, val, options = {}) {
 
 export const setPathCollection = function (changes, options = {}) {
   const state = this
-  const update = changes.reduce((promise, change) => {
-    const acc = promise
+  const update = changes.reduce((acc, change) => {
     if (change[0] === 'update') {
       const result = setByPath.call(state, change[1], change[2], {
         preventStateUpdate: true
@@ -161,7 +160,7 @@ export const setPathCollection = function (changes, options = {}) {
       })
     }
     return acc
-  }, Promise.resolve({}))
+  }, {})
 
   return state.update(update, options)
 }

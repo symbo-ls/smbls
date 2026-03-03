@@ -66,9 +66,7 @@ export const report = (err, arg, element) => {
   let errObj
   if (err && typeof err === 'string') errObj = ERRORS_REGISTRY[currentLang][err]
 
-  return new Error(
-    `"${err}", "${arg}"\n\n`,
-    `${errObj.description}`,
-    element ? `\n\n${element}` : ''
-  )
+  const description = errObj ? `\n\n${errObj.description}` : ''
+  const context = element ? `\n\n${element}` : ''
+  return new Error(`"${err}", "${arg}"${description}${context}`)
 }

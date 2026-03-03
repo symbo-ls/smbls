@@ -9,7 +9,7 @@ import { report } from '@domql/report'
 export function attr (params, element, node) {
   const { __ref: ref, props } = element
   const { __attr } = ref
-  if (isNot('object')) report('HTMLInvalidAttr', params)
+  if (isNot(params)('object')) report('HTMLInvalidAttr', params)
   if (params) {
     const attrs = exec(params, element)
     if (props.attr) deepMerge(attrs, props.attr)

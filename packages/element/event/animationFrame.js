@@ -37,13 +37,18 @@ export const applyAnimationFrame = element => {
   }
 }
 
+let _frameRunning = false
+
 export const initAnimationFrame = () => {
   const frameListeners = new Set()
+
+  if (_frameRunning) return frameListeners
+  _frameRunning = true
 
   function requestFrame () {
     // Iterate over frameListeners
     for (const element of frameListeners) {
-      if (!element.parent.node.contains(element.node)) {
+      if (!element.parent?.node?.contains(element.node)) {
         frameListeners.delete(element) // Remove if node has no parent
       } else {
         try {

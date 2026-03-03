@@ -14,7 +14,7 @@ export function text (param, element, node) {
   }
   if (element.tag === 'string') {
     node.nodeValue = prop
-  } else if (param !== undefined || param !== null) {
+  } else if (param !== undefined && param !== null) {
     if (element.__text) {
       if (element.__text.text === prop) return
       element.__text.text = prop

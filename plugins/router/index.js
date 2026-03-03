@@ -112,7 +112,7 @@ export const router = (path, el, state = {}, options = {}) => {
       const top =
         activeNode.getBoundingClientRect().top +
           rootNode.scrollTop -
-          opts.scrollToOffset || 0
+          (opts.scrollToOffset || 0)
       scrollNode.scrollTo({
         ...(opts.scrollToOptions || {}),
         top,

@@ -90,7 +90,7 @@ export const createNode = (element, opts) => {
 
   const content = element.children
     ? setChildren(element.children, element, opts)
-    : element.content || element.content
+    : element.children || element.content
 
   if (content) {
     setContent(content, element, opts)
