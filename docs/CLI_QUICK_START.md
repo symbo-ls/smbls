@@ -160,6 +160,14 @@ smbls collab
 
 ---
 
+## GitHub integration (CI sync)
+
+If you want GitHub Actions to run `smbls github sync` on every push (and optionally install the Symbols GitHub App for webhooks), see:
+
+- `docs/GITHUB_INTEGRATION.md`
+
+---
+
 ## File assets (uploads/downloads) linked to a project
 
 These commands manage the project `files` map (upload, download, list, remove).
