@@ -74,27 +74,48 @@ export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
   }
 }
 
+const registerNodeEvent = (param, element, node, options) => {
+  const appliedFunction = getOnOrPropsEvent(param, element)
+  if (isFunction(appliedFunction)) {
+    node.addEventListener(param, event => {
+      const { state, context } = element
+      const result = appliedFunction.call(
+        element,
+        event,
+        element,
+        state,
+        context,
+        options
+      )
+      if (result && typeof result.then === 'function') {
+        result.then(() => {})
+      }
+    })
+  }
+}
+
 export const applyEventsOnNode = (element, options) => {
-  const { node, on } = element
+  const { node, on, props } = element
+  const handled = new Set()
+
+  // Register events from on: { click: ..., input: ... }
   for (const param in on) {
     if (DOMQL_EVENTS.includes(param)) continue
+    handled.add(param)
+    registerNodeEvent(param, element, node, options)
+  }
 
-    const appliedFunction = getOnOrPropsEvent(param, element)
-    if (isFunction(appliedFunction)) {
-      node.addEventListener(param, event => {
-        const { state, context } = element
-        const result = appliedFunction.call(
-          element,
-          event,
-          element,
-          state,
-          context,
-          options
-        )
-        if (result && typeof result.then === 'function') {
-          result.then(() => {})
-        }
-      })
+  // Also pick up props.onClick, props.onInput, etc.
+  // These arrive via propertizeElement moving root-level onClick to props
+  if (props) {
+    for (const key in props) {
+      if (key.length > 2 && key.startsWith('on') && isFunction(props[key])) {
+        const thirdChar = key[2]
+        if (thirdChar !== thirdChar.toUpperCase()) continue
+        const eventName = thirdChar.toLowerCase() + key.slice(3)
+        if (handled.has(eventName) || DOMQL_EVENTS.includes(eventName)) continue
+        registerNodeEvent(eventName, element, node, options)
+      }
     }
   }
 }

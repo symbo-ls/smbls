@@ -2,7 +2,7 @@
 
 import { report } from '@domql/report'
 import { canRenderTag } from '../event/index.js'
-import { exec, isObject, isString, isValidHtmlTag, document } from '@domql/utils'
+import { exec, isObject, isString, isValidHtmlTag, SVG_TAGS, document } from '@domql/utils'
 
 export const createHTMLNode = (element) => {
   const { tag, context } = element
@@ -11,9 +11,9 @@ export const createHTMLNode = (element) => {
     if (tag === 'string') return doc.createTextNode(element.text)
     else if (tag === 'fragment') {
       return doc.createDocumentFragment()
-    } else if (tag === 'svg' || tag === 'path') { // TODO: change that
+    } else if (SVG_TAGS.has(tag)) {
       return doc.createElementNS('http://www.w3.org/2000/svg', tag)
-    } else return doc.createElement(tag) // TODO: allow strict mode to check validity
+    } else return doc.createElement(tag)
   } else {
     return doc.createElement('div')
   }

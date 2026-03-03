@@ -1,7 +1,7 @@
 'use strict'
 
 import { create } from '../create.js'
-import { exec, isString } from '@domql/utils'
+import { exec, isString, SVG_TAGS } from '@domql/utils'
 
 /**
  * Creates a text node and appends into
@@ -15,6 +15,11 @@ export function text (param, element, node) {
   if (element.tag === 'string') {
     node.nodeValue = prop
   } else if (param !== undefined && param !== null) {
+    // SVG elements don't support appending text nodes as children
+    if (SVG_TAGS.has(element.tag)) {
+      if (node) node.textContent = prop
+      return
+    }
     if (element.__text) {
       if (element.__text.text === prop) return
       element.__text.text = prop

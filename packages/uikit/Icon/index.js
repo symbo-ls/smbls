@@ -3,6 +3,7 @@
 const inheritFromIsActive = el => {
   const { props } = el
   const propsActive = props['.isActive']
+  if (!propsActive) return
   return el.call('exec', propsActive.name || propsActive.icon)
 }
 
@@ -32,6 +33,7 @@ export const Icon = {
     const inheritFromIsActive = (el) => {
       const { props } = el
       const propsActive = props['.isActive']
+      if (!propsActive) return
       return el.call('exec', propsActive.name || propsActive.icon)
     }
 

@@ -2,6 +2,7 @@
 
 import { isFunction, isMethod, isObject, isUndefined } from '@domql/utils'
 import { applyEventsOnNode, triggerEventOn } from './event/index.js'
+import { propagateEventsFromProps, propagateEventsFromElement } from './utils/propEvents.js'
 import { cacheNode } from './render/index.js'
 import { create } from './create.js'
 
@@ -52,6 +53,8 @@ export const createNode = (element, opts) => {
   // iterate through exec
   throughInitialExec(element)
 
+  propagateEventsFromProps(element)
+  propagateEventsFromElement(element)
   applyEventsOnNode(element, { isNewNode, ...opts })
 
   for (const param in element) {
@@ -61,7 +64,8 @@ export const createNode = (element, opts) => {
       !Object.hasOwnProperty.call(element, param) ||
       isUndefined(value) ||
       isMethod(param, element) ||
-      isObject(REGISTRY[param])
+      isObject(REGISTRY[param]) ||
+      (param.startsWith('on') && param.length > 2 && param[2] === param[2].toUpperCase())
     ) {
       continue
     }

@@ -8,7 +8,7 @@ import {
   isDevelopment,
   matchesComponentNaming
 } from '@domql/utils'
-import { initEmotion } from './initEmotion.js'
+import { initEmotion } from '@symbo.ls/emotion'
 
 import * as uikit from '@symbo.ls/uikit'
 import * as utils from './utilImports.js'

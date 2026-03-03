@@ -90,6 +90,26 @@ export const THEME_PROPS = {
       borderColor: getMediaColor(val, globalTheme)
     }
   },
+  borderTopColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderTopColor: getMediaColor(val, globalTheme) }
+  },
+  borderBottomColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderBottomColor: getMediaColor(val, globalTheme) }
+  },
+  borderLeftColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderLeftColor: getMediaColor(val, globalTheme) }
+  },
+  borderRightColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderRightColor: getMediaColor(val, globalTheme) }
+  },
   borderLeft: (val) => ({
     borderLeft: transformBorder(val)
   }),

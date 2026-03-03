@@ -4,6 +4,7 @@ import { DOMQ_PROPERTIES, PROPS_METHODS } from './keys.js'
 import { addEventFromProps } from './events.js'
 import { deepClone, deepMerge, exec } from './object.js'
 import { is, isArray, isFunction, isObject, isObjectLike } from './types.js'
+import { lowercaseFirstLetter } from './string.js'
 
 export const createProps = (element, parent, key) => {
   const { props, __ref: ref } = element
@@ -23,6 +24,15 @@ export function pickupPropsFromElement (obj, opts = {}) {
 
   for (const key in obj) {
     const value = obj[key]
+
+    // Move top-level onXxx handlers directly into on.xxx (v3 style)
+    const isEventHandler = key.length > 2 && key.startsWith('on') && key[2] === key[2].toUpperCase() && isFunction(value)
+    if (isEventHandler) {
+      const eventName = lowercaseFirstLetter(key.slice(2))
+      if (obj.on) obj.on[eventName] = value
+      delete obj[key]
+      continue
+    }
 
     const hasDefine = isObject(this.define?.[key])
     const hasGlobalDefine = isObject(this.context?.define?.[key])
@@ -66,7 +76,10 @@ export function pickupElementFromProps (obj = this, opts) {
 
     // Move qualifying properties back to obj root
     if (isElement || isBuiltin || hasDefine || hasGlobalDefine) {
-      obj[key] = value
+      // Don't overwrite if root already has this property explicitly set
+      if (obj[key] === undefined) {
+        obj[key] = value
+      }
 
       if (obj.props) delete obj.props[key]
     }

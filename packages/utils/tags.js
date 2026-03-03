@@ -130,8 +130,47 @@ export const HTML_TAGS = {
 
     // SVG
     'svg',
-    'path'
+    'path',
+    'circle',
+    'ellipse',
+    'line',
+    'polygon',
+    'polyline',
+    'rect',
+    'g',
+    'defs',
+    'symbol',
+    'use',
+    'text',
+    'tspan',
+    'image',
+    'clipPath',
+    'mask',
+    'pattern',
+    'marker',
+    'linearGradient',
+    'radialGradient',
+    'stop',
+    'filter',
+    'feGaussianBlur',
+    'feOffset',
+    'feMerge',
+    'feMergeNode',
+    'feBlend',
+    'feColorMatrix',
+    'feFlood',
+    'feComposite',
+    'foreignObject'
   ]
 }
+
+export const SVG_TAGS = new Set([
+  'svg', 'path', 'circle', 'ellipse', 'line', 'polygon', 'polyline',
+  'rect', 'g', 'defs', 'symbol', 'use', 'text', 'tspan', 'image',
+  'clipPath', 'mask', 'pattern', 'marker', 'linearGradient',
+  'radialGradient', 'stop', 'filter', 'feGaussianBlur', 'feOffset',
+  'feMerge', 'feMergeNode', 'feBlend', 'feColorMatrix', 'feFlood',
+  'feComposite', 'foreignObject'
+])
 
 export const isValidHtmlTag = arg => HTML_TAGS.body.includes(arg)

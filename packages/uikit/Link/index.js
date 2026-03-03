@@ -1,5 +1,7 @@
 'use strict'
 
+import { router as defaultRouter } from '@domql/router'
+
 export const Link = {
   extends: 'Focusable',
   tag: 'a',
@@ -61,6 +63,7 @@ export const RouterLink = {
       href.startsWith('geo:') ||
       href.startsWith('maps:')
     if (href && !linkIsExternal) {
+      event.preventDefault()
       try {
         ;(functions.router || snippets.router || utils.router || defaultRouter)(
           href,
@@ -73,7 +76,6 @@ export const RouterLink = {
             ...props.routerOptions
           }
         )
-        event.preventDefault()
       } catch (e) {
         console.warn(e)
       }

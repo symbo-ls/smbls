@@ -35,10 +35,14 @@
   "dependencies": {
     "@domql/utils": "3.2.3",
     "@symbo.ls/atoms": "3.2.3",
-    "smbls": "^3.2.3",
-    "@symbo.ls/scratch": "3.2.3"
+    "@symbo.ls/emotion": "3.2.3",
+    "@symbo.ls/scratch": "3.2.3",
+    "smbls": "^3.2.3"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "browser": "./dist/iife/index.js",
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {
+    "@babel/core": "^7.29.0"
+  }
 }

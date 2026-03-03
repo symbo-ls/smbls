@@ -12,11 +12,14 @@ export const DOMQ_PROPERTIES = [
   'scope',
   'root',
   'deps',
+  'extend',
   'extends',
   '$router',
   'routes',
   'children',
+  'childExtend',
   'childExtends',
+  'childExtendRecursive',
   'childExtendsRecursive',
   'props',
   'if',
@@ -128,7 +131,13 @@ export const METHODS = [
   'error',
   'call',
   'nextElement',
-  'previousElement'
+  'previousElement',
+  'getRootState',
+  'getRoot',
+  'getRootData',
+  'getRootContext',
+  'getContext',
+  'getChildren'
 ]
 
 export const METHODS_EXL = [

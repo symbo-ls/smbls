@@ -162,6 +162,10 @@ export const update = function (params = {}, opts) {
     const isInPreventDefineUpdate =
       isArray(preventDefineUpdate) && preventDefineUpdate.includes(param)
 
+    // Skip onXxx event handler functions (e.g. onClick) that may remain at root level
+    const isRootEventHandler = isFunction(prop) && param.length > 2 &&
+      param.startsWith('on') && param[2] === param[2].toUpperCase()
+
     if (
       isUndefined(prop) ||
       isInPreventUpdate ||
@@ -170,6 +174,7 @@ export const update = function (params = {}, opts) {
       preventDefineUpdate === param ||
       (preventStateUpdate && param === 'state') ||
       isMethod(param, element) ||
+      isRootEventHandler ||
       isObject(REGISTRY[param])
     ) {
       continue
@@ -211,13 +216,35 @@ export const update = function (params = {}, opts) {
   }
 
   if (!preventContentUpdate) {
-    const children = params.children || element.children
-    const content = children
-      ? setChildren(children, element, opts)
-      : element.children || params.content
+    // Update existing content element if it's a live DOMQL element
+    const contentKey = ref.contentElementKey || 'content'
+    const existingContent = element[contentKey]
+    if (existingContent && existingContent.__ref && isFunction(existingContent.update)) {
+      const lazyLoad = element.props?.lazyLoad || options.lazyLoad
+      const contentUpdateCall = () =>
+        update.call(existingContent, params[contentKey], {
+          ...options,
+          currentSnapshot: snapshotOnCallee,
+          calleeElement
+        })
 
-    if (content) {
-      setContent(content, element, options)
+      if (lazyLoad) {
+        window.requestAnimationFrame(() => {
+          contentUpdateCall()
+          if (!options.preventUpdateListener) {
+            triggerEventOn('lazyLoad', element, options)
+          }
+        })
+      } else contentUpdateCall()
+    } else {
+      const children = params.children || element.children
+      const content = children
+        ? setChildren(children, element, opts)
+        : element.children || params.content
+
+      if (content) {
+        setContent(content, element, options)
+      }
     }
   }
 

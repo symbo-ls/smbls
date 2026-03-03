@@ -9,6 +9,7 @@ import {
   isUndefined,
   detectInfiniteLoop,
   propertizeElement,
+  pickupElementFromProps,
   createElement,
   applyExtends,
   createScope,
@@ -72,6 +73,8 @@ export const create = (
 
   // apply props settings
   initProps(element, parent, options)
+  // Re-pickup component-named properties that entered props via childProps/inheritParentProps
+  pickupElementFromProps.call(element, element, { cachedKeys: [] })
   if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
   }
@@ -209,6 +212,8 @@ const onlyResolveExtends = (element, parent, key, options) => {
 
   // apply props settings
   initProps(element, parent, options)
+  // Re-pickup component-named properties that entered props via childProps/inheritParentProps
+  pickupElementFromProps.call(element, element, { cachedKeys: [] })
   if (element.scope === 'props' || element.scope === true) {
     element.scope = element.props
   }

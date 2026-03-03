@@ -13,7 +13,7 @@ export const setContentKey = (element, opts = {}) => {
   return ref.contentElementKey
 }
 
-export const reset = options => {
+export function reset (options) {
   const element = this
   create(element, element.parent, undefined, {
     ignoreChildExtends: true,

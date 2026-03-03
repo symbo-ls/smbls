@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject } from '@domql/utils'
-import { emotion } from 'smbls/emotion.js'
+import { emotion } from '@symbo.ls/emotion'
 import { getTimingByKey, getTimingFunction } from '@symbo.ls/scratch'
 
 const applyAnimationProps = (animation, element) => {
