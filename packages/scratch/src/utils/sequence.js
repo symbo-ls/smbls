@@ -1,7 +1,7 @@
 'use strict'
 
 import { isString } from '@domql/utils'
-import { toDashCase } from '@symbo.ls/utils'
+import { toDashCase } from '@symbo.ls/smbls-utils'
 import { getActiveConfig } from '../factory.js'
 import { CSS_UNITS, isScalingUnit } from './unit.js'
 

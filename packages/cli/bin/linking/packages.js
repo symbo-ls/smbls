@@ -7,7 +7,7 @@ export default [
   '@symbo.ls/feather-icons',
   '@symbo.ls/material-icons',
   '@symbo.ls/preview',
-  '@symbo.ls/utils',
+  '@symbo.ls/smbls-utils',
   '@symbo.ls/default-config',
   '@symbo.ls/scratch',
   '@symbo.ls/atoms',

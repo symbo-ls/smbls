@@ -14,20 +14,20 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "^3.2.3",
-    "@symbo.ls/atoms": "^3.2.3",
-    "@symbo.ls/avatar": "^3.2.3",
-    "@symbo.ls/button": "^3.2.3",
-    "@symbo.ls/dialog": "^3.2.3",
-    "@symbo.ls/dropdown": "^3.2.3",
-    "@symbo.ls/icon": "^3.2.3",
-    "@symbo.ls/input": "^3.2.3",
-    "@symbo.ls/link": "^3.2.3",
-    "@symbo.ls/notification": "^3.2.3",
-    "@symbo.ls/range": "^3.2.3",
-    "@symbo.ls/scratch": "^3.2.3",
-    "@symbo.ls/select": "^3.2.3",
-    "@symbo.ls/tooltip": "^3.2.3"
+    "@domql/utils": "3.2.3",
+    "@symbo.ls/atoms": "3.2.3",
+    "@symbo.ls/avatar": "3.2.3",
+    "@symbo.ls/button": "3.2.3",
+    "@symbo.ls/dialog": "3.2.3",
+    "@symbo.ls/dropdown": "3.2.3",
+    "@symbo.ls/icon": "3.2.3",
+    "@symbo.ls/input": "3.2.3",
+    "@symbo.ls/link": "3.2.3",
+    "@symbo.ls/notification": "3.2.3",
+    "@symbo.ls/range": "3.2.3",
+    "@symbo.ls/scratch": "3.2.3",
+    "@symbo.ls/select": "3.2.3",
+    "@symbo.ls/tooltip": "3.2.3"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"

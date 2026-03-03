@@ -2,7 +2,7 @@ import fs from 'fs'
 import chalk from 'chalk'
 import path from 'path'
 import * as utils from '@domql/utils'
-import * as smblsUtils from '@symbo.ls/utils'
+import * as smblsUtils from '@symbo.ls/smbls-utils'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 

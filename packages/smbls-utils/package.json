@@ -32,8 +32,8 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@domql/element": "^3.2.3",
-    "@domql/utils": "^3.2.3"
+    "@domql/element": "3.2.3",
+    "@domql/utils": "3.2.3"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "browser": "./dist/iife/index.js",

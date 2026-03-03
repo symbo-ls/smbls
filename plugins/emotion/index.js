@@ -3,7 +3,14 @@
 // import DOM from '../../src'
 import { isObjectLike, isString, isNumber, isBoolean, exec } from '@domql/utils'
 import { applyClassListOnNode } from './classList'
-import createEmotion from '@emotion/css/create-instance'
+import createEmotionInstance from '@emotion/css/create-instance'
+
+export const createEmotion = (key = 'smbls', container) => {
+  const cleanKey = key.replaceAll(/\./g, '-')
+  return createEmotionInstance({ key: cleanKey, container })
+}
+
+export const emotion = createEmotion()
 
 export const transformEmotionStyle = emotion => {
   return (params, element, state) => {
@@ -64,7 +71,7 @@ export const transformEmotionClass = emotion => {
 }
 
 export const transformDOMQLEmotion = (emotion, options) => {
-  if (!emotion) emotion = createEmotion(options || { key: 'smbls' })
+  if (!emotion) emotion = createEmotionInstance(options || { key: 'smbls' })
 
   return {
     style: transformEmotionStyle(emotion),

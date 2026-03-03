@@ -1,13 +1,12 @@
 {
   "name": "@symbo.ls/markdown",
-  "version": "2.11.470",
+  "version": "3.2.3",
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
   "gitHead": "f0186c01b816bdb54d5e19d4392c003d9a8eb945",
   "dependencies": {
-    "@domql/converter": "latest",
-    "remark": "latest",
+"remark": "latest",
     "remark-gfm": "latest"
   },
   "type": "module",

@@ -1,6 +1,6 @@
 'use strict'
 
-import { arrayzeValue } from '@symbo.ls/utils'
+import { arrayzeValue } from '@symbo.ls/smbls-utils'
 import { isArray, isString, merge } from '@domql/utils'
 
 import { getActiveConfig } from '../factory.js'

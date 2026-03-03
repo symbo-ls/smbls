@@ -1,6 +1,6 @@
 'use strict'
 
-import { toCamelCase } from '@symbo.ls/utils'
+import { toCamelCase } from '@symbo.ls/smbls-utils'
 import { getActiveConfig } from '../factory.js'
 import {
   applySequenceVars,

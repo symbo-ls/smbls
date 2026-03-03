@@ -5,8 +5,8 @@
   "license": "MIT",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "dependencies": {
-    "@symbo.ls/atoms": "^3.2.3",
-    "@symbo.ls/button": "^3.2.3"
+    "@symbo.ls/atoms": "3.2.3",
+    "@symbo.ls/button": "3.2.3"
   },
   "source": "index.js",
   "type": "module",

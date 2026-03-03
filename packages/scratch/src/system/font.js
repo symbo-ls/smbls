@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject, isArray } from '@domql/utils'
-import { arrayzeValue } from '@symbo.ls/utils'
+import { arrayzeValue } from '@symbo.ls/smbls-utils'
 import { getActiveConfig } from '../factory.js'
 
 import {

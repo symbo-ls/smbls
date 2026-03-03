@@ -51,12 +51,10 @@
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/router": "^3.2.3",
-
-    "@domql/utils": "^3.2.3",
-    "@symbo.ls/init": "^3.2.3",
-    "@symbo.ls/scratch": "^3.2.3",
-    "@symbo.ls/uikit": "^3.2.3",
+    "@domql/router": "3.2.3",
+    "@domql/utils": "3.2.3",
+"@symbo.ls/scratch": "3.2.3",
+    "@symbo.ls/uikit": "3.2.3",
     "chalk": "^5.4.1",
     "express": "^4.21.2",
     "http": "^0.0.1-security",

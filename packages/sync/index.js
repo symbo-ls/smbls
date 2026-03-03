@@ -1,5 +1,5 @@
 import { router } from '@domql/router'
-import { init } from '@symbo.ls/init'
+import { init } from 'smbls'
 import { io } from 'socket.io-client'
 import { window, overwriteShallow, overwriteDeep } from '@domql/utils'
 import { connectedToSymbols, Notifications } from './SyncNotifications'

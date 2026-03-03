@@ -68,6 +68,7 @@ export const createDomqlElement = async (app, ctx) => {
     ctx.key = app
   } else if (!isObject(app)) {
     app = {}
+  }
 
   await prepareContext(app, ctx)
 
