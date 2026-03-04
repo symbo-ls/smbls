@@ -1,8 +1,8 @@
 {
   "name": "@symbo.ls/sync",
   "version": "3.2.3",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "main": "./index.js",
+  "module": "./index.js",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "files": [
     "dist",
@@ -14,20 +14,19 @@
   "jsdelivr": "./dist/iife/index.js",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "browser": "./dist/iife/index.js",
-      "default": "./dist/esm/index.js"
+      "import": "./index.js",
+      "require": "./index.js",
+      "browser": "./index.js",
+      "default": "./index.js"
     },
     "./client": {
-      "import": "./dist/esm/client.js",
-      "require": "./dist/cjs/client.js",
-      "default": "./dist/esm/client.js"
+      "import": "./client.js",
+      "require": "./client.js",
+      "default": "./client.js"
     },
     "./server": {
-      "import": "./dist/esm/server.js",
-      "require": "./dist/cjs/server.js",
-      "default": "./dist/esm/server.js"
+      "import": "./server.js",
+      "default": "./server.js"
     },
     "./*.js": {
       "import": "./dist/esm/*.js",
@@ -53,7 +52,7 @@
   "dependencies": {
     "@domql/router": "3.2.3",
     "@domql/utils": "3.2.3",
-"@symbo.ls/scratch": "3.2.3",
+    "@symbo.ls/scratch": "3.2.3",
     "@symbo.ls/uikit": "3.2.3",
     "chalk": "^5.4.1",
     "express": "^4.21.2",

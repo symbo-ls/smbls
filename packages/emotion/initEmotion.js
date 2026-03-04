@@ -1,21 +1,15 @@
 'use strict'
 
 import { transformDOMQLEmotion, emotion as defaultEmotion } from './index.js'
-import { init } from 'smbls'
+import { init, DEFAULT_CONTEXT } from 'smbls'
 import { deepClone, deepMerge } from '@domql/utils'
 
 import { DEFAULT_CONFIG } from '@symbo.ls/default-config'
 
-const DESIGN_SYSTEM_OPTIONS = {
-  useReset: true,
-  useVariable: true,
-  useIconSprite: true,
-  useSvgSprite: true,
-  useDocumentTheme: true,
-  useDefaultIcons: true,
-  useFontImport: true,
-  useDefaultConfig: true
-}
+const OPTION_KEYS = [
+  'useReset', 'useVariable', 'useFontImport', 'useIconSprite',
+  'useSvgSprite', 'useDocumentTheme', 'useDefaultIcons', 'useDefaultConfig', 'verbose'
+]
 
 export const initEmotion = (key, options = {}) => {
   const doc = options.parent || options.document || document
@@ -31,12 +25,18 @@ export const initEmotion = (key, options = {}) => {
       ? deepMerge(options.designSystem, deepClone(DEFAULT_CONFIG))
       : options.designSystem || deepClone(DEFAULT_CONFIG)
 
+  // Pick context-level overrides (from user's config.js spread into context)
+  const contextOverrides = {}
+  for (const k of OPTION_KEYS) {
+    if (options[k] !== undefined) contextOverrides[k] = options[k]
+  }
+
   const scratchSystem = init(designSystem, {
     key,
     emotion,
-    verbose: options.verbose,
     document: doc,
-    ...DESIGN_SYSTEM_OPTIONS,
+    ...DEFAULT_CONTEXT,
+    ...contextOverrides,
     ...initOptions
   })
 

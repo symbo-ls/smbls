@@ -39,26 +39,28 @@ const PM_CHOICES = [
 
 const CDN_VALUES = CDN_CHOICES.map(c => c.value)
 
+const CDN_PACKAGE_MANAGERS = CDN_VALUES
+
 /**
  * Write symbols/config.js with the resolved runtime config.
  * This file must be browser-safe (no dynamic imports, no Node APIs).
+ * Only includes packageManager when it's a CDN (implies prepareDependencies).
  */
-function writeProjectConfigJs (cwd, { distDir, prepareDependencies, packageManager, bundler }) {
+function writeProjectConfigJs (cwd, { distDir, packageManager, bundler }) {
   const configJsPath = path.join(cwd, distDir || 'symbols', 'config.js')
-  if (!fs.existsSync(configJsPath)) return
-  const lines = ['export default {']
-  if (bundler) lines.push(`  bundler: '${bundler}',`)
-  lines.push(`  packageManager: '${packageManager}',`)
-  lines.push(`  prepareDependencies: ${prepareDependencies}`)
-  lines.push('}')
-  fs.writeFileSync(configJsPath, lines.join('\n') + '\n')
+  fs.mkdirSync(path.dirname(configJsPath), { recursive: true })
+  const entries = []
+  if (bundler) entries.push(`  bundler: '${bundler}'`)
+  if (CDN_PACKAGE_MANAGERS.includes(packageManager)) entries.push(`  packageManager: '${packageManager}'`)
+  const body = entries.length ? '\n' + entries.join(',\n') + '\n' : ''
+  fs.writeFileSync(configJsPath, `export default {${body}}\n`)
 }
 
 /**
  * Run interactive config prompts and save results to symbols.json + .symbols_cache/config.json.
  * Also rewrites symbols/config.js if present.
  * @param {object} symbolsConfig - existing symbols.json content
- * @returns {{ runtime: string, bundler: string|null, packageManager: string, prepareDependencies: boolean }}
+ * @returns {{ runtime: string, bundler: string|null, packageManager: string }}
  */
 export async function runConfigPrompts (symbolsConfig = {}) {
   const cliConfig = loadCliConfig()
@@ -89,9 +91,9 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     },
     {
       type: 'input',
-      name: 'distDir',
-      message: 'Directory for generated files (distDir):',
-      default: symbolsConfig.distDir || './symbols',
+      name: 'dir',
+      message: 'Symbols source directory:',
+      default: symbolsConfig.dir || symbolsConfig.distDir || './symbols',
       filter: (v) => v.trim() || './symbols'
     },
     {
@@ -166,14 +168,12 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     packageManager = 'deno'
   }
 
-  const prepareDependencies = runtime === 'browser' && CDN_VALUES.includes(packageManager)
-
   updateLegacySymbolsJson({
     ...symbolsConfig,
     key: answers.key || undefined,
     branch: answers.branch,
     version: answers.version,
-    distDir: answers.distDir,
+    dir: answers.dir,
     runtime,
     bundler,
     packageManager
@@ -186,11 +186,10 @@ export async function runConfigPrompts (symbolsConfig = {}) {
   })
 
   writeProjectConfigJs(process.cwd(), {
-    distDir: answers.distDir,
-    prepareDependencies,
+    distDir: answers.dir,
     packageManager,
     bundler
   })
 
-  return { runtime, bundler, packageManager, prepareDependencies }
+  return { runtime, bundler, packageManager }
 }

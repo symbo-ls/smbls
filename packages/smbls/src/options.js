@@ -1,6 +1,7 @@
 'use strict'
 
 import { defaultDefine } from './define.js'
+import { version } from '../package.json' with { type: 'json' }
 
 export const DESIGN_SYSTEM_OPTIONS = {
   useReset: true,
@@ -13,15 +14,23 @@ export const DESIGN_SYSTEM_OPTIONS = {
   useDefaultConfig: true
 }
 
+export const ROUTER_OPTIONS = {
+  initRouter: true,
+  popState: true,
+  injectRouterInLinkComponent: true
+}
+
+export const DEFAULT_CONTEXT = {
+  ...DESIGN_SYSTEM_OPTIONS,
+  router: ROUTER_OPTIONS,
+  version
+}
+
 export const CREATE_OPTIONS = {
   state: {},
   pages: {},
   components: {},
-  router: {
-    initRouter: true,
-    popState: true,
-    injectRouterInLinkComponent: true
-  },
+  router: ROUTER_OPTIONS,
   define: defaultDefine
 }
 

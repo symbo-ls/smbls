@@ -7,7 +7,6 @@ import { isString, isNode, isObject } from '@domql/utils'
 import { initAnimationFrame } from '@domql/element'
 import { defaultDefine } from './define.js'
 import { initRouter } from './router.js'
-import { version } from '../package.json' with { type: 'json' }
 import {
   initializeExtend,
   initializeNotifications,
@@ -24,7 +23,8 @@ import {
   prepareState,
   prepareUtils,
   prepareMethods,
-  prepareSharedLibs
+  prepareSharedLibs,
+  PACKAGE_MANAGER_TO_CDN
 } from './prepare.js'
 
 export const prepareContext = async (app, context = {}) => {
@@ -48,7 +48,7 @@ export const prepareContext = async (app, context = {}) => {
   context.pages = preparePages(app, context)
   context.components = prepareComponents(context)
   context.utils = prepareUtils(context)
-  if (context.prepareDependencies !== false) {
+  if (PACKAGE_MANAGER_TO_CDN[context.packageManager]) {
     context.dependencies = await prepareDependencies(context)
   }
   context.methods = prepareMethods(context)

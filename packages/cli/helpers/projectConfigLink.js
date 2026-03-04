@@ -26,7 +26,7 @@ function writeJsonSafe (filePath, data) {
 
 export function getProjectConfigPaths (baseDir) {
   const root = path.resolve(baseDir || process.cwd())
-  const symbolsDir = path.join(root, '.symbols')
+  const symbolsDir = path.join(root, '.symbols_cache')
   return {
     root,
     symbolsDir,

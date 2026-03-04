@@ -1,7 +1,7 @@
 {
   "name": "@domql/performance",
   "version": "3.2.3",
-  "main": "./dist/cjs/index.js",
+  "main": "./index.js",
   "license": "MIT",
   "scripts": {
     "vpatch": "npm version patch && npm publish --access public",
@@ -15,17 +15,17 @@
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "source": "index.js",
   "type": "module",
-  "module": "./dist/esm/index.js",
+  "module": "./index.js",
   "browser": "./dist/iife/index.js",
   "unpkg": "./dist/iife/index.js",
   "jsdelivr": "./dist/iife/index.js",
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "browser": "./dist/iife/index.js",
-      "default": "./dist/esm/index.js"
+      "import": "./index.js",
+      "require": "./index.js",
+      "browser": "./index.js",
+      "default": "./index.js"
     }
   },
   "files": [

@@ -147,7 +147,7 @@ export const fetchFromCli = async (opts) => {
     resolveDistDir(symbolsConfig, {
       distDirOverride: opts.distDir
     }) ||
-    path.join(process.cwd(), 'smbls')
+    path.join(process.cwd(), 'symbols')
 
   console.log('\nFetching project data...\n')
 

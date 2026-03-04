@@ -155,7 +155,7 @@ function toLibFileStem (lib, idx) {
 
 export async function createFs (
   body,
-  distDir = path.join(process.cwd(), 'smbls'),
+  distDir = path.join(process.cwd(), 'symbols'),
   opts = {}
 ) {
   if (!body) {
@@ -560,13 +560,16 @@ export async function createFs (
     for (const [entryKey, value] of Object.entries(contentRoot || {})) {
       // Only split plain objects into individual files.
       if (isPlainObjectValue(value)) {
-        const safeStem = String(entryKey).replace(/[/\\]/g, '-')
+        const safeStem = String(entryKey).replace(/[/\\]/g, '-').toLowerCase()
         if (!safeStem) continue
+        const rawImportName = safeStem.replace(/-/g, '_')
+        const importName = isReservedIdentifier(rawImportName) ? `${rawImportName}_` : rawImportName
         objectEntries.push({
           entryKey,
           value,
           fileStem: safeStem,
-          importName: toSafeImportName(entryKey, usedImportNames)
+          importName,
+          exportKey: rawImportName
         })
       } else {
         simpleEntries.push([entryKey, value])
@@ -590,14 +593,13 @@ export async function createFs (
 
     const propLines = []
 
-    // Object entries first (in order)
-    for (const { entryKey, importName } of objectEntries) {
-      if (isValidIdentifierName(entryKey) && entryKey === importName) {
-        propLines.push(`${entryKey},`)
-      } else if (isValidIdentifierName(entryKey)) {
-        propLines.push(`${entryKey}: ${importName},`)
+    // Object entries first (in order) — use lowercase keys
+    for (const { importName, exportKey } of objectEntries) {
+      if (exportKey && exportKey !== importName) {
+        // reserved word: e.g. class_ var exported as class
+        propLines.push(`${exportKey}: ${importName},`)
       } else {
-        propLines.push(`${JSON.stringify(entryKey)}: ${importName},`)
+        propLines.push(`${importName},`)
       }
     }
 

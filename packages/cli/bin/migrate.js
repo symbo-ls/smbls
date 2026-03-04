@@ -92,6 +92,42 @@ program
     // Resolved source dir to work with
     ensureDir(symbolsDir)
 
+    // 3a. Lowercase all files in designSystem/ (preserve content)
+    const dsDir = path.join(symbolsDir, 'designSystem')
+    if (fs.existsSync(dsDir)) {
+      const dsFiles = fs.readdirSync(dsDir)
+      let renamedCount = 0
+      for (const file of dsFiles) {
+        if (file === 'index.js') continue
+        const lower = file.toLowerCase()
+        if (file !== lower) {
+          fs.renameSync(path.join(dsDir, file), path.join(dsDir, lower))
+          renamedCount++
+        }
+      }
+      // Update import variable names and paths in designSystem/index.js
+      const dsIndex = path.join(dsDir, 'index.js')
+      if (fs.existsSync(dsIndex)) {
+        const updated = fs.readFileSync(dsIndex, 'utf8')
+          // lowercase import variable names: `import FOO from` → `import foo from` (suffix _ for reserved words)
+          .replace(/^import\s+(\w+)\s+from/gm, (_, name) => {
+            const lower = name.toLowerCase()
+            const RESERVED = new Set(['class', 'default', 'export', 'import', 'return', 'let', 'const', 'var', 'function', 'new', 'this', 'super', 'extends', 'yield', 'await', 'delete', 'typeof', 'void', 'in', 'of', 'for', 'while', 'do', 'if', 'else', 'switch', 'case', 'break', 'continue', 'throw', 'try', 'catch', 'finally', 'with', 'debugger', 'static'])
+            return `import ${RESERVED.has(lower) ? `${lower}_` : lower} from`
+          })
+          // lowercase paths: `from './FOO'` → `from './foo'`
+          .replace(/from '\.\/([^']+)'/g, (_, p) => `from './${p.toLowerCase()}'`)
+          // lowercase export shorthand keys: `  FOO,` → `  foo,`
+          .replace(/^(  )(\w+),$/gm, (_, indent, key) => {
+            const lower = key.toLowerCase()
+            const RESERVED = new Set(['class', 'default', 'export', 'import', 'return', 'let', 'const', 'var', 'function', 'new', 'this', 'super', 'extends', 'yield', 'await', 'delete', 'typeof', 'void', 'in', 'of', 'for', 'while', 'do', 'if', 'else', 'switch', 'case', 'break', 'continue', 'throw', 'try', 'catch', 'finally', 'with', 'debugger', 'static'])
+            return RESERVED.has(lower) ? `${indent}${lower}: ${lower}_,` : `${indent}${lower},`
+          })
+        fs.writeFileSync(dsIndex, updated)
+      }
+      if (renamedCount) console.log(chalk.green('lower  ') + `designSystem/ (${renamedCount} files renamed to lowercase)`)
+    }
+
     // 3. Create symbols/app.js if missing
     const appJsPath = path.join(symbolsDir, 'app.js')
     if (!fs.existsSync(appJsPath)) {
@@ -160,8 +196,8 @@ program
     const existingSymbols = fs.existsSync(symbolsPath)
       ? JSON.parse(fs.readFileSync(symbolsPath, 'utf8'))
       : {}
-    if (!existingSymbols.distDir || existingSymbols.distDir === './smbls') {
-      existingSymbols.distDir = './symbols'
+    if (!existingSymbols.dir || existingSymbols.dir === './smbls' || existingSymbols.distDir === './smbls') {
+      existingSymbols.dir = './symbols'
     }
     console.log(chalk.bold('\nConfigure your project:\n'))
     const { packageManager: pm, bundler } = await runConfigPrompts(existingSymbols)

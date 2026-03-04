@@ -299,7 +299,7 @@ export async function startCollab (options) {
 
   const distDir =
     resolveDistDir(symbolsConfig) ||
-    path.join(process.cwd(), 'smbls')
+    path.join(process.cwd(), 'symbols')
 
   const packageJsonPath = findNearestPackageJson(process.cwd())
 

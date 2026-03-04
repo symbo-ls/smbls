@@ -77,9 +77,8 @@ export const PACKAGE_MANAGER_TO_CDN = {
  * Returns null when packageManager is a local tool (npm/yarn/pnpm/bun).
  */
 export const getCdnProviderFromConfig = (symbolsConfig = {}) => {
-  const { packageManager, bundler } = symbolsConfig
-  if (bundler !== 'browser') return null
-  return PACKAGE_MANAGER_TO_CDN[packageManager] || 'esmsh'
+  const { packageManager } = symbolsConfig
+  return PACKAGE_MANAGER_TO_CDN[packageManager] || null
 }
 
 export const getCDNUrl = (
@@ -138,11 +137,13 @@ export const prepareDependencies = async ({
   document,
   preventCaching = false,
   cdnProvider,
+  packageManager,
   symbolsConfig
 }) => {
-  // Derive provider from symbols.json config when not explicitly passed
+  // Derive provider from packageManager or symbolsConfig when not explicitly passed
   if (!cdnProvider) {
-    cdnProvider = getCdnProviderFromConfig(symbolsConfig) || 'esmsh'
+    cdnProvider = PACKAGE_MANAGER_TO_CDN[packageManager] ||
+      getCdnProviderFromConfig(symbolsConfig) || 'esmsh'
   }
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null

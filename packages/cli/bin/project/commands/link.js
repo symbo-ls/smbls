@@ -6,7 +6,7 @@ export function registerProjectLinkCommand (projectCmd) {
     .description('Link a local folder to an existing platform project')
     .option('--key <projectKey>', 'Project key to link')
     .option('--id <projectId>', 'Project id to link')
-    .option('--branch <branch>', 'Local branch for .symbols/config.json', 'main')
+    .option('--branch <branch>', 'Local branch for .symbols_cache/config.json', 'main')
     .action(async (dir, opts) => {
       await runProjectCreate(dir || process.cwd(), {
         linkExisting: true,

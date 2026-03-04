@@ -38,12 +38,13 @@ export const getRunnerConfig = (cwd = process.cwd()) => {
   const s = getSymbols(cwd)
   const runtime = s.runtime || 'node'
   const isBrowser = runtime === 'browser'
+  const distDir = s.dir || s.distDir || 'symbols'
   return {
     runtime,
     bundler: isBrowser ? null : (s.bundler || null),
-    entry: isBrowser ? (s.entry || 'index.html') : (s.entry || 'index.html'),
+    entry: s.entry || `${distDir}/index.html`,
     port: s.port || 1234,
-    distDir: s.distDir || 'dist',
+    distDir,
     packageManager: s.packageManager || 'npm'
   }
 }

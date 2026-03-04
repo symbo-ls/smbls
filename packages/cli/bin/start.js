@@ -1,5 +1,5 @@
 import { createServer } from 'http'
-import { createReadStream, existsSync, statSync } from 'fs'
+import { createReadStream, existsSync, statSync, readFileSync } from 'fs'
 import { resolve, extname, join } from 'path'
 import { program } from './program.js'
 import { resolveBundler, getRunnerConfig, findBin, spawnBin } from './bundler.js'
@@ -18,16 +18,43 @@ const MIME = {
   '.otf': 'font/otf'
 }
 
-const serveBrowser = (entry, port, cwd) => {
+const CDN_BASE = {
+  'esm.sh': pkg => `https://esm.sh/${pkg}`,
+  'unpkg': pkg => `https://unpkg.com/${pkg}?module`,
+  'skypack': pkg => `https://cdn.skypack.dev/${pkg}`,
+  'jsdelivr': pkg => `https://cdn.jsdelivr.net/npm/${pkg}/+esm`,
+  'pkg.symbo.ls': pkg => `https://pkg.symbo.ls/${pkg}`
+}
+
+const buildImportmap = (packageManager) => {
+  const fmt = CDN_BASE[packageManager] || CDN_BASE['esm.sh']
+  const imports = { smbls: fmt('smbls') }
+  return `<script type="importmap">\n${JSON.stringify({ imports }, null, 2)}\n</script>`
+}
+
+const injectImportmap = (html, packageManager) => {
+  const tag = buildImportmap(packageManager)
+  if (html.includes('</head>')) return html.replace('</head>', `${tag}\n</head>`)
+  if (html.includes('<body')) return html.replace('<body', `${tag}\n<body`)
+  return tag + '\n' + html
+}
+
+const serveBrowser = (entry, port, cwd, packageManager) => {
+  const entryPath = join(cwd, entry)
   const server = createServer((req, res) => {
     let urlPath = req.url.split('?')[0]
     if (urlPath === '/') urlPath = `/${entry}`
 
     const filePath = join(cwd, urlPath)
+    const isHtml = !existsSync(filePath) || statSync(filePath).isDirectory() ||
+      extname(filePath) === '.html'
 
-    if (!existsSync(filePath) || statSync(filePath).isDirectory()) {
+    if (isHtml) {
+      const html = readFileSync(existsSync(filePath) && !statSync(filePath).isDirectory()
+        ? filePath : entryPath, 'utf8')
+      const injected = injectImportmap(html, packageManager)
       res.writeHead(200, { 'Content-Type': 'text/html' })
-      createReadStream(join(cwd, entry)).pipe(res)
+      res.end(injected)
       return
     }
 
@@ -38,8 +65,6 @@ const serveBrowser = (entry, port, cwd) => {
 
   server.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`)
-    console.log(`Entry: ${entry} — browser native mode (no bundler)`)
-    console.log(`Dependencies resolved from dependencies.js`)
   })
 }
 
@@ -57,7 +82,7 @@ program
     const port = opts.port ? parseInt(opts.port, 10) : config.port
 
     if (config.runtime === 'browser') {
-      serveBrowser(resolvedEntry, port, cwd)
+      serveBrowser(resolvedEntry, port, cwd, config.packageManager)
       return
     }
 

@@ -3,13 +3,21 @@ import path from 'path'
 import { CredentialManager } from './credentialManager.js'
 
 // New configuration layout
-// .symbols/config.json  -> project runtime configuration (apiBaseUrl, projectKey|projectId, branch)
-// .symbols/lock.json    -> last pulled snapshot metadata (etag, version, projectId, branch, pulledAt)
+// .symbols_cache/config.json  -> project runtime configuration (apiBaseUrl, projectKey|projectId, branch)
+// .symbols_cache/lock.json    -> last pulled snapshot metadata (etag, version, projectId, branch, pulledAt)
 // Backward compatibility:
 //  - Keep reading legacy .smblsrc and symbols.json when present
+//  - Auto-migrate .symbols/ -> .symbols_cache/ on load
 
 const CWD = process.cwd()
-const SYMBOLS_DIR = path.join(CWD, '.symbols')
+const LEGACY_SYMBOLS_CACHE_DIR = path.join(CWD, '.symbols')
+const SYMBOLS_DIR = path.join(CWD, '.symbols_cache')
+
+// Auto-migrate .symbols -> .symbols_cache on first use
+if (fs.existsSync(LEGACY_SYMBOLS_CACHE_DIR) && !fs.existsSync(SYMBOLS_DIR)) {
+  try { fs.renameSync(LEGACY_SYMBOLS_CACHE_DIR, SYMBOLS_DIR) } catch (_) {}
+}
+
 const CONFIG_PATH = path.join(SYMBOLS_DIR, 'config.json')
 const LOCK_PATH = path.join(SYMBOLS_DIR, 'lock.json')
 const PROJECT_JSON_PATH = path.join(SYMBOLS_DIR, 'project.json')
@@ -144,7 +152,9 @@ export function ensureSymbolsDir() {
 // Helper for legacy projects to keep version/branch updates in symbols.json
 export function updateLegacySymbolsJson(partial) {
   const current = readJsonSafe(LEGACY_SYMBOLS_JSON) || {}
-  const next = { ...current, ...partial }
+  // Strip null/undefined from partial so they're never written to symbols.json
+  const cleaned = Object.fromEntries(Object.entries(partial).filter(([, v]) => v != null))
+  const next = { ...current, ...cleaned }
   writeJsonSafe(LEGACY_SYMBOLS_JSON, next)
   return next
 }

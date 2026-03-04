@@ -17,8 +17,12 @@
       "default": "./dist/esm/index.js"
     }
   },
+  "bin": {
+    "smbls": "./bin/smbls.js"
+  },
   "source": "index.js",
   "files": [
+    "bin",
     "dist",
     "*.js",
     "src"

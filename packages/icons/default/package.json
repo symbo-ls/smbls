@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/default-icons",
   "version": "3.2.3",
-  "main": "./dist/cjs/index.js",
+  "main": "./index.js",
   "author": "symbo.ls",
   "license": "ISC",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
@@ -11,15 +11,15 @@
   ],
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
-  "module": "./dist/esm/index.js",
+  "module": "./index.js",
   "unpkg": "./dist/iife/index.js",
   "jsdelivr": "./dist/iife/index.js",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "browser": "./dist/iife/index.js",
-      "default": "./dist/esm/index.js"
+      "import": "./index.js",
+      "require": "./index.js",
+      "browser": "./index.js",
+      "default": "./index.js"
     },
     "./*.js": {
       "import": "./dist/esm/*.js",

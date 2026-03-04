@@ -103,7 +103,7 @@ export async function runProjectCreate (destArg, options = {}) {
     console.log(chalk.green('Linked project:'))
     if (projectKey) console.log(' ', chalk.cyan(projectKey))
     if (projectId) console.log(' ', chalk.dim(projectId))
-    console.log(chalk.dim(`Config written to ${path.join(dest, '.symbols/config.json')}`))
+    console.log(chalk.dim(`Config written to ${path.join(dest, '.symbols_cache/config.json')}`))
     return
   }
 

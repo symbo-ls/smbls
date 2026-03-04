@@ -104,3 +104,4 @@ export const createSkeleton = (
 export default create
 
 export * from './init.js'
+export { DEFAULT_CONTEXT, DESIGN_SYSTEM_OPTIONS, ROUTER_OPTIONS } from './options.js'
