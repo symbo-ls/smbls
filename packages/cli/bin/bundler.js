@@ -102,10 +102,18 @@ export const spawnBin = (binPath, args, cwd = process.cwd()) => {
     process.exit(1)
   }
   const isTTY = process.stdin.isTTY
-  return spawn(binPath, args, {
-    stdio: isTTY ? 'inherit' : ['ignore', 'inherit', 'inherit'],
+  const child = spawn(binPath, args, {
+    stdio: isTTY ? 'inherit' : ['ignore', 'inherit', 'pipe'],
     cwd,
-    shell: process.platform === 'win32',
-    env: isTTY ? process.env : { ...process.env, CI: 'true' }
+    shell: process.platform === 'win32'
   })
+  if (!isTTY && child.stderr) {
+    child.stderr.on('data', (data) => {
+      const filtered = data.toString().split('\n')
+        .filter(line => !line.includes("Opening `/dev/tty` failed"))
+        .join('\n')
+      if (filtered.trim()) process.stderr.write(filtered)
+    })
+  }
+  return child
 }
