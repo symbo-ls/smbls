@@ -339,7 +339,7 @@ Use semantic components, never generic divs for meaningful content:
 | Thematic grouping         | Section          |
 | Sidebar                   | Aside            |
 | Actions                   | Button           |
-| Navigation links          | Link / RouteLink |
+| Navigation links          | Link             |
 | User input                | Input / Form     |
 
 ---

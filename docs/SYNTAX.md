@@ -579,13 +579,13 @@ export default {
 }
 ```
 
-### Navigation via RouteLink
+### Navigation via Link
 
 ```js
 export const NavItem = {
-  extends: 'RouteLink',
+  extends: 'Link',
   text: ({ props }) => props.label,
-  props: { href: '/dashboard' }
+  href: '/dashboard'
 }
 ```
 

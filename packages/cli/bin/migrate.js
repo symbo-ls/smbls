@@ -254,7 +254,7 @@ ${cdnHeadTags}</head>
       console.log(chalk.dim('skip   symbols/index.html (exists)'))
     }
 
-    // 6. Update package.json scripts
+    // 6. Update package.json scripts, deps, and remove bundler-handled devDeps
     const pkgPath = path.join(cwd, 'package.json')
     if (fs.existsSync(pkgPath)) {
       const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
@@ -273,6 +273,23 @@ ${cdnHeadTags}</head>
         const smblsVersion = getStarterKitSmblsVersion()
         pkg.dependencies.smbls = smblsVersion || 'latest'
         changed = true
+      }
+      // Remove devDeps that smbls runner already handles
+      const RUNNER_HANDLED = new Set([
+        'parcel', 'vite',
+        '@babel/core', '@babel/preset-env', '@parcel/babel-preset-env',
+        'buffer'
+      ])
+      if (pkg.devDependencies) {
+        for (const dep of RUNNER_HANDLED) {
+          if (dep in pkg.devDependencies) {
+            delete pkg.devDependencies[dep]
+            changed = true
+          }
+        }
+        if (Object.keys(pkg.devDependencies).length === 0) {
+          delete pkg.devDependencies
+        }
       }
       if (changed) {
         fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
