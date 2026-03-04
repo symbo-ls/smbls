@@ -50,7 +50,8 @@ export const usePropsAsCSS = (sourceObj, element, opts) => {
       if (isArray(val)) {
         val = val.reduce((a, c) => merge(a, c), {})
       }
-      const result = CSS_PROPS_REGISTRY[key](val, element, element.state, element.context)
+      let result = CSS_PROPS_REGISTRY[key](val, element, element.state, element.context)
+      if (isArray(result)) result = result.reduce((a, c) => merge(a, c), {})
       if (result) setToObj(key, result)
       if (!isProd && isObject(obj[key])) obj[key].label = key
     } else if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {

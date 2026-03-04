@@ -37,6 +37,21 @@ const CDN_PROVIDERS = {
     formatUrl: (pkg, version) =>
       `${CDN_PROVIDERS.skypack.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
   },
+  esmsh: {
+    url: 'https://esm.sh',
+    formatUrl: (pkg, version) =>
+      `${CDN_PROVIDERS.esmsh.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}`
+  },
+  unpkg: {
+    url: 'https://unpkg.com',
+    formatUrl: (pkg, version) =>
+      `${CDN_PROVIDERS.unpkg.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}?module`
+  },
+  jsdelivr: {
+    url: 'https://cdn.jsdelivr.net/npm',
+    formatUrl: (pkg, version) =>
+      `${CDN_PROVIDERS.jsdelivr.url}/${pkg}${version !== 'latest' ? `@${version}` : ''}/+esm`
+  },
   symbols: {
     url: 'https://pkg.symbo.ls',
     formatUrl: (pkg, version) => {
@@ -48,12 +63,31 @@ const CDN_PROVIDERS = {
   }
 }
 
+// Maps symbols.json packageManager values to CDN_PROVIDERS keys
+export const PACKAGE_MANAGER_TO_CDN = {
+  'esm.sh': 'esmsh',
+  'unpkg': 'unpkg',
+  'skypack': 'skypack',
+  'jsdelivr': 'jsdelivr',
+  'pkg.symbo.ls': 'symbols'
+}
+
+/**
+ * Derive the CDN provider key from a symbols config object.
+ * Returns null when packageManager is a local tool (npm/yarn/pnpm/bun).
+ */
+export const getCdnProviderFromConfig = (symbolsConfig = {}) => {
+  const { packageManager, bundler } = symbolsConfig
+  if (bundler !== 'browser') return null
+  return PACKAGE_MANAGER_TO_CDN[packageManager] || 'esmsh'
+}
+
 export const getCDNUrl = (
   packageName,
   version = 'latest',
-  provider = 'skypack'
+  provider = 'esmsh'
 ) => {
-  const cdnConfig = CDN_PROVIDERS[provider] || CDN_PROVIDERS.skypack
+  const cdnConfig = CDN_PROVIDERS[provider] || CDN_PROVIDERS.esmsh
   return cdnConfig.formatUrl(packageName, version)
 }
 
@@ -103,8 +137,13 @@ export const prepareDependencies = async ({
   dependenciesOnDemand,
   document,
   preventCaching = false,
-  cdnProvider = 'skypack'
+  cdnProvider,
+  symbolsConfig
 }) => {
+  // Derive provider from symbols.json config when not explicitly passed
+  if (!cdnProvider) {
+    cdnProvider = getCdnProviderFromConfig(symbolsConfig) || 'esmsh'
+  }
   if (!dependencies || Object.keys(dependencies).length === 0) {
     return null
   }
@@ -146,7 +185,8 @@ export const prepareDependencies = async ({
 
 export const prepareRequire = async (packages, ctx) => {
   const windowOpts = ctx.window || window
-  const defaultProvider = ctx.cdnProvider || 'skypack'
+  const defaultProvider = ctx.cdnProvider ||
+    getCdnProviderFromConfig(ctx.symbolsConfig) || 'esmsh'
 
   const initRequire = async (ctx) => async (key, provider) => {
     const windowOpts = ctx.window || window

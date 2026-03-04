@@ -43,6 +43,8 @@ program
 
     const cloneUrl = REPO_URLS.domql
     const packageManager = options.packageManager || 'npm'
+    const isBrowserMode = packageManager === 'browser' ||
+      ['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'].includes(packageManager)
 
     if (folderExists(dest)) {
       console.error(`Folder ${dest} already exists!`)
@@ -81,7 +83,7 @@ program
       addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${packageManager}`)
     }
 
-    if (options.dependencies) {
+    if (options.dependencies && !isBrowserMode) {
       console.log(`Installing dependencies using ${packageManager}...`)
 
       const exc = exec(packageManager === 'yarn' ? 'yarn' : 'npm i')
@@ -104,20 +106,20 @@ program
         console.log(chalk.green.bold(dest), 'successfuly created!')
         console.log(
           `Done! run \`${chalk.bold(
-            'cd ' + dest + '; ' + packageManager + ' start'
+            'cd ' + dest + '; smbls start'
           )}\` to start the development server.`
         )
       })
     } else {
-      console.log(
-        chalk.dim('Skipping dependency installation (--no-dependencies)')
-      )
+      if (isBrowserMode) {
+        console.log(chalk.dim(`Browser mode: dependencies resolved via ${packageManager} — skipping npm install.`))
+      } else {
+        console.log(chalk.dim('Skipping dependency installation (--no-dependencies)'))
+      }
       console.log()
       console.log(chalk.green.bold(dest), 'successfuly created!')
       console.log(
-        `Done! Now run \`${chalk.bold(
-          'cd ' + dest
-        )}\` and install dependencies manually.`
+        `Done! Now run \`${chalk.bold('cd ' + dest + '; smbls start')}\` to start.`
       )
     }
 
