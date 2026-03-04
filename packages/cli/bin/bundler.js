@@ -23,15 +23,17 @@ export const saveSymbols = (data, cwd = process.cwd()) => {
 
 /**
  * Returns runner config from symbols.json with fallback defaults.
- * Keys: bundler, entry, port, distDir
+ * Keys: bundler, entry, port, distDir, packageManager
  */
 export const getRunnerConfig = (cwd = process.cwd()) => {
   const s = getSymbols(cwd)
+  const isBrowser = s.bundler === 'browser'
   return {
     bundler: s.bundler || null,
-    entry: s.entry || 'index.html',
-    port: s.port || 1234,
-    distDir: s.distDir || 'dist'
+    entry: isBrowser ? null : (s.entry || 'index.html'),
+    port: isBrowser ? null : (s.port || 1234),
+    distDir: s.distDir || 'dist',
+    packageManager: s.packageManager || 'npm'
   }
 }
 
