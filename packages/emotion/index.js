@@ -64,7 +64,7 @@ export const transformEmotionClass = emotion => {
       }
     }
 
-    applyClassListOnNode(__classNames, element, element.node)
+    if (element.node) applyClassListOnNode(__classNames, element, element.node)
   }
 }
 

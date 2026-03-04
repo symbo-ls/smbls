@@ -45,7 +45,12 @@ export const classList = (params, element) => {
 // LEGACY (still needed in old domql)
 export const applyClassListOnNode = (params, element, node) => {
   const className = classList(params, element)
-  node.className = className
+  // Use setAttribute for universal SVG/HTML compatibility
+  if (node && typeof node.setAttribute === 'function') {
+    node.setAttribute('class', className)
+  } else if (node) {
+    try { node.className = className } catch (e) { /* SVG element */ }
+  }
   return className
 }
 

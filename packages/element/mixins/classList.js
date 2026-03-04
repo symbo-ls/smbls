@@ -44,7 +44,11 @@ export const classList = (params, element) => {
 export const applyClassListOnNode = (params, element, node) => {
   const className = classList(params, element)
   // Use setAttribute for universal SVG/HTML compatibility
-  node.setAttribute('class', className)
+  if (node && typeof node.setAttribute === 'function') {
+    node.setAttribute('class', className)
+  } else if (node) {
+    try { node.className = className } catch (e) { /* SVG element */ }
+  }
   return className
 }
 
