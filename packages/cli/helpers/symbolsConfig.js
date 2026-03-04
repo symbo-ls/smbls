@@ -56,8 +56,7 @@ export function resolveDistDir (symbolsConfig, options = {}) {
   const raw =
     distDirOverride ||
     overrideDistDir ||
-    cfg.dir ||
-    cfg.distDir // legacy fallback
+    cfg.distDir
 
   if (!raw) return null
 
