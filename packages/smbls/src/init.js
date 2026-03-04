@@ -69,6 +69,15 @@ export const init = (config, options = SET_OPTIONS) => {
   if (useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })
   if (useReset) emotion.injectGlobal(conf.RESET)
 
+  // Register all ANIMATION entries as global @keyframes
+  if (conf.ANIMATION) {
+    const keyframesCSS = {}
+    for (const name in conf.ANIMATION) {
+      keyframesCSS[`@keyframes ${name}`] = conf.ANIMATION[name]
+    }
+    emotion.injectGlobal(keyframesCSS)
+  }
+
   if (hasSvgs) appendSVGSprite(hasSvgs, { document: options.document })
   else if (useSvgSprite)
     appendSVGSprite(conf.SVG, { document: options.document })

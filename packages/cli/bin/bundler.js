@@ -2,7 +2,6 @@ import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
 import { spawn } from 'child_process'
 import chalk from 'chalk'
-import inquirer from 'inquirer'
 
 const BUNDLERS = ['parcel', 'vite', 'browser']
 
@@ -57,6 +56,7 @@ export const detectBundler = (cwd = process.cwd()) => {
 }
 
 export const promptBundler = async () => {
+  const { default: inquirer } = await import('inquirer')
   const { bundler } = await inquirer.prompt([{
     type: 'list',
     name: 'bundler',

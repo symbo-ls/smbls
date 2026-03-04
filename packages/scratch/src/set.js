@@ -17,7 +17,7 @@ import {
   setShadow
 } from './system'
 
-import { isFunction } from '@domql/utils'
+import { isFunction, deepMerge } from '@domql/utils'
 
 const setCases = (val, key) => {
   if (isFunction(val)) return val()
@@ -129,7 +129,22 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (!CONFIG.__svg_cache) CONFIG.__svg_cache = {}
 
   const keys = Object.keys(config)
-  keys.map(key => setEach(key, config[key]))
+  const keySet = new Set(keys)
+
+  // Pre-merge: fold UPPERCASE default keys into lowercase project keys
+  keys.forEach(key => {
+    const lower = key.toLowerCase()
+    if (lower !== key && keySet.has(lower)) {
+      deepMerge(config[lower], config[key])
+    }
+  })
+
+  // Process only lowercase keys (skip UPPERCASE when lowercase equivalent exists)
+  keys.map(key => {
+    const lower = key.toLowerCase()
+    if (lower !== key && keySet.has(lower)) return
+    return setEach(key, config[key])
+  })
 
   // apply generic configs
   if (config.TYPOGRAPHY || config.typography) {

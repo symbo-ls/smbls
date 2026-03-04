@@ -20,6 +20,7 @@ export const ANIMATION_PROPS = {
     animationDelay: getTimingByKey(el.props.animationDelay || '0s').timing,
     animationTimingFunction: getTimingFunction(el.props.animationTimingFunction || 'ease'),
     animationFillMode: el.props.animationFillMode || 'both',
+    animationIterationCount: el.props.animationIterationCount || 1,
     animationPlayState: el.props.animationPlayState,
     animationDirection: el.props.animationDirection
   }),
@@ -34,5 +35,17 @@ export const ANIMATION_PROPS = {
   }),
   animationTimingFunction: (val) => ({
     animationTimingFunction: getTimingFunction(val)
+  }),
+  animationIterationCount: (val) => ({
+    animationIterationCount: val
+  }),
+  animationFillMode: (val) => ({
+    animationFillMode: val
+  }),
+  animationPlayState: (val) => ({
+    animationPlayState: val
+  }),
+  animationDirection: (val) => ({
+    animationDirection: val
   })
 }
