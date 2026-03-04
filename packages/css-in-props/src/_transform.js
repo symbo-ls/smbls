@@ -74,7 +74,7 @@ export const extractCSSfromProps = (element) => {
       continue
     }
 
-    if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {
+    if (DEFAULT_CSS_PROPERTIES_LIST.has(key)) {
       css[key] = val
       continue
     }

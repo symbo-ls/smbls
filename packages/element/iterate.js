@@ -74,8 +74,13 @@ export const throughExecProps = element => {
   const { __ref: ref } = element
   const { props } = element
   for (const k in props) {
+    // Check for 'is', 'has', 'use' prefixes using charCodeAt
+    const c0 = k.charCodeAt(0)
+    const c1 = k.charCodeAt(1)
     const isDefine =
-      k.startsWith('is') || k.startsWith('has') || k.startsWith('use')
+      (c0 === 105 && c1 === 115) || // 'is'
+      (c0 === 104 && c1 === 97 && k.charCodeAt(2) === 115) || // 'has'
+      (c0 === 117 && c1 === 115 && k.charCodeAt(2) === 101) // 'use'
     const cachedExecProp = ref.__execProps[k]
     if (isFunction(cachedExecProp)) {
       const result = exec(cachedExecProp, element)
@@ -105,10 +110,13 @@ export const isPropertyInDefines = (key, element) => {}
 export const throughInitialDefine = element => {
   const { define, context, __ref: ref } = element
 
-  let defineObj = {}
+  const hasLocalDefine = isObject(define)
   const hasGlobalDefine = context && isObject(context.define)
-  if (isObject(define)) defineObj = { ...define }
-  if (hasGlobalDefine) defineObj = { ...defineObj, ...context.define }
+  if (!hasLocalDefine && !hasGlobalDefine) return element
+
+  const defineObj = hasLocalDefine && hasGlobalDefine
+    ? { ...define, ...context.define }
+    : hasLocalDefine ? define : context.define
 
   for (const param in defineObj) {
     let elementProp = element[param]
@@ -154,9 +162,13 @@ export const throughUpdatedDefine = element => {
   const { context, define, __ref: ref } = element
   const changes = {}
 
-  let obj = {}
-  if (isObject(define)) obj = { ...define }
-  if (isObject(context && context.define)) obj = { ...obj, ...context.define }
+  const hasLocalDefine = isObject(define)
+  const hasGlobalDefine = isObject(context && context.define)
+  if (!hasLocalDefine && !hasGlobalDefine) return changes
+
+  const obj = hasLocalDefine && hasGlobalDefine
+    ? { ...define, ...context.define }
+    : hasLocalDefine ? define : context.define
 
   for (const param in obj) {
     const execParam = ref.__exec[param]

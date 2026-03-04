@@ -12,7 +12,7 @@ const ENV = process.env.NODE_ENV
 export const returnValueAsText = (element, parent, key) => {
   const childExtendsTag = parent.childExtends && parent.childExtends.tag
   const childPropsTag = parent.props.childProps && parent.props.childProps.tag
-  const isKeyValidHTMLTag = HTML_TAGS.body.indexOf(key) > -1 && key
+  const isKeyValidHTMLTag = HTML_TAGS.body.has(key) && key
   return {
     text: element,
     tag: childExtendsTag || childPropsTag || isKeyValidHTMLTag || 'string'

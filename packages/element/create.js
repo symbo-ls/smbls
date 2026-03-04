@@ -41,7 +41,9 @@ const applyPropsAsAttrs = (element) => {
   for (const key in autoAttrs) {
     if (!EXCLUDED_ATTRS.has(key)) filtered[key] = autoAttrs[key]
   }
-  if (!Object.keys(filtered).length) return
+  let hasFiltered = false
+  for (const _k in filtered) { hasFiltered = true; break } // eslint-disable-line
+  if (!hasFiltered) return
 
   if (!element.attr) {
     element.attr = filtered
@@ -138,7 +140,9 @@ const cacheOptions = options => {
 }
 
 const resetOptions = (element, parent, options) => {
-  if (Object.keys(options).length) {
+  let hasKeys = false
+  for (const _k in options) { hasKeys = true; break } // eslint-disable-line
+  if (hasKeys) {
     OPTIONS.defaultOptions = options
     if (options.ignoreChildExtends) delete options.ignoreChildExtends
   }
@@ -150,6 +154,7 @@ const addElementIntoParentChildren = (element, parent) => {
   }
 }
 
+let _uniqIdCounter = 1
 const visitedElements = new WeakMap()
 const renderElement = (element, parent, options, attachOptions) => {
   if (visitedElements.has(element)) {
@@ -166,7 +171,7 @@ const renderElement = (element, parent, options, attachOptions) => {
     const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
     if (ref.__uniqId || isInfiniteLoopDetected) return
     createNode(element, options)
-    ref.__uniqId = Math.random()
+    ref.__uniqId = _uniqIdCounter++
   }
 
   // CREATE a real NODE

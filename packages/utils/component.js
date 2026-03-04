@@ -4,10 +4,9 @@ import { createExtendsFromKeys } from './extends.js'
 import { isString } from './types.js'
 
 export const matchesComponentNaming = key => {
-  const isFirstKeyString = isString(key)
-  if (!isFirstKeyString) return
-  const firstCharKey = key.slice(0, 1)
-  return /^[A-Z]*$/.test(firstCharKey)
+  if (!isString(key) || !key.length) return false
+  const code = key.charCodeAt(0)
+  return code >= 65 && code <= 90 // A-Z
 }
 
 export function getCapitalCaseKeys (obj) {

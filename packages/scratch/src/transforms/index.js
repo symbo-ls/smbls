@@ -1,6 +1,6 @@
 'use strict'
 
-import { isNull, isString, isObject, isUndefined, exec } from '@domql/utils'
+import { isString, isObject, exec } from '@domql/utils'
 import { getActiveConfig } from '../factory'
 import {
   getSpacingByKey,
@@ -21,20 +21,17 @@ import {
   parseColorToken
 } from '../utils'
 
-const isBorderStyle = (str) =>
-  [
-    'none',
-    'hidden',
-    'dotted',
-    'dashed',
-    'solid',
-    'double',
-    'groove',
-    'ridge',
-    'inset',
-    'outset',
-    'initial'
-  ].some((v) => str.includes(v))
+const BORDER_STYLES = new Set([
+  'none', 'hidden', 'dotted', 'dashed', 'solid', 'double',
+  'groove', 'ridge', 'inset', 'outset', 'initial'
+])
+
+const GRADIENT_KEYWORDS = new Set([
+  'to', 'top', 'bottom', 'left', 'right', 'center', 'at',
+  'circle', 'ellipse', 'closest-side', 'farthest-side',
+  'closest-corner', 'farthest-corner'
+])
+const isBorderStyle = (str) => BORDER_STYLES.has(str)
 
 export const transformBorder = (border) => {
   const str = border + ''
@@ -43,7 +40,8 @@ export const transformBorder = (border) => {
   if (CSS_NATIVE_COLOR_REGEX.test(str)) return str
 
   // Simple CSS keywords
-  if (['none', '0', 'initial', 'inherit', 'unset'].includes(str.trim())) return str
+  const trimmed = str.trim()
+  if (trimmed === 'none' || trimmed === '0' || trimmed === 'initial' || trimmed === 'inherit' || trimmed === 'unset') return str
 
   // Space-separated tokens (CSS-like syntax)
   const tokens = str.split(/\s+/)
@@ -155,7 +153,7 @@ export const resolveColorsInGradient = (gradient, globalTheme) => {
       if (!token) return token
       // Skip CSS values: percentages, degrees, direction keywords, native colors
       if (/^\d/.test(token) || token === '0') return token
-      if (['to', 'top', 'bottom', 'left', 'right', 'center', 'at', 'circle', 'ellipse', 'closest-side', 'farthest-side', 'closest-corner', 'farthest-corner'].includes(token)) return token
+      if (GRADIENT_KEYWORDS.has(token)) return token
       if (token === 'transparent') return token
       if (CSS_NATIVE_COLOR_REGEX.test(token)) return token
 
@@ -234,7 +232,7 @@ export const splitTransition = (transition) => {
 export function transformSize(propertyName, val, props = {}, opts = {}) {
   let value = exec.call(this, val || props[propertyName])
 
-  if (isUndefined(value) || isNull(value)) return
+  if (value === undefined || value === null) return
 
   let fnPrefix
   if (isString(value)) {

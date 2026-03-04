@@ -25,13 +25,13 @@ export const parse = function () {
   if (isObject(state)) {
     const obj = {}
     for (const param in state) {
-      if (!STATE_METHODS.includes(param)) {
+      if (!STATE_METHODS.has(param)) {
         obj[param] = state[param]
       }
     }
     return obj
   } else if (isArray(state)) {
-    return state.filter(item => !STATE_METHODS.includes(item))
+    return state.filter(item => !STATE_METHODS.has(item))
   }
 }
 
@@ -39,8 +39,8 @@ export const clean = function (options = {}) {
   const state = this
   for (const param in state) {
     if (
-      !STATE_METHODS.includes(param) &&
-      Object.hasOwnProperty.call(state, param)
+      !STATE_METHODS.has(param) &&
+      Object.prototype.hasOwnProperty.call(state, param)
     ) {
       delete state[param]
     }
@@ -174,9 +174,9 @@ export const removeByPath = function (path, options = {}) {
 
 export const removePathCollection = function (changes, options = {}) {
   const state = this
-  changes.forEach(item => {
-    removeByPath(item, { preventUpdate: true })
-  })
+  for (let i = 0; i < changes.length; i++) {
+    removeByPath(changes[i], { preventUpdate: true })
+  }
   return state.update({}, options)
 }
 

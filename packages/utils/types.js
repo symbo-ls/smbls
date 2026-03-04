@@ -27,24 +27,9 @@ export const isObjectLike = arg => {
   return typeof arg === 'object'
 }
 
-export const isDefined = arg => {
-  return (
-    isObject(arg) ||
-    isObjectLike(arg) ||
-    isString(arg) ||
-    isNumber(arg) ||
-    isFunction(arg) ||
-    isArray(arg) ||
-    isObjectLike(arg) ||
-    isBoolean(arg) ||
-    isDate(arg) ||
-    isNull(arg)
-  )
-}
+export const isDefined = arg => arg !== undefined
 
-export const isUndefined = arg => {
-  return arg === undefined
-}
+export const isUndefined = arg => arg === undefined
 
 export const TYPES = {
   boolean: isBoolean,
@@ -62,13 +47,9 @@ export const TYPES = {
 }
 
 export const is = arg => {
-  return (...args) => {
-    return args.map(val => TYPES[val](arg)).filter(v => v).length > 0
-  }
+  return (...args) => args.some(val => TYPES[val](arg))
 }
 
 export const isNot = arg => {
-  return (...args) => {
-    return args.map(val => TYPES[val](arg)).filter(v => v).length === 0
-  }
+  return (...args) => !args.some(val => TYPES[val](arg))
 }

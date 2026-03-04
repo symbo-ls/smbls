@@ -37,7 +37,7 @@ export const getExtendStackRegistry = (extend, stack) => {
 
 // stacking
 export const extractArrayExtend = (extend, stack, context) => {
-  extend.forEach(each => flattenExtend(each, stack, context))
+  for (let i = 0; i < extend.length; i++) flattenExtend(extend[i], stack, context)
   return stack
 }
 
@@ -60,7 +60,7 @@ export const flattenExtend = (extend, stack, context) => {
 
 export const deepMergeExtend = (element, extend) => {
   for (const e in extend) {
-    if (['parent', 'node', '__element'].indexOf(e) > -1) continue
+    if (e === 'parent' || e === 'node' || e === '__element') continue
     const elementProp = element[e]
     const extendProp = extend[e]
     if (elementProp === undefined) {
@@ -99,7 +99,7 @@ export const fallbackStringExtend = (
       (COMPONENTS[extend + '.' + variant] ||
         COMPONENTS[extend] ||
         COMPONENTS['smbls.' + extend])
-    const pageExists = PAGES && extend.startsWith('/') && PAGES[extend]
+    const pageExists = PAGES && extend.charCodeAt(0) === 47 && PAGES[extend]
     if (componentExists) return componentExists
     else if (pageExists) return pageExists
     else {

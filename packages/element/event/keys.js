@@ -1,6 +1,6 @@
 'use strict'
 
-export const DOMQ_PROPERTIES = [
+export const DOMQ_PROPERTIES = new Set([
   'attr',
   'style',
   'text',
@@ -33,9 +33,9 @@ export const DOMQ_PROPERTIES = [
   'on',
   'component',
   'context'
-]
+])
 
-export const PARSED_DOMQ_PROPERTIES = [
+export const PARSED_DOMQ_PROPERTIES = new Set([
   'attr',
   'style',
   'text',
@@ -53,7 +53,7 @@ export const PARSED_DOMQ_PROPERTIES = [
   'query',
   'on',
   'context'
-]
+])
 
 export const STATE_PROPERTIES = [
   'ref',
@@ -65,7 +65,7 @@ export const STATE_PROPERTIES = [
   'root'
 ]
 
-export const STATE_METHODS = [
+export const STATE_METHODS = new Set([
   'update',
   'parse',
   'clean',
@@ -98,11 +98,11 @@ export const STATE_METHODS = [
   'removeByPath',
   'removePathCollection',
   'getByPath'
-]
+])
 
-export const PROPS_METHODS = ['update', '__element']
+export const PROPS_METHODS = new Set(['update', '__element'])
 
-export const METHODS = [
+export const METHODS = new Set([
   'set',
   'reset',
   'update',
@@ -129,16 +129,16 @@ export const METHODS = [
   'call',
   'nextElement',
   'previousElement'
-]
+])
 
-export const METHODS_EXL = [
-  ...['node', 'context', 'extends', '__element', '__ref'],
+export const METHODS_EXL = new Set([
+  'node', 'context', 'extends', '__element', '__ref',
   ...METHODS,
   ...STATE_METHODS,
   ...PROPS_METHODS
-]
+])
 
-export const DOMQL_EVENTS = [
+export const DOMQL_EVENTS = new Set([
   'init',
   'beforeClassAssign',
   'render',
@@ -154,4 +154,4 @@ export const DOMQL_EVENTS = [
   'complete',
   'frame',
   'update'
-]
+])

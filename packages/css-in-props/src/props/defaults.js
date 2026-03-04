@@ -1,4 +1,4 @@
-export const DEFAULT_CSS_PROPERTIES_LIST = [
+export const DEFAULT_CSS_PROPERTIES_LIST = new Set([
   'accentColor',
   'alignContent',
   'alignItems',
@@ -315,4 +315,4 @@ export const DEFAULT_CSS_PROPERTIES_LIST = [
   'wordWrap',
   'writingMode',
   'zIndex'
-]
+])

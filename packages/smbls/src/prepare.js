@@ -145,11 +145,13 @@ export const prepareDependencies = async ({
     cdnProvider = PACKAGE_MANAGER_TO_CDN[packageManager] ||
       getCdnProviderFromConfig(symbolsConfig) || 'esmsh'
   }
-  if (!dependencies || Object.keys(dependencies).length === 0) {
-    return null
-  }
+  if (!dependencies) return null
+  let hasAny = false
+  for (const _k in dependencies) { hasAny = true; break } // eslint-disable-line
+  if (!hasAny) return null
 
-  for (const [dependency, version] of Object.entries(dependencies)) {
+  for (const dependency in dependencies) {
+    const version = dependencies[dependency]
     if (dependenciesOnDemand && dependenciesOnDemand[dependency]) {
       continue
     }
@@ -282,14 +284,13 @@ export const preparePages = (app, context) => {
     merge(app.routes, context.pages)
   }
   const pages = app.routes || context.pages || {}
-  return Object.keys(pages)
-    .filter((v) => !v.startsWith('/'))
-    .reduce((pages, v) => {
-      const index = v === 'index' ? '' : v
-      pages['/' + index] = pages[v]
-      delete pages[v]
-      return pages
-    }, pages)
+  for (const v in pages) {
+    if (v.charCodeAt(0) === 47) continue // '/'
+    const index = v === 'index' ? '' : v
+    pages['/' + index] = pages[v]
+    delete pages[v]
+  }
+  return pages
 }
 
 export const prepareSharedLibs = (context) => {

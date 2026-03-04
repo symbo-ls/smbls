@@ -5,9 +5,11 @@ import { isFunction } from './types.js'
 
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]
-  const onPropEvent =
-    element.props?.['on' + param.slice(0, 1).toUpperCase() + param.slice(1)]
-  return onEvent || onPropEvent
+  if (onEvent) return onEvent
+  const props = element.props
+  if (!props) return
+  const propKey = 'on' + param.charAt(0).toUpperCase() + param.slice(1)
+  return props[propKey]
 }
 
 export const applyEvent = (param, element, state, context, options) => {
@@ -100,7 +102,7 @@ export const applyEventsOnNode = (element, options) => {
 
   // Register events from on: { click: ..., input: ... }
   for (const param in on) {
-    if (DOMQL_EVENTS.includes(param)) continue
+    if (DOMQL_EVENTS.has(param)) continue
     handled.add(param)
     registerNodeEvent(param, element, node, options)
   }
@@ -109,11 +111,11 @@ export const applyEventsOnNode = (element, options) => {
   // These arrive via propertizeElement moving root-level onClick to props
   if (props) {
     for (const key in props) {
-      if (key.length > 2 && key.startsWith('on') && isFunction(props[key])) {
+      if (key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && isFunction(props[key])) {
         const thirdChar = key[2]
         if (thirdChar !== thirdChar.toUpperCase()) continue
         const eventName = thirdChar.toLowerCase() + key.slice(3)
-        if (handled.has(eventName) || DOMQL_EVENTS.includes(eventName)) continue
+        if (handled.has(eventName) || DOMQL_EVENTS.has(eventName)) continue
         registerNodeEvent(eventName, element, node, options)
       }
     }

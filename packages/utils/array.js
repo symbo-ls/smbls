@@ -8,9 +8,11 @@ export const arrayContainsOtherArray = (arr1, arr2) => {
 }
 
 export const getFrequencyInArray = (arr, value) => {
-  return arr.reduce((count, currentValue) => {
-    return currentValue === value ? count + 1 : count
-  }, 0)
+  let count = 0
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === value) count++
+  }
+  return count
 }
 
 export const removeFromArray = (arr, index) => {
@@ -134,8 +136,12 @@ export const filterArraysFast = (sourceArr, excludeArr) => {
 }
 
 export const checkIfStringIsInArray = (string, arr) => {
-  if (!string) return
-  return arr.filter(v => string.includes(v)).length
+  if (!string) return 0
+  let count = 0
+  for (let i = 0; i < arr.length; i++) {
+    if (string.includes(arr[i])) count++
+  }
+  return count
 }
 
 export const removeDuplicatesInArray = arr => {

@@ -67,12 +67,10 @@ export const memoize = fn => {
   }
 }
 
-export const isStringFunction = inputString => {
-  // Regular expression to match both regular and arrow function declarations
-  const functionRegex = /^((function\s*\([^)]*\)\s*\{[^}]*\})|(\([^)]*\)\s*=>))/
+const RE_STRING_FUNCTION = /^((function\s*\([^)]*\)\s*\{[^}]*\})|(\([^)]*\)\s*=>))/
 
-  // Use the regex to test if the inputString matches the function pattern
-  return functionRegex.test(inputString)
+export const isStringFunction = inputString => {
+  return RE_STRING_FUNCTION.test(inputString)
 }
 
 export function cloneFunction (fn, win = window) {
@@ -82,7 +80,7 @@ export function cloneFunction (fn, win = window) {
 
   // Copy properties from original function
   for (const key in fn) {
-    if (Object.hasOwnProperty.call(fn, key)) {
+    if (Object.prototype.hasOwnProperty.call(fn, key)) {
       temp[key] = fn[key]
     }
   }

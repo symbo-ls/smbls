@@ -94,7 +94,7 @@ export const setHashedExtend = (extend, stack) => {
   if (!isString(extend)) {
     extend.__hash = hash
   }
-  if (!['__proto__', 'constructor', 'prototype'].includes(hash)) {
+  if (hash !== '__proto__' && hash !== 'constructor' && hash !== 'prototype') {
     extendStackRegistry[hash] = stack
   }
   return stack
@@ -130,7 +130,9 @@ export const deepExtend = (extend, stack, context, processed = new Set()) => {
   const cleanExtend = { ...extend }
   delete cleanExtend.extends
   delete cleanExtend.extend
-  if (Object.keys(cleanExtend).length > 0) {
+  let hasKeys = false
+  for (const _k in cleanExtend) { hasKeys = true; break } // eslint-disable-line
+  if (hasKeys) {
     stack.push(cleanExtend)
   }
   if (extendOflattenExtend) {
@@ -167,12 +169,16 @@ export const flattenExtend = (
   return stack
 }
 
+const MERGE_EXTENDS_SKIP = new Set([
+  'parent', 'node', '__ref', '__proto__', 'extend', 'childExtend', 'childExtendRecursive'
+])
+
 export const deepMergeExtends = (element, extend) => {
   // Clone extend to prevent mutations
   extend = deepClone(extend)
 
   for (const e in extend) {
-    if (['parent', 'node', '__ref', '__proto__', 'extend', 'childExtend', 'childExtendRecursive'].indexOf(e) > -1) continue
+    if (MERGE_EXTENDS_SKIP.has(e)) continue
 
     const elementProp = element[e]
     const extendProp = extend[e]
@@ -183,7 +189,7 @@ export const deepMergeExtends = (element, extend) => {
     // Handle only properties that exist in the extend object
     if (
       Object.prototype.hasOwnProperty.call(extend, e) &&
-      !['__proto__', 'constructor', 'prototype'].includes(e)
+      e !== '__proto__' && e !== 'constructor' && e !== 'prototype'
     ) {
       if (elementProp === undefined) {
         // For undefined properties in element, copy from extend
@@ -242,7 +248,7 @@ export const mapStringsWithContextComponents = (
       (COMPONENTS[extend + '.' + variant] ||
         COMPONENTS[extend] ||
         COMPONENTS['smbls.' + extend])
-    const pageExists = PAGES && extend.startsWith('/') && PAGES[extend]
+    const pageExists = PAGES && extend.charCodeAt(0) === 47 && PAGES[extend]
     if (componentExists) return componentExists
     else if (pageExists) return pageExists
     else {
@@ -284,7 +290,7 @@ export const getExtendsInElement = obj => {
 
   function traverse (o) {
     for (const key in o) {
-      if (Object.hasOwnProperty.call(o, key)) {
+      if (Object.prototype.hasOwnProperty.call(o, key)) {
         // Check if the key starts with a capital letter and exclude keys like @mobileL, $propsCollection
         if (matchesComponentNaming(key)) {
           result.push(key)

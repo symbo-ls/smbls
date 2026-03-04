@@ -11,10 +11,8 @@ import {
   isUndefined,
   merge,
   overwriteDeep,
-  deepClone,
   isMethod,
   findInheritedState,
-  deepMerge,
   OPTIONS,
   updateProps,
   captureSnapshot,
@@ -46,14 +44,10 @@ const UPDATE_DEFAULT_OPTIONS = {
 }
 
 export const update = function (params = {}, opts) {
-  const calleeElementCache = opts?.calleeElement
-  const options = deepClone(
-    isObject(opts)
-      ? deepMerge(opts, UPDATE_DEFAULT_OPTIONS)
-      : UPDATE_DEFAULT_OPTIONS,
-    { exclude: ['calleeElement'] }
-  )
-  options.calleeElement = calleeElementCache
+  // Shallow copy is sufficient - all values are primitives/references that shouldn't be cloned
+  const options = isObject(opts)
+    ? { ...UPDATE_DEFAULT_OPTIONS, ...opts }
+    : { ...UPDATE_DEFAULT_OPTIONS }
   const element = this
 
   let ref = element.__ref
@@ -96,20 +90,23 @@ export const update = function (params = {}, opts) {
   if (ref.__if && !options.preventPropsUpdate) {
     const hasParentProps =
       parent.props && (parent.props[key] || parent.props.childProps)
-    const hasFunctionInProps = ref.__propsStack.filter(v => isFunction(v))
-    const props = params.props || hasParentProps || hasFunctionInProps.length
+    const hasFunctionInProps = ref.__propsStack.some(isFunction)
+    const props = params.props || hasParentProps || hasFunctionInProps
     if (props) updateProps(props, element, parent)
   }
 
   if (!options.preventBeforeUpdateListener && !options.preventListeners) {
-    const simulate = { ...params, ...element }
-    const beforeUpdateReturns = triggerEventOnUpdate(
-      'beforeUpdate',
-      params,
-      simulate,
-      options
-    )
-    if (beforeUpdateReturns === false) return element
+    const hasBeforeUpdate = element.on?.beforeUpdate || element.props?.onBeforeUpdate
+    if (hasBeforeUpdate) {
+      const simulate = { ...params, ...element }
+      const beforeUpdateReturns = triggerEventOnUpdate(
+        'beforeUpdate',
+        params,
+        simulate,
+        options
+      )
+      if (beforeUpdateReturns === false) return element
+    }
   }
 
   // apply new updates
@@ -155,7 +152,7 @@ export const update = function (params = {}, opts) {
   for (const param in element) {
     const prop = element[param]
 
-    if (!Object.hasOwnProperty.call(element, param)) continue
+    if (!Object.prototype.hasOwnProperty.call(element, param)) continue
 
     const isInPreventUpdate =
       isArray(preventUpdate) && preventUpdate.includes(param)
@@ -164,7 +161,8 @@ export const update = function (params = {}, opts) {
 
     // Skip onXxx event handler functions (e.g. onClick) that may remain at root level
     const isRootEventHandler = isFunction(prop) && param.length > 2 &&
-      param.startsWith('on') && param[2] === param[2].toUpperCase()
+      param.charCodeAt(0) === 111 && param.charCodeAt(1) === 110 && // 'on'
+      param.charCodeAt(2) >= 65 && param.charCodeAt(2) <= 90 // A-Z
 
     if (
       isUndefined(prop) ||

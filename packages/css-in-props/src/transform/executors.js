@@ -54,7 +54,7 @@ export const usePropsAsCSS = (sourceObj, element, opts) => {
       if (isArray(result)) result = result.reduce((a, c) => merge(a, c), {})
       if (result) setToObj(key, result)
       if (!isProd && isObject(obj[key])) obj[key].label = key
-    } else if (DEFAULT_CSS_PROPERTIES_LIST.includes(key)) {
+    } else if (DEFAULT_CSS_PROPERTIES_LIST.has(key)) {
       // they can be grouped
       const result = exec(value, element)
       setToObj(key, { [key]: result })
@@ -82,7 +82,9 @@ export const useSelectorsAsCSS = (sourceObj, element) => {
 export const useCssInProps = (selectorProps, element, opts = { unpack: true }) => {
   const [cssObj, restProps] = usePropsAsCSS(selectorProps, element, opts)
   const selectorsObj = useSelectorsAsCSS(restProps, element)
-  if (Object.keys(selectorsObj).length) {
+  let hasSelectors = false
+  for (const _k in selectorsObj) { hasSelectors = true; break } // eslint-disable-line
+  if (hasSelectors) {
     // console.log(opts.unpack, cssObj, selectorsObj)
     if (opts.unpack) return overwrite(cssObj, selectorsObj)
     cssObj._selectors = selectorsObj

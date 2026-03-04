@@ -6,6 +6,9 @@ import { deepClone, deepMerge, exec } from './object.js'
 import { is, isArray, isFunction, isObject, isObjectLike } from './types.js'
 import { lowercaseFirstLetter } from './string.js'
 
+const RE_UPPER = /^[A-Z]/
+const RE_DIGITS = /^\d+$/
+
 export const createProps = (element, parent, key) => {
   const { props, __ref: ref } = element
   ref.__propsStack = []
@@ -26,7 +29,7 @@ export function pickupPropsFromElement (obj, opts = {}) {
     const value = obj[key]
 
     // Move top-level onXxx handlers directly into on.xxx (v3 style)
-    const isEventHandler = key.length > 2 && key.startsWith('on') && key[2] === key[2].toUpperCase() && isFunction(value)
+    const isEventHandler = key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && key[2] === key[2].toUpperCase() && isFunction(value)
     if (isEventHandler) {
       const eventName = lowercaseFirstLetter(key.slice(2))
       if (obj.on) obj.on[eventName] = value
@@ -36,8 +39,8 @@ export function pickupPropsFromElement (obj, opts = {}) {
 
     const hasDefine = isObject(this.define?.[key])
     const hasGlobalDefine = isObject(this.context?.define?.[key])
-    const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
-    const isBuiltin = DOMQ_PROPERTIES.includes(key)
+    const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key)
+    const isBuiltin = DOMQ_PROPERTIES.has(key)
 
     // If it's not a special case, move to props
     if (!isElement && !isBuiltin && !hasDefine && !hasGlobalDefine) {
@@ -57,7 +60,7 @@ export function pickupElementFromProps (obj = this, opts) {
     const value = obj.props[key]
 
     // Handle event handlers
-    const isEvent = key.startsWith('on') && key.length > 2
+    const isEvent = key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110
     const isFn = isFunction(value)
 
     if (isEvent && isFn) {
@@ -71,8 +74,8 @@ export function pickupElementFromProps (obj = this, opts) {
 
     const hasDefine = isObject(this.define?.[key])
     const hasGlobalDefine = isObject(this.context?.define?.[key])
-    const isElement = /^[A-Z]/.test(key) || /^\d+$/.test(key)
-    const isBuiltin = DOMQ_PROPERTIES.includes(key)
+    const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key)
+    const isBuiltin = DOMQ_PROPERTIES.has(key)
 
     // Move qualifying properties back to obj root
     if (isElement || isBuiltin || hasDefine || hasGlobalDefine) {
@@ -159,7 +162,7 @@ export const removeDuplicateProps = propsStack => {
   const seen = new Set()
 
   return propsStack.filter(prop => {
-    if (!prop || PROPS_METHODS.includes(prop)) return false
+    if (!prop || PROPS_METHODS.has(prop)) return false
     const key = isObject(prop) ? JSON.stringify(prop) : prop
     if (seen.has(key)) return false
     seen.add(key)
@@ -169,7 +172,7 @@ export const removeDuplicateProps = propsStack => {
 
 export const syncProps = (propsStack, element, opts) => {
   element.props = propsStack.reduce((mergedProps, v) => {
-    if (PROPS_METHODS.includes(v)) return mergedProps
+    if (PROPS_METHODS.has(v)) return mergedProps
     while (isFunction(v)) v = exec(v, element)
     return deepMerge(mergedProps, deepClone(v, { exclude: PROPS_METHODS }))
   }, {})
@@ -196,11 +199,12 @@ export const createPropsStack = (element, parent) => {
 
   // Add extends props
   if (isArray(ref.__extendsStack)) {
-    ref.__extendsStack.forEach(_extends => {
+    for (let i = 0; i < ref.__extendsStack.length; i++) {
+      const _extends = ref.__extendsStack[i]
       if (_extends.props && _extends.props !== props) {
         propsStack.push(_extends.props)
       }
-    })
+    }
   }
 
   // Remove duplicates and update reference

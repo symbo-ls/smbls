@@ -131,50 +131,32 @@ export const findKeyPosition = (str, key) => {
   }
 }
 
-export const replaceOctalEscapeSequences = str => {
-  // Regex to match octal escape sequences
-  const octalRegex = /\\([0-7]{1,3})/g
+const RE_OCTAL = /\\([0-7]{1,3})/g
 
-  // Replace each match with the corresponding character
-  return str.replace(octalRegex, (match, p1) => {
-    // Convert the octal value to a decimal integer
-    const octalValue = parseInt(p1, 8)
-    // Convert the decimal value to the corresponding character
-    const char = String.fromCharCode(octalValue)
-    return char
-  })
+export const replaceOctalEscapeSequences = str => {
+  return str.replace(RE_OCTAL, (_, p1) => String.fromCharCode(parseInt(p1, 8)))
 }
 
 export const encodeNewlines = str => {
   return str
-    .split('\n')
-    .join('/////n')
-    .split('`')
-    .join('/////tilde')
-    .split('$')
-    .join('/////dlrsgn')
+    .replace(/\n/g, '/////n')
+    .replace(/`/g, '/////tilde')
+    .replace(/\$/g, '/////dlrsgn')
 }
 
 export const decodeNewlines = encodedStr => {
   return encodedStr
-    .split('/////n')
-    .join('\n')
-    .split('/////tilde')
-    .join('`')
-    .split('/////dlrsgn')
-    .join('$')
+    .replace(/\/\/\/\/\/n/g, '\n')
+    .replace(/\/\/\/\/\/tilde/g, '`')
+    .replace(/\/\/\/\/\/dlrsgn/g, '$')
 }
 
+const RE_NON_ALNUM = /[^a-zA-Z0-9\s]/g
+
 export const customEncodeURIComponent = str => {
-  return str
-    .split('')
-    .map(char => {
-      if (/[^a-zA-Z0-9\s]/.test(char)) {
-        return '%' + char.charCodeAt(0).toString(16).toUpperCase()
-      }
-      return char
-    })
-    .join('')
+  return str.replace(RE_NON_ALNUM, char =>
+    '%' + char.charCodeAt(0).toString(16).toUpperCase()
+  )
 }
 
 export const customDecodeURIComponent = encodedStr => {

@@ -218,10 +218,10 @@ export function keys () {
   const keys = []
   for (const param in element) {
     if (
-      // (REGISTRY[param] && !DOMQ_PROPERTIES.includes(param)) ||
-      !Object.hasOwnProperty.call(element, param) ||
-      (DOMQ_PROPERTIES.includes(param) &&
-        !PARSED_DOMQ_PROPERTIES.includes(param))
+      // (REGISTRY[param] && !DOMQ_PROPERTIES.has(param)) ||
+      !Object.prototype.hasOwnProperty.call(element, param) ||
+      (DOMQ_PROPERTIES.has(param) &&
+        !PARSED_DOMQ_PROPERTIES.has(param))
     ) {
       continue
     }
@@ -235,26 +235,28 @@ export function parse (excl = []) {
   const obj = {}
   const keyList = keys.call(element)
   const hasChildren = keyList.includes('children')
-  keyList.forEach(v => {
-    if (excl.includes(v) || !Object.hasOwnProperty.call(element, v)) return
-    if (hasChildren && v === 'content') return
+  const exclSet = excl.length ? new Set(excl) : null
+  for (let i = 0; i < keyList.length; i++) {
+    const v = keyList[i]
+    if ((exclSet && exclSet.has(v)) || !Object.prototype.hasOwnProperty.call(element, v)) continue
+    if (hasChildren && v === 'content') continue
     const val = element[v]
     if (v === 'state') {
-      if (element.__ref && !element.__ref.__hasRootState) return
+      if (element.__ref && !element.__ref.__hasRootState) continue
       const parsedVal = isFunction(val && val.parse) ? val.parse() : val
       obj[v] = isFunction(parsedVal)
         ? parsedVal
         : JSON.parse(JSON.stringify(parsedVal || {}))
     } else if (v === 'scope') {
-      if (element.__ref && !element.__ref.__hasRootScope) return
+      if (element.__ref && !element.__ref.__hasRootScope) continue
       obj[v] = JSON.parse(JSON.stringify(val || {}))
     } else if (v === 'props') {
       const { __element, update, ...props } = element[v]
       obj[v] = props
-    } else if (isDefined(val) && Object.hasOwnProperty.call(element, v)) {
+    } else if (isDefined(val) && Object.prototype.hasOwnProperty.call(element, v)) {
       obj[v] = val
     }
-  })
+  }
   return obj
 }
 
@@ -263,8 +265,9 @@ export function parseDeep (excl = [], visited = new WeakSet()) {
   if (visited.has(element)) return undefined
   visited.add(element)
   const obj = parse.call(element, excl)
+  const exclSet = excl.length ? new Set(excl) : null
   for (const v in obj) {
-    if (excl.includes(v) || !Object.hasOwnProperty.call(element, v)) continue
+    if ((exclSet && exclSet.has(v)) || !Object.prototype.hasOwnProperty.call(element, v)) continue
     const val = obj[v]
     if (Array.isArray(val)) {
       obj[v] = val.map(item =>
@@ -389,5 +392,5 @@ export function call (fnKey, ...args) {
 }
 
 export function isMethod (param, element) {
-  return Boolean(METHODS.includes(param) || element?.context?.methods?.[param])
+  return Boolean(METHODS.has(param) || element?.context?.methods?.[param])
 }

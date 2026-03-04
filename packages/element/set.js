@@ -71,15 +71,16 @@ export const removeContent = function (el, opts = {}) {
   // Handle fragment removal
   if (content.tag === 'fragment' && content.__ref?.__children) {
     // Remove all child nodes
-    content.__ref.__children.forEach(key => {
-      const child = content[key]
+    const __children = content.__ref.__children
+    for (let i = 0; i < __children.length; i++) {
+      const child = content[__children[i]]
       if (child.node && child.node.parentNode) {
         child.node.parentNode.removeChild(child.node)
       }
       if (isFunction(child.remove)) {
         child.remove()
       }
-    })
+    }
   } else {
     // Handle regular element removal
     if (content.node && content.node.parentNode) {

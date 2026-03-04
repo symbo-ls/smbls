@@ -2,14 +2,16 @@
 
 import { exec, isObject, isString } from '@domql/utils'
 
+const RE_MULTI_SPACE = /\s+/g
+
 export const assignKeyAsClassname = element => {
   const { key } = element
   if (element.classlist === true) element.classlist = key
   else if (
     !element.classlist &&
     typeof key === 'string' &&
-    key.charAt(0) === '_' &&
-    key.charAt(1) !== '_'
+    key.charCodeAt(0) === 95 &&
+    key.charCodeAt(1) !== 95
   ) {
     element.classlist = key.slice(1)
   }
@@ -36,7 +38,7 @@ export const classList = (params, element) => {
   if (isString(params)) params = element.classlist = { default: params }
   if (isObject(params)) params = classify(params, element)
   // TODO: fails on string
-  const className = params.replace(/\s+/g, ' ').trim()
+  const className = params.replace(RE_MULTI_SPACE, ' ').trim()
   return className
 }
 

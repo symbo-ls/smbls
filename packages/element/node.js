@@ -61,11 +61,11 @@ export const createNode = (element, opts) => {
     const value = element[param]
 
     if (
-      !Object.hasOwnProperty.call(element, param) ||
-      isUndefined(value) ||
+      !Object.prototype.hasOwnProperty.call(element, param) ||
+      value === undefined ||
       isMethod(param, element) ||
       isObject(REGISTRY[param]) ||
-      (param.startsWith('on') && param.length > 2 && param[2] === param[2].toUpperCase())
+      (param.length > 2 && param.charCodeAt(0) === 111 && param.charCodeAt(1) === 110 && param.charCodeAt(2) >= 65 && param.charCodeAt(2) <= 90)
     ) {
       continue
     }

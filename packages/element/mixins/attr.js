@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepMerge, exec, isNot, isNull, isUndefined } from '@domql/utils'
+import { deepMerge, exec, isNot } from '@domql/utils'
 import { report } from '@domql/report'
 
 /**
@@ -18,8 +18,8 @@ export function attr (params, element, node) {
       // if (__attr[attr] === val) return
       if (
         val !== false &&
-        !isUndefined(val) &&
-        !isNull(val) &&
+        val !== undefined &&
+        val !== null &&
         node.setAttribute
       ) {
         node.setAttribute(attr, val)

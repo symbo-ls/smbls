@@ -57,11 +57,15 @@ export function setChildren (param, element, opts) {
 
   if (!children || isNot(children)('array', 'object')) return
 
-  if (isArray(children) && children.find(v => v?.$$typeof)) {
-    const filterReact = children.filter(v => !v?.$$typeof)
-    if (filterReact.length !== children.length) {
-      const extractedReactComponents = children.filter(v => v?.$$typeof)
-      element.call('renderReact', extractedReactComponents, element)
+  if (isArray(children) && children.some(v => v?.$$typeof)) {
+    const filterReact = []
+    const reactComponents = []
+    for (let i = 0; i < children.length; i++) {
+      if (children[i]?.$$typeof) reactComponents.push(children[i])
+      else filterReact.push(children[i])
+    }
+    if (reactComponents.length) {
+      element.call('renderReact', reactComponents, element)
     }
     children = filterReact
   }
@@ -86,7 +90,7 @@ export function setChildren (param, element, opts) {
   const content = { tag: 'fragment' }
 
   for (const key in children) {
-    const value = Object.hasOwnProperty.call(children, key) && children[key]
+    const value = Object.prototype.hasOwnProperty.call(children, key) && children[key]
     if (isDefined(value) && value !== null && value !== false) {
       content[key] = isObjectLike(value)
         ? childrenAs

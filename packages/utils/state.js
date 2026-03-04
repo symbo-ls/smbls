@@ -14,8 +14,7 @@ import {
   isFunction,
   isObject,
   isObjectLike,
-  isString,
-  isUndefined
+  isString
 } from './types.js'
 
 export const checkForStateTypes = element => {
@@ -101,7 +100,7 @@ export const findInheritedState = (element, parent, options = {}) => {
 export const createInheritedState = (element, parent) => {
   const ref = element.__ref
   const inheritedState = findInheritedState(element, parent)
-  if (isUndefined(inheritedState)) return element.state
+  if (inheritedState === undefined) return element.state
 
   if (is(inheritedState)('object', 'array')) {
     return deepClone(inheritedState)
@@ -158,10 +157,11 @@ export const createNestedObjectByKeyPath = (path, value) => {
   const keys = path.split('/')
   const obj = {}
   let ref = obj
-  keys.forEach((key, index) => {
-    ref[key] = index === keys.length - 1 ? value || {} : {}
-    ref = ref[key]
-  })
+  const lastIdx = keys.length - 1
+  for (let i = 0; i <= lastIdx; i++) {
+    ref[keys[i]] = i === lastIdx ? value || {} : {}
+    ref = ref[keys[i]]
+  }
   return obj
 }
 

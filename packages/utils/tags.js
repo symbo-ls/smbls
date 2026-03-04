@@ -5,7 +5,7 @@ export const HTML_TAGS = {
 
   head: ['title', 'base', 'meta', 'style', 'noscript', 'script'],
 
-  body: [
+  body: new Set([
     'string',
     'style',
     'fragment',
@@ -161,7 +161,7 @@ export const HTML_TAGS = {
     'feFlood',
     'feComposite',
     'foreignObject'
-  ]
+  ])
 }
 
 export const SVG_TAGS = new Set([
@@ -173,4 +173,4 @@ export const SVG_TAGS = new Set([
   'feComposite', 'foreignObject'
 ])
 
-export const isValidHtmlTag = arg => HTML_TAGS.body.includes(arg)
+export const isValidHtmlTag = arg => HTML_TAGS.body.has(arg)
