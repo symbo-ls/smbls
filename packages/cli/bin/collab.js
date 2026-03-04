@@ -465,7 +465,7 @@ export async function startCollab (options) {
         const nextDeps = persistedObj.dependencies && typeof persistedObj.dependencies === 'object'
           ? persistedObj.dependencies
           : {}
-        if (symbolsConfig.bundler === 'browser') {
+        if (symbolsConfig.runtime === 'browser') {
           const depsJsPath = path.join(distDir, 'dependencies.js')
           syncDependenciesJs(depsJsPath, nextDeps, { overwriteExisting: true })
         } else if (packageJsonPath) {
@@ -513,7 +513,7 @@ export async function startCollab (options) {
   try {
     ensureSchemaDependencies(baseSnapshot)
     if (baseSnapshot?.dependencies) {
-      if (symbolsConfig.bundler === 'browser') {
+      if (symbolsConfig.runtime === 'browser') {
         const depsJsPath = path.join(distDir, 'dependencies.js')
         syncDependenciesJs(depsJsPath, baseSnapshot.dependencies, { overwriteExisting: true })
       } else if (packageJsonPath) {

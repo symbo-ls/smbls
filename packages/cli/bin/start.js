@@ -53,14 +53,15 @@ program
   .action(async (entry, opts) => {
     const cwd = process.cwd()
     const config = getRunnerConfig(cwd)
-    const bundler = opts.bundler || await resolveBundler(cwd)
     const resolvedEntry = entry || config.entry
     const port = opts.port ? parseInt(opts.port, 10) : config.port
 
-    if (bundler === 'browser') {
+    if (config.runtime === 'browser') {
       serveBrowser(resolvedEntry, port, cwd)
       return
     }
+
+    const bundler = opts.bundler || await resolveBundler(cwd)
 
     if (bundler === 'vite') {
       const args = ['serve', '--port', String(port)]

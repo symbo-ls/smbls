@@ -32,15 +32,17 @@ export const saveSymbols = (data, cwd = process.cwd()) => {
 
 /**
  * Returns runner config from symbols.json with fallback defaults.
- * Keys: bundler, entry, port, distDir, packageManager
+ * Keys: runtime, bundler, entry, port, distDir, packageManager
  */
 export const getRunnerConfig = (cwd = process.cwd()) => {
   const s = getSymbols(cwd)
-  const isBrowser = s.bundler === 'browser'
+  const runtime = s.runtime || 'node'
+  const isBrowser = runtime === 'browser'
   return {
-    bundler: s.bundler || null,
-    entry: isBrowser ? null : (s.entry || 'index.html'),
-    port: isBrowser ? null : (s.port || 1234),
+    runtime,
+    bundler: isBrowser ? null : (s.bundler || null),
+    entry: isBrowser ? (s.entry || 'index.html') : (s.entry || 'index.html'),
+    port: s.port || 1234,
     distDir: s.distDir || 'dist',
     packageManager: s.packageManager || 'npm'
   }
@@ -60,8 +62,7 @@ export const promptBundler = async () => {
     message: 'Which bundler do you want to use?',
     choices: [
       { name: 'Parcel  — zero-config, recommended', value: 'parcel' },
-      { name: 'Vite    — fast ES module dev server', value: 'vite' },
-      { name: 'Browser — native ES modules, no bundler', value: 'browser' }
+      { name: 'Vite    — fast ES module dev server', value: 'vite' }
     ]
   }])
   return bundler

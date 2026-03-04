@@ -235,7 +235,7 @@ export const fetchFromCli = async (opts) => {
   // Sync project dependencies — browser bundler writes to dependencies.js, others to package.json
   try {
     if (String(scope || '') !== 'libs' && payload?.dependencies) {
-      if (symbolsConfig.bundler === 'browser') {
+      if (symbolsConfig.runtime === 'browser') {
         const depsJsPath = path.join(distDir, 'dependencies.js')
         const res = syncDependenciesJs(depsJsPath, payload.dependencies, { overwriteExisting: true })
         if (verbose && res?.ok && res.changed) {

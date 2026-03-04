@@ -1,5 +1,7 @@
 'use strict'
 
+import fs from 'fs'
+import path from 'path'
 import inquirer from 'inquirer'
 import { loadCliConfig, saveCliConfig, updateLegacySymbolsJson } from './config.js'
 import { detectRuntime, detectPackageManager } from './packageManager.js'
@@ -7,7 +9,8 @@ import { detectRuntime, detectPackageManager } from './packageManager.js'
 const RUNTIME_CHOICES = [
   { name: 'Node     — standard Node.js runtime', value: 'node' },
   { name: 'Bun      — fast all-in-one JS runtime', value: 'bun' },
-  { name: 'Deno     — secure JS/TS runtime', value: 'deno' }
+  { name: 'Deno     — secure JS/TS runtime', value: 'deno' },
+  { name: 'Browser  — native ES modules, no bundler', value: 'browser' }
 ]
 
 const BUNDLER_CHOICES = [
@@ -16,7 +19,6 @@ const BUNDLER_CHOICES = [
   { name: 'Turbopack   — Rust-based incremental bundler', value: 'turbopack' },
   { name: 'Webpack     — battle-tested module bundler', value: 'webpack' },
   { name: 'Rollup      — ES module bundler', value: 'rollup' },
-  { name: 'Browser     — native ES modules, no bundler', value: 'browser' },
   { name: 'Other       — specify manually', value: 'other' }
 ]
 
@@ -35,10 +37,28 @@ const PM_CHOICES = [
   { name: 'bun', value: 'bun' }
 ]
 
+const CDN_VALUES = CDN_CHOICES.map(c => c.value)
+
+/**
+ * Write symbols/config.js with the resolved runtime config.
+ * This file must be browser-safe (no dynamic imports, no Node APIs).
+ */
+function writeProjectConfigJs (cwd, { distDir, prepareDependencies, packageManager, bundler }) {
+  const configJsPath = path.join(cwd, distDir || 'symbols', 'config.js')
+  if (!fs.existsSync(configJsPath)) return
+  const lines = ['export default {']
+  if (bundler) lines.push(`  bundler: '${bundler}',`)
+  lines.push(`  packageManager: '${packageManager}',`)
+  lines.push(`  prepareDependencies: ${prepareDependencies}`)
+  lines.push('}')
+  fs.writeFileSync(configJsPath, lines.join('\n') + '\n')
+}
+
 /**
  * Run interactive config prompts and save results to symbols.json + .symbols_cache/config.json.
+ * Also rewrites symbols/config.js if present.
  * @param {object} symbolsConfig - existing symbols.json content
- * @returns {{ bundler: string, packageManager: string }} resolved values
+ * @returns {{ runtime: string, bundler: string|null, packageManager: string, prepareDependencies: boolean }}
  */
 export async function runConfigPrompts (symbolsConfig = {}) {
   const cliConfig = loadCliConfig()
@@ -77,7 +97,7 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     {
       type: 'list',
       name: 'runtime',
-      message: 'JavaScript runtime:',
+      message: 'Environment:',
       choices: RUNTIME_CHOICES,
       default: symbolsConfig.runtime || detectedRuntime
     },
@@ -100,13 +120,13 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     {
       type: 'list',
       name: 'packageManager',
-      message: (a) => a.bundler === 'browser'
-        ? 'CDN provider (dependencies resolved in browser):'
+      message: (a) => a.runtime === 'browser'
+        ? 'CDN provider:'
         : 'Package manager:',
-      choices: (a) => a.bundler === 'browser' ? CDN_CHOICES : PM_CHOICES,
+      choices: (a) => a.runtime === 'browser' ? CDN_CHOICES : PM_CHOICES,
       default: (a) => {
-        if (a.bundler === 'browser') {
-          return CDN_CHOICES.find(c => c.value === symbolsConfig.packageManager)
+        if (a.runtime === 'browser') {
+          return CDN_VALUES.includes(symbolsConfig.packageManager)
             ? symbolsConfig.packageManager
             : 'esm.sh'
         }
@@ -114,7 +134,7 @@ export async function runConfigPrompts (symbolsConfig = {}) {
           ? symbolsConfig.packageManager
           : detectedPm
       },
-      when: (a) => a.runtime === 'node'
+      when: (a) => a.runtime === 'node' || a.runtime === 'browser'
     },
     {
       type: 'input',
@@ -126,11 +146,27 @@ export async function runConfigPrompts (symbolsConfig = {}) {
   ])
 
   const runtime = answers.runtime
-  const rawBundler = runtime === 'node' ? answers.bundler : (runtime === 'bun' ? 'vite' : 'browser')
-  const bundler = rawBundler === 'other' ? (answers.bundlerCustom || 'parcel') : rawBundler
-  const packageManager = runtime === 'node'
-    ? answers.packageManager
-    : runtime === 'bun' ? 'bun' : 'deno'
+  let bundler = null
+  if (runtime === 'node') {
+    const raw = answers.bundler
+    bundler = raw === 'other' ? (answers.bundlerCustom || 'parcel') : raw
+  } else if (runtime === 'bun') {
+    bundler = 'vite'
+  }
+  // deno and browser: no bundler
+
+  let packageManager
+  if (runtime === 'browser') {
+    packageManager = answers.packageManager || 'esm.sh'
+  } else if (runtime === 'node') {
+    packageManager = answers.packageManager || detectedPm
+  } else if (runtime === 'bun') {
+    packageManager = 'bun'
+  } else {
+    packageManager = 'deno'
+  }
+
+  const prepareDependencies = runtime === 'browser' && CDN_VALUES.includes(packageManager)
 
   updateLegacySymbolsJson({
     ...symbolsConfig,
@@ -149,5 +185,12 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     branch: answers.branch
   })
 
-  return { bundler, packageManager }
+  writeProjectConfigJs(process.cwd(), {
+    distDir: answers.distDir,
+    prepareDependencies,
+    packageManager,
+    bundler
+  })
+
+  return { runtime, bundler, packageManager, prepareDependencies }
 }

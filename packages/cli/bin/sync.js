@@ -447,7 +447,7 @@ export async function syncProjectChanges (options) {
     try {
       ensureSchemaDependencies(updatedServerData)
       if (updatedServerData?.dependencies) {
-        if (symbolsConfig.bundler === 'browser') {
+        if (symbolsConfig.runtime === 'browser') {
           const depsJsPath = path.join(distDir, 'dependencies.js')
           syncDependenciesJs(depsJsPath, updatedServerData.dependencies, { overwriteExisting: true })
         } else if (packageJsonPath) {
