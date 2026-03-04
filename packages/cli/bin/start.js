@@ -67,7 +67,7 @@ program
   .action(async (entry, opts, cmd) => {
     const cwd = process.cwd()
     const config = getRunnerConfig(cwd)
-    const resolvedEntry = entry || config.entry
+    const resolvedEntry = (entry && !entry.startsWith('-') ? entry : null) || config.entry
     const port = opts.port ? parseInt(opts.port, 10) : config.port
 
     // Collect unknown/pass-through args for the underlying bundler
