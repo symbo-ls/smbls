@@ -68,7 +68,7 @@ export function generateV3IndexJs (srcDir, { isCdnMode = false } = {}) {
       : `import ${m.name} from '${m.path}'`
   ).join('\n')
 
-  const contextKeys = present.map(m => `  ${m.name}`).join(',\n')
+  const contextKeys = present.map(m => m.name === 'config' ? `  ...config` : `  ${m.name}`).join(',\n')
 
   const smblsImport = isCdnMode ? '' : "import { create } from 'smbls'\n"
 

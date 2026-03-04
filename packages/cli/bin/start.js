@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join, dirname, resolve } from 'path'
 import { spawn } from 'child_process'
+import { createServer } from 'net'
 import { program } from './program.js'
 import { resolveBundler, getRunnerConfig, findBin, spawnBin } from './bundler.js'
 
@@ -29,6 +30,12 @@ const injectImportmap = (html, packageManager) => {
   if (html.includes('<body')) return html.replace('<body', `${tag}\n<body`)
   return tag + '\n' + html
 }
+
+const findFreePort = (port) => new Promise((resolve) => {
+  const server = createServer()
+  server.listen(port, () => { server.close(() => resolve(port)) })
+  server.on('error', () => resolve(findFreePort(port + 1)))
+})
 
 const startBrowser = (entry, port, cwd, packageManager, open) => {
   const entryPath = join(cwd, entry)
@@ -68,7 +75,7 @@ program
     const cwd = process.cwd()
     const config = getRunnerConfig(cwd)
     const resolvedEntry = (entry && !entry.startsWith('-') ? entry : null) || config.entry
-    const port = opts.port ? parseInt(opts.port, 10) : config.port
+    const port = await findFreePort(opts.port ? parseInt(opts.port, 10) : config.port)
 
     // Collect unknown/pass-through args for the underlying bundler
     const KNOWN_FLAGS = new Set(['--no-cache', '--cache', '--open', '--bundler', '-p', '--port'])
