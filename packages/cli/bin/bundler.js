@@ -1,13 +1,22 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { resolve } from 'path'
+import { resolve, dirname } from 'path'
 import { spawn } from 'child_process'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 
 const BUNDLERS = ['parcel', 'vite', 'browser']
 
-export const findBin = (name, cwd = process.cwd()) =>
-  resolve(cwd, 'node_modules', '.bin', name)
+export const findBin = (name, cwd = process.cwd()) => {
+  let dir = resolve(cwd)
+  for (let i = 0; i < 10; i++) {
+    const bin = resolve(dir, 'node_modules', '.bin', name)
+    if (existsSync(bin)) return bin
+    const parent = dirname(dir)
+    if (parent === dir) break
+    dir = parent
+  }
+  return resolve(cwd, 'node_modules', '.bin', name)
+}
 
 export const getSymbols = (cwd = process.cwd()) => {
   const p = resolve(cwd, 'symbols.json')
