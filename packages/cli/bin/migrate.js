@@ -10,9 +10,13 @@ import { detectV2Project, generateV3IndexJs } from './init-helpers/v2detect.js'
 import { runInstall } from '../helpers/packageManager.js'
 import { runConfigPrompts } from '../helpers/configPrompts.js'
 
-function getLatestSmblsVersion () {
+const STARTER_KIT_PKG_URL = 'https://raw.githubusercontent.com/symbo-ls/starter-kit/next/package.json'
+
+function getStarterKitSmblsVersion () {
   try {
-    return execSync('npm show smbls version', { encoding: 'utf8', stdio: 'pipe' }).trim()
+    const out = execSync(`curl -sf ${STARTER_KIT_PKG_URL}`, { encoding: 'utf8', stdio: 'pipe' })
+    const pkg = JSON.parse(out)
+    return pkg.dependencies?.smbls || null
   } catch {
     return null
   }
@@ -141,8 +145,8 @@ program
       }
       pkg.dependencies = pkg.dependencies || {}
       if (!pkg.dependencies.smbls || isV2VersionRange(pkg.dependencies.smbls)) {
-        const latest = getLatestSmblsVersion()
-        pkg.dependencies.smbls = latest ? `^${latest}` : 'latest'
+        const smblsVersion = getStarterKitSmblsVersion()
+        pkg.dependencies.smbls = smblsVersion || 'latest'
         changed = true
       }
       if (changed) {
