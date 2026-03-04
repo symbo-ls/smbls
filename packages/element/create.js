@@ -33,10 +33,10 @@ import { filterAttributesByTagName } from 'attrs-in-props'
 const EXCLUDED_ATTRS = new Set(['class', 'style'])
 
 const applyPropsAsAttrs = (element) => {
-  const { tag, props } = element
+  const { tag, props, context } = element
   if (!tag || !props) return
 
-  const autoAttrs = filterAttributesByTagName(tag, props)
+  const autoAttrs = filterAttributesByTagName(tag, props, context?.cssPropsRegistry)
   const filtered = {}
   for (const key in autoAttrs) {
     if (!EXCLUDED_ATTRS.has(key)) filtered[key] = autoAttrs[key]

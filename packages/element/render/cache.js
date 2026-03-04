@@ -4,6 +4,8 @@ import { report } from '@domql/report'
 import { canRenderTag } from '../event/index.js'
 import { exec, isObject, isString, isValidHtmlTag, SVG_TAGS, document } from '@domql/utils'
 
+const SVG_NS = 'http://www.w3.org/2000/svg'
+
 export const createHTMLNode = (element) => {
   const { tag, context } = element
   const doc = context.document || document
@@ -12,7 +14,10 @@ export const createHTMLNode = (element) => {
     else if (tag === 'fragment') {
       return doc.createDocumentFragment()
     } else if (SVG_TAGS.has(tag)) {
-      return doc.createElementNS('http://www.w3.org/2000/svg', tag)
+      if (tag === 'svg' || element.parent?.node?.namespaceURI === SVG_NS) {
+        return doc.createElementNS(SVG_NS, tag)
+      }
+      return doc.createElement(tag)
     } else return doc.createElement(tag)
   } else {
     return doc.createElement('div')
@@ -52,8 +57,10 @@ export const cacheNode = (element) => {
   }
 
   if (!win.nodeCaches) win.nodeCaches = {}
-  let cachedTag = win.nodeCaches[tag]
-  if (!cachedTag) cachedTag = win.nodeCaches[tag] = createHTMLNode(element)
+  const isSvgContext = SVG_TAGS.has(tag) && (tag === 'svg' || element.parent?.node?.namespaceURI === SVG_NS)
+  const cacheKey = isSvgContext ? 'svg:' + tag : tag
+  let cachedTag = win.nodeCaches[cacheKey]
+  if (!cachedTag) cachedTag = win.nodeCaches[cacheKey] = createHTMLNode(element)
 
   const clonedNode = cachedTag.cloneNode(true)
   if (tag === 'string') clonedNode.nodeValue = element.text

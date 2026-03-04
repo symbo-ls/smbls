@@ -1056,11 +1056,12 @@ export const checkEventFunctions = (key) => {
   return DOM_EVENTS.includes(normalizedKey)
 }
 
-export const filterAttributesByTagName = (tag, props) => {
+export const filterAttributesByTagName = (tag, props, cssProps) => {
   const filteredObject = {}
 
   for (const key in props) {
     if (Object.prototype.hasOwnProperty.call(props, key)) {
+      if (cssProps && key in cssProps) continue
       const isAttribute = checkAttributeByTagName(tag, key)
       const isEvent = checkEventFunctions(key)
       if (isDefined(props[key]) && (isAttribute || isEvent)) {

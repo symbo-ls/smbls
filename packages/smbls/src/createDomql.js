@@ -2,6 +2,7 @@
 
 import DOM from 'domql'
 import * as uikit from '@symbo.ls/uikit'
+import { CSS_PROPS_REGISTRY } from 'css-in-props'
 
 import { isString, isNode, isObject } from '@domql/utils'
 import { initAnimationFrame } from '@domql/element'
@@ -30,6 +31,7 @@ import {
 export const prepareContext = async (app, context = {}) => {
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
+  context.cssPropsRegistry = CSS_PROPS_REGISTRY
   context.window = prepareWindow(context)
 
   if (context.sharedLibraries && context.sharedLibraries.length) {
