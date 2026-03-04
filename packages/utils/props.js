@@ -77,7 +77,8 @@ export function pickupElementFromProps (obj = this, opts) {
     // Move qualifying properties back to obj root
     if (isElement || isBuiltin || hasDefine || hasGlobalDefine) {
       // Don't overwrite if root already has this property explicitly set
-      if (obj[key] === undefined) {
+      // Exception: null values should override to allow nullifying children from props
+      if (obj[key] === undefined || value === null) {
         obj[key] = value
         if (obj.props) delete obj.props[key]
       }
