@@ -102,7 +102,7 @@ export const spawnBin = (binPath, args, cwd = process.cwd()) => {
     process.exit(1)
   }
   return spawn(binPath, args, {
-    stdio: 'inherit',
+    stdio: process.stdin.isTTY ? 'inherit' : ['ignore', 'inherit', 'inherit'],
     cwd,
     shell: process.platform === 'win32'
   })
