@@ -23,7 +23,8 @@ import {
   augmentProjectWithLocalPackageDependencies,
   ensureSchemaDependencies,
   findNearestPackageJson,
-  syncPackageJsonDependencies
+  syncPackageJsonDependencies,
+  syncDependenciesJs
 } from '../helpers/dependenciesUtils.js'
 
 // The platform may omit empty designSystem buckets. The CLI filesystem
@@ -442,11 +443,16 @@ export async function syncProjectChanges (options) {
       console.log(chalk.gray(`${label} local designSystem files: ${JSON.stringify(out)}`))
     }
 
-    // Ensure fetched snapshot has dependency schema and sync deps into local package.json
+    // Ensure fetched snapshot has dependency schema and sync deps
     try {
       ensureSchemaDependencies(updatedServerData)
-      if (packageJsonPath && updatedServerData?.dependencies) {
-        syncPackageJsonDependencies(packageJsonPath, updatedServerData.dependencies, { overwriteExisting: true })
+      if (updatedServerData?.dependencies) {
+        if (symbolsConfig.bundler === 'browser') {
+          const depsJsPath = path.join(distDir, 'dependencies.js')
+          syncDependenciesJs(depsJsPath, updatedServerData.dependencies, { overwriteExisting: true })
+        } else if (packageJsonPath) {
+          syncPackageJsonDependencies(packageJsonPath, updatedServerData.dependencies, { overwriteExisting: true })
+        }
       }
     } catch (_) {}
 

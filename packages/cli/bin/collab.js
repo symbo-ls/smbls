@@ -19,7 +19,8 @@ import {
   ensureSchemaDependencies,
   findNearestPackageJson,
   syncPackageJsonDependencies,
-  patchPackageJsonDependencies
+  patchPackageJsonDependencies,
+  syncDependenciesJs
 } from '../helpers/dependenciesUtils.js'
 
 function getCollabStatePath () {
@@ -460,19 +461,24 @@ export async function startCollab (options) {
       if (typeof sendLocalChanges?.cancel === 'function') {
         sendLocalChanges.cancel()
       }
-      if (packageJsonPath && persistedObj?.dependencies) {
+      if (persistedObj?.dependencies) {
         const nextDeps = persistedObj.dependencies && typeof persistedObj.dependencies === 'object'
           ? persistedObj.dependencies
           : {}
-        const prevDeps = lastManagedDepsForPackageJson && typeof lastManagedDepsForPackageJson === 'object'
-          ? lastManagedDepsForPackageJson
-          : {}
-        const remove = Object.keys(prevDeps).filter((k) => !Object.prototype.hasOwnProperty.call(nextDeps, k))
-        patchPackageJsonDependencies(packageJsonPath, {
-          upsert: nextDeps,
-          remove,
-          overwriteExisting: true
-        })
+        if (symbolsConfig.bundler === 'browser') {
+          const depsJsPath = path.join(distDir, 'dependencies.js')
+          syncDependenciesJs(depsJsPath, nextDeps, { overwriteExisting: true })
+        } else if (packageJsonPath) {
+          const prevDeps = lastManagedDepsForPackageJson && typeof lastManagedDepsForPackageJson === 'object'
+            ? lastManagedDepsForPackageJson
+            : {}
+          const remove = Object.keys(prevDeps).filter((k) => !Object.prototype.hasOwnProperty.call(nextDeps, k))
+          patchPackageJsonDependencies(packageJsonPath, {
+            upsert: nextDeps,
+            remove,
+            overwriteExisting: true
+          })
+        }
         lastManagedDepsForPackageJson = clonePlain(nextDeps)
       }
     } catch (_) {}
@@ -506,8 +512,13 @@ export async function startCollab (options) {
   try { ensureDesignSystemBuckets(baseSnapshot?.designSystem) } catch (_) {}
   try {
     ensureSchemaDependencies(baseSnapshot)
-    if (packageJsonPath && baseSnapshot?.dependencies) {
-      syncPackageJsonDependencies(packageJsonPath, baseSnapshot.dependencies, { overwriteExisting: true })
+    if (baseSnapshot?.dependencies) {
+      if (symbolsConfig.bundler === 'browser') {
+        const depsJsPath = path.join(distDir, 'dependencies.js')
+        syncDependenciesJs(depsJsPath, baseSnapshot.dependencies, { overwriteExisting: true })
+      } else if (packageJsonPath) {
+        syncPackageJsonDependencies(packageJsonPath, baseSnapshot.dependencies, { overwriteExisting: true })
+      }
     }
   } catch (_) {}
 
@@ -726,7 +737,7 @@ export async function startCollab (options) {
         suppressLocalChanges = false
       }
     }
-    // Base snapshot is our last pulled .symbols/project.json
+    // Base snapshot is our last pulled .symbols_cache/project.json
     const changes = computeCoarseChanges(safeBase, safeLocal)
     if (!changes.length) return
     if (options.verbose) {

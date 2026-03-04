@@ -183,7 +183,7 @@ program
     console.log(chalk.dim('Run `smbls start` to start the development server.'))
     console.log()
     console.log(chalk.bold('Next steps:'))
-    console.log(chalk.dim('  • Review symbols/app.js — add your app config (routes, theme, etc.)'))
+    console.log(chalk.dim('  • Review symbols/index.js — add your app config (routes, theme, etc.)'))
     console.log(chalk.dim('  • Check that symbols/index.js imports match your actual files'))
     console.log(chalk.dim('  • Update extend → extends, childExtend → childExtends in components'))
   })

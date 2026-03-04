@@ -53,7 +53,7 @@ export function generateV3IndexJs (srcDir) {
     { name: 'files', path: './files/index.js', style: 'default' },
     { name: 'sharedLibraries', path: './sharedLibraries.js', style: 'default' },
     { name: 'config', path: './config.js', style: 'default' },
-    { name: 'env', path: './env.js', style: 'default' }
+    { name: 'envs', path: './envs.js', style: 'default' }
   ]
 
   const present = modules.filter(m => fs.existsSync(path.join(srcDir, m.path.replace('./', ''))))

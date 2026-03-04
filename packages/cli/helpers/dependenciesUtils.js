@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { execSync } from 'child_process'
 
 function isPlainObject(val) {
   return !!val && typeof val === 'object' && !Array.isArray(val)
@@ -220,6 +221,49 @@ export function augmentProjectWithLocalPackageDependencies(project, packageJsonP
 
   ensureSchemaDependencies(target)
   return target
+}
+
+/**
+ * Sync a dependency map into a symbols/dependencies.js source file.
+ * Merges incoming deps with existing ones; existing values win unless overwriteExisting is true.
+ * The file uses `export default { ... }` format.
+ */
+export function syncDependenciesJs(dependenciesJsPath, depsMap, { overwriteExisting = true } = {}) {
+  if (!dependenciesJsPath) return { ok: false, reason: 'missing_path' }
+  if (!isPlainObject(depsMap) || !Object.keys(depsMap).length) return { ok: true, changed: false }
+
+  let existing = {}
+  try {
+    if (fs.existsSync(dependenciesJsPath)) {
+      const src = fs.readFileSync(dependenciesJsPath, 'utf8')
+      const match = src.match(/export\s+default\s+(\{[\s\S]*?\})/)
+      if (match) existing = new Function('return ' + match[1])() // eslint-disable-line no-new-func
+    }
+  } catch (_) {}
+
+  let changed = false
+  for (const [name, ver] of Object.entries(depsMap)) {
+    if (!name || !ver) continue
+    if (!Object.prototype.hasOwnProperty.call(existing, name)) {
+      existing[name] = ver; changed = true
+    } else if (overwriteExisting && existing[name] !== ver) {
+      existing[name] = ver; changed = true
+    }
+  }
+
+  if (!changed) return { ok: true, changed: false }
+
+  const entries = Object.keys(existing).sort().map(k => `  '${k}': '${existing[k]}'`).join(',\n')
+  const content = `export default {\n${entries}\n}\n`
+  try {
+    fs.writeFileSync(dependenciesJsPath, content)
+    try {
+      execSync(`npx standard --fix "${dependenciesJsPath}"`, { stdio: 'pipe' })
+    } catch (_) {}
+    return { ok: true, changed: true }
+  } catch (_) {
+    return { ok: false, reason: 'write_failed' }
+  }
 }
 
 

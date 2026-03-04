@@ -14,7 +14,7 @@ import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
-import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies } from '../helpers/dependenciesUtils.js'
+import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies, syncDependenciesJs } from '../helpers/dependenciesUtils.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
 import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 const { isObjectLike } = (utils.default || utils)
@@ -232,19 +232,27 @@ export const fetchFromCli = async (opts) => {
     process.exit(1)
   }
 
-  // Sync project dependencies into local package.json
+  // Sync project dependencies — browser bundler writes to dependencies.js, others to package.json
   try {
-    if (String(scope || '') !== 'libs') {
-      const packageJsonPath = findNearestPackageJson(process.cwd())
-      if (packageJsonPath && payload?.dependencies) {
-        const res = syncPackageJsonDependencies(packageJsonPath, payload.dependencies, { overwriteExisting: true })
+    if (String(scope || '') !== 'libs' && payload?.dependencies) {
+      if (symbolsConfig.bundler === 'browser') {
+        const depsJsPath = path.join(distDir, 'dependencies.js')
+        const res = syncDependenciesJs(depsJsPath, payload.dependencies, { overwriteExisting: true })
         if (verbose && res?.ok && res.changed) {
-          console.log(chalk.gray('Updated package.json dependencies from fetched project data'))
+          console.log(chalk.gray('Updated dependencies.js from fetched project data'))
+        }
+      } else {
+        const packageJsonPath = findNearestPackageJson(process.cwd())
+        if (packageJsonPath) {
+          const res = syncPackageJsonDependencies(packageJsonPath, payload.dependencies, { overwriteExisting: true })
+          if (verbose && res?.ok && res.changed) {
+            console.log(chalk.gray('Updated package.json dependencies from fetched project data'))
+          }
         }
       }
     }
   } catch (e) {
-    if (verbose) console.error('Failed updating package.json dependencies', e)
+    if (verbose) console.error('Failed updating dependencies', e)
   }
 
   const { version: fetchedVersion, ...config } = payload

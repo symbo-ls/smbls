@@ -27,13 +27,12 @@ import {
   prepareSharedLibs
 } from './prepare.js'
 
-
 export const prepareContext = async (app, context = {}) => {
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
   context.window = prepareWindow(context)
 
-  if (context.sharedLibraries) {
+  if (context.sharedLibraries && context.sharedLibraries.length) {
     prepareSharedLibs(context)
   }
 
@@ -49,7 +48,9 @@ export const prepareContext = async (app, context = {}) => {
   context.pages = preparePages(app, context)
   context.components = prepareComponents(context)
   context.utils = prepareUtils(context)
-  context.dependencies = await prepareDependencies(context)
+  if (context.prepareDependencies !== false) {
+    context.dependencies = await prepareDependencies(context)
+  }
   context.methods = prepareMethods(context)
   context.routerOptions = initRouter(app, context)
   context.defaultExtends = [uikit.Box]
