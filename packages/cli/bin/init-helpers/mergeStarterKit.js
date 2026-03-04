@@ -2,17 +2,41 @@
 
 import chalk from 'chalk'
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { execSync } from 'child_process'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// starter-kit-cli is at monorepo root: packages/cli/bin/init-helpers → ../../../../.. → root
-const STARTER_KIT = path.resolve(__dirname, '../../../../../starter-kit-cli')
-
-const PARCELRC = JSON.stringify({ extends: '@symbo.ls/runner' }, null, 2) + '\n'
+const STARTER_KIT_REPO = 'https://github.com/symbo-ls/starter-kit'
+const STARTER_KIT_BRANCH = 'next'
 
 const ESLINTRC = JSON.stringify({ extends: 'standard' }, null, 2) + '\n'
+
+const BUNDLER_CONFIGS = {
+  parcel: {
+    file: '.parcelrc',
+    content: JSON.stringify({
+      extends: '@parcel/config-default',
+      transformers: {
+        '*.woff2': ['@parcel/transformer-raw'],
+        '*.otf': ['@parcel/transformer-raw'],
+        '*.svg': ['@parcel/transformer-inline-string'],
+        '*.wasm': ['@parcel/transformer-wasm']
+      }
+    }, null, 2) + '\n'
+  },
+  vite: {
+    file: 'vite.config.js',
+    content: `import { defineConfig } from 'vite'
+
+export default defineConfig({
+  root: '.',
+  build: {
+    outDir: 'dist'
+  }
+})
+`
+  }
+}
 
 function readJsonSafe (filePath) {
   try {
@@ -41,75 +65,87 @@ function writeIfMissing (dest, content) {
 }
 
 /**
- * Merge starter-kit-cli (feature/cli) files into an existing project directory.
+ * Merge starter-kit (next branch) files into an existing project directory.
  * - Updates package.json (merges deps from starter-kit-cli + smbls start/build scripts)
  * - Creates src/{index,designSystem,components,pages}.js if missing
  * - Creates index.html if missing
- * - Merges symbols.json (existing values win) → placed in distDir folder
- * - Creates .parcelrc, .eslintrc if missing → placed in distDir folder
+ * - Merges symbols.json (existing values win) at cwd root
+ * - Creates bundler config (.parcelrc / vite.config.js) if missing at cwd root
+ * - Creates .eslintrc if missing at cwd root
  */
 export async function mergeStarterKit (cwd) {
-  // --- package.json (always at project root) ---
-  const pkgPath = path.join(cwd, 'package.json')
-  const pkg = readJsonSafe(pkgPath) || {}
+  // --- clone starter-kit feature/cli into temp dir ---
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'smbls-starter-'))
+  console.log(chalk.dim(`Cloning ${STARTER_KIT_REPO}#${STARTER_KIT_BRANCH}...`))
+  try {
+    execSync(
+      `git clone --depth 1 -b ${STARTER_KIT_BRANCH} ${STARTER_KIT_REPO} ${tmpDir}`,
+      { stdio: 'pipe' }
+    )
+  } catch (err) {
+    fs.rmSync(tmpDir, { recursive: true, force: true })
+    throw new Error(`Failed to clone starter-kit: ${err.message}`)
+  }
 
-  let pkgChanged = false
+  try {
+    // --- package.json (always at project root) ---
+    const pkgPath = path.join(cwd, 'package.json')
+    const pkg = readJsonSafe(pkgPath) || {}
 
-  pkg.scripts = pkg.scripts || {}
-  if (!pkg.scripts.start) { pkg.scripts.start = 'smbls start'; pkgChanged = true }
-  if (!pkg.scripts.build) { pkg.scripts.build = 'smbls build'; pkgChanged = true }
+    let pkgChanged = false
 
-  pkg.dependencies = pkg.dependencies || {}
-  const templatePkg = readJsonSafe(path.join(STARTER_KIT, 'package.json')) || {}
-  const templateDeps = templatePkg.dependencies || {}
-  for (const [name, version] of Object.entries(templateDeps)) {
-    if (!pkg.dependencies[name]) {
-      pkg.dependencies[name] = version
+    pkg.scripts = pkg.scripts || {}
+    if (!pkg.scripts.start) { pkg.scripts.start = 'smbls start'; pkgChanged = true }
+    if (!pkg.scripts.build) { pkg.scripts.build = 'smbls build'; pkgChanged = true }
+
+    pkg.dependencies = pkg.dependencies || {}
+    const templatePkg = readJsonSafe(path.join(tmpDir, 'package.json')) || {}
+    const templateDeps = templatePkg.dependencies || {}
+    for (const [name, version] of Object.entries(templateDeps)) {
+      if (!pkg.dependencies[name]) {
+        pkg.dependencies[name] = version
+        pkgChanged = true
+      }
+    }
+    if (!pkg.dependencies.smbls) {
+      pkg.dependencies.smbls = '^3.2.3'
       pkgChanged = true
     }
+
+    if (pkgChanged) {
+      fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+      console.log(chalk.green('update ') + 'package.json')
+    } else {
+      console.log(chalk.yellow('skip ') + chalk.dim('package.json (already configured)'))
+    }
+
+    // --- merge symbols.json at cwd root ---
+    const existingSymbols = readJsonSafe(path.join(cwd, 'symbols.json')) || {}
+    const templateSymbols = readJsonSafe(path.join(tmpDir, 'symbols.json')) || {}
+    const mergedSymbols = { ...templateSymbols, ...existingSymbols }
+    const symbolsPath = path.join(cwd, 'symbols.json')
+    fs.writeFileSync(symbolsPath, JSON.stringify(mergedSymbols, null, 2) + '\n')
+    console.log(chalk.green('update ') + 'symbols.json')
+
+    // --- smbls/ folder from cloned starter-kit (app.js + index.html only if missing) ---
+    const smblsDir = path.join(cwd, 'symbols')
+    if (!fs.existsSync(smblsDir)) fs.mkdirSync(smblsDir, { recursive: true })
+    copyIfMissing(path.join(tmpDir, 'symbols', 'index.js'), path.join(smblsDir, 'index.js'))
+    copyIfMissing(path.join(tmpDir, 'symbols', 'index.html'), path.join(smblsDir, 'index.html'))
+
+    // --- bundler config ---
+    const bundler = mergedSymbols.bundler || 'parcel'
+    const bundlerConfig = BUNDLER_CONFIGS[bundler]
+    if (bundlerConfig) {
+      writeIfMissing(path.join(cwd, bundlerConfig.file), bundlerConfig.content)
+    }
+
+    // --- .eslintrc ---
+    writeIfMissing(path.join(cwd, '.eslintrc'), ESLINTRC)
+
+    console.log()
+    return cwd
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true })
   }
-  if (!pkg.dependencies.smbls) {
-    pkg.dependencies.smbls = '^3.2.3'
-    pkgChanged = true
-  }
-
-  if (pkgChanged) {
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
-    console.log(chalk.green('update ') + 'package.json')
-  } else {
-    console.log(chalk.yellow('skip ') + chalk.dim('package.json (already configured)'))
-  }
-
-  // --- resolve distDir ---
-  const existingSymbols = readJsonSafe(path.join(cwd, 'symbols.json')) || {}
-  const templateSymbols = readJsonSafe(path.join(STARTER_KIT, 'symbols.json')) || {}
-  const mergedSymbols = { ...templateSymbols, ...existingSymbols }
-  const distDir = mergedSymbols.distDir || 'smbls'
-  const dest = path.join(cwd, distDir)
-  if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true })
-
-  // --- src/ files from starter-kit-cli ---
-  const srcDir = path.join(dest, 'src')
-  if (!fs.existsSync(srcDir)) fs.mkdirSync(srcDir, { recursive: true })
-  const srcFiles = ['index.js', 'designSystem.js', 'components.js', 'pages.js']
-  for (const f of srcFiles) {
-    copyIfMissing(path.join(STARTER_KIT, 'src', f), path.join(srcDir, f))
-  }
-
-  // --- index.html ---
-  copyIfMissing(path.join(STARTER_KIT, 'index.html'), path.join(dest, 'index.html'))
-
-  // --- symbols.json ---
-  const symbolsPath = path.join(dest, 'symbols.json')
-  fs.writeFileSync(symbolsPath, JSON.stringify(mergedSymbols, null, 2) + '\n')
-  console.log(chalk.green('update ') + path.join(distDir, 'symbols.json'))
-
-  // --- .parcelrc ---
-  writeIfMissing(path.join(dest, '.parcelrc'), PARCELRC)
-
-  // --- .eslintrc ---
-  writeIfMissing(path.join(dest, '.eslintrc'), ESLINTRC)
-
-  console.log()
-  return dest
 }
