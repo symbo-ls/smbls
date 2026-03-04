@@ -553,17 +553,28 @@ export async function createFs (
       ? normalizeDesignSystemOptionFlags(contentRootRaw)
       : contentRootRaw
 
-    const usedImportNames = new Set()
+    const DS_CONFIG_KEYS = new Set([
+      'useReset', 'useVariable', 'useFontImport', 'useIconSprite', 'useSvgSprite',
+      'useDefaultConfig', 'useDocumentTheme', 'useDefaultIcons', 'verbose',
+      'globalTheme', 'version', 'router'
+    ])
+
     const objectEntries = []
     const simpleEntries = []
+    const configEntries = []
 
     for (const [entryKey, value] of Object.entries(contentRoot || {})) {
+      // Config options inside designSystem go to config.js, not designSystem/index.js
+      if (key === 'designSystem' && DS_CONFIG_KEYS.has(entryKey)) {
+        configEntries.push([entryKey, value])
+        continue
+      }
       // Only split plain objects into individual files.
       if (isPlainObjectValue(value)) {
         const safeStem = String(entryKey).replace(/[/\\]/g, '-').toLowerCase()
         if (!safeStem) continue
         const rawImportName = safeStem.replace(/-/g, '_')
-        const importName = isReservedIdentifier(rawImportName) ? `${rawImportName}_` : rawImportName
+        const importName = isReservedIdentifier(rawImportName) ? `_${rawImportName}` : rawImportName
         objectEntries.push({
           entryKey,
           value,
@@ -573,6 +584,31 @@ export async function createFs (
         })
       } else {
         simpleEntries.push([entryKey, value])
+      }
+    }
+
+    // Write config keys to config.js (merge with existing)
+    if (configEntries.length) {
+      const configPath = path.join(distDir, 'config.js')
+      let existing = {}
+      if (fs.existsSync(configPath)) {
+        const src = fs.readFileSync(configPath, 'utf8')
+        // Extract existing keys to avoid overwriting user config
+        const match = src.match(/export default\s*\{([\s\S]*)\}/)
+        if (match) {
+          for (const line of match[1].split('\n')) {
+            const m = line.match(/^\s*(\w+)\s*:/)
+            if (m) existing[m[1]] = true
+          }
+        }
+      }
+      const newEntries = configEntries.filter(([k]) => !existing[k])
+      if (newEntries.length) {
+        const lines = newEntries.map(([k, v]) => `  ${k}: ${JSON.stringify(v)}`)
+        const body = Object.keys(existing).length
+          ? fs.readFileSync(configPath, 'utf8').replace(/\}\s*$/, `  ${lines.join(',\n  ')},\n}\n`)
+          : `export default {\n${lines.join(',\n')}\n}\n`
+        fs.writeFileSync(configPath, body)
       }
     }
 

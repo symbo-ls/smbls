@@ -1,22 +1,8 @@
-import { createServer } from 'http'
-import { createReadStream, existsSync, statSync, readFileSync } from 'fs'
-import { resolve, extname, join } from 'path'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { join, dirname, resolve } from 'path'
+import { spawn } from 'child_process'
 import { program } from './program.js'
 import { resolveBundler, getRunnerConfig, findBin, spawnBin } from './bundler.js'
-
-const MIME = {
-  '.html': 'text/html',
-  '.js': 'text/javascript',
-  '.mjs': 'text/javascript',
-  '.css': 'text/css',
-  '.json': 'application/json',
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.woff2': 'font/woff2',
-  '.woff': 'font/woff',
-  '.otf': 'font/otf'
-}
 
 const CDN_BASE = {
   'esm.sh': pkg => `https://esm.sh/${pkg}`,
@@ -32,40 +18,42 @@ const buildImportmap = (packageManager) => {
   return `<script type="importmap">\n${JSON.stringify({ imports }, null, 2)}\n</script>`
 }
 
+const GLOBALS_SCRIPT = `  <script type="module">
+    import * as smbls from 'smbls'
+    Object.assign(globalThis, smbls)
+  </script>`
+
 const injectImportmap = (html, packageManager) => {
-  const tag = buildImportmap(packageManager)
+  const tag = buildImportmap(packageManager) + '\n' + GLOBALS_SCRIPT
   if (html.includes('</head>')) return html.replace('</head>', `${tag}\n</head>`)
   if (html.includes('<body')) return html.replace('<body', `${tag}\n<body`)
   return tag + '\n' + html
 }
 
-const serveBrowser = (entry, port, cwd, packageManager) => {
+const startBrowser = (entry, port, cwd, packageManager, open) => {
   const entryPath = join(cwd, entry)
-  const server = createServer((req, res) => {
-    let urlPath = req.url.split('?')[0]
-    if (urlPath === '/') urlPath = `/${entry}`
-
-    const filePath = join(cwd, urlPath)
-    const isHtml = !existsSync(filePath) || statSync(filePath).isDirectory() ||
-      extname(filePath) === '.html'
-
-    if (isHtml) {
-      const html = readFileSync(existsSync(filePath) && !statSync(filePath).isDirectory()
-        ? filePath : entryPath, 'utf8')
-      const injected = injectImportmap(html, packageManager)
-      res.writeHead(200, { 'Content-Type': 'text/html' })
-      res.end(injected)
-      return
+  if (existsSync(entryPath)) {
+    const html = readFileSync(entryPath, 'utf8')
+    const cdnUrl = (CDN_BASE[packageManager] || CDN_BASE['esm.sh'])('smbls')
+    if (!html.includes('type="importmap"')) {
+      writeFileSync(entryPath, injectImportmap(html, packageManager))
+    } else if (!html.includes(cdnUrl)) {
+      const updated = html.replace(/<script type="importmap">[\s\S]*?<\/script>/, buildImportmap(packageManager))
+      writeFileSync(entryPath, updated)
     }
+  }
 
-    const ext = extname(filePath)
-    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' })
-    createReadStream(filePath).pipe(res)
-  })
+  const root = dirname(resolve(cwd, entry))
+  const liveServerArgs = [root, `--port=${port}`]
+  if (!open) liveServerArgs.push('--no-browser')
 
-  server.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`)
-  })
+  const bin = findBin('live-server', cwd)
+  const [cmd, args] = existsSync(bin)
+    ? [bin, liveServerArgs]
+    : ['npx', ['--yes', 'live-server', ...liveServerArgs]]
+
+  const child = spawn(cmd, args, { stdio: 'inherit', cwd, shell: process.platform === 'win32' })
+  child.on('exit', code => process.exit(code || 0))
 }
 
 program
@@ -75,14 +63,36 @@ program
   .option('--no-cache', 'Disable build cache')
   .option('--open', 'Open browser on start')
   .option('--bundler <bundler>', 'Force bundler: parcel, vite, browser')
-  .action(async (entry, opts) => {
+  .allowUnknownOption()
+  .action(async (entry, opts, cmd) => {
     const cwd = process.cwd()
     const config = getRunnerConfig(cwd)
     const resolvedEntry = entry || config.entry
     const port = opts.port ? parseInt(opts.port, 10) : config.port
 
+    // Collect unknown/pass-through args for the underlying bundler
+    const KNOWN_FLAGS = new Set(['--no-cache', '--cache', '--open', '--bundler', '-p', '--port'])
+    const KNOWN_VALUE_FLAGS = new Set(['--bundler', '-p', '--port'])
+    const startIdx = process.argv.indexOf('start')
+    const rawArgs = startIdx >= 0 ? process.argv.slice(startIdx + 1) : []
+    const extraArgs = []
+    for (let i = 0; i < rawArgs.length; i++) {
+      const a = rawArgs[i]
+      if (!a.startsWith('-')) continue
+      const key = a.includes('=') ? a.split('=')[0] : a
+      if (KNOWN_FLAGS.has(key)) {
+        if (KNOWN_VALUE_FLAGS.has(key) && !a.includes('=')) i++ // skip value
+      } else {
+        extraArgs.push(a)
+        // if space-separated value (not another flag), include it too
+        if (!a.includes('=') && i + 1 < rawArgs.length && !rawArgs[i + 1].startsWith('-')) {
+          extraArgs.push(rawArgs[++i])
+        }
+      }
+    }
+
     if (config.runtime === 'browser') {
-      serveBrowser(resolvedEntry, port, cwd, config.packageManager)
+      startBrowser(resolvedEntry, port, cwd, config.packageManager, opts.open)
       return
     }
 
@@ -91,15 +101,17 @@ program
     if (bundler === 'vite') {
       const args = ['serve', '--port', String(port)]
       if (opts.open) args.push('--open')
+      args.push(...extraArgs)
       const child = spawnBin(findBin('vite', cwd), args, cwd)
       child.on('exit', code => process.exit(code || 0))
       return
     }
 
     // parcel (default)
-    const args = [resolvedEntry, '--port', String(port)]
+    const args = ['serve', resolvedEntry, '--port', String(port)]
     if (!opts.cache) args.push('--no-cache')
     if (opts.open) args.push('--open')
+    args.push(...extraArgs)
     const child = spawnBin(findBin('parcel', cwd), args, cwd)
     child.on('exit', code => process.exit(code || 0))
   })

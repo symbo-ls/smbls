@@ -6,6 +6,7 @@ import path from 'path'
 import { exec, execSync } from 'child_process'
 import { program } from './program.js'
 import { addToJson } from './init-helpers/addToJson.js'
+import { patchProjectForBrowserMode } from './init-helpers/browserMode.js'
 
 function folderExists (path) {
   try {
@@ -81,6 +82,10 @@ program
     } else {
       addToJson(SYMBOLS_FILE_PATH, 'key', `${dest}.symbo.ls`)
       addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${packageManager}`)
+    }
+
+    if (isBrowserMode) {
+      patchProjectForBrowserMode(path.join(process.cwd(), 'symbols'), packageManager)
     }
 
     if (options.dependencies && !isBrowserMode) {

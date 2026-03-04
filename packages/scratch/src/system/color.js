@@ -66,7 +66,7 @@ export const getColor = (value, key, config) => {
 
 export const getMediaColor = (value, globalTheme, config) => {
   const CONFIG = config || getActiveConfig()
-  if (!globalTheme) globalTheme = CONFIG.globalTheme
+  if (!globalTheme) globalTheme = CONFIG.globalTheme === 'auto' ? null : CONFIG.globalTheme
   if (!isString(value)) {
     if (CONFIG.verbose) console.warn(value, '- type for color is not valid')
     return

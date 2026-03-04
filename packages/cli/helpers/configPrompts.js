@@ -42,18 +42,21 @@ const CDN_VALUES = CDN_CHOICES.map(c => c.value)
 const CDN_PACKAGE_MANAGERS = CDN_VALUES
 
 /**
- * Write symbols/config.js with the resolved runtime config.
- * This file must be browser-safe (no dynamic imports, no Node APIs).
- * Only includes packageManager when it's a CDN (implies prepareDependencies).
+ * Merge packageManager (CDN only) into symbols/config.js without overwriting existing keys.
+ * bundler is stored in symbols.json only; config.js is a browser-safe runtime file.
  */
-function writeProjectConfigJs (cwd, { distDir, packageManager, bundler }) {
+function writeProjectConfigJs (cwd, { distDir, packageManager }) {
+  if (!CDN_PACKAGE_MANAGERS.includes(packageManager)) return
   const configJsPath = path.join(cwd, distDir || 'symbols', 'config.js')
   fs.mkdirSync(path.dirname(configJsPath), { recursive: true })
-  const entries = []
-  if (bundler) entries.push(`  bundler: '${bundler}'`)
-  if (CDN_PACKAGE_MANAGERS.includes(packageManager)) entries.push(`  packageManager: '${packageManager}'`)
-  const body = entries.length ? '\n' + entries.join(',\n') + '\n' : ''
-  fs.writeFileSync(configJsPath, `export default {${body}}\n`)
+  if (fs.existsSync(configJsPath)) {
+    const src = fs.readFileSync(configJsPath, 'utf8')
+    if (/\bpackageManager\b/.test(src)) return // already present, don't overwrite
+    const merged = src.replace(/\}\s*$/, `  packageManager: '${packageManager}',\n}\n`)
+    fs.writeFileSync(configJsPath, merged)
+  } else {
+    fs.writeFileSync(configJsPath, `export default {\n  packageManager: '${packageManager}',\n}\n`)
+  }
 }
 
 /**
@@ -187,8 +190,7 @@ export async function runConfigPrompts (symbolsConfig = {}) {
 
   writeProjectConfigJs(process.cwd(), {
     distDir: answers.dir,
-    packageManager,
-    bundler
+    packageManager
   })
 
   return { runtime, bundler, packageManager }

@@ -8,7 +8,8 @@ import { DEFAULT_CONFIG } from '@symbo.ls/default-config'
 
 const OPTION_KEYS = [
   'useReset', 'useVariable', 'useFontImport', 'useIconSprite',
-  'useSvgSprite', 'useDocumentTheme', 'useDefaultIcons', 'useDefaultConfig', 'verbose'
+  'useSvgSprite', 'useDocumentTheme', 'useDefaultIcons', 'useDefaultConfig', 'verbose',
+  'globalTheme'
 ]
 
 export const initEmotion = (key, options = {}) => {

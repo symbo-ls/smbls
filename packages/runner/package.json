@@ -6,10 +6,7 @@
   "type": "module",
   "author": "Symbols",
   "license": "MIT",
-  "scripts": {
-    "vpush": "git add . && git commit -am 'version update' && git push",
-    "vpatch": "npm version patch && npm publish"
-  },
+  "scripts": {},
   "dependencies": {
     "@babel/core": "^7.28.0",
     "@babel/eslint-parser": "^7.28.0",
@@ -24,8 +21,12 @@
     "vite": ">=5.0.0"
   },
   "peerDependenciesMeta": {
-    "parcel": { "optional": true },
-    "vite": { "optional": true }
+    "parcel": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
   },
   "bundlers": {
     "parcel": {
@@ -38,7 +39,9 @@
     "vite": {
       "vite": "^6.0.0"
     },
-    "browser": {}
+    "browser": {
+      "live-server": "^1.2.2"
+    }
   },
   "buildDependencies": {
     "@babel/core": "^7.28.0",

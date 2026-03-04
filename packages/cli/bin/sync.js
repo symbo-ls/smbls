@@ -424,7 +424,7 @@ export async function syncProjectChanges (options) {
     const debugDesignSystemFiles = async (label) => {
       if (!options.verbose) return
       const dir = path.join(distDir, 'designSystem')
-      const files = ['SPACING.js', 'THEME.js', 'TYPOGRAPHY.js']
+      const files = ['spacing.js', 'theme.js', 'typography.js']
       const out = []
       for (const f of files) {
         const fp = path.join(dir, f)

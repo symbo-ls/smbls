@@ -43,6 +43,7 @@ program
   .option('--yes', 'Skip confirmation prompt')
   .action(async (opts) => {
     const cwd = process.cwd()
+    const CDN_PMs = new Set(['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'])
     const info = detectV2Project(cwd)
     const symbolsDir = path.join(cwd, 'symbols')
 
@@ -92,9 +93,16 @@ program
     // Resolved source dir to work with
     ensureDir(symbolsDir)
 
-    // 3a. Lowercase all files in designSystem/ (preserve content)
+    // 3a. Lowercase all files in designSystem/ and fix designSystem/index.js format
     const dsDir = path.join(symbolsDir, 'designSystem')
     if (fs.existsSync(dsDir)) {
+      const DS_RESERVED = new Set([
+        'class', 'default', 'export', 'import', 'return', 'let', 'const', 'var',
+        'function', 'new', 'this', 'super', 'extends', 'yield', 'await', 'delete',
+        'typeof', 'void', 'in', 'of', 'for', 'while', 'do', 'if', 'else',
+        'switch', 'case', 'break', 'continue', 'throw', 'try', 'catch', 'finally',
+        'with', 'debugger', 'static'
+      ])
       const dsFiles = fs.readdirSync(dsDir)
       let renamedCount = 0
       for (const file of dsFiles) {
@@ -105,25 +113,90 @@ program
           renamedCount++
         }
       }
-      // Update import variable names and paths in designSystem/index.js
+
+      // Update designSystem/index.js
       const dsIndex = path.join(dsDir, 'index.js')
       if (fs.existsSync(dsIndex)) {
-        const updated = fs.readFileSync(dsIndex, 'utf8')
-          // lowercase import variable names: `import FOO from` → `import foo from` (suffix _ for reserved words)
-          .replace(/^import\s+(\w+)\s+from/gm, (_, name) => {
-            const lower = name.toLowerCase()
-            const RESERVED = new Set(['class', 'default', 'export', 'import', 'return', 'let', 'const', 'var', 'function', 'new', 'this', 'super', 'extends', 'yield', 'await', 'delete', 'typeof', 'void', 'in', 'of', 'for', 'while', 'do', 'if', 'else', 'switch', 'case', 'break', 'continue', 'throw', 'try', 'catch', 'finally', 'with', 'debugger', 'static'])
-            return `import ${RESERVED.has(lower) ? `${lower}_` : lower} from`
-          })
-          // lowercase paths: `from './FOO'` → `from './foo'`
-          .replace(/from '\.\/([^']+)'/g, (_, p) => `from './${p.toLowerCase()}'`)
-          // lowercase export shorthand keys: `  FOO,` → `  foo,`
-          .replace(/^(  )(\w+),$/gm, (_, indent, key) => {
-            const lower = key.toLowerCase()
-            const RESERVED = new Set(['class', 'default', 'export', 'import', 'return', 'let', 'const', 'var', 'function', 'new', 'this', 'super', 'extends', 'yield', 'await', 'delete', 'typeof', 'void', 'in', 'of', 'for', 'while', 'do', 'if', 'else', 'switch', 'case', 'break', 'continue', 'throw', 'try', 'catch', 'finally', 'with', 'debugger', 'static'])
-            return RESERVED.has(lower) ? `${indent}${lower}: ${lower}_,` : `${indent}${lower},`
-          })
+        const src = fs.readFileSync(dsIndex, 'utf8')
+
+        // Build mapping: oldVar → { newVar, exportKey } from import lines
+        // e.g. `import fontFamily from './FONT_FAMILY.js'` → fontFamily → { newVar: 'font_family', exportKey: 'font_family' }
+        // e.g. `import _class from './CLASS.js'`           → _class    → { newVar: '_class',      exportKey: 'class' }
+        const importVarMap = {}
+        src.replace(/^import\s+(\w+)\s+from\s+'\.\/([^']+?)(?:\.js)?'/gm, (_, oldVar, importPath) => {
+          const stem = importPath.toLowerCase().replace(/\.js$/, '')
+          const rawName = stem.replace(/-/g, '_')
+          const newVar = DS_RESERVED.has(rawName) ? `_${rawName}` : rawName
+          importVarMap[oldVar] = { newVar, exportKey: rawName }
+        })
+
+        const configEntries = []
+        let updated = src
+
+        // 1. Rewrite import variable names using the computed mapping
+        updated = updated.replace(/^(import\s+)(\w+)(\s+from)/gm, (_, pre, oldVar, post) => {
+          const entry = importVarMap[oldVar]
+          return `${pre}${entry ? entry.newVar : oldVar}${post}`
+        })
+
+        // 2. Lowercase import paths
+        updated = updated.replace(/(from '\.\/)([\w./\\-]+)(')/g, (_, pre, p, post) => {
+          return `${pre}${p.toLowerCase()}${post}`
+        })
+
+        // 3. Extract config keys from export object and collect for config.js
+        updated = updated.replace(
+          /^[ \t]+(useReset|useVariable|useFontImport|useIconSprite|useSvgSprite|useDefaultConfig|useDocumentTheme|useDefaultIcons|verbose|globalTheme|version|router)\s*:\s*([^\n,]+?),?\s*$/gm,
+          (_, key, rawVal) => {
+            let val = rawVal.trim()
+            try { val = JSON.parse(val) } catch (_) {}
+            configEntries.push([key, val])
+            return ''
+          }
+        )
+
+        // 4. Convert `  UPPER_KEY: oldVar,` → shorthand `  newVar,` or `  exportKey: newVar,`
+        updated = updated.replace(/^([ \t]+)([A-Z][A-Z0-9_]*)\s*:\s*(\w+),?$/gm, (_, indent, key, oldVar) => {
+          const entry = importVarMap[oldVar]
+          if (entry) {
+            const { newVar, exportKey } = entry
+            return DS_RESERVED.has(exportKey) ? `${indent}${exportKey}: ${newVar},` : `${indent}${newVar},`
+          }
+          // Fallback: lowercase the key, keep existing var
+          return `${indent}${key.toLowerCase()}: ${oldVar},`
+        })
+
+        // 5. Handle any remaining shorthand uppercase keys `  UPPER_KEY,`
+        updated = updated.replace(/^([ \t]+)([A-Z][A-Z0-9_]+),$/gm, (_, indent, key) => {
+          const rawName = key.toLowerCase().replace(/-/g, '_')
+          const newVar = DS_RESERVED.has(rawName) ? `_${rawName}` : rawName
+          return DS_RESERVED.has(rawName) ? `${indent}${rawName}: ${newVar},` : `${indent}${newVar},`
+        })
+
+        // 6. Clean up blank lines from removed config keys
+        updated = updated.replace(/\n{3,}/g, '\n\n').replace(/\n\n(\s*\})/g, '\n$1').trimEnd() + '\n'
+
         fs.writeFileSync(dsIndex, updated)
+
+        // 7. Write config entries to config.js (merge without overwriting existing)
+        if (configEntries.length > 0) {
+          const configPath = path.join(symbolsDir, 'config.js')
+          const existingKeys = new Set()
+          let existingContent = ''
+          if (fs.existsSync(configPath)) {
+            existingContent = fs.readFileSync(configPath, 'utf8')
+            for (const m of existingContent.matchAll(/^\s*(\w+)\s*:/gm)) existingKeys.add(m[1])
+          }
+          const newEntries = configEntries.filter(([k]) => !existingKeys.has(k))
+          if (newEntries.length > 0) {
+            const lines = newEntries.map(([k, v]) => `  ${k}: ${JSON.stringify(v)},`)
+            const newContent = existingContent
+              ? existingContent.replace(/\}\s*$/, `  ${lines.join('\n  ')}\n}\n`)
+              : `export default {\n${lines.join('\n')}\n}\n`
+            fs.writeFileSync(configPath, newContent)
+            console.log(chalk.green('write  ') + `symbols/config.js (${newEntries.length} config keys moved)`)
+          }
+        }
       }
       if (renamedCount) console.log(chalk.green('lower  ') + `designSystem/ (${renamedCount} files renamed to lowercase)`)
     }
@@ -138,7 +211,11 @@ program
 
     // 4. Rewrite symbols/index.js to v3 format
     const indexJsPath = path.join(symbolsDir, 'index.js')
-    const v3Index = generateV3IndexJs(symbolsDir)
+    const earlySymbols = fs.existsSync(path.join(cwd, 'symbols.json'))
+      ? JSON.parse(fs.readFileSync(path.join(cwd, 'symbols.json'), 'utf8'))
+      : {}
+    const isCdnMode = earlySymbols.runtime === 'browser' || CDN_PMs.has(earlySymbols.packageManager)
+    const v3Index = generateV3IndexJs(symbolsDir, { isCdnMode })
     if (v3Index) {
       writeFile(indexJsPath, v3Index, 'symbols/index.js')
     } else {
@@ -148,13 +225,25 @@ program
     // 5. Create symbols/index.html if missing
     const symbolsHtml = path.join(symbolsDir, 'index.html')
     if (!fs.existsSync(symbolsHtml)) {
+      const cdnHeadTags = isCdnMode ? `  <script type="importmap">
+{
+  "imports": {
+    "smbls": "https://esm.sh/smbls"
+  }
+}
+</script>
+  <script type="module">
+    import * as smbls from 'smbls'
+    Object.assign(globalThis, smbls)
+  </script>
+` : ''
       const htmlTemplate = `<html background="#000">
 <head>
   <title>Symbols App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta charset="UTF-8">
-</head>
+${cdnHeadTags}</head>
 <body>
   <script type="module" src="./index.js"></script>
 </body>
@@ -199,13 +288,14 @@ program
     if (!existingSymbols.dir || existingSymbols.dir === './smbls' || existingSymbols.distDir === './smbls') {
       existingSymbols.dir = './symbols'
     }
+    delete existingSymbols.distDir
     console.log(chalk.bold('\nConfigure your project:\n'))
     const { packageManager: pm, bundler } = await runConfigPrompts(existingSymbols)
     console.log()
 
-    // 8. Install dependencies (skip for browser bundler)
-    if (bundler === 'browser') {
-      console.log(chalk.dim('Browser mode — skipping install.'))
+    // 8. Install dependencies (skip for browser/CDN mode)
+    if (bundler === 'browser' || CDN_PMs.has(pm)) {
+      console.log(chalk.dim('Preparing environment...'))
     } else {
       console.log(chalk.bold(`Installing dependencies with ${pm}...\n`))
       const installResult = runInstall(pm, cwd)

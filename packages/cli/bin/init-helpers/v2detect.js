@@ -40,7 +40,9 @@ export function detectV2Project (cwd = process.cwd()) {
 /**
  * Generate new v3 symbols/index.js content based on which files exist in srcDir.
  */
-export function generateV3IndexJs (srcDir) {
+const CDN_PMs = new Set(['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'])
+
+export function generateV3IndexJs (srcDir, { isCdnMode = false } = {}) {
   const modules = [
     { name: 'state', path: './state.js', style: 'default' },
     { name: 'dependencies', path: './dependencies.js', style: 'default' },
@@ -68,8 +70,9 @@ export function generateV3IndexJs (srcDir) {
 
   const contextKeys = present.map(m => `  ${m.name}`).join(',\n')
 
-  return `import { create } from 'smbls'
-import app from './app.js'
+  const smblsImport = isCdnMode ? '' : "import { create } from 'smbls'\n"
+
+  return `${smblsImport}import app from './app.js'
 
 ${imports}
 

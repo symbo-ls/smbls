@@ -5,7 +5,8 @@ import { isUndefined } from '@domql/utils'
 
 export const getSystemGlobalTheme = ({ context, state }) => {
   const rootState = state && state.root
-  return rootState && rootState.globalTheme ? rootState.globalTheme : context.designSystem && context.designSystem.globalTheme
+  const theme = (rootState && rootState.globalTheme) || (context.designSystem && context.designSystem.globalTheme)
+  return theme === 'auto' ? null : theme
 }
 
 export const Theme = {

@@ -49,6 +49,7 @@ export const init = (config, options = SET_OPTIONS) => {
       useDocumentTheme: options.useDocumentTheme,
       useIconSprite: options.useIconSprite,
       useDefaultConfig: options.useDefaultConfig,
+      globalTheme: options.globalTheme,
       ...resultConfig
     },
     { newConfig: options.newConfig }

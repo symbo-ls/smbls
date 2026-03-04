@@ -10,6 +10,7 @@ import { program } from './program.js'
 import { mergeStarterKit } from './init-helpers/mergeStarterKit.js'
 import { detectPackageManager, detectRuntime, runInstall } from '../helpers/packageManager.js'
 import { detectV2Project } from './init-helpers/v2detect.js'
+import { isCdnMode, patchProjectForBrowserMode } from './init-helpers/browserMode.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const CLI_BIN = resolve(__dirname, 'index.js')
@@ -115,6 +116,11 @@ program
     const savedConfig = (await loadSymbolsConfig({ required: false, validateKey: false, silent: true })) || {}
     const runtime = savedConfig.runtime || detectRuntime(projectDir)
     const pm = savedConfig.packageManager || (runtime !== 'node' ? runtime : detectPackageManager(projectDir))
+
+    if (isCdnMode(runtime, pm)) {
+      const symbolsDirName = (savedConfig.dir || './symbols').replace(/^\.\//, '')
+      patchProjectForBrowserMode(resolve(projectDir, symbolsDirName), pm)
+    }
 
     if (pm !== 'browser' && !['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'].includes(pm)) {
       console.log(chalk.bold(`\nInstalling dependencies with ${pm}...\n`))

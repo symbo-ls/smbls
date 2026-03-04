@@ -132,19 +132,19 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   keys.map(key => setEach(key, config[key]))
 
   // apply generic configs
-  if (config.TYPOGRAPHY) {
+  if (config.TYPOGRAPHY || config.typography) {
     try { applyTypographySequence() } catch (e) {
       if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
     }
   }
-  if (config.SPACING) {
+  if (config.SPACING || config.spacing) {
     try { applySpacingSequence() } catch (e) {
-      if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
+      if (CONFIG.verbose) console.warn('Error applying spacing sequence', e)
     }
   }
-  if (config.TIMING) {
+  if (config.TIMING || config.timing) {
     try { applyTimingSequence() } catch (e) {
-      if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
+      if (CONFIG.verbose) console.warn('Error applying timing sequence', e)
     }
   }
   applyDocument()

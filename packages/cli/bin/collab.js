@@ -113,7 +113,8 @@ function ensureDesignSystemBuckets (designSystem) {
 }
 
 function toExportNameFromFileStem (stem) {
-  // Mirror fs.js behavior loosely: kebab/snake/path -> camelCase export name.
+  // Fallback name lookup when mod.default is unavailable.
+  // fs.js uses lowercase_underscore names; this camelCase form covers legacy files.
   // e.g. "add-network" -> "addNetwork"
   if (!stem || typeof stem !== 'string') return stem
   const parts = stem.split(/[^a-zA-Z0-9]+/).filter(Boolean)
@@ -166,7 +167,7 @@ function debugDesignSystemBuckets (label, designSystem, { enabled }) {
 async function debugDesignSystemFiles (label, distDir, { enabled }) {
   if (!enabled) return
   const dir = path.join(distDir, 'designSystem')
-  const files = ['SPACING.js', 'THEME.js', 'TYPOGRAPHY.js']
+  const files = ['spacing.js', 'theme.js', 'typography.js']
   const out = []
   for (const f of files) {
     const fp = path.join(dir, f)
