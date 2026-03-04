@@ -283,7 +283,7 @@ Tabindex rules:
 ```js
 Button: {
   ':focus': { outline: 'none' },
-  ':focus-visible': { outline: 'solid, Y, blue .3', outlineOffset: '2px' }
+  ':focus-visible': { outline: 'solid Y blue.3', outlineOffset: '2px' }
 }
 ```
 

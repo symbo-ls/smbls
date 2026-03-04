@@ -201,9 +201,9 @@ Rules:
 | `display: grid; grid-template-columns: repeat(3,1fr)` | `extends: 'Grid', columns: 'repeat(3, 1fr)'` |
 | `font-size: 20px`                                     | `fontSize: 'A1'`                             |
 | `font-weight: 500`                                    | `fontWeight: '500'`                          |
-| `color: rgba(255,255,255,0.65)`                       | `color: 'white 0.65'`                        |
+| `color: rgba(255,255,255,0.65)`                       | `color: 'white.65'`                          |
 | `background: #000`                                    | `background: 'black'`                        |
-| `background: rgba(0,0,0,0.5)`                         | `background: 'black 0.5'`                    |
+| `background: rgba(0,0,0,0.5)`                         | `background: 'black.5'`                      |
 | `cursor: pointer`                                     | `cursor: 'pointer'`                          |
 | `overflow: hidden`                                    | `overflow: 'hidden'`                         |
 | `position: absolute; inset: 0`                        | `position: 'absolute', inset: '0'`           |

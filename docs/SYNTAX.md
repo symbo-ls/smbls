@@ -139,7 +139,7 @@ export const Hoverable = {
   opacity: 0.85,
   ':hover':  { opacity: 0.9, transform: 'scale(1.015)' },
   ':active': { opacity: 1,   transform: 'scale(1.015)' },
-  ':focus-visible': { outline: 'solid, X, blue .3' },
+  ':focus-visible': { outline: 'solid X blue.3' },
   ':not(:first-child)': {
     '@dark':  { borderWidth: '1px 0 0' },
     '@light': { borderWidth: '1px 0 0' }

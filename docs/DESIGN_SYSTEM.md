@@ -141,9 +141,9 @@ theme: {
   button: {
     color: 'text',
     background: 'primary',
-    ':hover':  { background: 'primary 0.85' },
-    ':active': { background: 'primary 0.75' },
-    '@dark':   { background: 'primary 0.6' }
+    ':hover':  { background: 'primary.85' },
+    ':active': { background: 'primary.75' },
+    '@dark':   { background: 'primary.6' }
   }
 }
 ```
@@ -304,7 +304,7 @@ const designSystemConfig = {
     }
   },
   theme: {
-    document: { color: 'text', background: 'primary 0.02' },
+    document: { color: 'text', background: 'primary.02' },
     button: { color: 'text', background: 'primary' }
   },
   typography: { base: 16, ratio: 1.25, subSequence: true },
@@ -323,8 +323,8 @@ const designSystemConfig = {
   icons: { search: '<svg>...</svg>' },
   svg: { logo: '<svg>...</svg>' },
   shadow: {
-    soft: 'black 0.15, 0px 10px 30px 0px',
-    hard: ['black 0.25, 0px 8px 16px 0px', 'black 0.35, 0px 10px 24px 0px']  // [light, dark]
+    soft: 'black.15 0px 10px 30px 0px',
+    hard: ['black.25 0px 8px 16px 0px', 'black.35 0px 10px 24px 0px']  // [light, dark]
   },
   media: {
     mobile: '(max-width: 768px)',
