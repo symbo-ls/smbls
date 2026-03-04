@@ -61,6 +61,7 @@ export const getColor = (value, key, config) => {
   if (val[tone]) rgb = val[tone].rgb
 
   if (alpha) return `rgba(${rgb}, ${alpha})`
+  if (tone) return `rgba(${rgb}, 1)`
   return CONFIG.useVariable ? `var(${val.var})` : `rgb(${rgb})`
 }
 
