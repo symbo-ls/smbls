@@ -1,5 +1,6 @@
 'use strict'
 
+// NOTE: Circular dependency — utils ↔ element. Bundler handles via lazy resolution.
 import { triggerEventOn } from '@domql/element'
 import { DOMQ_PROPERTIES, METHODS, PARSED_DOMQ_PROPERTIES } from './keys.js'
 import { isDefined, isFunction, isObject, isObjectLike } from './types.js'
@@ -203,12 +204,6 @@ export function getContext (key) {
   const ctx = this.context
   return key ? ctx[key] : ctx
 }
-
-// export function set () {
-// }
-
-// export function update () {
-// }
 
 export const defineSetter = (element, key, get, set) =>
   Object.defineProperty(element, key, { get, set })

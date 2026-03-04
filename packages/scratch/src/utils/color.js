@@ -168,6 +168,9 @@ export const opacify = (color, opacity) => {
   return `rgba(${arr})`
 }
 
+// Check if value is a CSS custom property reference (starts with --)
+export const isCSSVar = (v) => v.charCodeAt(0) === 45 && v.charCodeAt(1) === 45
+
 // Regex for CSS native color values - signals passthrough
 export const CSS_NATIVE_COLOR_REGEX = /(?:rgba?\(|hsla?\(|#[0-9a-fA-F]{3,8}\b)/
 
@@ -193,7 +196,7 @@ export const parseColorToken = (value) => {
   if (CSS_NATIVE_COLOR_REGEX.test(value)) return { passthrough: value }
 
   // CSS var passthrough
-  if (value.slice(0, 2) === '--') return { cssVar: value }
+  if (isCSSVar(value)) return { cssVar: value }
 
   const match = value.match(COLOR_TOKEN_REGEX)
   if (!match) return null

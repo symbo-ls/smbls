@@ -9,8 +9,7 @@ export const setVariables = (result, key) => {
   const CONFIG = getActiveConfig()
   const { CSS_VARS } = CONFIG
   if (isObjectLike(result.value)) {
-    // for (const key in result.value) {
-    // }
+    // TODO: handle nested object variables
   } else {
     CSS_VARS[result.var] = result.value
   }

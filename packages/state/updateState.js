@@ -1,6 +1,7 @@
 'use strict'
 
 import { report } from '@domql/report'
+// NOTE: Circular dependency — state ↔ element. Bundler handles via lazy resolution.
 import { triggerEventOnUpdate } from '@domql/element'
 import {
   checkIfInherits,

@@ -122,10 +122,7 @@ export const update = function (params = {}, opts) {
   }
 
   if (!ref.__if) return false
-  if (!node) {
-    // return createNode(element, options)
-    return
-  }
+  if (!node) return
 
   const {
     preventUpdate,
@@ -224,7 +221,7 @@ export const update = function (params = {}, opts) {
       const content = setChildren(childrenProp, element, opts)
       if (content && !ref.__noChildrenDifference) {
         setContent(content, element, options)
-      } else if (existingContent && existingContent.__ref && isFunction(existingContent.update)) {
+      } else if (existingContent?.__ref && isFunction(existingContent.update)) {
         const lazyLoad = element.props?.lazyLoad || options.lazyLoad
         const contentUpdateCall = () =>
           update.call(existingContent, params[contentKey], {
@@ -242,7 +239,7 @@ export const update = function (params = {}, opts) {
           })
         } else contentUpdateCall()
       }
-    } else if (existingContent && existingContent.__ref && isFunction(existingContent.update)) {
+    } else if (existingContent?.__ref && isFunction(existingContent.update)) {
       const lazyLoad = element.props?.lazyLoad || options.lazyLoad
       const contentUpdateCall = () =>
         update.call(existingContent, params[contentKey], {
@@ -321,8 +318,7 @@ const checkIfOnUpdate = (element, parent, options) => {
 
       const nextElement = element.nextElement()
       const nextNode = nextElement?.node // document.body.contains(previousElement.node)
-      const hasNext = nextNode?.parentNode // && document.body.contains(nextElement.node)
-      // const hasNext = nextElement && document.body.contains(nextElement.node)
+      const hasNext = nextNode?.parentNode
 
       const attachOptions = (hasPrevious || hasNext) && {
         position: hasPrevious ? 'after' : hasNext ? 'before' : null,
@@ -379,7 +375,7 @@ const inheritStateUpdates = (element, options) => {
 
   // If does not have own state inherit from parent
   if (!stateKey && !ref.__hasRootState) {
-    element.state = (parent && parent.state) || {}
+    element.state = parent?.state || {}
     return
   }
 
@@ -435,14 +431,3 @@ const createStateUpdate = (element, parent, options) => {
 }
 
 export default update
-
-// save updates history
-// const overwriteChanges = overwriteDeep(element, params, { exclude: METHODS_EXL })
-// // const overwriteChanges = overwriteDeep(element, params)
-// const propsChanges = throughExecProps(element)
-// const execChanges = throughUpdatedExec(element, { ignore: UPDATE_DEFAULT_OPTIONS })
-// const definedChanges = throughUpdatedDefine(element)
-// if (options.stackChanges && ref.__stackChanges) {
-//   const stackChanges = merge(definedChanges, merge(execChanges, overwriteChanges))
-//   ref.__stackChanges.push(stackChanges)
-// }

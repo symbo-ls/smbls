@@ -10,12 +10,11 @@ export const applyParam = (param, element, options) => {
   const { onlyUpdate } = options
 
   const DOMQLProperty = REGISTRY[param]
-  const DOMQLPropertyFromContext =
-    context && context.registry && context.registry[param]
+  const DOMQLPropertyFromContext = context?.registry?.[param]
   const isGlobalTransformer = DOMQLPropertyFromContext || DOMQLProperty
 
-  const hasDefine = element.define && element.define[param]
-  const hasContextDefine = context && context.define && context.define[param]
+  const hasDefine = element.define?.[param]
+  const hasContextDefine = context?.define?.[param]
 
   if (!ref.__if) return
 

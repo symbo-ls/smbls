@@ -6,6 +6,7 @@ import { getActiveConfig } from '../factory.js'
 import {
   colorStringToRgbaArray,
   getRgbTone,
+  isCSSVar,
   parseColorToken
 } from '../utils'
 
@@ -16,7 +17,7 @@ export const getColor = (value, key, config) => {
     return
   }
 
-  if (value.slice(0, 2) === '--') return `var(${value})`
+  if (isCSSVar(value)) return `var(${value})`
 
   if (key && value[key]) value = value[key]
 
@@ -73,7 +74,7 @@ export const getMediaColor = (value, globalTheme, config) => {
     return
   }
 
-  if (value.slice(0, 2) === '--') return `var(${value})`
+  if (isCSSVar(value)) return `var(${value})`
 
   let name
   if (isArray(value)) {
@@ -111,7 +112,7 @@ export const getMediaColor = (value, globalTheme, config) => {
 export const setColor = (val, key, suffix) => {
   const CONFIG = getActiveConfig()
 
-  if (isString(val) && val.slice(0, 2) === '--') {
+  if (isString(val) && isCSSVar(val)) {
     val = getColor(val.slice(2))
     if (!(
       val.includes('rgb') ||
@@ -161,7 +162,7 @@ export const setColor = (val, key, suffix) => {
 
 export const setGradient = (val, key, suffix) => {
   const CONFIG = getActiveConfig()
-  if (isString(val) && val.slice(0, 2) === '--') val = getColor(val.slice(2))
+  if (isString(val) && isCSSVar(val)) val = getColor(val.slice(2))
 
   if (isArray(val)) {
     return {

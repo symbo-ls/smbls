@@ -4,6 +4,7 @@ import { isString } from '@domql/utils'
 import { toDashCase } from '@symbo.ls/smbls-utils'
 import { getActiveConfig } from '../factory.js'
 import { CSS_UNITS, isScalingUnit } from './unit.js'
+import { isCSSVar } from './color.js'
 
 export const numToLetterMap = {
   '-6': 'U',
@@ -231,7 +232,7 @@ export const getSequenceValue = (value = 'A', sequenceProps) => {
   const CONFIG = getActiveConfig()
   const { UNIT } = CONFIG
 
-  if (isString(value) && value.slice(0, 2) === '--') return `var(${value})`
+  if (isString(value) && isCSSVar(value)) return `var(${value})`
 
   const { sequence, unit = UNIT.default, useVariable } = sequenceProps
 

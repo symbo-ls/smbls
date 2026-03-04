@@ -26,7 +26,7 @@ export const createBasedOnType = (element, parent, key) => {
       console.warn(
         key,
         'element is undefined in',
-        parent && parent.__ref && parent.__ref.path
+        parent?.__ref?.path
       )
     }
     return {}

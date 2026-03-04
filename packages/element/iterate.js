@@ -49,8 +49,7 @@ export const throughUpdatedExec = (element, options = {}) => {
       continue
     }
     const execReturnsString = isString(newExec) || isNumber(newExec)
-    // if (prop && prop.node && execReturnsString) {
-    if (prop && prop.node && execReturnsString) {
+    if (prop?.node && execReturnsString) {
       overwrite(prop, { text: newExec })
     } else if (newExec !== prop) {
       if (matchesComponentNaming(param)) {
@@ -104,8 +103,6 @@ export const throughExecProps = element => {
     }
   }
 }
-
-export const isPropertyInDefines = (key, element) => {}
 
 export const throughInitialDefine = element => {
   const { define, context, __ref: ref } = element
@@ -163,7 +160,7 @@ export const throughUpdatedDefine = element => {
   const changes = {}
 
   const hasLocalDefine = isObject(define)
-  const hasGlobalDefine = isObject(context && context.define)
+  const hasGlobalDefine = isObject(context?.define)
   if (!hasLocalDefine && !hasGlobalDefine) return changes
 
   const obj = hasLocalDefine && hasGlobalDefine

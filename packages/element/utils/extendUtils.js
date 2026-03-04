@@ -91,8 +91,8 @@ export const fallbackStringExtend = (
   options = {},
   variant
 ) => {
-  const COMPONENTS = (context && context.components) || options.components
-  const PAGES = (context && context.pages) || options.pages
+  const COMPONENTS = context?.components || options.components
+  const PAGES = context?.pages || options.pages
   if (isString(extend)) {
     const componentExists =
       COMPONENTS &&
@@ -133,17 +133,3 @@ export const getExtendMerged = extend => {
   const stack = getExtendStack(extend)
   return cloneAndMergeArrayExtend(stack)
 }
-
-// export const replaceStringsWithComponents = (stack, context, options) => {
-//   const COMPONENTS = (context && context.components) || options.components
-//   return stack.map(v => {
-//     if (isString(v)) {
-//       const component = COMPONENTS[v]
-//       return component
-//     }
-//     if (isString(v.extend)) {
-//       v.extend = getExtendMerged(COMPONENTS[v.extend])
-//     }
-//     return v
-//   })
-// }

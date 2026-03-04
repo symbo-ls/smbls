@@ -31,7 +31,7 @@ const brackRegex = {
 
 const getNestedValue = (obj, path) => {
   return path.split('.').reduce((acc, part) => {
-    return acc && acc[part] !== undefined ? acc[part] : undefined
+    return acc?.[part]
   }, obj)
 }
 
@@ -56,14 +56,14 @@ export function replaceLiteralsWithObjectFields (str, state, options = {}) {
       // If the variable is 'parent', return the value property
       const key = variable.trim()
       if (key === 'parent') {
-        return parentState.value !== undefined ? String(parentState.value) : ''
+        return String(parentState.value ?? '')
       }
 
       const value = getNestedValue(parentState, key)
-      return value !== undefined ? String(value) : ''
+      return String(value ?? '')
     } else {
       const value = getNestedValue(obj, variable.trim())
-      return value !== undefined ? String(value) : ''
+      return String(value ?? '')
     }
   })
 }

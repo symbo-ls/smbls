@@ -85,7 +85,6 @@ export const useCssInProps = (selectorProps, element, opts = { unpack: true }) =
   let hasSelectors = false
   for (const _k in selectorsObj) { hasSelectors = true; break } // eslint-disable-line
   if (hasSelectors) {
-    // console.log(opts.unpack, cssObj, selectorsObj)
     if (opts.unpack) return overwrite(cssObj, selectorsObj)
     cssObj._selectors = selectorsObj
   }

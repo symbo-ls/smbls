@@ -55,7 +55,8 @@ export const PARSED_DOMQ_PROPERTIES = new Set([
   'key',
   'tag',
   'query',
-  'on'
+  'on',
+  'context'
 ])
 
 export const STATE_PROPERTIES = [

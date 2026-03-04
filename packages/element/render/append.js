@@ -20,11 +20,11 @@ export const insertNodeAfter = (node, siblingNode, parentNode) => {
   }
   const parent = parentNode || siblingNode?.parentNode
   if (siblingNode?.nextSibling) {
-    parent && parent.insertBefore(node, siblingNode.nextSibling)
+    parent?.insertBefore(node, siblingNode.nextSibling)
   } else if (siblingNode?.insertAdjacentElement) {
     siblingNode.insertAdjacentElement('afterend', node)
   } else {
-    parent && parent.insertBefore(node, siblingNode)
+    parent?.insertBefore(node, siblingNode)
   }
 }
 
@@ -33,7 +33,7 @@ export const insertNodeBefore = (node, siblingNode, parentNode) => {
     throw new Error('Node is required')
   }
   const parent = parentNode || siblingNode.parentNode
-  parent && parent.insertBefore(node, siblingNode)
+  parent?.insertBefore(node, siblingNode)
 }
 
 /**

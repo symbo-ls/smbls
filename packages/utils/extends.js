@@ -240,8 +240,8 @@ export const mapStringsWithContextComponents = (
   options = {},
   variant
 ) => {
-  const COMPONENTS = (context && context.components) || options.components
-  const PAGES = (context && context.pages) || options.pages
+  const COMPONENTS = context?.components || options.components
+  const PAGES = context?.pages || options.pages
   if (isString(extend)) {
     const componentExists =
       COMPONENTS &&
@@ -414,7 +414,6 @@ export const createExtendsStack = (element, parent, options = {}) => {
   const { props, __ref: ref } = element
   const context = element.context || parent.context
 
-  // if (ENV !== 'test' && ENV !== 'development') delete element.extends
   const variant = element.variant || props?.variant
 
   const __extends = removeDuplicatesInArray(

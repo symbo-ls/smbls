@@ -12,7 +12,6 @@ const RE_DIGITS = /^\d+$/
 export const createProps = (element, parent, key) => {
   const { props, __ref: ref } = element
   ref.__propsStack = []
-  // if (props !== undefined) ref.__initialProps = props
   if (props) ref.__initialProps = props
   else return {}
   if (!isObjectLike(props)) {
@@ -187,7 +186,7 @@ export const createPropsStack = (element, parent) => {
   let propsStack = ref.__propsStack || []
 
   // Get parent props
-  if (parent && parent.props) {
+  if (parent?.props) {
     const parentStack = inheritParentProps(element, parent)
     propsStack = [...parentStack]
   }
@@ -234,7 +233,10 @@ export const initProps = function (element, parent, options) {
   else {
     try {
       applyProps(element, parent)
-    } catch {
+    } catch (e) {
+      if (element.context?.designSystem?.verbose) {
+        console.warn('initProps error at', ref.path?.join('.'), e)
+      }
       element.props = {}
       ref.__propsStack = []
     }

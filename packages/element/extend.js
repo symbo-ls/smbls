@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, exec, isProduction } from '@domql/utils'
+import { isFunction, exec } from '@domql/utils'
 import {
   getExtendStack,
   jointStacks,
@@ -9,6 +9,8 @@ import {
   fallbackStringExtend
 } from './utils/index.js'
 
+// Module-level cache for context.defaultExtends merged result.
+// Set once on first use, never invalidated — assumes defaultExtends is static.
 let mainExtend
 
 /**
@@ -27,21 +29,16 @@ export const applyExtend = (element, parent, options = {}) => {
 
   const extendStack = getExtendStack(extend, context)
 
-  // if (isProduction()) delete element.extend
   delete element.extend
 
   let childExtendStack = []
   if (parent) {
     element.parent = parent
     // Assign parent attr to the element
-    if (!options.ignoreChildExtend && !(props && props.ignoreChildExtend)) {
+    if (!options.ignoreChildExtend && !props?.ignoreChildExtend) {
       childExtendStack = getExtendStack(parent.childExtend, context)
 
-      // if (!options.ignoreChildExtend && !(props && exec(props, element).ignoreChildExtend)) {
-      //   const ignoreChildExtendRecursive = props && exec(props, element).ignoreChildExtendRecursive
-
-      const ignoreChildExtendRecursive =
-        props && props.ignoreChildExtendRecursive
+      const ignoreChildExtendRecursive = props?.ignoreChildExtendRecursive
       if (parent.childExtendRecursive && !ignoreChildExtendRecursive) {
         const canExtendRecursive = element.key !== '__text'
         if (canExtendRecursive) {
@@ -84,9 +81,9 @@ export const applyExtend = (element, parent, options = {}) => {
   if (__ref) __ref.__extend = stack
   let mergedExtend = cloneAndMergeArrayExtend(stack)
 
-  const COMPONENTS = (context && context.components) || options.components
+  const COMPONENTS = context?.components || options.components
   const component = exec(element.component || mergedExtend.component, element)
-  if (component && COMPONENTS && COMPONENTS[component]) {
+  if (component && COMPONENTS?.[component]) {
     const componentExtend = cloneAndMergeArrayExtend(
       getExtendStack(COMPONENTS[component])
     )

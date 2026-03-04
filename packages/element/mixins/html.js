@@ -10,8 +10,6 @@ export function html (param, element, node) {
   const prop = exec(element?.props?.html || param, element)
   const { __ref } = element
   if (prop !== __ref.__html) {
-    // const parser = new window.DOMParser()
-    // param = parser.parseFromString(param, 'text/html')
     if (node.nodeName === 'SVG') node.textContent = prop
     else node.innerHTML = prop
     __ref.__html = prop

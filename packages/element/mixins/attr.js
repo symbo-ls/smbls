@@ -15,7 +15,6 @@ export function attr (params, element, node) {
     if (props.attr) deepMerge(attrs, props.attr)
     for (const attr in attrs) {
       const val = exec(attrs[attr], element)
-      // if (__attr[attr] === val) return
       if (
         val !== false &&
         val !== undefined &&

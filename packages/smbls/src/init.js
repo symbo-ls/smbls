@@ -11,7 +11,6 @@ import {
 import { isObject, deepMerge, deepClone } from '@domql/utils'
 
 import { emotion as defaultEmotion } from '@symbo.ls/emotion'
-// import { setClassname } from 'css-in-props'
 
 import DYNAMIC_JSON from '../dynamic.json' with { type: 'json' }
 
@@ -96,8 +95,6 @@ const UPDATE_OPTIONS = {
 export const reinit = (config, options = UPDATE_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
   const resultConfig = mergeWithLocalFile(config || {}, options)
-  // const prevStyles = document.querySelector('[data-emotion="smbls"]')
-  // console.log(prevStyles)
   const conf = set({
     verbose: false,
     ...resultConfig

@@ -53,7 +53,6 @@ export const createAsync = (
     ...DEFAULT_CREATE_OPTIONS,
     ...mergeWithLocalFile(options, optionsExternalFile)
   }
-  // const SYMBOLS_KEY = process.env.SYMBOLS_KEY
   const key = redefinedOptions.key
   fetchAsync(domqlApp, key, { utils, ...redefinedOptions })
 

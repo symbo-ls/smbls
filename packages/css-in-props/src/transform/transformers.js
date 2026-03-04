@@ -12,25 +12,13 @@ const applyMediaProps = (key, selectorProps, element) => {
   const { context } = element
   if (!context.designSystem?.MEDIA) return
 
-  // const globalTheme = getSystemGlobalTheme(element)
   const mediaValue = context.designSystem.MEDIA[key.slice(1)]
   const generatedClass = useCssInProps(selectorProps, element)
-  // const name = key.slice(1)
-  // console.log('==generatedClass', generatedClass)
 
-  // Theme handling
-  // if (globalTheme && ['dark', 'light'].includes(name)) {
-  //   return name === globalTheme ? merge(result, generatedClass) : undefined
-  // }
-
-  // Media query construction
   const mediaKey = mediaValue
     ? '@media ' + (mediaValue === 'print' ? mediaValue : `screen and ${mediaValue}`)
     : key
 
-  // result[mediaKey] = generatedClass
-  // console.log(result, mediaKey)
-  // return result[mediaKey]
   return { [mediaKey]: generatedClass }
 }
 
@@ -41,10 +29,6 @@ const applyAndProps = (key, selectorProps, element) => {
 
 const applySelectorProps = (key, selectorProps, element) => {
   const selectorKey = `&${key}`
-  // if (key === ':after') {
-  //   console.log(selectorKey)
-  //   console.log(useCssInProps(selectorProps, element))
-  // }
   return { [selectorKey]: useCssInProps(selectorProps, element) }
 }
 
@@ -84,8 +68,6 @@ export const applyTrueProps = (selectorProps, element) => {
  * Mapping of key prefixes to their handler functions
  */
 export const transformersByPrefix = {
-  // Media and theme handlers
-  // key, props, result, element, isSubtree
   '@': applyMediaProps,
 
   // Selector handlers

@@ -268,10 +268,9 @@ const onlyResolveExtends = (element, parent, key, options) => {
         continue
       }
 
-      const hasDefine = element.define && element.define[k]
-      const contextHasDefine =
-        element.context && element.context.define && element.context.define[k]
-      const optionsHasDefine = options.define && options.define[k]
+      const hasDefine = element.define?.[k]
+      const contextHasDefine = element.context?.define?.[k]
+      const optionsHasDefine = options.define?.[k]
 
       if (!ref.__skipCreate && REGISTRY[k] && !optionsHasDefine) {
         continue
@@ -299,23 +298,5 @@ const onlyResolveExtends = (element, parent, key, options) => {
 
   return element
 }
-
-// const checkIfMedia = (key) => key.slice(0, 1) === '@'
-
-// const applyMediaProps = (element, parent, key) => {
-//   const { props } = element
-//   if (props) {
-//     props.display = 'none'
-//     if (props[key]) props[key].display = props.display
-//     else props[key] = { display: props.display || 'block' }
-//     return element
-//   } else {
-//     return {
-//       ...element,
-//         display: 'none',
-//         [key]: { display: 'block' }
-//     }
-//   }
-// }
 
 export default create

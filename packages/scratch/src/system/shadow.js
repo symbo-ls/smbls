@@ -3,7 +3,7 @@
 import { getActiveConfig } from '../factory.js'
 import { getColor } from './color.js'
 import { getSpacingByKey } from './spacing.js'
-import { isResolvedColor, splitTopLevelCommas, CSS_NATIVE_COLOR_REGEX } from '../utils/color.js'
+import { isResolvedColor, isCSSVar, splitTopLevelCommas, CSS_NATIVE_COLOR_REGEX } from '../utils/color.js'
 
 import {
   isObject,
@@ -13,8 +13,6 @@ import {
 
 export const setShadow = (value, key, suffix, prefers) => {
   const CONFIG = getActiveConfig()
-  // const { CSS_VARS } = CONFIG
-  // const theme = { valueue: value }
 
   if (isArray(value)) {
     return {
@@ -73,7 +71,7 @@ export const getShadow = (value, globalTheme) => {
     return
   }
 
-  if (value.slice(0, 2) === '--') return `var(${value})`
+  if (isCSSVar(value)) return `var(${value})`
 
   const [name] = isArray(value) ? value : value.split(' ')
 

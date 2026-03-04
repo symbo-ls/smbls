@@ -2,6 +2,7 @@
 
 import { getColor } from './color'
 import { getActiveConfig } from '../factory.js'
+import { isCSSVar } from '../utils/color.js'
 
 import {
   isObject,
@@ -174,7 +175,7 @@ export const setMediaTheme = (val, key, suffix, prefers) => {
     }
   }
 
-  if (isString(val) && val.slice(0, 2) === '--') {
+  if (isString(val) && isCSSVar(val)) {
     const { THEME } = CONFIG
     const value = THEME[val.slice(2)]
     const getReferenced = getMediaTheme(value, prefers)
@@ -215,7 +216,7 @@ const findModifier = (val, modifier) => {
 }
 
 const checkForReference = (val, callback) => {
-  if (isString(val) && val.slice(0, 2) === '--') return getMediaTheme(val.slice(2))
+  if (isString(val) && isCSSVar(val)) return getMediaTheme(val.slice(2))
   return val
 }
 
@@ -224,7 +225,7 @@ const checkThemeReference = (val) => checkForReference(val, checkThemeReference)
 export const getMediaTheme = (value, modifier) => {
   const activeConfig = getActiveConfig()
 
-  if (isString(value) && value.slice(0, 2) === '--') {
+  if (isString(value) && isCSSVar(value)) {
     value = getMediaTheme(value.slice(2))
   }
 

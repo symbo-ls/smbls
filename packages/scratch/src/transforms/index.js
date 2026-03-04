@@ -16,6 +16,7 @@ import {
 import {
   getFnPrefixAndValue,
   isResolvedColor,
+  isCSSVar,
   CSS_NATIVE_COLOR_REGEX,
   splitTopLevelCommas,
   parseColorToken
@@ -50,7 +51,7 @@ export const transformBorder = (border) => {
     .map((v) => {
       v = v.trim()
       if (!v) return ''
-      if (v.slice(0, 2) === '--') return `var(${v})`
+      if (isCSSVar(v)) return `var(${v})`
       if (isBorderStyle(v)) return v
       if (/^\d/.test(v) || v === '0') return v
       // Try color resolution
@@ -73,7 +74,7 @@ export const transformTextStroke = (stroke) => {
     .map((v) => {
       v = v.trim()
       if (!v) return ''
-      if (v.slice(0, 2) === '--') return `var(${v})`
+      if (isCSSVar(v)) return `var(${v})`
       if (/^\d/.test(v) || v.includes('px') || v === '0') return v
       const color = getColor(v)
       if (isResolvedColor(color)) return color
@@ -99,7 +100,7 @@ export const transformBoxShadow = (shadows, globalTheme) => {
         .map((v) => {
           v = v.trim()
           if (!v) return ''
-          if (v.slice(0, 2) === '--') return `var(${v})`
+          if (isCSSVar(v)) return `var(${v})`
           if (v === 'inset' || v === 'none') return v
 
           // Try color resolution
@@ -173,7 +174,7 @@ export const transformBackgroundImage = (backgroundImage, globalTheme) => {
   return backgroundImage
     .split(', ')
     .map((v) => {
-      if (v.slice(0, 2) === '--') return `var(${v})`
+      if (isCSSVar(v)) return `var(${v})`
       if (v.includes('url')) return v
       if (v.includes('gradient')) return resolveColorsInGradient(v, globalTheme)
       else if (CONFIG.GRADIENT[backgroundImage]) {
@@ -204,7 +205,7 @@ export const transformTransition = (transition) => {
 
   return arr
     .map((v) => {
-      if (v.slice(0, 2) === '--') return `var(${v})`
+      if (isCSSVar(v)) return `var(${v})`
       if (v.length < 3 || v.includes('ms')) {
         const mapWithSequence = getTimingByKey(v)
         return mapWithSequence.timing || v

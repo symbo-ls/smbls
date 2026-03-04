@@ -15,18 +15,12 @@ export const transformClassname = (
 
   if (!isObject(props)) return
 
-  // merge(elementClass, registry)
-  // if (registry && Object.keys(registry)[0] !== Object.keys(CSS_PROPS_REGISTRY)[0]) {
-  //   merge(elementClass, CSS_PROPS_REGISTRY)
-  // }
-
   for (const key in props) {
     const setter = keySetters[key.slice(0, 1)]
     const hasCSS = elementClass[key]
 
     if (setter) setter(key, props[key], classCss, element, true)
     else if (isFunction(hasCSS)) {
-      // const stack = hasCSS(element)
       const stack = hasCSS(element, element.state, element.context)
       const exec = isArray(stack)
         ? stack.reduce((a, c) => {
@@ -58,7 +52,6 @@ export const extractCSSfromProps = (element) => {
 
     const preprop = CSS_PROPS_REGISTRY[key]
     if (preprop) {
-      // const stack = hasCSS(element)
       const stack = preprop(element, element.state, element.context)
       const exec = isArray(stack)
         ? stack.reduce((a, c) => {

@@ -1,7 +1,6 @@
 'use strict'
 
-import { DOMQL_EVENTS } from './keys.js'
-import { isFunction } from './types.js'
+import { DOMQL_EVENTS, isFunction } from '@domql/utils'
 
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]
@@ -22,7 +21,7 @@ export const applyEvent = (param, element, state, context, options) => {
     options
   )
   if (result && typeof result.then === 'function') {
-    result.then(() => {})
+    result.catch(() => {})
   }
   return result
 }
@@ -56,7 +55,7 @@ export const applyEventUpdate = (
     options
   )
   if (result && typeof result.then === 'function') {
-    result.then(() => {})
+    result.catch(() => {})
   }
   return result
 }
@@ -90,7 +89,7 @@ const registerNodeEvent = (param, element, node, options) => {
         options
       )
       if (result && typeof result.then === 'function') {
-        result.then(() => {})
+        result.catch(() => {})
       }
     })
   }

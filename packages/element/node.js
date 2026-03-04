@@ -15,8 +15,6 @@ import { REGISTRY } from './mixins/index.js'
 import { applyParam } from './utils/applyParam.js'
 import setChildren from './children.js'
 import { setContent } from './set.js'
-// import { defineSetter } from './methods'
-
 const ENV = process.env.NODE_ENV
 
 export const createNode = (element, opts) => {
