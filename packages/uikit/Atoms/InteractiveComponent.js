@@ -41,10 +41,10 @@ export const Clickable = {
 
 export const Focusable = {
   border: 'none',
-  outline: 'solid, 0, blue .3',
+  outline: 'solid 0 blue.3',
   ':focus-visible': {
     opacity: 1,
-    outline: 'solid, X, blue .3'
+    outline: 'solid X blue.3'
   },
 
   attr: {

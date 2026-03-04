@@ -22,7 +22,7 @@ export const initEmotion = (key, options = {}) => {
   const registry =
     options.registry || transformDOMQLEmotion(initOptions.emotion, options)
   const designSystem =
-    initOptions.useDefaultConfig || options.designSystem?.useDefaultConfig
+    initOptions.useDefaultConfig || options.useDefaultConfig || options.designSystem?.useDefaultConfig
       ? deepMerge(options.designSystem, deepClone(DEFAULT_CONFIG))
       : options.designSystem || deepClone(DEFAULT_CONFIG)
 

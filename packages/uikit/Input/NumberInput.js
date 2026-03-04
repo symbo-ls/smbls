@@ -9,7 +9,7 @@ export const NumberInput = {
   textAlign: 'center',
   round: 'Y1',
   theme: 'transparent',
-  border: 'solid, gray3',
+  border: 'solid gray3',
   borderWidth: '1px',
   placeholder: '0',
   fontWeight: '400',
