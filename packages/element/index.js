@@ -1,11 +1,11 @@
 'use strict'
 
-import { TREE } from './tree'
-import create from './create'
-import createNode from './node'
-import define from './define'
-import update from './update'
-import set from './set'
+import { TREE } from './tree.js'
+import create from './create.js'
+import createNode from './node.js'
+import define from './define.js'
+import update from './update.js'
+import set from './set.js'
 
 export {
   TREE,

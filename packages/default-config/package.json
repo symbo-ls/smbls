@@ -5,15 +5,15 @@
   "main": "./blank/index.js",
   "type": "module",
   "dependencies": {
-    "@symbo.ls/default-icons": "3.2.3"
+    "@symbo.ls/default-icons": "^3.2.3"
   },
   "license": "MIT",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "module": "./blank/index.js",
   "exports": {
     ".": {
-      "import": "././blank/index.js",
-      "default": "././blank/index.js"
+      "import": "./blank/index.js",
+      "default": "./blank/index.js"
     }
   }
 }

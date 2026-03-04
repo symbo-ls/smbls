@@ -12,8 +12,8 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "3.2.3",
-    "smbls": "3.2.3",
+    "@domql/utils": "^3.2.3",
+    "smbls": "^3.2.3",
     "jsdom": "^26.0.0"
   },
   "peerDependencies": {
@@ -21,7 +21,11 @@
     "kalduna": "latest"
   },
   "peerDependenciesMeta": {
-    "globusa": { "optional": true },
-    "kalduna": { "optional": true }
+    "globusa": {
+      "optional": true
+    },
+    "kalduna": {
+      "optional": true
+    }
   }
 }

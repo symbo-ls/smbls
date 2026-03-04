@@ -1,7 +1,7 @@
 'use strict'
 
 import { report } from '@domql/report'
-import { REGISTRY } from './mixins'
+import { REGISTRY } from './mixins/index.js'
 
 export default (params, options = {}) => {
   const { overwrite } = options

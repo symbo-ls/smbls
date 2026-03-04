@@ -9,7 +9,7 @@
     "create-smbls": "index.js"
   },
   "dependencies": {
-    "@symbo.ls/cli": "3.2.3"
+    "@symbo.ls/cli": "^3.2.3"
   },
   "scripts": {
     "vpush": "git add . && git commit -am 'version update' && git push",

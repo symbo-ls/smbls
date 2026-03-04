@@ -10,7 +10,7 @@ import {
   isUndefined
 } from '@domql/utils'
 
-import { applyStateMethods } from './methods'
+import { applyStateMethods } from './methods.js'
 
 export const createState = function (element, parent, options) {
   element.state = applyInitialState(element, parent, options)

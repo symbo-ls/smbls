@@ -2,8 +2,8 @@
   "name": "smbls-root",
   "private": true,
   "scripts": {
-    "start": "npm run clean:dist; parcel example/index.html --no-cache --port 4321",
-    "build": "npm run clean:dist; parcel build example/index.html --no-cache",
+    "start": "npm run clean:dist; parcel examples/index.html --no-cache --port 4321",
+    "build": "npm run clean:dist; parcel build examples/index.html --no-cache",
     "build:packages": "npm run build --if-present --workspaces --include-workspace-root=false",
     "build:watch": "nodemon --exec \"npm run build:packages\" --ignore 'dist/*'",
     "prepare": "echo 'Run npm run build:packages to build all packages'",

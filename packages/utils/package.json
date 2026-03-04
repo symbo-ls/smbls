@@ -12,6 +12,11 @@
       "browser": "./dist/iife/index.js",
       "default": "./dist/esm/index.js"
     },
+    "./methods": {
+      "import": "./dist/esm/methods.js",
+      "require": "./dist/cjs/methods.js",
+      "default": "./dist/esm/methods.js"
+    },
     "./*.js": {
       "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.js",
@@ -34,7 +39,7 @@
     "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
     "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
     "prepublish": "npm run build && npm run copy:package:cjs",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --bundle --target=es2020 --format=iife --global-name=DomqlUtils --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV"
+    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild index.js --bundle --target=es2020 --format=iife --global-name=DomqlUtils --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV --external:@domql/element"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "devDependencies": {

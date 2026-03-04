@@ -57,8 +57,6 @@ export const transformEmotionClass = emotion => {
     }
 
     // Remove stale classNames that no longer exist in __class
-    // This handles cases like `hide` where the CSS prop returns falsy
-    // and is omitted from __class, but the old className lingers
     for (const key in __classNames) {
       if (key === 'classProps' || key === 'class') continue
       if (__class[key] === undefined) {

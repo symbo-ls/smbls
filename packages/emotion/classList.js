@@ -45,7 +45,7 @@ export const classList = (params, element) => {
 // LEGACY (still needed in old domql)
 export const applyClassListOnNode = (params, element, node) => {
   const className = classList(params, element)
-  node.classList = className
+  node.className = className
   return className
 }
 
