@@ -1,6 +1,7 @@
 {
   "name": "smbls-root",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "npm run clean:dist; parcel examples/index.html --no-cache --port 4321",
     "build": "npm run clean:dist; parcel build examples/index.html --no-cache",

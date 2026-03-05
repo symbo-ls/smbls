@@ -2,7 +2,7 @@
   "name": "symbols-app-connect",
   "displayName": "Symbols.app Connect",
   "description": "Symbols.app Connect for DOMQL syntax — properties, events, components, element methods, state and more",
-  "version": "3.2.4",
+  "version": "3.3.0",
   "publisher": "symbo-ls",
   "repository": {
     "type": "git",
@@ -65,16 +65,24 @@
     },
     "configurationDefaults": {
       "[javascript]": {
-        "editor.quickSuggestions": { "strings": "on" }
+        "editor.quickSuggestions": {
+          "strings": "on"
+        }
       },
       "[typescript]": {
-        "editor.quickSuggestions": { "strings": "on" }
+        "editor.quickSuggestions": {
+          "strings": "on"
+        }
       },
       "[javascriptreact]": {
-        "editor.quickSuggestions": { "strings": "on" }
+        "editor.quickSuggestions": {
+          "strings": "on"
+        }
       },
       "[typescriptreact]": {
-        "editor.quickSuggestions": { "strings": "on" }
+        "editor.quickSuggestions": {
+          "strings": "on"
+        }
       }
     }
   },

@@ -157,11 +157,10 @@ export const throughInitialDefine = element => {
 
 export const throughUpdatedDefine = element => {
   const { context, define, __ref: ref } = element
-  const changes = {}
 
   const hasLocalDefine = isObject(define)
   const hasGlobalDefine = isObject(context?.define)
-  if (!hasLocalDefine && !hasGlobalDefine) return changes
+  if (!hasLocalDefine && !hasGlobalDefine) return
 
   const obj = hasLocalDefine && hasGlobalDefine
     ? { ...define, ...context.define }
@@ -198,5 +197,4 @@ export const throughUpdatedDefine = element => {
       element[param] = newExecParam
     }
   }
-  return changes
 }

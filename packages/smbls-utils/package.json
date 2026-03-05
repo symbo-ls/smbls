@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/smbls-utils",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "author": "symbo.ls",
   "files": [
     "dist",
@@ -24,10 +24,10 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild src/index.js --bundle --target=es2020 --format=iife --global-name=SmblsSmblsUtils --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
-    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs && npm run build:iife",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild src/index.js --bundle --target=es2020 --format=iife --global-name=SmblsSmblsUtils --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "node ../../build/build.js",
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "license": "ISC",

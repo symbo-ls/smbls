@@ -101,8 +101,9 @@ export function propertizeElement (element = this) {
 }
 
 export function propertizeUpdate (params = {}) {
-  const obj = deepMerge({ on: {}, props: {} }, params)
-  return propertizeElement.call(this, obj)
+  if (!params.on) params.on = {}
+  if (!params.props) params.props = {}
+  return propertizeElement.call(this, params)
 }
 
 export const objectizeStringProperty = propValue => {
@@ -114,11 +115,7 @@ export const objectizeStringProperty = propValue => {
 
 export const propExists = (prop, stack) => {
   if (!prop || !stack.length) return false
-  const key = isObject(prop) ? JSON.stringify(prop) : prop
-  return stack.some(existing => {
-    const existingKey = isObject(existing) ? JSON.stringify(existing) : existing
-    return existingKey === key
-  })
+  return stack.includes(prop)
 }
 
 export const inheritParentProps = (element, parent) => {
@@ -162,9 +159,8 @@ export const removeDuplicateProps = propsStack => {
 
   return propsStack.filter(prop => {
     if (!prop || PROPS_METHODS.has(prop)) return false
-    const key = isObject(prop) ? JSON.stringify(prop) : prop
-    if (seen.has(key)) return false
-    seen.add(key)
+    if (seen.has(prop)) return false
+    seen.add(prop)
     return true
   })
 }

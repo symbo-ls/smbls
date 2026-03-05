@@ -17,7 +17,15 @@ const getOnOrPropsEvent = (param, element) => {
 const registerNodeEvent = (param, element, node, options) => {
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (isFunction(appliedFunction)) {
-    node.addEventListener(param, event => {
+    const { __ref: ref } = element
+    if (!ref.__eventListeners) ref.__eventListeners = {}
+
+    // Remove previous listener for this event to avoid duplicates
+    if (ref.__eventListeners[param]) {
+      node.removeEventListener(param, ref.__eventListeners[param])
+    }
+
+    const handler = event => {
       const { state, context } = element
       const result = appliedFunction.call(
         element,
@@ -30,7 +38,10 @@ const registerNodeEvent = (param, element, node, options) => {
       if (result && typeof result.then === 'function') {
         result.catch(() => {})
       }
-    })
+    }
+
+    ref.__eventListeners[param] = handler
+    node.addEventListener(param, handler)
   }
 }
 

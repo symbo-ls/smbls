@@ -146,15 +146,19 @@ export const update = function (params = {}, opts) {
     } else options.preventUpdateAfterCount++
   }
 
+  // Convert arrays to Sets once for O(1) lookups during iteration
+  const preventUpdateSet = isArray(preventUpdate) ? new Set(preventUpdate) : null
+  const preventDefineUpdateSet = isArray(preventDefineUpdate) ? new Set(preventDefineUpdate) : null
+
   for (const param in element) {
     const prop = element[param]
 
     if (!Object.prototype.hasOwnProperty.call(element, param)) continue
 
     const isInPreventUpdate =
-      isArray(preventUpdate) && preventUpdate.includes(param)
+      preventUpdateSet && preventUpdateSet.has(param)
     const isInPreventDefineUpdate =
-      isArray(preventDefineUpdate) && preventDefineUpdate.includes(param)
+      preventDefineUpdateSet && preventDefineUpdateSet.has(param)
 
     // Skip onXxx event handler functions (e.g. onClick) that may remain at root level
     const isRootEventHandler = isFunction(prop) && param.length > 2 &&

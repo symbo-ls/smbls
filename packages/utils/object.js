@@ -404,9 +404,6 @@ export const overwriteDeep = (
   opts = {},
   visited = new WeakMap()
 ) => {
-  const excl = opts.exclude || []
-  const forcedExclude = !opts.preventForce
-
   if (
     !isObjectLike(obj) ||
     !isObjectLike(params) ||
@@ -419,9 +416,13 @@ export const overwriteDeep = (
   if (visited.has(obj)) return visited.get(obj)
   visited.set(obj, obj)
 
+  const excl = opts.exclude
+  const exclSet = excl ? (excl instanceof Set ? excl : new Set(excl)) : null
+  const forcedExclude = !opts.preventForce
+
   for (const e in params) {
     if (!Object.prototype.hasOwnProperty.call(params, e)) continue
-    if (excl.includes(e) || (forcedExclude && _startsWithDunder(e))) continue
+    if ((exclSet && exclSet.has(e)) || (forcedExclude && _startsWithDunder(e))) continue
 
     const objProp = obj[e]
     const paramsProp = params[e]
