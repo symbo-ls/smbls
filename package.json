@@ -14,10 +14,10 @@
     "clean": "npm run clean:dist; npm run clean:packages; npm run clean:modules",
     "clean:dist": "rm -rf ./dist ./.cache ./.parcel-cache",
     "clean:modules": "rm -rf node_modules yarn.lock package-lock.json lerna-debug.log yarn-error.log",
-    "clean:packages": "npx lerna exec -- rm -rf dist yarn.lock yarn-error.log package-lock.json",
+    "clean:packages": "find . -path ./node_modules -prune -o -name dist -type d -print -exec rm -rf {} +",
     "reinstall": "npm run clean; npm i --verbose",
-    "link:all": "npx lerna exec -- npm run unlink; npx lerna exec -- npm run link",
-    "link:all-force": "npx lerna exec -- npm run unlink; npm run link:all"
+    "link:all": "npm run unlink --workspaces --if-present; npm run link --workspaces --if-present",
+    "link:all-force": "npm run unlink --workspaces --if-present; npm run link:all"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1",
@@ -33,7 +33,6 @@
     "eslint": "^9.28.0",
     "globusa": "^1.1.4",
     "jest": "^29.7.0",
-    "lerna": "^9.0.1",
     "parcel": "^2.15.2",
     "process": "^0.11.10",
     "rimraf": "^5.0.1",
