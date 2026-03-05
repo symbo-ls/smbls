@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/connect",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "Symbols Connect — Chrome extension for DOMQL inspection and element grabbing",
   "main": "dist/content.js",
   "scripts": {
@@ -15,6 +15,6 @@
     "chokidar": "^3.5.3"
   },
   "dependencies": {
-    "@domql/utils": "^2.29.81"
+    "@domql/utils": "^3.3.4"
   }
 }
