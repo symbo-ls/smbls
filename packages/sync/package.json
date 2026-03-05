@@ -6,7 +6,8 @@
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "files": [
     "dist",
-    "*.js"
+    "*.js",
+    "dynamic.json"
   ],
   "repository": "https://github.com/symbo-ls/scratch",
   "type": "module",
