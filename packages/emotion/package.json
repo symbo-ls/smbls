@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/emotion",
-  "version": "3.4.2",
+  "version": "3.4.3",
   "license": "MIT",
   "type": "module",
   "main": "index.js",
   "source": "index.js",
   "dependencies": {
-    "@domql/utils": "^3.4.2",
+    "@domql/utils": "^3.4.3",
     "@emotion/css": "^11.10.0",
-    "@symbo.ls/default-config": "^3.4.2",
-    "smbls": "^3.4.2"
+    "@symbo.ls/default-config": "^3.4.3",
+    "smbls": "^3.4.3"
   }
 }
