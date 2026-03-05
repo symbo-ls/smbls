@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/smbls-utils",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "author": "symbo.ls",
   "files": [
     "dist",
