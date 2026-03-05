@@ -5,7 +5,8 @@ import { ALL_CSS_PROPS } from '../data/cssProperties'
 import { ALL_COMPONENTS } from '../data/components'
 import { ELEMENT_METHODS, STATE_METHODS, HTML_ATTRIBUTES } from '../data/elementMethods'
 import {
-  SPACING_SCALE, FONT_SIZE_SCALE, COLOR_TOKENS, COLOR_MODIFIERS,
+  SPACING_SCALE, SPACING_TOKENS, TYPOGRAPHY_TOKENS, TIMING_TOKENS,
+  SEQUENCE_CONFIGS, FONT_SIZE_SCALE, COLOR_TOKENS, COLOR_TOKEN_MAP, COLOR_MODIFIERS,
   GRADIENT_TOKENS, THEME_TOKENS, THEME_MODIFIERS, ICON_NAMES,
   MEDIA_TOKENS, HTML_TAGS, CSS_VALUE_ENUMS,
   COLOR_PROPERTIES, SPACING_PROPERTIES, FONT_SIZE_PROPERTIES,
@@ -332,8 +333,14 @@ function getStateKeyCompletions(): vscode.CompletionItem[] {
 function getColorCompletions(): vscode.CompletionItem[] {
   const items: vscode.CompletionItem[] = []
 
-  for (const c of COLOR_TOKENS) {
-    items.push(mkValueItem(c, `Color token: ${c}`, `Design system color.\n\nModifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken)`, '1'))
+  for (const c of COLOR_TOKEN_MAP) {
+    const hexInfo = c.hex ? ` → ${c.hex}` : ''
+    const desc = c.description || ''
+    const detail = c.hex ? `${c.hex}` : (c.description || 'Color token')
+    const docs = c.hex
+      ? `\`${c.label}\` → \`${c.hex}\`\n\nModifiers: \`${c.label}.5\` (opacity), \`${c.label}+16\` (lighten), \`${c.label}-16\` (darken), \`${c.label}=50\` (set lightness)`
+      : `${desc}\n\nModifiers: \`${c.label}.5\` (opacity)`
+    items.push(mkValueItem(c.label, detail, docs, '1'))
   }
 
   for (const g of GRADIENT_TOKENS) {
@@ -344,16 +351,18 @@ function getColorCompletions(): vscode.CompletionItem[] {
 }
 
 function getSpacingCompletions(): vscode.CompletionItem[] {
-  return SPACING_SCALE.map((token, i) => {
+  const cfg = SEQUENCE_CONFIGS.spacing
+  return SPACING_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, '0')
-    return mkValueItem(token, `Spacing token: ${token}`, `Design system spacing scale.\n\nSmaller: W < X < Y < Z < **A** < B < C < D > larger\n\nSub-steps: A1, A2 between A and B`, sort)
+    return mkValueItem(token.label, `${token.label} → ${token.approxValue}`, `**Spacing** \`${token.label}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (golden ratio)\n\nScale: W X Y Z **A** B C D E F G H\n\nSub-steps: A1, A2 interpolate between A and B\n\nOperations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`, sort)
   })
 }
 
 function getFontSizeCompletions(): vscode.CompletionItem[] {
-  return FONT_SIZE_SCALE.map((token, i) => {
+  const cfg = SEQUENCE_CONFIGS.typography
+  return TYPOGRAPHY_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, '0')
-    return mkValueItem(token, `Font size token: ${token}`, `Typography scale. Base = A (16px), ratio ~1.25\n\nSmaller: Z < Y < X → **A** → B < C < D larger`, sort)
+    return mkValueItem(token.label, `${token.label} → ${token.approxValue}`, `**Typography** \`${token.label}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (major third)\n\nScale: X Y Z **A** B C D E F G H`, sort)
   })
 }
 
@@ -504,10 +513,16 @@ async function getValueCompletions(ctx: ContextInfo): Promise<vscode.CompletionI
   const enumItems = getCssEnumCompletions(prop)
   if (enumItems.length > 0) return enumItems
 
-  // For transition/animation, provide timing tokens
-  if (prop === 'transition') {
-    const items = SPACING_SCALE.map(t => mkValueItem(t, `Duration token: ${t}`, 'Design system timing token'))
-    items.push(mkValueItem('A defaultBezier', 'transition: A defaultBezier', 'Common transition with default easing'))
+  // Timing properties → timing tokens
+  if (prop === 'transition' || prop === 'transitionDuration' || prop === 'animationDuration') {
+    const cfg = SEQUENCE_CONFIGS.timing
+    const items = TIMING_TOKENS.map((t, i) => {
+      const sort = String(i).padStart(2, '0')
+      return mkValueItem(t.label, `${t.label} → ${t.approxValue}`, `**Timing** \`${t.label}\` ≈ **${t.approxValue}**\n\nBase: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`, sort)
+    })
+    if (prop === 'transition') {
+      items.push(mkValueItem('A defaultBezier', 'transition: A defaultBezier', 'Common transition with default easing'))
+    }
     return items
   }
 

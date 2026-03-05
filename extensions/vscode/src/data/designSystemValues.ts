@@ -1,34 +1,117 @@
 // Design system token values for smart value completions
 
-// Spacing / Typography scale: generated from ratio-based sequences
-// Base = A (16px), ratio ~1.618 (golden) for spacing, ~1.25 for typography
-// Positive: A B C D E F G H (larger)
-// Negative: Z Y X W V U T S (smaller)
-// Sub-steps: A1 A2 B1 B2 etc.
-export const SPACING_SCALE = [
-  'W2', 'W1', 'W',
-  'X2', 'X1', 'X',
-  'Y2', 'Y1', 'Y',
-  'Z2', 'Z1', 'Z',
-  'A', 'A1', 'A2',
-  'B', 'B1', 'B2',
-  'C', 'C1', 'C2',
-  'D', 'D1', 'D2',
-  'E', 'E1', 'E2',
-  'F', 'F1', 'F2',
-  'G', 'G1', 'G2',
-  'H', 'H1', 'H2'
+// Sequence-based design tokens
+// Each type (spacing, typography, timing) has its own base, ratio, and unit
+// Formula: value = base × ratio^index
+// Letter mapping: U(-6) V(-5) W(-4) X(-3) Y(-2) Z(-1) A(0) B(1) C(2) D(3) E(4) F(5) G(6) H(7)
+// Sub-steps (1,2) interpolate between main steps using golden-ratio subdivision
+
+export interface SequenceToken {
+  label: string
+  approxValue: string  // includes unit
+  index: number
+}
+
+export interface SequenceConfig {
+  type: string
+  base: number
+  ratio: number
+  unit: string
+  description: string
+}
+
+// Default configs per type
+export const SEQUENCE_CONFIGS: Record<string, SequenceConfig> = {
+  spacing: { type: 'spacing', base: 16, ratio: 1.618, unit: 'em', description: 'Spacing (golden ratio)' },
+  typography: { type: 'font-size', base: 16, ratio: 1.25, unit: 'em', description: 'Typography (major third)' },
+  timing: { type: 'timing', base: 150, ratio: 1.333, unit: 'ms', description: 'Timing (perfect fourth)' },
+}
+
+// Sub-ratio calculation (matches getSubratioDifference in sequence.js)
+function getSubValues(base: number, ratio: number, value: number): number[] {
+  const next = value * ratio
+  const diff = next - value
+  const subRatio = diff / 1.618
+  const first = next - subRatio
+  const second = value + subRatio
+  const middle = (first + second) / 2
+  const diffRounded = Math.floor(next) - Math.floor(value)
+  return diffRounded > 16 ? [first, middle, second] : [first, second]
+}
+
+function formatValue(val: number, unit: string): string {
+  if (unit === 'ms') return `~${Math.round(val)}ms`
+  if (val >= 100) return `~${Math.round(val)}px`
+  if (val >= 10) return `~${Math.round(val * 10) / 10}px`
+  return `~${Math.round(val * 100) / 100}px`
+}
+
+// Letter map (matches numToLetterMap in sequence.js)
+const NUM_TO_LETTER: Record<number, string> = {
+  '-6': 'U', '-5': 'V', '-4': 'W', '-3': 'X', '-2': 'Y', '-1': 'Z',
+  0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H',
+} as any
+
+function generateTokens(config: SequenceConfig, rangeStart: number, rangeEnd: number): SequenceToken[] {
+  const tokens: SequenceToken[] = []
+  for (let key = rangeStart; key <= rangeEnd; key++) {
+    const letter = (NUM_TO_LETTER as any)[key]
+    if (!letter) continue
+    const value = config.base * Math.pow(config.ratio, key)
+    const approx = key === 0 && config.unit !== 'ms'
+      ? `${config.base}px`
+      : formatValue(value, config.unit)
+    tokens.push({ label: letter, approxValue: approx, index: key })
+
+    // Generate sub-steps
+    const subs = getSubValues(config.base, config.ratio, value)
+    subs.forEach((sv, i) => {
+      tokens.push({
+        label: `${letter}${i + 1}`,
+        approxValue: formatValue(sv, config.unit),
+        index: key + (i + 1) / 10,
+      })
+    })
+  }
+  return tokens
+}
+
+// Pre-generate tokens for each type
+export const SPACING_TOKENS = generateTokens(SEQUENCE_CONFIGS.spacing, -4, 7)
+export const TYPOGRAPHY_TOKENS = generateTokens(SEQUENCE_CONFIGS.typography, -3, 7)
+export const TIMING_TOKENS = generateTokens(SEQUENCE_CONFIGS.timing, -3, 7)
+
+export const SPACING_SCALE = SPACING_TOKENS.map(t => t.label)
+export const FONT_SIZE_SCALE = TYPOGRAPHY_TOKENS.map(t => t.label)
+
+// Default color tokens with hex values
+export interface ColorToken {
+  label: string
+  hex: string
+  description?: string
+}
+
+export const COLOR_TOKEN_MAP: ColorToken[] = [
+  { label: 'blue', hex: '#213eb0' },
+  { label: 'green', hex: '#389d34' },
+  { label: 'red', hex: '#e15c55' },
+  { label: 'yellow', hex: '#EDCB38' },
+  { label: 'orange', hex: '#e97c16' },
+  { label: 'transparent', hex: 'rgba(0,0,0,0)' },
+  { label: 'black', hex: '#000000' },
+  { label: 'gray', hex: '#4e4e50' },
+  { label: 'white', hex: '#ffffff' },
+  { label: 'title', hex: '', description: 'Near-black text (light) / near-white text (dark)' },
+  { label: 'caption', hex: '', description: 'Secondary text color, adapts to theme' },
+  { label: 'paragraph', hex: '', description: 'Body text color, adapts to theme' },
+  { label: 'disabled', hex: '', description: 'Muted/disabled text color' },
+  { label: 'line', hex: '', description: 'Border/divider color, adapts to theme' },
+  { label: 'currentColor', hex: '', description: 'Inherits current text color' },
+  { label: 'inherit', hex: '', description: 'Inherits from parent' },
+  { label: 'none', hex: '', description: 'No color' },
 ]
 
-export const FONT_SIZE_SCALE = [...SPACING_SCALE]
-
-// Default color tokens
-export const COLOR_TOKENS = [
-  'blue', 'green', 'red', 'yellow', 'orange',
-  'transparent', 'black', 'gray', 'white',
-  'title', 'caption', 'paragraph', 'disabled', 'line',
-  'currentColor', 'inherit', 'none'
-]
+export const COLOR_TOKENS = COLOR_TOKEN_MAP.map(t => t.label)
 
 // Color modifier syntax hints
 export const COLOR_MODIFIERS = [

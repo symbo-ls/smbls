@@ -133,6 +133,20 @@ var DOMQL_REGISTRY_KEYS = [
     kind: "property"
   },
   {
+    label: "childProps",
+    detail: "childProps: object",
+    documentation: 'Props applied to all direct child elements.\n\n```js\nchildProps: { padding: "A", theme: "field" }\n```',
+    snippet: "childProps: {\n  ${1:key}: ${2:value},\n},",
+    kind: "property"
+  },
+  {
+    label: "childrenAs",
+    detail: "childrenAs: string",
+    documentation: 'Rename the `children` key to a custom name for semantic clarity.\n\n```js\nchildrenAs: "items"\nchildrenAs: "slides"\n```',
+    snippet: "childrenAs: '${1:items}',",
+    kind: "property"
+  },
+  {
     label: "children",
     detail: "children: array | function",
     documentation: 'Dynamic child list. Each item becomes a child element using `childExtends` as template.\n\n```js\nchildren: ({ props }) => props.items\nchildren: [{ text: "Item 1" }, { text: "Item 2" }]\n```',
@@ -1425,64 +1439,87 @@ var HTML_ATTRIBUTES = [
 ];
 
 // src/data/designSystemValues.ts
-var SPACING_SCALE = [
-  "W2",
-  "W1",
-  "W",
-  "X2",
-  "X1",
-  "X",
-  "Y2",
-  "Y1",
-  "Y",
-  "Z2",
-  "Z1",
-  "Z",
-  "A",
-  "A1",
-  "A2",
-  "B",
-  "B1",
-  "B2",
-  "C",
-  "C1",
-  "C2",
-  "D",
-  "D1",
-  "D2",
-  "E",
-  "E1",
-  "E2",
-  "F",
-  "F1",
-  "F2",
-  "G",
-  "G1",
-  "G2",
-  "H",
-  "H1",
-  "H2"
+var SEQUENCE_CONFIGS = {
+  spacing: { type: "spacing", base: 16, ratio: 1.618, unit: "em", description: "Spacing (golden ratio)" },
+  typography: { type: "font-size", base: 16, ratio: 1.25, unit: "em", description: "Typography (major third)" },
+  timing: { type: "timing", base: 150, ratio: 1.333, unit: "ms", description: "Timing (perfect fourth)" }
+};
+function getSubValues(base, ratio, value) {
+  const next = value * ratio;
+  const diff = next - value;
+  const subRatio = diff / 1.618;
+  const first = next - subRatio;
+  const second = value + subRatio;
+  const middle = (first + second) / 2;
+  const diffRounded = Math.floor(next) - Math.floor(value);
+  return diffRounded > 16 ? [first, middle, second] : [first, second];
+}
+function formatValue(val, unit) {
+  if (unit === "ms") return `~${Math.round(val)}ms`;
+  if (val >= 100) return `~${Math.round(val)}px`;
+  if (val >= 10) return `~${Math.round(val * 10) / 10}px`;
+  return `~${Math.round(val * 100) / 100}px`;
+}
+var NUM_TO_LETTER = {
+  "-6": "U",
+  "-5": "V",
+  "-4": "W",
+  "-3": "X",
+  "-2": "Y",
+  "-1": "Z",
+  0: "A",
+  1: "B",
+  2: "C",
+  3: "D",
+  4: "E",
+  5: "F",
+  6: "G",
+  7: "H"
+};
+function generateTokens(config, rangeStart, rangeEnd) {
+  const tokens = [];
+  for (let key = rangeStart; key <= rangeEnd; key++) {
+    const letter = NUM_TO_LETTER[key];
+    if (!letter) continue;
+    const value = config.base * Math.pow(config.ratio, key);
+    const approx = key === 0 && config.unit !== "ms" ? `${config.base}px` : formatValue(value, config.unit);
+    tokens.push({ label: letter, approxValue: approx, index: key });
+    const subs = getSubValues(config.base, config.ratio, value);
+    subs.forEach((sv, i) => {
+      tokens.push({
+        label: `${letter}${i + 1}`,
+        approxValue: formatValue(sv, config.unit),
+        index: key + (i + 1) / 10
+      });
+    });
+  }
+  return tokens;
+}
+var SPACING_TOKENS = generateTokens(SEQUENCE_CONFIGS.spacing, -4, 7);
+var TYPOGRAPHY_TOKENS = generateTokens(SEQUENCE_CONFIGS.typography, -3, 7);
+var TIMING_TOKENS = generateTokens(SEQUENCE_CONFIGS.timing, -3, 7);
+var SPACING_SCALE = SPACING_TOKENS.map((t) => t.label);
+var FONT_SIZE_SCALE = TYPOGRAPHY_TOKENS.map((t) => t.label);
+var COLOR_TOKEN_MAP = [
+  { label: "blue", hex: "#213eb0" },
+  { label: "green", hex: "#389d34" },
+  { label: "red", hex: "#e15c55" },
+  { label: "yellow", hex: "#EDCB38" },
+  { label: "orange", hex: "#e97c16" },
+  { label: "transparent", hex: "rgba(0,0,0,0)" },
+  { label: "black", hex: "#000000" },
+  { label: "gray", hex: "#4e4e50" },
+  { label: "white", hex: "#ffffff" },
+  { label: "title", hex: "", description: "Near-black text (light) / near-white text (dark)" },
+  { label: "caption", hex: "", description: "Secondary text color, adapts to theme" },
+  { label: "paragraph", hex: "", description: "Body text color, adapts to theme" },
+  { label: "disabled", hex: "", description: "Muted/disabled text color" },
+  { label: "line", hex: "", description: "Border/divider color, adapts to theme" },
+  { label: "currentColor", hex: "", description: "Inherits current text color" },
+  { label: "inherit", hex: "", description: "Inherits from parent" },
+  { label: "none", hex: "", description: "No color" }
 ];
-var FONT_SIZE_SCALE = [...SPACING_SCALE];
-var COLOR_TOKENS = [
-  "blue",
-  "green",
-  "red",
-  "yellow",
-  "orange",
-  "transparent",
-  "black",
-  "gray",
-  "white",
-  "title",
-  "caption",
-  "paragraph",
-  "disabled",
-  "line",
-  "currentColor",
-  "inherit",
-  "none"
-];
+var COLOR_TOKENS = COLOR_TOKEN_MAP.map((t) => t.label);
 var GRADIENT_TOKENS = [
   "gradient-blue-light",
   "gradient-blue-dark",
@@ -2097,10 +2134,16 @@ function getStateKeyCompletions() {
 }
 function getColorCompletions() {
   const items = [];
-  for (const c of COLOR_TOKENS) {
-    items.push(mkValueItem(c, `Color token: ${c}`, `Design system color.
+  for (const c of COLOR_TOKEN_MAP) {
+    const hexInfo = c.hex ? ` \u2192 ${c.hex}` : "";
+    const desc = c.description || "";
+    const detail = c.hex ? `${c.hex}` : c.description || "Color token";
+    const docs = c.hex ? `\`${c.label}\` \u2192 \`${c.hex}\`
 
-Modifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken)`, "1"));
+Modifiers: \`${c.label}.5\` (opacity), \`${c.label}+16\` (lighten), \`${c.label}-16\` (darken), \`${c.label}=50\` (set lightness)` : `${desc}
+
+Modifiers: \`${c.label}.5\` (opacity)`;
+    items.push(mkValueItem(c.label, detail, docs, "1"));
   }
   for (const g of GRADIENT_TOKENS) {
     items.push(mkValueItem(g, `Gradient: ${g}`, "Design system gradient token", "2"));
@@ -2108,21 +2151,29 @@ Modifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken)`, "
   return items;
 }
 function getSpacingCompletions() {
-  return SPACING_SCALE.map((token, i) => {
+  const cfg = SEQUENCE_CONFIGS.spacing;
+  return SPACING_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, "0");
-    return mkValueItem(token, `Spacing token: ${token}`, `Design system spacing scale.
+    return mkValueItem(token.label, `${token.label} \u2192 ${token.approxValue}`, `**Spacing** \`${token.label}\` \u2248 **${token.approxValue}**
 
-Smaller: W < X < Y < Z < **A** < B < C < D > larger
+Base: A = ${cfg.base}px, ratio: ${cfg.ratio} (golden ratio)
 
-Sub-steps: A1, A2 between A and B`, sort);
+Scale: W X Y Z **A** B C D E F G H
+
+Sub-steps: A1, A2 interpolate between A and B
+
+Operations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`, sort);
   });
 }
 function getFontSizeCompletions() {
-  return FONT_SIZE_SCALE.map((token, i) => {
+  const cfg = SEQUENCE_CONFIGS.typography;
+  return TYPOGRAPHY_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, "0");
-    return mkValueItem(token, `Font size token: ${token}`, `Typography scale. Base = A (16px), ratio ~1.25
+    return mkValueItem(token.label, `${token.label} \u2192 ${token.approxValue}`, `**Typography** \`${token.label}\` \u2248 **${token.approxValue}**
 
-Smaller: Z < Y < X \u2192 **A** \u2192 B < C < D larger`, sort);
+Base: A = ${cfg.base}px, ratio: ${cfg.ratio} (major third)
+
+Scale: X Y Z **A** B C D E F G H`, sort);
   });
 }
 function getThemeCompletions() {
@@ -2276,9 +2327,17 @@ async function getValueCompletions(ctx) {
   if (FONT_SIZE_PROPERTIES.has(prop)) return getFontSizeCompletions();
   const enumItems = getCssEnumCompletions(prop);
   if (enumItems.length > 0) return enumItems;
-  if (prop === "transition") {
-    const items = SPACING_SCALE.map((t) => mkValueItem(t, `Duration token: ${t}`, "Design system timing token"));
-    items.push(mkValueItem("A defaultBezier", "transition: A defaultBezier", "Common transition with default easing"));
+  if (prop === "transition" || prop === "transitionDuration" || prop === "animationDuration") {
+    const cfg = SEQUENCE_CONFIGS.timing;
+    const items = TIMING_TOKENS.map((t, i) => {
+      const sort = String(i).padStart(2, "0");
+      return mkValueItem(t.label, `${t.label} \u2192 ${t.approxValue}`, `**Timing** \`${t.label}\` \u2248 **${t.approxValue}**
+
+Base: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`, sort);
+    });
+    if (prop === "transition") {
+      items.push(mkValueItem("A defaultBezier", "transition: A defaultBezier", "Common transition with default easing"));
+    }
     return items;
   }
   return [];
@@ -2383,11 +2442,15 @@ for (const p of ALL_CSS_PROPS) {
 ${p.documentation}`);
 }
 var valueHints = /* @__PURE__ */ new Map();
-for (const c of COLOR_TOKENS) {
-  if (c !== "inherit" && c !== "none" && c !== "currentColor") {
-    valueHints.set(c, `**Color token:** \`${c}\`
+for (const c of COLOR_TOKEN_MAP) {
+  if (c.label !== "inherit" && c.label !== "none" && c.label !== "currentColor") {
+    const hexInfo = c.hex ? ` \u2192 \`${c.hex}\`` : "";
+    const desc = c.description ? `
 
-Modifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken), \`${c}=50\` (set lightness)`);
+${c.description}` : "";
+    valueHints.set(c.label, `**Color token:** \`${c.label}\`${hexInfo}${desc}
+
+Modifiers: \`${c.label}.5\` (opacity), \`${c.label}+16\` (lighten), \`${c.label}-16\` (darken), \`${c.label}=50\` (set lightness)`);
   }
 }
 for (const g of GRADIENT_TOKENS) {
@@ -2426,11 +2489,17 @@ var DomqlHoverProvider = class {
     const prop = getPropertyContext(document, position);
     if (prop) {
       if ((SPACING_PROPERTIES.has(prop) || FONT_SIZE_PROPERTIES.has(prop)) && SPACING_SCALE.includes(word)) {
-        const md = new vscode3.MarkdownString(`**Design token:** \`${word}\`
+        const token = SPACING_TOKENS.find((t) => t.label === word);
+        const pxInfo = token ? ` \u2248 **${token.approxPx}**` : "";
+        const md = new vscode3.MarkdownString(`**Design token:** \`${word}\`${pxInfo}
 
-Scale: W < X < Y < Z < **A** (base=16px) < B < C < D < E
+Base: A = 16px, ratio: 1.618 (golden ratio)
 
-Sub-steps: A1, A2 between A and B`);
+Scale: U V W X Y Z **A** B C D E F G H
+
+Sub-steps: A1, A2 between A and B
+
+Operations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`);
         md.isTrusted = true;
         return new vscode3.Hover(md, wordRange);
       }

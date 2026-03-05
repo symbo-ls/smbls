@@ -22,6 +22,7 @@ import { resolve } from 'path'
 import { parseHTML } from 'linkedom'
 import { renderElement, collectBrNodes, hydrate } from '../index.js'
 import { loadProject } from '../load.js'
+import createInstance from '@emotion/css/create-instance'
 
 const [projectName, requestedRoute] = process.argv.slice(2)
 
@@ -112,7 +113,15 @@ console.log()
 
 console.log('  Step 4: Hydrate — remap DomQL elements to DOM nodes\n')
 
-const { element: hydrated, linked: hydratedLinked, unlinked: hydratedUnlinked } = hydrate(elementTree, { root: body, renderEvents: false })
+// Initialize emotion for CSS class generation
+const emotion = createInstance({ key: 'br' })
+
+const { element: hydrated, linked: hydratedLinked, unlinked: hydratedUnlinked } = hydrate(elementTree, {
+  root: body,
+  renderEvents: false,
+  emotion,
+  designSystem: data.designSystem
+})
 
 // Walk and verify
 let linked = 0

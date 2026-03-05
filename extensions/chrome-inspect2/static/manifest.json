@@ -3,7 +3,7 @@
   "name": "Symbols Connect",
   "version": "3.0.0",
   "description": "symbols.app connect — DOMQL Inspector and element grabber for the Symbols design system",
-  "permissions": ["scripting", "tabs", "activeTab", "storage"],
+  "permissions": ["scripting", "tabs", "activeTab", "storage", "declarativeNetRequest"],
   "host_permissions": ["<all_urls>"],
   "icons": {
     "48": "assets/48x48.png",

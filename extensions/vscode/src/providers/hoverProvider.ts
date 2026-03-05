@@ -5,8 +5,8 @@ import { ELEMENT_METHODS, STATE_METHODS } from '../data/elementMethods'
 import { ALL_COMPONENTS } from '../data/components'
 import { ALL_CSS_PROPS } from '../data/cssProperties'
 import {
-  COLOR_TOKENS, GRADIENT_TOKENS, THEME_TOKENS,
-  ICON_NAMES, SPACING_SCALE, COLOR_PROPERTIES,
+  COLOR_TOKENS, COLOR_TOKEN_MAP, GRADIENT_TOKENS, THEME_TOKENS,
+  ICON_NAMES, SPACING_SCALE, SPACING_TOKENS, COLOR_PROPERTIES,
   SPACING_PROPERTIES, FONT_SIZE_PROPERTIES
 } from '../data/designSystemValues'
 import { isDomqlFile } from './completionProvider'
@@ -36,9 +36,11 @@ for (const p of ALL_CSS_PROPS) {
 // Design system value hover info
 const valueHints = new Map<string, string>()
 
-for (const c of COLOR_TOKENS) {
-  if (c !== 'inherit' && c !== 'none' && c !== 'currentColor') {
-    valueHints.set(c, `**Color token:** \`${c}\`\n\nModifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken), \`${c}=50\` (set lightness)`)
+for (const c of COLOR_TOKEN_MAP) {
+  if (c.label !== 'inherit' && c.label !== 'none' && c.label !== 'currentColor') {
+    const hexInfo = c.hex ? ` → \`${c.hex}\`` : ''
+    const desc = c.description ? `\n\n${c.description}` : ''
+    valueHints.set(c.label, `**Color token:** \`${c.label}\`${hexInfo}${desc}\n\nModifiers: \`${c.label}.5\` (opacity), \`${c.label}+16\` (lighten), \`${c.label}-16\` (darken), \`${c.label}=50\` (set lightness)`)
   }
 }
 for (const g of GRADIENT_TOKENS) {
@@ -87,7 +89,9 @@ export class DomqlHoverProvider implements vscode.HoverProvider {
     if (prop) {
       // Spacing tokens
       if ((SPACING_PROPERTIES.has(prop) || FONT_SIZE_PROPERTIES.has(prop)) && SPACING_SCALE.includes(word)) {
-        const md = new vscode.MarkdownString(`**Design token:** \`${word}\`\n\nScale: W < X < Y < Z < **A** (base=16px) < B < C < D < E\n\nSub-steps: A1, A2 between A and B`)
+        const token = SPACING_TOKENS.find(t => t.label === word)
+        const pxInfo = token ? ` ≈ **${token.approxPx}**` : ''
+        const md = new vscode.MarkdownString(`**Design token:** \`${word}\`${pxInfo}\n\nBase: A = 16px, ratio: 1.618 (golden ratio)\n\nScale: U V W X Y Z **A** B C D E F G H\n\nSub-steps: A1, A2 between A and B\n\nOperations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`)
         md.isTrusted = true
         return new vscode.Hover(md, wordRange)
       }

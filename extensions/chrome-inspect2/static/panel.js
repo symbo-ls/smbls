@@ -96,6 +96,17 @@
   }
 
   // ============================================================
+  // Project / URL matching
+  // ============================================================
+  function isProjectMatch (projectKey, pageHost) {
+    if (!projectKey || !pageHost) return false
+    if (pageHost === projectKey) return true
+    if (pageHost.includes(projectKey.replace(/\./g, ''))) return true
+    if (projectKey.includes(pageHost.split('.')[0])) return true
+    return false
+  }
+
+  // ============================================================
   // Connect Screen
   // ============================================================
   async function showConnectScreen () {
@@ -118,11 +129,36 @@
       const recentList = document.getElementById('recent-list')
       recentList.innerHTML = ''
 
+      // Get inspected page hostname for matching
+      let pageHost = null
+      try {
+        pageHost = await pageEval('window.location.hostname')
+      } catch (e) {}
+
       if (recents.length > 0) {
         recentSection.style.display = 'block'
-        for (const item of recents) {
+
+        // Load caches to get project keys for matching
+        const recentsWithCache = await Promise.all(recents.map(async (item) => {
+          let cache = null
+          try { cache = await getFileCache(item.name) } catch (e) {}
+          return { ...item, cache }
+        }))
+
+        // Sort: matching projects first
+        recentsWithCache.sort((a, b) => {
+          const aMatch = isProjectMatch(a.cache?.config?.key, pageHost) ? 1 : 0
+          const bMatch = isProjectMatch(b.cache?.config?.key, pageHost) ? 1 : 0
+          return bMatch - aMatch
+        })
+
+        for (const item of recentsWithCache) {
           const row = document.createElement('div')
           row.className = 'recent-item'
+
+          const projectKey = item.cache?.config?.key || ''
+          const match = pageHost && projectKey && isProjectMatch(projectKey, pageHost)
+          if (match) row.classList.add('matching')
 
           const name = document.createElement('span')
           name.className = 'recent-name'
@@ -130,15 +166,21 @@
 
           const type = document.createElement('span')
           type.className = 'recent-type'
-          type.textContent = 'local'
+          type.textContent = projectKey || 'local'
 
           row.appendChild(name)
           row.appendChild(type)
 
+          if (match) {
+            const badge = document.createElement('span')
+            badge.className = 'project-match-badge'
+            badge.textContent = 'match'
+            row.appendChild(badge)
+          }
+
           row.addEventListener('click', async () => {
             try {
-              // Try to load from file cache first
-              const cache = await getFileCache(item.name)
+              const cache = item.cache
               if (cache && cache.tree) {
                 connectLocal(item.name, cache)
               } else {
@@ -297,13 +339,8 @@
         const item = document.createElement('div')
         item.className = 'project-item'
 
-        // Check if project key matches the current page
         const projectKey = project.key || ''
-        const isMatch = pageHost && projectKey && (
-          pageHost === projectKey ||
-          pageHost.includes(projectKey.replace(/\./g, '')) ||
-          projectKey.includes(pageHost.split('.')[0])
-        )
+        const isMatch = isProjectMatch(projectKey, pageHost)
 
         if (isMatch) item.classList.add('matching')
 

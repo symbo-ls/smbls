@@ -60,6 +60,25 @@ chrome.runtime.onInstalled.addListener(({ previousVersion, reason }) => {
 
   if (['install', 'update'].includes(reason)) {
     initSettings()
+
+    // Override Origin header on API requests to avoid CORS rejection
+    chrome.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: [1],
+      addRules: [{
+        id: 1,
+        priority: 1,
+        action: {
+          type: 'modifyHeaders',
+          requestHeaders: [
+            { header: 'Origin', operation: 'set', value: 'https://symbols.app' }
+          ]
+        },
+        condition: {
+          urlFilter: 'https://api.symbols.app/*',
+          resourceTypes: ['xmlhttprequest', 'other']
+        }
+      }]
+    })
   }
 })
 
@@ -150,23 +169,27 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true
   }
 
-  // Proxy API requests (avoids CORS preflight issues in devtools panel)
+  // Proxy API requests — strip Origin to avoid CORS rejection on server
   if (msg.type === 'api-fetch') {
-    ;(async () => {
-      try {
-        const res = await fetch(msg.url, {
-          method: msg.method || 'GET',
-          headers: msg.headers || {},
-          body: msg.body || undefined
-        })
-        const text = await res.text()
+    const headers = new Headers(msg.headers || {})
+    headers.delete('Origin')
+    const fetchOpts = {
+      method: msg.method || 'GET',
+      headers
+    }
+    if (msg.body && msg.method && msg.method !== 'GET') {
+      fetchOpts.body = msg.body
+    }
+    fetch(msg.url, fetchOpts)
+      .then((res) => res.text().then((text) => ({ ok: res.ok, status: res.status, text })))
+      .then(({ ok, status, text }) => {
         let json = null
         try { json = JSON.parse(text) } catch (e) {}
-        sendResponse({ ok: res.ok, status: res.status, data: json, text: text })
-      } catch (e) {
+        sendResponse({ ok, status, data: json, text })
+      })
+      .catch((e) => {
         sendResponse({ ok: false, status: 0, error: e.message || String(e) })
-      }
-    })()
+      })
     return true
   }
 

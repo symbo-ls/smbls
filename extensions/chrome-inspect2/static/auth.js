@@ -48,22 +48,23 @@
   }
 
   // ============================================================
-  // API calls
+  // API calls (routed through service worker to bypass CORS)
   // ============================================================
   async function apiRequest (path, options) {
-    const url = API_BASE + path
-    const res = await fetch(url, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options && options.headers)
-      }
-    })
-    if (!res.ok) {
-      const text = await res.text().catch(() => '')
-      throw new Error(text || ('HTTP ' + res.status))
+    var url = API_BASE + path
+    var headers = { 'Content-Type': 'application/json' }
+    if (options && options.headers) {
+      Object.assign(headers, options.headers)
     }
-    return res.json()
+    var resp = await swFetch(url, {
+      method: (options && options.method) || 'GET',
+      headers: headers,
+      body: (options && options.body) || undefined
+    })
+    if (!resp.ok) {
+      throw new Error((resp.data && resp.data.message) || resp.text || resp.error || ('HTTP ' + resp.status))
+    }
+    return resp.data
   }
 
   async function authedRequest (path, options) {
@@ -211,24 +212,33 @@
   // Proxy fetch through service worker to avoid CORS preflight issues
   function swFetch (url, options) {
     return new Promise(function (resolve, reject) {
-      chrome.runtime.sendMessage({
-        type: 'api-fetch',
-        url: url,
-        method: (options && options.method) || 'GET',
-        headers: (options && options.headers) || {},
-        body: (options && options.body) || undefined
-      }, function (resp) {
-        if (chrome.runtime.lastError) {
-          reject(new Error(chrome.runtime.lastError.message))
-          return
-        }
-        if (!resp) {
-          reject(new Error('No response from service worker'))
-          return
-        }
-        resolve(resp)
-      })
+      try {
+        chrome.runtime.sendMessage({
+          type: 'api-fetch',
+          url: url,
+          method: (options && options.method) || 'GET',
+          headers: (options && options.headers) || {},
+          body: (options && options.body) || undefined
+        }, function (resp) {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message))
+            return
+          }
+          if (!resp) {
+            reject(new Error('No response from service worker'))
+            return
+          }
+          resolve(resp)
+        })
+      } catch (e) {
+        reject(new Error('sendMessage failed: ' + (e.message || e)))
+      }
     })
+  }
+
+  // Try swFetch — no fallback to direct fetch (CORS blocks it)
+  async function proxyFetch (url, options) {
+    return swFetch(url, options)
   }
 
   async function loginViaBrowser (onStatus) {
@@ -239,20 +249,25 @@
     if (onStatus) onStatus('Creating secure session...')
 
     // Create PKCE session via service worker (avoids CORS)
-    var sessionResp = await swFetch(API_BASE + '/core/auth/session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        session_id: sessionId,
-        code_challenge: codeChallenge,
-        plugin_info: { version: 'chrome-extension', figma_env: 'chrome' }
+    var sessionResp
+    try {
+      sessionResp = await proxyFetch(API_BASE + '/core/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          code_challenge: codeChallenge,
+          plugin_info: { version: 'chrome-extension', figma_env: 'chrome' }
+        })
       })
-    })
+    } catch (fetchErr) {
+      chrome.tabs.create({ url: WEBSITE_BASE + '/signin' })
+      throw new Error('Session fetch error: ' + fetchErr.message)
+    }
 
     if (!sessionResp.ok) {
-      // Fallback: open signin page, ask user to use email/password
       chrome.tabs.create({ url: WEBSITE_BASE + '/signin' })
-      throw new Error('Session unavailable — sign in on symbols.app, then use email & password below')
+      throw new Error('Session failed (HTTP ' + sessionResp.status + '): ' + (sessionResp.text || '').substring(0, 120))
     }
 
     // Open signin with session param
@@ -293,7 +308,7 @@
 
     if (onStatus) onStatus('Confirming session...')
 
-    var confirmResp = await swFetch(API_BASE + '/core/auth/session/confirm', {
+    var confirmResp = await proxyFetch(API_BASE + '/core/auth/session/confirm', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

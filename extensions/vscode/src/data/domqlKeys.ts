@@ -112,6 +112,22 @@ export const DOMQL_REGISTRY_KEYS: DomqlKeyInfo[] = [
     kind: 'property'
   },
   {
+    label: 'childProps',
+    detail: 'childProps: object',
+    documentation:
+      'Props applied to all direct child elements.\n\n```js\nchildProps: { padding: "A", theme: "field" }\n```',
+    snippet: 'childProps: {\n  ${1:key}: ${2:value},\n},',
+    kind: 'property'
+  },
+  {
+    label: 'childrenAs',
+    detail: 'childrenAs: string',
+    documentation:
+      'Rename the `children` key to a custom name for semantic clarity.\n\n```js\nchildrenAs: "items"\nchildrenAs: "slides"\n```',
+    snippet: "childrenAs: '${1:items}',",
+    kind: 'property'
+  },
+  {
     label: 'children',
     detail: 'children: array | function',
     documentation:

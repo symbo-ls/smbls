@@ -15,7 +15,9 @@
 import { createServer } from 'http'
 import { resolve } from 'path'
 import { readFileSync } from 'fs'
-import { renderElement } from '../index.js'
+import { parseHTML } from 'linkedom'
+import createInstance from '@emotion/css/create-instance'
+import { renderElement, hydrate } from '../index.js'
 import { loadProject } from '../load.js'
 
 const DEFAULT_PORT = process.argv[2] || 3456
@@ -59,6 +61,166 @@ const serializeProjectData = () => {
   return serializable
 }
 
+// ── CSS generation helpers ──────────────────────────────────────────────────
+
+const CSS_COLOR_PROPS = new Set([
+  'color', 'background', 'backgroundColor', 'borderColor',
+  'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor',
+  'outlineColor', 'fill', 'stroke'
+])
+
+// Props that aren't CSS — HTML attributes and internal DomQL keys
+const NON_CSS_PROPS = new Set([
+  'href', 'src', 'alt', 'title', 'id', 'name', 'type', 'value', 'placeholder',
+  'target', 'rel', 'loading', 'srcset', 'sizes', 'media', 'role', 'tabindex',
+  'for', 'action', 'method', 'enctype', 'autocomplete', 'autofocus',
+  'theme', '__element', 'update'
+])
+
+// DomQL shorthand props that expand to multiple CSS properties
+const resolveShorhand = (key, val) => {
+  if (key === 'flexAlign' && typeof val === 'string') {
+    const [alignItems, justifyContent] = val.split(' ')
+    return { display: 'flex', 'align-items': alignItems, 'justify-content': justifyContent }
+  }
+  if (key === 'gridAlign' && typeof val === 'string') {
+    const [alignItems, justifyContent] = val.split(' ')
+    return { display: 'grid', 'align-items': alignItems, 'justify-content': justifyContent }
+  }
+  if (key === 'round' && val) {
+    return { 'border-radius': typeof val === 'number' ? val + 'px' : val }
+  }
+  if (key === 'boxSize' && val) {
+    return { width: val, height: val }
+  }
+  return null
+}
+
+const camelToKebab = (str) => str.replace(/[A-Z]/g, m => '-' + m.toLowerCase())
+
+const resolveInnerProps = (obj, colorMap) => {
+  const result = {}
+  for (const k in obj) {
+    const v = obj[k]
+    const expanded = resolveShorhand(k, v)
+    if (expanded) {
+      Object.assign(result, expanded)
+      continue
+    }
+    if (typeof v !== 'string' && typeof v !== 'number') continue
+    result[camelToKebab(k)] = CSS_COLOR_PROPS.has(k) && colorMap[v] ? colorMap[v] : v
+  }
+  return result
+}
+
+const buildCSSFromProps = (props, colorMap, mediaMap) => {
+  const base = {}
+  const mediaRules = {}
+  const pseudoRules = {}
+
+  for (const key in props) {
+    const val = props[key]
+
+    if (key.charCodeAt(0) === 64 && typeof val === 'object') {
+      const breakpoint = mediaMap?.[key.slice(1)]
+      if (breakpoint) {
+        const inner = resolveInnerProps(val, colorMap)
+        if (Object.keys(inner).length) mediaRules[breakpoint] = inner
+      }
+      continue
+    }
+
+    if (key.charCodeAt(0) === 58 && typeof val === 'object') {
+      const inner = resolveInnerProps(val, colorMap)
+      if (Object.keys(inner).length) pseudoRules[key] = inner
+      continue
+    }
+
+    if (typeof val !== 'string' && typeof val !== 'number') continue
+    if (key.charCodeAt(0) >= 65 && key.charCodeAt(0) <= 90) continue
+    if (NON_CSS_PROPS.has(key)) continue
+
+    // Resolve DomQL shorthands (flexAlign, round, boxSize, etc.)
+    const expanded = resolveShorhand(key, val)
+    if (expanded) {
+      Object.assign(base, expanded)
+      continue
+    }
+
+    base[camelToKebab(key)] = CSS_COLOR_PROPS.has(key) && colorMap[val] ? colorMap[val] : val
+  }
+
+  return { base, mediaRules, pseudoRules }
+}
+
+const renderCSSRule = (selector, { base, mediaRules, pseudoRules }) => {
+  const lines = []
+  const baseDecls = Object.entries(base).map(([k, v]) => `${k}: ${v}`).join('; ')
+  if (baseDecls) lines.push(`${selector} { ${baseDecls}; }`)
+
+  for (const [pseudo, props] of Object.entries(pseudoRules)) {
+    const decls = Object.entries(props).map(([k, v]) => `${k}: ${v}`).join('; ')
+    if (decls) lines.push(`${selector}${pseudo} { ${decls}; }`)
+  }
+
+  for (const [query, props] of Object.entries(mediaRules)) {
+    const decls = Object.entries(props).map(([k, v]) => `${k}: ${v}`).join('; ')
+    const mq = query.startsWith('@') ? query : `@media ${query}`
+    if (decls) lines.push(`${mq} { ${selector} { ${decls}; } }`)
+  }
+
+  return lines.join('\n')
+}
+
+const extractCSS = (element, designSystem) => {
+  const colorMap = designSystem?.color || {}
+  const mediaMap = designSystem?.media || {}
+  const animations = designSystem?.animation || {}
+  const rules = []
+  const seen = new Set()
+  const usedAnimations = new Set()
+
+  const walk = (el) => {
+    if (!el || !el.__ref) return
+    const { props } = el
+    if (props && el.node) {
+      const cls = el.node.getAttribute?.('class')
+      if (cls && !seen.has(cls)) {
+        seen.add(cls)
+        const cssResult = buildCSSFromProps(props, colorMap, mediaMap)
+        const hasRules = Object.keys(cssResult.base).length || Object.keys(cssResult.mediaRules).length || Object.keys(cssResult.pseudoRules).length
+        if (hasRules) rules.push(renderCSSRule('.' + cls.split(' ')[0], cssResult))
+
+        // Track used animations
+        const anim = props.animation || props.animationName
+        if (typeof anim === 'string') {
+          const name = anim.split(' ')[0]
+          if (animations[name]) usedAnimations.add(name)
+        }
+      }
+    }
+    if (el.__ref.__children) {
+      for (const childKey of el.__ref.__children) {
+        if (el[childKey]?.__ref) walk(el[childKey])
+      }
+    }
+  }
+  walk(element)
+
+  // Generate @keyframes for used animations
+  const keyframes = []
+  for (const name of usedAnimations) {
+    const frames = animations[name]
+    const frameRules = Object.entries(frames).map(([step, props]) => {
+      const decls = Object.entries(props).map(([k, v]) => `${camelToKebab(k)}: ${v}`).join('; ')
+      return `  ${step} { ${decls}; }`
+    }).join('\n')
+    keyframes.push(`@keyframes ${name} {\n${frameRules}\n}`)
+  }
+
+  return [...keyframes, ...rules].join('\n')
+}
+
 // ── Pre-render each route ───────────────────────────────────────────────────
 
 const rendered = {}
@@ -88,13 +250,32 @@ for (const route of routes) {
       }
     }
 
+    // Generate CSS: parse HTML, run hydration with emotion, extract styles
+    const { document: cssDoc } = parseHTML(`<html><head></head><body>${result.html}</body></html>`)
+    const emotion = createInstance({ key: 'smbls', container: cssDoc.head })
+
+    const { linked, unlinked } = hydrate(result.element, {
+      root: cssDoc.body,
+      renderEvents: false,
+      events: false,
+      emotion,
+      designSystem: data.designSystem
+    })
+
+    // Get the styled HTML (with class attributes) and any injected <style> tags
+    const styledHtml = cssDoc.body.innerHTML
+    const cssText = extractCSS(result.element, data.designSystem)
+
     rendered[route] = {
-      html: result.html,
+      html: styledHtml,
+      css: cssText,
       registry,
-      brKeyCount: Object.keys(result.registry).length
+      brKeyCount: Object.keys(result.registry).length,
+      linked,
+      unlinked
     }
 
-    console.log(`  ${route} -> ${result.html.length} chars, ${Object.keys(result.registry).length} keys`)
+    console.log(`  ${route} -> ${styledHtml.length} chars, ${Object.keys(result.registry).length} keys, ${linked} styled`)
   } catch (err) {
     console.error(`  ${route} ERROR:`, err.message)
   }
@@ -115,6 +296,9 @@ const buildPage = (route) => {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>rita - brender dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter Tight', system-ui, -apple-system, sans-serif; }
@@ -122,6 +306,9 @@ const buildPage = (route) => {
     [data-br]:hover { outline: 1px dashed rgba(79,70,229,0.3); }
     #br-debug { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; color: #e2e8f0; font-family: monospace; font-size: 12px; padding: 8px 16px; z-index: 9999; display: flex; gap: 24px; }
     #br-debug .stat { color: #818cf8; font-weight: 700; }
+  </style>
+  <style data-emotion="smbls">
+${r.css}
   </style>
 </head>
 <body>
