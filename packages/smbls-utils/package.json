@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/smbls-utils",
-  "version": "3.4.7",
+  "version": "3.4.8",
   "author": "symbo.ls",
   "files": [
     "dist",
@@ -32,8 +32,8 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@domql/element": "^3.4.7",
-    "@domql/utils": "^3.4.7"
+    "@domql/element": "^3.4.8",
+    "@domql/utils": "^3.4.8"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "browser": "./dist/esm/index.js",

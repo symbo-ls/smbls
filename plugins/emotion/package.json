@@ -1,11 +1,11 @@
 {
   "name": "@domql/emotion",
-  "version": "3.4.7",
+  "version": "3.4.8",
   "main": "./dist/cjs/index.js",
   "license": "MIT",
   "deprecated": "Use @symbo.ls/emotion instead",
   "dependencies": {
-    "@symbo.ls/emotion": "^3.4.7"
+    "@symbo.ls/emotion": "^3.4.8"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "source": "index.js",
