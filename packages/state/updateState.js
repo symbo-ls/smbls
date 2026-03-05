@@ -1,8 +1,6 @@
 'use strict'
 
 import { report } from '@domql/report'
-// NOTE: Circular dependency — state ↔ element. Bundler handles via lazy resolution.
-import { triggerEventOnUpdate } from '@domql/element'
 import {
   checkIfInherits,
   createNestedObjectByKeyPath,
@@ -11,7 +9,8 @@ import {
   getRootStateInKey,
   merge,
   overwriteDeep,
-  overwriteState
+  overwriteState,
+  triggerEventOnUpdate
 } from '@domql/utils'
 
 const STATE_UPDATE_OPTIONS = {

@@ -113,14 +113,26 @@ export const setColor = (val, key, suffix) => {
   const CONFIG = getActiveConfig()
 
   if (isString(val) && isCSSVar(val)) {
-    val = getColor(val.slice(2))
+    const rawRef = val.slice(2)
+    val = getColor(rawRef)
     if (!(
       val.includes('rgb') ||
       val.includes('var') ||
       val.includes('#')
     )) {
-      if (CONFIG.verbose) console.warn(val, '- referred but does not exist')
-      val = val.split(' ')[0]
+      // Handle space-separated format: '--colorName alpha' (e.g. '--gray1 1')
+      const parts = rawRef.split(' ')
+      const refColor = CONFIG.COLOR[parts[0]]
+      if (refColor && refColor.value) {
+        if (parts[1] !== undefined) {
+          val = `rgba(${refColor.rgb}, ${parts[1]})`
+        } else {
+          val = refColor.value
+        }
+      } else {
+        if (CONFIG.verbose) console.warn(val, '- referred but does not exist')
+        val = parts[0]
+      }
     }
   }
 

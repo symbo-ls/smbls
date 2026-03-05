@@ -2,6 +2,9 @@
 
 import { DOMQL_EVENTS, isFunction } from '@domql/utils'
 
+// Re-export event trigger functions from @domql/utils (moved there to break circular dep)
+export { applyEvent, triggerEventOn, applyEventUpdate, triggerEventOnUpdate } from '@domql/utils'
+
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]
   if (onEvent) return onEvent
@@ -9,70 +12,6 @@ const getOnOrPropsEvent = (param, element) => {
   if (!props) return
   const propKey = 'on' + param.charAt(0).toUpperCase() + param.slice(1)
   return props[propKey]
-}
-
-export const applyEvent = (param, element, state, context, options) => {
-  if (!isFunction(param)) return
-  const result = param.call(
-    element,
-    element,
-    state || element.state,
-    context || element.context,
-    options
-  )
-  if (result && typeof result.then === 'function') {
-    result.catch(() => {})
-  }
-  return result
-}
-
-export const triggerEventOn = (param, element, options) => {
-  if (!element) {
-    throw new Error('Element is required')
-  }
-  const appliedFunction = getOnOrPropsEvent(param, element)
-  if (appliedFunction) {
-    const { state, context } = element
-    return applyEvent(appliedFunction, element, state, context, options)
-  }
-}
-
-export const applyEventUpdate = (
-  param,
-  updatedObj,
-  element,
-  state,
-  context,
-  options
-) => {
-  if (!isFunction(param)) return
-  const result = param.call(
-    element,
-    updatedObj,
-    element,
-    state || element.state,
-    context || element.context,
-    options
-  )
-  if (result && typeof result.then === 'function') {
-    result.catch(() => {})
-  }
-  return result
-}
-
-export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
-  const appliedFunction = getOnOrPropsEvent(param, element)
-  if (appliedFunction) {
-    const { state, context } = element
-    return applyEventUpdate(
-      appliedFunction,
-      updatedObj,
-      element,
-      state,
-      context,
-      options
-    )
-  }
 }
 
 const registerNodeEvent = (param, element, node, options) => {
@@ -107,7 +46,6 @@ export const applyEventsOnNode = (element, options) => {
   }
 
   // Also pick up props.onClick, props.onInput, etc.
-  // These arrive via propertizeElement moving root-level onClick to props
   if (props) {
     for (const key in props) {
       if (key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && isFunction(props[key])) {

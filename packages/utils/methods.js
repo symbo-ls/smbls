@@ -1,7 +1,6 @@
 'use strict'
 
-// NOTE: Circular dependency — utils ↔ element. Bundler handles via lazy resolution.
-import { triggerEventOn } from '@domql/element'
+import { triggerEventOn } from './triggerEvent.js'
 import { DOMQ_PROPERTIES, METHODS, PARSED_DOMQ_PROPERTIES } from './keys.js'
 import { isDefined, isFunction, isObject, isObjectLike } from './types.js'
 import { deepClone } from './object.js'

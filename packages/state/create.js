@@ -1,13 +1,12 @@
 'use strict'
 
-// NOTE: Circular dependency — state ↔ element. Bundler handles via lazy resolution.
-import { triggerEventOn } from '@domql/element'
 import {
   applyDependentState,
   checkForStateTypes,
   checkIfInherits,
   createInheritedState,
-  isUndefined
+  isUndefined,
+  triggerEventOn
 } from '@domql/utils'
 
 import { applyStateMethods } from './methods.js'

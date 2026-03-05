@@ -1,7 +1,6 @@
 'use strict'
 
-import { triggerEventOn } from '@domql/element'
-import { document, window } from '@domql/utils'
+import { document, window, triggerEventOn } from '@domql/utils'
 import { setContentKey } from '@domql/element/set'
 
 export const getActiveRoute = (level = 0, route = window.location.pathname) => {
