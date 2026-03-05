@@ -1,0 +1,21 @@
+{
+  "name": "@domql/brender-examples",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "render": "node render.js",
+    "render:home": "node render.js /",
+    "render:about": "node render.js /about",
+    "liquidate": "node liquidate.js",
+    "liquidate:about": "node liquidate.js /about",
+    "inspect": "node inspect.js",
+    "inspect:about": "node inspect.js /about"
+  },
+  "dependencies": {
+    "@domql/brender": "^3.2.3",
+    "linkedom": "^0.16.8",
+    "smbls": "^3.2.3"
+  }
+}

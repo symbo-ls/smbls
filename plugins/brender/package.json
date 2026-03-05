@@ -1,0 +1,44 @@
+{
+  "name": "@domql/brender",
+  "version": "3.2.3",
+  "license": "MIT",
+  "type": "module",
+  "module": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./hydrate": {
+      "import": "./hydrate.js",
+      "default": "./hydrate.js"
+    }
+  },
+  "source": "index.js",
+  "files": [
+    "dist",
+    "*.js"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "npx rimraf dist && npm run build:esm && npm run build:cjs",
+    "prepublish": "npm run build && npm run copy:package:cjs",
+    "render:survey": "node scripts/render.js survey",
+    "render:rita": "node scripts/render.js rita",
+    "render:all": "npm run render:survey && npm run render:rita",
+    "liquidate:survey": "node scripts/liquidate.js survey",
+    "liquidate:rita": "node scripts/liquidate.js rita",
+    "dev:rita": "node examples/serve-rita.js"
+  },
+  "dependencies": {
+    "linkedom": "^0.16.8"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0"
+  },
+  "sideEffects": false
+}
