@@ -221,6 +221,73 @@
       }
     }
 
+    // Original (definition) props — from __ref before function resolution
+    info.originalProps = {}
+    info.functionProps = {} // props whose original value is a function
+
+    // Gather original definition values from __ref and extend chain
+    function collectOriginal (def, depth) {
+      if (!def || typeof def !== 'object' || depth > 10) return
+      // Props from definition
+      if (def.props && typeof def.props === 'object') {
+        for (var pk of Object.keys(def.props)) {
+          if (pk.startsWith('__')) continue
+          if (!(pk in info.originalProps)) {
+            if (typeof def.props[pk] === 'function') {
+              info.functionProps[pk] = { name: def.props[pk].name || 'anonymous' }
+              // Still store the computed value
+              if (el.props && el.props[pk] !== undefined && typeof el.props[pk] !== 'function') {
+                info.originalProps[pk] = serialize(el.props[pk], 0, 3, new WeakSet())
+              }
+            } else {
+              info.originalProps[pk] = serialize(def.props[pk], 0, 3, new WeakSet())
+            }
+          }
+        }
+      }
+      // Text from definition
+      if (def.text !== undefined && !('text' in info.originalProps)) {
+        if (typeof def.text === 'function') {
+          info.functionProps.text = { name: def.text.name || 'anonymous' }
+        } else {
+          info.originalProps.text = serialize(def.text, 0, 3, new WeakSet())
+        }
+      }
+      // Top-level DOMQL keys that are also "props" in the broad sense
+      var domqlKeys = ['tag', 'theme', 'flow', 'wrap', 'display', 'position', 'cursor', 'opacity', 'overflow']
+      for (var dk of domqlKeys) {
+        if (def[dk] !== undefined && !(dk in info.originalProps)) {
+          if (typeof def[dk] === 'function') {
+            info.functionProps[dk] = { name: def[dk].name || 'anonymous' }
+          } else {
+            info.originalProps[dk] = serialize(def[dk], 0, 3, new WeakSet())
+          }
+        }
+      }
+      // Walk extends
+      if (def.extend) collectOriginal(def.extend, depth + 1)
+      if (Array.isArray(def.extends)) {
+        for (var ext of def.extends) collectOriginal(ext, depth + 1)
+      }
+    }
+
+    // Start from the element's own __ref
+    if (el.__ref) {
+      collectOriginal(el.__ref, 0)
+      if (el.__ref.__extend) collectOriginal(el.__ref.__extend, 0)
+      if (el.__ref.__extends && Array.isArray(el.__ref.__extends)) {
+        for (var re of el.__ref.__extends) collectOriginal(re, 0)
+      }
+    }
+
+    // Also check top-level element properties for functions
+    var topFuncKeys = ['text', 'tag', 'if', 'data']
+    for (var tfk of topFuncKeys) {
+      if (typeof el[tfk] === 'function' && !(tfk in info.functionProps)) {
+        info.functionProps[tfk] = { name: el[tfk].name || 'anonymous' }
+      }
+    }
+
     // Methods available
     info.methods = METHOD_NAMES.filter(m => typeof el[m] === 'function')
 
@@ -616,6 +683,15 @@
 
     isPickerActive () {
       return pickerActive
+    },
+
+    // Get design system from root context
+    getDesignSystem () {
+      const root = findRoot()
+      if (!root) return null
+      const ds = (root.context && root.context.designSystem) || root.designSystem
+      if (!ds || typeof ds !== 'object') return null
+      return serialize(ds, 0, 4, new WeakSet())
     },
 
     // Read and clear last pick result

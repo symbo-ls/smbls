@@ -4,11 +4,15 @@ const FILES_STORE = 'files'
 
 function openDB () {
   return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, 2)
+    const req = indexedDB.open(DB_NAME, 3)
     req.onupgradeneeded = (e) => {
       const db = e.target.result
       if (!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE)
       if (!db.objectStoreNames.contains(FILES_STORE)) db.createObjectStore(FILES_STORE)
+      if (!db.objectStoreNames.contains('threads')) {
+        const store = db.createObjectStore('threads', { keyPath: 'id' })
+        store.createIndex('project', 'project', { unique: false })
+      }
     }
     req.onsuccess = () => resolve(req.result)
     req.onerror = () => reject(req.error)
@@ -294,8 +298,3 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 })
 
 document.getElementById('btn-pick').addEventListener('click', pickFolder)
-
-// Only auto-open picker if opened via user action (not for background file ops)
-if (!new URLSearchParams(location.search).has('bg')) {
-  pickFolder()
-}

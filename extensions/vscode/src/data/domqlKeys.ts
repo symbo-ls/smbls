@@ -137,17 +137,17 @@ export const DOMQL_REGISTRY_KEYS: DomqlKeyInfo[] = [
   },
   {
     label: 'childExtends',
-    detail: 'childExtends: string | object',
+    detail: 'childExtends: string | object | array',
     documentation:
-      'Apply an extend to all direct child elements.\n\n```js\nchildExtends: "Button"\nchildExtends: { padding: "Z2 C", round: "0" }\n```',
+      'Apply an extend to all direct child elements. Accepts string, object, or array of extends.\n\n```js\nchildExtends: "Button"\nchildExtends: ["IconText", "Focusable"]\nchildExtends: { padding: "Z2 C", round: "0" }\n```',
     snippet: "childExtends: '${1:ComponentName}',",
     kind: 'property'
   },
   {
     label: 'childExtendsRecursive',
-    detail: 'childExtendsRecursive: string | object',
+    detail: 'childExtendsRecursive: string | object | array',
     documentation:
-      'Apply an extend to ALL descendants recursively.\n\n```js\nchildExtendsRecursive: { fontSize: "A" }\n```',
+      'Apply an extend to ALL descendants recursively. Accepts string, object, or array of extends.\n\n```js\nchildExtendsRecursive: "Button"\nchildExtendsRecursive: { fontSize: "A" }\n```',
     snippet: "childExtendsRecursive: '${1:ComponentName}',",
     kind: 'property'
   },

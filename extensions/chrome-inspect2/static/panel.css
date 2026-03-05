@@ -210,9 +210,131 @@ body {
 #tree-pane {
   width: 300px;
   min-width: 150px;
-  overflow: auto;
+  overflow: hidden;
   border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+#tree-pane-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.tree-pane-tab {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.tree-pane-tab:hover { color: var(--text); }
+
+.tree-pane-tab.active {
+  color: var(--text-bright);
+  border-bottom-color: var(--accent);
+}
+
+.tree-pane-panel {
+  display: none;
+  flex: 1;
+  overflow: auto;
   padding: 4px 0;
+}
+
+.tree-pane-panel.active {
+  display: block;
+}
+
+/* State tree */
+.state-tree-key {
+  color: var(--key-color);
+  font-weight: 500;
+}
+
+.state-tree-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 4px;
+  font-size: 9px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  line-height: 14px;
+  vertical-align: middle;
+}
+
+.state-tree-value {
+  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
+  font-size: 11px;
+  line-height: 18px;
+  opacity: 0.85;
+}
+
+.state-tree-value:hover {
+  background: var(--bg-hover);
+  opacity: 1;
+}
+
+/* Design System tab */
+.ds-category {
+  border-bottom: 1px solid var(--border);
+}
+.ds-category-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--key-color);
+}
+.ds-category-header:hover {
+  background: var(--bg-hover);
+}
+.ds-category-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ds-category-count {
+  display: inline-block;
+  padding: 0 4px;
+  font-size: 9px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 8px;
+  line-height: 14px;
+  font-weight: 400;
+}
+.ds-category-body {
+  padding-bottom: 4px;
+}
+.ds-value-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 20px;
+  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
+}
+.ds-value-row:hover {
+  background: var(--bg-hover);
+}
+.ds-color-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(128,128,128,0.3);
+  flex-shrink: 0;
 }
 
 #resizer {
@@ -293,6 +415,62 @@ body {
   border-bottom-color: var(--accent);
 }
 
+/* Props sub-tabs (Computed / Original) */
+#props-subtabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.props-subtab {
+  padding: 3px 10px;
+  font-size: 10px;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.props-subtab:hover { color: var(--text); }
+.props-subtab.active {
+  color: var(--text-bright);
+  border-bottom-color: var(--accent);
+}
+
+.props-subpanel { display: none; }
+.props-subpanel.active { display: block; }
+
+/* Function prop indicator */
+.prop-fn-badge {
+  display: inline-block;
+  font-size: 9px;
+  color: #C586C0;
+  margin-left: 4px;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.prop-row.is-function .prop-value {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.prop-fn-tooltip {
+  font-size: 10px;
+  color: var(--text-dim);
+  padding: 4px 8px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-top: 2px;
+  font-style: italic;
+}
+
 .tab-spacer {
   flex: 1;
 }
@@ -301,6 +479,7 @@ body {
   flex: 1;
   overflow: auto;
   padding: 8px 0;
+  position: relative;
 }
 
 .tab-panel {
@@ -1058,6 +1237,29 @@ body {
   opacity: 0.9;
 }
 
+/* Add prop/state button */
+.prop-add-row {
+  padding: 4px 16px;
+  margin-top: 4px;
+}
+
+.prop-add-btn {
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--text-dim);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
+  cursor: pointer;
+  width: 100%;
+}
+
+.prop-add-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
 /* ============================================================
    AI Bar (Editor bottom bar)
    ============================================================ */
@@ -1150,12 +1352,349 @@ body {
   border-color: var(--accent);
 }
 
+.ai-settings-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.ai-settings-btn:hover { color: var(--text-bright); }
+
+/* AI Settings Dialog */
+.ai-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-dialog {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 340px;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.ai-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-bright);
+}
+
+.ai-dialog-header button {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  font-family: inherit;
+}
+
+.ai-dialog-header button:hover { color: var(--text-bright); }
+
+.ai-dialog-body {
+  padding: 14px;
+}
+
+.ai-dialog-section {
+  margin-bottom: 12px;
+}
+
+.ai-dialog-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 4px;
+}
+
+.ai-dialog-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.ai-dialog-auth-status {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.ai-dialog-auth-status.signed-in {
+  background: rgba(89, 172, 86, 0.12);
+  color: #59AC56;
+  border: 1px solid rgba(89, 172, 86, 0.2);
+}
+
+.ai-dialog-auth-status.signed-out {
+  background: rgba(0, 133, 255, 0.08);
+  color: var(--accent);
+  border: 1px solid rgba(0, 133, 255, 0.15);
+}
+
+.ai-dialog-field {
+  margin-bottom: 10px;
+}
+
+.ai-dialog-field label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.ai-dialog-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.ai-dialog-input:focus {
+  border-color: var(--accent);
+}
+
+.ai-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.ai-dialog-save {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 6px 20px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.ai-dialog-save:hover { opacity: 0.9; }
+
+/* Scope toggle (Element / Section) */
+.ai-scope-toggle {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ai-scope-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.ai-scope-btn:first-child {
+  border-right: 1px solid var(--border);
+}
+
+.ai-scope-btn:hover {
+  color: var(--text);
+}
+
+.ai-scope-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
 /* ============================================================
    Chat mode
    ============================================================ */
 #mode-chat {
   background: var(--bg);
 }
+
+/* Thread bar */
+#chat-threads-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-alt);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+#chat-threads-list {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+#chat-threads-list::-webkit-scrollbar { display: none; }
+
+.thread-tab {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 140px;
+  font-family: inherit;
+}
+
+.thread-tab:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.thread-tab.active {
+  background: var(--bg);
+  color: var(--text-bright);
+  border-color: var(--border);
+}
+
+.thread-tab .thread-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thread-tab .thread-close {
+  font-size: 10px;
+  opacity: 0;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.thread-tab:hover .thread-close { opacity: 0.6; }
+.thread-tab .thread-close:hover { opacity: 1; color: var(--error-color, #e15c55); }
+
+#chat-thread-history,
+#chat-new-thread {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+#chat-thread-history:hover,
+#chat-new-thread:hover {
+  color: var(--text-bright);
+  border-color: var(--accent);
+}
+
+/* Thread history panel */
+#chat-thread-history-panel {
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  max-height: 200px;
+  overflow: auto;
+  flex-shrink: 0;
+}
+
+.thread-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+.thread-history-header button {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  font-family: inherit;
+}
+
+.thread-history-header button:hover { color: var(--text-bright); }
+
+.thread-history-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+
+.thread-history-item:hover { background: var(--bg-hover); }
+.thread-history-item.active { background: var(--bg); color: var(--text-bright); }
+
+.thread-history-item .thread-history-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.thread-history-item .thread-history-date {
+  font-size: 10px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.thread-history-item .thread-history-delete {
+  font-size: 10px;
+  opacity: 0;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.thread-history-item:hover .thread-history-delete { opacity: 0.6; }
+.thread-history-item .thread-history-delete:hover { opacity: 1; color: var(--error-color, #e15c55); }
 
 #chat-messages {
   flex: 1;

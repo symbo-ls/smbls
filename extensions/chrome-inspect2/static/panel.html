@@ -91,10 +91,22 @@
       </div>
       <div id="main">
         <div id="tree-pane">
-          <!-- Active nodes (top) -->
-          <div id="active-section">
-            <span class="tree-section-label">Active Nodes</span>
+          <div id="tree-pane-tabs">
+            <button class="tree-pane-tab active" data-tree="nodes">Active Nodes</button>
+            <button class="tree-pane-tab" data-tree="state">State Tree</button>
+            <button class="tree-pane-tab" data-tree="designsystem">Design System</button>
+          </div>
+          <!-- Active nodes -->
+          <div id="active-section" class="tree-pane-panel active">
             <div id="tree-container"></div>
+          </div>
+          <!-- State tree -->
+          <div id="state-tree-section" class="tree-pane-panel">
+            <div id="state-tree-container"></div>
+          </div>
+          <!-- Design system -->
+          <div id="design-system-section" class="tree-pane-panel">
+            <div id="design-system-container"></div>
           </div>
           <!-- Symbols context (bottom) -->
           <div id="symbols-section" style="display:none">
@@ -116,10 +128,16 @@
             <button class="tab" data-tab="ref">__ref</button>
             <button class="tab" data-tab="source" style="display:none">Source</button>
             <span class="tab-spacer"></span>
-            <button class="tab" data-tab="methods">Methods</button>
           </div>
           <div id="detail-content">
-            <div id="tab-props" class="tab-panel active"></div>
+            <div id="tab-props" class="tab-panel active">
+              <div id="props-subtabs">
+                <button class="props-subtab active" data-propview="computed">Computed</button>
+                <button class="props-subtab" data-propview="original">Original</button>
+              </div>
+              <div id="props-computed" class="props-subpanel active"></div>
+              <div id="props-original" class="props-subpanel"></div>
+            </div>
             <div id="tab-state" class="tab-panel"></div>
             <div id="tab-children" class="tab-panel"></div>
             <div id="tab-ref" class="tab-panel"></div>
@@ -134,11 +152,14 @@
         <div id="ai-input-row">
           <select id="ai-model" class="ai-model-select" title="Select AI model">
             <option value="Starter">Starter (free)</option>
-            <option value="Anthropic: Claude Sonnet 4.5">Claude 4.5</option>
-            <option value="Google: Gemini 3 Pro Preview">Gemini 3 Pro</option>
-            <option value="OpenAI: GPT-5.1">GPT-5.1</option>
+            <option value="claude">Claude</option>
             <option value="chrome">Chrome AI (local)</option>
           </select>
+          <button class="ai-settings-btn" title="AI settings" data-settings="ai">&#9881;</button>
+          <div class="ai-scope-toggle" title="Scope">
+            <button class="ai-scope-btn active" data-scope="element">Element</button>
+            <button class="ai-scope-btn" data-scope="section">Section</button>
+          </div>
           <input id="ai-input" type="text" placeholder="Ask AI to modify components..." />
           <button id="ai-send">Send</button>
         </div>
@@ -149,6 +170,18 @@
          CHAT MODE
          ============================================================ -->
     <div id="mode-chat" class="mode-panel">
+      <div id="chat-threads-bar">
+        <div id="chat-threads-list"></div>
+        <button id="chat-thread-history" title="Thread history">&#9776;</button>
+        <button id="chat-new-thread" title="New thread">+ New</button>
+      </div>
+      <div id="chat-thread-history-panel" style="display:none">
+        <div class="thread-history-header">
+          <span>Thread History</span>
+          <button id="chat-thread-history-close">&times;</button>
+        </div>
+        <div id="chat-thread-history-list"></div>
+      </div>
       <div id="chat-messages"></div>
       <div id="chat-context-bar">
         <span id="chat-context-label" class="chat-context-label">No element selected</span>
@@ -157,16 +190,43 @@
       <div id="chat-input-row">
         <select id="chat-model" class="ai-model-select" title="Select AI model">
           <option value="Starter">Starter (free)</option>
-          <option value="Anthropic: Claude Sonnet 4.5">Claude 4.5</option>
-          <option value="Google: Gemini 3 Pro Preview">Gemini 3 Pro</option>
-          <option value="OpenAI: GPT-5.1">GPT-5.1</option>
+          <option value="claude">Claude</option>
           <option value="chrome">Chrome AI (local)</option>
         </select>
+        <button class="ai-settings-btn" title="AI settings" data-settings="ai">&#9881;</button>
+        <div class="ai-scope-toggle" title="Scope">
+          <button class="ai-scope-btn active" data-scope="element">Element</button>
+          <button class="ai-scope-btn" data-scope="section">Section</button>
+        </div>
         <input id="chat-input" type="text" placeholder="Describe what you want to change..." />
         <button id="chat-send">Send</button>
       </div>
     </div>
 
+  </div>
+
+  <!-- AI Settings Dialog -->
+  <div id="ai-settings-dialog" class="ai-dialog-overlay" style="display:none">
+    <div class="ai-dialog">
+      <div class="ai-dialog-header">
+        <span>AI Settings</span>
+        <button id="ai-dialog-close">&times;</button>
+      </div>
+      <div class="ai-dialog-body">
+        <div class="ai-dialog-section">
+          <div class="ai-dialog-label">Claude API</div>
+          <p class="ai-dialog-hint">Sign in to symbols.app to use Claude via the platform, or enter your own Anthropic API key.</p>
+          <div id="ai-dialog-auth-status" class="ai-dialog-auth-status"></div>
+          <div class="ai-dialog-field">
+            <label>Anthropic API Key</label>
+            <input id="ai-key-anthropic" type="password" placeholder="sk-ant-..." class="ai-dialog-input" />
+          </div>
+        </div>
+        <div class="ai-dialog-actions">
+          <button id="ai-dialog-save" class="ai-dialog-save">Save</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="auth.js"></script>

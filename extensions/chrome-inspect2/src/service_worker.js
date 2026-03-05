@@ -63,7 +63,7 @@ chrome.runtime.onInstalled.addListener(({ previousVersion, reason }) => {
 
     // Override Origin header on API requests to avoid CORS rejection
     chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: [1, 2],
+      removeRuleIds: [1, 2, 3],
       addRules: [
         {
           id: 1,
@@ -85,11 +85,11 @@ chrome.runtime.onInstalled.addListener(({ previousVersion, reason }) => {
           action: {
             type: 'modifyHeaders',
             requestHeaders: [
-              { header: 'Origin', operation: 'set', value: 'https://symbols.app' }
+              { header: 'Origin', operation: 'remove' }
             ]
           },
           condition: {
-            urlFilter: 'https://smart-assistant-production.up.railway.app/*',
+            urlFilter: 'https://api.anthropic.com/*',
             resourceTypes: ['xmlhttprequest', 'other']
           }
         }
