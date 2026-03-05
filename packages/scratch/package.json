@@ -2,7 +2,7 @@
   "name": "@symbo.ls/scratch",
   "description": "Φ / CSS framework and methodology.",
   "author": "symbo.ls",
-  "version": "3.3.0",
+  "version": "3.3.2",
   "files": [
     "dist",
     "*.js",
