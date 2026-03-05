@@ -4624,15 +4624,7 @@ Do NOT include any explanation, only valid JSON.`
 
   // ---- Claude API (direct or via platform) ----
   async function callClaudeAPI (prompt, context) {
-    const contextStr = 'Element path: ' + (context.elementPath || 'none') +
-      '\nElement key: ' + (context.elementKey || 'none') +
-      '\nCurrent props: ' + JSON.stringify(context.props) +
-      '\nCurrent state: ' + JSON.stringify(context.state) +
-      '\nTag: ' + (context.tag || 'unknown') +
-      (context.scope === 'section' && context.children
-        ? '\nChildren: ' + JSON.stringify(context.children)
-        : '') +
-      '\n\nUser request: ' + prompt
+    const contextStr = buildContextStr(prompt, context)
 
     // Try 1: own API key
     const apiKey = await getApiKey('anthropic')
@@ -4693,15 +4685,155 @@ Do NOT include any explanation, only valid JSON.`
     throw new Error('No Claude access. Enter your API key or sign in to symbols.app.')
   }
 
+  // ---- OpenAI API ----
+  async function callOpenAI (prompt, context) {
+    const contextStr = buildContextStr(prompt, context)
+    const apiKey = await getApiKey('openai')
+    if (!apiKey) throw new Error('No OpenAI API key. Add it in AI Settings.')
+
+    const resp = await swFetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: AI_SYSTEM_PROMPT },
+          { role: 'user', content: contextStr }
+        ],
+        max_tokens: 1024
+      })
+    })
+
+    if (!resp.ok) {
+      if (resp.status === 401) throw new Error('Invalid OpenAI API key.')
+      throw new Error('OpenAI API error: HTTP ' + resp.status)
+    }
+    if (resp.data && resp.data.choices && resp.data.choices[0]) {
+      return resp.data.choices[0].message.content
+    }
+    throw new Error('Unexpected OpenAI response')
+  }
+
+  // ---- Google Gemini API ----
+  async function callGemini (prompt, context) {
+    const contextStr = buildContextStr(prompt, context)
+    const apiKey = await getApiKey('gemini')
+    if (!apiKey) throw new Error('No Gemini API key. Add it in AI Settings.')
+
+    const resp = await swFetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: AI_SYSTEM_PROMPT }] },
+        contents: [{ parts: [{ text: contextStr }] }],
+        generationConfig: { maxOutputTokens: 1024 }
+      })
+    })
+
+    if (!resp.ok) {
+      if (resp.status === 400 || resp.status === 403) throw new Error('Invalid Gemini API key.')
+      throw new Error('Gemini API error: HTTP ' + resp.status)
+    }
+    if (resp.data && resp.data.candidates && resp.data.candidates[0]) {
+      return resp.data.candidates[0].content.parts[0].text
+    }
+    throw new Error('Unexpected Gemini response')
+  }
+
+  // ---- DeepSeek API (OpenAI-compatible) ----
+  async function callDeepSeek (prompt, context) {
+    const contextStr = buildContextStr(prompt, context)
+    const apiKey = await getApiKey('deepseek')
+    if (!apiKey) throw new Error('No DeepSeek API key. Add it in AI Settings.')
+
+    const resp = await swFetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: AI_SYSTEM_PROMPT },
+          { role: 'user', content: contextStr }
+        ],
+        max_tokens: 1024
+      })
+    })
+
+    if (!resp.ok) {
+      if (resp.status === 401) throw new Error('Invalid DeepSeek API key.')
+      throw new Error('DeepSeek API error: HTTP ' + resp.status)
+    }
+    if (resp.data && resp.data.choices && resp.data.choices[0]) {
+      return resp.data.choices[0].message.content
+    }
+    throw new Error('Unexpected DeepSeek response')
+  }
+
+  // ---- Groq API (OpenAI-compatible) ----
+  async function callGroq (prompt, context) {
+    const contextStr = buildContextStr(prompt, context)
+    const apiKey = await getApiKey('groq')
+    if (!apiKey) throw new Error('No Groq API key. Add it in AI Settings.')
+
+    const resp = await swFetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: AI_SYSTEM_PROMPT },
+          { role: 'user', content: contextStr }
+        ],
+        max_tokens: 1024
+      })
+    })
+
+    if (!resp.ok) {
+      if (resp.status === 401) throw new Error('Invalid Groq API key.')
+      throw new Error('Groq API error: HTTP ' + resp.status)
+    }
+    if (resp.data && resp.data.choices && resp.data.choices[0]) {
+      return resp.data.choices[0].message.content
+    }
+    throw new Error('Unexpected Groq response')
+  }
+
+  // ---- Shared context builder ----
+  function buildContextStr (prompt, context) {
+    return 'Element path: ' + (context.elementPath || 'none') +
+      '\nElement key: ' + (context.elementKey || 'none') +
+      '\nCurrent props: ' + JSON.stringify(context.props) +
+      '\nCurrent state: ' + JSON.stringify(context.state) +
+      '\nTag: ' + (context.tag || 'unknown') +
+      (context.scope === 'section' && context.children
+        ? '\nChildren: ' + JSON.stringify(context.children)
+        : '') +
+      '\n\nUser request: ' + prompt
+  }
+
   // ---- AI settings dialog ----
+  const AI_PROVIDERS = ['anthropic', 'openai', 'gemini', 'deepseek', 'groq']
+
   function openAISettings () {
     const dialog = document.getElementById('ai-settings-dialog')
     dialog.style.display = ''
 
-    // Load saved key
-    getApiKey('anthropic').then(key => {
-      document.getElementById('ai-key-anthropic').value = key || ''
-    })
+    // Load saved keys for all providers
+    for (const provider of AI_PROVIDERS) {
+      getApiKey(provider).then(key => {
+        const el = document.getElementById('ai-key-' + provider)
+        if (el) el.value = key || ''
+      })
+    }
 
     // Show auth status
     const statusEl = document.getElementById('ai-dialog-auth-status')
@@ -4712,12 +4844,12 @@ Do NOT include any explanation, only valid JSON.`
           statusEl.textContent = 'Signed in to symbols.app — Claude available via platform'
         } else {
           statusEl.className = 'ai-dialog-auth-status signed-out'
-          statusEl.textContent = 'Not signed in — sign in to symbols.app for free Claude access, or use your own API key below'
+          statusEl.textContent = 'Not signed in to symbols.app'
         }
       })
     } else {
       statusEl.className = 'ai-dialog-auth-status signed-out'
-      statusEl.textContent = 'Sign in to symbols.app or enter your Anthropic API key below'
+      statusEl.textContent = ''
     }
   }
 
@@ -4725,11 +4857,15 @@ Do NOT include any explanation, only valid JSON.`
     document.getElementById('ai-settings-dialog').style.display = 'none'
   }
 
-  function saveAISettings () {
-    const key = document.getElementById('ai-key-anthropic').value.trim()
-    setApiKey('anthropic', key || null).then(() => {
-      closeAISettings()
-    })
+  async function saveAISettings () {
+    for (const provider of AI_PROVIDERS) {
+      const el = document.getElementById('ai-key-' + provider)
+      if (el) {
+        const key = el.value.trim()
+        await setApiKey(provider, key || null)
+      }
+    }
+    closeAISettings()
   }
 
   function getActiveScope (containerId) {
@@ -4854,6 +4990,14 @@ Do NOT include any explanation, only valid JSON.`
         response = starterAI(prompt, context)
       } else if (model === 'claude') {
         response = await callClaudeAPI(prompt, context)
+      } else if (model === 'openai') {
+        response = await callOpenAI(prompt, context)
+      } else if (model === 'gemini') {
+        response = await callGemini(prompt, context)
+      } else if (model === 'deepseek') {
+        response = await callDeepSeek(prompt, context)
+      } else if (model === 'groq') {
+        response = await callGroq(prompt, context)
       } else if (model === 'chrome') {
         response = await runChromeAI(prompt, context)
       }
@@ -5322,6 +5466,8 @@ Do NOT include any explanation, only valid JSON.`
     if (mode === 'chat') updateChatContextLabel()
     if (mode === 'gallery') renderGallery()
     if (mode === 'content') renderContent()
+    if (mode === 'network') renderNetwork()
+    if (mode === 'integrations') renderIntegrations()
   }
 
   // ============================================================
@@ -5436,6 +5582,14 @@ Do NOT include any explanation, only valid JSON.`
         response = starterAI(prompt, context)
       } else if (model === 'claude') {
         response = await callClaudeAPI(prompt, context)
+      } else if (model === 'openai') {
+        response = await callOpenAI(prompt, context)
+      } else if (model === 'gemini') {
+        response = await callGemini(prompt, context)
+      } else if (model === 'deepseek') {
+        response = await callDeepSeek(prompt, context)
+      } else if (model === 'groq') {
+        response = await callGroq(prompt, context)
       } else if (model === 'chrome') {
         response = await runChromeAI(prompt, context)
       }
@@ -5578,6 +5732,20 @@ Do NOT include any explanation, only valid JSON.`
       })
     }
     document.getElementById('btn-app-disconnect').addEventListener('click', disconnect)
+
+    // Network controls
+    const networkTestBtn = document.getElementById('network-test')
+    if (networkTestBtn) networkTestBtn.addEventListener('click', testNetworkConnection)
+    const networkSaveBtn = document.getElementById('network-save')
+    if (networkSaveBtn) networkSaveBtn.addEventListener('click', saveNetworkConfig)
+    const networkDisconnectBtn = document.getElementById('network-disconnect')
+    if (networkDisconnectBtn) networkDisconnectBtn.addEventListener('click', disconnectNetwork)
+
+    // Integrations search
+    const intgSearch = document.getElementById('integrations-search')
+    if (intgSearch) {
+      intgSearch.addEventListener('input', () => renderMarketplace(intgSearch.value))
+    }
 
     // Tree pane tabs (Active Nodes / State Tree / Design System)
     document.querySelectorAll('.tree-pane-tab').forEach(tab => {
@@ -6228,6 +6396,303 @@ Do NOT include any explanation, only valid JSON.`
       row.appendChild(input)
       container.appendChild(row)
     }
+  }
+
+  // ============================================================
+  // Network mode — backend connection & server info
+  // ============================================================
+  let networkConfig = { url: '', token: '' }
+
+  async function renderNetwork () {
+    // Load saved config
+    const data = await chrome.storage.local.get('network_config')
+    if (data.network_config) networkConfig = data.network_config
+
+    const urlInput = document.getElementById('network-url')
+    const tokenInput = document.getElementById('network-token')
+    if (urlInput) urlInput.value = networkConfig.url || ''
+    if (tokenInput) tokenInput.value = networkConfig.token || ''
+
+    // Try to load config from symbols.json or runtime
+    loadNetworkInfo()
+  }
+
+  async function loadNetworkInfo () {
+    // Try reading from fileCache (symbols.json)
+    let config = null
+    if (typeof fileCache !== 'undefined') {
+      for (const [path, content] of Object.entries(fileCache)) {
+        if (path.endsWith('symbols.json') || path.endsWith('symbols.config.js')) {
+          try {
+            const parsed = JSON.parse(content)
+            if (parsed.server || parsed.api || parsed.backend || parsed.network) {
+              config = parsed.server || parsed.api || parsed.backend || parsed.network
+              break
+            }
+          } catch (e) {}
+        }
+      }
+    }
+
+    // Try reading from runtime context
+    if (!config) {
+      try {
+        const raw = await pageEval(`(function(){
+          var I = window.__DOMQL_INSPECTOR__;
+          if (!I) return 'null';
+          var el = I.findRoot();
+          if (!el) return 'null';
+          var ctx = el.context || {};
+          var cfg = ctx.server || ctx.api || ctx.backend || ctx.network || {};
+          if (!cfg || typeof cfg !== 'object') return 'null';
+          try { return JSON.stringify(cfg); } catch(e) { return 'null'; }
+        })()`)
+        if (raw && raw !== 'null') config = JSON.parse(raw)
+      } catch (e) {}
+    }
+
+    // Populate server info from config
+    if (config) {
+      setNetworkInfoField('host', config.host || config.url || config.hostname || '—')
+      setNetworkInfoField('ip', config.ip || config.address || '—')
+      setNetworkInfoField('platform', config.platform || config.provider || config.hosting || '—')
+      setNetworkInfoField('region', config.region || config.location || '—')
+
+      // Auto-fill URL if empty
+      const urlInput = document.getElementById('network-url')
+      if (urlInput && !urlInput.value && (config.url || config.host)) {
+        urlInput.value = config.url || config.host
+      }
+    }
+
+    // Try to get deployment info
+    const deployEl = document.getElementById('network-deployment')
+    if (config && (config.deploy || config.deployment || config.ci)) {
+      const deploy = config.deploy || config.deployment || config.ci
+      deployEl.innerHTML = ''
+      for (const [k, v] of Object.entries(deploy)) {
+        const row = document.createElement('div')
+        row.className = 'network-info-row'
+        row.innerHTML = '<span class="network-info-label">' + escapeHtml(k) + '</span><span class="network-info-value">' + escapeHtml(String(v)) + '</span>'
+        deployEl.appendChild(row)
+      }
+    }
+  }
+
+  function setNetworkInfoField (field, value) {
+    const el = document.getElementById('network-info-' + field)
+    if (el) el.textContent = value || '—'
+  }
+
+  async function testNetworkConnection () {
+    const url = document.getElementById('network-url').value.trim()
+    if (!url) return
+    const statusEl = document.getElementById('network-status')
+    const statusText = document.getElementById('network-status-text')
+    statusText.textContent = 'Testing...'
+    statusEl.className = 'network-status'
+
+    const start = Date.now()
+    try {
+      const resp = await swFetch(url + (url.includes('?') ? '&' : '?') + '_t=' + Date.now(), {
+        method: 'GET',
+        headers: networkConfig.token ? { 'Authorization': 'Bearer ' + networkConfig.token } : {}
+      })
+      const latency = Date.now() - start
+      setNetworkInfoField('latency', latency + 'ms')
+
+      if (resp.ok) {
+        statusEl.className = 'network-status connected'
+        statusText.textContent = 'Connected (' + latency + 'ms)'
+        setNetworkInfoField('status', 'OK (' + (resp.status || 200) + ')')
+
+        // Try to extract host from URL
+        try {
+          const u = new URL(url)
+          setNetworkInfoField('host', u.hostname)
+        } catch (e) {}
+      } else {
+        statusEl.className = 'network-status error'
+        statusText.textContent = 'Error: HTTP ' + (resp.status || 'unknown')
+        setNetworkInfoField('status', 'Error ' + (resp.status || ''))
+      }
+    } catch (e) {
+      statusEl.className = 'network-status error'
+      statusText.textContent = 'Failed: ' + (e.message || 'connection error')
+      setNetworkInfoField('status', 'Unreachable')
+      setNetworkInfoField('latency', '—')
+    }
+  }
+
+  async function saveNetworkConfig () {
+    networkConfig.url = document.getElementById('network-url').value.trim()
+    networkConfig.token = document.getElementById('network-token').value.trim()
+    await chrome.storage.local.set({ network_config: networkConfig })
+    setStatus('Network config saved')
+    testNetworkConnection()
+  }
+
+  async function disconnectNetwork () {
+    networkConfig = { url: '', token: '' }
+    await chrome.storage.local.set({ network_config: networkConfig })
+    document.getElementById('network-url').value = ''
+    document.getElementById('network-token').value = ''
+    document.getElementById('network-status').className = 'network-status'
+    document.getElementById('network-status-text').textContent = 'Not connected'
+    ;['host', 'ip', 'status', 'latency', 'platform', 'region'].forEach(f => setNetworkInfoField(f, '—'))
+    document.getElementById('network-deployment').innerHTML = '<div class="empty-message">Connect to view deployment configuration</div>'
+    setStatus('Disconnected')
+  }
+
+  // ============================================================
+  // Integrations mode — marketplace & active integrations
+  // ============================================================
+  const MARKETPLACE_ITEMS = [
+    { id: 'google-analytics', name: 'Google Analytics', icon: '\uD83D\uDCCA', desc: 'Track page views, events, and user behavior', category: 'Analytics' },
+    { id: 'mixpanel', name: 'Mixpanel', icon: '\uD83D\uDD0D', desc: 'Product analytics and user tracking', category: 'Analytics' },
+    { id: 'hotjar', name: 'Hotjar', icon: '\uD83D\uDD25', desc: 'Heatmaps, recordings, and user feedback', category: 'Analytics' },
+    { id: 'sentry', name: 'Sentry', icon: '\uD83D\uDEE1', desc: 'Error tracking and performance monitoring', category: 'Monitoring' },
+    { id: 'intercom', name: 'Intercom', icon: '\uD83D\uDCAC', desc: 'Customer messaging and live chat', category: 'Chatbot' },
+    { id: 'crisp', name: 'Crisp', icon: '\uD83D\uDDE8', desc: 'Live chat and helpdesk widget', category: 'Chatbot' },
+    { id: 'stripe', name: 'Stripe', icon: '\uD83D\uDCB3', desc: 'Payment processing and subscriptions', category: 'Payments' },
+    { id: 'auth0', name: 'Auth0', icon: '\uD83D\uDD10', desc: 'Authentication and authorization', category: 'Auth' },
+    { id: 'firebase', name: 'Firebase', icon: '\uD83D\uDD25', desc: 'Backend services, auth, and real-time database', category: 'Backend' },
+    { id: 'supabase', name: 'Supabase', icon: '\u26A1', desc: 'Open-source Firebase alternative with Postgres', category: 'Backend' },
+    { id: 'cloudflare', name: 'Cloudflare', icon: '\u2601', desc: 'CDN, DNS, and edge computing', category: 'Infrastructure' },
+    { id: 'vercel', name: 'Vercel', icon: '\u25B2', desc: 'Deployment and serverless functions', category: 'Infrastructure' },
+    { id: 'mailchimp', name: 'Mailchimp', icon: '\uD83D\uDCE7', desc: 'Email marketing and automation', category: 'Marketing' },
+    { id: 'segment', name: 'Segment', icon: '\uD83D\uDD00', desc: 'Customer data platform and event routing', category: 'Analytics' },
+    { id: 'posthog', name: 'PostHog', icon: '\uD83E\uDDA4', desc: 'Open-source product analytics and feature flags', category: 'Analytics' },
+    { id: 'recaptcha', name: 'reCAPTCHA', icon: '\uD83E\uDD16', desc: 'Bot protection and spam prevention', category: 'Security' },
+  ]
+
+  let enabledIntegrations = {}
+
+  async function renderIntegrations () {
+    const data = await chrome.storage.local.get('integrations')
+    enabledIntegrations = (data.integrations) || {}
+
+    renderActiveIntegrations()
+    renderMarketplace()
+  }
+
+  function renderActiveIntegrations () {
+    const container = document.getElementById('integrations-active')
+    container.innerHTML = ''
+    const activeIds = Object.keys(enabledIntegrations)
+
+    if (activeIds.length === 0) {
+      container.innerHTML = '<div class="empty-message">No integrations enabled</div>'
+      return
+    }
+
+    for (const id of activeIds) {
+      const item = MARKETPLACE_ITEMS.find(m => m.id === id) || { name: id, icon: '\uD83D\uDD0C', desc: '' }
+      const config = enabledIntegrations[id] || {}
+
+      const el = document.createElement('div')
+      el.className = 'integration-item'
+
+      el.innerHTML =
+        '<div class="integration-icon">' + item.icon + '</div>' +
+        '<div class="integration-info">' +
+          '<div class="integration-name">' + escapeHtml(item.name) + '</div>' +
+          '<div class="integration-desc">' + escapeHtml(config.key ? 'Configured' : 'Not configured') + '</div>' +
+        '</div>'
+
+      const actions = document.createElement('div')
+      actions.className = 'integration-actions'
+
+      const configBtn = document.createElement('button')
+      configBtn.className = 'integration-btn'
+      configBtn.textContent = 'Configure'
+      configBtn.addEventListener('click', () => openIntegrationConfig(id, item))
+      actions.appendChild(configBtn)
+
+      const removeBtn = document.createElement('button')
+      removeBtn.className = 'integration-btn integration-btn-danger'
+      removeBtn.textContent = 'Remove'
+      removeBtn.addEventListener('click', async () => {
+        delete enabledIntegrations[id]
+        await chrome.storage.local.set({ integrations: enabledIntegrations })
+        renderActiveIntegrations()
+        renderMarketplace()
+      })
+      actions.appendChild(removeBtn)
+
+      el.appendChild(actions)
+      container.appendChild(el)
+    }
+  }
+
+  function renderMarketplace (filter) {
+    const container = document.getElementById('integrations-marketplace')
+    container.innerHTML = ''
+    const query = (filter || '').toLowerCase()
+
+    for (const item of MARKETPLACE_ITEMS) {
+      if (enabledIntegrations[item.id]) continue
+      if (query && !item.name.toLowerCase().includes(query) && !item.category.toLowerCase().includes(query) && !item.desc.toLowerCase().includes(query)) continue
+
+      const card = document.createElement('div')
+      card.className = 'integration-card'
+      card.innerHTML =
+        '<div class="integration-card-header">' +
+          '<div class="integration-card-icon">' + item.icon + '</div>' +
+          '<div class="integration-card-name">' + escapeHtml(item.name) + '</div>' +
+        '</div>' +
+        '<div class="integration-card-desc">' + escapeHtml(item.desc) + '</div>' +
+        '<span class="integration-card-tag">' + escapeHtml(item.category) + '</span>'
+
+      card.addEventListener('click', () => openIntegrationConfig(item.id, item))
+      container.appendChild(card)
+    }
+
+    if (container.children.length === 0) {
+      container.innerHTML = '<div class="empty-message">' + (query ? 'No matching integrations' : 'All integrations enabled') + '</div>'
+    }
+  }
+
+  function openIntegrationConfig (id, item) {
+    const config = enabledIntegrations[id] || {}
+    const isNew = !enabledIntegrations[id]
+
+    // Simple config dialog inline
+    const overlay = document.createElement('div')
+    overlay.className = 'ai-dialog-overlay'
+    const dialog = document.createElement('div')
+    dialog.className = 'ai-dialog'
+    dialog.innerHTML =
+      '<div class="ai-dialog-header"><span>' + escapeHtml(item.name) + '</span><button class="dialog-close">&times;</button></div>' +
+      '<div class="ai-dialog-body">' +
+        '<div class="ai-dialog-section">' +
+          '<div class="ai-dialog-field"><label>API Key / ID</label><input id="intg-key" type="text" placeholder="Enter API key or tracking ID" class="ai-dialog-input" value="' + escapeHtml(config.key || '') + '" /></div>' +
+          '<div class="ai-dialog-field"><label>Config (JSON, optional)</label><textarea id="intg-config" class="method-args-textarea" rows="4" spellcheck="false" placeholder=\'{"option": "value"}\'>' + escapeHtml(config.extra ? JSON.stringify(config.extra, null, 2) : '') + '</textarea></div>' +
+        '</div>' +
+        '<div class="ai-dialog-actions">' +
+          '<button id="intg-save" class="ai-dialog-save">' + (isNew ? 'Enable' : 'Save') + '</button>' +
+        '</div>' +
+      '</div>'
+
+    overlay.appendChild(dialog)
+    document.body.appendChild(overlay)
+
+    dialog.querySelector('.dialog-close').addEventListener('click', () => overlay.remove())
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove() })
+
+    dialog.querySelector('#intg-save').addEventListener('click', async () => {
+      const key = dialog.querySelector('#intg-key').value.trim()
+      let extra = null
+      const extraRaw = dialog.querySelector('#intg-config').value.trim()
+      if (extraRaw) {
+        try { extra = JSON.parse(extraRaw) } catch (e) { extra = null }
+      }
+      enabledIntegrations[id] = { key, extra, enabledAt: Date.now() }
+      await chrome.storage.local.set({ integrations: enabledIntegrations })
+      overlay.remove()
+      renderActiveIntegrations()
+      renderMarketplace()
+    })
   }
 
   // Auto-refresh: listen for page navigation and poll for DOM changes

@@ -24,6 +24,8 @@ import './files.js'
 import './migrate.js'
 import './start.js'
 import './build.js'
+import './deploy.js'
+import './ask.js'
 import './eject.js'
 
 const args = process.argv

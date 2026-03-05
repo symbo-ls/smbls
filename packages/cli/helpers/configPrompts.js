@@ -37,6 +37,14 @@ const PM_CHOICES = [
   { name: 'bun', value: 'bun' }
 ]
 
+const DEPLOY_CHOICES = [
+  { name: 'Symbols    — push to Symbols platform (default)', value: 'symbols' },
+  { name: 'Cloudflare — deploy to Cloudflare Pages', value: 'cloudflare' },
+  { name: 'Vercel     — deploy to Vercel', value: 'vercel' },
+  { name: 'Netlify    — deploy to Netlify', value: 'netlify' },
+  { name: 'GitHub     — deploy to GitHub Pages', value: 'github-pages' }
+]
+
 const CDN_VALUES = CDN_CHOICES.map(c => c.value)
 
 const CDN_PACKAGE_MANAGERS = CDN_VALUES
@@ -147,6 +155,13 @@ export async function runConfigPrompts (symbolsConfig = {}) {
       message: 'API base URL:',
       default: cliConfig.apiBaseUrl || 'https://api.symbols.app',
       filter: (v) => v.trim() || 'https://api.symbols.app'
+    },
+    {
+      type: 'list',
+      name: 'deploy',
+      message: 'Deploy target:',
+      choices: DEPLOY_CHOICES,
+      default: symbolsConfig.deploy || 'symbols'
     }
   ])
 
@@ -179,7 +194,8 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     dir: answers.dir,
     runtime,
     bundler,
-    packageManager
+    packageManager,
+    deploy: answers.deploy || symbolsConfig.deploy
   })
 
   saveCliConfig({

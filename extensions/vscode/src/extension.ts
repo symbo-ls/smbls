@@ -3,6 +3,7 @@ import { DomqlCompletionProvider } from './providers/completionProvider'
 import { DomqlHoverProvider } from './providers/hoverProvider'
 import { DomqlDefinitionProvider } from './providers/definitionProvider'
 import { invalidateCache } from './providers/workspaceScanner'
+import { ChatViewProvider } from './chat/chatPanel'
 
 const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact']
 
@@ -72,6 +73,18 @@ export function activate(context: vscode.ExtensionContext): void {
       }
       output.appendLine('--- End ---')
       vscode.window.showInformationMessage('Symbols.app: Check Output panel (Symbols.app channel)')
+    })
+  )
+
+  // Chat panel
+  const chatProvider = new ChatViewProvider(context.extensionUri)
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(ChatViewProvider.viewType, chatProvider)
+  )
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('symbolsApp.openChat', () => {
+      vscode.commands.executeCommand('symbolsChat.focus')
     })
   )
 

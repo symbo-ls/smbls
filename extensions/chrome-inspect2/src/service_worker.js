@@ -63,7 +63,7 @@ chrome.runtime.onInstalled.addListener(({ previousVersion, reason }) => {
 
     // Override Origin header on API requests to avoid CORS rejection
     chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: [1, 2, 3],
+      removeRuleIds: [1, 2, 3, 4, 5, 6, 7],
       addRules: [
         {
           id: 1,
@@ -90,6 +90,62 @@ chrome.runtime.onInstalled.addListener(({ previousVersion, reason }) => {
           },
           condition: {
             urlFilter: 'https://api.anthropic.com/*',
+            resourceTypes: ['xmlhttprequest', 'other']
+          }
+        },
+        {
+          id: 3,
+          priority: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              { header: 'Origin', operation: 'remove' }
+            ]
+          },
+          condition: {
+            urlFilter: 'https://api.openai.com/*',
+            resourceTypes: ['xmlhttprequest', 'other']
+          }
+        },
+        {
+          id: 4,
+          priority: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              { header: 'Origin', operation: 'remove' }
+            ]
+          },
+          condition: {
+            urlFilter: 'https://generativelanguage.googleapis.com/*',
+            resourceTypes: ['xmlhttprequest', 'other']
+          }
+        },
+        {
+          id: 5,
+          priority: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              { header: 'Origin', operation: 'remove' }
+            ]
+          },
+          condition: {
+            urlFilter: 'https://api.deepseek.com/*',
+            resourceTypes: ['xmlhttprequest', 'other']
+          }
+        },
+        {
+          id: 6,
+          priority: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              { header: 'Origin', operation: 'remove' }
+            ]
+          },
+          condition: {
+            urlFilter: 'https://api.groq.com/*',
             resourceTypes: ['xmlhttprequest', 'other']
           }
         }

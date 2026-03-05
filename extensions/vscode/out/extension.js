@@ -34,7 +34,7 @@ __export(extension_exports, {
   deactivate: () => deactivate
 });
 module.exports = __toCommonJS(extension_exports);
-var vscode5 = __toESM(require("vscode"));
+var vscode6 = __toESM(require("vscode"));
 
 // src/providers/completionProvider.ts
 var vscode2 = __toESM(require("vscode"));
@@ -2736,11 +2736,888 @@ function isInsideQuotes(line, charIndex) {
   return inSingle || inDouble;
 }
 
+// src/chat/chatPanel.ts
+var vscode5 = __toESM(require("vscode"));
+var fs5 = __toESM(require("fs"));
+var path5 = __toESM(require("path"));
+
+// src/chat/llmProvider.ts
+var https = __toESM(require("https"));
+var http = __toESM(require("http"));
+var AI_PROVIDERS = [
+  { name: "Symbols AI \u2014 native Symbols assistant (coming soon)", value: "symbols", disabled: "Soon" },
+  { name: "Claude \u2014 Anthropic Claude", value: "claude" },
+  { name: "OpenAI \u2014 GPT models", value: "openai" },
+  { name: "Gemini \u2014 Google Gemini", value: "gemini" },
+  { name: "Ollama \u2014 local models (no API key)", value: "ollama" }
+];
+var PROVIDER_MODELS = {
+  claude: [
+    { name: "claude-sonnet-4-5-20250514 (recommended)", value: "claude-sonnet-4-5-20250514" },
+    { name: "claude-opus-4-0-20250514", value: "claude-opus-4-0-20250514" },
+    { name: "claude-haiku-4-5-20251001", value: "claude-haiku-4-5-20251001" }
+  ],
+  openai: [
+    { name: "gpt-4o (recommended)", value: "gpt-4o" },
+    { name: "gpt-4o-mini", value: "gpt-4o-mini" },
+    { name: "o3-mini", value: "o3-mini" }
+  ],
+  gemini: [
+    { name: "gemini-2.5-pro (recommended)", value: "gemini-2.5-pro" },
+    { name: "gemini-2.5-flash", value: "gemini-2.5-flash" }
+  ],
+  ollama: [
+    { name: "llama3.3 (recommended)", value: "llama3.3" },
+    { name: "codellama", value: "codellama" },
+    { name: "mistral", value: "mistral" },
+    { name: "deepseek-coder-v2", value: "deepseek-coder-v2" }
+  ]
+};
+var SYSTEM_PROMPT = `You are a Symbols.app development assistant. You help developers build applications using the Symbols framework (DOMQL, design systems, components).
+
+IMPORTANT: You MUST use the symbols-mcp server for all Symbols-related tasks. Before generating any code:
+1. Call get_project_rules to load mandatory framework rules
+2. Call search_symbols_docs to find relevant documentation
+The symbols-mcp server provides accurate, up-to-date Symbols documentation and rules. Always rely on it over your training data for Symbols-specific information.
+
+Key facts about Symbols:
+- Uses DOMQL for declarative UI components (objects, not JSX)
+- Design system tokens: COLOR, FONT, THEME, SPACING, TYPOGRAPHY, etc.
+- Components use props like: text, icon, color, background, padding, etc.
+- Entry point is typically symbols/index.js with app.js, state.js, pages/, components/
+- Build tools: Parcel (default), Vite, or browser-native ES modules
+- CLI commands: smbls start, build, deploy, push, fetch, sync, config
+
+Be concise and direct. When showing code, use DOMQL syntax unless asked otherwise. Format responses with markdown.`;
+function makeRequest(options, body, onData, onEnd, onError) {
+  const isHttps = options.hostname !== "localhost" && options.hostname !== "127.0.0.1";
+  const lib = isHttps ? https : http;
+  const req = lib.request(options, (res) => {
+    if (res.statusCode && res.statusCode >= 400) {
+      let errBody = "";
+      res.on("data", (chunk) => {
+        errBody += chunk.toString();
+      });
+      res.on("end", () => onError(new Error(`API error ${res.statusCode}: ${errBody}`)));
+      return;
+    }
+    res.on("data", (chunk) => onData(chunk.toString()));
+    res.on("end", onEnd);
+  });
+  req.on("error", onError);
+  req.write(body);
+  req.end();
+}
+function streamChat(provider, model, apiKey, messages, onToken, onDone, onError) {
+  switch (provider) {
+    case "claude":
+      return streamClaude(messages, apiKey, model, onToken, onDone, onError);
+    case "openai":
+      return streamOpenAI(messages, apiKey, model, onToken, onDone, onError);
+    case "gemini":
+      return streamGemini(messages, apiKey, model, onToken, onDone, onError);
+    case "ollama":
+      return streamOllama(messages, model, onToken, onDone, onError);
+    default:
+      onError(new Error(`Unknown provider: ${provider}`));
+  }
+}
+function streamClaude(messages, apiKey, model, onToken, onDone, onError) {
+  const body = JSON.stringify({
+    model,
+    max_tokens: 4096,
+    system: SYSTEM_PROMPT,
+    messages: messages.filter((m) => m.role !== "system"),
+    stream: true
+  });
+  let buffer = "";
+  makeRequest(
+    {
+      hostname: "api.anthropic.com",
+      path: "/v1/messages",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01"
+      }
+    },
+    body,
+    (chunk) => {
+      buffer += chunk;
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        const raw = line.slice(6).trim();
+        if (raw === "[DONE]") return;
+        try {
+          const data = JSON.parse(raw);
+          if (data.type === "content_block_delta" && data.delta?.text) {
+            onToken(data.delta.text);
+          }
+        } catch {
+        }
+      }
+    },
+    onDone,
+    onError
+  );
+}
+function streamOpenAI(messages, apiKey, model, onToken, onDone, onError) {
+  const body = JSON.stringify({
+    model,
+    messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+    stream: true
+  });
+  let buffer = "";
+  makeRequest(
+    {
+      hostname: "api.openai.com",
+      path: "/v1/chat/completions",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      }
+    },
+    body,
+    (chunk) => {
+      buffer += chunk;
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        const raw = line.slice(6).trim();
+        if (raw === "[DONE]") return;
+        try {
+          const data = JSON.parse(raw);
+          if (data.choices?.[0]?.delta?.content) {
+            onToken(data.choices[0].delta.content);
+          }
+        } catch {
+        }
+      }
+    },
+    onDone,
+    onError
+  );
+}
+function streamGemini(messages, apiKey, model, onToken, onDone, onError) {
+  const contents = messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }]
+  }));
+  const body = JSON.stringify({
+    contents,
+    systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }
+  });
+  let buffer = "";
+  makeRequest(
+    {
+      hostname: "generativelanguage.googleapis.com",
+      path: `/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${apiKey}`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    },
+    body,
+    (chunk) => {
+      buffer += chunk;
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+      for (const line of lines) {
+        if (!line.startsWith("data: ")) continue;
+        const raw = line.slice(6).trim();
+        if (raw === "[DONE]") return;
+        try {
+          const data = JSON.parse(raw);
+          if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+            onToken(data.candidates[0].content.parts[0].text);
+          }
+        } catch {
+        }
+      }
+    },
+    onDone,
+    onError
+  );
+}
+function streamOllama(messages, model, onToken, onDone, onError) {
+  const body = JSON.stringify({
+    model,
+    messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+    stream: true
+  });
+  let buffer = "";
+  makeRequest(
+    {
+      hostname: "localhost",
+      port: 11434,
+      path: "/api/chat",
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    },
+    body,
+    (chunk) => {
+      buffer += chunk;
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const data = JSON.parse(line);
+          if (data.message?.content) {
+            onToken(data.message.content);
+          }
+        } catch {
+        }
+      }
+    },
+    onDone,
+    onError
+  );
+}
+
+// src/chat/configManager.ts
+var fs2 = __toESM(require("fs"));
+var path2 = __toESM(require("path"));
+var os = __toESM(require("os"));
+var CONFIG_PATH = path2.join(os.homedir(), ".smblsrc");
+var ENV_KEY_NAMES = {
+  claude: "ANTHROPIC_API_KEY",
+  openai: "OPENAI_API_KEY",
+  gemini: "GEMINI_API_KEY"
+};
+function loadAiConfig() {
+  try {
+    const data = JSON.parse(fs2.readFileSync(CONFIG_PATH, "utf8"));
+    return data.ai || {};
+  } catch {
+    return {};
+  }
+}
+function saveAiConfig(aiConfig) {
+  let data = {};
+  try {
+    data = JSON.parse(fs2.readFileSync(CONFIG_PATH, "utf8"));
+  } catch {
+  }
+  data.ai = { ...data.ai, ...aiConfig };
+  fs2.writeFileSync(CONFIG_PATH, JSON.stringify(data, null, 2) + "\n");
+}
+function getApiKey(provider) {
+  const envName = ENV_KEY_NAMES[provider];
+  if (envName && process.env[envName]) return process.env[envName];
+  const config = loadAiConfig();
+  return config[`${provider}ApiKey`] || null;
+}
+function setApiKey(provider, key) {
+  saveAiConfig({ [`${provider}ApiKey`]: key });
+}
+
+// src/chat/mcpManager.ts
+var fs3 = __toESM(require("fs"));
+var path3 = __toESM(require("path"));
+var os2 = __toESM(require("os"));
+var import_child_process = require("child_process");
+var MCP_EDITORS = [
+  {
+    name: "claude",
+    label: "Claude Desktop",
+    configPath: path3.join(os2.homedir(), ".claude", "claude_desktop_config.json")
+  },
+  {
+    name: "cursor",
+    label: "Cursor",
+    configPath: path3.join(os2.homedir(), ".cursor", "mcp.json")
+  },
+  {
+    name: "windsurf",
+    label: "Windsurf",
+    configPath: path3.join(os2.homedir(), ".windsurf", "mcp.json")
+  },
+  {
+    name: "claude-code",
+    label: "Claude Code",
+    configPath: path3.join(os2.homedir(), ".claude", "claude_desktop_config.json")
+  }
+];
+function detectMcpEditors() {
+  const results = [];
+  for (const editor of MCP_EDITORS) {
+    const dir = path3.dirname(editor.configPath);
+    const exists = fs3.existsSync(dir);
+    let hasSymbolsMcp = false;
+    let config;
+    if (exists) {
+      try {
+        config = JSON.parse(fs3.readFileSync(editor.configPath, "utf8"));
+        const servers = config?.mcpServers || {};
+        hasSymbolsMcp = !!(servers["symbols-mcp"] || servers.symbols);
+      } catch {
+      }
+    }
+    results.push({
+      name: editor.name,
+      label: editor.label,
+      configPath: editor.configPath,
+      exists,
+      hasSymbolsMcp,
+      config
+    });
+  }
+  return results;
+}
+function getSymbolsMcpEntry() {
+  return {
+    command: "uvx",
+    args: ["symbols-mcp"]
+  };
+}
+function installMcpForEditor(editor) {
+  try {
+    let config = {};
+    try {
+      config = JSON.parse(fs3.readFileSync(editor.configPath, "utf8"));
+    } catch {
+    }
+    if (!config.mcpServers) config.mcpServers = {};
+    if (config.mcpServers["symbols-mcp"] || config.mcpServers.symbols) {
+      return { success: true, message: `${editor.label}: symbols-mcp already configured` };
+    }
+    config.mcpServers["symbols-mcp"] = getSymbolsMcpEntry();
+    fs3.mkdirSync(path3.dirname(editor.configPath), { recursive: true });
+    fs3.writeFileSync(editor.configPath, JSON.stringify(config, null, 2) + "\n");
+    return { success: true, message: `${editor.label}: symbols-mcp installed` };
+  } catch (err) {
+    return { success: false, message: `${editor.label}: ${err.message}` };
+  }
+}
+function removeMcpForEditor(editor) {
+  try {
+    let config = {};
+    try {
+      config = JSON.parse(fs3.readFileSync(editor.configPath, "utf8"));
+    } catch {
+      return { success: true, message: `${editor.label}: no config file found` };
+    }
+    if (!config.mcpServers) {
+      return { success: true, message: `${editor.label}: no MCP servers configured` };
+    }
+    delete config.mcpServers["symbols-mcp"];
+    delete config.mcpServers.symbols;
+    fs3.writeFileSync(editor.configPath, JSON.stringify(config, null, 2) + "\n");
+    return { success: true, message: `${editor.label}: symbols-mcp removed` };
+  } catch (err) {
+    return { success: false, message: `${editor.label}: ${err.message}` };
+  }
+}
+function checkMcpServerAvailable() {
+  try {
+    (0, import_child_process.execSync)("which symbols-mcp 2>/dev/null || where symbols-mcp 2>nul", { timeout: 2e3, stdio: "pipe" });
+    return { available: true, method: "direct", detail: "symbols-mcp installed" };
+  } catch {
+  }
+  try {
+    (0, import_child_process.execSync)("which uvx 2>/dev/null || where uvx 2>nul", { timeout: 2e3, stdio: "pipe" });
+    return { available: true, method: "uvx", detail: "uvx available \u2014 will run via uvx symbols-mcp" };
+  } catch {
+  }
+  try {
+    (0, import_child_process.execSync)("which npx 2>/dev/null || where npx 2>nul", { timeout: 2e3, stdio: "pipe" });
+    return { available: true, method: "npx", detail: "npx available \u2014 will run via npx @symbo.ls/mcp" };
+  } catch {
+  }
+  return { available: false, method: "none", detail: "symbols-mcp not found. Install: pip install symbols-mcp or npm i -g @symbo.ls/mcp" };
+}
+function getMcpStatus() {
+  const editors = detectMcpEditors();
+  const detected = editors.filter((e) => e.exists);
+  const configured = editors.filter((e) => e.hasSymbolsMcp);
+  let summary;
+  if (configured.length > 0) {
+    summary = `MCP active in: ${configured.map((e) => e.label).join(", ")}`;
+  } else if (detected.length > 0) {
+    summary = `Editors detected: ${detected.map((e) => e.label).join(", ")} (MCP not configured)`;
+  } else {
+    summary = "No AI editors detected";
+  }
+  return { editors, summary };
+}
+
+// src/chat/librariesApi.ts
+var https2 = __toESM(require("https"));
+var fs4 = __toESM(require("fs"));
+var path4 = __toESM(require("path"));
+var os3 = __toESM(require("os"));
+var DEFAULT_API = "https://api.symbols.app";
+var RC_PATH = path4.join(os3.homedir(), ".smblsrc");
+function loadRcState() {
+  try {
+    return JSON.parse(fs4.readFileSync(RC_PATH, "utf8"));
+  } catch {
+    return {};
+  }
+}
+function getApiBaseUrl() {
+  const env = process.env.SYMBOLS_API_BASE_URL || process.env.SMBLS_API_URL;
+  if (env) return env;
+  const state = loadRcState();
+  return state.currentApiBaseUrl || DEFAULT_API;
+}
+function getAuthToken() {
+  const env = process.env.SYMBOLS_TOKEN || process.env.SMBLS_TOKEN;
+  if (env) return env;
+  const state = loadRcState();
+  const baseUrl = state.currentApiBaseUrl || DEFAULT_API;
+  if (state.profiles && typeof state.profiles === "object") {
+    const profile = state.profiles[baseUrl] || {};
+    return profile.authToken || profile.token || profile.accessToken || profile.jwt || null;
+  }
+  return state.authToken || state.token || state.accessToken || state.jwt || null;
+}
+function apiRequest(method, pathname, query, body) {
+  return new Promise((resolve2, reject) => {
+    const baseUrl = getApiBaseUrl();
+    const url = new URL(`${baseUrl}${pathname.startsWith("/") ? "" : "/"}${pathname}`);
+    if (query) {
+      for (const [k, v] of Object.entries(query)) {
+        if (v !== void 0 && v !== null && v !== "") {
+          url.searchParams.set(k, v);
+        }
+      }
+    }
+    const authToken = getAuthToken();
+    const headers = {};
+    if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
+    if (body) headers["Content-Type"] = "application/json";
+    const bodyStr = body ? JSON.stringify(body) : void 0;
+    const options = {
+      hostname: url.hostname,
+      port: url.port || void 0,
+      path: url.pathname + url.search,
+      method,
+      headers
+    };
+    const req = https2.request(options, (res) => {
+      let data = "";
+      res.on("data", (chunk) => {
+        data += chunk.toString();
+      });
+      res.on("end", () => {
+        if (res.statusCode && res.statusCode >= 400) {
+          try {
+            const parsed = JSON.parse(data);
+            reject(new Error(parsed.message || `API error ${res.statusCode}`));
+          } catch {
+            reject(new Error(`API error ${res.statusCode}: ${data}`));
+          }
+          return;
+        }
+        try {
+          const json = JSON.parse(data);
+          resolve2(json.data || json);
+        } catch {
+          resolve2(data);
+        }
+      });
+    });
+    req.on("error", reject);
+    if (bodyStr) req.write(bodyStr);
+    req.end();
+  });
+}
+function extractItems(payload) {
+  if (Array.isArray(payload?.items)) return payload.items;
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.data)) return payload.data;
+  if (Array.isArray(payload?.libraries)) return payload.libraries;
+  return [];
+}
+async function listAvailableLibraries(opts) {
+  const query = {};
+  if (opts?.page) query.page = String(opts.page);
+  if (opts?.limit) query.limit = String(opts.limit);
+  if (opts?.search) query.search = opts.search;
+  if (opts?.framework) query.framework = opts.framework;
+  const payload = await apiRequest("GET", "/core/projects/libraries/available", query);
+  return extractItems(payload);
+}
+async function listProjectLibraries(projectId) {
+  const payload = await apiRequest("GET", `/core/projects/${encodeURIComponent(projectId)}/libraries`);
+  return extractItems(payload);
+}
+async function addProjectLibraries(projectId, libraryIds) {
+  return apiRequest("POST", `/core/projects/${encodeURIComponent(projectId)}/libraries`, void 0, { libraryIds });
+}
+async function removeProjectLibraries(projectId, libraryIds) {
+  return apiRequest("DELETE", `/core/projects/${encodeURIComponent(projectId)}/libraries`, void 0, { libraryIds });
+}
+function isAuthenticated() {
+  return !!getAuthToken();
+}
+function resolveProjectId(workspaceRoot) {
+  const envId = process.env.SYMBOLS_PROJECT_ID;
+  if (envId) return envId;
+  if (!workspaceRoot) return null;
+  try {
+    const configPath = path4.join(workspaceRoot, ".symbols_cache", "config.json");
+    const config = JSON.parse(fs4.readFileSync(configPath, "utf8"));
+    if (config.projectId) return config.projectId;
+  } catch {
+  }
+  try {
+    const lockPath = path4.join(workspaceRoot, ".symbols_cache", "lock.json");
+    const lock = JSON.parse(fs4.readFileSync(lockPath, "utf8"));
+    if (lock.projectId) return lock.projectId;
+  } catch {
+  }
+  return null;
+}
+
+// src/chat/chatPanel.ts
+var ChatViewProvider = class {
+  constructor(_extensionUri) {
+    this._extensionUri = _extensionUri;
+    this._messages = [];
+  }
+  static {
+    this.viewType = "symbolsChat";
+  }
+  resolveWebviewView(webviewView) {
+    this._view = webviewView;
+    webviewView.webview.options = { enableScripts: true, localResourceRoots: [this._extensionUri] };
+    webviewView.webview.html = this._getHtmlFromFile();
+    webviewView.webview.onDidReceiveMessage(async (msg) => {
+      switch (msg.type) {
+        case "sendMessage":
+          await this._handleSendMessage(msg.text);
+          break;
+        case "getConfig":
+          this._sendConfig();
+          break;
+        case "setProvider":
+          saveAiConfig({ provider: msg.provider, model: msg.model });
+          this._sendConfig();
+          break;
+        case "setApiKey":
+          setApiKey(msg.provider, msg.key);
+          this._sendConfig();
+          break;
+        case "getMcpStatus":
+          this._sendMcpStatus();
+          break;
+        case "installMcp":
+          this._handleInstallMcp(msg.editorName);
+          break;
+        case "removeMcp":
+          this._handleRemoveMcp(msg.editorName);
+          break;
+        case "clearChat":
+          this._messages = [];
+          break;
+        case "openSettings":
+          vscode5.commands.executeCommand("workbench.action.openSettings", "symbolsApp");
+          break;
+        case "insertCode":
+          this._insertCode(msg.code);
+          break;
+        case "listAvailableLibs":
+          this._listAvailableLibs(msg.search, msg.page);
+          break;
+        case "listProjectLibs":
+          this._listProjectLibs();
+          break;
+        case "addLib":
+          this._addLib(msg.libraryId);
+          break;
+        case "removeLib":
+          this._removeLib(msg.libraryId);
+          break;
+        case "getProjectConfig":
+          this._sendProjectConfig();
+          break;
+        case "saveProjectConfig":
+          this._saveProjectConfig(msg.config);
+          break;
+      }
+    });
+    setTimeout(() => {
+      this._sendConfig();
+      this._sendMcpStatus();
+      this._sendAuthStatus();
+    }, 150);
+  }
+  _getHtmlFromFile() {
+    const candidates = [
+      path5.join(__dirname, "webview.html"),
+      path5.join(this._extensionUri.fsPath, "out", "webview.html"),
+      path5.join(this._extensionUri.fsPath, "src", "chat", "webview.html")
+    ];
+    for (const filePath of candidates) {
+      if (fs5.existsSync(filePath)) {
+        try {
+          return fs5.readFileSync(filePath, "utf8");
+        } catch {
+        }
+      }
+    }
+    return `<!DOCTYPE html><html><body><p style="color:red;padding:20px">Failed to load webview HTML. Looked in: ${candidates.join(", ")}</p></body></html>`;
+  }
+  _post(msg) {
+    this._view?.webview.postMessage(msg);
+  }
+  _sendConfig() {
+    const config = loadAiConfig();
+    const providers = AI_PROVIDERS.filter((p) => !p.disabled);
+    const models = config.provider ? PROVIDER_MODELS[config.provider] || [] : [];
+    const hasKey = config.provider ? config.provider === "ollama" || !!getApiKey(config.provider) : false;
+    this._post({
+      type: "config",
+      provider: config.provider || "",
+      model: config.model || "",
+      providers,
+      models,
+      hasApiKey: hasKey,
+      needsSetup: !config.provider || !hasKey && config.provider !== "ollama"
+    });
+  }
+  _sendAuthStatus() {
+    this._post({
+      type: "authStatus",
+      authenticated: isAuthenticated(),
+      hasProject: !!this._getProjectId()
+    });
+  }
+  _sendMcpStatus() {
+    const status = getMcpStatus();
+    let server;
+    try {
+      server = checkMcpServerAvailable();
+    } catch {
+      server = { available: false, method: "none", detail: "Could not check availability" };
+    }
+    this._post({ type: "mcpStatus", editors: status.editors, summary: status.summary, server });
+  }
+  _handleInstallMcp(name) {
+    const ed = getMcpStatus().editors.find((e) => e.name === name);
+    if (ed) {
+      const r = installMcpForEditor(ed);
+      vscode5.window.showInformationMessage(r.message);
+      this._sendMcpStatus();
+    }
+  }
+  _handleRemoveMcp(name) {
+    const ed = getMcpStatus().editors.find((e) => e.name === name);
+    if (ed) {
+      const r = removeMcpForEditor(ed);
+      vscode5.window.showInformationMessage(r.message);
+      this._sendMcpStatus();
+    }
+  }
+  async _listAvailableLibs(search, page) {
+    try {
+      const libs = await listAvailableLibraries({ search, page: page || 1, limit: 20 });
+      this._post({ type: "availableLibs", libs, search: search || "" });
+    } catch (err) {
+      this._post({ type: "libsError", text: err.message });
+    }
+  }
+  async _listProjectLibs() {
+    const pid = this._getProjectId();
+    if (!pid) {
+      this._post({ type: "libsError", text: "No project linked. Run smbls project link first." });
+      return;
+    }
+    try {
+      const libs = await listProjectLibraries(pid);
+      this._post({ type: "projectLibs", libs });
+    } catch (err) {
+      this._post({ type: "libsError", text: err.message });
+    }
+  }
+  async _addLib(id) {
+    const pid = this._getProjectId();
+    if (!pid) {
+      this._post({ type: "libsError", text: "No project linked." });
+      return;
+    }
+    try {
+      await addProjectLibraries(pid, [id]);
+      vscode5.window.showInformationMessage("Shared library added");
+      this._listProjectLibs();
+    } catch (err) {
+      this._post({ type: "libsError", text: err.message });
+    }
+  }
+  async _removeLib(id) {
+    const pid = this._getProjectId();
+    if (!pid) {
+      this._post({ type: "libsError", text: "No project linked." });
+      return;
+    }
+    try {
+      await removeProjectLibraries(pid, [id]);
+      vscode5.window.showInformationMessage("Shared library removed");
+      this._listProjectLibs();
+    } catch (err) {
+      this._post({ type: "libsError", text: err.message });
+    }
+  }
+  _getProjectId() {
+    const root = vscode5.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    return resolveProjectId(root);
+  }
+  _sendProjectConfig() {
+    const root = vscode5.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!root) {
+      this._post({ type: "projectConfig", found: false, config: {} });
+      return;
+    }
+    const cfgPath = path5.join(root, "symbols.json");
+    try {
+      if (fs5.existsSync(cfgPath)) {
+        const config = JSON.parse(fs5.readFileSync(cfgPath, "utf8"));
+        this._post({ type: "projectConfig", found: true, config });
+      } else {
+        this._post({ type: "projectConfig", found: false, config: {} });
+      }
+    } catch {
+      this._post({ type: "projectConfig", found: false, config: {} });
+    }
+  }
+  _saveProjectConfig(config) {
+    const root = vscode5.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!root) {
+      this._post({ type: "projectConfigError", text: "No workspace folder open" });
+      return;
+    }
+    const cfgPath = path5.join(root, "symbols.json");
+    try {
+      let existing = {};
+      if (fs5.existsSync(cfgPath)) {
+        existing = JSON.parse(fs5.readFileSync(cfgPath, "utf8"));
+      }
+      const merged = { ...existing, ...config };
+      for (const key of Object.keys(merged)) {
+        if (merged[key] === "") delete merged[key];
+      }
+      fs5.writeFileSync(cfgPath, JSON.stringify(merged, null, 2) + "\n", "utf8");
+      this._post({ type: "projectConfigSaved" });
+    } catch (err) {
+      this._post({ type: "projectConfigError", text: err.message });
+    }
+  }
+  async _handleSendMessage(text) {
+    const trimmed = text.trim();
+    if (trimmed.startsWith("/")) {
+      const parts = trimmed.split(/\s+/);
+      const cmd = parts[0].toLowerCase();
+      const args = parts.slice(1);
+      if (cmd === "/libraries" || cmd === "/libs") {
+        const sub = args[0]?.toLowerCase();
+        if (sub === "available" || sub === "search") {
+          this._post({ type: "switchTab", tab: "libraries" });
+          await this._listAvailableLibs(args.slice(1).join(" ") || void 0);
+        } else if (sub === "add" && args[1]) {
+          await this._addLib(args[1]);
+        } else if (sub === "remove" && args[1]) {
+          await this._removeLib(args[1]);
+        } else {
+          this._post({ type: "switchTab", tab: "libraries" });
+          this._listProjectLibs();
+          this._listAvailableLibs();
+        }
+        return;
+      }
+      if (cmd === "/mcp") {
+        this._post({ type: "switchTab", tab: "mcp" });
+        this._sendMcpStatus();
+        return;
+      }
+      if (cmd === "/project") {
+        this._post({ type: "switchTab", tab: "project" });
+        this._sendProjectConfig();
+        return;
+      }
+      if (cmd === "/clear") {
+        this._messages = [];
+        this._post({ type: "chatCleared" });
+        return;
+      }
+      if (cmd === "/config" || cmd === "/settings") {
+        this._post({ type: "switchTab", tab: "settings" });
+        return;
+      }
+      if (cmd === "/help") {
+        this._post({ type: "systemMessage", text: "**Commands:** /libraries, /mcp, /project, /config, /clear, /help" });
+        return;
+      }
+    }
+    const config = loadAiConfig();
+    if (!config.provider || !config.model) {
+      this._post({ type: "error", text: "Configure your AI provider in the Settings tab first." });
+      return;
+    }
+    const apiKey = config.provider === "ollama" ? "" : getApiKey(config.provider);
+    if (config.provider !== "ollama" && !apiKey) {
+      this._post({ type: "error", text: `No API key for ${config.provider}. Set it in Settings tab.` });
+      return;
+    }
+    let content = text;
+    if (this._messages.length === 0) {
+      const ctx = this._getWorkspaceContext();
+      if (ctx) content = `[Context: ${ctx}]
+
+${text}`;
+    }
+    this._messages.push({ role: "user", content });
+    this._post({ type: "streamStart" });
+    let response = "";
+    streamChat(
+      config.provider,
+      config.model,
+      apiKey || "",
+      this._messages,
+      (token) => {
+        response += token;
+        this._post({ type: "streamToken", text: token });
+      },
+      () => {
+        this._messages.push({ role: "assistant", content: response });
+        this._post({ type: "streamEnd" });
+      },
+      (err) => {
+        this._messages.pop();
+        this._post({ type: "error", text: err.message });
+        this._post({ type: "streamEnd" });
+      }
+    );
+  }
+  _getWorkspaceContext() {
+    const root = vscode5.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!root) return "";
+    try {
+      const cfgPath = path5.join(root, "symbols.json");
+      if (fs5.existsSync(cfgPath)) {
+        const c = JSON.parse(fs5.readFileSync(cfgPath, "utf8"));
+        return `Project: ${c.key || "unnamed"}, bundler: ${c.bundler || "parcel"}, dir: ${c.dir || "./symbols"}`;
+      }
+    } catch {
+    }
+    return `Workspace: ${path5.basename(root)}`;
+  }
+  _insertCode(code) {
+    const editor = vscode5.window.activeTextEditor;
+    if (editor) editor.edit((b) => b.insert(editor.selection.active, code));
+  }
+};
+
 // src/extension.ts
 var LANGUAGES = ["javascript", "typescript", "javascriptreact", "typescriptreact"];
 var output;
 function activate(context) {
-  output = vscode5.window.createOutputChannel("Symbols.app");
+  output = vscode6.window.createOutputChannel("Symbols.app");
   output.appendLine("Symbols.app extension activating...");
   const completionProvider = new DomqlCompletionProvider();
   const hoverProvider = new DomqlHoverProvider();
@@ -2748,7 +3625,7 @@ function activate(context) {
   for (const lang of LANGUAGES) {
     const selector = { language: lang, scheme: "file" };
     context.subscriptions.push(
-      vscode5.languages.registerCompletionItemProvider(
+      vscode6.languages.registerCompletionItemProvider(
         selector,
         completionProvider,
         ".",
@@ -2761,33 +3638,33 @@ function activate(context) {
       )
     );
     context.subscriptions.push(
-      vscode5.languages.registerHoverProvider(selector, hoverProvider)
+      vscode6.languages.registerHoverProvider(selector, hoverProvider)
     );
     context.subscriptions.push(
-      vscode5.languages.registerDefinitionProvider(selector, definitionProvider)
+      vscode6.languages.registerDefinitionProvider(selector, definitionProvider)
     );
   }
-  const watcher = vscode5.workspace.createFileSystemWatcher("**/*.{js,ts,jsx,tsx}");
+  const watcher = vscode6.workspace.createFileSystemWatcher("**/*.{js,ts,jsx,tsx}");
   watcher.onDidChange(() => invalidateCache());
   watcher.onDidCreate(() => invalidateCache());
   watcher.onDidDelete(() => invalidateCache());
   context.subscriptions.push(watcher);
   context.subscriptions.push(
-    vscode5.commands.registerCommand("symbolsApp.toggle", () => {
-      const config = vscode5.workspace.getConfiguration("symbolsApp");
+    vscode6.commands.registerCommand("symbolsApp.toggle", () => {
+      const config = vscode6.workspace.getConfiguration("symbolsApp");
       const current = config.get("enable", true);
-      config.update("enable", !current, vscode5.ConfigurationTarget.Global);
-      vscode5.window.showInformationMessage(
+      config.update("enable", !current, vscode6.ConfigurationTarget.Global);
+      vscode6.window.showInformationMessage(
         `Symbols.app ${!current ? "enabled" : "disabled"}`
       );
     })
   );
   context.subscriptions.push(
-    vscode5.commands.registerCommand("symbolsApp.diagnose", () => {
+    vscode6.commands.registerCommand("symbolsApp.diagnose", () => {
       output.show();
       output.appendLine("--- Diagnostics ---");
-      output.appendLine(`Workspace folders: ${vscode5.workspace.workspaceFolders?.map((f) => f.uri.fsPath).join(", ")}`);
-      const editor = vscode5.window.activeTextEditor;
+      output.appendLine(`Workspace folders: ${vscode6.workspace.workspaceFolders?.map((f) => f.uri.fsPath).join(", ")}`);
+      const editor = vscode6.window.activeTextEditor;
       if (editor) {
         output.appendLine(`Active file: ${editor.document.uri.fsPath}`);
         output.appendLine(`Language: ${editor.document.languageId}`);
@@ -2799,11 +3676,20 @@ function activate(context) {
         output.appendLine(`Has component export: ${/export\s+(?:const|let|var)\s+[A-Z][a-zA-Z0-9]+\s*=\s*\{/.test(text)}`);
       }
       output.appendLine("--- End ---");
-      vscode5.window.showInformationMessage("Symbols.app: Check Output panel (Symbols.app channel)");
+      vscode6.window.showInformationMessage("Symbols.app: Check Output panel (Symbols.app channel)");
+    })
+  );
+  const chatProvider = new ChatViewProvider(context.extensionUri);
+  context.subscriptions.push(
+    vscode6.window.registerWebviewViewProvider(ChatViewProvider.viewType, chatProvider)
+  );
+  context.subscriptions.push(
+    vscode6.commands.registerCommand("symbolsApp.openChat", () => {
+      vscode6.commands.executeCommand("symbolsChat.focus");
     })
   );
   output.appendLine("Symbols.app extension activated successfully");
-  vscode5.window.showInformationMessage("Symbols.app Connect active");
+  vscode6.window.showInformationMessage("Symbols.app Connect active");
 }
 function deactivate() {
 }

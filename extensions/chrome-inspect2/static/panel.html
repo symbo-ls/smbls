@@ -72,6 +72,8 @@
       <button class="mode-tab" data-mode="chat">Chat</button>
       <button class="mode-tab" data-mode="gallery">Gallery</button>
       <button class="mode-tab" data-mode="content">Content</button>
+      <button class="mode-tab" data-mode="network">Network</button>
+      <button class="mode-tab" data-mode="integrations">Integrations</button>
       <span class="mode-tab-spacer"></span>
       <span id="app-connection-badge"></span>
       <button id="btn-app-disconnect" title="Disconnect">&#10005;</button>
@@ -167,6 +169,10 @@
           <select id="ai-model" class="ai-model-select" title="Select AI model">
             <option value="Starter">Starter (free)</option>
             <option value="claude">Claude</option>
+            <option value="openai">GPT-4o</option>
+            <option value="gemini">Gemini</option>
+            <option value="deepseek">DeepSeek</option>
+            <option value="groq">Groq</option>
             <option value="chrome">Chrome AI (local)</option>
           </select>
           <button class="ai-settings-btn" title="AI settings" data-settings="ai">&#9881;</button>
@@ -205,6 +211,10 @@
         <select id="chat-model" class="ai-model-select" title="Select AI model">
           <option value="Starter">Starter (free)</option>
           <option value="claude">Claude</option>
+          <option value="openai">GPT-4o</option>
+          <option value="gemini">Gemini</option>
+          <option value="deepseek">DeepSeek</option>
+          <option value="groq">Groq</option>
           <option value="chrome">Chrome AI (local)</option>
         </select>
         <button class="ai-settings-btn" title="AI settings" data-settings="ai">&#9881;</button>
@@ -239,6 +249,79 @@
       </div>
     </div>
 
+    <!-- ============================================================
+         NETWORK MODE
+         ============================================================ -->
+    <div id="mode-network" class="mode-panel">
+      <div class="network-panel">
+        <div class="network-section">
+          <div class="section-header">Backend Connection</div>
+          <div id="network-status" class="network-status">
+            <span class="network-status-dot"></span>
+            <span id="network-status-text">Not connected</span>
+          </div>
+          <div class="network-fields">
+            <div class="network-field">
+              <label>Server URL</label>
+              <div class="network-field-row">
+                <input id="network-url" type="text" placeholder="https://api.example.com" class="network-input" />
+                <button id="network-test" class="network-btn-sm">Test</button>
+              </div>
+            </div>
+            <div class="network-field">
+              <label>API Key / Token</label>
+              <input id="network-token" type="password" placeholder="Bearer token or API key" class="network-input" />
+            </div>
+          </div>
+          <div class="network-actions">
+            <button id="network-save" class="network-btn">Save Connection</button>
+            <button id="network-disconnect" class="network-btn network-btn-secondary">Disconnect</button>
+          </div>
+        </div>
+
+        <div class="network-section">
+          <div class="section-header">Server Info</div>
+          <div id="network-info" class="network-info">
+            <div class="network-info-row"><span class="network-info-label">Host</span><span id="network-info-host" class="network-info-value">—</span></div>
+            <div class="network-info-row"><span class="network-info-label">IP</span><span id="network-info-ip" class="network-info-value">—</span></div>
+            <div class="network-info-row"><span class="network-info-label">Status</span><span id="network-info-status" class="network-info-value">—</span></div>
+            <div class="network-info-row"><span class="network-info-label">Latency</span><span id="network-info-latency" class="network-info-value">—</span></div>
+            <div class="network-info-row"><span class="network-info-label">Platform</span><span id="network-info-platform" class="network-info-value">—</span></div>
+            <div class="network-info-row"><span class="network-info-label">Region</span><span id="network-info-region" class="network-info-value">—</span></div>
+          </div>
+        </div>
+
+        <div class="network-section">
+          <div class="section-header">Deployment</div>
+          <div id="network-deployment" class="network-info">
+            <div class="empty-message">Connect to view deployment configuration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         INTEGRATIONS MODE
+         ============================================================ -->
+    <div id="mode-integrations" class="mode-panel">
+      <div class="integrations-panel">
+        <div class="integrations-section">
+          <div class="section-header">Active Integrations</div>
+          <div id="integrations-active" class="integrations-list">
+            <div class="empty-message">No integrations enabled</div>
+          </div>
+        </div>
+
+        <div class="integrations-section">
+          <div class="section-header">Marketplace</div>
+          <div class="integrations-search-row">
+            <input id="integrations-search" type="text" placeholder="Search integrations..." class="integrations-search" />
+          </div>
+          <div id="integrations-marketplace" class="integrations-grid"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- AI Settings Dialog -->
@@ -249,15 +332,45 @@
         <button id="ai-dialog-close">&times;</button>
       </div>
       <div class="ai-dialog-body">
+        <div id="ai-dialog-auth-status" class="ai-dialog-auth-status"></div>
+
         <div class="ai-dialog-section">
-          <div class="ai-dialog-label">Claude API</div>
-          <p class="ai-dialog-hint">Sign in to symbols.app to use Claude via the platform, or enter your own Anthropic API key.</p>
-          <div id="ai-dialog-auth-status" class="ai-dialog-auth-status"></div>
           <div class="ai-dialog-field">
-            <label>Anthropic API Key</label>
+            <label>Anthropic (Claude)</label>
             <input id="ai-key-anthropic" type="password" placeholder="sk-ant-..." class="ai-dialog-input" />
           </div>
         </div>
+
+        <div class="ai-dialog-section">
+          <div class="ai-dialog-field">
+            <label>OpenAI (GPT-4o)</label>
+            <input id="ai-key-openai" type="password" placeholder="sk-..." class="ai-dialog-input" />
+          </div>
+        </div>
+
+        <div class="ai-dialog-section">
+          <div class="ai-dialog-field">
+            <label>Google AI (Gemini)</label>
+            <input id="ai-key-gemini" type="password" placeholder="AIza..." class="ai-dialog-input" />
+          </div>
+        </div>
+
+        <div class="ai-dialog-section">
+          <div class="ai-dialog-field">
+            <label>DeepSeek</label>
+            <input id="ai-key-deepseek" type="password" placeholder="sk-..." class="ai-dialog-input" />
+          </div>
+        </div>
+
+        <div class="ai-dialog-section">
+          <div class="ai-dialog-field">
+            <label>Groq</label>
+            <input id="ai-key-groq" type="password" placeholder="gsk_..." class="ai-dialog-input" />
+          </div>
+        </div>
+
+        <p class="ai-dialog-hint">Sign in to symbols.app for free Claude access, or enter API keys above.</p>
+
         <div class="ai-dialog-actions">
           <button id="ai-dialog-save" class="ai-dialog-save">Save</button>
         </div>

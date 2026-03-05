@@ -2803,3 +2803,278 @@ body {
   padding-top: 8px;
   border-top: 1px solid var(--border);
 }
+
+/* ============================================================
+   Network mode
+   ============================================================ */
+#mode-network {
+  flex-direction: column;
+  overflow-y: auto;
+}
+.network-panel {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.network-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  background: var(--bg-alt);
+}
+.network-section .section-header {
+  margin-bottom: 10px;
+}
+.network-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.network-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  flex-shrink: 0;
+}
+.network-status.connected .network-status-dot { background: #4caf50; }
+.network-status.error .network-status-dot { background: var(--error-color); }
+.network-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.network-field label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 3px;
+}
+.network-field-row {
+  display: flex;
+  gap: 6px;
+}
+.network-input {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-bright);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+.network-input:focus { border-color: var(--accent); }
+.network-btn-sm {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.network-btn-sm:hover { border-color: var(--accent); color: var(--text-bright); }
+.network-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.network-btn {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  font-family: inherit;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.network-btn:hover { opacity: 0.9; }
+.network-btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+.network-btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+.network-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.network-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.network-info-row:last-child { border-bottom: none; }
+.network-info-label {
+  color: var(--text-dim);
+}
+.network-info-value {
+  color: var(--text-bright);
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 11px;
+}
+
+/* ============================================================
+   Integrations mode
+   ============================================================ */
+#mode-integrations {
+  flex-direction: column;
+  overflow-y: auto;
+}
+.integrations-panel {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.integrations-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.integrations-search-row {
+  margin-bottom: 4px;
+}
+.integrations-search {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+.integrations-search:focus { border-color: var(--accent); }
+.integrations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.integration-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-alt);
+}
+.integration-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.integration-info {
+  flex: 1;
+  min-width: 0;
+}
+.integration-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-bright);
+}
+.integration-desc {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.integration-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 4px;
+}
+.integration-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+}
+.integration-btn:hover { border-color: var(--accent); color: var(--text-bright); }
+.integration-btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.integration-btn-primary:hover { opacity: 0.9; }
+.integration-btn-danger {
+  color: var(--error-color);
+}
+.integration-btn-danger:hover { border-color: var(--error-color); }
+.integrations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+.integration-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-alt);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.integration-card:hover { border-color: var(--accent); }
+.integration-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.integration-card-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.integration-card-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-bright);
+}
+.integration-card-desc {
+  font-size: 10px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+.integration-card-tag {
+  display: inline-block;
+  font-size: 9px;
+  color: var(--text-dim);
+  background: var(--bg-input);
+  padding: 1px 5px;
+  border-radius: 8px;
+  margin-top: 6px;
+}

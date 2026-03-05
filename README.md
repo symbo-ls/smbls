@@ -50,6 +50,64 @@ init({ color, theme })
 
 More about these config at the [Initialization](https://symbols.app/docs/intro#initialization) page.
 
+## Deployment
+
+Deploy your project with a single command:
+
+```bash
+npx smbls deploy
+```
+
+On first run, you'll be prompted to choose a deploy target:
+
+- **Symbols** — push to the Symbols platform (default, same as `smbls push`)
+- **Cloudflare** — deploy to Cloudflare Pages (generates `wrangler.jsonc`)
+- **Vercel** — deploy to Vercel (generates `vercel.json`)
+- **Netlify** — deploy to Netlify (generates `netlify.toml`)
+- **GitHub Pages** — deploy via GitHub Actions (generates workflow)
+
+Your choice is saved to `symbols.json` so subsequent deploys run without prompts.
+
+To only generate the config files without deploying:
+
+```bash
+npx smbls deploy --init
+```
+
+You can also set the deploy target in `smbls config` or pass it directly:
+
+```bash
+npx smbls deploy --provider cloudflare
+```
+
+## AI Assistant
+
+Ask questions about your Symbols project directly from the terminal:
+
+```bash
+npx smbls ask "how do I add a new page?"
+```
+
+Or start an interactive chat session:
+
+```bash
+npx smbls ask
+```
+
+On first run, you'll be guided through setup:
+
+1. **Choose an AI provider** — Claude, OpenAI, Gemini, Ollama (local), or Symbols AI (coming soon)
+2. **Select a model** and enter your API key
+3. **Auto-configure symbols-mcp** for your AI editors (Claude Code, Cursor, Windsurf)
+
+The [symbols-mcp](https://github.com/symbo-ls/symbols-mcp) server gives AI assistants access to Symbols documentation and framework rules — no API key required.
+
+To reconfigure at any time:
+
+```bash
+npx smbls ask --init
+```
+
 
 # Design System
 
