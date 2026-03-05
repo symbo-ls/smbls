@@ -99,6 +99,7 @@ export const update = function (params = {}, opts) {
     const hasBeforeUpdate = element.on?.beforeUpdate || element.props?.onBeforeUpdate
     if (hasBeforeUpdate) {
       const simulate = { ...params, ...element }
+      Object.setPrototypeOf(simulate, Object.getPrototypeOf(element))
       const beforeUpdateReturns = triggerEventOnUpdate(
         'beforeUpdate',
         params,
@@ -195,14 +196,21 @@ export const update = function (params = {}, opts) {
       }
 
       const childParams = params[param]
-      if (childParams === undefined && !options.isForced) continue
+      if (childParams === undefined && !options.isForced) {
+        if (options.onlyUpdate) {
+          if (param !== options.onlyUpdate) continue
+        } else if (!options.updateByState) {
+          continue
+        }
+      }
+
+      // Once we reach the onlyUpdate target, clear it so its children update normally
+      const childOptions = options.onlyUpdate && param === options.onlyUpdate
+        ? { ...options, onlyUpdate: undefined, currentSnapshot: snapshotOnCallee, calleeElement }
+        : { ...options, currentSnapshot: snapshotOnCallee, calleeElement }
 
       const childUpdateCall = () =>
-        update.call(prop, childParams, {
-          ...options,
-          currentSnapshot: snapshotOnCallee,
-          calleeElement
-        })
+        update.call(prop, childParams, childOptions)
 
       if (lazyLoad) {
         window.requestAnimationFrame(() => {
@@ -218,12 +226,16 @@ export const update = function (params = {}, opts) {
   }
 
   if (!preventContentUpdate) {
-    // Update existing content element if it's a live DOMQL element
     const contentKey = ref.contentElementKey || 'content'
     const existingContent = element[contentKey]
 
-    // Re-evaluate children if the element has a children property
-    const childrenProp = params.children || element.children
+    // During state-triggered cascading updates (updateByState), skip static
+    // children but still re-process dynamic children (originally functions, already
+    // re-evaluated by throughUpdatedExec). Check ref.__exec.children to detect these.
+    const childrenProp = options.updateByState
+      ? (params.children || (ref.__exec?.children ? element.children : undefined))
+      : (params.children || element.children)
+
     if (childrenProp) {
       const content = setChildren(childrenProp, element, opts)
       if (content && !ref.__noChildrenDifference) {
@@ -265,7 +277,7 @@ export const update = function (params = {}, opts) {
       } else contentUpdateCall()
     } else {
       const content = element.children || params.content
-      if (content) {
+      if (content && !options.updateByState) {
         setContent(content, element, options)
       }
     }

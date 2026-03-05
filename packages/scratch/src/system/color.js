@@ -124,14 +124,32 @@ export const setColor = (val, key, suffix) => {
       const parts = rawRef.split(' ')
       const refColor = CONFIG.COLOR[parts[0]]
       if (refColor && refColor.value) {
-        if (parts[1] !== undefined) {
-          val = `rgba(${refColor.rgb}, ${parts[1]})`
-        } else {
-          val = refColor.value
+        let rgb = refColor.rgb
+        const alpha = parts[1] !== undefined ? parts[1] : '1'
+        const tone = parts[2]
+        if (tone) {
+          rgb = getRgbTone(rgb, tone)
         }
+        val = `rgba(${rgb}, ${alpha})`
       } else {
-        if (CONFIG.verbose) console.warn(val, '- referred but does not exist')
-        val = parts[0]
+        // Try to resolve as CSS keyword color with tone modifier
+        const tone = parts[2]
+        const alpha = parts[1] !== undefined ? parts[1] : '1'
+        if (tone) {
+          try {
+            const rgb = colorStringToRgbaArray(parts[0])
+            if (rgb && rgb.length >= 3) {
+              const tonedRgb = getRgbTone(rgb.slice(0, 3).join(', '), tone)
+              val = `rgba(${tonedRgb}, ${alpha})`
+            } else {
+              val = parts[0]
+            }
+          } catch (e) {
+            val = parts[0]
+          }
+        } else {
+          val = parts[0]
+        }
       }
     }
   }

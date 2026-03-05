@@ -1,13 +1,11 @@
 'use strict'
 
-// import { DEFAULT_ICONS } from '@symbo.ls/default-icons'
+import { DEFAULT_ICONS } from '@symbo.ls/default-icons'
 import { COLOR, GRADIENT } from './color'
 import { THEME } from './theme'
 import { FONT, FONT_FAMILY } from './font'
 import { MEDIA } from './media'
 import { TIMING } from './timing'
-
-const DEFAULT_ICONS = {}
 
 export const DEFAULT_CONFIG = {
   version: '0.0.1',

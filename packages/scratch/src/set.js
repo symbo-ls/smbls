@@ -56,38 +56,38 @@ export const VALUE_TRANSFORMERS = {
  * @param {String} key Key, or the name of the property
  * @returns {Object} Factory
  */
-export const setValue = (FACTORY_NAME, value, key) => {
+export const setValue = (factoryName, value, key) => {
   const CONFIG = getActiveConfig()
-  const factoryName = FACTORY_NAME.toLowerCase()
-  const FACTORY = CONFIG[FACTORY_NAME]
+  const lowerName = factoryName.toLowerCase()
+  const FACTORY = CONFIG[lowerName] || CONFIG[factoryName]
 
-  if (VALUE_TRANSFORMERS[factoryName]) {
+  if (VALUE_TRANSFORMERS[lowerName]) {
     try {
-      const result = VALUE_TRANSFORMERS[factoryName](value, key)
+      const result = VALUE_TRANSFORMERS[lowerName](value, key)
       FACTORY[key] = result
       return FACTORY
     } catch (error) {
-      if (CONFIG.verbose) console.warn('Error setting', factoryName, 'value', value, key, error)
+      if (CONFIG.verbose) console.warn('Error setting', lowerName, 'value', value, key, error)
     }
   }
 
-  if (CONFIG.verbose) console.warn('Can not find', factoryName, 'method in scratch')
+  if (CONFIG.verbose) console.warn('Can not find', lowerName, 'method in scratch')
 }
 
 export const setEach = (factoryName, props) => {
   const CONFIG = getActiveConfig()
-  const FACTORY_NAME = factoryName.toUpperCase()
+  const lowerName = factoryName.toLowerCase()
   const keys = Object.keys(props)
 
   keys.forEach((key) => {
     try {
-      return setValue(FACTORY_NAME, props[key], key)
+      return setValue(lowerName, props[key], key)
     } catch (error) {
-      if (CONFIG.verbose) console.warn('Error setting', FACTORY_NAME, 'value', props[key], key, error)
+      if (CONFIG.verbose) console.warn('Error setting', lowerName, 'value', props[key], key, error)
     }
   })
 
-  return CONFIG[FACTORY_NAME]
+  return CONFIG[lowerName] || CONFIG[factoryName]
 }
 
 const SET_OPTIONS = {}
@@ -107,6 +107,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     useDocumentTheme,
     useDefaultConfig,
     SEMANTIC_ICONS,
+    semantic_icons,
     ...config
   } = recivedConfig
 
@@ -123,7 +124,11 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (useDocumentTheme !== undefined) CONFIG.useDocumentTheme = useDocumentTheme
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
   if (useDefaultConfig !== undefined) CONFIG.useDefaultConfig = useDefaultConfig
-  if (SEMANTIC_ICONS !== undefined) CONFIG.SEMANTIC_ICONS = SEMANTIC_ICONS
+  const _semanticIcons = SEMANTIC_ICONS || semantic_icons
+  if (_semanticIcons !== undefined) {
+    CONFIG.semantic_icons = _semanticIcons
+    CONFIG.SEMANTIC_ICONS = CONFIG.semantic_icons // backward compat alias
+  }
   if (CONFIG.verbose) console.log(CONFIG)
 
   if (!CONFIG.__svg_cache) CONFIG.__svg_cache = {}
