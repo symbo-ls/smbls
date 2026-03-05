@@ -48,7 +48,7 @@ init({
     primary: {
       color: 'white',
       background: 'primary',
-      ':hover': { background: 'primary 0.8' }
+      ':hover': { opacity: '0.85' }
     }
   }
 })
@@ -60,10 +60,16 @@ init({
 import { create } from 'smbls'
 
 const App = {
+  extends: 'Flex',
+  flow: 'column',
+
   Header: {
+    extends: 'Flex',
     H1: { text: 'Hello Symbols!' }
   },
+
   Main: {
+    extends: 'Flex',
     Button: {
       text: 'Get Started',
       theme: 'primary'

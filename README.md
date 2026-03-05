@@ -29,7 +29,7 @@ This scaffolds a project with a design system, example components, and a dev ser
 npm install smbls
 ```
 
-Create a `designSystem.js` file and initialize:
+Create a `designSystem/index.js` file and initialize:
 
 ```javascript
 import { init } from 'smbls'
@@ -44,7 +44,7 @@ init({
     primary: {
       color: 'white',
       background: 'primary',
-      ':hover': { background: 'primary 0.85' }
+      ':hover': { opacity: '0.85' }
     }
   },
   typography: {
@@ -59,11 +59,16 @@ init({
 Components are plain objects — no JSX, no template strings:
 
 ```javascript
-const Card = {
-  props: { theme: 'primary', padding: 'A' },
+export const Card = {
+  extends: 'Flex',
+  theme: 'primary',
+  padding: 'A',
+  flow: 'column',
 
   Header: {
-    Icon: { name: 'star' },
+    extends: 'Flex',
+    flexAlign: 'center start',
+    gap: 'A',
     Title: { tag: 'h3', text: 'Hello Symbols' }
   },
 
@@ -74,7 +79,7 @@ const Card = {
   Footer: {
     Button: {
       text: 'Get Started',
-      on: { click: (ev, el) => console.log('clicked!') }
+      onClick: (ev, el) => console.log('clicked!')
     }
   }
 }
@@ -84,13 +89,9 @@ const Card = {
 
 ```javascript
 import { create } from 'smbls'
-
-const App = {
-  routes: {
-    '/': { Page: { extend: HomePage } },
-    '/about': { Page: { extend: AboutPage } }
-  }
-}
+// pages/index.js defines routes:
+// import { main } from './main.js'
+// export default { '/': main, '/about': about }
 
 create(App)
 ```
@@ -120,7 +121,7 @@ export default {
 const color = {
   blue: '#112233',
   gray: ['#111', '#CCC'],        // [light mode, dark mode]
-  modal: '--gray .1',            // reference gray with 0.1 opacity
+  modalBg: 'rgba(17, 17, 17, 0.1)', // define opacity colors as named tokens
   bg: {
     '@dark': 'black',            // dark mode value
     '@light': 'white'            // light mode value
@@ -137,13 +138,15 @@ const theme = {
   primary: {
     color: 'white',
     background: 'blue',
-    ':hover': { background: 'blue 0.8' },
-    ':active': { background: 'blue 0.6' }
+    ':hover': { opacity: '0.85' },
+    ':active': { opacity: '0.7' }
   },
   secondary: {
     color: 'blue',
     background: 'transparent',
-    border: '1px solid blue'
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'blue'
   }
 }
 ```
@@ -170,7 +173,7 @@ const icons = {
 }
 ```
 
-Use in components with `Icon: { name: 'arrow' }`. SVGs can also be inlined via bundler plugins ([Parcel](https://github.com/ewanmellor/parcel-plugin-inline-svg), [Vite](https://www.npmjs.com/package/vite-svg-loader)).
+Use inline SVG in components via `Svg: { viewBox: '0 0 24 24', html: '<path d="..." fill="currentColor"/>' }`. SVGs can also be inlined via bundler plugins ([Parcel](https://github.com/ewanmellor/parcel-plugin-inline-svg), [Vite](https://www.npmjs.com/package/vite-svg-loader)).
 
 See the [default-config](https://github.com/symbo-ls/smbls/tree/main/packages/default-config) for a complete example.
 
@@ -181,11 +184,12 @@ Components are plain JavaScript objects. CSS properties and HTML attributes work
 ### DOMQL
 
 ```javascript
-const Hero = {
+export const Hero = {
+  extends: 'Flex',
   tag: 'section',
   padding: 'D',
   flow: 'column',
-  align: 'center center',
+  flexAlign: 'center center',
 
   Title: {
     tag: 'h1',
@@ -201,17 +205,18 @@ const Hero = {
   },
 
   Actions: {
+    extends: 'Flex',
     flow: 'row',
     gap: 'B',
 
     Primary: {
-      extend: Button,
+      extends: 'Button',
       text: 'Get Started',
       theme: 'primary'
     },
 
     Secondary: {
-      extend: Button,
+      extends: 'Button',
       text: 'Learn More',
       theme: 'secondary'
     }
@@ -221,16 +226,16 @@ const Hero = {
 
 ### React
 
-The same design system works in React:
+The same design system works with [`@symbo.ls/react`](https://github.com/symbo-ls/react):
 
 ```jsx
-import { Button, H1 } from 'smbls'
+import { Flex, Button, H1 } from '@symbo.ls/react'
 
 const Hero = () => (
-  <section>
+  <Flex tag="section" flow="column" flexAlign="center center" padding="D">
     <H1 text="Build faster" fontSize="E" fontWeight="700" />
     <Button text="Get Started" theme="primary" />
-  </section>
+  </Flex>
 )
 ```
 
