@@ -11,7 +11,7 @@
  */
 
 import { resolve } from 'path'
-import { render, loadProject } from '@domql/brender'
+import { render, loadProject } from '@symbo.ls/brender'
 
 const RITA_PATH = resolve(import.meta.dirname, '../../../../next/rita')
 const route = process.argv[2] || '/'

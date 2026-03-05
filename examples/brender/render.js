@@ -14,7 +14,7 @@
 
 import { resolve } from 'path'
 import { writeFileSync, mkdirSync } from 'fs'
-import { render, generateHeadHtml, loadProject } from '@domql/brender'
+import { render, generateHeadHtml, loadProject } from '@symbo.ls/brender'
 
 const RITA_PATH = resolve(import.meta.dirname, '../../../../next/rita')
 const OUT_DIR = resolve(import.meta.dirname, 'dist')

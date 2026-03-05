@@ -16,8 +16,8 @@ const copyDir = (src, dest) => {
 
 const runBrender = async (cwd, outDir) => {
   try {
-    const { loadProject } = await import('@domql/brender/load')
-    const { renderPage } = await import('@domql/brender')
+    const { loadProject } = await import('@symbo.ls/brender/load')
+    const { renderPage } = await import('@symbo.ls/brender')
 
     console.log(chalk.dim('Pre-rendering pages with brender...'))
     const data = await loadProject(cwd)

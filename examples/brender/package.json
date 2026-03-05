@@ -1,5 +1,5 @@
 {
-  "name": "@domql/brender-examples",
+  "name": "@symbo.ls/brender-examples",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,7 @@
     "inspect:about": "node inspect.js /about"
   },
   "dependencies": {
-    "@domql/brender": "^3.2.3",
+    "@symbo.ls/brender": "^3.2.3",
     "linkedom": "^0.16.8",
     "smbls": "^3.2.3"
   }
