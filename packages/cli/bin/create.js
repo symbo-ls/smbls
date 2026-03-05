@@ -1,137 +1,37 @@
 'use strict'
 
-import chalk from 'chalk'
-import fs from 'fs'
-import path from 'path'
-import { exec, execSync } from 'child_process'
 import { program } from './program.js'
-import { addToJson } from './init-helpers/addToJson.js'
-import { patchProjectForBrowserMode } from './init-helpers/browserMode.js'
-
-function folderExists (path) {
-  try {
-    fs.accessSync(path, fs.constants.F_OK)
-    return true // The folder exists
-  } catch (err) {
-    return false // The folder does not exist
-  }
-}
-
-const REPO_URLS = {
-  domql: 'https://github.com/symbo-ls/starter-kit'
-}
+import { runProjectCreate } from './project/commands/create.js'
 
 program
   .command('create')
-  .description('Create and initialize a new project')
-  .argument('dest', 'Project directory')
-  .option('--verbose', 'Verbose output')
-  .option('--remote', 'Fetch from platform', true)
+  .description('Create and initialize a new project (alias for `project create`)')
+  .argument('[dir]', 'Project directory')
+  .option('--create-new', 'Force create new platform project', false)
+  .option('--link-existing', 'Force link to existing platform project', false)
+  .option('--local-only', 'Local-only (no platform)', false)
+  .option('--non-interactive', 'Disable prompts (require flags)', false)
+  .option('--name <name>', 'Platform project name')
+  .option('--type <projectType>', 'Platform projectType (API-required)')
+  .option('--key <projectKey>', 'Platform project key')
+  .option('--id <projectId>', 'Platform project id (for link mode)')
+  .option('--visibility <visibility>', 'Platform visibility', 'private')
+  .option('--language <language>', 'Platform language', 'javascript')
+  .option('--platform-framework <framework>', 'Platform framework field', 'platform')
+  .option('--branch <branch>', 'Local branch for .symbols/config.json', 'main')
+  .option('--verbose', 'Verbose output', false)
+  .option('--remote', 'Clone feature/remote branch when cloning templates', true)
   .option('--domql', 'Use DOMQL template (default)', true)
-  .option(
-    '--package-manager <manager>',
-    'Choose the package manager (e.g., npm, yarn)',
-    'npm'
-  )
-  .option('--clean-from-git', 'remove starter-kit git repository', true)
+  .option('--template <gitUrl>', 'Override template git repo URL')
+  .option('--package-manager <manager>', 'Choose the package manager (npm/yarn)', 'npm')
+  .option('--clean-from-git', 'Remove starter-kit git repository', true)
   .option('--no-dependencies', 'Skip installing dependencies')
   .option('--no-clone', 'Create folder instead of cloning from git')
-  .action(async (dest = 'symbols-starter-kit', options) => {
-    if (options.domql === false) {
-      console.error(chalk.red('Only DOMQL templates are supported right now.'))
-      process.exit(1)
-    }
-
-    const cloneUrl = REPO_URLS.domql
-    const packageManager = options.packageManager || 'npm'
-    const isBrowserMode = packageManager === 'browser' ||
-      ['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'].includes(packageManager)
-
-    if (folderExists(dest)) {
-      console.error(`Folder ${dest} already exists!`)
-      return
-    }
-
-    if (options.clone) {
-      console.log(`Cloning ${cloneUrl} into '${dest}'...`)
-      execSync(
-        `git clone ${
-          options.remote ? ' -b feature/remote' : ''
-        } ${cloneUrl} ${dest}`
-      )
-    } else {
-      console.log(`Creating directory '${dest}'...`)
-      fs.mkdirSync(dest, { recursive: true })
-    }
-
-    process.chdir(dest)
-
-    const SYMBOLS_FILE_PATH = path.join(process.cwd(), 'symbols.json')
-
-    // Create symbols.json if not using clone
-    if (!options.clone) {
-      const initialSymbolsJson = {
-        key: `${dest}.symbo.ls`,
-        packageManager
-      }
-      fs.writeFileSync(
-        SYMBOLS_FILE_PATH,
-        JSON.stringify(initialSymbolsJson, null, 2)
-      )
-      console.log('Created symbols.json file')
-    } else {
-      addToJson(SYMBOLS_FILE_PATH, 'key', `${dest}.symbo.ls`)
-      addToJson(SYMBOLS_FILE_PATH, 'packageManager', `${packageManager}`)
-    }
-
-    if (isBrowserMode) {
-      patchProjectForBrowserMode(path.join(process.cwd(), 'symbols'), packageManager)
-    }
-
-    if (options.dependencies && !isBrowserMode) {
-      console.log(`Installing dependencies using ${packageManager}...`)
-
-      const exc = exec(packageManager === 'yarn' ? 'yarn' : 'npm i')
-
-      if (options.verbose) {
-        exc.stdout.on('data', data => {
-          console.log(data)
-        })
-        exc.stderr.on('data', data => {
-          console.error(data)
-        })
-      } else {
-        console.log(chalk.dim('Use --verbose to print the output'))
-      }
-
-      console.log()
-
-      exc.on('close', code => {
-        console.log()
-        console.log(chalk.green.bold(dest), 'successfuly created!')
-        console.log(
-          `Done! run \`${chalk.bold(
-            'cd ' + dest + '; smbls start'
-          )}\` to start the development server.`
-        )
-      })
-    } else {
-      if (isBrowserMode) {
-        console.log(chalk.dim(`Browser mode: dependencies resolved via ${packageManager} — skipping npm install.`))
-      } else {
-        console.log(chalk.dim('Skipping dependency installation (--no-dependencies)'))
-      }
-      console.log()
-      console.log(chalk.green.bold(dest), 'successfuly created!')
-      console.log(
-        `Done! Now run \`${chalk.bold('cd ' + dest + '; smbls start')}\` to start.`
-      )
-    }
-
-    if (options.cleanFromGit && options.clone) {
-      fs.rmSync('.git', {
-        recursive: true,
-        force: true
-      })
-    }
+  .option('--blank-shared-libraries', 'Create project with blank shared libraries', false)
+  .action(async (dir, opts) => {
+    await runProjectCreate(dir, {
+      ...opts,
+      createNew: !!opts.createNew,
+      linkExisting: !!opts.linkExisting
+    })
   })
