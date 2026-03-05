@@ -3773,89 +3773,135 @@
     const editor = document.createElement('div')
     editor.className = 'obj-editor'
 
-    function rebuild () {
-      editor.innerHTML = ''
-      const entries = isArray
-        ? workingCopy.map((v, i) => [String(i), v])
-        : Object.entries(workingCopy)
+    // Recursively build editor for an object/array at any nesting depth
+    function buildLevel (container, obj, depth, setParentValue) {
+      container.innerHTML = ''
+      const isArr = Array.isArray(obj)
+      const entries = isArr
+        ? obj.map((v, i) => [String(i), v])
+        : Object.entries(obj)
 
       for (const [k, v] of entries) {
         const row = document.createElement('div')
         row.className = 'obj-editor-row'
+        if (depth > 0) row.style.paddingLeft = (depth * 12) + 'px'
 
-        if (!isArray) {
+        // Key label
+        if (!isArr) {
           const keyInput = document.createElement('input')
           keyInput.className = 'prop-edit-input obj-key-input'
           keyInput.value = k
           keyInput.readOnly = true
           keyInput.title = k
           row.appendChild(keyInput)
-
-          const colon = document.createElement('span')
-          colon.className = 'prop-colon'
-          colon.textContent = ': '
-          row.appendChild(colon)
         } else {
           const idx = document.createElement('span')
           idx.className = 'prop-key'
           idx.textContent = k
           idx.style.minWidth = '20px'
           row.appendChild(idx)
-
-          const colon = document.createElement('span')
-          colon.className = 'prop-colon'
-          colon.textContent = ': '
-          row.appendChild(colon)
         }
 
-        const valInput = document.createElement('input')
-        valInput.className = 'prop-edit-input'
-        valInput.value = typeof v === 'string' ? v
-          : v === null ? 'null'
-          : typeof v === 'object' ? JSON.stringify(v)
-          : String(v)
-        valInput.dataset.origType = typeof v === 'string' ? 'string'
-          : v === null ? 'null'
-          : typeof v === 'object' ? 'json'
-          : typeof v
-        valInput.addEventListener('change', () => {
-          const parsed = parsePreservingType(valInput.value, valInput.dataset.origType)
-          if (isArray) workingCopy[parseInt(k)] = parsed
-          else workingCopy[k] = parsed
-        })
-        row.appendChild(valInput)
+        const colon = document.createElement('span')
+        colon.className = 'prop-colon'
+        colon.textContent = ': '
+        row.appendChild(colon)
 
-        // Delete button
-        const delBtn = document.createElement('button')
-        delBtn.className = 'obj-editor-del'
-        delBtn.textContent = '\u00d7'
-        delBtn.title = 'Remove'
-        delBtn.addEventListener('click', (e) => {
-          e.stopPropagation()
-          if (isArray) workingCopy.splice(parseInt(k), 1)
-          else delete workingCopy[k]
-          rebuild()
-        })
-        row.appendChild(delBtn)
+        const isNested = v !== null && typeof v === 'object'
 
-        editor.appendChild(row)
+        if (isNested) {
+          // Nested object/array — show toggle + nested editor
+          const nestedIsArr = Array.isArray(v)
+          const preview = document.createElement('span')
+          preview.className = 'obj-nested-preview'
+          preview.textContent = nestedIsArr ? '[' + v.length + ']' : '{' + Object.keys(v).length + '}'
+          preview.style.cursor = 'pointer'
+          preview.style.color = 'var(--text-dim)'
+          preview.style.fontSize = '10px'
+          row.appendChild(preview)
+
+          // Delete button
+          const delBtn = document.createElement('button')
+          delBtn.className = 'obj-editor-del'
+          delBtn.textContent = '\u00d7'
+          delBtn.title = 'Remove'
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation()
+            if (isArr) obj.splice(parseInt(k), 1)
+            else delete obj[k]
+            if (setParentValue) setParentValue(obj)
+            buildLevel(container, obj, depth, setParentValue)
+          })
+          row.appendChild(delBtn)
+          container.appendChild(row)
+
+          // Nested container (collapsed by default for depth > 0)
+          const nestedContainer = document.createElement('div')
+          nestedContainer.className = 'obj-editor-nested'
+          let nestedExpanded = depth === 0
+          if (!nestedExpanded) nestedContainer.style.display = 'none'
+          else buildLevel(nestedContainer, v, depth + 1, (newVal) => {
+            if (isArr) obj[parseInt(k)] = newVal
+            else obj[k] = newVal
+          })
+
+          preview.addEventListener('click', () => {
+            nestedExpanded = !nestedExpanded
+            nestedContainer.style.display = nestedExpanded ? 'block' : 'none'
+            if (nestedExpanded && nestedContainer.innerHTML === '') {
+              buildLevel(nestedContainer, v, depth + 1, (newVal) => {
+                if (isArr) obj[parseInt(k)] = newVal
+                else obj[k] = newVal
+              })
+            }
+          })
+          container.appendChild(nestedContainer)
+        } else {
+          // Primitive value — editable input
+          const valInput = document.createElement('input')
+          valInput.className = 'prop-edit-input'
+          valInput.value = v === null ? 'null' : String(v)
+          valInput.dataset.origType = v === null ? 'null' : typeof v
+          valInput.addEventListener('change', () => {
+            const parsed = parsePreservingType(valInput.value, valInput.dataset.origType)
+            if (isArr) obj[parseInt(k)] = parsed
+            else obj[k] = parsed
+          })
+          row.appendChild(valInput)
+
+          // Delete button
+          const delBtn = document.createElement('button')
+          delBtn.className = 'obj-editor-del'
+          delBtn.textContent = '\u00d7'
+          delBtn.title = 'Remove'
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation()
+            if (isArr) obj.splice(parseInt(k), 1)
+            else delete obj[k]
+            if (setParentValue) setParentValue(obj)
+            buildLevel(container, obj, depth, setParentValue)
+          })
+          row.appendChild(delBtn)
+          container.appendChild(row)
+        }
       }
 
       // Add entry button
       const addRow = document.createElement('div')
       addRow.className = 'obj-editor-row obj-editor-add'
+      if (depth > 0) addRow.style.paddingLeft = (depth * 12) + 'px'
       const addBtn = document.createElement('button')
       addBtn.className = 'prop-add-btn'
-      addBtn.textContent = isArray ? '+ Add item' : '+ Add key'
+      addBtn.textContent = isArr ? '+ Add item' : '+ Add key'
       addBtn.style.fontSize = '10px'
       addBtn.style.padding = '2px 6px'
       addBtn.addEventListener('click', (e) => {
         e.stopPropagation()
-        if (isArray) { workingCopy.push(''); rebuild() }
+        if (isArr) { obj.push(''); buildLevel(container, obj, depth, setParentValue) }
         else {
-          // Inline key input instead of prompt()
           const keyRow = document.createElement('div')
           keyRow.className = 'obj-editor-row'
+          if (depth > 0) keyRow.style.paddingLeft = (depth * 12) + 'px'
           const keyInput = document.createElement('input')
           keyInput.className = 'prop-edit-input'
           keyInput.placeholder = 'key name'
@@ -3863,25 +3909,27 @@
           keyRow.appendChild(keyInput)
           addRow.before(keyRow)
           keyInput.focus()
+          const finishAdd = () => {
+            const newKey = keyInput.value.trim()
+            if (newKey && !(newKey in obj)) { obj[newKey] = ''; buildLevel(container, obj, depth, setParentValue) }
+            else keyRow.remove()
+          }
           keyInput.addEventListener('keydown', (ev) => {
-            if (ev.key === 'Enter') {
-              const k = keyInput.value.trim()
-              if (k && !(k in workingCopy)) { workingCopy[k] = ''; rebuild() }
-              else keyRow.remove()
-            }
+            if (ev.key === 'Enter') finishAdd()
             if (ev.key === 'Escape') keyRow.remove()
           })
-          keyInput.addEventListener('blur', () => {
-            const k = keyInput.value.trim()
-            if (k && !(k in workingCopy)) { workingCopy[k] = ''; rebuild() }
-            else keyRow.remove()
-          })
+          keyInput.addEventListener('blur', finishAdd)
         }
       })
       addRow.appendChild(addBtn)
-      editor.appendChild(addRow)
+      container.appendChild(addRow)
+    }
 
-      // Save / Cancel buttons
+    function rebuild () {
+      editor.innerHTML = ''
+      buildLevel(editor, workingCopy, 0, null)
+
+      // Save / Cancel buttons (always at bottom of top-level editor)
       const actions = document.createElement('div')
       actions.className = 'obj-editor-actions'
       const saveBtn = document.createElement('button')
@@ -3916,24 +3964,7 @@
     }
 
     async function commitObj () {
-      // Read latest values from inputs
-      const inputs = editor.querySelectorAll('.obj-editor-row:not(.obj-editor-add)')
-      if (isArray) {
-        workingCopy = []
-        inputs.forEach(row => {
-          const inp = row.querySelector('.prop-edit-input:not(.obj-key-input)')
-          if (inp) workingCopy.push(parsePreservingType(inp.value, inp.dataset.origType))
-        })
-      } else {
-        workingCopy = {}
-        inputs.forEach(row => {
-          const keyInp = row.querySelector('.obj-key-input')
-          const valInp = row.querySelector('.prop-edit-input:not(.obj-key-input)')
-          if (keyInp && valInp) {
-            workingCopy[keyInp.value] = parsePreservingType(valInp.value, valInp.dataset.origType)
-          }
-        })
-      }
+      // workingCopy is already updated in-place by input change handlers and recursive buildLevel
 
       el.classList.remove('editing')
       el.innerHTML = ''
@@ -5773,11 +5804,28 @@ Do NOT include any explanation, only valid JSON.`
         var comps = [];
         var pages = [];
 
+        // Count component usage in the live tree
+        var usage = {};
+        function countUsage(e, d) {
+          if (d > 20 || !e || !e.node) return;
+          var cname = (e.__ref && e.__ref.__name) || e.component || '';
+          if (cname) usage[cname] = (usage[cname] || 0) + 1;
+          // Also count by key if it's CapitalCase
+          if (e.key && /^[A-Z]/.test(e.key) && e.key !== cname) {
+            usage[e.key] = (usage[e.key] || 0) + 1;
+          }
+          for (var ck in e) {
+            if (ck === 'parent' || ck === 'node' || ck === 'context' || ck === 'state' || ck.startsWith('__')) continue;
+            if (e[ck] && typeof e[ck] === 'object' && e[ck].node) countUsage(e[ck], d + 1);
+          }
+        }
+        countUsage(el, 0);
+
         // Extract context.components (CapitalCase keys)
         var src = ctx.components || {};
         for (var k in src) {
           if (k[0] === k[0].toUpperCase() && k[0] !== '_' && /^[A-Z]/.test(k)) {
-            comps.push({ name: k });
+            comps.push({ name: k, count: usage[k] || 0 });
           }
         }
 
@@ -5810,7 +5858,8 @@ Do NOT include any explanation, only valid JSON.`
         chip.title = page.path || ''
         chip.addEventListener('click', () => {
           // Navigate to page in the inspected tab
-          pageEval('window.location.href = ' + JSON.stringify(page.path)).catch(() => {})
+          const path = page.path.startsWith('/') ? page.path : '/' + page.path
+          pageEval('window.location.pathname = ' + JSON.stringify(path)).catch(() => {})
         })
         pagesRow.appendChild(chip)
       }
@@ -5831,6 +5880,14 @@ Do NOT include any explanation, only valid JSON.`
       const name = document.createElement('div')
       name.className = 'gallery-card-name'
       name.textContent = comp.name
+
+      if (comp.count > 0) {
+        const count = document.createElement('span')
+        count.className = 'gallery-card-count'
+        count.textContent = comp.count
+        count.title = 'Used ' + comp.count + ' time' + (comp.count === 1 ? '' : 's')
+        name.appendChild(count)
+      }
 
       card.appendChild(name)
 
@@ -5892,13 +5949,36 @@ Do NOT include any explanation, only valid JSON.`
         if (!I) return JSON.stringify({data:{},debug:'no inspector'});
         var el = I.findRoot();
         if (!el) return JSON.stringify({data:{},debug:'no root'});
+
+        // Find state - may be on root or on a child element
         var st = el.state;
-        if (!st) return JSON.stringify({data:{},debug:'no state on root. root key=' + (el.key||'?') + ' keys: ' + Object.keys(el).slice(0,15).join(',')});
+        if (!st || typeof st !== 'object' || !Object.keys(st).some(function(k){ return k !== 'parent' && k !== 'update' && !k.startsWith('__') && typeof st[k] !== 'function'; })) {
+          // Walk children to find element with meaningful state
+          function findState(e, d) {
+            if (d > 4 || !e) return null;
+            for (var k in e) {
+              if (k === 'parent' || k === 'node' || k === 'context' || k.startsWith('__')) continue;
+              if (e[k] && typeof e[k] === 'object' && e[k].node) {
+                if (e[k].state && typeof e[k].state === 'object') {
+                  var hasData = Object.keys(e[k].state).some(function(sk){ return sk !== 'parent' && sk !== 'update' && !sk.startsWith('__') && typeof e[k].state[sk] !== 'function'; });
+                  if (hasData) return e[k].state;
+                }
+                var found = findState(e[k], d + 1);
+                if (found) return found;
+              }
+            }
+            return null;
+          }
+          var childState = findState(el, 0);
+          if (childState) st = childState;
+        }
+        if (!st) return JSON.stringify({data:{},debug:'no state found on root or children'});
         var SKIP = {parent:1,root:1,update:1,set:1,reset:1,replace:1,toggle:1,
           remove:1,add:1,apply:1,setByPath:1,parse:1,clean:1,destroy:1,
           create:1,quietUpdate:1,__element:1,__depends:1,__ref:1};
         var result = {};
         var stKeys = [];
+        var skipped = [];
         for (var k in st) {
           if (SKIP[k] || k.startsWith('__') || typeof st[k] === 'function') continue;
           stKeys.push(k);
@@ -5910,15 +5990,16 @@ Do NOT include any explanation, only valid JSON.`
             } else if (Array.isArray(v)) {
               result[k] = { type: 'array', length: v.length, value: JSON.parse(JSON.stringify(v.slice(0, 50))) };
             } else if (t === 'object') {
-              if (v.node) continue;
+              if (v.node) { skipped.push(k + '(node)'); continue; }
+              if (v.parent === st) { skipped.push(k + '(childState)'); continue; }
               var keys = Object.keys(v).filter(function(kk){ return !kk.startsWith('__') && typeof v[kk] !== 'function'; });
               var obj = {};
               keys.slice(0, 100).forEach(function(kk){ try { obj[kk] = JSON.parse(JSON.stringify(v[kk])); } catch(e){} });
               result[k] = { type: 'object', keys: keys.length, value: obj };
             }
-          } catch(e) {}
+          } catch(e) { skipped.push(k + '(err:' + e.message + ')'); }
         }
-        return JSON.stringify({data:result, debug:'state keys: ' + stKeys.join(',')});
+        return JSON.stringify({data:result, debug:'keys: ' + stKeys.join(',') + '; skipped: ' + skipped.join(',') + '; resultKeys: ' + Object.keys(result).join(',')});
       })()`)
       if (raw) {
         const parsed = JSON.parse(raw)
@@ -5944,6 +6025,14 @@ Do NOT include any explanation, only valid JSON.`
       sidebar.innerHTML = '<div class="empty-message">No root state data' + (contentDebug ? '<br><small style="opacity:0.5">' + contentDebug + '</small>' : '') + '</div>'
       main.innerHTML = ''
       return
+    }
+
+    // Temporary debug
+    if (contentDebug) {
+      const dbg = document.createElement('div')
+      dbg.style.cssText = 'font-size:9px;color:var(--text-dim);padding:4px 8px;opacity:0.5'
+      dbg.textContent = contentDebug
+      sidebar.appendChild(dbg)
     }
 
     // Render sidebar items

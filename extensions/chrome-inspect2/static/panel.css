@@ -771,6 +771,18 @@ body {
   opacity: 1;
   color: var(--error-color);
 }
+.obj-editor-nested {
+  border-left: 1px solid var(--border);
+  margin-left: 8px;
+}
+.obj-nested-preview {
+  padding: 1px 4px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-input);
+}
+.obj-nested-preview:hover {
+  color: var(--accent) !important;
+}
 .obj-editor-actions {
   display: flex;
   gap: 4px;
@@ -2624,6 +2636,19 @@ body {
   color: var(--text-bright);
   font-weight: 500;
   margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gallery-card-count {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-dim);
+  background: var(--bg-input);
+  border-radius: 8px;
+  padding: 1px 5px;
+  min-width: 14px;
+  text-align: center;
 }
 .gallery-card-tag {
   font-size: 10px;
