@@ -27,7 +27,7 @@
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
-  "browser": "./dist/iife/index.js",
+  "browser": "./index.js",
   "unpkg": "./dist/iife/index.js",
   "jsdelivr": "./dist/iife/index.js",
   "sideEffects": false

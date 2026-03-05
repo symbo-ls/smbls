@@ -16,7 +16,7 @@
   "source": "index.js",
   "type": "module",
   "module": "./index.js",
-  "browser": "./dist/iife/index.js",
+  "browser": "./index.js",
   "unpkg": "./dist/iife/index.js",
   "jsdelivr": "./dist/iife/index.js",
   "sideEffects": false,
