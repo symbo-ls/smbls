@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/runner",
-  "version": "3.4.8",
+  "version": "3.4.9",
   "description": "Build runner and toolchain for Symbols projects",
   "main": "index.js",
   "type": "module",

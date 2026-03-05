@@ -1,6 +1,6 @@
 {
   "name": "create-smbls",
-  "version": "3.4.8",
+  "version": "3.4.9",
   "description": "Create a new Symbols project",
   "author": "Symbols",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "create-smbls": "index.js"
   },
   "dependencies": {
-    "@symbo.ls/cli": "^3.4.8"
+    "@symbo.ls/cli": "^3.4.9"
   },
   "scripts": {
     "vpush": "git add . && git commit -am 'version update' && git push",

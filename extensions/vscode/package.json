@@ -2,7 +2,7 @@
   "name": "symbols-app-connect",
   "displayName": "Symbols.app Connect",
   "description": "Symbols.app Connect for DOMQL syntax — properties, events, components, element methods, state and more",
-  "version": "3.4.8",
+  "version": "3.4.9",
   "publisher": "symbo-ls",
   "repository": {
     "type": "git",
