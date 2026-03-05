@@ -66,10 +66,12 @@
   <!-- Main App (hidden until connected) -->
   <div id="app" style="display:none">
 
-    <!-- Top-level mode tabs: Chat / Editor -->
+    <!-- Top-level mode tabs -->
     <div id="mode-tabs">
       <button class="mode-tab active" data-mode="editor">Editor</button>
       <button class="mode-tab" data-mode="chat">Chat</button>
+      <button class="mode-tab" data-mode="gallery">Gallery</button>
+      <button class="mode-tab" data-mode="content">Content</button>
       <span class="mode-tab-spacer"></span>
       <span id="app-connection-badge"></span>
       <button id="btn-app-disconnect" title="Disconnect">&#10005;</button>
@@ -85,7 +87,14 @@
         <button id="btn-refresh" title="Refresh element tree">Refresh</button>
         <button id="btn-undo" title="Undo last change (Ctrl+Z)" disabled>&#8617;</button>
         <button id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled>&#8618;</button>
-        <button id="btn-sync" class="btn-sync" title="Sync changes to source" style="display:none">Sync</button>
+        <div class="btn-sync-wrap">
+          <button id="btn-sync" class="btn-sync" title="Sync changes to source" style="display:none">Sync</button>
+          <button id="btn-sync-dropdown" class="btn-sync-dropdown" title="View pending changes" style="display:none">&#9662;</button>
+        </div>
+        <div id="sync-changes-panel" class="sync-changes-panel" style="display:none">
+          <div class="sync-changes-header">Pending Changes <button id="sync-changes-close">&times;</button></div>
+          <div id="sync-changes-list"></div>
+        </div>
         <span id="status"></span>
         <button id="btn-reload" title="Reload panel">&#8635;</button>
       </div>
@@ -146,21 +155,21 @@
           </div>
         </div>
       </div>
-      <!-- Editor AI bar -->
+      <!-- Editor AI bar (bottom) -->
       <div id="ai-bar">
         <div id="ai-result"></div>
         <div id="ai-input-row">
+          <input id="ai-input" type="text" placeholder="Ask AI to modify components..." />
+          <div class="ai-scope-toggle" title="Scope">
+            <button class="ai-scope-btn active" data-scope="element">Element</button>
+            <button class="ai-scope-btn" data-scope="section">Section</button>
+          </div>
           <select id="ai-model" class="ai-model-select" title="Select AI model">
             <option value="Starter">Starter (free)</option>
             <option value="claude">Claude</option>
             <option value="chrome">Chrome AI (local)</option>
           </select>
           <button class="ai-settings-btn" title="AI settings" data-settings="ai">&#9881;</button>
-          <div class="ai-scope-toggle" title="Scope">
-            <button class="ai-scope-btn active" data-scope="element">Element</button>
-            <button class="ai-scope-btn" data-scope="section">Section</button>
-          </div>
-          <input id="ai-input" type="text" placeholder="Ask AI to modify components..." />
           <button id="ai-send">Send</button>
         </div>
       </div>
@@ -188,18 +197,45 @@
         <button id="chat-pick-element" class="chat-pick-btn" title="Pick an element to include as context">Select Element</button>
       </div>
       <div id="chat-input-row">
+        <input id="chat-input" type="text" placeholder="Describe what you want to change..." />
+        <div class="ai-scope-toggle" title="Scope">
+          <button class="ai-scope-btn active" data-scope="element">Element</button>
+          <button class="ai-scope-btn" data-scope="section">Section</button>
+        </div>
         <select id="chat-model" class="ai-model-select" title="Select AI model">
           <option value="Starter">Starter (free)</option>
           <option value="claude">Claude</option>
           <option value="chrome">Chrome AI (local)</option>
         </select>
         <button class="ai-settings-btn" title="AI settings" data-settings="ai">&#9881;</button>
-        <div class="ai-scope-toggle" title="Scope">
-          <button class="ai-scope-btn active" data-scope="element">Element</button>
-          <button class="ai-scope-btn" data-scope="section">Section</button>
-        </div>
-        <input id="chat-input" type="text" placeholder="Describe what you want to change..." />
         <button id="chat-send">Send</button>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         GALLERY MODE
+         ============================================================ -->
+    <div id="mode-gallery" class="mode-panel">
+      <div id="gallery-toolbar">
+        <input id="gallery-search" type="text" placeholder="Search components..." class="gallery-search" />
+      </div>
+      <div id="gallery-pages" class="gallery-pages-row"></div>
+      <div id="gallery-container" class="gallery-grid"></div>
+    </div>
+
+    <!-- ============================================================
+         CONTENT MODE
+         ============================================================ -->
+    <div id="mode-content" class="mode-panel">
+      <div id="content-toolbar">
+        <select id="content-language" class="content-lang-select">
+          <option value="en">English (en)</option>
+        </select>
+        <button id="content-add-lang" class="content-add-lang-btn" title="Add language">+ Language</button>
+      </div>
+      <div id="content-body">
+        <div id="content-sidebar"></div>
+        <div id="content-main"></div>
       </div>
     </div>
 

@@ -21,6 +21,7 @@
   let redoStack = []
   let platformProjectData = null // project data from platform API
   let platformProjectId = null
+  let cachedDesignSystem = null // cached DS for autocomplete suggestions
 
   // ============================================================
   // IndexedDB
@@ -1264,13 +1265,70 @@
 
   function updateSyncButton () {
     const btn = document.getElementById('btn-sync')
+    const dropdown = document.getElementById('btn-sync-dropdown')
     if (!btn) return
     const count = pendingSyncOps.length
     if (count > 0) {
       btn.style.display = ''
       btn.textContent = 'Sync (' + count + ')'
+      if (dropdown) dropdown.style.display = ''
     } else {
       btn.style.display = 'none'
+      if (dropdown) dropdown.style.display = 'none'
+      const panel = document.getElementById('sync-changes-panel')
+      if (panel) panel.style.display = 'none'
+    }
+  }
+
+  function toggleSyncChangesPanel () {
+    const panel = document.getElementById('sync-changes-panel')
+    if (!panel) return
+    const visible = panel.style.display !== 'none'
+    if (visible) {
+      panel.style.display = 'none'
+      return
+    }
+    panel.style.display = ''
+    renderSyncChangesList()
+  }
+
+  function renderSyncChangesList () {
+    const list = document.getElementById('sync-changes-list')
+    if (!list) return
+    list.innerHTML = ''
+
+    if (pendingSyncOps.length === 0) {
+      list.innerHTML = '<div class="empty-message">No pending changes</div>'
+      return
+    }
+
+    for (let i = 0; i < pendingSyncOps.length; i++) {
+      const op = pendingSyncOps[i]
+      const row = document.createElement('div')
+      row.className = 'sync-change-row'
+
+      const path = document.createElement('span')
+      path.className = 'sync-change-path'
+      path.textContent = (op.elementPath || '') + '.' + op.key
+
+      const val = document.createElement('span')
+      val.className = 'sync-change-val'
+      val.textContent = typeof op.value === 'string' ? op.value : JSON.stringify(op.value)
+
+      const removeBtn = document.createElement('button')
+      removeBtn.className = 'sync-change-remove'
+      removeBtn.textContent = '\u00d7'
+      removeBtn.title = 'Remove this change'
+      removeBtn.addEventListener('click', () => {
+        pendingSyncOps.splice(i, 1)
+        updateSyncButton()
+        renderSyncChangesList()
+      })
+
+      row.appendChild(path)
+      row.appendChild(val)
+      row.appendChild(removeBtn)
+      list.appendChild(row)
     }
   }
 
@@ -1701,6 +1759,12 @@
         }
 
         setStatus('Tree loaded')
+        // Pre-cache design system for autocomplete
+        if (!cachedDesignSystem) {
+          fetchRuntimeDesignSystem().then(ds => {
+            if (ds && Object.keys(ds).length > 0) cachedDesignSystem = ds
+          })
+        }
       } else {
         setStatus('No DOMQL root found')
       }
@@ -2124,7 +2188,7 @@
 
     // --- Original view ---
     if (!hasOriginal) {
-      originalPanel.innerHTML = '<div class="empty-message">No original definition props found</div>'
+      originalPanel.innerHTML = '<div class="empty-message">No original definition props found. Connect a local folder or platform to recognize original props.</div>'
     } else {
       for (const [key, val] of Object.entries(selectedInfo.originalProps)) {
         const isFunc = key in funcProps
@@ -2205,6 +2269,36 @@
     row.dataset.propKey = key
     row.dataset.propType = type
 
+    // Checkbox to disable/enable prop (like CSS DevTools)
+    const checkbox = document.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.checked = true
+    checkbox.className = 'prop-checkbox'
+    checkbox.title = 'Toggle property'
+    checkbox.addEventListener('change', async () => {
+      row.classList.toggle('prop-disabled', !checkbox.checked)
+      if (checkbox.checked) {
+        // Re-enable: set value back
+        const expr = type === 'state'
+          ? 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(val) + '))'
+          : 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(val) + '))'
+        await pageEval(expr).catch(() => {})
+        setStatus('Enabled ' + key)
+      } else {
+        // Disable: set to undefined/remove
+        const expr = type === 'state'
+          ? 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',undefined))'
+          : 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',undefined))'
+        await pageEval(expr).catch(() => {})
+        setStatus('Disabled ' + key)
+      }
+    })
+    row.appendChild(checkbox)
+
     const keyEl = document.createElement('span')
     keyEl.className = 'prop-key'
     keyEl.textContent = key
@@ -2240,6 +2334,56 @@
       valEl.addEventListener('click', () => startEditing(valEl, key, editableVal, type, componentName))
     }
 
+    // Number arrows (like CSS DevTools)
+    const isNum = typeof val === 'number' || (typeof val === 'string' && /^-?\d+(\.\d+)?(px|em|rem|%|vh|vw|ms|s)?$/.test(val))
+    if (isNum && !isComplex(val)) {
+      const arrows = document.createElement('span')
+      arrows.className = 'prop-num-arrows'
+      const upBtn = document.createElement('button')
+      upBtn.className = 'prop-num-arrow up'
+      upBtn.textContent = '\u25B2'
+      upBtn.title = 'Increment'
+      const downBtn = document.createElement('button')
+      downBtn.className = 'prop-num-arrow down'
+      downBtn.textContent = '\u25BC'
+      downBtn.title = 'Decrement'
+
+      const nudge = async (delta) => {
+        const current = typeof val === 'number' ? val : parseFloat(val)
+        const unit = typeof val === 'string' ? val.replace(/^-?\d+(\.\d+)?/, '') : ''
+        const newNum = current + delta
+        const newVal = unit ? String(newNum) + unit : newNum
+        val = newVal
+        valEl.innerHTML = ''
+        valEl.appendChild(renderValue(newVal))
+        // Reattach click
+        if (!isComplex(newVal)) {
+          valEl.addEventListener('click', () => startEditing(valEl, key, newVal, type, componentName))
+        }
+        const expr = type === 'state'
+          ? 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(newVal) + '))'
+          : 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(newVal) + '))'
+        await pageEval(expr).catch(() => {})
+      }
+      upBtn.addEventListener('click', (e) => { e.stopPropagation(); nudge(1) })
+      downBtn.addEventListener('click', (e) => { e.stopPropagation(); nudge(-1) })
+      arrows.appendChild(upBtn)
+      arrows.appendChild(downBtn)
+
+      const semiEl = document.createElement('span')
+      semiEl.className = 'prop-semi'
+      semiEl.textContent = ';'
+
+      row.appendChild(keyEl)
+      row.appendChild(colonEl)
+      row.appendChild(valEl)
+      row.appendChild(arrows)
+      row.appendChild(semiEl)
+      return row
+    }
+
     const semiEl = document.createElement('span')
     semiEl.className = 'prop-semi'
     semiEl.textContent = ';'
@@ -2251,6 +2395,49 @@
     return row
   }
 
+  // All known prop keys for autocomplete
+  const KNOWN_PROP_KEYS = [
+    // Layout
+    'display', 'position', 'overflow', 'overflowX', 'overflowY', 'visibility',
+    'flex', 'flexDirection', 'flexWrap', 'flexGrow', 'flexShrink', 'flexBasis',
+    'alignItems', 'alignContent', 'alignSelf', 'justifyContent', 'justifyItems', 'justifySelf',
+    'flow', 'wrap', 'order',
+    // Spacing
+    'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+    'paddingInline', 'paddingBlock',
+    'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+    'marginInline', 'marginBlock',
+    'gap', 'rowGap', 'columnGap',
+    // Size
+    'width', 'height', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight', 'boxSize',
+    // Position
+    'top', 'right', 'bottom', 'left', 'inset', 'zIndex',
+    // Color
+    'color', 'background', 'backgroundColor', 'borderColor', 'fill', 'stroke',
+    'opacity',
+    // Typography
+    'fontSize', 'fontFamily', 'fontWeight', 'fontStyle', 'lineHeight', 'letterSpacing',
+    'textAlign', 'textDecoration', 'textTransform', 'textOverflow', 'whiteSpace', 'wordBreak',
+    // Border
+    'border', 'borderWidth', 'borderStyle', 'borderRadius', 'round',
+    'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
+    // Effects
+    'boxShadow', 'transition', 'transform', 'animation', 'cursor', 'pointerEvents',
+    'userSelect', 'outline', 'outlineColor', 'outlineWidth', 'outlineOffset',
+    // Background
+    'backgroundImage', 'backgroundSize', 'backgroundRepeat', 'backgroundPosition', 'backgroundClip',
+    // Grid
+    'gridTemplate', 'gridTemplateColumns', 'gridTemplateRows', 'gridColumn', 'gridRow',
+    'gridArea', 'gridGap',
+    // DOMQL specific
+    'tag', 'text', 'html', 'theme', 'scope', 'if', 'content',
+    'src', 'href', 'placeholder', 'type', 'value', 'title', 'alt',
+    'childExtend', 'childProps', 'extend', 'props',
+    // Other
+    'objectFit', 'objectPosition', 'resize', 'appearance', 'boxSizing',
+    'willChange', 'verticalAlign', 'mixBlendMode', 'backdropFilter', 'filter'
+  ]
+
   function createAddButton (type) {
     const wrap = document.createElement('div')
     wrap.className = 'prop-add-row'
@@ -2261,7 +2448,7 @@
       // Replace button with inline key:value editor
       wrap.innerHTML = ''
       const row = document.createElement('div')
-      row.className = 'prop-row'
+      row.className = 'prop-row prop-add-inline'
 
       const keyInput = document.createElement('input')
       keyInput.className = 'prop-edit-input'
@@ -2287,7 +2474,112 @@
       row.appendChild(semiEl)
       wrap.appendChild(row)
 
+      // Key autocomplete dropdown
+      const keyDropdown = document.createElement('div')
+      keyDropdown.className = 'prop-dropdown'
+      keyDropdown.style.display = 'none'
+      row.appendChild(keyDropdown)
+
+      // Value autocomplete dropdown
+      const valDropdown = document.createElement('div')
+      valDropdown.className = 'prop-dropdown'
+      valDropdown.style.display = 'none'
+      row.appendChild(valDropdown)
+
+      let keyFiltered = []
+      let keyActiveIdx = -1
+      let valFiltered = []
+      let valActiveIdx = -1
+      let activeDropdown = null
+
+      function showKeyDropdown () {
+        activeDropdown = 'key'
+        valDropdown.style.display = 'none'
+        const text = keyInput.value.toLowerCase()
+        // Exclude props that already exist
+        const existing = selectedInfo ? Object.keys(selectedInfo.props || {}) : []
+        keyFiltered = KNOWN_PROP_KEYS
+          .filter(k => !existing.includes(k) && (text ? k.toLowerCase().includes(text) : true))
+          .slice(0, 20)
+          .map(k => ({ label: k }))
+        keyActiveIdx = -1
+        renderKeyDD()
+      }
+
+      function renderKeyDD () {
+        keyDropdown.innerHTML = ''
+        if (keyFiltered.length === 0) { keyDropdown.style.display = 'none'; return }
+        keyDropdown.style.display = ''
+        for (let i = 0; i < keyFiltered.length; i++) {
+          const item = document.createElement('div')
+          item.className = 'prop-dropdown-item' + (i === keyActiveIdx ? ' active' : '')
+          item.textContent = keyFiltered[i].label
+          item.addEventListener('mousedown', (e) => {
+            e.preventDefault()
+            keyInput.value = keyFiltered[i].label
+            keyDropdown.style.display = 'none'
+            valInput.focus()
+            showValDropdown()
+          })
+          keyDropdown.appendChild(item)
+        }
+      }
+
+      function showValDropdown () {
+        activeDropdown = 'val'
+        keyDropdown.style.display = 'none'
+        const propName = keyInput.value.trim()
+        const allSuggestions = getSuggestionsForProp(propName) || []
+        const text = valInput.value.toLowerCase()
+        valFiltered = text
+          ? allSuggestions.filter(s => s.label.toLowerCase().includes(text)).slice(0, 20)
+          : allSuggestions.slice(0, 20)
+        valActiveIdx = -1
+        renderValDD()
+      }
+
+      function renderValDD () {
+        valDropdown.innerHTML = ''
+        if (valFiltered.length === 0) { valDropdown.style.display = 'none'; return }
+        valDropdown.style.display = ''
+        for (let i = 0; i < valFiltered.length; i++) {
+          const s = valFiltered[i]
+          const item = document.createElement('div')
+          item.className = 'prop-dropdown-item' + (i === valActiveIdx ? ' active' : '')
+          if (s.hex !== undefined) {
+            const sw = document.createElement('span')
+            sw.className = 'dd-swatch'
+            sw.style.background = s.hex || '#555'
+            item.appendChild(sw)
+          }
+          const label = document.createElement('span')
+          label.textContent = s.label
+          item.appendChild(label)
+          if (s.hint) {
+            const hint = document.createElement('span')
+            hint.className = 'dd-hint'
+            hint.textContent = s.hint
+            item.appendChild(hint)
+          }
+          item.addEventListener('mousedown', (e) => {
+            e.preventDefault()
+            valInput.value = s.label
+            valDropdown.style.display = 'none'
+          })
+          valDropdown.appendChild(item)
+        }
+      }
+
+      keyInput.addEventListener('input', showKeyDropdown)
+      keyInput.addEventListener('focus', showKeyDropdown)
+      keyInput.addEventListener('blur', () => setTimeout(() => { keyDropdown.style.display = 'none' }, 150))
+
+      valInput.addEventListener('input', showValDropdown)
+      valInput.addEventListener('focus', showValDropdown)
+      valInput.addEventListener('blur', () => setTimeout(() => { valDropdown.style.display = 'none' }, 150))
+
       keyInput.focus()
+      showKeyDropdown()
 
       const commit = async () => {
         const key = keyInput.value.trim()
@@ -2316,13 +2608,31 @@
       }
 
       valInput.addEventListener('keydown', (e) => {
+        if (activeDropdown === 'val' && valFiltered.length > 0) {
+          if (e.key === 'ArrowDown') { e.preventDefault(); valActiveIdx = Math.min(valActiveIdx + 1, valFiltered.length - 1); renderValDD(); return }
+          if (e.key === 'ArrowUp') { e.preventDefault(); valActiveIdx = Math.max(valActiveIdx - 1, 0); renderValDD(); return }
+          if (e.key === 'Enter' && valActiveIdx >= 0) { e.preventDefault(); valInput.value = valFiltered[valActiveIdx].label; valDropdown.style.display = 'none'; commit(); return }
+        }
         if (e.key === 'Enter') commit()
         if (e.key === 'Escape') renderDetail()
       })
       keyInput.addEventListener('keydown', (e) => {
+        if (activeDropdown === 'key' && keyFiltered.length > 0) {
+          if (e.key === 'ArrowDown') { e.preventDefault(); keyActiveIdx = Math.min(keyActiveIdx + 1, keyFiltered.length - 1); renderKeyDD(); return }
+          if (e.key === 'ArrowUp') { e.preventDefault(); keyActiveIdx = Math.max(keyActiveIdx - 1, 0); renderKeyDD(); return }
+          if ((e.key === 'Enter' || e.key === 'Tab') && keyActiveIdx >= 0) {
+            e.preventDefault()
+            keyInput.value = keyFiltered[keyActiveIdx].label
+            keyDropdown.style.display = 'none'
+            valInput.focus()
+            showValDropdown()
+            return
+          }
+        }
         if (e.key === 'Enter' || e.key === 'Tab') {
           e.preventDefault()
           valInput.focus()
+          showValDropdown()
         }
         if (e.key === 'Escape') renderDetail()
       })
@@ -2647,23 +2957,15 @@
   // ============================================================
   // Design System tab
   // ============================================================
-  async function renderDesignSystem () {
-    const container = document.getElementById('design-system-container')
-    container.innerHTML = ''
-
-    // Try runtime — check multiple paths for designSystem
-    let ds = null
+  async function fetchRuntimeDesignSystem () {
     try {
       const raw = await pageEval(`(function(){
         var I = window.__DOMQL_INSPECTOR__;
         if (!I) return 'null';
-        // Try from root context
         var ds = I.getDesignSystem();
         if (ds) return JSON.stringify(ds);
-        // Try from any element that has context
         var root = I.findRoot();
         if (root) {
-          // Walk to find any child with context.designSystem
           function findDS(el, depth) {
             if (depth > 4 || !el) return null;
             if (el.context && el.context.designSystem) return el;
@@ -2684,39 +2986,96 @@
         }
         return 'null';
       })()`)
-      if (raw && raw !== 'null') ds = JSON.parse(raw)
+      if (raw && raw !== 'null') return JSON.parse(raw)
     } catch (e) { /* ignore */ }
-
-    // Fallback: look for designSystem files in fileCache
-    if (!ds && Object.keys(fileCache).length) {
-      ds = buildDesignSystemFromFiles()
-    }
-
-    if (!ds || Object.keys(ds).length === 0) {
-      if (!renderDesignSystem._retried) {
-        renderDesignSystem._retried = true
-        container.innerHTML = '<div class="empty-message">Loading design system...</div>'
-        setTimeout(() => renderDesignSystem(), 2000)
-      } else {
-        renderDesignSystem._retried = false
-        container.innerHTML = '<div class="empty-message">Design system is empty</div>'
-      }
-      return
-    }
-    renderDesignSystem._retried = false
-
-    renderDesignSystemContent(container, ds)
+    return null
   }
 
-  function renderDesignSystemContent (container, ds) {
+  async function renderDesignSystem () {
+    const container = document.getElementById('design-system-container')
+    container.innerHTML = ''
+
+    // Build sub-tabs: Original / Computed
+    const subtabs = document.createElement('div')
+    subtabs.id = 'ds-subtabs'
+    subtabs.innerHTML = '<button class="props-subtab active" data-dsview="original">Original</button>' +
+      '<button class="props-subtab" data-dsview="computed">Computed</button>'
+
+    const originalPanel = document.createElement('div')
+    originalPanel.id = 'ds-original'
+    originalPanel.className = 'props-subpanel active'
+
+    const computedPanel = document.createElement('div')
+    computedPanel.id = 'ds-computed'
+    computedPanel.className = 'props-subpanel'
+
+    container.appendChild(subtabs)
+    container.appendChild(originalPanel)
+    container.appendChild(computedPanel)
+
+    // Wire sub-tab switching
+    subtabs.querySelectorAll('.props-subtab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        subtabs.querySelectorAll('.props-subtab').forEach(b => b.classList.remove('active'))
+        btn.classList.add('active')
+        originalPanel.classList.toggle('active', btn.dataset.dsview === 'original')
+        computedPanel.classList.toggle('active', btn.dataset.dsview === 'computed')
+      })
+    })
+
+    // --- Original (from source files) ---
+    const originalDS = buildDesignSystemFromFiles()
+    if (originalDS && Object.keys(originalDS).length > 0) {
+      cachedDesignSystem = originalDS
+      renderDesignSystemContent(originalPanel, originalDS, true)
+    } else {
+      originalPanel.innerHTML = '<div class="empty-message">No source files found. Connect a local folder or platform to view original design system.</div>'
+    }
+
+    // --- Computed (from runtime) ---
+    const runtimeDS = await fetchRuntimeDesignSystem()
+    if (runtimeDS && Object.keys(runtimeDS).length > 0) {
+      if (!cachedDesignSystem) cachedDesignSystem = runtimeDS
+      renderDesignSystemContent(computedPanel, runtimeDS, false)
+    } else {
+      if (!renderDesignSystem._retried) {
+        renderDesignSystem._retried = true
+        computedPanel.innerHTML = '<div class="empty-message">Loading...</div>'
+        setTimeout(async () => {
+          const ds = await fetchRuntimeDesignSystem()
+          renderDesignSystem._retried = false
+          if (ds && Object.keys(ds).length > 0) {
+            if (!cachedDesignSystem) cachedDesignSystem = ds
+            computedPanel.innerHTML = ''
+            renderDesignSystemContent(computedPanel, ds, false)
+          } else {
+            computedPanel.innerHTML = '<div class="empty-message">Design system is empty at runtime</div>'
+          }
+        }, 2000)
+      } else {
+        renderDesignSystem._retried = false
+        computedPanel.innerHTML = '<div class="empty-message">Design system is empty at runtime</div>'
+      }
+    }
+
+    // If no original but we have computed, default to computed tab
+    if ((!originalDS || Object.keys(originalDS).length === 0) && runtimeDS && Object.keys(runtimeDS).length > 0) {
+      subtabs.querySelectorAll('.props-subtab').forEach(b => b.classList.remove('active'))
+      subtabs.querySelector('[data-dsview="computed"]').classList.add('active')
+      originalPanel.classList.remove('active')
+      computedPanel.classList.add('active')
+    }
+  }
+
+  function renderDesignSystemContent (container, ds, isOriginal) {
 
     // Render known categories in order, then the rest
-    const categoryOrder = ['color', 'colors', 'theme', 'themes', 'spacing', 'space', 'typography', 'font', 'fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderRadius', 'shadow', 'media', 'breakpoints', 'opacity', 'transition', 'gradient']
+    const categoryOrder = ['color', 'COLOR', 'colors', 'gradient', 'GRADIENT', 'theme', 'THEME', 'themes', 'font', 'FONT', 'font_family', 'FONT_FAMILY', 'typography', 'TYPOGRAPHY', 'spacing', 'SPACING', 'space', 'timing', 'TIMING', 'class', 'CLASS', 'grid', 'GRID', 'icons', 'ICONS', 'shape', 'SHAPE', 'reset', 'RESET', 'animation', 'ANIMATION', 'media', 'MEDIA', 'cases', 'CASES', 'fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderRadius', 'shadow', 'breakpoints', 'opacity', 'transition']
     const rendered = {}
 
     for (const cat of categoryOrder) {
       if (ds[cat] !== undefined) {
-        renderDSCategory(container, cat, ds[cat], [cat])
+        renderDSCategory(container, cat, ds[cat], [cat], isOriginal)
         rendered[cat] = true
       }
     }
@@ -2726,36 +3085,59 @@
       if (rendered[key]) continue
       if (key.startsWith('__') || typeof ds[key] === 'function') continue
       if (ds[key] && ds[key].__type === 'function') continue
-      renderDSCategory(container, key, ds[key], [key])
+      renderDSCategory(container, key, ds[key], [key], isOriginal)
     }
   }
 
   function buildDesignSystemFromFiles () {
     const ds = {}
+    const dsFiles = []
+
+    // Collect all DS-related files
     for (const [path, content] of Object.entries(fileCache)) {
       if (!content) continue
-      // Match files in designSystem folder or files named designSystem
-      const isDS = /designSystem/i.test(path) || /design.system/i.test(path)
+      const isDS = /designSystem/i.test(path) || /design.system/i.test(path) || /design-system/i.test(path)
       if (!isDS) continue
+      dsFiles.push({ path, content })
+    }
 
-      // Try to extract exported values (basic heuristic)
+    if (dsFiles.length === 0) return ds
+
+    // Sort: index files last (they aggregate), category files first
+    dsFiles.sort((a, b) => {
+      const aName = a.path.split('/').pop().replace(/\.(js|jsx|ts|tsx|json)$/i, '').toLowerCase()
+      const bName = b.path.split('/').pop().replace(/\.(js|jsx|ts|tsx|json)$/i, '').toLowerCase()
+      const aIsIndex = aName === 'index' || aName === 'designsystem'
+      const bIsIndex = bName === 'index' || bName === 'designsystem'
+      if (aIsIndex && !bIsIndex) return 1
+      if (!aIsIndex && bIsIndex) return -1
+      return 0
+    })
+
+    for (const { path, content } of dsFiles) {
       const name = path.split('/').pop().replace(/\.(js|jsx|ts|tsx|json)$/i, '')
+      const nameLower = name.toLowerCase()
       try {
         if (path.endsWith('.json')) {
           const parsed = JSON.parse(content)
-          if (name.toLowerCase() === 'index' || name.toLowerCase() === 'designsystem') {
-            Object.assign(ds, parsed)
+          if (nameLower === 'index' || nameLower === 'designsystem') {
+            // Index only adds keys not already present from individual files
+            for (const [k, v] of Object.entries(parsed)) {
+              if (!ds[k] && !ds[k.toLowerCase()]) ds[k] = v
+            }
           } else {
             ds[name] = parsed
           }
         } else {
           // Try to extract object literals from export default or module.exports
-          const match = content.match(/(?:export\s+default|module\.exports\s*=)\s*(\{[\s\S]*\})\s*$/m)
+          const match = content.match(/(?:export\s+default|module\.exports\s*=)\s*(\{[\s\S]*?\})\s*;?\s*$/m)
           if (match) {
             try {
               const obj = (new Function('return ' + match[1]))()
-              if (name.toLowerCase() === 'index' || name.toLowerCase() === 'designsystem') {
-                Object.assign(ds, obj)
+              if (nameLower === 'index' || nameLower === 'designsystem') {
+                for (const [k, v] of Object.entries(obj)) {
+                  if (!ds[k] && !ds[k.toLowerCase()]) ds[k] = v
+                }
               } else {
                 ds[name] = obj
               }
@@ -2767,7 +3149,7 @@
     return ds
   }
 
-  function renderDSCategory (container, name, value, path) {
+  function renderDSCategory (container, name, value, path, isOriginal) {
     const section = document.createElement('div')
     section.className = 'ds-category'
 
@@ -2797,7 +3179,7 @@
     body.className = 'ds-category-body'
     body.style.display = 'none'
 
-    renderDSValue(body, value, path, 0)
+    renderDSValue(body, value, path, 0, isOriginal)
 
     section.appendChild(body)
     container.appendChild(section)
@@ -2811,7 +3193,7 @@
     })
   }
 
-  function renderDSValue (container, value, path, depth) {
+  function renderDSValue (container, value, path, depth, isOriginal) {
     if (depth > 6) return
     if (value === null || value === undefined) return
     if (value && value.__type === 'function') {
@@ -2860,7 +3242,7 @@
 
         const subBody = document.createElement('div')
         subBody.style.display = 'none'
-        renderDSValue(subBody, val, [...path, key], depth + 1)
+        renderDSValue(subBody, val, [...path, key], depth + 1, isOriginal)
         container.appendChild(subBody)
 
         let subExpanded = false
@@ -2898,19 +3280,23 @@
         row.appendChild(colon)
         row.appendChild(valSpan)
 
-        // Make editable on click
-        row.style.cursor = 'pointer'
-        row.addEventListener('click', (e) => {
-          e.stopPropagation()
-          editDSValue(row, path, key, val, valSpan)
-        })
+        // Make editable on click — only for original, computed is read-only
+        if (isOriginal) {
+          row.style.cursor = 'pointer'
+          row.addEventListener('click', (e) => {
+            e.stopPropagation()
+            editDSValue(row, path, key, val, valSpan, isOriginal)
+          })
+        } else {
+          row.classList.add('ds-readonly')
+        }
 
         container.appendChild(row)
       }
     }
   }
 
-  function editDSValue (row, path, key, currentVal, valSpan) {
+  function editDSValue (row, path, key, currentVal, valSpan, isOriginal) {
     if (row.querySelector('input')) return // already editing
 
     const input = document.createElement('input')
@@ -2919,10 +3305,85 @@
     input.value = typeof currentVal === 'string' ? currentVal : JSON.stringify(currentVal)
     input.style.width = '120px'
 
+    // Build autocomplete for DS values
+    const dsSuggestions = getDSSuggestionsForPath(path, key)
+    let dropdown = null
+    let filtered = []
+    let activeIndex = -1
+
     valSpan.style.display = 'none'
     row.appendChild(input)
+
+    if (dsSuggestions.length > 0) {
+      dropdown = document.createElement('div')
+      dropdown.className = 'prop-dropdown'
+      row.appendChild(dropdown)
+    }
+
+    function filterSuggestions (text) {
+      const lower = (text || '').toLowerCase()
+      filtered = lower
+        ? dsSuggestions.filter(s => s.label.toLowerCase().includes(lower))
+        : dsSuggestions.slice()
+      if (filtered.length > 30) filtered = filtered.slice(0, 30)
+      activeIndex = -1
+      renderDDItems()
+    }
+
+    function renderDDItems () {
+      if (!dropdown) return
+      dropdown.innerHTML = ''
+      if (filtered.length === 0) { dropdown.style.display = 'none'; return }
+      dropdown.style.display = ''
+      for (let i = 0; i < filtered.length; i++) {
+        const s = filtered[i]
+        const item = document.createElement('div')
+        item.className = 'prop-dropdown-item' + (i === activeIndex ? ' active' : '')
+        if (s.hex !== undefined) {
+          const sw = document.createElement('span')
+          sw.className = 'dd-swatch'
+          sw.style.background = s.hex || 'repeating-conic-gradient(#555 0% 25%, transparent 0% 50%) 50%/8px 8px'
+          item.appendChild(sw)
+        }
+        const label = document.createElement('span')
+        label.className = 'dd-label'
+        label.textContent = s.label
+        item.appendChild(label)
+        if (s.hint) {
+          const hint = document.createElement('span')
+          hint.className = 'dd-hint'
+          hint.textContent = s.hint
+          item.appendChild(hint)
+        }
+        item.addEventListener('mousedown', (e) => {
+          e.preventDefault()
+          input.value = s.label
+          commit()
+        })
+        dropdown.appendChild(item)
+      }
+    }
+
+    input.addEventListener('input', () => filterSuggestions(input.value))
+    input.addEventListener('keydown', (e) => {
+      if (dropdown && filtered.length > 0) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex = Math.min(activeIndex + 1, filtered.length - 1); renderDDItems() }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex = Math.max(activeIndex - 1, 0); renderDDItems() }
+        else if (e.key === 'Enter' && activeIndex >= 0) { e.preventDefault(); input.value = filtered[activeIndex].label; commit(); return }
+      }
+      if (e.key === 'Enter') { e.preventDefault(); commit() }
+      if (e.key === 'Escape') { cleanup() }
+    })
+
     input.focus()
     input.select()
+    if (dsSuggestions.length > 0) filterSuggestions(input.value)
+
+    function cleanup () {
+      if (dropdown) dropdown.remove()
+      input.remove()
+      valSpan.style.display = ''
+    }
 
     const commit = async () => {
       let newVal = input.value.trim()
@@ -2932,32 +3393,126 @@
       else if (newVal === 'null') newVal = null
       else if (!isNaN(Number(newVal)) && newVal !== '') newVal = Number(newVal)
 
-      // Update via pageEval on root.context.designSystem
       const fullPath = [...path, key]
+
+      if (isOriginal) {
+        // Update source file via updateDesignSystem pattern
+        // Path: e.g. ['color', 'primary'] -> 'COLOR.primary'
+        const dsKey = fullPath.length > 1
+          ? fullPath[0].toUpperCase() + '.' + fullPath.slice(1).join('.')
+          : fullPath[0]
+        if (connectionMode === 'local') {
+          // Find and update the source file
+          const category = fullPath[0]
+          const dsFilePath = findDSSourceFile(category)
+          if (dsFilePath) {
+            await updateDSSourceFile(dsFilePath, fullPath.slice(1), newVal)
+            setStatus('Updated ' + dsKey + ' in source')
+          } else {
+            setStatus('Source file not found for ' + category)
+          }
+        } else {
+          setStatus('Source editing requires local folder connection')
+        }
+      }
+
+      // Always update runtime too
       const pathStr = fullPath.map(p => '["' + p.replace(/"/g, '\\"') + '"]').join('')
       const valExpr = typeof newVal === 'string' ? '"' + newVal.replace(/"/g, '\\"') + '"' : String(newVal)
-
       try {
         await pageEval(`(function(){
           var root = window.__DOMQL_INSPECTOR__.findRoot();
           if (!root || !root.context || !root.context.designSystem) return;
           root.context.designSystem${pathStr} = ${valExpr};
         })()`)
-        setStatus('Updated ' + key)
+        if (!isOriginal) setStatus('Updated ' + key + ' (runtime)')
       } catch (e) {
-        setStatus('Error: ' + e.message)
+        if (!isOriginal) setStatus('Error: ' + e.message)
       }
 
-      input.remove()
+      // Update cached DS
+      if (cachedDesignSystem) {
+        let obj = cachedDesignSystem
+        for (let i = 0; i < fullPath.length - 1; i++) {
+          if (!obj[fullPath[i]]) obj[fullPath[i]] = {}
+          obj = obj[fullPath[i]]
+        }
+        obj[fullPath[fullPath.length - 1]] = newVal
+      }
+
+      cleanup()
       valSpan.textContent = String(newVal ?? '')
-      valSpan.style.display = ''
     }
 
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); commit() }
-      if (e.key === 'Escape') { input.remove(); valSpan.style.display = '' }
+    input.addEventListener('blur', () => {
+      setTimeout(() => { if (document.activeElement !== input) commit() }, 150)
     })
-    input.addEventListener('blur', commit)
+  }
+
+  // Find the source file in fileCache for a DS category
+  function findDSSourceFile (category) {
+    const lc = category.toLowerCase()
+    for (const path of Object.keys(fileCache)) {
+      if (!/designSystem/i.test(path)) continue
+      const filename = path.split('/').pop().replace(/\.(js|jsx|ts|tsx|json)$/i, '').toLowerCase()
+      if (filename === lc || filename === category) return path
+    }
+    return null
+  }
+
+  // Update a value in a DS source file (basic string replacement)
+  async function updateDSSourceFile (filePath, keyPath, newVal) {
+    const content = fileCache[filePath]
+    if (!content) return
+
+    const key = keyPath[keyPath.length - 1]
+    const valStr = typeof newVal === 'string' ? "'" + newVal.replace(/'/g, "\\'") + "'" : String(newVal)
+
+    // Try to find and replace the key-value pair
+    const patterns = [
+      new RegExp("(\\b" + escapeRegExp(key) + "\\s*:\\s*)(['\"][^'\"]*['\"]|[\\d.]+|true|false|null)", 'm'),
+      new RegExp("(['\"]" + escapeRegExp(key) + "['\"]\\s*:\\s*)(['\"][^'\"]*['\"]|[\\d.]+|true|false|null)", 'm')
+    ]
+
+    let updated = content
+    let replaced = false
+    for (const pat of patterns) {
+      if (pat.test(updated)) {
+        updated = updated.replace(pat, '$1' + valStr)
+        replaced = true
+        break
+      }
+    }
+
+    if (replaced) {
+      fileCache[filePath] = updated
+      // Save to IndexedDB
+      try {
+        const db = await openDB()
+        const tx = db.transaction(FILES_STORE, 'readwrite')
+        tx.objectStore(FILES_STORE).put(fileCache, folderName)
+      } catch (e) { /* ignore */ }
+    }
+  }
+
+  function escapeRegExp (s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+
+  // Get autocomplete suggestions based on DS path context
+  function getDSSuggestionsForPath (path, key) {
+    if (!cachedDesignSystem) return []
+    const category = (path[0] || '').toLowerCase()
+
+    // For color categories, suggest existing color values
+    if (category === 'color' || category === 'colors') {
+      return extractDSColorSuggestions()
+    }
+    // For theme categories, suggest theme names
+    if (category === 'theme' || category === 'themes') {
+      return extractDSKeys('theme').concat(extractDSKeys('THEME')).map(k => ({ label: k }))
+    }
+    return []
   }
 
   function renderChildrenTab () {
@@ -3034,13 +3589,44 @@
     const item = document.createElement('div')
     item.className = 'method-item'
 
+    const nameRow = document.createElement('div')
+    nameRow.className = 'method-name-row'
+
     const name = document.createElement('span')
     name.className = 'method-name'
     name.textContent = method + '()'
 
-    const argsInput = document.createElement('input')
-    argsInput.className = 'method-args'
-    argsInput.placeholder = 'args (JSON)'
+    const toggleBtn = document.createElement('button')
+    toggleBtn.className = 'method-toggle'
+    toggleBtn.textContent = '\u25B6'
+    toggleBtn.title = 'Show input'
+
+    nameRow.appendChild(name)
+    nameRow.appendChild(toggleBtn)
+    item.appendChild(nameRow)
+
+    // Collapsible input area
+    const inputArea = document.createElement('div')
+    inputArea.className = 'method-input-area'
+    inputArea.style.display = 'none'
+
+    const argsTextarea = document.createElement('textarea')
+    argsTextarea.className = 'method-args-textarea'
+    argsTextarea.placeholder = '// JSON or object literal\n{\n  "key": "value"\n}'
+    argsTextarea.rows = 6
+    argsTextarea.spellcheck = false
+    argsTextarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        const start = argsTextarea.selectionStart
+        const end = argsTextarea.selectionEnd
+        argsTextarea.value = argsTextarea.value.substring(0, start) + '  ' + argsTextarea.value.substring(end)
+        argsTextarea.selectionStart = argsTextarea.selectionEnd = start + 2
+      }
+    })
+
+    const btnRow = document.createElement('div')
+    btnRow.className = 'method-btn-row'
 
     const btn = document.createElement('button')
     btn.className = 'method-btn'
@@ -3049,15 +3635,43 @@
     const result = document.createElement('span')
     result.className = 'method-result'
 
+    btnRow.appendChild(btn)
+    btnRow.appendChild(result)
+    inputArea.appendChild(argsTextarea)
+    inputArea.appendChild(btnRow)
+    item.appendChild(inputArea)
+
+    let expanded = false
+    toggleBtn.addEventListener('click', () => {
+      expanded = !expanded
+      toggleBtn.textContent = expanded ? '\u25BC' : '\u25B6'
+      inputArea.style.display = expanded ? 'block' : 'none'
+    })
+
+    // Also toggle on name click
+    name.style.cursor = 'pointer'
+    name.addEventListener('click', () => {
+      expanded = !expanded
+      toggleBtn.textContent = expanded ? '\u25BC' : '\u25B6'
+      inputArea.style.display = expanded ? 'block' : 'none'
+    })
+
     btn.addEventListener('click', async () => {
       let args = []
-      if (argsInput.value.trim()) {
+      const raw = argsTextarea.value.trim()
+      if (raw) {
         try {
-          args = JSON.parse('[' + argsInput.value + ']')
+          // Try parsing as JSON array first, then as single arg
+          if (raw.startsWith('[')) args = JSON.parse(raw)
+          else args = [JSON.parse(raw)]
         } catch (e) {
-          result.textContent = 'Invalid JSON args'
-          result.style.color = 'var(--error-color)'
-          return
+          // Try wrapping in array
+          try { args = JSON.parse('[' + raw + ']') }
+          catch (e2) {
+            result.textContent = 'Invalid JSON/object'
+            result.style.color = 'var(--error-color)'
+            return
+          }
         }
       }
 
@@ -3075,14 +3689,14 @@
             JSON.stringify(args) + '))'
         }
 
-        const raw = await pageEval(expr)
-        const res = JSON.parse(raw)
+        const rawRes = await pageEval(expr)
+        const res = JSON.parse(rawRes)
         if (res.error) {
           result.textContent = 'Error: ' + res.error
           result.style.color = 'var(--error-color)'
         } else {
           result.textContent = res.result !== undefined ? JSON.stringify(res.result).slice(0, 100) : 'OK'
-          result.style.color = 'var(--text-dim)'
+          result.style.color = 'var(--type-color)'
           setTimeout(() => selectElement(selectedPath), 200)
         }
       } catch (e) {
@@ -3091,10 +3705,6 @@
       }
     })
 
-    item.appendChild(name)
-    item.appendChild(argsInput)
-    item.appendChild(btn)
-    item.appendChild(result)
     return item
   }
 
@@ -3311,14 +3921,14 @@
       if (isArray) {
         workingCopy = []
         inputs.forEach(row => {
-          const inp = row.querySelector('.prop-edit-input')
+          const inp = row.querySelector('.prop-edit-input:not(.obj-key-input)')
           if (inp) workingCopy.push(parsePreservingType(inp.value, inp.dataset.origType))
         })
       } else {
         workingCopy = {}
         inputs.forEach(row => {
           const keyInp = row.querySelector('.obj-key-input')
-          const valInp = row.querySelectorAll('.prop-edit-input')[row.querySelector('.obj-key-input') ? 1 : 0]
+          const valInp = row.querySelector('.prop-edit-input:not(.obj-key-input)')
           if (keyInp && valInp) {
             workingCopy[keyInp.value] = parsePreservingType(valInp.value, valInp.dataset.origType)
           }
@@ -3475,6 +4085,25 @@
 
       let newValue = input.value
       try { newValue = JSON.parse(newValue) } catch (e) {}
+
+      // Skip update if value hasn't changed
+      const unchanged = newValue === currentValue ||
+        (typeof newValue === 'string' && typeof currentValue === 'string' && newValue === currentValue) ||
+        JSON.stringify(newValue) === JSON.stringify(currentValue)
+
+      if (unchanged) {
+        el.innerHTML = ''
+        el.appendChild(renderValue(currentValue))
+        if (opts && opts.tabNext) {
+          setTimeout(() => {
+            const allVals = Array.from(document.querySelectorAll('.prop-value.editable'))
+            const idx = allVals.indexOf(el)
+            const next = allVals[idx + (opts.tabBack ? -1 : 1)]
+            if (next) next.click()
+          }, 0)
+        }
+        return
+      }
 
       el.innerHTML = ''
       el.appendChild(renderValue(newValue))
@@ -4492,11 +5121,91 @@ Do NOT include any explanation, only valid JSON.`
     'hr', 'br', 'strong', 'em', 'b', 'i', 'u', 'small', 'mark'
   ]
 
+  // Extract DS token suggestions from cached design system
+  function extractDSColorSuggestions () {
+    if (!cachedDesignSystem) return []
+    const colors = cachedDesignSystem.color || cachedDesignSystem.COLOR || cachedDesignSystem.colors || {}
+    const items = []
+    for (const [k, v] of Object.entries(colors)) {
+      if (k.startsWith('__')) continue
+      if (typeof v === 'string') {
+        items.push({ label: k, hex: /^(#|rgb|hsl)/.test(v) ? v : '', hint: v })
+      }
+    }
+    return items
+  }
+
+  function extractDSThemeSuggestions () {
+    if (!cachedDesignSystem) return []
+    const themes = cachedDesignSystem.theme || cachedDesignSystem.THEME || cachedDesignSystem.themes || {}
+    const items = []
+    for (const k of Object.keys(themes)) {
+      if (k.startsWith('__')) continue
+      items.push({ label: k, hint: 'theme' })
+    }
+    return items
+  }
+
+  function extractDSKeys (category) {
+    if (!cachedDesignSystem) return []
+    const obj = cachedDesignSystem[category]
+    if (!obj || typeof obj !== 'object') return []
+    return Object.keys(obj).filter(k => !k.startsWith('__'))
+  }
+
+  function extractDSSpacingSuggestions () {
+    if (!cachedDesignSystem) return []
+    const sp = cachedDesignSystem.spacing || cachedDesignSystem.SPACING || {}
+    if (sp.base && sp.ratio) {
+      // Generate tokens from base/ratio
+      return generateTokens(sp.base, sp.ratio, 'px', -4, 7)
+    }
+    // Otherwise extract raw keys
+    const items = []
+    for (const [k, v] of Object.entries(sp)) {
+      if (k.startsWith('__')) continue
+      items.push({ label: k, hint: typeof v === 'number' ? v + 'px' : String(v) })
+    }
+    return items
+  }
+
+  function extractDSFontSuggestions () {
+    if (!cachedDesignSystem) return []
+    const typo = cachedDesignSystem.typography || cachedDesignSystem.TYPOGRAPHY || {}
+    if (typo.base && typo.ratio) {
+      return generateTokens(typo.base, typo.ratio, 'px', -3, 7)
+    }
+    const font = cachedDesignSystem.font || cachedDesignSystem.FONT || {}
+    const items = []
+    for (const [k, v] of Object.entries(font)) {
+      if (k.startsWith('__')) continue
+      items.push({ label: k, hint: String(v) })
+    }
+    return items
+  }
+
+  function extractDSGradientSuggestions () {
+    if (!cachedDesignSystem) return []
+    const gr = cachedDesignSystem.gradient || cachedDesignSystem.GRADIENT || {}
+    return Object.keys(gr).filter(k => !k.startsWith('__')).map(k => ({ label: k, hint: 'gradient' }))
+  }
+
   function getSuggestionsForProp (propName) {
     // CSS enum values (display, position, flexDirection, etc.)
     if (CSS_ENUMS[propName]) return CSS_ENUMS[propName].map(v => ({ label: v }))
-    // Theme tokens with modifiers
+
+    // Theme tokens — prefer DS tokens, fall back to defaults
     if (propName === 'theme') {
+      const dsThemes = extractDSThemeSuggestions()
+      if (dsThemes.length > 0) {
+        // Add modifiers to DS themes
+        for (const t of dsThemes.slice()) {
+          for (const mod of THEME_MODIFIERS) {
+            dsThemes.push({ label: t.label + ' ' + mod, hint: 'modifier' })
+          }
+        }
+        return dsThemes
+      }
       const items = THEME_TOKENS.map(v => ({ label: v, hint: 'theme' }))
       for (const t of ['primary', 'secondary', 'card', 'dialog', 'label']) {
         for (const mod of THEME_MODIFIERS) {
@@ -4505,18 +5214,57 @@ Do NOT include any explanation, only valid JSON.`
       }
       return items
     }
-    // Color properties
+
+    // Color properties — prefer DS color tokens
     if (COLOR_PROPS.has(propName)) {
+      const dsColors = extractDSColorSuggestions()
+      if (dsColors.length > 0) {
+        // Merge DS colors with gradients
+        const dsGradients = extractDSGradientSuggestions()
+        return [...dsColors, ...dsGradients, ...COLOR_TOKENS]
+      }
       const items = COLOR_TOKENS.slice()
       for (const g of GRADIENT_TOKENS) items.push({ label: g, hint: 'gradient' })
       return items
     }
-    // Spacing / size tokens
-    if (SPACING_PROPS.has(propName)) return SPACING_TOKENS
-    // Font size tokens
-    if (FONT_SIZE_PROPS.has(propName)) return FONT_SIZE_TOKENS
+
+    // Spacing — prefer DS spacing tokens
+    if (SPACING_PROPS.has(propName)) {
+      const dsSpacing = extractDSSpacingSuggestions()
+      return dsSpacing.length > 0 ? dsSpacing : SPACING_TOKENS
+    }
+
+    // Font size — prefer DS typography tokens
+    if (FONT_SIZE_PROPS.has(propName)) {
+      const dsFonts = extractDSFontSuggestions()
+      return dsFonts.length > 0 ? dsFonts : FONT_SIZE_TOKENS
+    }
+
     // Timing tokens
-    if (propName === 'transition' || propName === 'transitionDuration' || propName === 'animationDuration') return TIMING_TOKENS
+    if (propName === 'transition' || propName === 'transitionDuration' || propName === 'animationDuration') {
+      const dsTiming = cachedDesignSystem && (cachedDesignSystem.timing || cachedDesignSystem.TIMING)
+      if (dsTiming && typeof dsTiming === 'object') {
+        const items = []
+        for (const [k, v] of Object.entries(dsTiming)) {
+          if (!k.startsWith('__')) items.push({ label: k, hint: String(v) })
+        }
+        if (items.length > 0) return items
+      }
+      return TIMING_TOKENS
+    }
+
+    // Font family — from DS
+    if (propName === 'fontFamily') {
+      const ff = cachedDesignSystem && (cachedDesignSystem.font_family || cachedDesignSystem.FONT_FAMILY)
+      if (ff && typeof ff === 'object') {
+        const items = []
+        for (const [k, v] of Object.entries(ff)) {
+          if (!k.startsWith('__')) items.push({ label: k, hint: typeof v === 'string' ? v : '' })
+        }
+        if (items.length > 0) return items
+      }
+    }
+
     // HTML tags
     if (propName === 'tag') return HTML_TAGS.map(v => ({ label: v }))
     return null
@@ -4541,6 +5289,8 @@ Do NOT include any explanation, only valid JSON.`
       p.classList.toggle('active', p.id === 'mode-' + mode)
     })
     if (mode === 'chat') updateChatContextLabel()
+    if (mode === 'gallery') renderGallery()
+    if (mode === 'content') renderContent()
   }
 
   // ============================================================
@@ -4738,10 +5488,64 @@ Do NOT include any explanation, only valid JSON.`
     initElementsSync()
     initAutoRefresh()
 
-    // Mode tabs (Editor / Chat)
+    // Mode tabs (Editor / Chat / Gallery / Content)
     document.querySelectorAll('.mode-tab').forEach(tab => {
       tab.addEventListener('click', () => switchMode(tab.dataset.mode))
     })
+
+    // Gallery controls
+    const gallerySearch = document.getElementById('gallery-search')
+    if (gallerySearch) {
+      gallerySearch.addEventListener('input', () => {
+        const q = gallerySearch.value.toLowerCase()
+        document.querySelectorAll('.gallery-card').forEach(card => {
+          const name = card.querySelector('.gallery-card-name')?.textContent.toLowerCase() || ''
+          card.style.display = name.includes(q) ? '' : 'none'
+        })
+      })
+    }
+    // Content controls
+    const contentLang = document.getElementById('content-language')
+    if (contentLang) {
+      contentLang.addEventListener('change', () => {
+        activeContentLang = contentLang.value
+        renderContent()
+      })
+    }
+    const addLangBtn = document.getElementById('content-add-lang')
+    if (addLangBtn) {
+      addLangBtn.addEventListener('click', () => {
+        const code = window.prompt ? null : '' // prompt doesn't work in DevTools
+        // Use inline input instead
+        const toolbar = document.getElementById('content-toolbar')
+        const inp = document.createElement('input')
+        inp.className = 'content-lang-input'
+        inp.placeholder = 'lang code (e.g. fr)'
+        inp.style.width = '80px'
+        toolbar.appendChild(inp)
+        inp.focus()
+        const add = () => {
+          const code = inp.value.trim().toLowerCase()
+          if (code && !contentLanguages.includes(code)) {
+            contentLanguages.push(code)
+            contentData[code] = {}
+            const opt = document.createElement('option')
+            opt.value = code
+            opt.textContent = code.toUpperCase()
+            contentLang.appendChild(opt)
+            contentLang.value = code
+            activeContentLang = code
+            renderContent()
+          }
+          inp.remove()
+        }
+        inp.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') add()
+          if (e.key === 'Escape') inp.remove()
+        })
+        inp.addEventListener('blur', add)
+      })
+    }
     document.getElementById('btn-app-disconnect').addEventListener('click', disconnect)
 
     // Tree pane tabs (Active Nodes / State Tree / Design System)
@@ -4809,6 +5613,10 @@ Do NOT include any explanation, only valid JSON.`
     document.getElementById('btn-refresh').addEventListener('click', loadTree)
     document.getElementById('btn-inspect').addEventListener('click', inspectSelected)
     document.getElementById('btn-sync').addEventListener('click', syncChanges)
+    document.getElementById('btn-sync-dropdown').addEventListener('click', toggleSyncChangesPanel)
+    document.getElementById('sync-changes-close').addEventListener('click', () => {
+      document.getElementById('sync-changes-panel').style.display = 'none'
+    })
     document.getElementById('btn-undo').addEventListener('click', undo)
     document.getElementById('btn-redo').addEventListener('click', redo)
 
@@ -4923,6 +5731,416 @@ Do NOT include any explanation, only valid JSON.`
     if (connectionMode) loadTree()
   }
 
+  // ============================================================
+  // Gallery mode — display all components
+  // ============================================================
+  async function renderGallery () {
+    const container = document.getElementById('gallery-container')
+    const pagesRow = document.getElementById('gallery-pages')
+    if (!container) return
+    container.innerHTML = '<div class="empty-message">Loading...</div>'
+    if (pagesRow) pagesRow.innerHTML = ''
+
+    // Get components from element.context.components and pages from element.context.pages
+    let result = { components: [], pages: [], debug: '' }
+    try {
+      const raw = await pageEval(`(function(){
+        var I = window.__DOMQL_INSPECTOR__;
+        if (!I) return JSON.stringify({components:[],pages:[],debug:'no inspector'});
+        var el = I.findRoot();
+        if (!el) return JSON.stringify({components:[],pages:[],debug:'no root'});
+
+        // Find context - may be on root or on a child element
+        var ctx = el.context;
+        if (!ctx) {
+          // Walk children to find an element with context
+          function findCtx(e, d) {
+            if (d > 4 || !e) return null;
+            if (e.context) return e.context;
+            for (var k in e) {
+              if (k === 'parent' || k === 'node' || k === 'state' || k.startsWith('__')) continue;
+              if (e[k] && typeof e[k] === 'object' && e[k].node) {
+                var found = findCtx(e[k], d + 1);
+                if (found) return found;
+              }
+            }
+            return null;
+          }
+          ctx = findCtx(el, 0);
+        }
+        if (!ctx) return JSON.stringify({components:[],pages:[],debug:'no context on root or children. root key=' + (el.key||'?') + ' has keys: ' + Object.keys(el).slice(0,15).join(',')});
+
+        var comps = [];
+        var pages = [];
+
+        // Extract context.components (CapitalCase keys)
+        var src = ctx.components || {};
+        for (var k in src) {
+          if (k[0] === k[0].toUpperCase() && k[0] !== '_' && /^[A-Z]/.test(k)) {
+            comps.push({ name: k });
+          }
+        }
+
+        // Extract context.pages
+        var pgs = ctx.pages || {};
+        for (var k in pgs) {
+          if (k.startsWith('__')) continue;
+          try {
+            pages.push({ name: k, path: pgs[k] && pgs[k].path ? pgs[k].path : '/' + k });
+          } catch(e) {}
+        }
+
+        var debug = 'ctx keys: ' + Object.keys(ctx).slice(0,20).join(',') + '; components keys: ' + Object.keys(src).slice(0,10).join(',');
+        return JSON.stringify({ components: comps, pages: pages, debug: debug });
+      })()`)
+      if (raw) result = JSON.parse(raw)
+    } catch (e) { result.debug = 'parse error: ' + e.message }
+
+    // Render pages row
+    if (pagesRow && result.pages.length > 0) {
+      const label = document.createElement('span')
+      label.className = 'gallery-section-label'
+      label.textContent = 'Pages'
+      pagesRow.appendChild(label)
+
+      for (const page of result.pages) {
+        const chip = document.createElement('button')
+        chip.className = 'gallery-page-chip'
+        chip.textContent = page.name
+        chip.title = page.path || ''
+        chip.addEventListener('click', () => {
+          // Navigate to page in the inspected tab
+          pageEval('window.location.href = ' + JSON.stringify(page.path)).catch(() => {})
+        })
+        pagesRow.appendChild(chip)
+      }
+    }
+
+    // Render components grid
+    container.innerHTML = ''
+
+    if (result.components.length === 0) {
+      container.innerHTML = '<div class="empty-message">No components found' + (result.debug ? '<br><small style="opacity:0.5">' + result.debug + '</small>' : '') + '</div>'
+      return
+    }
+
+    for (const comp of result.components) {
+      const card = document.createElement('div')
+      card.className = 'gallery-card'
+
+      const name = document.createElement('div')
+      name.className = 'gallery-card-name'
+      name.textContent = comp.name
+
+      card.appendChild(name)
+
+      card.addEventListener('click', () => {
+        // Try to find this component in the tree and select it
+        switchMode('editor')
+        if (treeData) {
+          const path = findComponentPath(comp.name)
+          if (path) {
+            selectElement(path)
+            highlightElement(path)
+            expandAndSelectTreePath(path)
+          }
+        }
+      })
+
+      container.appendChild(card)
+    }
+  }
+
+  // Find the tree path of a component by its name (walks tree looking for matching __ref.__name or key)
+  function findComponentPath (name) {
+    if (!treeData) return null
+    function walk (node, path) {
+      if (!node || !node.children) return null
+      for (const child of node.children) {
+        const childPath = path ? path + '.' + child.key : child.key
+        if (child.key === name || child.component === name) return childPath
+        const found = walk(child, childPath)
+        if (found) return found
+      }
+      return null
+    }
+    return walk(treeData, '')
+  }
+
+  // ============================================================
+  // Content mode — CMS-like environment with languages
+  // ============================================================
+  let contentData = {} // { en: { key: value }, fr: { key: value } }
+  let contentLanguages = ['en']
+  let activeContentLang = 'en'
+
+  let contentSelectedKey = null // currently selected sidebar key
+
+  async function renderContent () {
+    const sidebar = document.getElementById('content-sidebar')
+    const main = document.getElementById('content-main')
+    if (!sidebar || !main) return
+    sidebar.innerHTML = '<div class="empty-message">Loading...</div>'
+    main.innerHTML = ''
+
+    // Extract root state (same data source as the State Tree tab)
+    let rootState = {}
+    let contentDebug = ''
+    try {
+      const raw = await pageEval(`(function(){
+        var I = window.__DOMQL_INSPECTOR__;
+        if (!I) return JSON.stringify({data:{},debug:'no inspector'});
+        var el = I.findRoot();
+        if (!el) return JSON.stringify({data:{},debug:'no root'});
+        var st = el.state;
+        if (!st) return JSON.stringify({data:{},debug:'no state on root. root key=' + (el.key||'?') + ' keys: ' + Object.keys(el).slice(0,15).join(',')});
+        var SKIP = {parent:1,root:1,update:1,set:1,reset:1,replace:1,toggle:1,
+          remove:1,add:1,apply:1,setByPath:1,parse:1,clean:1,destroy:1,
+          create:1,quietUpdate:1,__element:1,__depends:1,__ref:1};
+        var result = {};
+        var stKeys = [];
+        for (var k in st) {
+          if (SKIP[k] || k.startsWith('__') || typeof st[k] === 'function') continue;
+          stKeys.push(k);
+          try {
+            var v = st[k];
+            var t = typeof v;
+            if (v === null || t === 'string' || t === 'number' || t === 'boolean') {
+              result[k] = { type: 'primitive', value: v };
+            } else if (Array.isArray(v)) {
+              result[k] = { type: 'array', length: v.length, value: JSON.parse(JSON.stringify(v.slice(0, 50))) };
+            } else if (t === 'object') {
+              if (v.node) continue;
+              var keys = Object.keys(v).filter(function(kk){ return !kk.startsWith('__') && typeof v[kk] !== 'function'; });
+              var obj = {};
+              keys.slice(0, 100).forEach(function(kk){ try { obj[kk] = JSON.parse(JSON.stringify(v[kk])); } catch(e){} });
+              result[k] = { type: 'object', keys: keys.length, value: obj };
+            }
+          } catch(e) {}
+        }
+        return JSON.stringify({data:result, debug:'state keys: ' + stKeys.join(',')});
+      })()`)
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        rootState = parsed.data || {}
+        contentDebug = parsed.debug || ''
+      }
+    } catch (e) { contentDebug = 'parse error: ' + e.message }
+
+    sidebar.innerHTML = ''
+
+    // Sidebar: show keys that have objects or arrays as values
+    const sidebarKeys = []
+    const primitiveKeys = []
+    for (const [key, info] of Object.entries(rootState)) {
+      if (info.type === 'object' || info.type === 'array') {
+        sidebarKeys.push(key)
+      } else {
+        primitiveKeys.push(key)
+      }
+    }
+
+    if (sidebarKeys.length === 0 && primitiveKeys.length === 0) {
+      sidebar.innerHTML = '<div class="empty-message">No root state data' + (contentDebug ? '<br><small style="opacity:0.5">' + contentDebug + '</small>' : '') + '</div>'
+      main.innerHTML = ''
+      return
+    }
+
+    // Render sidebar items
+    for (const key of sidebarKeys) {
+      const info = rootState[key]
+      const item = document.createElement('div')
+      item.className = 'content-sidebar-item'
+      if (contentSelectedKey === key) item.classList.add('active')
+
+      const label = document.createElement('span')
+      label.className = 'content-sidebar-label'
+      label.textContent = key
+
+      const badge = document.createElement('span')
+      badge.className = 'content-sidebar-badge'
+      badge.textContent = info.type === 'array' ? '[' + info.length + ']' : '{' + info.keys + '}'
+
+      item.appendChild(label)
+      item.appendChild(badge)
+      item.addEventListener('click', () => {
+        contentSelectedKey = key
+        renderContentMain(main, key, rootState[key])
+        // Update active
+        sidebar.querySelectorAll('.content-sidebar-item').forEach(i => i.classList.remove('active'))
+        item.classList.add('active')
+      })
+      sidebar.appendChild(item)
+    }
+
+    // Auto-select first sidebar item, or show primitives
+    if (contentSelectedKey && rootState[contentSelectedKey]) {
+      renderContentMain(main, contentSelectedKey, rootState[contentSelectedKey])
+    } else if (sidebarKeys.length > 0) {
+      contentSelectedKey = sidebarKeys[0]
+      sidebar.querySelector('.content-sidebar-item')?.classList.add('active')
+      renderContentMain(main, sidebarKeys[0], rootState[sidebarKeys[0]])
+    } else {
+      renderContentPrimitives(main, primitiveKeys, rootState)
+    }
+
+    // Show primitives section at bottom of main if there are any
+    if (primitiveKeys.length > 0 && sidebarKeys.length > 0) {
+      const primSection = document.createElement('div')
+      primSection.className = 'content-primitives-section'
+      const primHeader = document.createElement('div')
+      primHeader.className = 'section-header'
+      primHeader.textContent = 'Root Values'
+      primSection.appendChild(primHeader)
+      renderContentPrimitives(primSection, primitiveKeys, rootState)
+      main.appendChild(primSection)
+    }
+  }
+
+  function renderContentMain (container, key, info) {
+    // Clear previous content (keep primitives section if any)
+    const primSection = container.querySelector('.content-primitives-section')
+    container.innerHTML = ''
+
+    const header = document.createElement('div')
+    header.className = 'content-main-header'
+    header.textContent = key + (info.type === 'array' ? ' [' + info.length + ' items]' : '')
+    container.appendChild(header)
+
+    const data = info.value
+    if (info.type === 'array') {
+      for (let i = 0; i < data.length; i++) {
+        const item = data[i]
+        if (item && typeof item === 'object') {
+          renderContentObject(container, key, i, item)
+        } else {
+          renderContentField(container, key + '[' + i + ']', String(i), item, key, i)
+        }
+      }
+    } else if (info.type === 'object') {
+      for (const [subKey, val] of Object.entries(data)) {
+        if (val && typeof val === 'object' && !Array.isArray(val)) {
+          renderContentObject(container, key, subKey, val)
+        } else {
+          renderContentField(container, key + '.' + subKey, subKey, val, key, subKey)
+        }
+      }
+    }
+
+    if (primSection) container.appendChild(primSection)
+  }
+
+  function renderContentObject (container, stateKey, index, obj) {
+    const card = document.createElement('div')
+    card.className = 'content-object-card'
+
+    const cardHeader = document.createElement('div')
+    cardHeader.className = 'content-object-header'
+    cardHeader.textContent = typeof index === 'number' ? '#' + index : index
+    card.appendChild(cardHeader)
+
+    for (const [k, v] of Object.entries(obj)) {
+      if (k.startsWith('__') || typeof v === 'function') continue
+      const row = document.createElement('div')
+      row.className = 'content-field'
+
+      const label = document.createElement('label')
+      label.className = 'content-field-label'
+      label.textContent = k
+
+      const input = document.createElement(typeof v === 'string' && v.length > 60 ? 'textarea' : 'input')
+      input.className = 'content-input'
+      input.value = v === null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v)
+      if (input.tagName === 'TEXTAREA') { input.rows = 2 }
+
+      input.addEventListener('change', async () => {
+        let newVal = input.value
+        if (newVal === 'true') newVal = true
+        else if (newVal === 'false') newVal = false
+        else if (newVal === 'null') newVal = null
+        else if (!isNaN(Number(newVal)) && newVal !== '') newVal = Number(newVal)
+        try {
+          await pageEval('(function(){ var root = window.__DOMQL_INSPECTOR__.findRoot(); if(!root || !root.state) return; var st = root.state; ' +
+            'var target = st[' + JSON.stringify(stateKey) + ']; if(!target) return; ' +
+            (typeof index === 'number'
+              ? 'target = target[' + index + ']; '
+              : 'target = target[' + JSON.stringify(index) + ']; ') +
+            'if(target) target[' + JSON.stringify(k) + '] = ' + JSON.stringify(newVal) + '; if(st.update) st.update(); })()')
+          setStatus('Updated ' + k)
+        } catch (e) { setStatus('Error: ' + (e.message || e)) }
+      })
+
+      row.appendChild(label)
+      row.appendChild(input)
+      card.appendChild(row)
+    }
+
+    container.appendChild(card)
+  }
+
+  function renderContentField (container, fullPath, label, value, stateKey, subKey) {
+    const row = document.createElement('div')
+    row.className = 'content-field'
+
+    const labelEl = document.createElement('label')
+    labelEl.className = 'content-field-label'
+    labelEl.textContent = label
+
+    const input = document.createElement('input')
+    input.className = 'content-input'
+    input.value = value === null ? '' : typeof value === 'object' ? JSON.stringify(value) : String(value)
+
+    input.addEventListener('change', async () => {
+      let newVal = input.value
+      if (newVal === 'true') newVal = true
+      else if (newVal === 'false') newVal = false
+      else if (newVal === 'null') newVal = null
+      else if (!isNaN(Number(newVal)) && newVal !== '') newVal = Number(newVal)
+      try {
+        await pageEval('(function(){ var root = window.__DOMQL_INSPECTOR__.findRoot(); if(root && root.state) { root.state.' + stateKey +
+          (typeof subKey === 'number' ? '[' + subKey + ']' : '["' + subKey + '"]') +
+          ' = ' + JSON.stringify(newVal) + '; if(root.state.update) root.state.update(); } })()')
+        setStatus('Updated ' + label)
+      } catch (e) { setStatus('Error: ' + (e.message || e)) }
+    })
+
+    row.appendChild(labelEl)
+    row.appendChild(input)
+    container.appendChild(row)
+  }
+
+  function renderContentPrimitives (container, keys, rootState) {
+    for (const key of keys) {
+      const info = rootState[key]
+      const row = document.createElement('div')
+      row.className = 'content-field'
+
+      const label = document.createElement('label')
+      label.className = 'content-field-label'
+      label.textContent = key
+
+      const input = document.createElement('input')
+      input.className = 'content-input'
+      input.value = info.value === null ? '' : String(info.value)
+
+      input.addEventListener('change', async () => {
+        let newVal = input.value
+        if (newVal === 'true') newVal = true
+        else if (newVal === 'false') newVal = false
+        else if (newVal === 'null') newVal = null
+        else if (!isNaN(Number(newVal)) && newVal !== '') newVal = Number(newVal)
+        try {
+          await pageEval('(function(){ var root = window.__DOMQL_INSPECTOR__.findRoot(); if(root && root.state) { root.state["' + key + '"] = ' + JSON.stringify(newVal) + '; if(root.state.update) root.state.update(); } })()')
+          setStatus('Updated ' + key)
+        } catch (e) { setStatus('Error: ' + (e.message || e)) }
+      })
+
+      row.appendChild(label)
+      row.appendChild(input)
+      container.appendChild(row)
+    }
+  }
+
   // Auto-refresh: listen for page navigation and poll for DOM changes
   function initAutoRefresh () {
     // Refresh tree when user navigates to a new page
@@ -4942,6 +6160,8 @@ Do NOT include any explanation, only valid JSON.`
     let lastTreeHash = ''
     setInterval(async () => {
       if (!connectionMode) return
+      // Skip polling while an editor is active to avoid re-rendering mid-edit
+      if (document.querySelector('.prop-value.editing') || document.querySelector('.obj-editor') || document.querySelector('.prop-add-inline')) return
       try {
         const ready = await pageEval('typeof window.__DOMQL_INSPECTOR__ !== "undefined"')
         if (!ready) return
