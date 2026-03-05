@@ -190,8 +190,11 @@ export const update = function (params = {}, opts) {
         options.onEachUpdate(param, element, element.state, element.context)
       }
 
+      const childParams = params[param]
+      if (childParams === undefined && !options.isForced) continue
+
       const childUpdateCall = () =>
-        update.call(prop, params[prop], {
+        update.call(prop, childParams, {
           ...options,
           currentSnapshot: snapshotOnCallee,
           calleeElement

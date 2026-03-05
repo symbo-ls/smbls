@@ -685,13 +685,34 @@
       return pickerActive
     },
 
-    // Get design system from root context
-    getDesignSystem () {
-      const root = findRoot()
-      if (!root) return null
-      const ds = (root.context && root.context.designSystem) || root.designSystem
+    // Get design system from any element's context
+    getDesignSystem (el) {
+      const target = el || findRoot()
+      if (!target) return null
+      const ds = (target.context && target.context.designSystem) || target.designSystem
       if (!ds || typeof ds !== 'object') return null
-      return serialize(ds, 0, 4, new WeakSet())
+      // Custom serializer that handles DS-specific structures
+      const seen = new WeakSet()
+      function ser (v, d) {
+        if (d > 5) return { __type: 'truncated' }
+        if (v === null) return null
+        if (v === undefined) return { __type: 'undefined' }
+        if (typeof v === 'function') return { __type: 'function', name: v.name || '' }
+        if (typeof v !== 'object') return v
+        if (v instanceof HTMLElement || v instanceof Node) return { __type: 'node' }
+        if (seen.has(v)) return { __type: 'circular' }
+        seen.add(v)
+        if (Array.isArray(v)) return v.slice(0, 50).map(function (x) { return ser(x, d + 1) })
+        var o = {}
+        var keys = Object.keys(v)
+        for (var i = 0; i < keys.length && i < 200; i++) {
+          var k = keys[i]
+          if (k === 'parent' || k === 'node' || k === '__element' || k === 'context') continue
+          try { o[k] = ser(v[k], d + 1) } catch (e) { /* skip */ }
+        }
+        return o
+      }
+      return ser(ds, 0)
     },
 
     // Read and clear last pick result

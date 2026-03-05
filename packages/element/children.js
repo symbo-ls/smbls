@@ -16,6 +16,29 @@ import {
   matchesComponentNaming
 } from '@domql/utils'
 
+const shallowChildrenEqual = (a, b) => {
+  if (a === b) return true
+  if (!a || !b) return false
+  if (isArray(a) && isArray(b)) {
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false
+    }
+    return true
+  }
+  if (isObject(a) && isObject(b)) {
+    const keysA = Object.keys(a)
+    const keysB = Object.keys(b)
+    if (keysA.length !== keysB.length) return false
+    for (let i = 0; i < keysA.length; i++) {
+      const key = keysA[i]
+      if (a[key] !== b[key]) return false
+    }
+    return true
+  }
+  return a === b
+}
+
 /**
  * Apply data parameters on the DOM nodes
  * this should only work if `showOnNode: true` is passed
@@ -70,21 +93,22 @@ export function setChildren (param, element, opts) {
     children = filterReact
   }
 
+  let cloned
   if (ref.__childrenCache) {
-    const equals =
-      JSON.stringify(children) === JSON.stringify(ref.__childrenCache) // make smarter diff
-    if (equals) {
+    if (shallowChildrenEqual(children, ref.__childrenCache)) {
       ref.__noChildrenDifference = true
     } else {
-      ref.__childrenCache = deepClone(children)
+      cloned = deepClone(children)
+      ref.__childrenCache = cloned
       delete ref.__noChildrenDifference
     }
   } else {
-    ref.__childrenCache = deepClone(children)
+    cloned = deepClone(children)
+    ref.__childrenCache = cloned
   }
 
   if (isObject(children) || isArray(children)) {
-    children = deepClone(children)
+    children = cloned || deepClone(children)
   }
 
   const content = { tag: 'fragment' }

@@ -7,7 +7,7 @@
   let selectedPath = null
   let selectedInfo = null
   let treeData = null
-  let connectionMode = null // 'local' | 'platform'
+  let connectionMode = null // 'local' | 'platform' | 'runtime'
   let projectName = ''
   let symbolsConfig = null
   let symbolsDir = 'symbols'
@@ -585,6 +585,9 @@
     // Show source tab
     document.querySelector('.tab[data-tab="source"]').style.display = ''
 
+    // Hide connect button now that we have a real connection
+    updateConnectButton()
+
     renderSymbolsTree()
     loadTree()
   }
@@ -607,6 +610,9 @@
     // Hide source tab, show data tab for platform mode
     document.querySelector('.tab[data-tab="source"]').style.display = 'none'
     document.getElementById('symbols-section').style.display = 'none'
+
+    // Hide connect button
+    updateConnectButton()
 
     // Load project data if we have a project ID
     if (platformProjectId) {
@@ -634,6 +640,93 @@
       platformSocket = null
     }
     showConnectScreen()
+  }
+
+  // Auto-connect to the page if it's a DOMQL/Symbols site
+  async function tryAutoConnect () {
+    try {
+      const hasDomql = await pageEval('typeof window.__DOMQL_INSPECTOR__ !== "undefined"')
+      if (!hasDomql) return false
+
+      const hostname = await pageEval('window.location.hostname') || ''
+      connectionMode = 'runtime'
+      projectName = hostname || 'Page'
+
+      document.getElementById('connect-screen').style.display = 'none'
+      document.getElementById('connect-error').style.display = 'none'
+      showApp(projectName)
+
+      // Hide source tab in runtime mode (no files)
+      document.querySelector('.tab[data-tab="source"]').style.display = 'none'
+
+      // Show connect button in header
+      updateConnectButton()
+
+      loadTree()
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+
+  function updateConnectButton () {
+    let btn = document.getElementById('btn-header-connect')
+    if (connectionMode === 'local' || connectionMode === 'platform') {
+      if (btn) btn.style.display = 'none'
+      return
+    }
+    if (!btn) {
+      btn = document.createElement('button')
+      btn.id = 'btn-header-connect'
+      btn.className = 'btn-header-connect'
+      btn.title = 'Connect local folder or platform to save changes'
+      btn.textContent = 'Connect'
+      btn.addEventListener('click', showConnectDialog)
+      const spacer = document.querySelector('.mode-tab-spacer')
+      if (spacer) spacer.parentNode.insertBefore(btn, spacer.nextSibling)
+    }
+    btn.style.display = ''
+  }
+
+  function showConnectDialog () {
+    // Show a small inline dialog with options
+    let dialog = document.getElementById('connect-dialog')
+    if (dialog) { dialog.style.display = dialog.style.display === 'none' ? 'flex' : 'none'; return }
+
+    dialog = document.createElement('div')
+    dialog.id = 'connect-dialog'
+    dialog.className = 'connect-dialog'
+    dialog.innerHTML = `
+      <div class="connect-dialog-inner">
+        <div class="connect-dialog-title">Save changes to:</div>
+        <button id="cd-local" class="connect-dialog-btn">Local Folder</button>
+        <button id="cd-platform" class="connect-dialog-btn">Platform (sign in)</button>
+        <button id="cd-close" class="connect-dialog-close">&times;</button>
+      </div>
+    `
+    document.getElementById('app').appendChild(dialog)
+
+    document.getElementById('cd-local').addEventListener('click', () => {
+      dialog.style.display = 'none'
+      chrome.runtime.sendMessage({ type: 'open-picker' })
+      setStatus('Select a folder in the opened tab...')
+    })
+    document.getElementById('cd-platform').addEventListener('click', () => {
+      dialog.style.display = 'none'
+      // Go to connect screen for platform sign-in
+      document.getElementById('connect-screen').style.display = 'flex'
+      document.getElementById('app').style.display = 'none'
+    })
+    document.getElementById('cd-close').addEventListener('click', () => {
+      dialog.style.display = 'none'
+    })
+  }
+
+  function promptSaveConnection () {
+    if (connectionMode === 'local' || connectionMode === 'platform') return false
+    showConnectDialog()
+    setStatus('Connect to save changes')
+    return true
   }
 
   // ============================================================
@@ -1744,9 +1837,14 @@
     renderMethodsTab()
     renderRefTab()
 
-    // Update state tree if it's the active tree pane
+    // Update selected highlight in state tree without full re-render
     if (document.querySelector('.tree-pane-tab[data-tree="state"]')?.classList.contains('active')) {
-      renderStateTree()
+      document.querySelectorAll('#state-tree-container .tree-item.selected').forEach(el => el.classList.remove('selected'))
+      if (selectedPath) {
+        document.querySelectorAll('#state-tree-container .tree-item').forEach(el => {
+          if (el.dataset.statePath === selectedPath) el.classList.add('selected')
+        })
+      }
     }
 
     if (connectionMode === 'local' && currentSourcePath &&
@@ -2119,8 +2217,16 @@
     valEl.dataset.component = componentName || ''
     valEl.appendChild(renderValue(val))
 
-    const editableVal = isEditableValue(val) ? val : stringifyForEdit(val)
-    valEl.addEventListener('click', () => startEditing(valEl, key, editableVal, type, componentName))
+    if (isComplex(val)) {
+      // Object/array — use structured editor on click
+      valEl.addEventListener('click', (e) => {
+        e.stopPropagation()
+        startObjectEditing(valEl, key, val, type, componentName)
+      })
+    } else {
+      const editableVal = isEditableValue(val) ? val : stringifyForEdit(val)
+      valEl.addEventListener('click', () => startEditing(valEl, key, editableVal, type, componentName))
+    }
 
     const semiEl = document.createElement('span')
     semiEl.className = 'prop-semi'
@@ -2275,16 +2381,11 @@
         function walk(el, path, depth, parentState) {
           if (depth > 8 || !el || !el.node) return null;
           var key = el.key || path.split('.').pop() || 'root';
-          var node = { key: key, path: path };
-
-          // State info
           var st = el.state;
           var hasOwnState = st && st !== parentState;
-          node.hasOwnState = hasOwnState;
-          node.state = st ? getStateData(st) : null;
 
-          // Children
-          node.children = [];
+          // Collect children that have state boundaries
+          var stateChildren = [];
           var childKeys = (el.__ref && el.__ref.__children) || [];
           var visited = {};
           for (var ci = 0; ci < childKeys.length; ci++) {
@@ -2292,19 +2393,62 @@
             if (ck.startsWith('__') || visited[ck]) continue;
             visited[ck] = true;
             if (el[ck] && el[ck].node) {
-              var child = walk(el[ck], path ? path+'.'+ck : ck, depth+1, st);
-              if (child) node.children.push(child);
+              var results = collectStateNodes(el[ck], path ? path+'.'+ck : ck, depth+1, st);
+              for (var ri = 0; ri < results.length; ri++) stateChildren.push(results[ri]);
             }
           }
           for (var k in el) {
             if (SKIP_EL[k] || k.startsWith('__') || visited[k]) continue;
             if (typeof el[k] === 'object' && el[k] && el[k].node instanceof HTMLElement && el[k].key) {
               visited[k] = true;
-              var child2 = walk(el[k], path ? path+'.'+k : k, depth+1, st);
-              if (child2) node.children.push(child2);
+              var results2 = collectStateNodes(el[k], path ? path+'.'+k : k, depth+1, st);
+              for (var r2 = 0; r2 < results2.length; r2++) stateChildren.push(results2[r2]);
             }
           }
-          return node;
+
+          // Only create a node if this element has its own state or is root
+          if (hasOwnState || depth === 0) {
+            var node = { key: key, path: path, hasOwnState: hasOwnState };
+            node.state = hasOwnState && st ? getStateData(st) : null;
+            node.children = stateChildren;
+            return node;
+          }
+          return null;
+        }
+
+        // Collect nodes that have their own state (skip elements that just inherit)
+        function collectStateNodes(el, path, depth, parentState) {
+          if (depth > 8 || !el || !el.node) return [];
+          var st = el.state;
+          var hasOwnState = st && st !== parentState;
+          var result = [];
+
+          if (hasOwnState) {
+            var node = walk(el, path, depth, parentState);
+            if (node) result.push(node);
+          } else {
+            // This element inherits state — skip it but check its children
+            var childKeys = (el.__ref && el.__ref.__children) || [];
+            var visited = {};
+            for (var ci = 0; ci < childKeys.length; ci++) {
+              var ck = childKeys[ci];
+              if (ck.startsWith('__') || visited[ck]) continue;
+              visited[ck] = true;
+              if (el[ck] && el[ck].node) {
+                var sub = collectStateNodes(el[ck], path ? path+'.'+ck : ck, depth+1, st);
+                for (var si = 0; si < sub.length; si++) result.push(sub[si]);
+              }
+            }
+            for (var k in el) {
+              if (SKIP_EL[k] || k.startsWith('__') || visited[k]) continue;
+              if (typeof el[k] === 'object' && el[k] && el[k].node instanceof HTMLElement && el[k].key) {
+                visited[k] = true;
+                var sub2 = collectStateNodes(el[k], path ? path+'.'+k : k, depth+1, st);
+                for (var s2 = 0; s2 < sub2.length; s2++) result.push(sub2[s2]);
+              }
+            }
+          }
+          return result;
         }
 
         try {
@@ -2347,6 +2491,7 @@
     const item = document.createElement('div')
     item.className = 'tree-item' + (isSelected ? ' selected' : '')
     item.style.paddingLeft = (8 + depth * 14) + 'px'
+    if (node.path) item.dataset.statePath = node.path
 
     const arrow = document.createElement('span')
     arrow.className = 'tree-arrow'
@@ -2371,6 +2516,9 @@
     label.addEventListener('click', (e) => {
       e.stopPropagation()
       if (node.path) {
+        // Update selected highlight locally without re-rendering tree
+        document.querySelectorAll('#state-tree-container .tree-item.selected').forEach(el => el.classList.remove('selected'))
+        item.classList.add('selected')
         selectElement(node.path)
         highlightElement(node.path)
       }
@@ -2399,13 +2547,15 @@
             '<span class="prop-colon">: </span>' +
             '<span class="' + valClass + '">' + escapeHtml(valStr) + '</span>'
 
-          // Click to edit state value
+          // Click to select element and show state tab
           row.style.cursor = 'pointer'
-          row.addEventListener('click', () => {
+          row.addEventListener('click', (e) => {
+            e.stopPropagation()
             if (node.path) {
-              selectElement(node.path)
-              // Switch to state tab in detail pane
-              switchToTab('state')
+              // Update selected highlight locally
+              document.querySelectorAll('#state-tree-container .tree-item.selected').forEach(el => el.classList.remove('selected'))
+              item.classList.add('selected')
+              selectElement(node.path).then(() => switchToTab('state'))
             }
           })
 
@@ -2457,6 +2607,14 @@
     return val === null || typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean'
   }
 
+  // Check if value is a complex type (object/array) that needs structured editing
+  function isComplex (val) {
+    if (val === null || val === undefined) return false
+    if (typeof val !== 'object') return false
+    if (val.__type) return false // serialization markers
+    return true
+  }
+
   // Convert complex values to an editable string representation
   function stringifyForEdit (val) {
     if (val && val.__type === 'function') return val.name ? 'f ' + val.name + '()' : ''
@@ -2481,14 +2639,38 @@
     const container = document.getElementById('design-system-container')
     container.innerHTML = ''
 
-    // Try runtime first (from DOMQL context)
+    // Try runtime — check multiple paths for designSystem
     let ds = null
     try {
       const raw = await pageEval(`(function(){
         var I = window.__DOMQL_INSPECTOR__;
         if (!I) return 'null';
+        // Try from root context
         var ds = I.getDesignSystem();
-        return ds ? JSON.stringify(ds) : 'null';
+        if (ds) return JSON.stringify(ds);
+        // Try from any element that has context
+        var root = I.findRoot();
+        if (root) {
+          // Walk to find any child with context.designSystem
+          function findDS(el, depth) {
+            if (depth > 4 || !el) return null;
+            if (el.context && el.context.designSystem) return el;
+            for (var k in el) {
+              if (k === 'parent' || k === 'node' || k === 'context' || k === 'state' || k.startsWith('__')) continue;
+              if (el[k] && typeof el[k] === 'object' && el[k].node) {
+                var found = findDS(el[k], depth + 1);
+                if (found) return found;
+              }
+            }
+            return null;
+          }
+          var elWithDS = findDS(root, 0);
+          if (elWithDS) {
+            ds = I.getDesignSystem(elWithDS);
+            if (ds) return JSON.stringify(ds);
+          }
+        }
+        return 'null';
       })()`)
       if (raw && raw !== 'null') ds = JSON.parse(raw)
     } catch (e) { /* ignore */ }
@@ -2499,9 +2681,22 @@
     }
 
     if (!ds || Object.keys(ds).length === 0) {
-      container.innerHTML = '<div class="empty-message">No design system found. Make sure your project has a designSystem in context or in the symbols folder.</div>'
+      if (!renderDesignSystem._retried) {
+        renderDesignSystem._retried = true
+        container.innerHTML = '<div class="empty-message">Loading design system...</div>'
+        setTimeout(() => renderDesignSystem(), 2000)
+      } else {
+        renderDesignSystem._retried = false
+        container.innerHTML = '<div class="empty-message">Design system is empty</div>'
+      }
       return
     }
+    renderDesignSystem._retried = false
+
+    renderDesignSystemContent(container, ds)
+  }
+
+  function renderDesignSystemContent (container, ds) {
 
     // Render known categories in order, then the rest
     const categoryOrder = ['color', 'colors', 'theme', 'themes', 'spacing', 'space', 'typography', 'font', 'fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'letterSpacing', 'borderRadius', 'shadow', 'media', 'breakpoints', 'opacity', 'transition', 'gradient']
@@ -2935,6 +3130,209 @@
           JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(parsed) + '))'
       pageEval(expr).catch(() => {})
     } catch (e) {}
+  }
+
+  // Structured editor for object/array prop values
+  function startObjectEditing (el, propKey, currentValue, type, componentName) {
+    if (el.classList.contains('editing')) return
+
+    const existing = document.querySelector('.prop-value.editing')
+    if (existing && existing !== el) {
+      existing.dispatchEvent(new Event('commitEdit'))
+    }
+
+    const isArray = Array.isArray(currentValue)
+    const originalJSON = JSON.stringify(currentValue)
+    let workingCopy = JSON.parse(originalJSON)
+
+    el.innerHTML = ''
+    el.classList.add('editing')
+
+    const editor = document.createElement('div')
+    editor.className = 'obj-editor'
+
+    function rebuild () {
+      editor.innerHTML = ''
+      const entries = isArray
+        ? workingCopy.map((v, i) => [String(i), v])
+        : Object.entries(workingCopy)
+
+      for (const [k, v] of entries) {
+        const row = document.createElement('div')
+        row.className = 'obj-editor-row'
+
+        if (!isArray) {
+          const keyInput = document.createElement('input')
+          keyInput.className = 'prop-edit-input obj-key-input'
+          keyInput.value = k
+          keyInput.readOnly = true
+          keyInput.title = k
+          row.appendChild(keyInput)
+
+          const colon = document.createElement('span')
+          colon.className = 'prop-colon'
+          colon.textContent = ': '
+          row.appendChild(colon)
+        } else {
+          const idx = document.createElement('span')
+          idx.className = 'prop-key'
+          idx.textContent = k
+          idx.style.minWidth = '20px'
+          row.appendChild(idx)
+
+          const colon = document.createElement('span')
+          colon.className = 'prop-colon'
+          colon.textContent = ': '
+          row.appendChild(colon)
+        }
+
+        const valInput = document.createElement('input')
+        valInput.className = 'prop-edit-input'
+        valInput.value = typeof v === 'string' ? v
+          : v === null ? 'null'
+          : typeof v === 'object' ? JSON.stringify(v)
+          : String(v)
+        valInput.dataset.origType = typeof v === 'string' ? 'string'
+          : v === null ? 'null'
+          : typeof v === 'object' ? 'json'
+          : typeof v
+        valInput.addEventListener('change', () => {
+          const parsed = parsePreservingType(valInput.value, valInput.dataset.origType)
+          if (isArray) workingCopy[parseInt(k)] = parsed
+          else workingCopy[k] = parsed
+        })
+        row.appendChild(valInput)
+
+        // Delete button
+        const delBtn = document.createElement('button')
+        delBtn.className = 'obj-editor-del'
+        delBtn.textContent = '\u00d7'
+        delBtn.title = 'Remove'
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation()
+          if (isArray) workingCopy.splice(parseInt(k), 1)
+          else delete workingCopy[k]
+          rebuild()
+        })
+        row.appendChild(delBtn)
+
+        editor.appendChild(row)
+      }
+
+      // Add entry button
+      const addRow = document.createElement('div')
+      addRow.className = 'obj-editor-row obj-editor-add'
+      const addBtn = document.createElement('button')
+      addBtn.className = 'prop-add-btn'
+      addBtn.textContent = isArray ? '+ Add item' : '+ Add key'
+      addBtn.style.fontSize = '10px'
+      addBtn.style.padding = '2px 6px'
+      addBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        if (isArray) { workingCopy.push(''); rebuild() }
+        else {
+          const newKey = prompt('Key name:')
+          if (newKey && !(newKey in workingCopy)) {
+            workingCopy[newKey] = ''
+            rebuild()
+          }
+        }
+      })
+      addRow.appendChild(addBtn)
+      editor.appendChild(addRow)
+
+      // Save / Cancel buttons
+      const actions = document.createElement('div')
+      actions.className = 'obj-editor-actions'
+      const saveBtn = document.createElement('button')
+      saveBtn.className = 'obj-editor-save'
+      saveBtn.textContent = 'Save'
+      saveBtn.addEventListener('click', (e) => { e.stopPropagation(); commitObj() })
+      const cancelBtn = document.createElement('button')
+      cancelBtn.className = 'obj-editor-cancel'
+      cancelBtn.textContent = 'Cancel'
+      cancelBtn.addEventListener('click', (e) => { e.stopPropagation(); revertObj() })
+      actions.appendChild(saveBtn)
+      actions.appendChild(cancelBtn)
+      editor.appendChild(actions)
+    }
+
+    rebuild()
+    el.appendChild(editor)
+
+    // Parse value preserving its original type
+    function parsePreservingType (str, origType) {
+      if (origType === 'null' && str === 'null') return null
+      if (origType === 'number') { const n = Number(str); return isNaN(n) ? str : n }
+      if (origType === 'boolean') return str === 'true'
+      if (origType === 'json') { try { return JSON.parse(str) } catch (e) { return str } }
+      if (origType === 'string') return str
+      // Auto-detect
+      if (str === 'null') return null
+      if (str === 'true') return true
+      if (str === 'false') return false
+      if (!isNaN(Number(str)) && str !== '') return Number(str)
+      try { return JSON.parse(str) } catch (e) { return str }
+    }
+
+    async function commitObj () {
+      // Read latest values from inputs
+      const inputs = editor.querySelectorAll('.obj-editor-row:not(.obj-editor-add)')
+      if (isArray) {
+        workingCopy = []
+        inputs.forEach(row => {
+          const inp = row.querySelector('.prop-edit-input')
+          if (inp) workingCopy.push(parsePreservingType(inp.value, inp.dataset.origType))
+        })
+      } else {
+        workingCopy = {}
+        inputs.forEach(row => {
+          const keyInp = row.querySelector('.obj-key-input')
+          const valInp = row.querySelectorAll('.prop-edit-input')[row.querySelector('.obj-key-input') ? 1 : 0]
+          if (keyInp && valInp) {
+            workingCopy[keyInp.value] = parsePreservingType(valInp.value, valInp.dataset.origType)
+          }
+        })
+      }
+
+      el.classList.remove('editing')
+      el.innerHTML = ''
+      el.appendChild(renderValue(workingCopy))
+
+      if (selectedInfo && type !== 'state' && selectedInfo.props) selectedInfo.props[propKey] = workingCopy
+      else if (selectedInfo && type === 'state' && selectedInfo.state) selectedInfo.state[propKey] = workingCopy
+
+      try {
+        const expr = type === 'state'
+          ? 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(propKey) + ',' + JSON.stringify(workingCopy) + '))'
+          : 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(propKey) + ',' + JSON.stringify(workingCopy) + '))'
+        const raw = await pageEval(expr)
+        const res = JSON.parse(raw)
+        if (res.error) {
+          setStatus('Update failed: ' + res.error)
+          el.innerHTML = ''
+          el.appendChild(renderValue(currentValue))
+        } else {
+          setStatus('Updated ' + propKey)
+          pushHistory(selectedPath, propKey, currentValue, workingCopy, type, componentName)
+          trackPropChange(propKey, currentValue, workingCopy, componentName)
+        }
+      } catch (e) {
+        setStatus('Error: ' + (e.message || e))
+        el.innerHTML = ''
+        el.appendChild(renderValue(currentValue))
+      }
+    }
+
+    function revertObj () {
+      el.classList.remove('editing')
+      el.innerHTML = ''
+      el.appendChild(renderValue(currentValue))
+    }
+
+    el.addEventListener('commitEdit', revertObj, { once: true })
   }
 
   function startEditing (el, key, currentValue, type, componentName) {
@@ -4303,7 +4701,7 @@ Do NOT include any explanation, only valid JSON.`
     }
   }
 
-  function init () {
+  async function init () {
     initTabs()
     initPropsSubtabs()
     initResizer()
@@ -4486,7 +4884,9 @@ Do NOT include any explanation, only valid JSON.`
       document.getElementById('chat-thread-history-panel').style.display = 'none'
     })
 
-    showConnectScreen()
+    // Try auto-connect if page is a DOMQL/Symbols site
+    const autoConnected = await tryAutoConnect()
+    if (!autoConnected) showConnectScreen()
   }
 
   window.panelShown = function () {

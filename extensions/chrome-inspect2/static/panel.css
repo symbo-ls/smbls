@@ -337,6 +337,70 @@ body {
   flex-shrink: 0;
 }
 
+/* Header connect button */
+.btn-header-connect {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  margin-right: 4px;
+}
+.btn-header-connect:hover {
+  opacity: 0.85;
+}
+
+/* Connect dialog */
+.connect-dialog {
+  position: absolute;
+  top: 32px;
+  right: 8px;
+  z-index: 100;
+  display: flex;
+}
+.connect-dialog-inner {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  min-width: 180px;
+}
+.connect-dialog-title {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.connect-dialog-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+}
+.connect-dialog-btn:hover {
+  background: var(--bg-hover);
+}
+.connect-dialog-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+}
+
 #resizer {
   width: 4px;
   cursor: col-resize;
@@ -619,6 +683,58 @@ body {
   outline: none;
   min-width: 30px;
 }
+
+/* Object/array editor */
+.obj-editor {
+  padding: 4px 0;
+  width: 100%;
+}
+.obj-editor-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 0;
+}
+.obj-key-input {
+  max-width: 80px;
+  color: var(--key-color) !important;
+  opacity: 0.8;
+}
+.obj-editor-del {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 2px;
+  opacity: 0.5;
+}
+.obj-editor-del:hover {
+  opacity: 1;
+  color: var(--error-color);
+}
+.obj-editor-actions {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0 2px;
+}
+.obj-editor-save,
+.obj-editor-cancel {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 10px;
+  cursor: pointer;
+  background: var(--bg);
+  color: var(--text);
+}
+.obj-editor-save {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.obj-editor-save:hover { opacity: 0.85; }
+.obj-editor-cancel:hover { background: var(--bg-hover); }
 
 /* Value type colors */
 .v-string { color: var(--string-color); }
