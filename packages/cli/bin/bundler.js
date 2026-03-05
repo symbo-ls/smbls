@@ -46,6 +46,7 @@ export const getRunnerConfig = (cwd = process.cwd()) => {
     port: s.port || 1234,
     dir,
     distDir,
+    brender: s.brender !== false,
     packageManager: s.packageManager || 'npm'
   }
 }

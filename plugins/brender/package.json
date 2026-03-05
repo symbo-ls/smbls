@@ -14,6 +14,10 @@
     "./hydrate": {
       "import": "./hydrate.js",
       "default": "./hydrate.js"
+    },
+    "./load": {
+      "import": "./load.js",
+      "default": "./load.js"
     }
   },
   "source": "index.js",

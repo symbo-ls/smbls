@@ -49,6 +49,7 @@ interface ContextInfo {
   propertyName?: string   // the key whose value we're completing
   enclosingKey?: string   // parent object key (attr, state, on, etc.)
   enclosingTag?: string   // detected tag for the element
+  inString?: boolean      // whether cursor is already inside quotes
 }
 
 /**
@@ -153,9 +154,9 @@ export function detectContext(
     const prop = getPropertyForStringValue(linePrefix)
     if (prop) {
       if (enclosingKey === 'attr') {
-        return { type: 'attr-value', propertyName: prop, enclosingTag: tag }
+        return { type: 'attr-value', propertyName: prop, enclosingTag: tag, inString: true }
       }
-      return { type: 'element-value', propertyName: prop, enclosingKey: enclosingKey ?? undefined, enclosingTag: tag }
+      return { type: 'element-value', propertyName: prop, enclosingKey: enclosingKey ?? undefined, enclosingTag: tag, inString: true }
     }
   }
 
@@ -205,7 +206,8 @@ function mkValueItem(
   label: string,
   detail: string,
   docs?: string,
-  sort = '1'
+  sort = '1',
+  inString = false
 ): vscode.CompletionItem {
   const item = new vscode.CompletionItem(label, vscode.CompletionItemKind.Value)
   item.detail = detail
@@ -218,6 +220,10 @@ function mkValueItem(
   // Ensure items show up inside strings
   item.filterText = label
   item.range = undefined
+  // Design system values are always strings — wrap in quotes when not already inside one
+  if (!inString) {
+    item.insertText = new vscode.SnippetString(`'${label}'`)
+  }
   return item
 }
 
@@ -330,93 +336,92 @@ function getStateKeyCompletions(): vscode.CompletionItem[] {
 // Value completions — the smart part
 // ---------------------------------------------------------------------------
 
-function getColorCompletions(): vscode.CompletionItem[] {
+function getColorCompletions(inString = false): vscode.CompletionItem[] {
   const items: vscode.CompletionItem[] = []
 
   for (const c of COLOR_TOKEN_MAP) {
-    const hexInfo = c.hex ? ` → ${c.hex}` : ''
     const desc = c.description || ''
     const detail = c.hex ? `${c.hex}` : (c.description || 'Color token')
     const docs = c.hex
       ? `\`${c.label}\` → \`${c.hex}\`\n\nModifiers: \`${c.label}.5\` (opacity), \`${c.label}+16\` (lighten), \`${c.label}-16\` (darken), \`${c.label}=50\` (set lightness)`
       : `${desc}\n\nModifiers: \`${c.label}.5\` (opacity)`
-    items.push(mkValueItem(c.label, detail, docs, '1'))
+    items.push(mkValueItem(c.label, detail, docs, '1', inString))
   }
 
   for (const g of GRADIENT_TOKENS) {
-    items.push(mkValueItem(g, `Gradient: ${g}`, 'Design system gradient token', '2'))
+    items.push(mkValueItem(g, `Gradient: ${g}`, 'Design system gradient token', '2', inString))
   }
 
   return items
 }
 
-function getSpacingCompletions(): vscode.CompletionItem[] {
+function getSpacingCompletions(inString = false): vscode.CompletionItem[] {
   const cfg = SEQUENCE_CONFIGS.spacing
   return SPACING_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, '0')
-    return mkValueItem(token.label, `${token.label} → ${token.approxValue}`, `**Spacing** \`${token.label}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (golden ratio)\n\nScale: W X Y Z **A** B C D E F G H\n\nSub-steps: A1, A2 interpolate between A and B\n\nOperations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`, sort)
+    return mkValueItem(token.label, `${token.label} → ${token.approxValue}`, `**Spacing** \`${token.label}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (golden ratio)\n\nScale: W X Y Z **A** B C D E F G H\n\nSub-steps: A1, A2 interpolate between A and B\n\nOperations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`, sort, inString)
   })
 }
 
-function getFontSizeCompletions(): vscode.CompletionItem[] {
+function getFontSizeCompletions(inString = false): vscode.CompletionItem[] {
   const cfg = SEQUENCE_CONFIGS.typography
   return TYPOGRAPHY_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, '0')
-    return mkValueItem(token.label, `${token.label} → ${token.approxValue}`, `**Typography** \`${token.label}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (major third)\n\nScale: X Y Z **A** B C D E F G H`, sort)
+    return mkValueItem(token.label, `${token.label} → ${token.approxValue}`, `**Typography** \`${token.label}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (major third)\n\nScale: X Y Z **A** B C D E F G H`, sort, inString)
   })
 }
 
-function getThemeCompletions(): vscode.CompletionItem[] {
+function getThemeCompletions(inString = false): vscode.CompletionItem[] {
   const items: vscode.CompletionItem[] = []
 
   for (const t of THEME_TOKENS) {
-    items.push(mkValueItem(t, `Theme: ${t}`, `Apply design system theme.\n\nModifiers: \`"${t} .child"\`, \`"${t} .color-only"\``, '1'))
+    items.push(mkValueItem(t, `Theme: ${t}`, `Apply design system theme.\n\nModifiers: \`"${t} .child"\`, \`"${t} .color-only"\``, '1', inString))
   }
 
   // Theme with modifier combinations
   for (const t of ['primary', 'secondary', 'card', 'dialog', 'label']) {
     for (const mod of THEME_MODIFIERS) {
-      items.push(mkValueItem(`${t} ${mod}`, `Theme modifier: ${t} ${mod}`, `Theme \`${t}\` with modifier \`${mod}\``, '3'))
+      items.push(mkValueItem(`${t} ${mod}`, `Theme modifier: ${t} ${mod}`, `Theme \`${t}\` with modifier \`${mod}\``, '3', inString))
     }
   }
 
   return items
 }
 
-function getIconCompletions(): vscode.CompletionItem[] {
+function getIconCompletions(inString = false): vscode.CompletionItem[] {
   return ICON_NAMES.map(name =>
-    mkValueItem(name, `Icon: ${name}`, `Default icon from design system`, '1')
+    mkValueItem(name, `Icon: ${name}`, `Default icon from design system`, '1', inString)
   )
 }
 
-function getExtendsCompletions(workspaceComponents: string[]): vscode.CompletionItem[] {
+function getExtendsCompletions(workspaceComponents: string[], inString = false): vscode.CompletionItem[] {
   const items: vscode.CompletionItem[] = []
 
   // Built-in components first
   for (const c of ALL_COMPONENTS) {
-    items.push(mkValueItem(c.label, c.detail, c.documentation, '1'))
+    items.push(mkValueItem(c.label, c.detail, c.documentation, '1', inString))
   }
 
   // Workspace components
   for (const name of workspaceComponents) {
     // Skip if already in built-in
     if (ALL_COMPONENTS.some(c => c.label === name)) continue
-    items.push(mkValueItem(name, `Project component: ${name}`, 'Detected from workspace', '2'))
+    items.push(mkValueItem(name, `Project component: ${name}`, 'Detected from workspace', '2', inString))
   }
 
   return items
 }
 
-function getTagCompletions(): vscode.CompletionItem[] {
+function getTagCompletions(inString = false): vscode.CompletionItem[] {
   return HTML_TAGS.map(tag =>
-    mkValueItem(tag, `HTML tag: <${tag}>`, undefined, '1')
+    mkValueItem(tag, `HTML tag: <${tag}>`, undefined, '1', inString)
   )
 }
 
-function getCssEnumCompletions(property: string): vscode.CompletionItem[] {
+function getCssEnumCompletions(property: string, inString = false): vscode.CompletionItem[] {
   const values = CSS_VALUE_ENUMS[property]
   if (!values) return []
-  return values.map(v => mkValueItem(v, `${property}: ${v}`, undefined, '1'))
+  return values.map(v => mkValueItem(v, `${property}: ${v}`, undefined, '1', inString))
 }
 
 function getAttrValueCompletions(attrName: string): vscode.CompletionItem[] {
@@ -484,33 +489,34 @@ function getCallArgCompletions(): vscode.CompletionItem[] {
 async function getValueCompletions(ctx: ContextInfo): Promise<vscode.CompletionItem[]> {
   const prop = ctx.propertyName
   if (!prop) return []
+  const inStr = ctx.inString ?? false
 
   // extends / childExtends / childExtendsRecursive → component names
   if (prop === 'extends' || prop === 'childExtends' || prop === 'childExtendsRecursive' || prop === 'childExtend') {
     const wsComponents = await scanWorkspaceComponents()
-    return getExtendsCompletions(wsComponents)
+    return getExtendsCompletions(wsComponents, inStr)
   }
 
   // tag → HTML tags
-  if (prop === 'tag') return getTagCompletions()
+  if (prop === 'tag') return getTagCompletions(inStr)
 
   // theme → theme tokens
-  if (prop === 'theme') return getThemeCompletions()
+  if (prop === 'theme') return getThemeCompletions(inStr)
 
   // icon / name (inside Icon component) → icon names
-  if (prop === 'icon' || prop === 'name') return getIconCompletions()
+  if (prop === 'icon' || prop === 'name') return getIconCompletions(inStr)
 
   // Color properties → color tokens
-  if (COLOR_PROPERTIES.has(prop)) return getColorCompletions()
+  if (COLOR_PROPERTIES.has(prop)) return getColorCompletions(inStr)
 
   // Spacing/size properties → spacing tokens
-  if (SPACING_PROPERTIES.has(prop)) return getSpacingCompletions()
+  if (SPACING_PROPERTIES.has(prop)) return getSpacingCompletions(inStr)
 
   // Font size properties → font size tokens
-  if (FONT_SIZE_PROPERTIES.has(prop)) return getFontSizeCompletions()
+  if (FONT_SIZE_PROPERTIES.has(prop)) return getFontSizeCompletions(inStr)
 
   // CSS enum values (display, position, etc.)
-  const enumItems = getCssEnumCompletions(prop)
+  const enumItems = getCssEnumCompletions(prop, inStr)
   if (enumItems.length > 0) return enumItems
 
   // Timing properties → timing tokens
@@ -518,10 +524,10 @@ async function getValueCompletions(ctx: ContextInfo): Promise<vscode.CompletionI
     const cfg = SEQUENCE_CONFIGS.timing
     const items = TIMING_TOKENS.map((t, i) => {
       const sort = String(i).padStart(2, '0')
-      return mkValueItem(t.label, `${t.label} → ${t.approxValue}`, `**Timing** \`${t.label}\` ≈ **${t.approxValue}**\n\nBase: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`, sort)
+      return mkValueItem(t.label, `${t.label} → ${t.approxValue}`, `**Timing** \`${t.label}\` ≈ **${t.approxValue}**\n\nBase: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`, sort, inStr)
     })
     if (prop === 'transition') {
-      items.push(mkValueItem('A defaultBezier', 'transition: A defaultBezier', 'Common transition with default easing'))
+      items.push(mkValueItem('A defaultBezier', 'transition: A defaultBezier', 'Common transition with default easing', '99', inStr))
     }
     return items
   }

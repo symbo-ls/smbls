@@ -1,0 +1,10 @@
+{
+  "key": "projectName.symbo.ls",
+  "distDir": "./smbls",
+  "version": "1.0.23",
+  "branch": "main",
+  "packageManager": "npm",
+  "dir": "./symbols",
+  "runtime": "node",
+  "bundler": "parcel"
+}

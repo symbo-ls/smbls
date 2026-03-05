@@ -63,21 +63,37 @@ chrome.runtime.onInstalled.addListener(({ previousVersion, reason }) => {
 
     // Override Origin header on API requests to avoid CORS rejection
     chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: [1],
-      addRules: [{
-        id: 1,
-        priority: 1,
-        action: {
-          type: 'modifyHeaders',
-          requestHeaders: [
-            { header: 'Origin', operation: 'set', value: 'https://symbols.app' }
-          ]
+      removeRuleIds: [1, 2],
+      addRules: [
+        {
+          id: 1,
+          priority: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              { header: 'Origin', operation: 'set', value: 'https://symbols.app' }
+            ]
+          },
+          condition: {
+            urlFilter: 'https://api.symbols.app/*',
+            resourceTypes: ['xmlhttprequest', 'other']
+          }
         },
-        condition: {
-          urlFilter: 'https://api.symbols.app/*',
-          resourceTypes: ['xmlhttprequest', 'other']
+        {
+          id: 2,
+          priority: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [
+              { header: 'Origin', operation: 'set', value: 'https://symbols.app' }
+            ]
+          },
+          condition: {
+            urlFilter: 'https://smart-assistant-production.up.railway.app/*',
+            resourceTypes: ['xmlhttprequest', 'other']
+          }
         }
-      }]
+      ]
     })
   }
 })
@@ -145,7 +161,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
 
     const openNewPickerTab = () => {
-      const pickerUrl = chrome.runtime.getURL('picker.html')
+      const pickerUrl = chrome.runtime.getURL('picker.html?bg')
       chrome.tabs.create({ url: pickerUrl, active: false }, (tab) => {
         pickerTabId = tab.id
         // Wait for the page to load before forwarding

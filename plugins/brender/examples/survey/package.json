@@ -1,0 +1,30 @@
+{
+  "name": "@symbo.ls/survey",
+  "version": "3.2.3",
+  "description": "Example dev setup to use Symbols",
+  "author": "symbo.ls",
+  "private": true,
+  "repository": "https://github.com/symbo-ls/starter-kit",
+  "scripts": {
+    "start": "smbls start",
+    "build": "smbls build",
+    "deploy": "node deploy.js",
+    "setup": "node setup.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
+  },
+  "dependencies": {
+    "smbls": "3.2.3"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.16.3",
+    "@parcel/transformer-inline-string": "^2.9.1",
+    "@parcel/transformer-raw": "^2.9.1",
+    "eslint": "^8.42.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "wrangler": "^4.68.1"
+  }
+}

@@ -1,7 +1,7 @@
 {
-  "name": "@symbo.ls/vscode",
+  "name": "symbols-app-connect",
   "displayName": "Symbols.app Connect",
-  "description": "IntelliSense for Symbols.app / DOMQL syntax — properties, events, components, element methods, state and more",
+  "description": "Symbols.app Connect for DOMQL syntax — properties, events, components, element methods, state and more",
   "version": "3.2.4",
   "publisher": "symbo-ls",
   "repository": {
@@ -34,12 +34,12 @@
     "commands": [
       {
         "command": "symbolsApp.toggle",
-        "title": "Toggle Symbols.app IntelliSense",
+        "title": "Toggle Symbols.app Connect",
         "category": "Symbols.app"
       },
       {
         "command": "symbolsApp.diagnose",
-        "title": "Diagnose Symbols.app IntelliSense",
+        "title": "Diagnose Symbols.app Connect",
         "category": "Symbols.app"
       }
     ],
@@ -49,7 +49,7 @@
         "symbolsApp.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Enable Symbols.app IntelliSense"
+          "description": "Enable Symbols.app Connect"
         },
         "symbolsApp.detectByImports": {
           "type": "boolean",
@@ -83,7 +83,7 @@
     "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "compile": "npm run esbuild-base",
     "watch": "npm run esbuild-base -- --watch",
-    "package": "vsce package",
+    "package": "npx @vscode/vsce package --no-dependencies",
     "install-vsce": "npm install -g @vscode/vsce"
   },
   "devDependencies": {

@@ -6,7 +6,8 @@ import { ALL_COMPONENTS } from '../data/components'
 import { ALL_CSS_PROPS } from '../data/cssProperties'
 import {
   COLOR_TOKENS, COLOR_TOKEN_MAP, GRADIENT_TOKENS, THEME_TOKENS,
-  ICON_NAMES, SPACING_SCALE, SPACING_TOKENS, COLOR_PROPERTIES,
+  ICON_NAMES, SPACING_SCALE, SPACING_TOKENS, TYPOGRAPHY_TOKENS, TIMING_TOKENS,
+  SEQUENCE_CONFIGS, COLOR_PROPERTIES,
   SPACING_PROPERTIES, FONT_SIZE_PROPERTIES
 } from '../data/designSystemValues'
 import { isDomqlFile } from './completionProvider'
@@ -88,12 +89,36 @@ export class DomqlHoverProvider implements vscode.HoverProvider {
     const prop = getPropertyContext(document, position)
     if (prop) {
       // Spacing tokens
-      if ((SPACING_PROPERTIES.has(prop) || FONT_SIZE_PROPERTIES.has(prop)) && SPACING_SCALE.includes(word)) {
+      if (SPACING_PROPERTIES.has(prop)) {
         const token = SPACING_TOKENS.find(t => t.label === word)
-        const pxInfo = token ? ` ≈ **${token.approxPx}**` : ''
-        const md = new vscode.MarkdownString(`**Design token:** \`${word}\`${pxInfo}\n\nBase: A = 16px, ratio: 1.618 (golden ratio)\n\nScale: U V W X Y Z **A** B C D E F G H\n\nSub-steps: A1, A2 between A and B\n\nOperations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`)
-        md.isTrusted = true
-        return new vscode.Hover(md, wordRange)
+        if (token) {
+          const cfg = SEQUENCE_CONFIGS.spacing
+          const md = new vscode.MarkdownString(`**Spacing token:** \`${word}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (golden ratio)\n\nScale: W X Y Z **A** B C D E F G H\n\nOperations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`)
+          md.isTrusted = true
+          return new vscode.Hover(md, wordRange)
+        }
+      }
+
+      // Typography tokens
+      if (FONT_SIZE_PROPERTIES.has(prop)) {
+        const token = TYPOGRAPHY_TOKENS.find(t => t.label === word)
+        if (token) {
+          const cfg = SEQUENCE_CONFIGS.typography
+          const md = new vscode.MarkdownString(`**Typography token:** \`${word}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}px, ratio: ${cfg.ratio} (major third)\n\nScale: X Y Z **A** B C D E F G H`)
+          md.isTrusted = true
+          return new vscode.Hover(md, wordRange)
+        }
+      }
+
+      // Timing tokens
+      if (prop === 'transition' || prop === 'transitionDuration' || prop === 'animationDuration') {
+        const token = TIMING_TOKENS.find(t => t.label === word)
+        if (token) {
+          const cfg = SEQUENCE_CONFIGS.timing
+          const md = new vscode.MarkdownString(`**Timing token:** \`${word}\` ≈ **${token.approxValue}**\n\nBase: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`)
+          md.isTrusted = true
+          return new vscode.Hover(md, wordRange)
+        }
       }
 
       // Color values

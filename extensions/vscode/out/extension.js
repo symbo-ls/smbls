@@ -680,17 +680,21 @@ var ALL_EVENTS = [...DOM_EVENTS, ...DOMQL_LIFECYCLE_EVENTS];
 
 // src/data/cssProperties.ts
 var DESIGN_SYSTEM_PROPS = [
-  { label: "flow", detail: "flow: string", documentation: 'Shorthand for `flexDirection`. Common values: `"column"`, `"row"`, `"y"`, `"x"`, `"column-reverse"`' },
-  { label: "align", detail: "align: string", documentation: 'Shorthand for `alignItems justifyContent`. E.g. `"center space-between"`, `"center center"`' },
-  { label: "round", detail: "round: string", documentation: 'Design token for border-radius. E.g. `"C"`, `"A"`, `"100%"`' },
-  { label: "boxSize", detail: "boxSize: string", documentation: "Sets both width and height. Design token or CSS value." },
-  { label: "widthRange", detail: "widthRange: string", documentation: "Sets minWidth and maxWidth to the same value." },
-  { label: "heightRange", detail: "heightRange: string", documentation: "Sets minHeight and maxHeight to the same value." },
-  { label: "theme", detail: "theme: string", documentation: 'Apply a design-system theme token. E.g. `"dialog"`, `"field"`, `"primary"`' },
+  { label: "flow", detail: "flow: string", documentation: 'Shorthand for `flexDirection`. Common values: `"column"`, `"row"`, `"y"`, `"x"`, `"column-reverse"`\n\n```js\nflow: "column"\nflow: "x"  // alias for "row"\n```' },
+  { label: "align", detail: "align: string", documentation: 'Shorthand for united `alignItems` and `justifyContent`.\n\n```js\nalign: "center center"\nalign: "flex-start space-between"\n```' },
+  { label: "flexAlign", detail: "flexAlign: string", documentation: 'Shorthand for united `alignItems` and `justifyContent`.\n\n```js\nflexAlign: "flex-start center"\n```' },
+  { label: "round", detail: "round: string", documentation: 'Rounding the corners of the shape. Accepts spacing design tokens or CSS values.\n\n```js\nround: "C2"\nround: "100%"\n```' },
+  { label: "boxSize", detail: "boxSize: string", documentation: 'Range of width and height. Accepts spacing design tokens.\n\n```js\nboxSize: "C1 E"  // width: C1, height: E\nboxSize: "D"     // both width and height\n```' },
+  { label: "widthRange", detail: "widthRange: string", documentation: 'Range of min-width and max-width.\n\n```js\nwidthRange: "A1 B2"  // minWidth: A1, maxWidth: B2\nwidthRange: "H2 50%"\n```' },
+  { label: "heightRange", detail: "heightRange: string", documentation: 'Range of min-height and max-height.\n\n```js\nheightRange: "A1 B2"  // minHeight: A1, maxHeight: B2\n```' },
+  { label: "theme", detail: "theme: string | object", documentation: 'Reference the value from the Themes configuration.\n\n```js\ntheme: "primary"\ntheme: "primary .active"\ntheme: { color: "white", "@dark": { color: "blue" } }\n```' },
   { label: "columns", detail: "columns: string", documentation: "Shorthand for `gridTemplateColumns`." },
   { label: "rows", detail: "rows: string", documentation: "Shorthand for `gridTemplateRows`." },
   { label: "wrap", detail: "wrap: string", documentation: 'Shorthand for `flexWrap`. E.g. `"wrap"`, `"nowrap"`' },
-  { label: "inset", detail: "inset: string", documentation: "CSS inset shorthand (top, right, bottom, left)." }
+  { label: "inset", detail: "inset: string", documentation: "CSS inset shorthand (top, right, bottom, left)." },
+  { label: "shape", detail: "shape: string", documentation: 'Name of the shape from Shapes configuration.\n\n```js\nshape: "tag"\nshape: "tooltip top"\n```' },
+  { label: "shapeModifier", detail: "shapeModifier: string | object", documentation: 'If the shape is either tooltip or tag, sets additional attributes like direction or position.\n\n```js\nshapeModifier: { position: "block center", direction: "north west" }\n```' },
+  { label: "shadow", detail: "shadow: string", documentation: 'Level of the shadow that adds depth to the element.\n\n```js\nshadow: "black A A C"  // color x y depth\n```' }
 ];
 var STANDARD_CSS_PROPS = [
   // Layout
@@ -719,7 +723,7 @@ var STANDARD_CSS_PROPS = [
   { label: "justifyContent", detail: "justifyContent: string" },
   { label: "justifyItems", detail: "justifyItems: string" },
   { label: "justifySelf", detail: "justifySelf: string" },
-  { label: "gap", detail: "gap: string", documentation: 'Design token or CSS value. E.g. `"A"`, `"B C"`, `"8px"`' },
+  { label: "gap", detail: "gap: string", documentation: 'The space between children inside the element. Accepts spacing design tokens.\n\n```js\ngap: "A2"\ngap: "B C"  // rowGap columnGap\n```' },
   { label: "rowGap", detail: "rowGap: string" },
   { label: "columnGap", detail: "columnGap: string" },
   { label: "order", detail: "order: number" },
@@ -734,21 +738,22 @@ var STANDARD_CSS_PROPS = [
   { label: "gridAutoColumns", detail: "gridAutoColumns: string" },
   { label: "gridAutoRows", detail: "gridAutoRows: string" },
   // Sizing
-  { label: "width", detail: "width: string" },
-  { label: "height", detail: "height: string" },
-  { label: "minWidth", detail: "minWidth: string" },
-  { label: "maxWidth", detail: "maxWidth: string" },
-  { label: "minHeight", detail: "minHeight: string" },
-  { label: "maxHeight", detail: "maxHeight: string" },
+  { label: "width", detail: "width: string", documentation: 'Width of the element. Accepts spacing design tokens or CSS values.\n\n```js\nwidth: "F1"\nwidth: "100%"\n```' },
+  { label: "height", detail: "height: string", documentation: 'Height of the element. Accepts spacing design tokens or CSS values.\n\n```js\nheight: "F1"\n```' },
+  { label: "minWidth", detail: "minWidth: string", documentation: "Min width of the box. Accepts spacing design tokens or CSS values." },
+  { label: "maxWidth", detail: "maxWidth: string", documentation: "Max width of the box. Accepts spacing design tokens or CSS values." },
+  { label: "minHeight", detail: "minHeight: string", documentation: "Min height of the box. Accepts spacing design tokens or CSS values." },
+  { label: "maxHeight", detail: "maxHeight: string", documentation: "Max height of the box. Accepts spacing design tokens or CSS values." },
+  { label: "aspectRatio", detail: "aspectRatio: string", documentation: 'Aspect ratio of the box.\n\n```js\naspectRatio: "1 / 2"\n```' },
   // Spacing
-  { label: "padding", detail: "padding: string", documentation: 'Design token or CSS value. E.g. `"A B"`, `"Z2 C"`' },
+  { label: "padding", detail: "padding: string", documentation: 'Space inside the element. Accepts spacing design tokens or CSS values.\n\n```js\npadding: "A1 C2"\npadding: "Z2 C"\n```' },
   { label: "paddingTop", detail: "paddingTop: string" },
   { label: "paddingRight", detail: "paddingRight: string" },
   { label: "paddingBottom", detail: "paddingBottom: string" },
   { label: "paddingLeft", detail: "paddingLeft: string" },
   { label: "paddingInline", detail: "paddingInline: string" },
   { label: "paddingBlock", detail: "paddingBlock: string" },
-  { label: "margin", detail: "margin: string" },
+  { label: "margin", detail: "margin: string", documentation: 'Outer space of the element. Accepts spacing design tokens or CSS values.\n\n```js\nmargin: "0 -B2"\n```' },
   { label: "marginTop", detail: "marginTop: string" },
   { label: "marginRight", detail: "marginRight: string" },
   { label: "marginBottom", detail: "marginBottom: string" },
@@ -756,7 +761,7 @@ var STANDARD_CSS_PROPS = [
   { label: "marginInline", detail: "marginInline: string" },
   { label: "marginBlock", detail: "marginBlock: string" },
   // Background
-  { label: "background", detail: "background: string", documentation: 'Color name, design token, or CSS value. E.g. `"codGray"`, `"surface"`, `"primary"`' },
+  { label: "background", detail: "background: string", documentation: 'Setting the specific background color matching with one from the Colors page. Accepts color tokens with modifiers.\n\n```js\nbackground: "gray"\nbackground: "blue.5"  // with opacity\n```' },
   { label: "backgroundColor", detail: "backgroundColor: string" },
   { label: "backgroundImage", detail: "backgroundImage: string" },
   { label: "backgroundSize", detail: "backgroundSize: string" },
@@ -764,7 +769,7 @@ var STANDARD_CSS_PROPS = [
   { label: "backgroundRepeat", detail: "backgroundRepeat: string" },
   { label: "backgroundClip", detail: "backgroundClip: string" },
   // Border
-  { label: "border", detail: "border: string" },
+  { label: "border", detail: "border: string", documentation: 'Border with design system color tokens. Order: color, size, style.\n\n```js\nborder: "blue 1px solid"\nborderTop: "1px solid gray.5"\n```' },
   { label: "borderTop", detail: "borderTop: string" },
   { label: "borderRight", detail: "borderRight: string" },
   { label: "borderBottom", detail: "borderBottom: string" },
@@ -772,7 +777,7 @@ var STANDARD_CSS_PROPS = [
   { label: "borderWidth", detail: "borderWidth: string" },
   { label: "borderStyle", detail: "borderStyle: string" },
   { label: "borderColor", detail: "borderColor: string" },
-  { label: "borderRadius", detail: "borderRadius: string" },
+  { label: "borderRadius", detail: "borderRadius: string", documentation: 'Rounding the corners of the shape. Accepts spacing design tokens.\n\n```js\nborderRadius: "C2"\n```' },
   { label: "borderTopLeftRadius", detail: "borderTopLeftRadius: string" },
   { label: "borderTopRightRadius", detail: "borderTopRightRadius: string" },
   { label: "borderBottomLeftRadius", detail: "borderBottomLeftRadius: string" },
@@ -780,9 +785,9 @@ var STANDARD_CSS_PROPS = [
   { label: "outline", detail: "outline: string" },
   { label: "outlineOffset", detail: "outlineOffset: string" },
   // Typography
-  { label: "color", detail: "color: string", documentation: 'Color name from design system or CSS value. E.g. `"primary"`, `"title"`, `"currentColor"`' },
-  { label: "fontSize", detail: "fontSize: string", documentation: 'Design token (e.g. `"A"`, `"B"`, `"C"`) or CSS value.' },
-  { label: "fontWeight", detail: "fontWeight: string | number" },
+  { label: "color", detail: "color: string", documentation: 'Setting the specific text color matching with one from the Colors page. Accepts color tokens with modifiers.\n\n```js\ncolor: "title"\ncolor: "blue.5"  // with opacity\n```' },
+  { label: "fontSize", detail: "fontSize: string", documentation: 'Using typography sequence or default CSS values. Accepts typography design tokens.\n\n```js\nfontSize: "B"\nfontSize: "Z1"\n```' },
+  { label: "fontWeight", detail: "fontWeight: string | number", documentation: 'CSS font-weight value. Finds the closest weight in configuration or sets variable font value.\n\n```js\nfontWeight: "500"\n```' },
   { label: "fontFamily", detail: "fontFamily: string" },
   { label: "fontStyle", detail: "fontStyle: string" },
   { label: "lineHeight", detail: "lineHeight: string | number" },
@@ -801,14 +806,20 @@ var STANDARD_CSS_PROPS = [
   { label: "backdropFilter", detail: "backdropFilter: string" },
   { label: "transform", detail: "transform: string" },
   { label: "transformOrigin", detail: "transformOrigin: string" },
-  { label: "transition", detail: "transition: string", documentation: 'E.g. `"B defaultBezier"` using design tokens.' },
+  { label: "transition", detail: "transition: string", documentation: 'Transition using timing design tokens.\n\n```js\ntransition: "A defaultBezier"\n```' },
   { label: "transitionProperty", detail: "transitionProperty: string" },
-  { label: "transitionDuration", detail: "transitionDuration: string" },
+  { label: "transitionDuration", detail: "transitionDuration: string", documentation: "Duration value from Timing sequence, or CSS value." },
   { label: "transitionTimingFunction", detail: "transitionTimingFunction: string" },
   { label: "transitionDelay", detail: "transitionDelay: string" },
-  { label: "animation", detail: "animation: string" },
-  { label: "animationName", detail: "animationName: string" },
-  { label: "animationDuration", detail: "animationDuration: string" },
+  { label: "animation", detail: "animation: string", documentation: 'Bundle animation properties. Accepts animation name and timing tokens.\n\n```js\nanimation: "fadeIn"\nanimation: "fadeIn C1 my-custom-bezier"\n```' },
+  { label: "animationName", detail: "animationName: string", documentation: "Name of the animation defined in design system." },
+  { label: "animationDuration", detail: "animationDuration: string", documentation: 'Duration value from Timing sequence, or CSS value.\n\n```js\nanimationDuration: "C"\n```' },
+  { label: "animationDelay", detail: "animationDelay: string", documentation: "Delay value from Timing sequence, or CSS value." },
+  { label: "animationTimingFunction", detail: "animationTimingFunction: string", documentation: "A value from Timing sequence, or CSS animation-timing-function property." },
+  { label: "animationFillMode", detail: "animationFillMode: string" },
+  { label: "animationPlayState", detail: "animationPlayState: string" },
+  { label: "animationIterationCount", detail: "animationIterationCount: string" },
+  { label: "animationDirection", detail: "animationDirection: string" },
   // Cursor / pointer
   { label: "cursor", detail: "cursor: string" },
   { label: "pointerEvents", detail: "pointerEvents: string" },
@@ -1995,9 +2006,9 @@ function detectContext(document, position) {
     const prop = getPropertyForStringValue(linePrefix);
     if (prop) {
       if (enclosingKey === "attr") {
-        return { type: "attr-value", propertyName: prop, enclosingTag: tag };
+        return { type: "attr-value", propertyName: prop, enclosingTag: tag, inString: true };
       }
-      return { type: "element-value", propertyName: prop, enclosingKey: enclosingKey ?? void 0, enclosingTag: tag };
+      return { type: "element-value", propertyName: prop, enclosingKey: enclosingKey ?? void 0, enclosingTag: tag, inString: true };
     }
   }
   const atKeyPos = isAtKeyPosition(linePrefix);
@@ -2025,7 +2036,7 @@ function mkItem(label, kind, detail, docs, snippet, sort = "5") {
   item.sortText = sort + label;
   return item;
 }
-function mkValueItem(label, detail, docs, sort = "1") {
+function mkValueItem(label, detail, docs, sort = "1", inString = false) {
   const item = new vscode2.CompletionItem(label, vscode2.CompletionItemKind.Value);
   item.detail = detail;
   if (docs) {
@@ -2036,6 +2047,9 @@ function mkValueItem(label, detail, docs, sort = "1") {
   item.sortText = sort + label;
   item.filterText = label;
   item.range = void 0;
+  if (!inString) {
+    item.insertText = new vscode2.SnippetString(`'${label}'`);
+  }
   return item;
 }
 function getElementKeyCompletions() {
@@ -2132,10 +2146,9 @@ function getStateKeyCompletions() {
     return item;
   });
 }
-function getColorCompletions() {
+function getColorCompletions(inString = false) {
   const items = [];
   for (const c of COLOR_TOKEN_MAP) {
-    const hexInfo = c.hex ? ` \u2192 ${c.hex}` : "";
     const desc = c.description || "";
     const detail = c.hex ? `${c.hex}` : c.description || "Color token";
     const docs = c.hex ? `\`${c.label}\` \u2192 \`${c.hex}\`
@@ -2143,14 +2156,14 @@ function getColorCompletions() {
 Modifiers: \`${c.label}.5\` (opacity), \`${c.label}+16\` (lighten), \`${c.label}-16\` (darken), \`${c.label}=50\` (set lightness)` : `${desc}
 
 Modifiers: \`${c.label}.5\` (opacity)`;
-    items.push(mkValueItem(c.label, detail, docs, "1"));
+    items.push(mkValueItem(c.label, detail, docs, "1", inString));
   }
   for (const g of GRADIENT_TOKENS) {
-    items.push(mkValueItem(g, `Gradient: ${g}`, "Design system gradient token", "2"));
+    items.push(mkValueItem(g, `Gradient: ${g}`, "Design system gradient token", "2", inString));
   }
   return items;
 }
-function getSpacingCompletions() {
+function getSpacingCompletions(inString = false) {
   const cfg = SEQUENCE_CONFIGS.spacing;
   return SPACING_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, "0");
@@ -2162,10 +2175,10 @@ Scale: W X Y Z **A** B C D E F G H
 
 Sub-steps: A1, A2 interpolate between A and B
 
-Operations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`, sort);
+Operations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`, sort, inString);
   });
 }
-function getFontSizeCompletions() {
+function getFontSizeCompletions(inString = false) {
   const cfg = SEQUENCE_CONFIGS.typography;
   return TYPOGRAPHY_TOKENS.map((token, i) => {
     const sort = String(i).padStart(2, "0");
@@ -2173,48 +2186,48 @@ function getFontSizeCompletions() {
 
 Base: A = ${cfg.base}px, ratio: ${cfg.ratio} (major third)
 
-Scale: X Y Z **A** B C D E F G H`, sort);
+Scale: X Y Z **A** B C D E F G H`, sort, inString);
   });
 }
-function getThemeCompletions() {
+function getThemeCompletions(inString = false) {
   const items = [];
   for (const t of THEME_TOKENS) {
     items.push(mkValueItem(t, `Theme: ${t}`, `Apply design system theme.
 
-Modifiers: \`"${t} .child"\`, \`"${t} .color-only"\``, "1"));
+Modifiers: \`"${t} .child"\`, \`"${t} .color-only"\``, "1", inString));
   }
   for (const t of ["primary", "secondary", "card", "dialog", "label"]) {
     for (const mod of THEME_MODIFIERS) {
-      items.push(mkValueItem(`${t} ${mod}`, `Theme modifier: ${t} ${mod}`, `Theme \`${t}\` with modifier \`${mod}\``, "3"));
+      items.push(mkValueItem(`${t} ${mod}`, `Theme modifier: ${t} ${mod}`, `Theme \`${t}\` with modifier \`${mod}\``, "3", inString));
     }
   }
   return items;
 }
-function getIconCompletions() {
+function getIconCompletions(inString = false) {
   return ICON_NAMES.map(
-    (name) => mkValueItem(name, `Icon: ${name}`, `Default icon from design system`, "1")
+    (name) => mkValueItem(name, `Icon: ${name}`, `Default icon from design system`, "1", inString)
   );
 }
-function getExtendsCompletions(workspaceComponents) {
+function getExtendsCompletions(workspaceComponents, inString = false) {
   const items = [];
   for (const c of ALL_COMPONENTS) {
-    items.push(mkValueItem(c.label, c.detail, c.documentation, "1"));
+    items.push(mkValueItem(c.label, c.detail, c.documentation, "1", inString));
   }
   for (const name of workspaceComponents) {
     if (ALL_COMPONENTS.some((c) => c.label === name)) continue;
-    items.push(mkValueItem(name, `Project component: ${name}`, "Detected from workspace", "2"));
+    items.push(mkValueItem(name, `Project component: ${name}`, "Detected from workspace", "2", inString));
   }
   return items;
 }
-function getTagCompletions() {
+function getTagCompletions(inString = false) {
   return HTML_TAGS.map(
-    (tag) => mkValueItem(tag, `HTML tag: <${tag}>`, void 0, "1")
+    (tag) => mkValueItem(tag, `HTML tag: <${tag}>`, void 0, "1", inString)
   );
 }
-function getCssEnumCompletions(property) {
+function getCssEnumCompletions(property, inString = false) {
   const values = CSS_VALUE_ENUMS[property];
   if (!values) return [];
-  return values.map((v) => mkValueItem(v, `${property}: ${v}`, void 0, "1"));
+  return values.map((v) => mkValueItem(v, `${property}: ${v}`, void 0, "1", inString));
 }
 function getAttrValueCompletions(attrName) {
   switch (attrName) {
@@ -2315,17 +2328,18 @@ Resolution: utils \u2192 functions \u2192 methods \u2192 snippets`, "1")
 async function getValueCompletions(ctx) {
   const prop = ctx.propertyName;
   if (!prop) return [];
+  const inStr = ctx.inString ?? false;
   if (prop === "extends" || prop === "childExtends" || prop === "childExtendsRecursive" || prop === "childExtend") {
     const wsComponents = await scanWorkspaceComponents();
-    return getExtendsCompletions(wsComponents);
+    return getExtendsCompletions(wsComponents, inStr);
   }
-  if (prop === "tag") return getTagCompletions();
-  if (prop === "theme") return getThemeCompletions();
-  if (prop === "icon" || prop === "name") return getIconCompletions();
-  if (COLOR_PROPERTIES.has(prop)) return getColorCompletions();
-  if (SPACING_PROPERTIES.has(prop)) return getSpacingCompletions();
-  if (FONT_SIZE_PROPERTIES.has(prop)) return getFontSizeCompletions();
-  const enumItems = getCssEnumCompletions(prop);
+  if (prop === "tag") return getTagCompletions(inStr);
+  if (prop === "theme") return getThemeCompletions(inStr);
+  if (prop === "icon" || prop === "name") return getIconCompletions(inStr);
+  if (COLOR_PROPERTIES.has(prop)) return getColorCompletions(inStr);
+  if (SPACING_PROPERTIES.has(prop)) return getSpacingCompletions(inStr);
+  if (FONT_SIZE_PROPERTIES.has(prop)) return getFontSizeCompletions(inStr);
+  const enumItems = getCssEnumCompletions(prop, inStr);
   if (enumItems.length > 0) return enumItems;
   if (prop === "transition" || prop === "transitionDuration" || prop === "animationDuration") {
     const cfg = SEQUENCE_CONFIGS.timing;
@@ -2333,10 +2347,10 @@ async function getValueCompletions(ctx) {
       const sort = String(i).padStart(2, "0");
       return mkValueItem(t.label, `${t.label} \u2192 ${t.approxValue}`, `**Timing** \`${t.label}\` \u2248 **${t.approxValue}**
 
-Base: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`, sort);
+Base: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`, sort, inStr);
     });
     if (prop === "transition") {
-      items.push(mkValueItem("A defaultBezier", "transition: A defaultBezier", "Common transition with default easing"));
+      items.push(mkValueItem("A defaultBezier", "transition: A defaultBezier", "Common transition with default easing", "99", inStr));
     }
     return items;
   }
@@ -2488,20 +2502,44 @@ var DomqlHoverProvider = class {
     }
     const prop = getPropertyContext(document, position);
     if (prop) {
-      if ((SPACING_PROPERTIES.has(prop) || FONT_SIZE_PROPERTIES.has(prop)) && SPACING_SCALE.includes(word)) {
+      if (SPACING_PROPERTIES.has(prop)) {
         const token = SPACING_TOKENS.find((t) => t.label === word);
-        const pxInfo = token ? ` \u2248 **${token.approxPx}**` : "";
-        const md = new vscode3.MarkdownString(`**Design token:** \`${word}\`${pxInfo}
+        if (token) {
+          const cfg = SEQUENCE_CONFIGS.spacing;
+          const md = new vscode3.MarkdownString(`**Spacing token:** \`${word}\` \u2248 **${token.approxValue}**
 
-Base: A = 16px, ratio: 1.618 (golden ratio)
+Base: A = ${cfg.base}px, ratio: ${cfg.ratio} (golden ratio)
 
-Scale: U V W X Y Z **A** B C D E F G H
-
-Sub-steps: A1, A2 between A and B
+Scale: W X Y Z **A** B C D E F G H
 
 Operations: \`A+B\`, \`A-Z\`, \`A*2\`, \`-A\` (negative)`);
-        md.isTrusted = true;
-        return new vscode3.Hover(md, wordRange);
+          md.isTrusted = true;
+          return new vscode3.Hover(md, wordRange);
+        }
+      }
+      if (FONT_SIZE_PROPERTIES.has(prop)) {
+        const token = TYPOGRAPHY_TOKENS.find((t) => t.label === word);
+        if (token) {
+          const cfg = SEQUENCE_CONFIGS.typography;
+          const md = new vscode3.MarkdownString(`**Typography token:** \`${word}\` \u2248 **${token.approxValue}**
+
+Base: A = ${cfg.base}px, ratio: ${cfg.ratio} (major third)
+
+Scale: X Y Z **A** B C D E F G H`);
+          md.isTrusted = true;
+          return new vscode3.Hover(md, wordRange);
+        }
+      }
+      if (prop === "transition" || prop === "transitionDuration" || prop === "animationDuration") {
+        const token = TIMING_TOKENS.find((t) => t.label === word);
+        if (token) {
+          const cfg = SEQUENCE_CONFIGS.timing;
+          const md = new vscode3.MarkdownString(`**Timing token:** \`${word}\` \u2248 **${token.approxValue}**
+
+Base: A = ${cfg.base}ms, ratio: ${cfg.ratio} (perfect fourth)`);
+          md.isTrusted = true;
+          return new vscode3.Hover(md, wordRange);
+        }
       }
       if (COLOR_PROPERTIES.has(prop) || prop === "background") {
         const hint = valueHints.get(word);
@@ -2765,7 +2803,7 @@ function activate(context) {
     })
   );
   output.appendLine("Symbols.app extension activated successfully");
-  vscode5.window.showInformationMessage("Symbols.app IntelliSense active");
+  vscode5.window.showInformationMessage("Symbols.app Connect active");
 }
 function deactivate() {
 }

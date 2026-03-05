@@ -36,6 +36,93 @@ body {
   flex-direction: column;
 }
 
+/* ============================================================
+   Top-level mode tabs (Chat / Editor)
+   ============================================================ */
+#mode-tabs {
+  display: flex;
+  align-items: center;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+.mode-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-dim);
+  padding: 7px 16px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.mode-tab:hover {
+  color: var(--text);
+  background: var(--bg-hover);
+}
+
+.mode-tab.active {
+  color: var(--text-bright);
+  border-bottom-color: var(--accent);
+}
+
+.mode-tab-spacer {
+  flex: 1;
+}
+
+#app-connection-badge {
+  font-size: 10px;
+  color: var(--type-color);
+  padding: 2px 6px;
+  border: 1px solid var(--type-color);
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+#btn-app-disconnect {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+#btn-app-disconnect:hover {
+  color: var(--error-color);
+}
+
+/* ============================================================
+   Mode panels
+   ============================================================ */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.mode-panel {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mode-panel.active {
+  display: flex;
+}
+
+/* ============================================================
+   Editor toolbar
+   ============================================================ */
 #toolbar {
   display: flex;
   align-items: center;
@@ -111,6 +198,9 @@ body {
   opacity: 1;
 }
 
+/* ============================================================
+   Main layout
+   ============================================================ */
 #main {
   display: flex;
   flex: 1;
@@ -144,6 +234,9 @@ body {
   overflow: hidden;
 }
 
+/* ============================================================
+   Detail header and tabs
+   ============================================================ */
 #detail-header {
   padding: 8px 12px;
   background: var(--bg-alt);
@@ -219,7 +312,17 @@ body {
   display: block;
 }
 
-/* Tree view */
+#tab-source.active {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ============================================================
+   Tree view
+   ============================================================ */
 .tree-item {
   display: flex;
   align-items: center;
@@ -267,54 +370,78 @@ body {
   display: block;
 }
 
-/* Property rows */
+/* ============================================================
+   Property rows — Chrome DevTools CSS panel style
+   ============================================================ */
 .prop-row {
   display: flex;
-  align-items: flex-start;
-  padding: 2px 0;
-  min-height: 22px;
+  align-items: baseline;
+  padding: 1px 0 1px 16px;
+  min-height: 20px;
+  line-height: 18px;
+  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
+  font-size: 12px;
+}
+
+.prop-row:hover {
+  background: var(--bg-hover);
 }
 
 .prop-key {
   color: var(--key-color);
-  min-width: 120px;
   flex-shrink: 0;
-  padding-right: 8px;
+  white-space: nowrap;
+}
+
+.prop-colon {
+  color: var(--text-dim);
+  margin-right: 6px;
 }
 
 .prop-value {
   flex: 1;
   word-break: break-all;
+  position: relative;
+}
+
+.prop-semi {
+  color: var(--text-dim);
+  margin-left: 1px;
+  opacity: 0.4;
 }
 
 .prop-value.editable {
   cursor: text;
-  padding: 1px 4px;
+  padding: 0 2px;
   border-radius: 2px;
+  min-width: 20px;
 }
 
 .prop-value.editable:hover {
-  background: var(--bg-hover);
-  outline: 1px solid var(--border);
+  background: rgba(0, 133, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(0, 133, 255, 0.2);
 }
 
 .prop-value.editing {
   background: var(--bg);
-  outline: 1px solid var(--accent);
-}
-
-.prop-value input {
-  background: var(--bg);
-  border: 1px solid var(--accent);
-  color: var(--text);
-  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
-  font-size: 12px;
-  padding: 1px 4px;
-  width: 100%;
-  outline: none;
+  box-shadow: 0 0 0 1px var(--accent);
   border-radius: 2px;
 }
 
+.prop-edit-input {
+  background: transparent;
+  border: none;
+  color: var(--string-color);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 0;
+  width: 100%;
+  outline: none;
+  min-width: 30px;
+}
+
+/* Value type colors */
 .v-string { color: var(--string-color); }
 .v-number { color: var(--number-color); }
 .v-boolean { color: var(--boolean-color); }
@@ -322,6 +449,57 @@ body {
 .v-function { color: var(--function-color); font-style: italic; }
 .v-type { color: var(--type-color); font-style: italic; }
 .v-error { color: var(--error-color); }
+
+/* ============================================================
+   Property dropdown suggestions
+   ============================================================ */
+.prop-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  max-height: 180px;
+  overflow: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  margin-top: 2px;
+}
+
+.prop-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.prop-dropdown-item:hover,
+.prop-dropdown-item.active {
+  background: var(--bg-hover);
+}
+
+.prop-dropdown-item .dd-label {
+  color: var(--text-bright);
+}
+
+.prop-dropdown-item .dd-hint {
+  color: var(--text-dim);
+  font-size: 10px;
+  margin-left: 8px;
+}
+
+.prop-dropdown-item .dd-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  margin-right: 6px;
+  flex-shrink: 0;
+}
 
 /* Nested object view */
 .nested-obj {
@@ -339,7 +517,9 @@ body {
   color: var(--text);
 }
 
-/* Methods */
+/* ============================================================
+   Methods
+   ============================================================ */
 .method-item {
   display: flex;
   align-items: center;
@@ -383,7 +563,9 @@ body {
   margin-left: 8px;
 }
 
-/* Children list */
+/* ============================================================
+   Children list
+   ============================================================ */
 .child-item {
   display: flex;
   align-items: center;
@@ -411,7 +593,9 @@ body {
   font-size: 10px;
 }
 
-/* Section headers */
+/* ============================================================
+   Section headers
+   ============================================================ */
 .section-header {
   color: var(--text-dim);
   font-size: 10px;
@@ -423,6 +607,9 @@ body {
 }
 
 .prop-source-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: var(--function-color);
   font-size: 10px;
   letter-spacing: 0.5px;
@@ -569,6 +756,11 @@ body {
   background: var(--bg-hover);
 }
 
+.recent-item.matching {
+  border: 1px solid var(--type-color);
+  background: rgba(89, 172, 86, 0.08);
+}
+
 .recent-name {
   color: var(--text-bright);
   font-family: 'DmSansVariable', 'Helvetica Neue', 'Helvetica', system-ui, sans-serif;
@@ -584,12 +776,6 @@ body {
 /* ============================================================
    Inspector layout (when connected)
    ============================================================ */
-#inspector {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
 #connection-badge {
   font-size: 11px;
   color: var(--type-color);
@@ -675,7 +861,9 @@ body {
   display: block;
 }
 
-/* Source tab */
+/* ============================================================
+   Source tab
+   ============================================================ */
 #tab-source {
   position: relative;
 }
@@ -821,12 +1009,6 @@ body {
 .sh-comment { color: #6A9955; font-style: italic; }
 
 /* Prop source badges */
-.prop-source-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .prop-source-file {
   font-size: 9px;
   color: var(--accent);
@@ -876,7 +1058,9 @@ body {
   opacity: 0.9;
 }
 
-/* AI Prompt Bar */
+/* ============================================================
+   AI Bar (Editor bottom bar)
+   ============================================================ */
 #ai-bar {
   border-top: 1px solid var(--border);
   background: var(--bg-alt);
@@ -900,12 +1084,15 @@ body {
   margin: 0;
 }
 
-#ai-input-row {
+#ai-input-row,
+#chat-input-row {
   display: flex;
   gap: 6px;
+  align-items: center;
 }
 
-#ai-input {
+#ai-input,
+#chat-input {
   flex: 1;
   background: var(--bg);
   border: 1px solid var(--border);
@@ -917,15 +1104,18 @@ body {
   outline: none;
 }
 
-#ai-input:focus {
+#ai-input:focus,
+#chat-input:focus {
   border-color: var(--accent);
 }
 
-#ai-input::placeholder {
+#ai-input::placeholder,
+#chat-input::placeholder {
   color: var(--text-dim);
 }
 
-#ai-send {
+#ai-send,
+#chat-send {
   background: var(--accent);
   color: #fff;
   border: none;
@@ -934,13 +1124,182 @@ body {
   font-size: 11px;
   font-family: inherit;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-#ai-send:hover {
+#ai-send:hover,
+#chat-send:hover {
   opacity: 0.9;
 }
 
-/* Auth section */
+/* AI model selector */
+.ai-model-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 10px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.ai-model-select:focus {
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   Chat mode
+   ============================================================ */
+#mode-chat {
+  background: var(--bg);
+}
+
+#chat-messages {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-msg {
+  max-width: 90%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.chat-msg.user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 2px;
+}
+
+.chat-msg.assistant {
+  align-self: flex-start;
+  background: var(--bg-alt);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 2px;
+}
+
+.chat-msg.assistant pre {
+  background: var(--bg);
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin: 6px 0;
+  overflow-x: auto;
+  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
+  font-size: 11px;
+}
+
+.chat-msg.assistant code {
+  font-family: 'Droid Sans Mono for Powerline', 'SF Mono', 'Menlo', monospace;
+  font-size: 11px;
+  background: var(--bg);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.chat-msg.system {
+  align-self: center;
+  color: var(--text-dim);
+  font-size: 11px;
+  font-style: italic;
+  padding: 4px 8px;
+}
+
+.chat-msg .chat-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.chat-msg .chat-apply-btn {
+  background: var(--type-color);
+  color: #fff;
+  border: none;
+  padding: 3px 10px;
+  border-radius: 3px;
+  font-size: 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.chat-msg .chat-apply-btn:hover {
+  opacity: 0.9;
+}
+
+.chat-thinking {
+  color: var(--text-dim);
+  font-style: italic;
+  animation: auth-pulse 2s ease-in-out infinite;
+}
+
+/* Chat context bar */
+#chat-context-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-alt);
+  flex-shrink: 0;
+}
+
+.chat-context-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-context-label.has-element {
+  color: var(--key-color);
+}
+
+.chat-pick-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 3px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.chat-pick-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.chat-pick-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+#chat-input-row {
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-alt);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Auth section
+   ============================================================ */
 #auth-section {
   margin-bottom: 20px;
 }
@@ -1079,7 +1438,9 @@ body {
   border-color: var(--error-color);
 }
 
-/* JSON Tree Editor */
+/* ============================================================
+   JSON Tree Editor
+   ============================================================ */
 .json-editor {
   padding: 0 12px;
   overflow: auto;

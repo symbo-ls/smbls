@@ -29,6 +29,9 @@
     "socket.io-client": "^4.8.1",
     "v8-compile-cache": "^2.4.0"
   },
+  "optionalDependencies": {
+    "@domql/brender": "^3.2.3"
+  },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "source": "index.js"
 }

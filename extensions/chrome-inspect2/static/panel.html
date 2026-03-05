@@ -63,66 +63,110 @@
     </div>
   </div>
 
-  <!-- Inspector (hidden until connected) -->
-  <div id="inspector" style="display:none">
-    <div id="toolbar">
-      <button id="btn-pick" title="Pick an element on the page">Pick Element</button>
-      <button id="btn-inspect" title="Inspect element selected in Elements panel ($0)">Inspect $0</button>
-      <button id="btn-refresh" title="Refresh element tree">Refresh</button>
-      <span id="connection-badge"></span>
-      <button id="btn-undo" title="Undo last change (Ctrl+Z)" disabled>&#8617;</button>
-      <button id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled>&#8618;</button>
-      <button id="btn-sync" class="btn-sync" title="Sync changes to source" style="display:none">Sync</button>
-      <button id="btn-disconnect" title="Disconnect and return to connect screen">Disconnect</button>
-      <span id="status"></span>
-      <button id="btn-reload" title="Reload panel">&#8635;</button>
+  <!-- Main App (hidden until connected) -->
+  <div id="app" style="display:none">
+
+    <!-- Top-level mode tabs: Chat / Editor -->
+    <div id="mode-tabs">
+      <button class="mode-tab active" data-mode="editor">Editor</button>
+      <button class="mode-tab" data-mode="chat">Chat</button>
+      <span class="mode-tab-spacer"></span>
+      <span id="app-connection-badge"></span>
+      <button id="btn-app-disconnect" title="Disconnect">&#10005;</button>
     </div>
-    <div id="main">
-      <div id="tree-pane">
-        <!-- Active nodes (top) -->
-        <div id="active-section">
-          <span class="tree-section-label">Active Nodes</span>
-          <div id="tree-container"></div>
+
+    <!-- ============================================================
+         EDITOR MODE
+         ============================================================ -->
+    <div id="mode-editor" class="mode-panel active">
+      <div id="toolbar">
+        <button id="btn-pick" title="Pick an element on the page">Pick Element</button>
+        <button id="btn-inspect" title="Inspect element selected in Elements panel ($0)">Inspect $0</button>
+        <button id="btn-refresh" title="Refresh element tree">Refresh</button>
+        <button id="btn-undo" title="Undo last change (Ctrl+Z)" disabled>&#8617;</button>
+        <button id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled>&#8618;</button>
+        <button id="btn-sync" class="btn-sync" title="Sync changes to source" style="display:none">Sync</button>
+        <span id="status"></span>
+        <button id="btn-reload" title="Reload panel">&#8635;</button>
+      </div>
+      <div id="main">
+        <div id="tree-pane">
+          <!-- Active nodes (top) -->
+          <div id="active-section">
+            <span class="tree-section-label">Active Nodes</span>
+            <div id="tree-container"></div>
+          </div>
+          <!-- Symbols context (bottom) -->
+          <div id="symbols-section" style="display:none">
+            <span class="tree-section-label">Symbols Context</span>
+            <div id="symbols-container"></div>
+          </div>
         </div>
-        <!-- Symbols context (bottom) -->
-        <div id="symbols-section" style="display:none">
-          <span class="tree-section-label">Symbols Context</span>
-          <div id="symbols-container"></div>
+        <div id="resizer"></div>
+        <div id="detail-pane">
+          <div id="detail-header">
+            <span id="detail-key">No element selected</span>
+            <span id="detail-tag"></span>
+            <span id="detail-path"></span>
+          </div>
+          <div id="detail-tabs">
+            <button class="tab active" data-tab="props">Props</button>
+            <button class="tab" data-tab="state">State</button>
+            <button class="tab" data-tab="children">Children</button>
+            <button class="tab" data-tab="ref">__ref</button>
+            <button class="tab" data-tab="source" style="display:none">Source</button>
+            <span class="tab-spacer"></span>
+            <button class="tab" data-tab="methods">Methods</button>
+          </div>
+          <div id="detail-content">
+            <div id="tab-props" class="tab-panel active"></div>
+            <div id="tab-state" class="tab-panel"></div>
+            <div id="tab-children" class="tab-panel"></div>
+            <div id="tab-ref" class="tab-panel"></div>
+            <div id="tab-source" class="tab-panel"></div>
+            <div id="tab-methods" class="tab-panel"></div>
+          </div>
         </div>
       </div>
-      <div id="resizer"></div>
-      <div id="detail-pane">
-        <div id="detail-header">
-          <span id="detail-key">No element selected</span>
-          <span id="detail-tag"></span>
-          <span id="detail-path"></span>
-        </div>
-        <div id="detail-tabs">
-          <button class="tab active" data-tab="props">Props</button>
-          <button class="tab" data-tab="state">State</button>
-          <button class="tab" data-tab="children">Children</button>
-          <button class="tab" data-tab="ref">__ref</button>
-          <button class="tab" data-tab="source" style="display:none">Source</button>
-          <span class="tab-spacer"></span>
-          <button class="tab" data-tab="methods">Methods</button>
-        </div>
-        <div id="detail-content">
-          <div id="tab-props" class="tab-panel active"></div>
-          <div id="tab-state" class="tab-panel"></div>
-          <div id="tab-children" class="tab-panel"></div>
-          <div id="tab-ref" class="tab-panel"></div>
-          <div id="tab-source" class="tab-panel"></div>
-          <div id="tab-methods" class="tab-panel"></div>
+      <!-- Editor AI bar -->
+      <div id="ai-bar">
+        <div id="ai-result"></div>
+        <div id="ai-input-row">
+          <select id="ai-model" class="ai-model-select" title="Select AI model">
+            <option value="Starter">Starter (free)</option>
+            <option value="Anthropic: Claude Sonnet 4.5">Claude 4.5</option>
+            <option value="Google: Gemini 3 Pro Preview">Gemini 3 Pro</option>
+            <option value="OpenAI: GPT-5.1">GPT-5.1</option>
+            <option value="chrome">Chrome AI (local)</option>
+          </select>
+          <input id="ai-input" type="text" placeholder="Ask AI to modify components..." />
+          <button id="ai-send">Send</button>
         </div>
       </div>
     </div>
-    <div id="ai-bar" style="display:none">
-      <div id="ai-result"></div>
-      <div id="ai-input-row">
-        <input id="ai-input" type="text" placeholder="Ask AI to modify components..." />
-        <button id="ai-send">Send</button>
+
+    <!-- ============================================================
+         CHAT MODE
+         ============================================================ -->
+    <div id="mode-chat" class="mode-panel">
+      <div id="chat-messages"></div>
+      <div id="chat-context-bar">
+        <span id="chat-context-label" class="chat-context-label">No element selected</span>
+        <button id="chat-pick-element" class="chat-pick-btn" title="Pick an element to include as context">Select Element</button>
+      </div>
+      <div id="chat-input-row">
+        <select id="chat-model" class="ai-model-select" title="Select AI model">
+          <option value="Starter">Starter (free)</option>
+          <option value="Anthropic: Claude Sonnet 4.5">Claude 4.5</option>
+          <option value="Google: Gemini 3 Pro Preview">Gemini 3 Pro</option>
+          <option value="OpenAI: GPT-5.1">GPT-5.1</option>
+          <option value="chrome">Chrome AI (local)</option>
+        </select>
+        <input id="chat-input" type="text" placeholder="Describe what you want to change..." />
+        <button id="chat-send">Send</button>
       </div>
     </div>
+
   </div>
 
   <script src="auth.js"></script>

@@ -1,6 +1,8 @@
 import { createEnv } from './env.js'
 import { resetKeys, assignKeys, mapKeysToElements } from './keys.js'
-import { extractMetadata } from './metadata.js'
+import { extractMetadata, generateHeadHtml } from './metadata.js'
+import { hydrate } from './hydrate.js'
+import { parseHTML } from 'linkedom'
 
 /**
  * Renders a Symbols/DomQL project to HTML on the server.
@@ -98,4 +100,287 @@ export const renderElement = async (elementDef, options = {}) => {
   const html = body.innerHTML
 
   return { html, registry, element }
+}
+
+// ── Route-level SSR ───────────────────────────────────────────────────────────
+
+/**
+ * Renders a single route and returns body HTML + CSS separately.
+ * Designed for integration with an existing server router that manages
+ * its own <head>, template, and bundle injection.
+ *
+ * @param {object} data - Full project data
+ * @param {object} [options]
+ * @param {string} [options.route='/'] - Route to render
+ * @returns {Promise<{ html: string, css: string, resetCss: string, fontLinks: string, metadata: object, brKeyCount: number }>}
+ */
+export const renderRoute = async (data, options = {}) => {
+  const { route = '/' } = options
+  const ds = data.designSystem || {}
+  const pageDef = (data.pages || {})[route]
+  if (!pageDef) return null
+
+  const result = await renderElement(pageDef, {
+    context: {
+      components: data.components || {},
+      snippets: data.snippets || {},
+      designSystem: ds,
+      state: data.state || {},
+      functions: data.functions || {},
+      methods: data.methods || {}
+    }
+  })
+
+  // Hydrate with emotion → CSS classes on nodes
+  const { document: cssDoc } = parseHTML(`<html><head></head><body>${result.html}</body></html>`)
+  let emotionInstance
+  try {
+    const { default: createInstance } = await import('@emotion/css/create-instance')
+    emotionInstance = createInstance({ key: 'smbls', container: cssDoc.head })
+  } catch {}
+
+  hydrate(result.element, {
+    root: cssDoc.body,
+    renderEvents: false,
+    events: false,
+    emotion: emotionInstance,
+    designSystem: ds
+  })
+
+  return {
+    html: cssDoc.body.innerHTML,
+    css: extractCSS(result.element, ds),
+    resetCss: generateResetCSS(ds.reset),
+    fontLinks: generateFontLinks(ds),
+    metadata: extractMetadata(data, route),
+    brKeyCount: Object.keys(result.registry).length
+  }
+}
+
+// ── Full page SSR ─────────────────────────────────────────────────────────────
+
+/**
+ * Renders a complete HTML page for a route — ready to serve.
+ * Includes head, metadata, fonts, reset CSS, component CSS, and body.
+ *
+ * @param {object} data - Full project data (from loadProject)
+ * @param {string} route - Route to render (e.g. '/', '/about')
+ * @param {object} [options]
+ * @param {string} [options.lang='en'] - HTML lang attribute
+ * @param {string} [options.themeColor] - theme-color meta
+ * @returns {Promise<{ html: string, route: string, brKeyCount: number }>}
+ */
+export const renderPage = async (data, route = '/', options = {}) => {
+  const { lang = 'en', themeColor } = options
+
+  const result = await renderRoute(data, { route })
+  if (!result) return null
+
+  const metadata = { ...result.metadata }
+  if (themeColor) metadata['theme-color'] = themeColor
+  const headTags = generateHeadHtml(metadata)
+
+  const html = `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+${headTags}
+${result.fontLinks}
+<style>${result.resetCss}</style>
+<style data-emotion="smbls">
+${result.css}
+</style>
+</head>
+<body>
+${result.html}
+</body>
+</html>`
+
+  return { html, route, brKeyCount: result.brKeyCount }
+}
+
+// ── CSS helpers ─────────────────────────────────────────────────────────────
+
+const CSS_COLOR_PROPS = new Set([
+  'color', 'background', 'backgroundColor', 'borderColor',
+  'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor',
+  'outlineColor', 'fill', 'stroke'
+])
+
+const NON_CSS_PROPS = new Set([
+  'href', 'src', 'alt', 'title', 'id', 'name', 'type', 'value', 'placeholder',
+  'target', 'rel', 'loading', 'srcset', 'sizes', 'media', 'role', 'tabindex',
+  'for', 'action', 'method', 'enctype', 'autocomplete', 'autofocus',
+  'theme', '__element', 'update'
+])
+
+const camelToKebab = (str) => str.replace(/[A-Z]/g, m => '-' + m.toLowerCase())
+
+const resolveShorthand = (key, val) => {
+  if (key === 'flexAlign' && typeof val === 'string') {
+    const [alignItems, justifyContent] = val.split(' ')
+    return { display: 'flex', 'align-items': alignItems, 'justify-content': justifyContent }
+  }
+  if (key === 'gridAlign' && typeof val === 'string') {
+    const [alignItems, justifyContent] = val.split(' ')
+    return { display: 'grid', 'align-items': alignItems, 'justify-content': justifyContent }
+  }
+  if (key === 'round' && val) {
+    return { 'border-radius': typeof val === 'number' ? val + 'px' : val }
+  }
+  if (key === 'boxSize' && val) {
+    return { width: val, height: val }
+  }
+  return null
+}
+
+const resolveInnerProps = (obj, colorMap) => {
+  const result = {}
+  for (const k in obj) {
+    const v = obj[k]
+    const expanded = resolveShorthand(k, v)
+    if (expanded) { Object.assign(result, expanded); continue }
+    if (typeof v !== 'string' && typeof v !== 'number') continue
+    result[camelToKebab(k)] = CSS_COLOR_PROPS.has(k) && colorMap[v] ? colorMap[v] : v
+  }
+  return result
+}
+
+const buildCSSFromProps = (props, colorMap, mediaMap) => {
+  const base = {}
+  const mediaRules = {}
+  const pseudoRules = {}
+
+  for (const key in props) {
+    const val = props[key]
+
+    if (key.charCodeAt(0) === 64 && typeof val === 'object') {
+      const bp = mediaMap?.[key.slice(1)]
+      if (bp) {
+        const inner = resolveInnerProps(val, colorMap)
+        if (Object.keys(inner).length) mediaRules[bp] = inner
+      }
+      continue
+    }
+
+    if (key.charCodeAt(0) === 58 && typeof val === 'object') {
+      const inner = resolveInnerProps(val, colorMap)
+      if (Object.keys(inner).length) pseudoRules[key] = inner
+      continue
+    }
+
+    if (typeof val !== 'string' && typeof val !== 'number') continue
+    if (key.charCodeAt(0) >= 65 && key.charCodeAt(0) <= 90) continue
+    if (NON_CSS_PROPS.has(key)) continue
+
+    const expanded = resolveShorthand(key, val)
+    if (expanded) { Object.assign(base, expanded); continue }
+
+    base[camelToKebab(key)] = CSS_COLOR_PROPS.has(key) && colorMap[val] ? colorMap[val] : val
+  }
+
+  return { base, mediaRules, pseudoRules }
+}
+
+const renderCSSRule = (selector, { base, mediaRules, pseudoRules }) => {
+  const lines = []
+  const baseDecls = Object.entries(base).map(([k, v]) => `${k}: ${v}`).join('; ')
+  if (baseDecls) lines.push(`${selector} { ${baseDecls}; }`)
+
+  for (const [pseudo, p] of Object.entries(pseudoRules)) {
+    const decls = Object.entries(p).map(([k, v]) => `${k}: ${v}`).join('; ')
+    if (decls) lines.push(`${selector}${pseudo} { ${decls}; }`)
+  }
+
+  for (const [query, p] of Object.entries(mediaRules)) {
+    const decls = Object.entries(p).map(([k, v]) => `${k}: ${v}`).join('; ')
+    const mq = query.startsWith('@') ? query : `@media ${query}`
+    if (decls) lines.push(`${mq} { ${selector} { ${decls}; } }`)
+  }
+
+  return lines.join('\n')
+}
+
+const extractCSS = (element, ds) => {
+  const colorMap = ds?.color || {}
+  const mediaMap = ds?.media || {}
+  const animations = ds?.animation || {}
+  const rules = []
+  const seen = new Set()
+  const usedAnimations = new Set()
+
+  const walk = (el) => {
+    if (!el || !el.__ref) return
+    const { props } = el
+    if (props && el.node) {
+      const cls = el.node.getAttribute?.('class')
+      if (cls && !seen.has(cls)) {
+        seen.add(cls)
+        const cssResult = buildCSSFromProps(props, colorMap, mediaMap)
+        const has = Object.keys(cssResult.base).length || Object.keys(cssResult.mediaRules).length || Object.keys(cssResult.pseudoRules).length
+        if (has) rules.push(renderCSSRule('.' + cls.split(' ')[0], cssResult))
+
+        const anim = props.animation || props.animationName
+        if (typeof anim === 'string') {
+          const name = anim.split(' ')[0]
+          if (animations[name]) usedAnimations.add(name)
+        }
+      }
+    }
+    if (el.__ref.__children) {
+      for (const ck of el.__ref.__children) {
+        if (el[ck]?.__ref) walk(el[ck])
+      }
+    }
+  }
+  walk(element)
+
+  const keyframes = []
+  for (const name of usedAnimations) {
+    const frames = animations[name]
+    const frameRules = Object.entries(frames).map(([step, p]) => {
+      const decls = Object.entries(p).map(([k, v]) => `${camelToKebab(k)}: ${v}`).join('; ')
+      return `  ${step} { ${decls}; }`
+    }).join('\n')
+    keyframes.push(`@keyframes ${name} {\n${frameRules}\n}`)
+  }
+
+  return [...keyframes, ...rules].join('\n')
+}
+
+const generateResetCSS = (reset) => {
+  if (!reset) return ''
+  const rules = []
+  for (const [selector, props] of Object.entries(reset)) {
+    const decls = Object.entries(props)
+      .map(([k, v]) => `${camelToKebab(k)}: ${v}`)
+      .join('; ')
+    if (decls) rules.push(`${selector} { ${decls}; }`)
+  }
+  return rules.join('\n')
+}
+
+const generateFontLinks = (ds) => {
+  if (!ds) return ''
+  const families = ds.font_family || ds.fontFamily || {}
+  const fontNames = new Set()
+
+  // Collect font family names from the design system
+  for (const val of Object.values(families)) {
+    const match = val.match(/'([^']+)'/)
+    if (match) fontNames.add(match[1])
+  }
+
+  if (!fontNames.size) return ''
+
+  // Build Google Fonts URL
+  const params = [...fontNames].map(name => {
+    const slug = name.replace(/\s+/g, '+')
+    return `family=${slug}:wght@300;400;500;600;700`
+  }).join('&')
+
+  return [
+    '<link rel="preconnect" href="https://fonts.googleapis.com">',
+    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+    `<link href="https://fonts.googleapis.com/css2?${params}&display=swap" rel="stylesheet">`
+  ].join('\n')
 }

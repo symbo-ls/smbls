@@ -76,7 +76,7 @@ export function activate(context: vscode.ExtensionContext): void {
   )
 
   output.appendLine('Symbols.app extension activated successfully')
-  vscode.window.showInformationMessage('Symbols.app IntelliSense active')
+  vscode.window.showInformationMessage('Symbols.app Connect active')
 }
 
 export function deactivate(): void {}

@@ -111,7 +111,7 @@
   // ============================================================
   async function showConnectScreen () {
     document.getElementById('connect-screen').style.display = 'flex'
-    document.getElementById('inspector').style.display = 'none'
+    document.getElementById('app').style.display = 'none'
     document.getElementById('connect-error').style.display = 'none'
     connectionMode = null
     symbolsConfig = null
@@ -381,21 +381,10 @@
 
     document.getElementById('connect-screen').style.display = 'none'
     document.getElementById('connect-error').style.display = 'none'
-    document.getElementById('inspector').style.display = 'flex'
-    document.getElementById('connection-badge').textContent = projectName
+    showApp(projectName)
 
     // Show source tab
     document.querySelector('.tab[data-tab="source"]').style.display = ''
-
-    // Show AI bar if signed in
-    if (window.SymbolsAuth) {
-      window.SymbolsAuth.getStoredAuth().then(a => {
-        if (a.accessToken) {
-          const aiBar = document.getElementById('ai-bar')
-          if (aiBar) aiBar.style.display = ''
-        }
-      })
-    }
 
     renderSymbolsTree()
     loadTree()
@@ -414,16 +403,11 @@
 
     document.getElementById('connect-screen').style.display = 'none'
     document.getElementById('connect-error').style.display = 'none'
-    document.getElementById('inspector').style.display = 'flex'
-    document.getElementById('connection-badge').textContent = projectName
+    showApp(projectName)
 
     // Hide source tab, show data tab for platform mode
     document.querySelector('.tab[data-tab="source"]').style.display = 'none'
     document.getElementById('symbols-section').style.display = 'none'
-
-    // Show AI bar for authenticated users
-    const aiBar = document.getElementById('ai-bar')
-    if (aiBar) aiBar.style.display = ''
 
     // Load project data if we have a project ID
     if (platformProjectId) {
@@ -1426,6 +1410,7 @@
   // ============================================================
   async function selectElement (path) {
     selectedPath = path
+    updateChatContextLabel()
 
     document.querySelectorAll('.tree-item.selected').forEach(el => el.classList.remove('selected'))
     const item = document.querySelector(`.tree-item[data-path="${CSS.escape(path)}"]`)
@@ -1776,12 +1761,13 @@
   function createPropRow (key, val, type, componentName, filePath) {
     const row = document.createElement('div')
     row.className = 'prop-row'
+    row.dataset.propKey = key
+    row.dataset.propType = type
 
     const keyEl = document.createElement('span')
     keyEl.className = 'prop-key'
     keyEl.textContent = key
 
-    // Show source file badge if available and clicking navigates to that prop in source
     if (filePath && connectionMode === 'local') {
       keyEl.classList.add('has-source')
       keyEl.title = filePath
@@ -1791,15 +1777,28 @@
       })
     }
 
+    const colonEl = document.createElement('span')
+    colonEl.className = 'prop-colon'
+    colonEl.textContent = ':'
+
     const valEl = document.createElement('span')
     valEl.className = 'prop-value editable'
+    valEl.dataset.propKey = key
+    valEl.dataset.propType = type
+    valEl.dataset.component = componentName || ''
     valEl.appendChild(renderValue(val))
 
     const editableVal = isEditableValue(val) ? val : stringifyForEdit(val)
     valEl.addEventListener('click', () => startEditing(valEl, key, editableVal, type, componentName))
 
+    const semiEl = document.createElement('span')
+    semiEl.className = 'prop-semi'
+    semiEl.textContent = ';'
+
     row.appendChild(keyEl)
+    row.appendChild(colonEl)
     row.appendChild(valEl)
+    row.appendChild(semiEl)
     return row
   }
 
@@ -1993,67 +1992,156 @@
   // ============================================================
   // Editing
   // ============================================================
+  // Inline editing — Chrome DevTools CSS panel style
+  // ============================================================
+  function applyLivePreview (key, value, type) {
+    if (!selectedPath) return
+    try {
+      let parsed = value
+      try { parsed = JSON.parse(value) } catch (e) {}
+      const expr = type === 'state'
+        ? 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+          JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(parsed) + '))'
+        : 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+          JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(parsed) + '))'
+      pageEval(expr).catch(() => {})
+    } catch (e) {}
+  }
+
   function startEditing (el, key, currentValue, type, componentName) {
     if (el.classList.contains('editing')) return
+
+    // Close any other open editor
+    const existing = document.querySelector('.prop-value.editing')
+    if (existing && existing !== el) {
+      existing.dispatchEvent(new Event('commitEdit'))
+    }
+
     el.innerHTML = ''
     el.classList.add('editing')
 
     const input = document.createElement('input')
-    input.value = typeof currentValue === 'string' ? currentValue : JSON.stringify(currentValue)
+    input.className = 'prop-edit-input'
+    input.value = typeof currentValue === 'string' ? currentValue
+      : currentValue === null ? 'null'
+      : JSON.stringify(currentValue)
     el.appendChild(input)
     input.focus()
     input.select()
 
-    let committed = false
+    // Build suggestion list
+    const allSuggestions = getSuggestionsForProp(key) || []
+    let filtered = []
+    let activeIndex = -1
+    let dropdown = null
 
-    const commit = async () => {
+    if (allSuggestions.length > 0) {
+      dropdown = document.createElement('div')
+      dropdown.className = 'prop-dropdown'
+      el.appendChild(dropdown)
+    }
+
+    function filterSuggestions (text) {
+      const lower = (text || '').toLowerCase()
+      filtered = lower
+        ? allSuggestions.filter(s => s.label.toLowerCase().startsWith(lower) || s.label.toLowerCase().includes(lower))
+        : allSuggestions.slice()
+      if (filtered.length > 30) filtered = filtered.slice(0, 30)
+      activeIndex = -1
+      renderDropdownItems()
+    }
+
+    function renderDropdownItems () {
+      if (!dropdown) return
+      dropdown.innerHTML = ''
+      if (filtered.length === 0) { dropdown.style.display = 'none'; return }
+      dropdown.style.display = ''
+      for (let i = 0; i < filtered.length; i++) {
+        const s = filtered[i]
+        const item = document.createElement('div')
+        item.className = 'prop-dropdown-item' + (i === activeIndex ? ' active' : '')
+        if (s.hex !== undefined) {
+          const swatch = document.createElement('span')
+          swatch.className = 'dd-swatch'
+          if (s.hex) swatch.style.background = s.hex
+          else swatch.style.background = 'repeating-conic-gradient(#555 0% 25%, transparent 0% 50%) 50%/8px 8px'
+          item.appendChild(swatch)
+        }
+        const label = document.createElement('span')
+        label.className = 'dd-label'
+        label.textContent = s.label
+        item.appendChild(label)
+        if (s.hint) {
+          const hint = document.createElement('span')
+          hint.className = 'dd-hint'
+          hint.textContent = s.hint
+          item.appendChild(hint)
+        }
+        item.addEventListener('mousedown', (e) => {
+          e.preventDefault()
+          input.value = s.label
+          applyLivePreview(key, s.label, type)
+          commit()
+        })
+        dropdown.appendChild(item)
+      }
+      // Scroll active item into view
+      if (activeIndex >= 0 && dropdown.children[activeIndex]) {
+        dropdown.children[activeIndex].scrollIntoView({ block: 'nearest' })
+      }
+    }
+
+    function highlightIndex (idx) {
+      activeIndex = idx
+      if (!dropdown) return
+      Array.from(dropdown.children).forEach((c, i) => c.classList.toggle('active', i === idx))
+      if (idx >= 0 && dropdown.children[idx]) {
+        dropdown.children[idx].scrollIntoView({ block: 'nearest' })
+      }
+    }
+
+    filterSuggestions(input.value)
+
+    let committed = false
+    const originalValue = input.value
+
+    function cleanup () {
+      el.classList.remove('editing')
+      if (dropdown) dropdown.remove()
+      dropdown = null
+    }
+
+    async function commit (opts) {
       if (committed) return
       committed = true
-      el.classList.remove('editing')
+      cleanup()
 
       let newValue = input.value
-      try {
-        newValue = JSON.parse(newValue)
-      } catch (e) {
-        // Keep as string
-      }
+      try { newValue = JSON.parse(newValue) } catch (e) {}
 
-      // Immediately update panel display
       el.innerHTML = ''
       el.appendChild(renderValue(newValue))
 
-      // Update selectedInfo locally so panel stays in sync
       if (selectedInfo && selectedInfo.props && type !== 'state') {
         selectedInfo.props[key] = newValue
       } else if (selectedInfo && selectedInfo.state && type === 'state') {
         selectedInfo.state[key] = newValue
       }
 
-      // Update DOM via setProps / update
+      // Apply final change (may already be previewed)
       try {
-        let expr
-        if (type === 'state') {
-          expr = 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
-            JSON.stringify(selectedPath) + ',' +
-            JSON.stringify(key) + ',' +
-            JSON.stringify(newValue) + '))'
-        } else {
-          expr = 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
-            JSON.stringify(selectedPath) + ',' +
-            JSON.stringify(key) + ',' +
-            JSON.stringify(newValue) + '))'
-        }
-
+        const expr = type === 'state'
+          ? 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(newValue) + '))'
+          : 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+            JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(newValue) + '))'
         const raw = await pageEval(expr)
         const res = JSON.parse(raw)
         if (res.error) {
           setStatus('Update failed: ' + res.error)
-          // Revert display
           el.innerHTML = ''
           el.appendChild(renderValue(currentValue))
-          if (selectedInfo && selectedInfo.props && type !== 'state') {
-            selectedInfo.props[key] = currentValue
-          }
+          if (selectedInfo && selectedInfo.props && type !== 'state') selectedInfo.props[key] = currentValue
         } else {
           setStatus('Updated ' + key)
           pushHistory(selectedPath, key, currentValue, newValue, type, componentName)
@@ -2064,19 +2152,87 @@
         el.innerHTML = ''
         el.appendChild(renderValue(currentValue))
       }
+
+      // Tab → jump to next editable value
+      if (opts && opts.tabNext) {
+        setTimeout(() => {
+          const allVals = Array.from(document.querySelectorAll('.prop-value.editable'))
+          const idx = allVals.indexOf(el)
+          const next = allVals[idx + (opts.tabBack ? -1 : 1)]
+          if (next) next.click()
+        }, 0)
+      }
     }
 
+    function revert () {
+      committed = true
+      cleanup()
+      el.innerHTML = ''
+      el.appendChild(renderValue(currentValue))
+      // Revert live preview
+      applyLivePreview(key, typeof currentValue === 'string' ? currentValue : JSON.stringify(currentValue), type)
+    }
+
+    // Allow external commit trigger
+    el.addEventListener('commitEdit', () => { if (!committed) commit() }, { once: true })
+
+    input.addEventListener('input', () => {
+      filterSuggestions(input.value)
+      // Live preview as you type
+      applyLivePreview(key, input.value, type)
+    })
+
     input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); commit() }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        if (filtered.length > 0) {
+          // Cycle through suggestions
+          const next = activeIndex + 1 >= filtered.length ? 0 : activeIndex + 1
+          highlightIndex(next)
+          input.value = filtered[next].label
+          applyLivePreview(key, input.value, type)
+        } else if (typeof currentValue === 'number' || /^-?\d+(\.\d+)?$/.test(input.value)) {
+          // Increment number
+          const num = parseFloat(input.value) || 0
+          input.value = String(num + (e.shiftKey ? 10 : e.altKey ? 0.1 : 1))
+          applyLivePreview(key, input.value, type)
+        }
+        return
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        if (filtered.length > 0) {
+          const prev = activeIndex - 1 < 0 ? filtered.length - 1 : activeIndex - 1
+          highlightIndex(prev)
+          input.value = filtered[prev].label
+          applyLivePreview(key, input.value, type)
+        } else if (typeof currentValue === 'number' || /^-?\d+(\.\d+)?$/.test(input.value)) {
+          const num = parseFloat(input.value) || 0
+          input.value = String(num - (e.shiftKey ? 10 : e.altKey ? 0.1 : 1))
+          applyLivePreview(key, input.value, type)
+        }
+        return
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        commit()
+        return
+      }
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        commit({ tabNext: true, tabBack: e.shiftKey })
+        return
+      }
       if (e.key === 'Escape') {
-        committed = true
-        el.classList.remove('editing')
-        el.innerHTML = ''
-        el.appendChild(renderValue(currentValue))
+        e.preventDefault()
+        revert()
+        return
       }
     })
 
-    input.addEventListener('blur', commit)
+    input.addEventListener('blur', () => {
+      setTimeout(() => { if (!committed) commit() }, 120)
+    })
   }
 
   // ============================================================
@@ -2379,50 +2535,124 @@
   // ============================================================
   // AI Prompt
   // ============================================================
+  // ============================================================
+  // AI — Smart Assistant API + Chrome AI fallback
+  // ============================================================
+
+  // Service worker fetch proxy (avoids CORS)
+  function swFetch (url, options) {
+    return new Promise(function (resolve, reject) {
+      try {
+        chrome.runtime.sendMessage({
+          type: 'api-fetch',
+          url: url,
+          method: (options && options.method) || 'GET',
+          headers: (options && options.headers) || {},
+          body: (options && options.body) || undefined
+        }, function (resp) {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message))
+            return
+          }
+          if (!resp) {
+            reject(new Error('No response from service worker'))
+            return
+          }
+          resolve(resp)
+        })
+      } catch (e) {
+        reject(new Error('sendMessage failed: ' + (e.message || e)))
+      }
+    })
+  }
+
+  const AI_BASE_URL = 'https://smart-assistant-production.up.railway.app'
+  let aiSessionId = null
+
+  const AI_SYSTEM_PROMPT = `You are a DOMQL/Symbols component assistant integrated into a Chrome DevTools inspector.
+You modify Symbols/DOMQL components by returning actionable JSON.
+
+Response format — respond ONLY with a valid JSON object:
+- Prop changes: {"action":"setProps","changes":{"key":"value"}}
+- State changes: {"action":"setState","changes":{"key":"value"}}
+- Text changes: {"action":"setText","value":"new text"}
+- Style changes: {"action":"setProps","changes":{"style":{"property":"value"}}}
+- Multiple changes: {"action":"setProps","changes":{"padding":"B","color":"blue","theme":"primary"}}
+
+Symbols design system values:
+- Spacing tokens (golden ratio): W X Y Z A B C D E F G H (A=16px base)
+- Font size tokens (major third): X Y Z A B C D E F G H (A=16px base)
+- Colors: blue, green, red, yellow, orange, black, gray, white, title, caption, paragraph
+- Color modifiers: blue.5 (opacity), blue+16 (lighten), blue-16 (darken), blue=50 (lightness)
+- Themes: primary, secondary, tertiary, card, dialog, field, label, alert, warning, success
+- Flow: row, column, x, y
+
+Do NOT include any explanation, only valid JSON.`
+
+  function getElementContext () {
+    return {
+      elementPath: selectedPath || null,
+      elementKey: selectedInfo ? selectedInfo.key : null,
+      props: selectedInfo ? selectedInfo.props : {},
+      state: selectedInfo ? selectedInfo.state : {},
+      tag: selectedInfo ? selectedInfo.tag : null
+    }
+  }
+
+  async function fetchSmartAssistant (query, model, context) {
+    const contextStr = 'Element path: ' + (context.elementPath || 'none') +
+      '\nElement key: ' + (context.elementKey || 'none') +
+      '\nCurrent props: ' + JSON.stringify(context.props) +
+      '\nCurrent state: ' + JSON.stringify(context.state) +
+      '\nTag: ' + (context.tag || 'unknown') +
+      '\n\nUser request: ' + query
+
+    const requestBody = {
+      model: model,
+      query: contextStr,
+      data: context,
+      session_id: aiSessionId
+    }
+
+    // Use service worker proxy to avoid CORS
+    const resp = await swFetch(AI_BASE_URL + '/api/prompt-legacy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    })
+
+    if (!resp.ok) throw new Error('AI API error: HTTP ' + resp.status)
+
+    const data = resp.data || {}
+    if (data.session_id) aiSessionId = data.session_id
+    else if (data.code_response?.session_id) aiSessionId = data.code_response.session_id
+
+    const codeResp = data.code_response
+    if (codeResp) {
+      if (codeResp.type === 'json_response' && codeResp.data?.value) return JSON.stringify(codeResp.data.value)
+      if (codeResp.type === 'symbols_component_code' && codeResp.component_code) return codeResp.component_code
+      if (codeResp.commentary) return codeResp.commentary
+      if (codeResp.response) return typeof codeResp.response === 'string' ? codeResp.response : JSON.stringify(codeResp.response)
+    }
+    if (data.response) return typeof data.response === 'string' ? data.response : JSON.stringify(data.response)
+    if (data.content) return data.content
+    return JSON.stringify(data)
+  }
+
   async function handleAIPrompt (prompt) {
     const resultEl = document.getElementById('ai-result')
     resultEl.textContent = 'Thinking...'
     resultEl.style.color = 'var(--text-dim)'
 
     try {
-      // Build context about the selected element
-      let elementInfo = null
-      if (selectedPath) {
-        const raw = await pageEval(
-          'JSON.stringify(window.__DOMQL_INSPECTOR__.navigatePath(' + JSON.stringify(selectedPath) + '))'
-        )
-        if (raw) elementInfo = JSON.parse(raw)
-      }
-
-      const context = {
-        elementPath: selectedPath || null,
-        elementKey: elementInfo ? elementInfo.key : null,
-        props: elementInfo ? elementInfo.props : {},
-        state: elementInfo ? elementInfo.state : {},
-        tag: elementInfo ? elementInfo.tag : null,
-        projectData: platformProjectData ? { hasData: true } : null
-      }
-
-      // Try platform AI first (if signed in), then fall back to Chrome AI
-      const auth = window.SymbolsAuth ? await window.SymbolsAuth.getStoredAuth() : null
+      const context = getElementContext()
+      const model = document.getElementById('ai-model').value
       let response = null
 
-      if (auth && auth.accessToken) {
-        // Use platform AI
-        try {
-          const messages = [
-            { role: 'user', content: prompt }
-          ]
-          const aiRes = await window.SymbolsAuth.aiPrompt(messages, context)
-          response = aiRes.response || aiRes.message || aiRes.content || JSON.stringify(aiRes)
-        } catch (e) {
-          resultEl.textContent = 'Platform AI error: ' + (e.message || e)
-          resultEl.style.color = 'var(--error-color)'
-          return
-        }
-      } else {
-        // Fallback to Chrome AI
+      if (model === 'chrome') {
         response = await runChromeAI(prompt, context)
+      } else {
+        response = await fetchSmartAssistant(prompt, model, context)
       }
 
       if (!response) {
@@ -2431,7 +2661,6 @@
         return
       }
 
-      // Try to parse as actionable JSON
       await applyAIResponse(response, resultEl)
     } catch (e) {
       resultEl.textContent = 'Error: ' + (e.message || e)
@@ -2440,29 +2669,20 @@
   }
 
   async function runChromeAI (prompt, context) {
-    const systemPrompt = `You are a DOMQL component assistant. You modify Symbols/DOMQL components.
-Given an element's current props, state, and the user request, respond with ONLY a JSON object.
-For prop changes: {"action":"setProps","changes":{"key":"value"}}
-For state changes: {"action":"setState","changes":{"key":"value"}}
-For text changes: {"action":"setText","value":"new text"}
-For style changes: {"action":"update","changes":{"style":{"property":"value"}}}
-Do NOT include any explanation, only valid JSON.`
-
-    const contextPrompt = `Element path: ${context.elementPath || 'none'}
-Element key: ${context.elementKey || 'none'}
-Current props: ${JSON.stringify(context.props)}
-Current state: ${JSON.stringify(context.state)}
-Tag: ${context.tag || 'unknown'}
-
-User request: ${prompt}`
+    const contextPrompt = 'Element path: ' + (context.elementPath || 'none') +
+      '\nElement key: ' + (context.elementKey || 'none') +
+      '\nCurrent props: ' + JSON.stringify(context.props) +
+      '\nCurrent state: ' + JSON.stringify(context.state) +
+      '\nTag: ' + (context.tag || 'unknown') +
+      '\n\nUser request: ' + prompt
 
     const id = '__domql_ai_' + Date.now()
     const aiExpr = `(async function(){
       try {
         if(typeof LanguageModel==='undefined'){
-          window.${id}={error:'Chrome AI not available. Sign in to use platform AI.'};return
+          window.${id}={error:'Chrome AI not available. Select a different model.'};return
         }
-        var s=await LanguageModel.create({initialPrompts:[{role:'system',content:${JSON.stringify(systemPrompt)}}]})
+        var s=await LanguageModel.create({initialPrompts:[{role:'system',content:${JSON.stringify(AI_SYSTEM_PROMPT)}}]})
         var r=await s.prompt(${JSON.stringify(contextPrompt)})
         s.destroy()
         window.${id}={response:r}
@@ -2534,6 +2754,299 @@ User request: ${prompt}`
   // ============================================================
   // Tabs, Resizer, Init
   // ============================================================
+  // ============================================================
+  // Design system value suggestions (matches VSCode extension)
+  // ============================================================
+
+  // Sequence token generator (golden ratio for spacing, major third for typography)
+  function generateTokens (base, ratio, unit, start, end) {
+    const letters = { '-6': 'U', '-5': 'V', '-4': 'W', '-3': 'X', '-2': 'Y', '-1': 'Z', 0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H' }
+    const tokens = []
+    for (let k = start; k <= end; k++) {
+      const letter = letters[k]
+      if (!letter) continue
+      const value = base * Math.pow(ratio, k)
+      const approx = unit === 'ms' ? '~' + Math.round(value) + 'ms'
+        : value >= 100 ? '~' + Math.round(value) + 'px'
+        : value >= 10 ? '~' + (Math.round(value * 10) / 10) + 'px'
+        : '~' + (Math.round(value * 100) / 100) + 'px'
+      tokens.push({ label: letter, hint: approx })
+      // Sub-steps
+      const next = value * ratio
+      const diff = next - value
+      const subRatio = diff / 1.618
+      const sub1 = next - subRatio
+      const sub2 = value + subRatio
+      const fmt = (v) => unit === 'ms' ? '~' + Math.round(v) + 'ms' : '~' + Math.round(v) + 'px'
+      tokens.push({ label: letter + '1', hint: fmt(sub1) })
+      tokens.push({ label: letter + '2', hint: fmt(sub2) })
+    }
+    return tokens
+  }
+
+  const SPACING_TOKENS = generateTokens(16, 1.618, 'px', -4, 7)
+  const FONT_SIZE_TOKENS = generateTokens(16, 1.25, 'px', -3, 7)
+  const TIMING_TOKENS = generateTokens(150, 1.333, 'ms', -3, 7)
+
+  const COLOR_TOKENS = [
+    { label: 'blue', hex: '#213eb0' }, { label: 'green', hex: '#389d34' },
+    { label: 'red', hex: '#e15c55' }, { label: 'yellow', hex: '#EDCB38' },
+    { label: 'orange', hex: '#e97c16' }, { label: 'transparent', hex: '' },
+    { label: 'black', hex: '#000000' }, { label: 'gray', hex: '#4e4e50' },
+    { label: 'white', hex: '#ffffff' },
+    { label: 'title', hex: '', hint: 'text color' },
+    { label: 'caption', hex: '', hint: 'secondary text' },
+    { label: 'paragraph', hex: '', hint: 'body text' },
+    { label: 'disabled', hex: '', hint: 'muted' },
+    { label: 'line', hex: '', hint: 'border/divider' },
+    { label: 'currentColor', hex: '', hint: 'inherit text' },
+    { label: 'inherit', hex: '' }, { label: 'none', hex: '' }
+  ]
+
+  const GRADIENT_TOKENS = [
+    'gradient-blue-light', 'gradient-blue-dark', 'gradient-dark',
+    'gradient-dark-active', 'gradient-light', 'gradient-light-active', 'gradient-colorful'
+  ]
+
+  const THEME_TOKENS = [
+    'document', 'primary', 'secondary', 'tertiary', 'quaternary', 'quinary',
+    'alert', 'warning', 'success', 'field', 'label', 'card', 'dialog',
+    'none', 'transparent'
+  ]
+  const THEME_MODIFIERS = ['.color-only', '.inactive', '.gradient', '.child', '.secondary', '.helper', '.light', '.dark', '.active']
+
+  const CSS_ENUMS = {
+    display: ['flex', 'grid', 'block', 'inline', 'inline-flex', 'inline-grid', 'inline-block', 'none', 'contents'],
+    position: ['relative', 'absolute', 'fixed', 'sticky', 'static'],
+    overflow: ['hidden', 'auto', 'scroll', 'visible', 'clip'],
+    overflowX: ['hidden', 'auto', 'scroll', 'visible', 'clip'],
+    overflowY: ['hidden', 'auto', 'scroll', 'visible', 'clip'],
+    visibility: ['visible', 'hidden', 'collapse'],
+    flexDirection: ['row', 'column', 'row-reverse', 'column-reverse'],
+    flexWrap: ['wrap', 'nowrap', 'wrap-reverse'],
+    alignItems: ['center', 'flex-start', 'flex-end', 'stretch', 'baseline'],
+    alignContent: ['center', 'flex-start', 'flex-end', 'stretch', 'space-between', 'space-around', 'space-evenly'],
+    alignSelf: ['center', 'flex-start', 'flex-end', 'stretch', 'baseline', 'auto'],
+    justifyContent: ['center', 'flex-start', 'flex-end', 'space-between', 'space-around', 'space-evenly', 'stretch'],
+    justifyItems: ['center', 'start', 'end', 'stretch', 'baseline'],
+    justifySelf: ['center', 'start', 'end', 'stretch', 'baseline', 'auto'],
+    textAlign: ['left', 'center', 'right', 'justify', 'start', 'end'],
+    textDecoration: ['none', 'underline', 'line-through', 'overline'],
+    textTransform: ['none', 'uppercase', 'lowercase', 'capitalize'],
+    textOverflow: ['ellipsis', 'clip'],
+    whiteSpace: ['nowrap', 'pre', 'pre-wrap', 'pre-line', 'normal', 'break-spaces'],
+    wordBreak: ['break-word', 'break-all', 'keep-all', 'normal'],
+    fontStyle: ['normal', 'italic', 'oblique'],
+    fontWeight: ['100', '200', '300', '400', '500', '600', '700', '800', '900', 'normal', 'bold', 'lighter', 'bolder'],
+    cursor: ['pointer', 'default', 'move', 'text', 'wait', 'help', 'crosshair', 'not-allowed', 'grab', 'grabbing', 'zoom-in', 'zoom-out', 'none'],
+    pointerEvents: ['auto', 'none', 'all'],
+    userSelect: ['none', 'auto', 'text', 'all'],
+    objectFit: ['cover', 'contain', 'fill', 'none', 'scale-down'],
+    objectPosition: ['center', 'top', 'bottom', 'left', 'right'],
+    resize: ['none', 'both', 'horizontal', 'vertical'],
+    borderStyle: ['solid', 'dashed', 'dotted', 'double', 'none', 'groove', 'ridge'],
+    boxSizing: ['border-box', 'content-box'],
+    backgroundSize: ['cover', 'contain', 'auto'],
+    backgroundRepeat: ['no-repeat', 'repeat', 'repeat-x', 'repeat-y'],
+    backgroundPosition: ['center', 'top', 'bottom', 'left', 'right'],
+    backgroundClip: ['border-box', 'padding-box', 'content-box', 'text'],
+    mixBlendMode: ['normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten'],
+    appearance: ['none', 'auto'],
+    verticalAlign: ['top', 'middle', 'bottom', 'baseline'],
+    willChange: ['auto', 'transform', 'opacity', 'scroll-position'],
+    // DOMQL shorthands
+    flow: ['column', 'row', 'x', 'y', 'column-reverse', 'row-reverse'],
+    wrap: ['wrap', 'nowrap', 'wrap-reverse'],
+    scope: ['state', 'props']
+  }
+
+  const COLOR_PROPS = new Set([
+    'color', 'background', 'backgroundColor', 'borderColor',
+    'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor',
+    'outlineColor', 'fill', 'stroke', 'caretColor', 'accentColor',
+    'textDecorationColor', 'columnRuleColor'
+  ])
+  const SPACING_PROPS = new Set([
+    'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+    'paddingInline', 'paddingBlock',
+    'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+    'marginInline', 'marginBlock',
+    'gap', 'rowGap', 'columnGap',
+    'top', 'right', 'bottom', 'left', 'inset',
+    'width', 'height', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight',
+    'flexBasis', 'borderRadius', 'round', 'boxSize',
+    'borderWidth', 'outlineOffset', 'outlineWidth',
+    'borderTopLeftRadius', 'borderTopRightRadius',
+    'borderBottomLeftRadius', 'borderBottomRightRadius'
+  ])
+  const FONT_SIZE_PROPS = new Set(['fontSize', 'lineHeight', 'letterSpacing'])
+
+  const HTML_TAGS = [
+    'div', 'span', 'p', 'a', 'button', 'input', 'textarea', 'select', 'option',
+    'form', 'label', 'fieldset', 'legend',
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'ul', 'ol', 'li', 'dl', 'dt', 'dd',
+    'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td',
+    'section', 'article', 'aside', 'header', 'footer', 'nav', 'main',
+    'figure', 'figcaption', 'blockquote', 'pre', 'code',
+    'img', 'picture', 'source', 'video', 'audio', 'canvas',
+    'svg', 'path', 'circle', 'rect', 'line', 'g',
+    'iframe', 'embed', 'details', 'summary', 'dialog',
+    'hr', 'br', 'strong', 'em', 'b', 'i', 'u', 'small', 'mark'
+  ]
+
+  function getSuggestionsForProp (propName) {
+    // CSS enum values (display, position, flexDirection, etc.)
+    if (CSS_ENUMS[propName]) return CSS_ENUMS[propName].map(v => ({ label: v }))
+    // Theme tokens with modifiers
+    if (propName === 'theme') {
+      const items = THEME_TOKENS.map(v => ({ label: v, hint: 'theme' }))
+      for (const t of ['primary', 'secondary', 'card', 'dialog', 'label']) {
+        for (const mod of THEME_MODIFIERS) {
+          items.push({ label: t + ' ' + mod, hint: 'modifier' })
+        }
+      }
+      return items
+    }
+    // Color properties
+    if (COLOR_PROPS.has(propName)) {
+      const items = COLOR_TOKENS.slice()
+      for (const g of GRADIENT_TOKENS) items.push({ label: g, hint: 'gradient' })
+      return items
+    }
+    // Spacing / size tokens
+    if (SPACING_PROPS.has(propName)) return SPACING_TOKENS
+    // Font size tokens
+    if (FONT_SIZE_PROPS.has(propName)) return FONT_SIZE_TOKENS
+    // Timing tokens
+    if (propName === 'transition' || propName === 'transitionDuration' || propName === 'animationDuration') return TIMING_TOKENS
+    // HTML tags
+    if (propName === 'tag') return HTML_TAGS.map(v => ({ label: v }))
+    return null
+  }
+
+  // ============================================================
+  // Show app / mode switching
+  // ============================================================
+  let chatMessages = [] // { role: 'user'|'assistant'|'system', content }
+
+  function showApp (name) {
+    document.getElementById('app').style.display = 'flex'
+    document.getElementById('app-connection-badge').textContent = name || projectName
+  }
+
+  function switchMode (mode) {
+    document.querySelectorAll('.mode-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.mode === mode)
+    })
+    document.querySelectorAll('.mode-panel').forEach(p => {
+      p.classList.toggle('active', p.id === 'mode-' + mode)
+    })
+    if (mode === 'chat') updateChatContextLabel()
+  }
+
+  // ============================================================
+  // Chat mode
+  // ============================================================
+  function addChatMessage (role, content) {
+    chatMessages.push({ role, content })
+    renderChatMessages()
+  }
+
+  function renderChatMessages () {
+    const container = document.getElementById('chat-messages')
+    container.innerHTML = ''
+    for (const msg of chatMessages) {
+      const el = document.createElement('div')
+      el.className = 'chat-msg ' + msg.role
+      if (msg.role === 'assistant') {
+        // Try to detect JSON action blocks
+        let hasAction = false
+        try {
+          const parsed = JSON.parse(msg.content)
+          if (parsed.action) hasAction = true
+        } catch (e) {}
+        el.innerHTML = escapeHtml(msg.content)
+        if (hasAction) {
+          const actions = document.createElement('div')
+          actions.className = 'chat-actions'
+          const applyBtn = document.createElement('button')
+          applyBtn.className = 'chat-apply-btn'
+          applyBtn.textContent = 'Apply Changes'
+          applyBtn.addEventListener('click', () => {
+            const resultEl = document.createElement('div')
+            applyAIResponse(msg.content, resultEl)
+          })
+          actions.appendChild(applyBtn)
+          el.appendChild(actions)
+        }
+      } else {
+        el.textContent = msg.content
+      }
+      container.appendChild(el)
+    }
+    container.scrollTop = container.scrollHeight
+  }
+
+  function escapeHtml (str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  }
+
+  function updateChatContextLabel () {
+    const label = document.getElementById('chat-context-label')
+    if (!label) return
+    if (selectedPath) {
+      label.textContent = selectedPath
+      label.className = 'chat-context-label has-element'
+    } else {
+      label.textContent = 'No element selected'
+      label.className = 'chat-context-label'
+    }
+  }
+
+  async function handleChatPrompt (prompt) {
+    addChatMessage('user', prompt)
+
+    // Show thinking indicator
+    const thinkingEl = document.createElement('div')
+    thinkingEl.className = 'chat-msg assistant chat-thinking'
+    thinkingEl.textContent = 'Thinking...'
+    document.getElementById('chat-messages').appendChild(thinkingEl)
+
+    try {
+      let elementInfo = null
+      if (selectedPath) {
+        const raw = await pageEval(
+          'JSON.stringify(window.__DOMQL_INSPECTOR__.navigatePath(' + JSON.stringify(selectedPath) + '))'
+        )
+        if (raw) elementInfo = JSON.parse(raw)
+      }
+
+      const context = {
+        elementPath: selectedPath || null,
+        elementKey: elementInfo ? elementInfo.key : null,
+        props: elementInfo ? elementInfo.props : {},
+        state: elementInfo ? elementInfo.state : {},
+        tag: elementInfo ? elementInfo.tag : null
+      }
+
+      const model = document.getElementById('chat-model').value
+      let response = null
+
+      if (model === 'chrome') {
+        response = await runChromeAI(prompt, context)
+      } else {
+        response = await fetchSmartAssistant(prompt, model, context)
+      }
+
+      thinkingEl.remove()
+      addChatMessage('assistant', response || 'No response')
+    } catch (e) {
+      thinkingEl.remove()
+      addChatMessage('system', 'Error: ' + (e.message || e))
+    }
+  }
+
   function initTabs () {
     const tabs = document.querySelectorAll('.tab')
     tabs.forEach(tab => {
@@ -2592,6 +3105,12 @@ User request: ${prompt}`
     initResizer()
     initElementsSync()
 
+    // Mode tabs (Editor / Chat)
+    document.querySelectorAll('.mode-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchMode(tab.dataset.mode))
+    })
+    document.getElementById('btn-app-disconnect').addEventListener('click', disconnect)
+
     // Connect screen buttons
     document.getElementById('btn-connect-local').addEventListener('click', () => {
       chrome.runtime.sendMessage({ type: 'open-picker' })
@@ -2638,7 +3157,6 @@ User request: ${prompt}`
     document.getElementById('btn-pick').addEventListener('click', startPicker)
     document.getElementById('btn-refresh').addEventListener('click', loadTree)
     document.getElementById('btn-inspect').addEventListener('click', inspectSelected)
-    document.getElementById('btn-disconnect').addEventListener('click', disconnect)
     document.getElementById('btn-sync').addEventListener('click', syncChanges)
     document.getElementById('btn-undo').addEventListener('click', undo)
     document.getElementById('btn-redo').addEventListener('click', redo)
@@ -2656,36 +3174,58 @@ User request: ${prompt}`
     })
     document.getElementById('btn-reload').addEventListener('click', () => location.reload())
 
-    // AI prompt — show if signed in OR Chrome AI available
+    // Editor AI bar
     const aiInput = document.getElementById('ai-input')
     const aiSend = document.getElementById('ai-send')
-    const aiBar = document.getElementById('ai-bar')
     if (aiInput && aiSend) {
-      // Check if user is signed in or Chrome AI is available
-      Promise.all([
-        window.SymbolsAuth ? window.SymbolsAuth.getStoredAuth().then(a => !!a.accessToken) : Promise.resolve(false),
-        pageEval('typeof LanguageModel !== "undefined"').catch(() => false)
-      ]).then(([signedIn, chromeAI]) => {
-        if (signedIn || chromeAI) {
-          aiBar.style.display = ''
-          if (signedIn) {
-            aiInput.placeholder = 'Ask AI to modify components...'
-          } else {
-            aiInput.placeholder = 'Ask Chrome AI (sign in for platform AI)...'
-          }
-        }
-      })
-
       aiSend.addEventListener('click', () => {
         const prompt = aiInput.value.trim()
-        if (prompt) handleAIPrompt(prompt)
+        if (prompt) {
+          handleAIPrompt(prompt)
+          aiInput.value = ''
+        }
       })
       aiInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault()
           const prompt = aiInput.value.trim()
-          if (prompt) handleAIPrompt(prompt)
+          if (prompt) {
+            handleAIPrompt(prompt)
+            aiInput.value = ''
+          }
         }
+      })
+    }
+
+    // Chat mode
+    const chatInput = document.getElementById('chat-input')
+    const chatSend = document.getElementById('chat-send')
+    if (chatInput && chatSend) {
+      chatSend.addEventListener('click', () => {
+        const prompt = chatInput.value.trim()
+        if (prompt) {
+          handleChatPrompt(prompt)
+          chatInput.value = ''
+        }
+      })
+      chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault()
+          const prompt = chatInput.value.trim()
+          if (prompt) {
+            handleChatPrompt(prompt)
+            chatInput.value = ''
+          }
+        }
+      })
+    }
+
+    // Chat pick element button
+    const chatPickBtn = document.getElementById('chat-pick-element')
+    if (chatPickBtn) {
+      chatPickBtn.addEventListener('click', () => {
+        startPicker()
+        switchMode('editor')
       })
     }
 

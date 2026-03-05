@@ -1,7 +1,7 @@
 import { createEnv } from './env.js'
 import { resetKeys, assignKeys, mapKeysToElements } from './keys.js'
 import { loadProject, loadAndRenderAll } from './load.js'
-import { render, renderElement } from './render.js'
+import { render, renderElement, renderRoute, renderPage } from './render.js'
 import { extractMetadata, generateHeadHtml } from './metadata.js'
 import { collectBrNodes, hydrate } from './hydrate.js'
 
@@ -14,6 +14,8 @@ export {
   loadAndRenderAll,
   render,
   renderElement,
+  renderRoute,
+  renderPage,
   extractMetadata,
   generateHeadHtml,
   collectBrNodes,
@@ -29,6 +31,8 @@ export default {
   loadAndRenderAll,
   render,
   renderElement,
+  renderRoute,
+  renderPage,
   extractMetadata,
   generateHeadHtml,
   collectBrNodes,

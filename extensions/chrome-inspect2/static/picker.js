@@ -294,4 +294,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 })
 
 document.getElementById('btn-pick').addEventListener('click', pickFolder)
-pickFolder()
+
+// Only auto-open picker if opened via user action (not for background file ops)
+if (!new URLSearchParams(location.search).has('bg')) {
+  pickFolder()
+}
