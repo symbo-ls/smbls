@@ -7,25 +7,32 @@
 [![node](https://img.shields.io/node/v/smbls.svg)](https://nodejs.org)
 [![ESM](https://img.shields.io/badge/module-ESM%20%7C%20CJS-blue)](https://www.npmjs.com/package/smbls)
 
-With Symbols, you can create a [Design System](https://github.com/symbo-ls/smbls/tree/main/packages/scratch) and use it in [DOMQL](https://github.com/symbo-ls/smbls/tree/main/uikit/domql), [React](https://github.com/symbo-ls/smbls/tree/main/uikit/react) and soon others components ([ask](https://github.com/orgs/symbo-ls/discussions/categories/feature-request)).
+Create a [Design System](https://github.com/symbo-ls/smbls/tree/main/packages/scratch) and use it in [DOMQL](https://github.com/symbo-ls/smbls/tree/main/packages/domql) and [React](https://github.com/symbo-ls/smbls/tree/main/packages/react) components.
 
-For more in-depth exmplanation check out the official [documentation page](https://symbols.app/developers).
+For more details check the official [documentation](https://symbols.app/developers).
 
-## Index
+## Table of Contents
+
 - [Installation](#installation)
 - [Initialization](#initialization)
+- [CLI](#cli)
 - [Design System](#design-system)
 - [Components](#components)
-
+- [UIKit](#uikit)
+- [Deployment](#deployment)
+- [AI Assistant](#ai-assistant)
+- [Extensions](#extensions)
+- [Packages](#packages)
 
 ## Installation
-Install the CLI
+
+Install the CLI globally:
 
 ```bash
 npm i @symbo.ls/cli -g
 ```
 
-or inside the project of your frontend
+Or add to your project:
 
 ```bash
 npm i smbls --save
@@ -33,7 +40,7 @@ npm i smbls --save
 
 ## Initialization
 
-Initialize Symbols design system externally, or [inject it](https://symbols.app/docs/intro#configuration) in your already existing application.
+Initialize the Symbols design system, or [inject it](https://symbols.app/docs/intro#configuration) into an existing application:
 
 ```javascript
 import { init } from 'smbls'
@@ -54,72 +61,54 @@ const theme = {
 init({ color, theme })
 ```
 
-More about these config at the [Initialization](https://symbols.app/docs/intro#initialization) page.
+More at the [Initialization](https://symbols.app/docs/intro#initialization) page.
 
-## Deployment
+## CLI
 
-Deploy your project with a single command:
+The `smbls` CLI provides commands for the full project lifecycle:
 
-```bash
-npx smbls deploy
-```
-
-On first run, you'll be prompted to choose a deploy target:
-
-- **Symbols** — push to the Symbols platform (default, same as `smbls push`)
-- **Cloudflare** — deploy to Cloudflare Pages (generates `wrangler.jsonc`)
-- **Vercel** — deploy to Vercel (generates `vercel.json`)
-- **Netlify** — deploy to Netlify (generates `netlify.toml`)
-- **GitHub Pages** — deploy via GitHub Actions (generates workflow)
-
-Your choice is saved to `symbols.json` so subsequent deploys run without prompts.
-
-To only generate the config files without deploying:
+### Project
 
 ```bash
-npx smbls deploy --init
+smbls init              # Initialize a new project
+smbls create            # Create new components/projects
+smbls install            # Install dependencies
+smbls clean              # Clean build artifacts
+smbls eject              # Eject from Symbols configuration
 ```
 
-You can also set the deploy target in `smbls config` or pass it directly:
+### Development
 
 ```bash
-npx smbls deploy --provider cloudflare
+smbls start              # Start development server
+smbls build              # Build project
+smbls deploy             # Deploy project
 ```
 
-## AI Assistant
-
-Ask questions about your Symbols project directly from the terminal:
+### Sync & Collaboration
 
 ```bash
-npx smbls ask "how do I add a new page?"
+smbls fetch              # Fetch configuration from Symbols.app
+smbls sync               # Synchronize with Symbols
+smbls push               # Push changes to Symbols
+smbls config             # Manage configuration
+smbls collab             # Collaboration features
+smbls login / logout     # Authentication
 ```
 
-Or start an interactive chat session:
+### Utilities
 
 ```bash
-npx smbls ask
+smbls convert            # Convert legacy code
+smbls migrate            # Migrate projects
+smbls ask                # AI assistant
+smbls completion         # Shell completion setup
+smbls link-packages      # Link local packages
 ```
 
-On first run, you'll be guided through setup:
+## Design System
 
-1. **Choose an AI provider** — Claude, OpenAI, Gemini, Ollama (local), or Symbols AI (coming soon)
-2. **Select a model** and enter your API key
-3. **Auto-configure symbols-mcp** for your AI editors (Claude Code, Cursor, Windsurf)
-
-The [symbols-mcp](https://github.com/symbo-ls/symbols-mcp) server gives AI assistants access to Symbols documentation and framework rules — no API key required.
-
-To reconfigure at any time:
-
-```bash
-npx smbls ask --init
-```
-
-
-# Design System
-
-Symbols provides advanced design system tools to support configuring all nessessary tokens in the web application.
-
-You can create a `designSystem.js` file and insert following:
+Symbols provides design system tools for configuring all necessary tokens. Create a `designSystem.js` file:
 
 ```javascript
 export default {
@@ -136,13 +125,13 @@ export default {
 }
 ```
 
-Each token has a individual config parameters. For example colors receive following config:
+### Colors
 
 ```javascript
-const colors = {
+const color = {
   blue: '#112233',
-  gray: ['#111', '#CCC'], // light mode, dark mode
-  modal: '--gray .1', // references with gray and applies 0.1 opacity
+  gray: ['#111', '#CCC'],           // [light mode, dark mode]
+  modal: '--gray .1',               // reference gray with 0.1 opacity
   bg: {
     '@dark': 'black',
     '@light': 'white'
@@ -150,7 +139,7 @@ const colors = {
 }
 ```
 
-Fonts configuration looks like this:
+### Fonts
 
 ```javascript
 const font = {
@@ -164,7 +153,7 @@ const font = {
 }
 ```
 
-Icons receive pure SVG objects as follows:
+### Icons
 
 ```javascript
 const icons = {
@@ -172,17 +161,13 @@ const icons = {
 }
 ```
 
-Although you can configure your bundler in a way that it inlines SVG imports [Parcel](https://github.com/ewanmellor/parcel-plugin-inline-svg), [Vite](https://www.npmjs.com/package/vite-svg-loader).
+SVG imports can also be inlined via bundler plugins ([Parcel](https://github.com/ewanmellor/parcel-plugin-inline-svg), [Vite](https://www.npmjs.com/package/vite-svg-loader)).
 
-The example of the [default-config](https://github.com/symbo-ls/smbls/tree/main/packages/default-config) page. You can read more at [Design System](https://symbols.app/docs/design-system) page.
+See the [default-config](https://github.com/symbo-ls/smbls/tree/main/packages/default-config) for a full example. More at the [Design System](https://symbols.app/docs/design-system) page.
 
----
+## Components
 
-# Components
-
-You can directly use this configuration in [DOMQL](https://github.com/symbo-ls/smbls/tree/main/uikit/domql) and [React](https://github.com/symbo-ls/smbls/tree/main/uikit/react) components.
-
-The color and fonts use would be like:
+Use design tokens directly in DOMQL and React components:
 
 ### DOMQL
 
@@ -212,10 +197,136 @@ const MyComponent = () => {
 }
 ```
 
-Symbols provide all nessessary atoms and components. You can check more at our [uikit](https://symbols.app/components) library.
+How components work at the [components](https://symbols.app/docs/components) page.
 
-How components work at [components](https://symbols.app/docs/components) page.
+## UIKit
+
+The UIKit provides ready-to-use components built on Scratch and DOMQL:
+
+| Component | Package |
+|-----------|---------|
+| Atoms | `@symbo.ls/atoms` |
+| Avatar | `@symbo.ls/avatar` |
+| Button | `@symbo.ls/button` |
+| Datepicker | `@symbo.ls/datepicker` |
+| Dialog | `@symbo.ls/dialog` |
+| Dropdown | `@symbo.ls/dropdown` |
+| Icon | `@symbo.ls/icon` |
+| Input | `@symbo.ls/input` |
+| Link | `@symbo.ls/link` |
+| Notification | `@symbo.ls/notification` |
+| Range | `@symbo.ls/range` |
+| Select | `@symbo.ls/select` |
+| TimePicker | `@symbo.ls/timepicker` |
+| Tooltip | `@symbo.ls/tooltip` |
+
+Browse all components at the [UIKit library](https://symbols.app/components).
+
+## Deployment
+
+Deploy with a single command:
+
+```bash
+npx smbls deploy
+```
+
+On first run, choose a deploy target:
+
+- **Symbols** — push to the Symbols platform (default)
+- **Cloudflare** — deploy to Cloudflare Pages
+- **Vercel** — deploy to Vercel
+- **Netlify** — deploy to Netlify
+- **GitHub Pages** — deploy via GitHub Actions
+
+Your choice is saved to `symbols.json` for subsequent deploys.
+
+```bash
+npx smbls deploy --init              # Generate config files only
+npx smbls deploy --provider cloudflare  # Set provider directly
+```
+
+## AI Assistant
+
+Ask questions about your Symbols project from the terminal:
+
+```bash
+npx smbls ask "how do I add a new page?"
+npx smbls ask                          # interactive chat
+npx smbls ask --init                   # reconfigure
+```
+
+On first run, you'll set up:
+
+1. **AI provider** — Claude, OpenAI, Gemini, Ollama (local), or Symbols AI
+2. **Model** and API key
+3. **symbols-mcp** auto-configuration for AI editors (Claude Code, Cursor, Windsurf)
+
+The [symbols-mcp](https://github.com/symbo-ls/symbols-mcp) server gives AI assistants access to Symbols documentation and framework rules.
+
+## Extensions
+
+### VSCode — Symbols.app Connect
+
+IntelliSense for DOMQL/Symbols.app syntax including properties, events, components, and element methods autocomplete. Also includes AI chat integration and MCP support.
+
+Location: [`extensions/vscode/`](extensions/vscode/)
+
+### Chrome DevTools
+
+Chrome extension for inspecting Symbols components.
+
+Location: [`extensions/chrome-inspect2/`](extensions/chrome-inspect2/)
+
+## Packages
+
+### Core
+
+| Package | Description |
+|---------|-------------|
+| [`smbls`](packages/smbls/) | Main package — bundles the entire ecosystem |
+| [`@domql/element`](packages/domql/) | Core DOMQL framework |
+| [`@domql/state`](packages/state/) | State management |
+| [`@domql/utils`](packages/utils/) | Utility functions |
+| [`@domql/router`](packages/router/) | Application router |
+
+### Styling
+
+| Package | Description |
+|---------|-------------|
+| [`@symbo.ls/scratch`](packages/scratch/) | CSS framework and methodology |
+| [`@symbo.ls/css-in-props`](packages/css-in-props/) | CSS properties as props |
+| [`@symbo.ls/attrs-in-props`](packages/attrs-in-props/) | HTML attributes as props |
+| [`@symbo.ls/emotion`](packages/emotion/) | Emotion CSS-in-JS integration |
+| [`@symbo.ls/shorthand`](packages/shorthand/) | Shorthand syntax transpiler |
+
+### Design System
+
+| Package | Description |
+|---------|-------------|
+| [`@symbo.ls/default-config`](packages/default-config/) | Default design system configuration |
+| [`@symbo.ls/default-icons`](packages/icons/) | Default icon set |
+| [`@symbo.ls/uikit`](packages/uikit/) | Complete UI component library |
+
+### Tooling
+
+| Package | Description |
+|---------|-------------|
+| [`@symbo.ls/cli`](packages/cli/) | Command-line interface |
+| [`@symbo.ls/runner`](packages/runner/) | Build runner (Parcel, Vite, live-server) |
+| [`@symbo.ls/fetch`](packages/fetch/) | Fetch config from Symbols.app |
+| [`@symbo.ls/sync`](packages/sync/) | Real-time sync (browser & Node.js) |
+| [`create-smbls`](packages/create-smbls/) | Project scaffolding |
+
+### Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| [`brender`](plugins/brender/) | Browser rendering utilities |
+| [`emotion`](plugins/emotion/) | Emotion CSS plugin |
+| [`parse`](plugins/parse/) | Parser utilities |
+| [`performance`](plugins/performance/) | Performance monitoring |
+| [`router`](plugins/router/) | Routing plugin |
 
 ---
 
-For more in-depth exmplanation check out the official [documentation page](https://symbols.app/developers).
+For more details check the official [documentation](https://symbols.app/developers).
