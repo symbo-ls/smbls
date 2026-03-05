@@ -16,13 +16,19 @@ import {
   matchesComponentNaming
 } from '@domql/utils'
 
-const shallowChildrenEqual = (a, b) => {
+const deepChildrenEqual = (a, b) => {
   if (a === b) return true
   if (!a || !b) return false
+  const typeA = typeof a
+  const typeB = typeof b
+  // Functions in children data are structural definitions (event handlers,
+  // conditions) that get new references each call but are logically equal
+  if (typeA === 'function' && typeB === 'function') return true
+  if (typeA !== typeB) return false
   if (isArray(a) && isArray(b)) {
     if (a.length !== b.length) return false
     for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false
+      if (!deepChildrenEqual(a[i], b[i])) return false
     }
     return true
   }
@@ -32,7 +38,7 @@ const shallowChildrenEqual = (a, b) => {
     if (keysA.length !== keysB.length) return false
     for (let i = 0; i < keysA.length; i++) {
       const key = keysA[i]
-      if (a[key] !== b[key]) return false
+      if (!deepChildrenEqual(a[key], b[key])) return false
     }
     return true
   }
@@ -95,7 +101,7 @@ export function setChildren (param, element, opts) {
 
   let cloned
   if (ref.__childrenCache) {
-    if (shallowChildrenEqual(children, ref.__childrenCache)) {
+    if (deepChildrenEqual(children, ref.__childrenCache)) {
       ref.__noChildrenDifference = true
     } else {
       cloned = deepClone(children)
@@ -105,6 +111,8 @@ export function setChildren (param, element, opts) {
   } else {
     cloned = deepClone(children)
     ref.__childrenCache = cloned
+    // First evaluation during update - no cache to compare against, so don't
+    // assume children match. State-dependent children may have changed since creation.
   }
 
   if (isObject(children) || isArray(children)) {

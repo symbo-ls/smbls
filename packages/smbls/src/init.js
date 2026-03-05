@@ -54,7 +54,7 @@ export const init = (config, options = SET_OPTIONS) => {
     { newConfig: options.newConfig }
   )
 
-  const FontFace = getFontFaceString(conf.FONT)
+  const FontFace = getFontFaceString(conf.font || conf.FONT)
 
   const useReset = conf.useReset
   const useVariable = conf.useVariable
@@ -66,24 +66,23 @@ export const init = (config, options = SET_OPTIONS) => {
 
   if (useFontImport) emotion.injectGlobal(FontFace)
   if (useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })
-  if (useReset) emotion.injectGlobal(conf.RESET)
+  if (useReset) emotion.injectGlobal(conf.reset || conf.RESET)
 
   // Register all ANIMATION entries as global @keyframes
-  if (conf.ANIMATION) {
+  const animations = conf.animation || conf.ANIMATION
+  if (animations) {
     const keyframesCSS = {}
-    for (const name in conf.ANIMATION) {
-      keyframesCSS[`@keyframes ${name}`] = conf.ANIMATION[name]
+    for (const name in animations) {
+      keyframesCSS[`@keyframes ${name}`] = animations[name]
     }
     emotion.injectGlobal(keyframesCSS)
   }
 
-  if (hasSvgs) appendSVGSprite(hasSvgs, { document: options.document })
-  else if (useSvgSprite)
-    appendSVGSprite(conf.SVG, { document: options.document })
+  if (hasSvgs || useSvgSprite)
+    appendSVGSprite(conf.svg || conf.SVG, { document: options.document })
 
-  if (hasIcons) appendSvgIconsSprite(hasIcons, { document: options.document })
-  else if (useIconSprite)
-    appendSvgIconsSprite(conf.ICONS, { document: options.document })
+  if (hasIcons || useIconSprite)
+    appendSvgIconsSprite(conf.icons || conf.ICONS, { document: options.document })
 
   return conf
 }
