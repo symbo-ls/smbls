@@ -1,6 +1,6 @@
 {
   "name": "@domql/state",
-  "version": "3.3.6",
+  "version": "3.3.7",
   "license": "MIT",
   "type": "module",
   "module": "./dist/esm/index.js",
@@ -39,8 +39,8 @@
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/report": "^3.3.6",
-    "@domql/utils": "^3.3.6"
+    "@domql/report": "^3.3.7",
+    "@domql/utils": "^3.3.7"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "browser": "./dist/iife/index.js",
