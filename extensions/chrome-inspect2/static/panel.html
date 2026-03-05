@@ -15,6 +15,27 @@
 
       <div id="connect-error" class="connect-error" style="display:none"></div>
 
+      <!-- Auth section -->
+      <div id="auth-section">
+        <div id="auth-signed-out">
+          <div id="auth-form" class="auth-form">
+            <button id="btn-sign-in-browser" class="auth-btn auth-btn-primary">Sign in via symbols.app</button>
+            <div id="auth-status" class="auth-status" style="display:none"></div>
+            <div class="auth-divider"><span>or sign in with email</span></div>
+            <input id="auth-email" type="email" placeholder="Email" class="auth-input" />
+            <input id="auth-password" type="password" placeholder="Password" class="auth-input" />
+            <button id="btn-sign-in" class="auth-btn">Sign In</button>
+            <div id="auth-error" class="auth-error" style="display:none"></div>
+          </div>
+        </div>
+        <div id="auth-signed-in" style="display:none">
+          <div class="auth-user-row">
+            <span id="auth-user-name" class="auth-user-name"></span>
+            <button id="btn-sign-out" class="auth-sign-out">Sign Out</button>
+          </div>
+        </div>
+      </div>
+
       <div class="connect-options">
         <button id="btn-connect-local" class="connect-btn">
           <span class="connect-btn-icon">&#128193;</span>
@@ -22,11 +43,17 @@
           <span class="connect-btn-hint">Select a folder with symbols.json</span>
         </button>
 
-        <button id="btn-connect-platform" class="connect-btn">
+        <button id="btn-connect-platform" class="connect-btn" style="display:none">
           <span class="connect-btn-icon">&#9729;</span>
           <span class="connect-btn-label">Connect Platform</span>
           <span class="connect-btn-hint">symbols.app project</span>
         </button>
+      </div>
+
+      <!-- Platform project list -->
+      <div id="platform-projects" class="connect-recent" style="display:none">
+        <div class="section-header">Your Projects</div>
+        <div id="project-list"></div>
       </div>
 
       <div id="connect-recent" class="connect-recent" style="display:none">
@@ -43,8 +70,12 @@
       <button id="btn-inspect" title="Inspect element selected in Elements panel ($0)">Inspect $0</button>
       <button id="btn-refresh" title="Refresh element tree">Refresh</button>
       <span id="connection-badge"></span>
+      <button id="btn-undo" title="Undo last change (Ctrl+Z)" disabled>&#8617;</button>
+      <button id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled>&#8618;</button>
+      <button id="btn-sync" class="btn-sync" title="Sync changes to source" style="display:none">Sync</button>
       <button id="btn-disconnect" title="Disconnect and return to connect screen">Disconnect</button>
       <span id="status"></span>
+      <button id="btn-reload" title="Reload panel">&#8635;</button>
     </div>
     <div id="main">
       <div id="tree-pane">
@@ -67,8 +98,8 @@
           <span id="detail-path"></span>
         </div>
         <div id="detail-tabs">
-          <button class="tab active" data-tab="state">State</button>
-          <button class="tab" data-tab="props">Props</button>
+          <button class="tab active" data-tab="props">Props</button>
+          <button class="tab" data-tab="state">State</button>
           <button class="tab" data-tab="children">Children</button>
           <button class="tab" data-tab="ref">__ref</button>
           <button class="tab" data-tab="source" style="display:none">Source</button>
@@ -76,8 +107,8 @@
           <button class="tab" data-tab="methods">Methods</button>
         </div>
         <div id="detail-content">
-          <div id="tab-state" class="tab-panel active"></div>
-          <div id="tab-props" class="tab-panel"></div>
+          <div id="tab-props" class="tab-panel active"></div>
+          <div id="tab-state" class="tab-panel"></div>
           <div id="tab-children" class="tab-panel"></div>
           <div id="tab-ref" class="tab-panel"></div>
           <div id="tab-source" class="tab-panel"></div>
@@ -85,7 +116,7 @@
         </div>
       </div>
     </div>
-    <div id="ai-bar">
+    <div id="ai-bar" style="display:none">
       <div id="ai-result"></div>
       <div id="ai-input-row">
         <input id="ai-input" type="text" placeholder="Ask AI to modify components..." />
@@ -94,6 +125,7 @@
     </div>
   </div>
 
+  <script src="auth.js"></script>
   <script src="panel.js"></script>
 </body>
 </html>

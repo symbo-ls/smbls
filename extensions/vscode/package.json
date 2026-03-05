@@ -31,6 +31,11 @@
         "command": "symbolsApp.toggle",
         "title": "Toggle Symbols.app IntelliSense",
         "category": "Symbols.app"
+      },
+      {
+        "command": "symbolsApp.diagnose",
+        "title": "Diagnose Symbols.app IntelliSense",
+        "category": "Symbols.app"
       }
     ],
     "configuration": {
@@ -51,6 +56,20 @@
           "default": true,
           "description": "Suggest CSS properties as top-level element keys (they get promoted to props automatically)"
         }
+      }
+    },
+    "configurationDefaults": {
+      "[javascript]": {
+        "editor.quickSuggestions": { "strings": "on" }
+      },
+      "[typescript]": {
+        "editor.quickSuggestions": { "strings": "on" }
+      },
+      "[javascriptreact]": {
+        "editor.quickSuggestions": { "strings": "on" }
+      },
+      "[typescriptreact]": {
+        "editor.quickSuggestions": { "strings": "on" }
       }
     }
   },

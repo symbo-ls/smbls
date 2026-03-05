@@ -4,31 +4,55 @@ import { DOM_EVENTS, DOMQL_LIFECYCLE_EVENTS } from '../data/events'
 import { ALL_CSS_PROPS } from '../data/cssProperties'
 import { ALL_COMPONENTS } from '../data/components'
 import { ELEMENT_METHODS, STATE_METHODS, HTML_ATTRIBUTES } from '../data/elementMethods'
+import {
+  SPACING_SCALE, FONT_SIZE_SCALE, COLOR_TOKENS, COLOR_MODIFIERS,
+  GRADIENT_TOKENS, THEME_TOKENS, THEME_MODIFIERS, ICON_NAMES,
+  MEDIA_TOKENS, HTML_TAGS, CSS_VALUE_ENUMS,
+  COLOR_PROPERTIES, SPACING_PROPERTIES, FONT_SIZE_PROPERTIES,
+  INPUT_TYPES, TARGET_VALUES, REL_VALUES, AUTOCOMPLETE_VALUES,
+  BOOLEAN_VALUES, LOADING_VALUES
+} from '../data/designSystemValues'
+import { scanWorkspaceComponents } from './workspaceScanner'
 
-// Patterns that indicate a file uses DOMQL
+// Patterns that indicate a file uses DOMQL / Symbols.app
 const DOMQL_IMPORT_RE = /from\s+['"](@domql\/|domql|@symbo\.ls\/|smbls)/
 const DOMQL_SIGNATURE_RE = /\b(extends|childExtends|childExtendsRecursive|onRender|onStateUpdate|onInit)\s*:/
+// Design system patterns: flow, theme, round, boxSize, align + PascalCase component keys
+const DESIGN_SYSTEM_RE = /\b(flow|theme|round|boxSize|childExtend|widthRange|heightRange)\s*:\s*['"`]/
+const COMPONENT_EXPORT_RE = /export\s+(?:const|let|var)\s+[A-Z][a-zA-Z0-9]+\s*=\s*\{/
 
 export function isDomqlFile(text: string, detectByImports: boolean): boolean {
   if (DOMQL_IMPORT_RE.test(text)) return true
   if (!detectByImports) return true
-  return DOMQL_SIGNATURE_RE.test(text)
+  if (DOMQL_SIGNATURE_RE.test(text)) return true
+  if (DESIGN_SYSTEM_RE.test(text)) return true
+  if (COMPONENT_EXPORT_RE.test(text)) return true
+  return false
 }
 
 type DomqlContext =
   | 'element-key'
+  | 'element-value'
   | 'attr-key'
+  | 'attr-value'
   | 'state-key'
   | 'on-key'
   | 'define-key'
   | 'el-method'
   | 'state-method'
+  | 'call-arg'
   | 'none'
+
+interface ContextInfo {
+  type: DomqlContext
+  propertyName?: string   // the key whose value we're completing
+  enclosingKey?: string   // parent object key (attr, state, on, etc.)
+  enclosingTag?: string   // detected tag for the element
+}
 
 /**
  * Walk backwards from `offset` and find the property key that owns the `{`
  * immediately enclosing the cursor position.
- * E.g. `attr: { | }` → "attr"
  */
 function findEnclosingKey(text: string, offset: number): string | null {
   let depth = 0
@@ -50,35 +74,108 @@ function findEnclosingKey(text: string, offset: number): string | null {
 
 /** Returns true when the cursor is at a key position (no colon yet on this property). */
 function isAtKeyPosition(linePrefix: string): boolean {
-  // After the last comma or opening brace, no colon should appear
   const afterDelim = linePrefix.split(/[,{]/).pop() ?? ''
   return !/:/.test(afterDelim)
+}
+
+/** Extract the property name before the colon when cursor is in value position */
+function getPropertyNameBeforeColon(linePrefix: string): string | null {
+  // Match: `  propertyName: ` or `  propertyName: 'partial` or `  propertyName: "partial`
+  const m = linePrefix.match(/(\w+)\s*:\s*['"]?[^,{}]*$/)
+  return m ? m[1] : null
+}
+
+/** Try to find the `tag` property in the current element scope */
+function findTagInScope(text: string, offset: number): string | null {
+  // Find the enclosing `{` at element level
+  let depth = 0
+  let braceStart = -1
+  for (let i = offset - 1; i >= 0; i--) {
+    const ch = text[i]
+    if (ch === '}') depth++
+    else if (ch === '{') {
+      if (depth === 0) { braceStart = i; break }
+      depth--
+    }
+  }
+  if (braceStart === -1) return null
+
+  // Search within this scope for tag: "..."
+  const scope = text.substring(braceStart, Math.min(offset + 500, text.length))
+  const tagMatch = scope.match(/tag\s*:\s*['"](\w+)['"]/)
+  return tagMatch ? tagMatch[1] : null
+}
+
+/** Check if we're inside el.call("...") */
+function isInsideCallArgs(linePrefix: string): boolean {
+  return /\.call\(\s*['"][^'"]*$/.test(linePrefix)
+}
+
+/** Check if cursor is inside a string value (after an opening quote with no closing quote) */
+function isInsideStringValue(linePrefix: string): boolean {
+  // Count unescaped quotes — odd count means we're inside a string
+  const singleQuotes = (linePrefix.match(/(?<![\\])'/g) || []).length
+  const doubleQuotes = (linePrefix.match(/(?<![\\])"/g) || []).length
+  return singleQuotes % 2 === 1 || doubleQuotes % 2 === 1
+}
+
+/** Extract the property name when cursor is inside a string: `propName: 'cursor|` */
+function getPropertyForStringValue(linePrefix: string): string | null {
+  // Match: word : (optional space) quote ... cursor (no closing quote)
+  const m = linePrefix.match(/(\w+)\s*:\s*['"][^'"]*$/)
+  return m ? m[1] : null
 }
 
 export function detectContext(
   document: vscode.TextDocument,
   position: vscode.Position
-): DomqlContext {
+): ContextInfo {
   const linePrefix = document.lineAt(position).text.substring(0, position.character)
 
-  // Method access
-  if (/\bel\.\s*$/.test(linePrefix)) return 'el-method'
-  if (/\bstate\.\s*$/.test(linePrefix)) return 'state-method'
+  // el.call("...") argument
+  if (isInsideCallArgs(linePrefix)) return { type: 'call-arg' }
+
+  // Method access: el. or state.
+  if (/\bel\.\s*$/.test(linePrefix)) return { type: 'el-method' }
+  if (/\bstate\.\s*$/.test(linePrefix)) return { type: 'state-method' }
 
   const fullText = document.getText()
   const config = vscode.workspace.getConfiguration('symbolsApp')
-  if (!isDomqlFile(fullText, config.get('detectByImports', true))) return 'none'
+  if (!isDomqlFile(fullText, config.get('detectByImports', true))) return { type: 'none' }
 
   const offset = document.offsetAt(position)
   const enclosingKey = findEnclosingKey(fullText, offset)
+  const tag = findTagInScope(fullText, offset) ?? undefined
 
-  if (enclosingKey === 'attr') return 'attr-key'
-  if (enclosingKey === 'state') return 'state-key'
-  if (enclosingKey === 'on') return 'on-key'
-  if (enclosingKey === 'define') return 'define-key'
+  // Inside a string value — provide string-level completions
+  if (isInsideStringValue(linePrefix)) {
+    const prop = getPropertyForStringValue(linePrefix)
+    if (prop) {
+      if (enclosingKey === 'attr') {
+        return { type: 'attr-value', propertyName: prop, enclosingTag: tag }
+      }
+      return { type: 'element-value', propertyName: prop, enclosingKey: enclosingKey ?? undefined, enclosingTag: tag }
+    }
+  }
 
-  if (isAtKeyPosition(linePrefix)) return 'element-key'
-  return 'none'
+  // Check if we're in value position (after colon)
+  const atKeyPos = isAtKeyPosition(linePrefix)
+  const propertyName = !atKeyPos ? getPropertyNameBeforeColon(linePrefix) : null
+
+  if (enclosingKey === 'attr') {
+    if (atKeyPos) return { type: 'attr-key', enclosingTag: tag }
+    return { type: 'attr-value', propertyName: propertyName ?? undefined, enclosingTag: tag }
+  }
+  if (enclosingKey === 'state') return { type: 'state-key' }
+  if (enclosingKey === 'on') return { type: 'on-key' }
+  if (enclosingKey === 'define') return { type: 'define-key' }
+
+  if (!atKeyPos && propertyName) {
+    return { type: 'element-value', propertyName, enclosingKey: enclosingKey ?? undefined, enclosingTag: tag }
+  }
+
+  if (atKeyPos) return { type: 'element-key' }
+  return { type: 'none' }
 }
 
 // ---------------------------------------------------------------------------
@@ -103,31 +200,51 @@ function mkItem(
   return item
 }
 
+function mkValueItem(
+  label: string,
+  detail: string,
+  docs?: string,
+  sort = '1'
+): vscode.CompletionItem {
+  const item = new vscode.CompletionItem(label, vscode.CompletionItemKind.Value)
+  item.detail = detail
+  if (docs) {
+    const md = new vscode.MarkdownString(docs)
+    md.isTrusted = true
+    item.documentation = md
+  }
+  item.sortText = sort + label
+  // Ensure items show up inside strings
+  item.filterText = label
+  item.range = undefined
+  return item
+}
+
 function getElementKeyCompletions(): vscode.CompletionItem[] {
   const config = vscode.workspace.getConfiguration('symbolsApp')
   const items: vscode.CompletionItem[] = []
 
-  // 1 – DOMQL built-in keys
+  // 1 - DOMQL built-in keys
   for (const k of DOMQL_ALL_KEYS) {
     items.push(mkItem(k.label, vscode.CompletionItemKind.Property, k.detail, k.documentation, k.snippet, '1'))
   }
 
-  // 2 – Lifecycle events
+  // 2 - Lifecycle events
   for (const ev of DOMQL_LIFECYCLE_EVENTS) {
     items.push(mkItem(ev.label, vscode.CompletionItemKind.Event, ev.detail, ev.documentation, ev.snippet, '2'))
   }
 
-  // 3 – DOM events
+  // 3 - DOM events
   for (const ev of DOM_EVENTS) {
     items.push(mkItem(ev.label, vscode.CompletionItemKind.Event, ev.detail, ev.documentation, ev.snippet, '3'))
   }
 
-  // 4 – Built-in components / atoms (PascalCase children)
+  // 4 - Built-in components / atoms (PascalCase children)
   for (const c of ALL_COMPONENTS) {
     items.push(mkItem(c.label, vscode.CompletionItemKind.Class, c.detail, c.documentation, c.snippet, '4'))
   }
 
-  // 5 – CSS properties
+  // 5 - CSS properties
   if (config.get('completeCssProps', true)) {
     for (const p of ALL_CSS_PROPS) {
       items.push(mkItem(p.label, vscode.CompletionItemKind.Property, p.detail, p.documentation ?? '', undefined, '5'))
@@ -137,7 +254,7 @@ function getElementKeyCompletions(): vscode.CompletionItem[] {
   return items
 }
 
-function getAttrKeyCompletions(): vscode.CompletionItem[] {
+function getAttrKeyCompletions(tag?: string): vscode.CompletionItem[] {
   return HTML_ATTRIBUTES.map(attr => {
     const item = new vscode.CompletionItem(attr, vscode.CompletionItemKind.Property)
     item.detail = `HTML attribute: ${attr}`
@@ -188,7 +305,7 @@ function getStateMethodCompletions(): vscode.CompletionItem[] {
 }
 
 function getStateKeyCompletions(): vscode.CompletionItem[] {
-  const common = [
+  const common: [string, string, string][] = [
     ['loading', 'false', 'Loading flag'],
     ['error', 'null', 'Error message or null'],
     ['data', 'null', 'Fetched data'],
@@ -209,24 +326,218 @@ function getStateKeyCompletions(): vscode.CompletionItem[] {
 }
 
 // ---------------------------------------------------------------------------
+// Value completions — the smart part
+// ---------------------------------------------------------------------------
+
+function getColorCompletions(): vscode.CompletionItem[] {
+  const items: vscode.CompletionItem[] = []
+
+  for (const c of COLOR_TOKENS) {
+    items.push(mkValueItem(c, `Color token: ${c}`, `Design system color.\n\nModifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken)`, '1'))
+  }
+
+  for (const g of GRADIENT_TOKENS) {
+    items.push(mkValueItem(g, `Gradient: ${g}`, 'Design system gradient token', '2'))
+  }
+
+  return items
+}
+
+function getSpacingCompletions(): vscode.CompletionItem[] {
+  return SPACING_SCALE.map((token, i) => {
+    const sort = String(i).padStart(2, '0')
+    return mkValueItem(token, `Spacing token: ${token}`, `Design system spacing scale.\n\nSmaller: W < X < Y < Z < **A** < B < C < D > larger\n\nSub-steps: A1, A2 between A and B`, sort)
+  })
+}
+
+function getFontSizeCompletions(): vscode.CompletionItem[] {
+  return FONT_SIZE_SCALE.map((token, i) => {
+    const sort = String(i).padStart(2, '0')
+    return mkValueItem(token, `Font size token: ${token}`, `Typography scale. Base = A (16px), ratio ~1.25\n\nSmaller: Z < Y < X → **A** → B < C < D larger`, sort)
+  })
+}
+
+function getThemeCompletions(): vscode.CompletionItem[] {
+  const items: vscode.CompletionItem[] = []
+
+  for (const t of THEME_TOKENS) {
+    items.push(mkValueItem(t, `Theme: ${t}`, `Apply design system theme.\n\nModifiers: \`"${t} .child"\`, \`"${t} .color-only"\``, '1'))
+  }
+
+  // Theme with modifier combinations
+  for (const t of ['primary', 'secondary', 'card', 'dialog', 'label']) {
+    for (const mod of THEME_MODIFIERS) {
+      items.push(mkValueItem(`${t} ${mod}`, `Theme modifier: ${t} ${mod}`, `Theme \`${t}\` with modifier \`${mod}\``, '3'))
+    }
+  }
+
+  return items
+}
+
+function getIconCompletions(): vscode.CompletionItem[] {
+  return ICON_NAMES.map(name =>
+    mkValueItem(name, `Icon: ${name}`, `Default icon from design system`, '1')
+  )
+}
+
+function getExtendsCompletions(workspaceComponents: string[]): vscode.CompletionItem[] {
+  const items: vscode.CompletionItem[] = []
+
+  // Built-in components first
+  for (const c of ALL_COMPONENTS) {
+    items.push(mkValueItem(c.label, c.detail, c.documentation, '1'))
+  }
+
+  // Workspace components
+  for (const name of workspaceComponents) {
+    // Skip if already in built-in
+    if (ALL_COMPONENTS.some(c => c.label === name)) continue
+    items.push(mkValueItem(name, `Project component: ${name}`, 'Detected from workspace', '2'))
+  }
+
+  return items
+}
+
+function getTagCompletions(): vscode.CompletionItem[] {
+  return HTML_TAGS.map(tag =>
+    mkValueItem(tag, `HTML tag: <${tag}>`, undefined, '1')
+  )
+}
+
+function getCssEnumCompletions(property: string): vscode.CompletionItem[] {
+  const values = CSS_VALUE_ENUMS[property]
+  if (!values) return []
+  return values.map(v => mkValueItem(v, `${property}: ${v}`, undefined, '1'))
+}
+
+function getAttrValueCompletions(attrName: string): vscode.CompletionItem[] {
+  switch (attrName) {
+    case 'type':
+      return INPUT_TYPES.map(t => mkValueItem(t, `type="${t}"`, undefined, '1'))
+    case 'target':
+      return TARGET_VALUES.map(t => mkValueItem(t, `target="${t}"`, undefined, '1'))
+    case 'rel':
+      return REL_VALUES.map(r => mkValueItem(r, `rel="${r}"`, undefined, '1'))
+    case 'autocomplete':
+      return AUTOCOMPLETE_VALUES.map(a => mkValueItem(a, `autocomplete="${a}"`, undefined, '1'))
+    case 'loading':
+      return LOADING_VALUES.map(l => mkValueItem(l, `loading="${l}"`, undefined, '1'))
+    case 'disabled': case 'checked': case 'required': case 'readonly':
+    case 'multiple': case 'hidden': case 'draggable': case 'contenteditable':
+    case 'spellcheck': case 'novalidate': case 'autofocus':
+      return BOOLEAN_VALUES.map(b => mkValueItem(b, `${attrName}="${b}"`, undefined, '1'))
+    case 'role':
+      // Common ARIA roles
+      return ['button', 'link', 'dialog', 'alert', 'navigation', 'menu', 'menuitem',
+        'tab', 'tablist', 'tabpanel', 'checkbox', 'radio', 'listbox', 'option',
+        'textbox', 'search', 'progressbar', 'slider', 'switch', 'tooltip', 'img',
+        'heading', 'list', 'listitem', 'group', 'region', 'banner', 'main',
+        'complementary', 'contentinfo', 'form', 'presentation', 'none'
+      ].map(r => mkValueItem(r, `role="${r}"`, undefined, '1'))
+    case 'dir':
+      return ['ltr', 'rtl', 'auto'].map(d => mkValueItem(d, `dir="${d}"`, undefined, '1'))
+    case 'method':
+      return ['get', 'post', 'put', 'delete', 'patch'].map(m => mkValueItem(m, `method="${m}"`, undefined, '1'))
+    case 'enctype':
+      return ['application/x-www-form-urlencoded', 'multipart/form-data', 'text/plain']
+        .map(e => mkValueItem(e, `enctype="${e}"`, undefined, '1'))
+    default:
+      return []
+  }
+}
+
+function getCallArgCompletions(): vscode.CompletionItem[] {
+  // Common context function names
+  const fns = [
+    ['exec', 'Execute a dynamic prop value'],
+    ['fetchData', 'Fetch data from API'],
+    ['router', 'Navigate to a route'],
+    ['isString', 'Check if value is string'],
+    ['isObject', 'Check if value is object'],
+    ['isArray', 'Check if value is array'],
+    ['isNumber', 'Check if value is number'],
+    ['isFunction', 'Check if value is function'],
+    ['isBoolean', 'Check if value is boolean'],
+    ['isDefined', 'Check if value is defined'],
+    ['isUndefined', 'Check if value is undefined'],
+    ['isNull', 'Check if value is null'],
+    ['isEmpty', 'Check if value is empty'],
+    ['deepMerge', 'Deep merge objects'],
+    ['deepClone', 'Deep clone an object'],
+    ['getSystemTheme', 'Get current system color scheme'],
+    ['setTheme', 'Set application theme'],
+  ]
+  return fns.map(([name, desc]) =>
+    mkValueItem(name, desc, `Context function: \`el.call("${name}", ...args)\`\n\nResolution: utils → functions → methods → snippets`, '1')
+  )
+}
+
+async function getValueCompletions(ctx: ContextInfo): Promise<vscode.CompletionItem[]> {
+  const prop = ctx.propertyName
+  if (!prop) return []
+
+  // extends / childExtends / childExtendsRecursive → component names
+  if (prop === 'extends' || prop === 'childExtends' || prop === 'childExtendsRecursive' || prop === 'childExtend') {
+    const wsComponents = await scanWorkspaceComponents()
+    return getExtendsCompletions(wsComponents)
+  }
+
+  // tag → HTML tags
+  if (prop === 'tag') return getTagCompletions()
+
+  // theme → theme tokens
+  if (prop === 'theme') return getThemeCompletions()
+
+  // icon / name (inside Icon component) → icon names
+  if (prop === 'icon' || prop === 'name') return getIconCompletions()
+
+  // Color properties → color tokens
+  if (COLOR_PROPERTIES.has(prop)) return getColorCompletions()
+
+  // Spacing/size properties → spacing tokens
+  if (SPACING_PROPERTIES.has(prop)) return getSpacingCompletions()
+
+  // Font size properties → font size tokens
+  if (FONT_SIZE_PROPERTIES.has(prop)) return getFontSizeCompletions()
+
+  // CSS enum values (display, position, etc.)
+  const enumItems = getCssEnumCompletions(prop)
+  if (enumItems.length > 0) return enumItems
+
+  // For transition/animation, provide timing tokens
+  if (prop === 'transition') {
+    const items = SPACING_SCALE.map(t => mkValueItem(t, `Duration token: ${t}`, 'Design system timing token'))
+    items.push(mkValueItem('A defaultBezier', 'transition: A defaultBezier', 'Common transition with default easing'))
+    return items
+  }
+
+  return []
+}
+
+// ---------------------------------------------------------------------------
 // Provider
 // ---------------------------------------------------------------------------
 
 export class DomqlCompletionProvider implements vscode.CompletionItemProvider {
-  provideCompletionItems(
+  async provideCompletionItems(
     document: vscode.TextDocument,
     position: vscode.Position
-  ): vscode.CompletionItem[] {
+  ): Promise<vscode.CompletionList | vscode.CompletionItem[]> {
     if (!vscode.workspace.getConfiguration('symbolsApp').get('enable', true)) return []
 
-    switch (detectContext(document, position)) {
-      case 'el-method':    return getElementMethodCompletions()
-      case 'state-method': return getStateMethodCompletions()
-      case 'attr-key':     return getAttrKeyCompletions()
-      case 'on-key':       return getOnKeyCompletions()
-      case 'state-key':    return getStateKeyCompletions()
+    const ctx = detectContext(document, position)
+    let items: vscode.CompletionItem[]
+
+    switch (ctx.type) {
+      case 'el-method':    items = getElementMethodCompletions(); break
+      case 'state-method': items = getStateMethodCompletions(); break
+      case 'call-arg':     items = getCallArgCompletions(); break
+      case 'attr-key':     items = getAttrKeyCompletions(ctx.enclosingTag); break
+      case 'attr-value':   items = ctx.propertyName ? getAttrValueCompletions(ctx.propertyName) : []; break
+      case 'on-key':       items = getOnKeyCompletions(); break
+      case 'state-key':    items = getStateKeyCompletions(); break
       case 'define-key':
-        return [mkItem(
+        items = [mkItem(
           'propName',
           vscode.CompletionItemKind.Property,
           '(param, el, state, context) => void',
@@ -234,8 +545,30 @@ export class DomqlCompletionProvider implements vscode.CompletionItemProvider {
           'propName: (param, el, state) => {\n  ${1:}\n},',
           '1'
         )]
-      case 'element-key':  return getElementKeyCompletions()
-      default:             return []
+        break
+      case 'element-value': items = await getValueCompletions(ctx); break
+      case 'element-key': {
+        items = getElementKeyCompletions()
+        const wsComponents = await scanWorkspaceComponents()
+        for (const name of wsComponents) {
+          if (ALL_COMPONENTS.some(c => c.label === name)) continue
+          items.push(mkItem(
+            name,
+            vscode.CompletionItemKind.Class,
+            `Project component: ${name}`,
+            'Detected from workspace files',
+            `${name}: {\n  \${1:}\n},`,
+            '4'
+          ))
+        }
+        break
+      }
+      default: return []
     }
+
+    if (items.length === 0) return []
+
+    // Use CompletionList with isIncomplete so VSCode shows items inside strings
+    return new vscode.CompletionList(items, true)
   }
 }

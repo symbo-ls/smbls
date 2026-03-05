@@ -202,7 +202,7 @@ export const update = function (params = {}, opts) {
           // eslint-disable-line
           childUpdateCall()
           // handle lazy load
-          if (!options.preventUpdateListener) {
+          if (!options.preventUpdateListener && !options.preventListeners) {
             triggerEventOn('lazyLoad', element, options)
           }
         })
@@ -233,7 +233,7 @@ export const update = function (params = {}, opts) {
         if (lazyLoad) {
           window.requestAnimationFrame(() => {
             contentUpdateCall()
-            if (!options.preventUpdateListener) {
+            if (!options.preventUpdateListener && !options.preventListeners) {
               triggerEventOn('lazyLoad', element, options)
             }
           })
@@ -251,7 +251,7 @@ export const update = function (params = {}, opts) {
       if (lazyLoad) {
         window.requestAnimationFrame(() => {
           contentUpdateCall()
-          if (!options.preventUpdateListener) {
+          if (!options.preventUpdateListener && !options.preventListeners) {
             triggerEventOn('lazyLoad', element, options)
           }
         })
@@ -264,7 +264,7 @@ export const update = function (params = {}, opts) {
     }
   }
 
-  if (!preventUpdateListener) {
+  if (!preventUpdateListener && !options.preventListeners) {
     triggerEventOn('update', element, options)
   }
 }

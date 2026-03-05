@@ -1,51 +1,48 @@
 import * as vscode from 'vscode'
-import * as fs from 'fs'
-import * as path from 'path'
 import { DomqlCompletionProvider } from './providers/completionProvider'
 import { DomqlHoverProvider } from './providers/hoverProvider'
+import { DomqlDefinitionProvider } from './providers/definitionProvider'
+import { invalidateCache } from './providers/workspaceScanner'
 
 const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact']
 
-function hasSymbolsJson(dir: string): boolean {
-  let current = dir
-  while (true) {
-    if (fs.existsSync(path.join(current, 'symbols.json'))) return true
-    const parent = path.dirname(current)
-    if (parent === current) return false
-    current = parent
-  }
-}
+// Output channel for diagnostics
+let output: vscode.OutputChannel
 
 export function activate(context: vscode.ExtensionContext): void {
-  const workspaceFolders = vscode.workspace.workspaceFolders
-  if (!workspaceFolders || !workspaceFolders.some(f => hasSymbolsJson(f.uri.fsPath))) return
+  output = vscode.window.createOutputChannel('Symbols.app')
+  output.appendLine('Symbols.app extension activating...')
 
   const completionProvider = new DomqlCompletionProvider()
   const hoverProvider = new DomqlHoverProvider()
+  const definitionProvider = new DomqlDefinitionProvider()
 
   for (const lang of LANGUAGES) {
-    // Completion: trigger on any character (key position detection handles context)
+    const selector = { language: lang, scheme: 'file' }
+
     context.subscriptions.push(
       vscode.languages.registerCompletionItemProvider(
-        { language: lang, scheme: 'file' },
+        selector,
         completionProvider,
-        '.', // trigger for el. / state. method completions
-        ' ', // trigger inside objects
-        '\n',
-        ','
+        '.', ' ', '\n', ',', ':', "'", '"'
       )
     )
 
-    // Hover provider
     context.subscriptions.push(
-      vscode.languages.registerHoverProvider(
-        { language: lang, scheme: 'file' },
-        hoverProvider
-      )
+      vscode.languages.registerHoverProvider(selector, hoverProvider)
+    )
+
+    context.subscriptions.push(
+      vscode.languages.registerDefinitionProvider(selector, definitionProvider)
     )
   }
 
-  // Command: toggle the extension on/off
+  const watcher = vscode.workspace.createFileSystemWatcher('**/*.{js,ts,jsx,tsx}')
+  watcher.onDidChange(() => invalidateCache())
+  watcher.onDidCreate(() => invalidateCache())
+  watcher.onDidDelete(() => invalidateCache())
+  context.subscriptions.push(watcher)
+
   context.subscriptions.push(
     vscode.commands.registerCommand('symbolsApp.toggle', () => {
       const config = vscode.workspace.getConfiguration('symbolsApp')
@@ -57,10 +54,29 @@ export function activate(context: vscode.ExtensionContext): void {
     })
   )
 
-  // Add toggle command to contributes
-  vscode.window.setStatusBarMessage('Symbols.app active', 3000)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('symbolsApp.diagnose', () => {
+      output.show()
+      output.appendLine('--- Diagnostics ---')
+      output.appendLine(`Workspace folders: ${vscode.workspace.workspaceFolders?.map(f => f.uri.fsPath).join(', ')}`)
+      const editor = vscode.window.activeTextEditor
+      if (editor) {
+        output.appendLine(`Active file: ${editor.document.uri.fsPath}`)
+        output.appendLine(`Language: ${editor.document.languageId}`)
+        const text = editor.document.getText()
+        output.appendLine(`File length: ${text.length}`)
+        output.appendLine(`Has DOMQL import: ${/from\s+['"](@domql\/|domql|@symbo\.ls\/|smbls)/.test(text)}`)
+        output.appendLine(`Has extends/childExtends: ${/\b(extends|childExtends|childExtendsRecursive|onRender|onStateUpdate|onInit)\s*:/.test(text)}`)
+        output.appendLine(`Has design system props: ${/\b(flow|theme|round|boxSize|childExtend|widthRange|heightRange)\s*:\s*['"\`]/.test(text)}`)
+        output.appendLine(`Has component export: ${/export\s+(?:const|let|var)\s+[A-Z][a-zA-Z0-9]+\s*=\s*\{/.test(text)}`)
+      }
+      output.appendLine('--- End ---')
+      vscode.window.showInformationMessage('Symbols.app: Check Output panel (Symbols.app channel)')
+    })
+  )
+
+  output.appendLine('Symbols.app extension activated successfully')
+  vscode.window.showInformationMessage('Symbols.app IntelliSense active')
 }
 
-export function deactivate(): void {
-  // cleanup handled by subscriptions
-}
+export function deactivate(): void {}

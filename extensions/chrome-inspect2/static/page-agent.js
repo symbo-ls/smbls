@@ -79,6 +79,56 @@
     return String(val)
   }
 
+  // Trace which component each prop comes from
+  function getPropsOrigin (el) {
+    const origins = {}
+
+    function traceExtend (def, depth) {
+      if (!def || typeof def !== 'object' || depth > 10) return
+      const name = def.__name || def.key || null
+
+      if (def.props && typeof def.props === 'object') {
+        for (const k of Object.keys(def.props)) {
+          if (typeof def.props[k] === 'function' || k.startsWith('__')) continue
+          if (!origins[k]) origins[k] = name
+        }
+      }
+
+      // Check text
+      if (def.text !== undefined && !origins.text) {
+        origins.text = name
+      }
+
+      // Recurse into extend chain
+      if (def.extend) traceExtend(def.extend, depth + 1)
+      if (Array.isArray(def.extends)) {
+        for (const ext of def.extends) traceExtend(ext, depth + 1)
+      }
+    }
+
+    // Walk from the element itself
+    if (el.__ref) {
+      // The element's own component name
+      const selfName = el.__ref.__name || el.component || el.key
+
+      // Check if the element defines its own props
+      if (el.__ref.__extend) traceExtend(el.__ref.__extend, 0)
+      if (el.__ref.__extends && Array.isArray(el.__ref.__extends)) {
+        for (const ext of el.__ref.__extends) traceExtend(ext, 0)
+      }
+
+      // Mark direct props (set on this instance) as "self"
+      if (el.props && typeof el.props === 'object') {
+        for (const k of Object.keys(el.props)) {
+          if (typeof el.props[k] === 'function' || k.startsWith('__')) continue
+          if (!origins[k]) origins[k] = selfName || 'self'
+        }
+      }
+    }
+
+    return origins
+  }
+
   // Get serialized info about a DOMQL element
   function getElementInfo (el) {
     if (!el) return null
@@ -104,9 +154,35 @@
 
     // Props — collect el.props if it exists as an object
     info.props = {}
+
+    // Include text as a prop shortcut — el.text is a top-level DOMQL property
+    // It can be a string, number, or function (getter). Always try to resolve it.
+    var textVal = undefined
+    if (el.text !== undefined && el.text !== null) {
+      if (typeof el.text === 'function') {
+        try { textVal = el.text.call(el, el, el.state, el.context) } catch (e) { /* skip */ }
+      } else if (typeof el.text !== 'object') {
+        textVal = el.text
+      }
+    }
+    if ((textVal === undefined || textVal === null) && el.props && el.props.text != null && typeof el.props.text !== 'function') {
+      textVal = el.props.text
+    }
+    if ((textVal === undefined || textVal === null) && el.node) {
+      // Fallback: read direct text nodes from DOM
+      var directText = ''
+      for (var ci = 0; ci < el.node.childNodes.length; ci++) {
+        if (el.node.childNodes[ci].nodeType === 3) directText += el.node.childNodes[ci].textContent
+      }
+      if (directText.trim()) textVal = directText.trim()
+    }
+    if (textVal !== undefined && textVal !== null) {
+      info.props.text = serialize(textVal, 0, 3, new WeakSet())
+    }
+
     if (el.props && typeof el.props === 'object') {
       for (const k of Object.keys(el.props)) {
-        if (k === 'parent' || k === 'root' || k === 'update' || k === 'set' || k === 'reset' || k.startsWith('__')) continue
+        if (k === 'text' || k === 'parent' || k === 'root' || k === 'update' || k === 'set' || k === 'reset' || k.startsWith('__')) continue
         if (typeof el.props[k] === 'function') continue
         try {
           info.props[k] = serialize(el.props[k], 0, 3, new WeakSet())
@@ -115,6 +191,9 @@
         }
       }
     }
+
+    // Prop origin mapping — trace which component defines each prop
+    info.propsOrigin = getPropsOrigin(el)
 
     // Children (DOMQL child elements)
     info.children = []
@@ -234,6 +313,29 @@
   }
 
   // Highlight overlay management
+  let _highlightedNode = null
+  let _highlightColor = null
+  let _scrollRaf = null
+
+  function _updateOverlayPosition () {
+    if (!_highlightedNode) return
+    const overlay = document.getElementById('__domql-highlight__')
+    if (!overlay || overlay.style.display === 'none') return
+    const rect = _highlightedNode.getBoundingClientRect()
+    overlay.style.top = rect.top + 'px'
+    overlay.style.left = rect.left + 'px'
+    overlay.style.width = rect.width + 'px'
+    overlay.style.height = rect.height + 'px'
+  }
+
+  function _onScroll () {
+    if (_scrollRaf) return
+    _scrollRaf = requestAnimationFrame(() => {
+      _scrollRaf = null
+      _updateOverlayPosition()
+    })
+  }
+
   function showHighlight (node, color) {
     let overlay = document.getElementById('__domql-highlight__')
     if (!overlay) {
@@ -247,20 +349,28 @@
       `
       document.body.appendChild(overlay)
     }
+
+    _highlightedNode = node
+    _highlightColor = color || 'rgba(66, 133, 244, 0.6)'
+
     const rect = node.getBoundingClientRect()
-    const c = color || 'rgba(66, 133, 244, 0.6)'
     overlay.style.top = rect.top + 'px'
     overlay.style.left = rect.left + 'px'
     overlay.style.width = rect.width + 'px'
     overlay.style.height = rect.height + 'px'
-    overlay.style.background = c.replace('0.6', '0.12')
-    overlay.style.border = '2px solid ' + c
+    overlay.style.background = _highlightColor.replace('0.6', '0.12')
+    overlay.style.border = '2px solid ' + _highlightColor
     overlay.style.display = 'block'
+
+    window.removeEventListener('scroll', _onScroll, true)
+    window.addEventListener('scroll', _onScroll, true)
   }
 
   function hideHighlight () {
     const overlay = document.getElementById('__domql-highlight__')
     if (overlay) overlay.style.display = 'none'
+    _highlightedNode = null
+    window.removeEventListener('scroll', _onScroll, true)
   }
 
   // --- Picker mode ---
@@ -394,15 +504,19 @@
       return info
     },
 
-    // Navigate to child by key path (e.g., "Header.Nav.Link")
+    // Navigate to child by key path (e.g., "App.Header.Nav.Link")
+    // First part is the root element's own key, remaining parts are children
     navigatePath (path) {
       const root = findRoot()
       if (!root) return null
       const parts = path.split('.')
       let current = root
-      for (const part of parts) {
-        if (!current[part]) return null
-        current = current[part]
+      // If first part matches root's key, skip it (it refers to root itself)
+      var start = 0
+      if (parts[0] === root.key) start = 1
+      for (var i = start; i < parts.length; i++) {
+        if (!current[parts[i]]) return null
+        current = current[parts[i]]
       }
       return getElementInfo(current)
     },
@@ -413,9 +527,11 @@
       if (!root) return null
       const parts = path.split('.')
       let current = root
-      for (const part of parts) {
-        if (!current[part]) return null
-        current = current[part]
+      var start = 0
+      if (parts[0] === root.key) start = 1
+      for (var i = start; i < parts.length; i++) {
+        if (!current[parts[i]]) return null
+        current = current[parts[i]]
       }
       return current
     },
@@ -432,12 +548,19 @@
       }
     },
 
-    // Update prop value
+    // Update prop value — uses setProps to update and re-render
+    // text is a top-level DOMQL property, not inside props
     updateProp (path, key, value) {
       const el = this.getElementByPath(path)
       if (!el) return { error: 'Element not found' }
       try {
-        el.update({ [key]: value })
+        if (key === 'text') {
+          el.update({ text: value })
+        } else if (typeof el.setProps === 'function') {
+          el.setProps({ [key]: value })
+        } else {
+          el.update({ props: { [key]: value } })
+        }
         return { success: true }
       } catch (e) {
         return { error: e.message }

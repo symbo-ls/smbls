@@ -115,19 +115,58 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   // Forward file operations to the picker tab
   if (msg.type === 'read-file' || msg.type === 'write-file' || msg.type === 'rescan-project') {
-    if (pickerTabId) {
-      chrome.tabs.sendMessage(pickerTabId, msg, sendResponse)
-    } else {
-      // No picker tab open — open one silently
+    const forwardToPickerTab = (tabId) => {
+      chrome.tabs.sendMessage(tabId, msg, (response) => {
+        if (chrome.runtime.lastError) {
+          sendResponse({ error: 'Picker tab error: ' + chrome.runtime.lastError.message })
+        } else {
+          sendResponse(response)
+        }
+      })
+    }
+
+    const openNewPickerTab = () => {
       const pickerUrl = chrome.runtime.getURL('picker.html')
       chrome.tabs.create({ url: pickerUrl, active: false }, (tab) => {
         pickerTabId = tab.id
-        // Wait a moment for the page to load
-        setTimeout(() => {
-          chrome.tabs.sendMessage(pickerTabId, msg, sendResponse)
-        }, 500)
+        // Wait for the page to load before forwarding
+        setTimeout(() => forwardToPickerTab(tab.id), 800)
       })
     }
+
+    if (pickerTabId) {
+      // Verify the tab still exists
+      chrome.tabs.get(pickerTabId, (tab) => {
+        if (chrome.runtime.lastError || !tab) {
+          pickerTabId = null
+          openNewPickerTab()
+        } else {
+          forwardToPickerTab(pickerTabId)
+        }
+      })
+    } else {
+      openNewPickerTab()
+    }
+    return true
+  }
+
+  // Proxy API requests (avoids CORS preflight issues in devtools panel)
+  if (msg.type === 'api-fetch') {
+    ;(async () => {
+      try {
+        const res = await fetch(msg.url, {
+          method: msg.method || 'GET',
+          headers: msg.headers || {},
+          body: msg.body || undefined
+        })
+        const text = await res.text()
+        let json = null
+        try { json = JSON.parse(text) } catch (e) {}
+        sendResponse({ ok: res.ok, status: res.status, data: json, text: text })
+      } catch (e) {
+        sendResponse({ ok: false, status: 0, error: e.message || String(e) })
+      }
+    })()
     return true
   }
 

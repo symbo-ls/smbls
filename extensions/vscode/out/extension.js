@@ -34,12 +34,10 @@ __export(extension_exports, {
   deactivate: () => deactivate
 });
 module.exports = __toCommonJS(extension_exports);
-var vscode3 = __toESM(require("vscode"));
-var fs = __toESM(require("fs"));
-var path = __toESM(require("path"));
+var vscode5 = __toESM(require("vscode"));
 
 // src/providers/completionProvider.ts
-var vscode = __toESM(require("vscode"));
+var vscode2 = __toESM(require("vscode"));
 
 // src/data/domqlKeys.ts
 var DOMQL_REGISTRY_KEYS = [
@@ -1426,13 +1424,468 @@ var HTML_ATTRIBUTES = [
   "frameborder"
 ];
 
+// src/data/designSystemValues.ts
+var SPACING_SCALE = [
+  "W2",
+  "W1",
+  "W",
+  "X2",
+  "X1",
+  "X",
+  "Y2",
+  "Y1",
+  "Y",
+  "Z2",
+  "Z1",
+  "Z",
+  "A",
+  "A1",
+  "A2",
+  "B",
+  "B1",
+  "B2",
+  "C",
+  "C1",
+  "C2",
+  "D",
+  "D1",
+  "D2",
+  "E",
+  "E1",
+  "E2",
+  "F",
+  "F1",
+  "F2",
+  "G",
+  "G1",
+  "G2",
+  "H",
+  "H1",
+  "H2"
+];
+var FONT_SIZE_SCALE = [...SPACING_SCALE];
+var COLOR_TOKENS = [
+  "blue",
+  "green",
+  "red",
+  "yellow",
+  "orange",
+  "transparent",
+  "black",
+  "gray",
+  "white",
+  "title",
+  "caption",
+  "paragraph",
+  "disabled",
+  "line",
+  "currentColor",
+  "inherit",
+  "none"
+];
+var GRADIENT_TOKENS = [
+  "gradient-blue-light",
+  "gradient-blue-dark",
+  "gradient-dark",
+  "gradient-dark-active",
+  "gradient-light",
+  "gradient-light-active",
+  "gradient-colorful"
+];
+var THEME_TOKENS = [
+  "document",
+  "primary",
+  "secondary",
+  "tertiary",
+  "quaternary",
+  "quinary",
+  "alert",
+  "warning",
+  "success",
+  "field",
+  "label",
+  "card",
+  "dialog",
+  "none",
+  "transparent"
+];
+var THEME_MODIFIERS = [
+  ".color-only",
+  ".inactive",
+  ".gradient",
+  ".child",
+  ".secondary",
+  ".helper",
+  ".light",
+  ".dark",
+  ".active"
+];
+var ICON_NAMES = [
+  "symbols",
+  "logo",
+  "arrowDownCircle",
+  "arrowDownLeft",
+  "arrowDownRight",
+  "arrowDown",
+  "arrowLeftCircle",
+  "arrowLeft",
+  "arrowRight",
+  "arrowRightCircle",
+  "arrowUpCircle",
+  "arrowUpLeft",
+  "arrowUpRight",
+  "arrowUp",
+  "checkCircle",
+  "check",
+  "chevronDown",
+  "chevronLeft",
+  "chevronRight",
+  "chevronUp",
+  "copy",
+  "eyeOff",
+  "eye",
+  "info",
+  "lock",
+  "minus",
+  "sun",
+  "moon",
+  "moreHorizontal",
+  "moreVertical",
+  "send",
+  "smile",
+  "search",
+  "upload",
+  "video",
+  "x",
+  "star",
+  "plus"
+];
+var HTML_TAGS = [
+  "div",
+  "span",
+  "p",
+  "a",
+  "button",
+  "input",
+  "textarea",
+  "select",
+  "option",
+  "form",
+  "label",
+  "fieldset",
+  "legend",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "ul",
+  "ol",
+  "li",
+  "dl",
+  "dt",
+  "dd",
+  "table",
+  "thead",
+  "tbody",
+  "tfoot",
+  "tr",
+  "th",
+  "td",
+  "section",
+  "article",
+  "aside",
+  "header",
+  "footer",
+  "nav",
+  "main",
+  "figure",
+  "figcaption",
+  "blockquote",
+  "pre",
+  "code",
+  "img",
+  "picture",
+  "source",
+  "video",
+  "audio",
+  "canvas",
+  "svg",
+  "path",
+  "circle",
+  "rect",
+  "line",
+  "g",
+  "iframe",
+  "embed",
+  "object",
+  "details",
+  "summary",
+  "dialog",
+  "menu",
+  "hr",
+  "br",
+  "wbr",
+  "strong",
+  "em",
+  "b",
+  "i",
+  "u",
+  "s",
+  "small",
+  "sub",
+  "sup",
+  "mark",
+  "abbr",
+  "time",
+  "data",
+  "output",
+  "progress",
+  "meter"
+];
+var CSS_VALUE_ENUMS = {
+  display: ["flex", "grid", "block", "inline", "inline-flex", "inline-grid", "inline-block", "none", "contents"],
+  position: ["relative", "absolute", "fixed", "sticky", "static"],
+  overflow: ["hidden", "auto", "scroll", "visible", "clip"],
+  overflowX: ["hidden", "auto", "scroll", "visible", "clip"],
+  overflowY: ["hidden", "auto", "scroll", "visible", "clip"],
+  visibility: ["visible", "hidden", "collapse"],
+  flexDirection: ["row", "column", "row-reverse", "column-reverse"],
+  flexWrap: ["wrap", "nowrap", "wrap-reverse"],
+  alignItems: ["center", "flex-start", "flex-end", "stretch", "baseline"],
+  alignContent: ["center", "flex-start", "flex-end", "stretch", "space-between", "space-around", "space-evenly"],
+  alignSelf: ["center", "flex-start", "flex-end", "stretch", "baseline", "auto"],
+  justifyContent: ["center", "flex-start", "flex-end", "space-between", "space-around", "space-evenly", "stretch"],
+  justifyItems: ["center", "start", "end", "stretch", "baseline"],
+  justifySelf: ["center", "start", "end", "stretch", "baseline", "auto"],
+  textAlign: ["left", "center", "right", "justify", "start", "end"],
+  textDecoration: ["none", "underline", "line-through", "overline"],
+  textTransform: ["none", "uppercase", "lowercase", "capitalize"],
+  textOverflow: ["ellipsis", "clip"],
+  whiteSpace: ["nowrap", "pre", "pre-wrap", "pre-line", "normal", "break-spaces"],
+  wordBreak: ["break-word", "break-all", "keep-all", "normal"],
+  fontStyle: ["normal", "italic", "oblique"],
+  fontWeight: ["100", "200", "300", "400", "500", "600", "700", "800", "900", "normal", "bold", "lighter", "bolder"],
+  cursor: ["pointer", "default", "move", "text", "wait", "help", "crosshair", "not-allowed", "grab", "grabbing", "zoom-in", "zoom-out", "col-resize", "row-resize", "none"],
+  pointerEvents: ["auto", "none", "all"],
+  userSelect: ["none", "auto", "text", "all", "contain"],
+  objectFit: ["cover", "contain", "fill", "none", "scale-down"],
+  objectPosition: ["center", "top", "bottom", "left", "right"],
+  resize: ["none", "both", "horizontal", "vertical"],
+  listStyle: ["none", "disc", "circle", "square", "decimal"],
+  borderStyle: ["solid", "dashed", "dotted", "double", "none", "groove", "ridge", "inset", "outset"],
+  boxSizing: ["border-box", "content-box"],
+  backgroundSize: ["cover", "contain", "auto"],
+  backgroundRepeat: ["no-repeat", "repeat", "repeat-x", "repeat-y", "round", "space"],
+  backgroundPosition: ["center", "top", "bottom", "left", "right", "center center", "top center", "bottom center"],
+  backgroundClip: ["border-box", "padding-box", "content-box", "text"],
+  mixBlendMode: ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "difference", "exclusion"],
+  isolation: ["auto", "isolate"],
+  appearance: ["none", "auto"],
+  verticalAlign: ["top", "middle", "bottom", "baseline", "text-top", "text-bottom"],
+  tableLayout: ["auto", "fixed"],
+  willChange: ["auto", "transform", "opacity", "scroll-position"],
+  // DOMQL shorthand values
+  flow: ["column", "row", "x", "y", "column-reverse", "row-reverse"],
+  wrap: ["wrap", "nowrap", "wrap-reverse"],
+  scope: ["state", "props"]
+};
+var COLOR_PROPERTIES = /* @__PURE__ */ new Set([
+  "color",
+  "background",
+  "backgroundColor",
+  "borderColor",
+  "borderTopColor",
+  "borderRightColor",
+  "borderBottomColor",
+  "borderLeftColor",
+  "outlineColor",
+  "fill",
+  "stroke",
+  "caretColor",
+  "accentColor",
+  "textDecorationColor",
+  "columnRuleColor"
+]);
+var SPACING_PROPERTIES = /* @__PURE__ */ new Set([
+  "padding",
+  "paddingTop",
+  "paddingRight",
+  "paddingBottom",
+  "paddingLeft",
+  "paddingInline",
+  "paddingBlock",
+  "margin",
+  "marginTop",
+  "marginRight",
+  "marginBottom",
+  "marginLeft",
+  "marginInline",
+  "marginBlock",
+  "gap",
+  "rowGap",
+  "columnGap",
+  "top",
+  "right",
+  "bottom",
+  "left",
+  "inset",
+  "width",
+  "height",
+  "minWidth",
+  "maxWidth",
+  "minHeight",
+  "maxHeight",
+  "flexBasis",
+  "borderRadius",
+  "borderTopLeftRadius",
+  "borderTopRightRadius",
+  "borderBottomLeftRadius",
+  "borderBottomRightRadius",
+  "round",
+  "boxSize",
+  "widthRange",
+  "heightRange",
+  "borderWidth",
+  "outlineOffset",
+  "outlineWidth"
+]);
+var FONT_SIZE_PROPERTIES = /* @__PURE__ */ new Set([
+  "fontSize",
+  "lineHeight",
+  "letterSpacing"
+]);
+var INPUT_TYPES = [
+  "text",
+  "password",
+  "email",
+  "number",
+  "tel",
+  "url",
+  "search",
+  "date",
+  "time",
+  "datetime-local",
+  "month",
+  "week",
+  "color",
+  "range",
+  "file",
+  "hidden",
+  "checkbox",
+  "radio",
+  "submit",
+  "reset",
+  "button",
+  "image"
+];
+var TARGET_VALUES = ["_self", "_blank", "_parent", "_top"];
+var REL_VALUES = [
+  "noopener",
+  "noreferrer",
+  "nofollow",
+  "external",
+  "noopener noreferrer",
+  "stylesheet",
+  "icon",
+  "preload",
+  "prefetch"
+];
+var AUTOCOMPLETE_VALUES = [
+  "off",
+  "on",
+  "name",
+  "email",
+  "username",
+  "new-password",
+  "current-password",
+  "tel",
+  "address-line1",
+  "address-line2",
+  "country",
+  "postal-code"
+];
+var BOOLEAN_VALUES = ["true", "false"];
+var LOADING_VALUES = ["lazy", "eager"];
+
+// src/providers/workspaceScanner.ts
+var vscode = __toESM(require("vscode"));
+var SCAN_INTERVAL = 3e4;
+var PASCAL_CASE_RE = /^[A-Z][a-zA-Z0-9]+$/;
+var cache = { components: /* @__PURE__ */ new Map(), lastScan: 0 };
+var EXPORT_RE = /export\s+(?:const|let|var|function)\s+([A-Z][a-zA-Z0-9]+)/g;
+var OBJECT_KEY_RE = /^\s+([A-Z][a-zA-Z0-9]+)\s*[:{]/gm;
+function extractComponentsWithLines(text) {
+  const results = [];
+  const seen = /* @__PURE__ */ new Set();
+  EXPORT_RE.lastIndex = 0;
+  let m;
+  while (m = EXPORT_RE.exec(text)) {
+    if (PASCAL_CASE_RE.test(m[1]) && !seen.has(m[1])) {
+      seen.add(m[1]);
+      const line = text.substring(0, m.index).split("\n").length - 1;
+      results.push({ name: m[1], line });
+    }
+  }
+  OBJECT_KEY_RE.lastIndex = 0;
+  while (m = OBJECT_KEY_RE.exec(text)) {
+    if (PASCAL_CASE_RE.test(m[1]) && !seen.has(m[1])) {
+      seen.add(m[1]);
+      const line = text.substring(0, m.index).split("\n").length - 1;
+      results.push({ name: m[1], line });
+    }
+  }
+  return results;
+}
+async function scanWorkspaceComponents() {
+  await ensureScan();
+  return [...cache.components.keys()].sort();
+}
+async function ensureScan() {
+  const now = Date.now();
+  if (now - cache.lastScan < SCAN_INTERVAL && cache.components.size > 0) return;
+  const components = /* @__PURE__ */ new Map();
+  try {
+    const files = await vscode.workspace.findFiles(
+      "**/*.{js,ts,jsx,tsx}",
+      "{**/node_modules/**,**/dist/**,**/out/**,**/build/**,.next/**}",
+      500
+    );
+    for (const file of files) {
+      try {
+        const doc = await vscode.workspace.openTextDocument(file);
+        const text = doc.getText();
+        if (/extends\s*:|childExtends|from\s+['"](@domql|@symbo\.ls|smbls)/.test(text)) {
+          for (const { name, line } of extractComponentsWithLines(text)) {
+            if (!components.has(name)) {
+              components.set(name, { uri: file, line });
+            }
+          }
+        }
+      } catch {
+      }
+    }
+  } catch {
+  }
+  cache = { components, lastScan: now };
+}
+function invalidateCache() {
+  cache.lastScan = 0;
+}
+
 // src/providers/completionProvider.ts
 var DOMQL_IMPORT_RE = /from\s+['"](@domql\/|domql|@symbo\.ls\/|smbls)/;
 var DOMQL_SIGNATURE_RE = /\b(extends|childExtends|childExtendsRecursive|onRender|onStateUpdate|onInit)\s*:/;
+var DESIGN_SYSTEM_RE = /\b(flow|theme|round|boxSize|childExtend|widthRange|heightRange)\s*:\s*['"`]/;
+var COMPONENT_EXPORT_RE = /export\s+(?:const|let|var)\s+[A-Z][a-zA-Z0-9]+\s*=\s*\{/;
 function isDomqlFile(text, detectByImports) {
   if (DOMQL_IMPORT_RE.test(text)) return true;
   if (!detectByImports) return true;
-  return DOMQL_SIGNATURE_RE.test(text);
+  if (DOMQL_SIGNATURE_RE.test(text)) return true;
+  if (DESIGN_SYSTEM_RE.test(text)) return true;
+  if (COMPONENT_EXPORT_RE.test(text)) return true;
+  return false;
 }
 function findEnclosingKey(text, offset) {
   let depth = 0;
@@ -1455,60 +1908,127 @@ function isAtKeyPosition(linePrefix) {
   const afterDelim = linePrefix.split(/[,{]/).pop() ?? "";
   return !/:/.test(afterDelim);
 }
+function getPropertyNameBeforeColon(linePrefix) {
+  const m = linePrefix.match(/(\w+)\s*:\s*['"]?[^,{}]*$/);
+  return m ? m[1] : null;
+}
+function findTagInScope(text, offset) {
+  let depth = 0;
+  let braceStart = -1;
+  for (let i = offset - 1; i >= 0; i--) {
+    const ch = text[i];
+    if (ch === "}") depth++;
+    else if (ch === "{") {
+      if (depth === 0) {
+        braceStart = i;
+        break;
+      }
+      depth--;
+    }
+  }
+  if (braceStart === -1) return null;
+  const scope = text.substring(braceStart, Math.min(offset + 500, text.length));
+  const tagMatch = scope.match(/tag\s*:\s*['"](\w+)['"]/);
+  return tagMatch ? tagMatch[1] : null;
+}
+function isInsideCallArgs(linePrefix) {
+  return /\.call\(\s*['"][^'"]*$/.test(linePrefix);
+}
+function isInsideStringValue(linePrefix) {
+  const singleQuotes = (linePrefix.match(/(?<![\\])'/g) || []).length;
+  const doubleQuotes = (linePrefix.match(/(?<![\\])"/g) || []).length;
+  return singleQuotes % 2 === 1 || doubleQuotes % 2 === 1;
+}
+function getPropertyForStringValue(linePrefix) {
+  const m = linePrefix.match(/(\w+)\s*:\s*['"][^'"]*$/);
+  return m ? m[1] : null;
+}
 function detectContext(document, position) {
   const linePrefix = document.lineAt(position).text.substring(0, position.character);
-  if (/\bel\.\s*$/.test(linePrefix)) return "el-method";
-  if (/\bstate\.\s*$/.test(linePrefix)) return "state-method";
+  if (isInsideCallArgs(linePrefix)) return { type: "call-arg" };
+  if (/\bel\.\s*$/.test(linePrefix)) return { type: "el-method" };
+  if (/\bstate\.\s*$/.test(linePrefix)) return { type: "state-method" };
   const fullText = document.getText();
-  const config = vscode.workspace.getConfiguration("symbolsApp");
-  if (!isDomqlFile(fullText, config.get("detectByImports", true))) return "none";
+  const config = vscode2.workspace.getConfiguration("symbolsApp");
+  if (!isDomqlFile(fullText, config.get("detectByImports", true))) return { type: "none" };
   const offset = document.offsetAt(position);
   const enclosingKey = findEnclosingKey(fullText, offset);
-  if (enclosingKey === "attr") return "attr-key";
-  if (enclosingKey === "state") return "state-key";
-  if (enclosingKey === "on") return "on-key";
-  if (enclosingKey === "define") return "define-key";
-  if (isAtKeyPosition(linePrefix)) return "element-key";
-  return "none";
+  const tag = findTagInScope(fullText, offset) ?? void 0;
+  if (isInsideStringValue(linePrefix)) {
+    const prop = getPropertyForStringValue(linePrefix);
+    if (prop) {
+      if (enclosingKey === "attr") {
+        return { type: "attr-value", propertyName: prop, enclosingTag: tag };
+      }
+      return { type: "element-value", propertyName: prop, enclosingKey: enclosingKey ?? void 0, enclosingTag: tag };
+    }
+  }
+  const atKeyPos = isAtKeyPosition(linePrefix);
+  const propertyName = !atKeyPos ? getPropertyNameBeforeColon(linePrefix) : null;
+  if (enclosingKey === "attr") {
+    if (atKeyPos) return { type: "attr-key", enclosingTag: tag };
+    return { type: "attr-value", propertyName: propertyName ?? void 0, enclosingTag: tag };
+  }
+  if (enclosingKey === "state") return { type: "state-key" };
+  if (enclosingKey === "on") return { type: "on-key" };
+  if (enclosingKey === "define") return { type: "define-key" };
+  if (!atKeyPos && propertyName) {
+    return { type: "element-value", propertyName, enclosingKey: enclosingKey ?? void 0, enclosingTag: tag };
+  }
+  if (atKeyPos) return { type: "element-key" };
+  return { type: "none" };
 }
 function mkItem(label, kind, detail, docs, snippet, sort = "5") {
-  const item = new vscode.CompletionItem(label, kind);
+  const item = new vscode2.CompletionItem(label, kind);
   item.detail = detail;
-  const md = new vscode.MarkdownString(docs);
+  const md = new vscode2.MarkdownString(docs);
   md.isTrusted = true;
   item.documentation = md;
-  if (snippet) item.insertText = new vscode.SnippetString(snippet);
+  if (snippet) item.insertText = new vscode2.SnippetString(snippet);
   item.sortText = sort + label;
   return item;
 }
+function mkValueItem(label, detail, docs, sort = "1") {
+  const item = new vscode2.CompletionItem(label, vscode2.CompletionItemKind.Value);
+  item.detail = detail;
+  if (docs) {
+    const md = new vscode2.MarkdownString(docs);
+    md.isTrusted = true;
+    item.documentation = md;
+  }
+  item.sortText = sort + label;
+  item.filterText = label;
+  item.range = void 0;
+  return item;
+}
 function getElementKeyCompletions() {
-  const config = vscode.workspace.getConfiguration("symbolsApp");
+  const config = vscode2.workspace.getConfiguration("symbolsApp");
   const items = [];
   for (const k of DOMQL_ALL_KEYS) {
-    items.push(mkItem(k.label, vscode.CompletionItemKind.Property, k.detail, k.documentation, k.snippet, "1"));
+    items.push(mkItem(k.label, vscode2.CompletionItemKind.Property, k.detail, k.documentation, k.snippet, "1"));
   }
   for (const ev of DOMQL_LIFECYCLE_EVENTS) {
-    items.push(mkItem(ev.label, vscode.CompletionItemKind.Event, ev.detail, ev.documentation, ev.snippet, "2"));
+    items.push(mkItem(ev.label, vscode2.CompletionItemKind.Event, ev.detail, ev.documentation, ev.snippet, "2"));
   }
   for (const ev of DOM_EVENTS) {
-    items.push(mkItem(ev.label, vscode.CompletionItemKind.Event, ev.detail, ev.documentation, ev.snippet, "3"));
+    items.push(mkItem(ev.label, vscode2.CompletionItemKind.Event, ev.detail, ev.documentation, ev.snippet, "3"));
   }
   for (const c of ALL_COMPONENTS) {
-    items.push(mkItem(c.label, vscode.CompletionItemKind.Class, c.detail, c.documentation, c.snippet, "4"));
+    items.push(mkItem(c.label, vscode2.CompletionItemKind.Class, c.detail, c.documentation, c.snippet, "4"));
   }
   if (config.get("completeCssProps", true)) {
     for (const p of ALL_CSS_PROPS) {
-      items.push(mkItem(p.label, vscode.CompletionItemKind.Property, p.detail, p.documentation ?? "", void 0, "5"));
+      items.push(mkItem(p.label, vscode2.CompletionItemKind.Property, p.detail, p.documentation ?? "", void 0, "5"));
     }
   }
   return items;
 }
-function getAttrKeyCompletions() {
+function getAttrKeyCompletions(tag) {
   return HTML_ATTRIBUTES.map((attr) => {
-    const item = new vscode.CompletionItem(attr, vscode.CompletionItemKind.Property);
+    const item = new vscode2.CompletionItem(attr, vscode2.CompletionItemKind.Property);
     item.detail = `HTML attribute: ${attr}`;
     const needsQuotes = attr.includes("-");
-    item.insertText = new vscode.SnippetString(
+    item.insertText = new vscode2.SnippetString(
       needsQuotes ? `"${attr}": \${1:},` : `${attr}: \${1:},`
     );
     return item;
@@ -1517,9 +2037,9 @@ function getAttrKeyCompletions() {
 function getOnKeyCompletions() {
   return [...DOM_EVENTS, ...DOMQL_LIFECYCLE_EVENTS].map((ev) => {
     const raw = ev.label.charAt(2).toLowerCase() + ev.label.slice(3);
-    const item = new vscode.CompletionItem(raw, vscode.CompletionItemKind.Event);
+    const item = new vscode2.CompletionItem(raw, vscode2.CompletionItemKind.Event);
     item.detail = `on.${raw} (v2 \u2014 prefer top-level ${ev.label})`;
-    const md = new vscode.MarkdownString(`**v2 style** \u2014 prefer \`${ev.label}\` in v3.
+    const md = new vscode2.MarkdownString(`**v2 style** \u2014 prefer \`${ev.label}\` in v3.
 
 ${ev.documentation}`);
     md.isTrusted = true;
@@ -1529,29 +2049,29 @@ ${ev.documentation}`);
 },` : `${raw}: (event, el, state) => {
   \${1:}
 },`;
-    item.insertText = new vscode.SnippetString(sig);
+    item.insertText = new vscode2.SnippetString(sig);
     return item;
   });
 }
 function getElementMethodCompletions() {
   return ELEMENT_METHODS.map((m) => {
-    const item = new vscode.CompletionItem(m.label, vscode.CompletionItemKind.Method);
+    const item = new vscode2.CompletionItem(m.label, vscode2.CompletionItemKind.Method);
     item.detail = m.detail;
-    const md = new vscode.MarkdownString(m.documentation);
+    const md = new vscode2.MarkdownString(m.documentation);
     md.isTrusted = true;
     item.documentation = md;
-    item.insertText = new vscode.SnippetString(m.snippet);
+    item.insertText = new vscode2.SnippetString(m.snippet);
     return item;
   });
 }
 function getStateMethodCompletions() {
   return STATE_METHODS.map((m) => {
-    const item = new vscode.CompletionItem(m.label, vscode.CompletionItemKind.Method);
+    const item = new vscode2.CompletionItem(m.label, vscode2.CompletionItemKind.Method);
     item.detail = m.detail;
-    const md = new vscode.MarkdownString(m.documentation);
+    const md = new vscode2.MarkdownString(m.documentation);
     md.isTrusted = true;
     item.documentation = md;
-    item.insertText = new vscode.SnippetString(m.snippet);
+    item.insertText = new vscode2.SnippetString(m.snippet);
     return item;
   });
 }
@@ -1568,46 +2088,269 @@ function getStateKeyCompletions() {
     ["value", "''", "Input value"]
   ];
   return common.map(([key, def, desc]) => {
-    const item = new vscode.CompletionItem(key, vscode.CompletionItemKind.Property);
+    const item = new vscode2.CompletionItem(key, vscode2.CompletionItemKind.Property);
     item.detail = `${key}: ${def}`;
-    item.documentation = new vscode.MarkdownString(desc);
-    item.insertText = new vscode.SnippetString(`${key}: \${1:${def}},`);
+    item.documentation = new vscode2.MarkdownString(desc);
+    item.insertText = new vscode2.SnippetString(`${key}: \${1:${def}},`);
     return item;
   });
 }
+function getColorCompletions() {
+  const items = [];
+  for (const c of COLOR_TOKENS) {
+    items.push(mkValueItem(c, `Color token: ${c}`, `Design system color.
+
+Modifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken)`, "1"));
+  }
+  for (const g of GRADIENT_TOKENS) {
+    items.push(mkValueItem(g, `Gradient: ${g}`, "Design system gradient token", "2"));
+  }
+  return items;
+}
+function getSpacingCompletions() {
+  return SPACING_SCALE.map((token, i) => {
+    const sort = String(i).padStart(2, "0");
+    return mkValueItem(token, `Spacing token: ${token}`, `Design system spacing scale.
+
+Smaller: W < X < Y < Z < **A** < B < C < D > larger
+
+Sub-steps: A1, A2 between A and B`, sort);
+  });
+}
+function getFontSizeCompletions() {
+  return FONT_SIZE_SCALE.map((token, i) => {
+    const sort = String(i).padStart(2, "0");
+    return mkValueItem(token, `Font size token: ${token}`, `Typography scale. Base = A (16px), ratio ~1.25
+
+Smaller: Z < Y < X \u2192 **A** \u2192 B < C < D larger`, sort);
+  });
+}
+function getThemeCompletions() {
+  const items = [];
+  for (const t of THEME_TOKENS) {
+    items.push(mkValueItem(t, `Theme: ${t}`, `Apply design system theme.
+
+Modifiers: \`"${t} .child"\`, \`"${t} .color-only"\``, "1"));
+  }
+  for (const t of ["primary", "secondary", "card", "dialog", "label"]) {
+    for (const mod of THEME_MODIFIERS) {
+      items.push(mkValueItem(`${t} ${mod}`, `Theme modifier: ${t} ${mod}`, `Theme \`${t}\` with modifier \`${mod}\``, "3"));
+    }
+  }
+  return items;
+}
+function getIconCompletions() {
+  return ICON_NAMES.map(
+    (name) => mkValueItem(name, `Icon: ${name}`, `Default icon from design system`, "1")
+  );
+}
+function getExtendsCompletions(workspaceComponents) {
+  const items = [];
+  for (const c of ALL_COMPONENTS) {
+    items.push(mkValueItem(c.label, c.detail, c.documentation, "1"));
+  }
+  for (const name of workspaceComponents) {
+    if (ALL_COMPONENTS.some((c) => c.label === name)) continue;
+    items.push(mkValueItem(name, `Project component: ${name}`, "Detected from workspace", "2"));
+  }
+  return items;
+}
+function getTagCompletions() {
+  return HTML_TAGS.map(
+    (tag) => mkValueItem(tag, `HTML tag: <${tag}>`, void 0, "1")
+  );
+}
+function getCssEnumCompletions(property) {
+  const values = CSS_VALUE_ENUMS[property];
+  if (!values) return [];
+  return values.map((v) => mkValueItem(v, `${property}: ${v}`, void 0, "1"));
+}
+function getAttrValueCompletions(attrName) {
+  switch (attrName) {
+    case "type":
+      return INPUT_TYPES.map((t) => mkValueItem(t, `type="${t}"`, void 0, "1"));
+    case "target":
+      return TARGET_VALUES.map((t) => mkValueItem(t, `target="${t}"`, void 0, "1"));
+    case "rel":
+      return REL_VALUES.map((r) => mkValueItem(r, `rel="${r}"`, void 0, "1"));
+    case "autocomplete":
+      return AUTOCOMPLETE_VALUES.map((a) => mkValueItem(a, `autocomplete="${a}"`, void 0, "1"));
+    case "loading":
+      return LOADING_VALUES.map((l) => mkValueItem(l, `loading="${l}"`, void 0, "1"));
+    case "disabled":
+    case "checked":
+    case "required":
+    case "readonly":
+    case "multiple":
+    case "hidden":
+    case "draggable":
+    case "contenteditable":
+    case "spellcheck":
+    case "novalidate":
+    case "autofocus":
+      return BOOLEAN_VALUES.map((b) => mkValueItem(b, `${attrName}="${b}"`, void 0, "1"));
+    case "role":
+      return [
+        "button",
+        "link",
+        "dialog",
+        "alert",
+        "navigation",
+        "menu",
+        "menuitem",
+        "tab",
+        "tablist",
+        "tabpanel",
+        "checkbox",
+        "radio",
+        "listbox",
+        "option",
+        "textbox",
+        "search",
+        "progressbar",
+        "slider",
+        "switch",
+        "tooltip",
+        "img",
+        "heading",
+        "list",
+        "listitem",
+        "group",
+        "region",
+        "banner",
+        "main",
+        "complementary",
+        "contentinfo",
+        "form",
+        "presentation",
+        "none"
+      ].map((r) => mkValueItem(r, `role="${r}"`, void 0, "1"));
+    case "dir":
+      return ["ltr", "rtl", "auto"].map((d) => mkValueItem(d, `dir="${d}"`, void 0, "1"));
+    case "method":
+      return ["get", "post", "put", "delete", "patch"].map((m) => mkValueItem(m, `method="${m}"`, void 0, "1"));
+    case "enctype":
+      return ["application/x-www-form-urlencoded", "multipart/form-data", "text/plain"].map((e) => mkValueItem(e, `enctype="${e}"`, void 0, "1"));
+    default:
+      return [];
+  }
+}
+function getCallArgCompletions() {
+  const fns = [
+    ["exec", "Execute a dynamic prop value"],
+    ["fetchData", "Fetch data from API"],
+    ["router", "Navigate to a route"],
+    ["isString", "Check if value is string"],
+    ["isObject", "Check if value is object"],
+    ["isArray", "Check if value is array"],
+    ["isNumber", "Check if value is number"],
+    ["isFunction", "Check if value is function"],
+    ["isBoolean", "Check if value is boolean"],
+    ["isDefined", "Check if value is defined"],
+    ["isUndefined", "Check if value is undefined"],
+    ["isNull", "Check if value is null"],
+    ["isEmpty", "Check if value is empty"],
+    ["deepMerge", "Deep merge objects"],
+    ["deepClone", "Deep clone an object"],
+    ["getSystemTheme", "Get current system color scheme"],
+    ["setTheme", "Set application theme"]
+  ];
+  return fns.map(
+    ([name, desc]) => mkValueItem(name, desc, `Context function: \`el.call("${name}", ...args)\`
+
+Resolution: utils \u2192 functions \u2192 methods \u2192 snippets`, "1")
+  );
+}
+async function getValueCompletions(ctx) {
+  const prop = ctx.propertyName;
+  if (!prop) return [];
+  if (prop === "extends" || prop === "childExtends" || prop === "childExtendsRecursive" || prop === "childExtend") {
+    const wsComponents = await scanWorkspaceComponents();
+    return getExtendsCompletions(wsComponents);
+  }
+  if (prop === "tag") return getTagCompletions();
+  if (prop === "theme") return getThemeCompletions();
+  if (prop === "icon" || prop === "name") return getIconCompletions();
+  if (COLOR_PROPERTIES.has(prop)) return getColorCompletions();
+  if (SPACING_PROPERTIES.has(prop)) return getSpacingCompletions();
+  if (FONT_SIZE_PROPERTIES.has(prop)) return getFontSizeCompletions();
+  const enumItems = getCssEnumCompletions(prop);
+  if (enumItems.length > 0) return enumItems;
+  if (prop === "transition") {
+    const items = SPACING_SCALE.map((t) => mkValueItem(t, `Duration token: ${t}`, "Design system timing token"));
+    items.push(mkValueItem("A defaultBezier", "transition: A defaultBezier", "Common transition with default easing"));
+    return items;
+  }
+  return [];
+}
 var DomqlCompletionProvider = class {
-  provideCompletionItems(document, position) {
-    if (!vscode.workspace.getConfiguration("symbolsApp").get("enable", true)) return [];
-    switch (detectContext(document, position)) {
+  async provideCompletionItems(document, position) {
+    if (!vscode2.workspace.getConfiguration("symbolsApp").get("enable", true)) return [];
+    const ctx = detectContext(document, position);
+    let items;
+    switch (ctx.type) {
       case "el-method":
-        return getElementMethodCompletions();
+        items = getElementMethodCompletions();
+        break;
       case "state-method":
-        return getStateMethodCompletions();
+        items = getStateMethodCompletions();
+        break;
+      case "call-arg":
+        items = getCallArgCompletions();
+        break;
       case "attr-key":
-        return getAttrKeyCompletions();
+        items = getAttrKeyCompletions(ctx.enclosingTag);
+        break;
+      case "attr-value":
+        items = ctx.propertyName ? getAttrValueCompletions(ctx.propertyName) : [];
+        break;
       case "on-key":
-        return getOnKeyCompletions();
+        items = getOnKeyCompletions();
+        break;
       case "state-key":
-        return getStateKeyCompletions();
+        items = getStateKeyCompletions();
+        break;
       case "define-key":
-        return [mkItem(
+        items = [mkItem(
           "propName",
-          vscode.CompletionItemKind.Property,
+          vscode2.CompletionItemKind.Property,
           "(param, el, state, context) => void",
           "Custom property transformer \u2014 runs when this key appears on any element.",
           "propName: (param, el, state) => {\n  ${1:}\n},",
           "1"
         )];
-      case "element-key":
-        return getElementKeyCompletions();
+        break;
+      case "element-value":
+        items = await getValueCompletions(ctx);
+        break;
+      case "element-key": {
+        items = getElementKeyCompletions();
+        const wsComponents = await scanWorkspaceComponents();
+        for (const name of wsComponents) {
+          if (ALL_COMPONENTS.some((c) => c.label === name)) continue;
+          items.push(mkItem(
+            name,
+            vscode2.CompletionItemKind.Class,
+            `Project component: ${name}`,
+            "Detected from workspace files",
+            `${name}: {
+  \${1:}
+},`,
+            "4"
+          ));
+        }
+        break;
+      }
       default:
         return [];
     }
+    if (items.length === 0) return [];
+    return new vscode2.CompletionList(items, true);
   }
 };
 
 // src/providers/hoverProvider.ts
-var vscode2 = __toESM(require("vscode"));
+var vscode3 = __toESM(require("vscode"));
 var keyMap = /* @__PURE__ */ new Map();
 for (const k of DOMQL_ALL_KEYS) {
   keyMap.set(k.label, `**${k.detail}**
@@ -1639,70 +2382,321 @@ for (const p of ALL_CSS_PROPS) {
 
 ${p.documentation}`);
 }
+var valueHints = /* @__PURE__ */ new Map();
+for (const c of COLOR_TOKENS) {
+  if (c !== "inherit" && c !== "none" && c !== "currentColor") {
+    valueHints.set(c, `**Color token:** \`${c}\`
+
+Modifiers: \`${c}.5\` (opacity), \`${c}+16\` (lighten), \`${c}-16\` (darken), \`${c}=50\` (set lightness)`);
+  }
+}
+for (const g of GRADIENT_TOKENS) {
+  valueHints.set(g, `**Gradient token:** \`${g}\``);
+}
+for (const t of THEME_TOKENS) {
+  valueHints.set(t, `**Theme:** \`${t}\`
+
+Usage: \`theme: "${t}"\`
+
+Modifiers: \`"${t} .child"\`, \`"${t} .color-only"\``);
+}
+function getPropertyContext(document, position) {
+  const line = document.lineAt(position).text;
+  const colonIdx = line.indexOf(":");
+  if (colonIdx === -1 || position.character <= colonIdx) return null;
+  const beforeColon = line.substring(0, colonIdx).trim();
+  const m = beforeColon.match(/(\w+)$/);
+  return m ? m[1] : null;
+}
 var DomqlHoverProvider = class {
   provideHover(document, position) {
-    if (!vscode2.workspace.getConfiguration("symbolsApp").get("enable", true)) return null;
+    if (!vscode3.workspace.getConfiguration("symbolsApp").get("enable", true)) return null;
     const fullText = document.getText();
-    const config = vscode2.workspace.getConfiguration("symbolsApp");
+    const config = vscode3.workspace.getConfiguration("symbolsApp");
     if (!isDomqlFile(fullText, config.get("detectByImports", true))) return null;
-    const wordRange = document.getWordRangeAtPosition(position, /[\w.]+/);
+    const wordRange = document.getWordRangeAtPosition(position, /[\w.@:-]+/);
     if (!wordRange) return null;
     const word = document.getText(wordRange);
-    const docs = keyMap.get(word) ?? keyMap.get(word);
-    if (!docs) return null;
-    const md = new vscode2.MarkdownString(docs);
-    md.isTrusted = true;
-    return new vscode2.Hover(md, wordRange);
+    const docs = keyMap.get(word);
+    if (docs) {
+      const md = new vscode3.MarkdownString(docs);
+      md.isTrusted = true;
+      return new vscode3.Hover(md, wordRange);
+    }
+    const prop = getPropertyContext(document, position);
+    if (prop) {
+      if ((SPACING_PROPERTIES.has(prop) || FONT_SIZE_PROPERTIES.has(prop)) && SPACING_SCALE.includes(word)) {
+        const md = new vscode3.MarkdownString(`**Design token:** \`${word}\`
+
+Scale: W < X < Y < Z < **A** (base=16px) < B < C < D < E
+
+Sub-steps: A1, A2 between A and B`);
+        md.isTrusted = true;
+        return new vscode3.Hover(md, wordRange);
+      }
+      if (COLOR_PROPERTIES.has(prop) || prop === "background") {
+        const hint = valueHints.get(word);
+        if (hint) {
+          const md = new vscode3.MarkdownString(hint);
+          md.isTrusted = true;
+          return new vscode3.Hover(md, wordRange);
+        }
+      }
+      if (prop === "theme") {
+        const hint = valueHints.get(word);
+        if (hint) {
+          const md = new vscode3.MarkdownString(hint);
+          md.isTrusted = true;
+          return new vscode3.Hover(md, wordRange);
+        }
+      }
+      if ((prop === "icon" || prop === "name") && ICON_NAMES.includes(word)) {
+        const md = new vscode3.MarkdownString(`**Icon:** \`${word}\`
+
+Default icon from design system sprite`);
+        md.isTrusted = true;
+        return new vscode3.Hover(md, wordRange);
+      }
+    }
+    const generalHint = valueHints.get(word);
+    if (generalHint) {
+      const md = new vscode3.MarkdownString(generalHint);
+      md.isTrusted = true;
+      return new vscode3.Hover(md, wordRange);
+    }
+    return null;
   }
 };
 
-// src/extension.ts
-var LANGUAGES = ["javascript", "typescript", "javascriptreact", "typescriptreact"];
-function hasSymbolsJson(dir) {
-  let current = dir;
+// src/providers/definitionProvider.ts
+var vscode4 = __toESM(require("vscode"));
+var fs = __toESM(require("fs"));
+var path = __toESM(require("path"));
+var PASCAL_CASE_RE2 = /^[A-Z][a-zA-Z0-9]+$/;
+function findSymbolsConfig(fromPath) {
+  let current = path.dirname(fromPath);
   while (true) {
-    if (fs.existsSync(path.join(current, "symbols.json"))) return true;
+    const configPath = path.join(current, "symbols.json");
+    if (fs.existsSync(configPath)) {
+      try {
+        const json = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+        return { root: current, dir: json.dir || "./symbols" };
+      } catch {
+        return { root: current, dir: "./symbols" };
+      }
+    }
     const parent = path.dirname(current);
-    if (parent === current) return false;
+    if (parent === current) break;
     current = parent;
   }
+  return null;
 }
+var DomqlDefinitionProvider = class {
+  async provideDefinition(document, position) {
+    if (!vscode4.workspace.getConfiguration("symbolsApp").get("enable", true)) return null;
+    const fullText = document.getText();
+    const config = vscode4.workspace.getConfiguration("symbolsApp");
+    if (!isDomqlFile(fullText, config.get("detectByImports", true))) return null;
+    const wordRange = document.getWordRangeAtPosition(position, /[A-Z][a-zA-Z0-9]+/) || document.getWordRangeAtPosition(position, /[a-zA-Z][a-zA-Z0-9]+/);
+    if (!wordRange) return null;
+    const word = document.getText(wordRange);
+    if (!PASCAL_CASE_RE2.test(word)) return null;
+    const line = document.lineAt(position).text;
+    const insideString = isInsideQuotes(line, wordRange.start.character);
+    const isObjKey = line.substring(wordRange.end.character).trimStart().startsWith(":");
+    const textBefore = line.substring(0, wordRange.start.character);
+    const isDirectRef = /(?:extends|childExtends|childExtendsRecursive|childExtend)\s*:\s*$/.test(textBefore.trimEnd());
+    const isArrayRef = /(?:extends|childExtends)\s*:\s*\[/.test(textBefore);
+    if (!insideString && !isObjKey && !isDirectRef && !isArrayRef) return null;
+    const conventionResult = this.findByConvention(word, document.uri.fsPath);
+    if (conventionResult) return conventionResult;
+    return this.findByWorkspaceSearch(word, document.uri);
+  }
+  findByConvention(name, filePath) {
+    const symConfig = findSymbolsConfig(filePath);
+    const searchDirs = [];
+    if (symConfig) {
+      const symbolsBase = path.resolve(symConfig.root, symConfig.dir);
+      searchDirs.push(
+        path.join(symbolsBase, "components"),
+        symbolsBase,
+        path.join(symConfig.root, "components")
+      );
+    }
+    const fileDir = path.dirname(filePath);
+    searchDirs.push(
+      path.join(fileDir, "..", "components"),
+      // sibling components dir
+      path.join(fileDir, "components"),
+      fileDir
+    );
+    const folders = vscode4.workspace.workspaceFolders;
+    if (folders) {
+      for (const f of folders) {
+        searchDirs.push(
+          path.join(f.uri.fsPath, "components"),
+          path.join(f.uri.fsPath, "symbols", "components")
+        );
+      }
+    }
+    const extensions = [".js", ".ts", ".jsx", ".tsx"];
+    for (const dir of searchDirs) {
+      for (const ext of extensions) {
+        const candidate = path.join(dir, `${name}${ext}`);
+        const loc = this.resolveFile(candidate, name);
+        if (loc) return loc;
+      }
+      for (const ext of extensions) {
+        const candidate = path.join(dir, name, `index${ext}`);
+        const loc = this.resolveFile(candidate, name);
+        if (loc) return loc;
+      }
+    }
+    return null;
+  }
+  resolveFile(filePath, name) {
+    if (!fs.existsSync(filePath)) return null;
+    try {
+      const text = fs.readFileSync(filePath, "utf-8");
+      const lines = text.split("\n");
+      const pattern = new RegExp(`(?:export\\s+)?(?:const|let|var|function)\\s+${name}\\b`);
+      for (let i = 0; i < lines.length; i++) {
+        if (pattern.test(lines[i])) {
+          return new vscode4.Location(vscode4.Uri.file(filePath), new vscode4.Position(i, 0));
+        }
+      }
+      return new vscode4.Location(vscode4.Uri.file(filePath), new vscode4.Position(0, 0));
+    } catch {
+      return new vscode4.Location(vscode4.Uri.file(filePath), new vscode4.Position(0, 0));
+    }
+  }
+  async findByWorkspaceSearch(name, currentUri) {
+    try {
+      const nameFiles = await vscode4.workspace.findFiles(
+        `**/${name}.{js,ts,jsx,tsx}`,
+        "{**/node_modules/**,**/dist/**,**/out/**,**/build/**}",
+        10
+      );
+      for (const file of nameFiles) {
+        try {
+          const doc = await vscode4.workspace.openTextDocument(file);
+          const text = doc.getText();
+          if (!text.includes(name)) continue;
+          const lines = text.split("\n");
+          for (let i = 0; i < lines.length; i++) {
+            if (new RegExp(`(?:export\\s+)?(?:const|let|var|function)\\s+${name}\\s*[=({]`).test(lines[i])) {
+              return new vscode4.Location(file, new vscode4.Position(i, 0));
+            }
+          }
+          return new vscode4.Location(file, new vscode4.Position(0, 0));
+        } catch {
+        }
+      }
+      const files = await vscode4.workspace.findFiles(
+        "**/*.{js,ts,jsx,tsx}",
+        "{**/node_modules/**,**/dist/**,**/out/**,**/build/**,.next/**}",
+        300
+      );
+      for (const file of files) {
+        try {
+          const doc = await vscode4.workspace.openTextDocument(file);
+          const text = doc.getText();
+          if (!text.includes(name)) continue;
+          const lines = text.split("\n");
+          for (let i = 0; i < lines.length; i++) {
+            if (new RegExp(`^export\\s+(?:const|let|var)\\s+${name}\\s*=`).test(lines[i])) {
+              return new vscode4.Location(file, new vscode4.Position(i, 0));
+            }
+          }
+        } catch {
+        }
+      }
+    } catch {
+    }
+    return null;
+  }
+};
+function isInsideQuotes(line, charIndex) {
+  let inSingle = false;
+  let inDouble = false;
+  for (let i = 0; i < charIndex; i++) {
+    const ch = line[i];
+    const prev = i > 0 ? line[i - 1] : "";
+    if (prev === "\\") continue;
+    if (ch === "'" && !inDouble) inSingle = !inSingle;
+    if (ch === '"' && !inSingle) inDouble = !inDouble;
+  }
+  return inSingle || inDouble;
+}
+
+// src/extension.ts
+var LANGUAGES = ["javascript", "typescript", "javascriptreact", "typescriptreact"];
+var output;
 function activate(context) {
-  const workspaceFolders = vscode3.workspace.workspaceFolders;
-  if (!workspaceFolders || !workspaceFolders.some((f) => hasSymbolsJson(f.uri.fsPath))) return;
+  output = vscode5.window.createOutputChannel("Symbols.app");
+  output.appendLine("Symbols.app extension activating...");
   const completionProvider = new DomqlCompletionProvider();
   const hoverProvider = new DomqlHoverProvider();
+  const definitionProvider = new DomqlDefinitionProvider();
   for (const lang of LANGUAGES) {
+    const selector = { language: lang, scheme: "file" };
     context.subscriptions.push(
-      vscode3.languages.registerCompletionItemProvider(
-        { language: lang, scheme: "file" },
+      vscode5.languages.registerCompletionItemProvider(
+        selector,
         completionProvider,
         ".",
-        // trigger for el. / state. method completions
         " ",
-        // trigger inside objects
         "\n",
-        ","
+        ",",
+        ":",
+        "'",
+        '"'
       )
     );
     context.subscriptions.push(
-      vscode3.languages.registerHoverProvider(
-        { language: lang, scheme: "file" },
-        hoverProvider
-      )
+      vscode5.languages.registerHoverProvider(selector, hoverProvider)
+    );
+    context.subscriptions.push(
+      vscode5.languages.registerDefinitionProvider(selector, definitionProvider)
     );
   }
+  const watcher = vscode5.workspace.createFileSystemWatcher("**/*.{js,ts,jsx,tsx}");
+  watcher.onDidChange(() => invalidateCache());
+  watcher.onDidCreate(() => invalidateCache());
+  watcher.onDidDelete(() => invalidateCache());
+  context.subscriptions.push(watcher);
   context.subscriptions.push(
-    vscode3.commands.registerCommand("symbolsApp.toggle", () => {
-      const config = vscode3.workspace.getConfiguration("symbolsApp");
+    vscode5.commands.registerCommand("symbolsApp.toggle", () => {
+      const config = vscode5.workspace.getConfiguration("symbolsApp");
       const current = config.get("enable", true);
-      config.update("enable", !current, vscode3.ConfigurationTarget.Global);
-      vscode3.window.showInformationMessage(
+      config.update("enable", !current, vscode5.ConfigurationTarget.Global);
+      vscode5.window.showInformationMessage(
         `Symbols.app ${!current ? "enabled" : "disabled"}`
       );
     })
   );
-  vscode3.window.setStatusBarMessage("Symbols.app active", 3e3);
+  context.subscriptions.push(
+    vscode5.commands.registerCommand("symbolsApp.diagnose", () => {
+      output.show();
+      output.appendLine("--- Diagnostics ---");
+      output.appendLine(`Workspace folders: ${vscode5.workspace.workspaceFolders?.map((f) => f.uri.fsPath).join(", ")}`);
+      const editor = vscode5.window.activeTextEditor;
+      if (editor) {
+        output.appendLine(`Active file: ${editor.document.uri.fsPath}`);
+        output.appendLine(`Language: ${editor.document.languageId}`);
+        const text = editor.document.getText();
+        output.appendLine(`File length: ${text.length}`);
+        output.appendLine(`Has DOMQL import: ${/from\s+['"](@domql\/|domql|@symbo\.ls\/|smbls)/.test(text)}`);
+        output.appendLine(`Has extends/childExtends: ${/\b(extends|childExtends|childExtendsRecursive|onRender|onStateUpdate|onInit)\s*:/.test(text)}`);
+        output.appendLine(`Has design system props: ${/\b(flow|theme|round|boxSize|childExtend|widthRange|heightRange)\s*:\s*['"\`]/.test(text)}`);
+        output.appendLine(`Has component export: ${/export\s+(?:const|let|var)\s+[A-Z][a-zA-Z0-9]+\s*=\s*\{/.test(text)}`);
+      }
+      output.appendLine("--- End ---");
+      vscode5.window.showInformationMessage("Symbols.app: Check Output panel (Symbols.app channel)");
+    })
+  );
+  output.appendLine("Symbols.app extension activated successfully");
+  vscode5.window.showInformationMessage("Symbols.app IntelliSense active");
 }
 function deactivate() {
 }

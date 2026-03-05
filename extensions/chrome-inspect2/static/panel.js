@@ -13,6 +13,14 @@
   let symbolsDir = 'symbols'
   let symbolsTree = []
   let fileCache = {} // path -> content
+  let pendingChanges = {} // path -> { [propKey]: { oldVal, newVal, componentName } }
+  let pendingSyncOps = [] // ops to sync: { elementPath, key, value, componentName }
+  let platformSocket = null
+  let folderName = '' // actual folder name used as IndexedDB key
+  let changeHistory = [] // undo stack: { elementPath, key, oldValue, newValue, type }
+  let redoStack = []
+  let platformProjectData = null // project data from platform API
+  let platformProjectId = null
 
   // ============================================================
   // IndexedDB
@@ -98,6 +106,11 @@
     symbolsConfig = null
     symbolsTree = []
     fileCache = {}
+    platformProjectData = null
+    platformProjectId = null
+
+    // Check auth state
+    await updateAuthUI()
 
     try {
       const recents = await getRecentHandles()
@@ -149,7 +162,179 @@
     }
   }
 
+  // ============================================================
+  // Auth UI
+  // ============================================================
+  async function updateAuthUI () {
+    const signedOutEl = document.getElementById('auth-signed-out')
+    const signedInEl = document.getElementById('auth-signed-in')
+    const platformBtn = document.getElementById('btn-connect-platform')
+    const projectsSection = document.getElementById('platform-projects')
+
+    if (!window.SymbolsAuth) return
+
+    try {
+      const auth = await window.SymbolsAuth.getStoredAuth()
+      if (auth.accessToken) {
+        // Verify token is still valid
+        let user = auth.user
+        try {
+          user = await window.SymbolsAuth.getMe()
+          // Update stored user
+        } catch (e) {
+          // Token expired, show sign-out state
+          await window.SymbolsAuth.logout()
+          signedOutEl.style.display = ''
+          signedInEl.style.display = 'none'
+          platformBtn.style.display = 'none'
+          if (projectsSection) projectsSection.style.display = 'none'
+          return
+        }
+
+        // Signed in
+        signedOutEl.style.display = 'none'
+        signedInEl.style.display = ''
+        document.getElementById('auth-user-name').textContent = user.email || user.name || 'Signed in'
+        platformBtn.style.display = ''
+
+        // Load and show projects
+        await loadPlatformProjects()
+      } else {
+        signedOutEl.style.display = ''
+        signedInEl.style.display = 'none'
+        platformBtn.style.display = 'none'
+        if (projectsSection) projectsSection.style.display = 'none'
+      }
+    } catch (e) {
+      // Auth check failed — show sign-in
+      signedOutEl.style.display = ''
+      signedInEl.style.display = 'none'
+      platformBtn.style.display = 'none'
+    }
+  }
+
+  async function handleSignIn () {
+    const email = document.getElementById('auth-email').value.trim()
+    const password = document.getElementById('auth-password').value
+    const errorEl = document.getElementById('auth-error')
+    const btn = document.getElementById('btn-sign-in')
+
+    if (!email || !password) {
+      errorEl.textContent = 'Enter email and password'
+      errorEl.style.display = ''
+      return
+    }
+
+    btn.disabled = true
+    errorEl.style.display = 'none'
+
+    try {
+      await window.SymbolsAuth.login(email, password)
+      await updateAuthUI()
+    } catch (e) {
+      errorEl.textContent = e.message || 'Sign in failed'
+      errorEl.style.display = ''
+    } finally {
+      btn.disabled = false
+    }
+  }
+
+  async function handleBrowserSignIn () {
+    const btn = document.getElementById('btn-sign-in-browser')
+    const statusEl = document.getElementById('auth-status')
+    const errorEl = document.getElementById('auth-error')
+
+    btn.disabled = true
+    errorEl.style.display = 'none'
+    statusEl.style.display = ''
+    statusEl.className = 'auth-status waiting'
+    statusEl.textContent = 'Opening symbols.app...'
+
+    try {
+      await window.SymbolsAuth.loginViaBrowser((msg) => {
+        statusEl.textContent = msg
+      })
+      statusEl.style.display = 'none'
+      await updateAuthUI()
+    } catch (e) {
+      statusEl.style.display = 'none'
+      errorEl.textContent = e.message || 'Browser sign-in failed'
+      errorEl.style.display = ''
+    } finally {
+      btn.disabled = false
+    }
+  }
+
+  async function handleSignOut () {
+    try {
+      await window.SymbolsAuth.logout()
+    } catch (e) { /* ignore */ }
+    await updateAuthUI()
+  }
+
+  async function loadPlatformProjects () {
+    const projectsSection = document.getElementById('platform-projects')
+    const projectList = document.getElementById('project-list')
+    if (!projectsSection || !projectList) return
+
+    try {
+      const projects = await window.SymbolsAuth.listProjects()
+      if (!projects || !projects.length) {
+        projectsSection.style.display = 'none'
+        return
+      }
+
+      projectList.innerHTML = ''
+      projectsSection.style.display = ''
+
+      // Get the current page hostname to match against project keys
+      let pageHost = null
+      try {
+        pageHost = await pageEval('window.location.hostname')
+      } catch (e) {}
+
+      for (const project of projects) {
+        const item = document.createElement('div')
+        item.className = 'project-item'
+
+        // Check if project key matches the current page
+        const projectKey = project.key || ''
+        const isMatch = pageHost && projectKey && (
+          pageHost === projectKey ||
+          pageHost.includes(projectKey.replace(/\./g, '')) ||
+          projectKey.includes(pageHost.split('.')[0])
+        )
+
+        if (isMatch) item.classList.add('matching')
+
+        const nameEl = document.createElement('span')
+        nameEl.className = 'project-name'
+        nameEl.textContent = project.name || project.key
+
+        const keyEl = document.createElement('span')
+        keyEl.className = 'project-key'
+        keyEl.textContent = projectKey
+
+        item.appendChild(nameEl)
+        item.appendChild(keyEl)
+
+        if (isMatch) {
+          const badge = document.createElement('span')
+          badge.className = 'project-match-badge'
+          badge.textContent = 'match'
+          item.appendChild(badge)
+        }
+
+        item.addEventListener('click', () => connectPlatform(project))
+        projectList.appendChild(item)
+      }
+    } catch (e) {
+      projectsSection.style.display = 'none'
+    }
+  }
+
   function connectLocal (name, cache) {
+    folderName = name // keep the actual folder name for IndexedDB lookups
     projectName = cache.config?.key || name
     connectionMode = 'local'
     symbolsConfig = cache.config || {}
@@ -165,21 +350,53 @@
     // Show source tab
     document.querySelector('.tab[data-tab="source"]').style.display = ''
 
+    // Show AI bar if signed in
+    if (window.SymbolsAuth) {
+      window.SymbolsAuth.getStoredAuth().then(a => {
+        if (a.accessToken) {
+          const aiBar = document.getElementById('ai-bar')
+          if (aiBar) aiBar.style.display = ''
+        }
+      })
+    }
+
     renderSymbolsTree()
     loadTree()
   }
 
-  function connectPlatform () {
+  async function connectPlatform (project) {
     connectionMode = 'platform'
-    projectName = 'symbols.app'
+
+    if (project) {
+      projectName = project.key || project.name || 'symbols.app'
+      platformProjectId = project._id || project.id || null
+    } else {
+      projectName = 'symbols.app'
+      platformProjectId = null
+    }
 
     document.getElementById('connect-screen').style.display = 'none'
     document.getElementById('connect-error').style.display = 'none'
     document.getElementById('inspector').style.display = 'flex'
-    document.getElementById('connection-badge').textContent = 'symbols.app'
+    document.getElementById('connection-badge').textContent = projectName
 
+    // Hide source tab, show data tab for platform mode
     document.querySelector('.tab[data-tab="source"]').style.display = 'none'
     document.getElementById('symbols-section').style.display = 'none'
+
+    // Show AI bar for authenticated users
+    const aiBar = document.getElementById('ai-bar')
+    if (aiBar) aiBar.style.display = ''
+
+    // Load project data if we have a project ID
+    if (platformProjectId) {
+      try {
+        platformProjectData = await window.SymbolsAuth.getProjectData(platformProjectId, 'main')
+        setStatus('Platform data loaded')
+      } catch (e) {
+        setStatus('Could not load project data: ' + (e.message || e))
+      }
+    }
 
     loadTree()
   }
@@ -190,6 +407,12 @@
     symbolsConfig = null
     symbolsTree = []
     fileCache = {}
+    platformProjectData = null
+    platformProjectId = null
+    if (platformSocket) {
+      try { platformSocket.disconnect() } catch (e) {}
+      platformSocket = null
+    }
     showConnectScreen()
   }
 
@@ -253,9 +476,36 @@
       item.appendChild(icon)
       item.appendChild(nameEl)
 
+      // Derive component key from filename (Button.js -> Button, index.js in Button/ -> Button)
+      const basename = entry.name.replace(/\.(js|jsx|ts|tsx|json|css|html)$/i, '')
+      const dirName = entry.path.split('/').slice(-2, -1)[0]
+      const componentKey = basename === 'index' ? dirName : basename
+
       item.addEventListener('click', (e) => {
         e.stopPropagation()
         openFileInSource(entry.path)
+
+        // Try to select the matching active node
+        if (componentKey) {
+          const matchingItem = findTreeItemByKey(componentKey)
+          if (matchingItem) {
+            selectElement(matchingItem)
+            highlightElement(matchingItem)
+            pageEval('(function(){ var el = window.__DOMQL_INSPECTOR__.getElementByPath(' + JSON.stringify(matchingItem) + '); if(el && el.node) el.node.scrollIntoView({behavior:"smooth",block:"center"}) })()')
+          }
+        }
+      })
+
+      item.addEventListener('mouseenter', () => {
+        if (componentKey) {
+          const matchingItem = findTreeItemByKey(componentKey)
+          if (matchingItem) highlightElement(matchingItem)
+        }
+      })
+
+      item.addEventListener('mouseleave', () => {
+        if (selectedPath) highlightElement(selectedPath)
+        else removeHighlight()
       })
 
       container.appendChild(item)
@@ -265,11 +515,32 @@
   }
 
   // ============================================================
-  // Source tab - read from cache, save via messaging
+  // Find a tree item path by component key name
+  // ============================================================
+  function findTreeItemByKey (key) {
+    // Search the active tree for a node matching the key
+    const items = document.querySelectorAll('#tree-container .tree-item')
+    for (const item of items) {
+      const path = item.dataset.path
+      if (!path) continue
+      const lastPart = path.split('.').pop()
+      if (lastPart === key) return path
+    }
+    return null
+  }
+
+  // ============================================================
+  // Source tab — property source viewer
   // ============================================================
   let currentSourcePath = null
 
   function openFileInSource (path) {
+    currentSourcePath = path
+    showPropertySource(path)
+  }
+
+  // Show source file in the Source tab, optionally highlighting a component/property
+  function showPropertySource (path, componentName, propKey) {
     currentSourcePath = path
 
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
@@ -277,15 +548,83 @@
     document.querySelector('.tab[data-tab="source"]').classList.add('active')
     document.getElementById('tab-source').classList.add('active')
 
-    renderSourceTab(path)
+    renderSourceTab(path, componentName, propKey)
   }
 
-  function renderSourceTab (path) {
+  // ============================================================
+  // Syntax highlighting (JS/CSS tokens)
+  // ============================================================
+  function highlightSyntax (text) {
+    // Escape HTML first
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+
+    // Strings (single, double, template)
+    html = html.replace(/(&#39;(?:[^&#39;\\]|\\.)*&#39;|&quot;(?:[^&quot;\\]|\\.)*&quot;|`(?:[^`\\]|\\.)*`)/g,
+      '<span class="sh-string">$1</span>')
+    // Fallback for actual quote chars
+    html = html.replace(/('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`)/g,
+      '<span class="sh-string">$1</span>')
+
+    // Comments
+    html = html.replace(/(\/\/.*$)/gm, '<span class="sh-comment">$1</span>')
+
+    // Keywords
+    html = html.replace(/\b(export|default|const|let|var|function|return|if|else|for|while|import|from|extends|class|new|this|typeof|instanceof|in|of|async|await|try|catch|throw|switch|case|break|continue)\b/g,
+      '<span class="sh-keyword">$1</span>')
+
+    // Numbers
+    html = html.replace(/\b(\d+\.?\d*)\b/g, '<span class="sh-number">$1</span>')
+
+    // Booleans / special
+    html = html.replace(/\b(true|false|null|undefined|NaN|Infinity)\b/g, '<span class="sh-boolean">$1</span>')
+
+    return html
+  }
+
+  function findHighlightLine (lines, componentName, propKey) {
+    if (propKey && componentName) {
+      let componentStart = -1
+      let braceDepth = 0
+      for (let i = 0; i < lines.length; i++) {
+        if (componentStart === -1) {
+          if (lines[i].includes(componentName) && /[:={]/.test(lines[i])) {
+            componentStart = i
+            for (const ch of lines[i]) {
+              if (ch === '{') braceDepth++
+              if (ch === '}') braceDepth--
+            }
+          }
+        } else {
+          if (new RegExp('\\b' + escapeRegex(propKey) + '\\s*[:=]').test(lines[i])) return i
+          for (const ch of lines[i]) {
+            if (ch === '{') braceDepth++
+            if (ch === '}') braceDepth--
+          }
+          if (braceDepth <= 0) break
+        }
+      }
+    }
+    if (propKey) {
+      for (let i = 0; i < lines.length; i++) {
+        if (new RegExp('\\b' + escapeRegex(propKey) + '\\s*[:=]').test(lines[i])) return i
+      }
+    } else if (componentName) {
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes(componentName) && /[:={]/.test(lines[i])) return i
+      }
+    }
+    return -1
+  }
+
+  function renderSourceTab (path, componentName, propKey) {
     const panel = document.getElementById('tab-source')
     panel.innerHTML = ''
 
     if (!path) {
-      panel.innerHTML = '<div class="empty-message">Select a file from the symbols tree</div>'
+      panel.innerHTML = '<div class="empty-message">Click a property key to view its source</div>'
       return
     }
 
@@ -295,68 +634,618 @@
       return
     }
 
-    const pathEl = document.createElement('div')
-    pathEl.className = 'source-path'
+    // Header with file path and save status
+    const header = document.createElement('div')
+    header.className = 'ce-header'
+
+    const pathEl = document.createElement('span')
+    pathEl.className = 'ce-path'
     pathEl.textContent = path
+    if (componentName) pathEl.textContent += ' → ' + componentName
+    if (propKey) pathEl.textContent += '.' + propKey
 
-    const editor = document.createElement('textarea')
-    editor.className = 'source-editor'
-    editor.value = content
-    editor.spellcheck = false
-
-    const lineCount = content.split('\n').length
-    editor.style.minHeight = Math.min(Math.max(lineCount * 18, 200), 600) + 'px'
-
-    const actions = document.createElement('div')
-    actions.className = 'source-actions'
+    const statusEl = document.createElement('span')
+    statusEl.className = 'ce-status'
 
     const saveBtn = document.createElement('button')
-    saveBtn.className = 'source-save-btn'
+    saveBtn.className = 'ce-save'
     saveBtn.textContent = 'Save'
+    saveBtn.disabled = true
 
-    const status = document.createElement('span')
-    status.className = 'source-status'
+    header.appendChild(pathEl)
+    header.appendChild(statusEl)
+    header.appendChild(saveBtn)
 
-    saveBtn.addEventListener('click', () => {
-      chrome.runtime.sendMessage({
-        type: 'write-file',
-        project: projectName.includes('.') ? projectName : document.getElementById('connection-badge').textContent,
-        symbolsDir: symbolsDir,
-        path: path,
-        content: editor.value
-      }, (response) => {
-        if (response && response.success) {
-          fileCache[path] = editor.value
-          status.textContent = 'Saved'
-          status.style.color = 'var(--type-color)'
-          setTimeout(() => { status.textContent = '' }, 2000)
-        } else {
-          status.textContent = 'Error: ' + (response?.error || 'unknown')
-          status.style.color = 'var(--error-color)'
+    // Editor container with line numbers + textarea + highlight overlay
+    const editorWrap = document.createElement('div')
+    editorWrap.className = 'ce-wrap'
+
+    const gutterEl = document.createElement('div')
+    gutterEl.className = 'ce-gutter'
+
+    const highlightLayer = document.createElement('div')
+    highlightLayer.className = 'ce-highlight'
+
+    const textarea = document.createElement('textarea')
+    textarea.className = 'ce-textarea'
+    textarea.value = content
+    textarea.spellcheck = false
+    textarea.autocomplete = 'off'
+    textarea.autocapitalize = 'off'
+
+    editorWrap.appendChild(gutterEl)
+    editorWrap.appendChild(highlightLayer)
+    editorWrap.appendChild(textarea)
+
+    panel.appendChild(header)
+    panel.appendChild(editorWrap)
+
+    // Render highlighted code + line numbers
+    let dirty = false
+
+    function renderOverlay () {
+      const lines = textarea.value.split('\n')
+      // Gutter
+      gutterEl.innerHTML = lines.map((_, i) => '<div class="ce-ln">' + (i + 1) + '</div>').join('')
+      // Highlighted code
+      highlightLayer.innerHTML = lines.map(l => '<div class="ce-line">' + highlightSyntax(l || ' ') + '</div>').join('')
+    }
+
+    function syncScroll () {
+      highlightLayer.scrollTop = textarea.scrollTop
+      highlightLayer.scrollLeft = textarea.scrollLeft
+      gutterEl.scrollTop = textarea.scrollTop
+    }
+
+    renderOverlay()
+
+    // Find and scroll to target line
+    const targetLine = findHighlightLine(content.split('\n'), componentName, propKey)
+    if (targetLine >= 0) {
+      setTimeout(() => {
+        const lineEls = highlightLayer.querySelectorAll('.ce-line')
+        if (lineEls[targetLine]) {
+          lineEls[targetLine].classList.add('ce-active')
+          // Scroll textarea to that line
+          const lineH = textarea.scrollHeight / textarea.value.split('\n').length
+          textarea.scrollTop = Math.max(0, targetLine * lineH - editorWrap.clientHeight / 2)
+          syncScroll()
         }
-      })
+      }, 30)
+    }
+
+    textarea.addEventListener('input', () => {
+      renderOverlay()
+      if (!dirty) {
+        dirty = true
+        saveBtn.disabled = false
+        statusEl.textContent = 'Modified'
+        statusEl.className = 'ce-status ce-modified'
+      }
     })
 
-    editor.addEventListener('keydown', (e) => {
+    textarea.addEventListener('scroll', syncScroll)
+
+    // Tab key support
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        const s = textarea.selectionStart
+        const end = textarea.selectionEnd
+        if (e.shiftKey) {
+          // Dedent: remove leading 2 spaces on current line
+          const before = textarea.value.substring(0, s)
+          const lineStart = before.lastIndexOf('\n') + 1
+          const line = textarea.value.substring(lineStart)
+          if (line.startsWith('  ')) {
+            textarea.value = textarea.value.substring(0, lineStart) + textarea.value.substring(lineStart + 2)
+            textarea.selectionStart = textarea.selectionEnd = Math.max(lineStart, s - 2)
+            renderOverlay()
+          }
+        } else {
+          textarea.value = textarea.value.substring(0, s) + '  ' + textarea.value.substring(end)
+          textarea.selectionStart = textarea.selectionEnd = s + 2
+          renderOverlay()
+        }
+        if (!dirty) {
+          dirty = true
+          saveBtn.disabled = false
+          statusEl.textContent = 'Modified'
+          statusEl.className = 'ce-status ce-modified'
+        }
+      }
+
+      // Ctrl/Cmd+S to save
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault()
         saveBtn.click()
       }
-      if (e.key === 'Tab') {
+    })
+
+    // Auto-indent on Enter
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const s = textarea.selectionStart
+        const before = textarea.value.substring(0, s)
+        const currentLine = before.substring(before.lastIndexOf('\n') + 1)
+        const indent = currentLine.match(/^\s*/)[0]
+        // Add extra indent after {
+        const extra = currentLine.trimEnd().endsWith('{') ? '  ' : ''
         e.preventDefault()
-        const start = editor.selectionStart
-        const end = editor.selectionEnd
-        editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end)
-        editor.selectionStart = editor.selectionEnd = start + 2
+        const insertion = '\n' + indent + extra
+        textarea.value = textarea.value.substring(0, s) + insertion + textarea.value.substring(textarea.selectionEnd)
+        textarea.selectionStart = textarea.selectionEnd = s + insertion.length
+        renderOverlay()
+        if (!dirty) {
+          dirty = true
+          saveBtn.disabled = false
+          statusEl.textContent = 'Modified'
+          statusEl.className = 'ce-status ce-modified'
+        }
       }
     })
 
-    actions.appendChild(saveBtn)
-    actions.appendChild(status)
+    // Save
+    saveBtn.addEventListener('click', () => {
+      saveBtn.disabled = true
+      statusEl.textContent = 'Saving...'
+      statusEl.className = 'ce-status'
+      writeFileToProject(path, textarea.value, (ok, err) => {
+        if (ok) {
+          fileCache[path] = textarea.value
+          dirty = false
+          statusEl.textContent = 'Saved'
+          statusEl.className = 'ce-status ce-saved'
+          setTimeout(() => {
+            if (!dirty) {
+              statusEl.textContent = ''
+              statusEl.className = 'ce-status'
+            }
+          }, 2000)
+        } else {
+          saveBtn.disabled = false
+          statusEl.textContent = 'Error: ' + err
+          statusEl.className = 'ce-status ce-error'
+        }
+      })
+    })
+  }
 
-    panel.appendChild(pathEl)
-    panel.appendChild(editor)
-    panel.appendChild(actions)
+  function escapeRegex (str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+
+  // Write file via picker proxy — uses folderName which matches the IndexedDB key
+  function writeFileToProject (path, content, cb) {
+    if (!folderName) {
+      cb(false, 'No folder connected — open a local folder first')
+      return
+    }
+    chrome.runtime.sendMessage({
+      type: 'write-file', project: folderName, symbolsDir, path, content
+    }, (response) => {
+      if (chrome.runtime.lastError) {
+        cb(false, 'Picker tab lost — reopen folder via Connect screen. (' + chrome.runtime.lastError.message + ')')
+        return
+      }
+      if (response && response.success) cb(true)
+      else cb(false, response?.error || 'No response from picker tab')
+    })
+  }
+
+  // ============================================================
+  // Save pending prop changes back to source files
+  // ============================================================
+  async function saveChangesToFiles () {
+    const paths = Object.keys(pendingChanges)
+    if (!paths.length) {
+      setStatus('No file changes tracked')
+      return
+    }
+
+    let saved = 0
+    let errors = []
+
+    for (const filePath of paths) {
+      let content = fileCache[filePath]
+      if (!content) { errors.push(filePath + ': not in cache'); continue }
+
+      const changes = pendingChanges[filePath]
+      for (const [propKey, info] of Object.entries(changes)) {
+        // Find and replace the property value in the file
+        const newVal = typeof info.newVal === 'string' ? "'" + info.newVal.replace(/'/g, "\\'") + "'" : JSON.stringify(info.newVal)
+
+        // Try to match: propKey: oldValue  or  propKey: 'oldValue'
+        const patterns = [
+          new RegExp('(\\b' + escapeRegex(propKey) + '\\s*:\\s*)' + escapeRegex(formatValueForMatch(info.oldVal))),
+          new RegExp('(\\b' + escapeRegex(propKey) + '\\s*:\\s*)["\']' + escapeRegex(String(info.oldVal)) + '["\']'),
+          new RegExp('(\\b' + escapeRegex(propKey) + '\\s*:\\s*)' + escapeRegex(String(info.oldVal)))
+        ]
+
+        let replaced = false
+        for (const pattern of patterns) {
+          if (pattern.test(content)) {
+            content = content.replace(pattern, '$1' + newVal)
+            replaced = true
+            break
+          }
+        }
+
+        if (!replaced) {
+          errors.push(filePath + ': could not find ' + propKey)
+        }
+      }
+
+      // Write back
+      await new Promise((resolve) => {
+        writeFileToProject(filePath, content, (ok, err) => {
+          if (ok) {
+            fileCache[filePath] = content
+            saved++
+            delete pendingChanges[filePath]
+          } else {
+            errors.push(filePath + ': ' + err)
+          }
+          resolve()
+        })
+      })
+    }
+
+    if (saved > 0) {
+      setStatus('Saved ' + saved + ' file(s)' + (errors.length ? ', ' + errors.length + ' error(s)' : ''))
+      renderPropsTab()
+    } else if (errors.length) {
+      setStatus('Save errors: ' + errors.join('; '))
+    }
+  }
+
+  function formatValueForMatch (val) {
+    if (typeof val === 'string') return "'" + val.replace(/'/g, "\\'") + "'"
+    return JSON.stringify(val)
+  }
+
+  // Track a prop change for later save-to-file or sync
+  function trackPropChange (propKey, oldVal, newVal, componentName) {
+    // Resolve "self" or missing name to the actual element key
+    const resolvedName = resolveComponentName(componentName)
+
+    // Track sync ops for both modes
+    pendingSyncOps.push({
+      elementPath: selectedPath,
+      key: propKey,
+      value: newVal,
+      componentName: resolvedName
+    })
+    updateSyncButton()
+
+    // Also track file changes for local mode
+    if (connectionMode !== 'local' || !resolvedName) return
+    const filePath = findSourceForElement(resolvedName)
+    if (!filePath) return
+
+    if (!pendingChanges[filePath]) pendingChanges[filePath] = {}
+    pendingChanges[filePath][propKey] = { oldVal, newVal, componentName: resolvedName }
+  }
+
+  // Resolve component name — "self" means the prop is on the element itself,
+  // so use the element's key. Also walk up the ref chain for a named component.
+  function resolveComponentName (name) {
+    if (name && name !== 'self') return name
+    if (!selectedInfo) return null
+    // Use __ref.__name or component or the element key
+    if (selectedInfo.ref && selectedInfo.ref.__name) return selectedInfo.ref.__name
+    return selectedInfo.key || null
+  }
+
+  function updateSyncButton () {
+    const btn = document.getElementById('btn-sync')
+    if (!btn) return
+    const count = pendingSyncOps.length
+    if (count > 0) {
+      btn.style.display = ''
+      btn.textContent = 'Sync (' + count + ')'
+    } else {
+      btn.style.display = 'none'
+    }
+  }
+
+  // ============================================================
+  // Sync — write changes to source (local) or send to server (platform)
+  // ============================================================
+  async function syncChanges () {
+    if (pendingSyncOps.length === 0) {
+      setStatus('No changes to sync')
+      return
+    }
+
+    setStatus('Syncing ' + pendingSyncOps.length + ' change(s)...')
+
+    try {
+      if (connectionMode === 'local') {
+        await syncLocal()
+      } else if (connectionMode === 'platform') {
+        await syncRemote()
+      } else {
+        setStatus('Not connected — choose Local or Platform first')
+      }
+    } catch (e) {
+      setStatus('Sync failed: ' + (e.message || e))
+    }
+  }
+
+  // Build the top-level override object for a component change.
+  // Given element path "Hero.Headline" and key "text" with value "Hello",
+  // this produces: { Headline: { text: "Hello" } } — the override at the top-level component
+  function buildOverrideObject (elementPath, key, value) {
+    const parts = elementPath.split('.')
+    // Skip the root element (first part) — we want the nested path within the component
+    const nestedParts = parts.slice(1)
+
+    // Build from inside out
+    let obj = { [key]: value }
+    for (let i = nestedParts.length - 1; i >= 0; i--) {
+      obj = { [nestedParts[i]]: obj }
+    }
+    return { rootKey: parts[0], override: obj }
+  }
+
+  async function syncLocal () {
+    // If we have pending file changes from trackPropChange, use saveChangesToFiles
+    const fileChangeCount = Object.values(pendingChanges).reduce((n, c) => n + Object.keys(c).length, 0)
+
+    if (fileChangeCount > 0) {
+      await saveChangesToFiles()
+    } else {
+      // No file-mapped changes — try to write ops directly to source files
+      let written = 0
+      let errors = []
+
+      for (const op of pendingSyncOps) {
+        const componentName = op.componentName || selectedInfo?.key
+        const filePath = componentName ? findSourceForElement(componentName) : null
+
+        if (!filePath) {
+          errors.push((componentName || op.elementPath) + ': source file not found')
+          continue
+        }
+
+        let content = fileCache[filePath]
+        if (!content) {
+          errors.push(filePath + ': not in cache')
+          continue
+        }
+
+        // Find and replace the prop in the file
+        const newVal = typeof op.value === 'string'
+          ? "'" + op.value.replace(/'/g, "\\'") + "'"
+          : JSON.stringify(op.value)
+
+        const propPattern = new RegExp('(\\b' + escapeRegex(op.key) + '\\s*:\\s*)[^\n,}]+')
+        if (propPattern.test(content)) {
+          content = content.replace(propPattern, '$1' + newVal)
+          await new Promise((resolve) => {
+            writeFileToProject(filePath, content, (ok, err) => {
+              if (ok) {
+                fileCache[filePath] = content
+                written++
+              } else {
+                errors.push(filePath + ': ' + err)
+              }
+              resolve()
+            })
+          })
+        } else {
+          errors.push(filePath + ': could not find ' + op.key)
+        }
+      }
+
+      if (written > 0) {
+        setStatus('Saved ' + written + ' change(s)' + (errors.length ? ', ' + errors.length + ' error(s): ' + errors[0] : ''))
+      } else if (errors.length) {
+        setStatus('Sync errors: ' + errors.join('; '))
+      }
+    }
+
+    pendingSyncOps = []
+    pendingChanges = {}
+    updateSyncButton()
+  }
+
+  function findPageFile () {
+    // Look for the pages/index.js or pages file in the file cache
+    for (const path of Object.keys(fileCache)) {
+      if (/pages[/\\](index\.)?(js|jsx|ts|tsx)$/i.test(path)) return path
+    }
+    return null
+  }
+
+  async function syncToPageFile (filePath, componentChanges) {
+    let content = fileCache[filePath]
+    if (!content) {
+      setStatus('Page file not in cache')
+      return
+    }
+
+    // Get the current route from the inspected page
+    let route = '/'
+    try {
+      route = await pageEval('window.location.pathname') || '/'
+    } catch (e) { /* default to / */ }
+
+    let modified = false
+
+    for (const [componentKey, overrides] of Object.entries(componentChanges)) {
+      // Find the component reference in the page file for the current route
+      // Look for patterns like:  ComponentKey: { extends: ...
+      // or the route definition that contains this component
+      const propsStr = objectToJsProps(overrides, 3)
+
+      // Try to find existing component definition in the page
+      // Pattern: `ComponentKey: {` followed by content and `}`
+      const componentPattern = new RegExp(
+        '(\\b' + escapeRegex(componentKey) + '\\s*:\\s*\\{)'
+      )
+
+      if (componentPattern.test(content)) {
+        // Insert/merge the overrides into the existing component block
+        content = content.replace(componentPattern, '$1\n' + propsStr + ',')
+        modified = true
+      } else {
+        // Component not found in page — try to add it to the route section
+        const routePattern = new RegExp(
+          "('" + escapeRegex(route) + "'\\s*:\\s*\\{[^]*?)(\\n\\s*\\})",
+          'm'
+        )
+        const match = content.match(routePattern)
+        if (match) {
+          const indent = '    '
+          content = content.replace(
+            routePattern,
+            '$1,\n' + indent + componentKey + ': {\n' + indent + '  ' + propsStr + '\n' + indent + '}$2'
+          )
+          modified = true
+        }
+      }
+    }
+
+    if (modified) {
+      writeFileToProject(filePath, content, (ok, err) => {
+        if (ok) {
+          fileCache[filePath] = content
+          pendingChanges = {}
+          setStatus('Synced to ' + filePath.split('/').pop())
+          renderPropsTab()
+        } else {
+          setStatus('Sync error: ' + err)
+        }
+      })
+    } else {
+      // Fallback to individual file saves
+      await saveChangesToFiles()
+    }
+  }
+
+  // Convert an override object to JS property string for embedding in source
+  function objectToJsProps (obj, indent) {
+    const pad = ' '.repeat(indent || 0)
+    const lines = []
+    for (const [k, v] of Object.entries(obj)) {
+      if (v && typeof v === 'object' && !Array.isArray(v)) {
+        lines.push(pad + k + ': {')
+        lines.push(objectToJsProps(v, (indent || 0) + 2))
+        lines.push(pad + '}')
+      } else {
+        const val = typeof v === 'string' ? "'" + v.replace(/'/g, "\\'") + "'" : JSON.stringify(v)
+        lines.push(pad + k + ': ' + val)
+      }
+    }
+    return lines.join(',\n')
+  }
+
+  async function syncRemote () {
+    try {
+      // Use stored project name or get from inspected page context
+      let projectKey = projectName || null
+      if (!projectKey || projectKey === 'symbols.app') {
+        projectKey = await pageEval(
+          '(function(){ var ctx = document.body && document.body.ref && document.body.ref.context; return ctx && ctx.key })()'
+        )
+      }
+
+      if (!projectKey) {
+        setStatus('No project key found — cannot sync to platform')
+        return
+      }
+
+      // Build ops in the format the sync server expects: [action, path, change]
+      const ops = []
+      for (const op of pendingSyncOps) {
+        const parts = op.elementPath.split('.')
+        // Build the path: ['components', rootComponent, ...nestedParts, propKey]
+        // Or for page-level: ['pages', route, ...parts, propKey]
+        const opPath = ['components', ...parts, op.key]
+        ops.push(['set', opPath, op.value])
+      }
+
+      // Send ops via the page's existing socket or create a direct connection
+      const sent = await pageEval(
+        '(function(){' +
+        '  var ctx = document.body && document.body.ref && document.body.ref.context;' +
+        '  if (!ctx || !ctx.__socket) return false;' +
+        '  ctx.__socket.emit("ops", { changes: ' + JSON.stringify(ops) + ' });' +
+        '  return true;' +
+        '})()'
+      )
+
+      if (sent) {
+        setStatus('Synced ' + pendingSyncOps.length + ' change(s) to platform')
+      } else {
+        // Fallback: send ops directly via the collab socket API
+        await syncRemoteDirect(projectKey, ops)
+      }
+
+      pendingSyncOps = []
+      pendingChanges = {}
+      updateSyncButton()
+    } catch (e) {
+      setStatus('Sync error: ' + (e.message || e))
+    }
+  }
+
+  async function syncRemoteDirect (projectKey, ops) {
+    try {
+      // Use auth token if signed in, otherwise service token
+      let token = null
+      if (window.SymbolsAuth) {
+        token = await window.SymbolsAuth.getAccessToken()
+        if (!token) token = await window.SymbolsAuth.getServiceToken()
+      }
+
+      if (!token) {
+        // Fallback to direct service token fetch
+        const apiBase = 'https://api.symbols.app'
+        const tokenRes = await fetch(apiBase + '/service-token')
+        const tokenData = await tokenRes.json().catch(() => null)
+        token = tokenData?.token || (await tokenRes.text()).trim()
+      }
+
+      if (!token) {
+        setStatus('Not authenticated — sign in to sync to platform')
+        return
+      }
+
+      const res = await fetch('https://api.symbols.app/collab/ops', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          projectKey,
+          branch: 'main',
+          changes: ops
+        })
+      })
+
+      if (res.ok) {
+        setStatus('Synced ' + ops.length + ' change(s) to platform')
+      } else {
+        setStatus('Platform sync failed: ' + res.status)
+      }
+    } catch (e) {
+      setStatus('Platform sync error: ' + (e.message || e))
+    }
+  }
+
+  function deepMerge (target, source) {
+    for (const [k, v] of Object.entries(source)) {
+      if (v && typeof v === 'object' && !Array.isArray(v) && target[k] && typeof target[k] === 'object') {
+        deepMerge(target[k], v)
+      } else {
+        target[k] = v
+      }
+    }
+    return target
   }
 
   // ============================================================
@@ -397,7 +1286,7 @@
     if (path) {
       currentSourcePath = path
       const sourceTab = document.querySelector('.tab[data-tab="source"]')
-      sourceTab.textContent = 'Source: ' + path.split('/').pop()
+      sourceTab.textContent = 'Source'
     }
   }
 
@@ -638,6 +1527,11 @@
         document.querySelector('.tab[data-tab="source"]').classList.contains('active')) {
       renderSourceTab(currentSourcePath)
     }
+
+    // In platform mode, render project data context in the source tab area
+    if (connectionMode === 'platform' && platformProjectData) {
+      renderPlatformDataTab()
+    }
   }
 
   function renderValue (val, depth) {
@@ -759,15 +1653,11 @@
       keyEl.textContent = key
 
       const valEl = document.createElement('span')
-      valEl.className = 'prop-value'
+      valEl.className = 'prop-value editable'
+      valEl.appendChild(renderValue(val))
 
-      if (isPrimitive(val)) {
-        valEl.classList.add('editable')
-        valEl.appendChild(renderValue(val))
-        valEl.addEventListener('dblclick', () => startEditing(valEl, key, val, 'state'))
-      } else {
-        valEl.appendChild(renderValue(val))
-      }
+      const editableVal = isEditableValue(val) ? val : stringifyForEdit(val)
+      valEl.addEventListener('click', () => startEditing(valEl, key, editableVal, 'state'))
 
       row.appendChild(keyEl)
       row.appendChild(valEl)
@@ -784,12 +1674,69 @@
       return
     }
 
+    const origins = selectedInfo.propsOrigin || {}
+
+    // Group props by origin component
+    const groups = {}
     for (const [key, val] of Object.entries(selectedInfo.props)) {
-      panel.appendChild(createPropRow(key, val, 'prop'))
+      const source = origins[key] || 'self'
+      if (!groups[source]) groups[source] = []
+      groups[source].push({ key, val })
+    }
+
+    const sourceNames = Object.keys(groups)
+    for (const source of sourceNames) {
+      const filePath = connectionMode === 'local' && source !== 'self'
+        ? findSourceForElement(source) : null
+
+      if (sourceNames.length > 1 || source !== 'self') {
+        const header = document.createElement('div')
+        header.className = 'section-header prop-source-header'
+
+        const headerLabel = document.createElement('span')
+        headerLabel.textContent = source === 'self' ? 'Own' : source
+
+        header.appendChild(headerLabel)
+
+        if (filePath) {
+          const fileLink = document.createElement('span')
+          fileLink.className = 'prop-source-file'
+          fileLink.textContent = filePath
+          fileLink.title = 'View source'
+          fileLink.addEventListener('click', (e) => {
+            e.stopPropagation()
+            showPropertySource(filePath, source)
+          })
+          header.appendChild(fileLink)
+        }
+
+        panel.appendChild(header)
+      }
+
+      for (const { key, val } of groups[source]) {
+        panel.appendChild(createPropRow(key, val, 'prop', source, filePath))
+      }
+    }
+
+    // Save to files button (only when local + has pending changes)
+    if (connectionMode === 'local') {
+      const changeCount = Object.values(pendingChanges).reduce((n, c) => n + Object.keys(c).length, 0)
+      if (changeCount > 0) {
+        const saveBar = document.createElement('div')
+        saveBar.className = 'prop-save-bar'
+
+        const saveBtn = document.createElement('button')
+        saveBtn.className = 'prop-save-btn'
+        saveBtn.textContent = 'Save ' + changeCount + ' change' + (changeCount > 1 ? 's' : '') + ' to files'
+        saveBtn.addEventListener('click', saveChangesToFiles)
+
+        saveBar.appendChild(saveBtn)
+        panel.appendChild(saveBar)
+      }
     }
   }
 
-  function createPropRow (key, val, type) {
+  function createPropRow (key, val, type, componentName, filePath) {
     const row = document.createElement('div')
     row.className = 'prop-row'
 
@@ -797,20 +1744,48 @@
     keyEl.className = 'prop-key'
     keyEl.textContent = key
 
-    const valEl = document.createElement('span')
-    valEl.className = 'prop-value'
-
-    if (isPrimitive(val)) {
-      valEl.classList.add('editable')
-      valEl.appendChild(renderValue(val))
-      valEl.addEventListener('dblclick', () => startEditing(valEl, key, val, type))
-    } else {
-      valEl.appendChild(renderValue(val))
+    // Show source file badge if available and clicking navigates to that prop in source
+    if (filePath && connectionMode === 'local') {
+      keyEl.classList.add('has-source')
+      keyEl.title = filePath
+      keyEl.addEventListener('click', (e) => {
+        e.stopPropagation()
+        showPropertySource(filePath, componentName, key)
+      })
     }
+
+    const valEl = document.createElement('span')
+    valEl.className = 'prop-value editable'
+    valEl.appendChild(renderValue(val))
+
+    const editableVal = isEditableValue(val) ? val : stringifyForEdit(val)
+    valEl.addEventListener('click', () => startEditing(valEl, key, editableVal, type, componentName))
 
     row.appendChild(keyEl)
     row.appendChild(valEl)
     return row
+  }
+
+  // Check if value can be directly edited as text
+  function isEditableValue (val) {
+    return val === null || typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean'
+  }
+
+  // Convert complex values to an editable string representation
+  function stringifyForEdit (val) {
+    if (val && val.__type === 'function') return val.name ? 'f ' + val.name + '()' : ''
+    if (val && val.__type === 'undefined') return ''
+    if (val && val.__type === 'circular') return ''
+    try { return JSON.stringify(val) } catch (e) { return '' }
+  }
+
+  function switchToTab (tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
+    const tab = document.querySelector('.tab[data-tab="' + tabName + '"]')
+    if (tab) tab.classList.add('active')
+    const panel = document.getElementById('tab-' + tabName)
+    if (panel) panel.classList.add('active')
   }
 
   function renderChildrenTab () {
@@ -846,12 +1821,18 @@
         const childPath = selectedPath + '.' + child.key
         selectElement(childPath)
         highlightElement(childPath)
+        expandAndSelectTreePath(childPath)
+        switchToTab('props')
+      })
 
-        const treeItem = document.querySelector(`.tree-item[data-path="${CSS.escape(childPath)}"]`)
-        if (treeItem) {
-          treeItem.click()
-          treeItem.scrollIntoView({ block: 'nearest' })
-        }
+      item.addEventListener('mouseenter', () => {
+        const childPath = selectedPath + '.' + child.key
+        highlightElement(childPath)
+      })
+
+      item.addEventListener('mouseleave', () => {
+        if (selectedPath) highlightElement(selectedPath)
+        else removeHighlight()
       })
 
       panel.appendChild(item)
@@ -975,11 +1956,8 @@
   // ============================================================
   // Editing
   // ============================================================
-  function isPrimitive (val) {
-    return val === null || typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean'
-  }
-
-  function startEditing (el, key, currentValue, type) {
+  function startEditing (el, key, currentValue, type, componentName) {
+    if (el.classList.contains('editing')) return
     el.innerHTML = ''
     el.classList.add('editing')
 
@@ -989,16 +1967,32 @@
     input.focus()
     input.select()
 
-    const commit = async () => {
-      el.classList.remove('editing')
-      let newValue = input.value
+    let committed = false
 
+    const commit = async () => {
+      if (committed) return
+      committed = true
+      el.classList.remove('editing')
+
+      let newValue = input.value
       try {
         newValue = JSON.parse(newValue)
       } catch (e) {
         // Keep as string
       }
 
+      // Immediately update panel display
+      el.innerHTML = ''
+      el.appendChild(renderValue(newValue))
+
+      // Update selectedInfo locally so panel stays in sync
+      if (selectedInfo && selectedInfo.props && type !== 'state') {
+        selectedInfo.props[key] = newValue
+      } else if (selectedInfo && selectedInfo.state && type === 'state') {
+        selectedInfo.state[key] = newValue
+      }
+
+      // Update DOM via setProps / update
       try {
         let expr
         if (type === 'state') {
@@ -1017,11 +2011,17 @@
         const res = JSON.parse(raw)
         if (res.error) {
           setStatus('Update failed: ' + res.error)
+          // Revert display
+          el.innerHTML = ''
+          el.appendChild(renderValue(currentValue))
+          if (selectedInfo && selectedInfo.props && type !== 'state') {
+            selectedInfo.props[key] = currentValue
+          }
         } else {
           setStatus('Updated ' + key)
+          pushHistory(selectedPath, key, currentValue, newValue, type, componentName)
+          trackPropChange(key, currentValue, newValue, componentName)
         }
-
-        setTimeout(() => selectElement(selectedPath), 100)
       } catch (e) {
         setStatus('Error: ' + (e.message || e))
         el.innerHTML = ''
@@ -1030,8 +2030,9 @@
     }
 
     input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') commit()
+      if (e.key === 'Enter') { e.preventDefault(); commit() }
       if (e.key === 'Escape') {
+        committed = true
         el.classList.remove('editing')
         el.innerHTML = ''
         el.appendChild(renderValue(currentValue))
@@ -1039,6 +2040,78 @@
     })
 
     input.addEventListener('blur', commit)
+  }
+
+  // ============================================================
+  // History (undo / redo)
+  // ============================================================
+  function pushHistory (path, key, oldValue, newValue, type, componentName) {
+    changeHistory.push({ path, key, oldValue, newValue, type, componentName })
+    redoStack = []
+    updateUndoRedoButtons()
+  }
+
+  async function applyChange (path, key, value, type) {
+    let expr
+    if (type === 'state') {
+      expr = 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+        JSON.stringify(path) + ',' +
+        JSON.stringify(key) + ',' +
+        JSON.stringify(value) + '))'
+    } else {
+      expr = 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+        JSON.stringify(path) + ',' +
+        JSON.stringify(key) + ',' +
+        JSON.stringify(value) + '))'
+    }
+    const raw = await pageEval(expr)
+    return JSON.parse(raw)
+  }
+
+  async function undo () {
+    if (changeHistory.length === 0) return
+    const entry = changeHistory.pop()
+    redoStack.push(entry)
+    updateUndoRedoButtons()
+
+    const res = await applyChange(entry.path, entry.key, entry.oldValue, entry.type)
+    if (res.error) {
+      setStatus('Undo failed: ' + res.error)
+      return
+    }
+
+    setStatus('Undo: ' + entry.key)
+
+    // If we're viewing the same element, refresh the panel
+    if (selectedPath === entry.path) {
+      await selectElement(entry.path)
+    }
+  }
+
+  async function redo () {
+    if (redoStack.length === 0) return
+    const entry = redoStack.pop()
+    changeHistory.push(entry)
+    updateUndoRedoButtons()
+
+    const res = await applyChange(entry.path, entry.key, entry.newValue, entry.type)
+    if (res.error) {
+      setStatus('Redo failed: ' + res.error)
+      return
+    }
+
+    setStatus('Redo: ' + entry.key)
+
+    if (selectedPath === entry.path) {
+      await selectElement(entry.path)
+    }
+  }
+
+  function updateUndoRedoButtons () {
+    const undoBtn = document.getElementById('btn-undo')
+    const redoBtn = document.getElementById('btn-redo')
+    if (undoBtn) undoBtn.disabled = changeHistory.length === 0
+    if (redoBtn) redoBtn.disabled = redoStack.length === 0
   }
 
   // ============================================================
@@ -1053,6 +2126,220 @@
   }
 
   // ============================================================
+  // Platform Data Tab — JSON tree editor
+  // ============================================================
+  function renderPlatformDataTab () {
+    const sourceTab = document.querySelector('.tab[data-tab="source"]')
+    if (sourceTab) {
+      sourceTab.style.display = ''
+      sourceTab.textContent = 'Data'
+    }
+
+    // Only render if the tab is active
+    if (!sourceTab || !sourceTab.classList.contains('active')) return
+
+    const panel = document.getElementById('tab-source')
+    panel.innerHTML = ''
+
+    if (!platformProjectData) {
+      panel.innerHTML = '<div class="empty-message">No project data loaded</div>'
+      return
+    }
+
+    // Find relevant data for the selected element
+    let data = platformProjectData
+    if (selectedInfo && selectedInfo.key) {
+      // Try to find the component in project data
+      const key = selectedInfo.key
+      if (data.components && data.components[key]) {
+        data = { [key]: data.components[key] }
+      } else if (data[key]) {
+        data = { [key]: data[key] }
+      }
+    }
+
+    const editor = document.createElement('div')
+    editor.className = 'json-editor'
+    editor.appendChild(renderJsonTree(data, '', 0))
+    panel.appendChild(editor)
+  }
+
+  function renderJsonTree (obj, path, depth) {
+    const container = document.createElement('div')
+
+    if (obj === null || obj === undefined || typeof obj !== 'object') {
+      const row = document.createElement('div')
+      row.className = 'json-row'
+      row.style.paddingLeft = (depth * 14) + 'px'
+
+      const valEl = document.createElement('span')
+      valEl.className = 'json-value editable'
+      valEl.appendChild(renderValue(obj))
+      valEl.addEventListener('click', () => {
+        const editableVal = isEditableValue(obj) ? obj : stringifyForEdit(obj)
+        startJsonEditing(valEl, path, editableVal)
+      })
+
+      row.appendChild(valEl)
+      container.appendChild(row)
+      return container
+    }
+
+    const keys = Object.keys(obj)
+    for (const key of keys) {
+      const val = obj[key]
+      const fullPath = path ? path + '.' + key : key
+      const isObject = val && typeof val === 'object' && !Array.isArray(val)
+      const isArray = Array.isArray(val)
+
+      const row = document.createElement('div')
+      row.className = 'json-row'
+      row.style.paddingLeft = (depth * 14) + 'px'
+
+      if (isObject || isArray) {
+        const toggle = document.createElement('span')
+        toggle.className = 'json-toggle'
+        toggle.textContent = '\u25B6'
+
+        const keyEl = document.createElement('span')
+        keyEl.className = 'json-key'
+        keyEl.textContent = key
+
+        const colon = document.createElement('span')
+        colon.className = 'json-colon'
+        colon.textContent = ':'
+
+        const bracket = document.createElement('span')
+        bracket.className = 'json-bracket'
+        const childKeys = Object.keys(val)
+        bracket.textContent = (isArray ? '[' : '{') + childKeys.length + (isArray ? ' items]' : ' keys}')
+
+        row.appendChild(toggle)
+        row.appendChild(keyEl)
+        row.appendChild(colon)
+        row.appendChild(bracket)
+
+        const childContainer = document.createElement('div')
+        childContainer.className = 'json-children'
+        childContainer.appendChild(renderJsonTree(val, fullPath, depth + 1))
+
+        toggle.addEventListener('click', () => {
+          const expanded = childContainer.classList.toggle('expanded')
+          toggle.textContent = expanded ? '\u25BC' : '\u25B6'
+          bracket.textContent = expanded
+            ? (isArray ? '[' : '{')
+            : (isArray ? '[' : '{') + childKeys.length + (isArray ? ' items]' : ' keys}')
+        })
+
+        row.style.cursor = 'pointer'
+        row.addEventListener('click', (e) => {
+          if (e.target === toggle) return
+          toggle.click()
+        })
+
+        container.appendChild(row)
+        container.appendChild(childContainer)
+      } else {
+        const indent = document.createElement('span')
+        indent.className = 'json-indent'
+        indent.style.width = '14px'
+        indent.style.display = 'inline-block'
+
+        const keyEl = document.createElement('span')
+        keyEl.className = 'json-key'
+        keyEl.textContent = key
+
+        const colon = document.createElement('span')
+        colon.className = 'json-colon'
+        colon.textContent = ':'
+
+        const valEl = document.createElement('span')
+        valEl.className = 'json-value editable'
+        valEl.appendChild(renderValue(val))
+        valEl.addEventListener('click', () => {
+          const editableVal = isEditableValue(val) ? val : stringifyForEdit(val)
+          startJsonEditing(valEl, fullPath, editableVal)
+        })
+
+        row.appendChild(indent)
+        row.appendChild(keyEl)
+        row.appendChild(colon)
+        row.appendChild(valEl)
+        container.appendChild(row)
+      }
+    }
+
+    return container
+  }
+
+  function startJsonEditing (el, path, currentValue) {
+    if (el.classList.contains('editing')) return
+    el.innerHTML = ''
+    el.classList.add('editing')
+
+    const input = document.createElement('input')
+    input.value = typeof currentValue === 'string' ? currentValue : JSON.stringify(currentValue)
+    el.appendChild(input)
+    input.focus()
+    input.select()
+
+    let committed = false
+
+    const commit = async () => {
+      if (committed) return
+      committed = true
+      el.classList.remove('editing')
+
+      let newValue = input.value
+      try { newValue = JSON.parse(newValue) } catch (e) { /* keep as string */ }
+
+      el.innerHTML = ''
+      el.appendChild(renderValue(newValue))
+
+      // Update the platform project data in memory
+      setNestedValue(platformProjectData, path, newValue)
+
+      // Also update the DOM if we have a selected element
+      if (selectedPath) {
+        const parts = path.split('.')
+        const propKey = parts[parts.length - 1]
+        try {
+          await pageEval('JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+            JSON.stringify(selectedPath) + ',' +
+            JSON.stringify(propKey) + ',' +
+            JSON.stringify(newValue) + '))')
+          setStatus('Updated ' + propKey)
+        } catch (e) { /* best effort */ }
+
+        trackPropChange(propKey, currentValue, newValue, selectedInfo?.key)
+      }
+    }
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); commit() }
+      if (e.key === 'Escape') {
+        committed = true
+        el.classList.remove('editing')
+        el.innerHTML = ''
+        el.appendChild(renderValue(currentValue))
+      }
+    })
+    input.addEventListener('blur', commit)
+  }
+
+  function setNestedValue (obj, path, value) {
+    const parts = path.split('.')
+    let current = obj
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (!current[parts[i]] || typeof current[parts[i]] !== 'object') {
+        current[parts[i]] = {}
+      }
+      current = current[parts[i]]
+    }
+    current[parts[parts.length - 1]] = value
+  }
+
+  // ============================================================
   // AI Prompt
   // ============================================================
   async function handleAIPrompt (prompt) {
@@ -1061,68 +2348,149 @@
     resultEl.style.color = 'var(--text-dim)'
 
     try {
-      // Get current context from the page
-      const ctxRaw = await pageEval(`JSON.stringify({
-        route: window.location.pathname,
-        selectedKey: ${JSON.stringify(selectedPath)},
-        selectedInfo: ${selectedPath ? 'JSON.stringify(window.__DOMQL_INSPECTOR__.navigatePath(' + JSON.stringify(selectedPath) + '))' : 'null'}
-      })`)
-      const ctx = JSON.parse(ctxRaw)
-
-      // Check for Chrome built-in AI (LanguageModel API)
-      const hasAI = typeof LanguageModel !== 'undefined'
-      if (hasAI) {
-        const session = await LanguageModel.create({
-          initialPrompts: [{
-            role: 'system',
-            content: 'You are a DOMQL component assistant. You help modify Symbols/DOMQL components. When asked to change something, respond with ONLY a JSON object containing the update. Use the format: {"action":"update","path":"Component.Child","changes":{"key":"value"}}. For state changes use: {"action":"updateState","path":"Component","changes":{"key":"value"}}.'
-          }]
-        })
-
-        const contextPrompt = `Current element: ${ctx.selectedKey || 'none'}
-Element info: ${ctx.selectedInfo || 'none'}
-Route: ${ctx.route}
-
-User request: ${prompt}`
-
-        const response = await session.prompt(contextPrompt)
-
-        try {
-          const parsed = JSON.parse(response)
-          if (parsed.action === 'update' && parsed.path && parsed.changes) {
-            const expr = 'JSON.stringify(window.__DOMQL_INSPECTOR__.getElementByPath(' +
-              JSON.stringify(parsed.path) + ').update(' + JSON.stringify(parsed.changes) + '))'
-            await pageEval(expr)
-            resultEl.textContent = 'Applied changes to ' + parsed.path
-            resultEl.style.color = 'var(--type-color)'
-            setTimeout(() => loadTree(), 300)
-            if (selectedPath) setTimeout(() => selectElement(selectedPath), 500)
-          } else if (parsed.action === 'updateState' && parsed.path && parsed.changes) {
-            for (const [k, v] of Object.entries(parsed.changes)) {
-              await pageEval('JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
-                JSON.stringify(parsed.path) + ',' + JSON.stringify(k) + ',' + JSON.stringify(v) + '))')
-            }
-            resultEl.textContent = 'Updated state on ' + parsed.path
-            resultEl.style.color = 'var(--type-color)'
-            if (selectedPath) setTimeout(() => selectElement(selectedPath), 300)
-          } else {
-            resultEl.textContent = response
-            resultEl.style.color = 'var(--text)'
-          }
-        } catch (e) {
-          // AI returned text, not JSON
-          resultEl.textContent = response
-          resultEl.style.color = 'var(--text)'
-        }
-
-        session.destroy()
-      } else {
-        resultEl.textContent = 'Chrome AI not available. Enable chrome://flags/#optimization-guide-on-device-model and #prompt-api-for-gemini-nano'
-        resultEl.style.color = 'var(--error-color)'
+      // Build context about the selected element
+      let elementInfo = null
+      if (selectedPath) {
+        const raw = await pageEval(
+          'JSON.stringify(window.__DOMQL_INSPECTOR__.navigatePath(' + JSON.stringify(selectedPath) + '))'
+        )
+        if (raw) elementInfo = JSON.parse(raw)
       }
+
+      const context = {
+        elementPath: selectedPath || null,
+        elementKey: elementInfo ? elementInfo.key : null,
+        props: elementInfo ? elementInfo.props : {},
+        state: elementInfo ? elementInfo.state : {},
+        tag: elementInfo ? elementInfo.tag : null,
+        projectData: platformProjectData ? { hasData: true } : null
+      }
+
+      // Try platform AI first (if signed in), then fall back to Chrome AI
+      const auth = window.SymbolsAuth ? await window.SymbolsAuth.getStoredAuth() : null
+      let response = null
+
+      if (auth && auth.accessToken) {
+        // Use platform AI
+        try {
+          const messages = [
+            { role: 'user', content: prompt }
+          ]
+          const aiRes = await window.SymbolsAuth.aiPrompt(messages, context)
+          response = aiRes.response || aiRes.message || aiRes.content || JSON.stringify(aiRes)
+        } catch (e) {
+          resultEl.textContent = 'Platform AI error: ' + (e.message || e)
+          resultEl.style.color = 'var(--error-color)'
+          return
+        }
+      } else {
+        // Fallback to Chrome AI
+        response = await runChromeAI(prompt, context)
+      }
+
+      if (!response) {
+        resultEl.textContent = 'No response from AI'
+        resultEl.style.color = 'var(--error-color)'
+        return
+      }
+
+      // Try to parse as actionable JSON
+      await applyAIResponse(response, resultEl)
     } catch (e) {
       resultEl.textContent = 'Error: ' + (e.message || e)
       resultEl.style.color = 'var(--error-color)'
+    }
+  }
+
+  async function runChromeAI (prompt, context) {
+    const systemPrompt = `You are a DOMQL component assistant. You modify Symbols/DOMQL components.
+Given an element's current props, state, and the user request, respond with ONLY a JSON object.
+For prop changes: {"action":"setProps","changes":{"key":"value"}}
+For state changes: {"action":"setState","changes":{"key":"value"}}
+For text changes: {"action":"setText","value":"new text"}
+For style changes: {"action":"update","changes":{"style":{"property":"value"}}}
+Do NOT include any explanation, only valid JSON.`
+
+    const contextPrompt = `Element path: ${context.elementPath || 'none'}
+Element key: ${context.elementKey || 'none'}
+Current props: ${JSON.stringify(context.props)}
+Current state: ${JSON.stringify(context.state)}
+Tag: ${context.tag || 'unknown'}
+
+User request: ${prompt}`
+
+    const id = '__domql_ai_' + Date.now()
+    const aiExpr = `(async function(){
+      try {
+        if(typeof LanguageModel==='undefined'){
+          window.${id}={error:'Chrome AI not available. Sign in to use platform AI.'};return
+        }
+        var s=await LanguageModel.create({initialPrompts:[{role:'system',content:${JSON.stringify(systemPrompt)}}]})
+        var r=await s.prompt(${JSON.stringify(contextPrompt)})
+        s.destroy()
+        window.${id}={response:r}
+      }catch(e){window.${id}={error:e.message||String(e)}}
+    })()`
+    await pageEval(aiExpr)
+
+    for (let i = 0; i < 120; i++) {
+      await new Promise(r => setTimeout(r, 500))
+      const raw = await pageEval('JSON.stringify(window.' + id + ')')
+      if (raw && raw !== 'null' && raw !== 'undefined') {
+        const result = JSON.parse(raw)
+        await pageEval('delete window.' + id)
+        if (result.error) throw new Error(result.error)
+        return result.response
+      }
+    }
+    throw new Error('AI timed out')
+  }
+
+  async function applyAIResponse (response, resultEl) {
+    try {
+      const parsed = JSON.parse(response)
+      const path = selectedPath
+
+      if (!path) {
+        resultEl.textContent = 'Select an element first'
+        resultEl.style.color = 'var(--error-color)'
+        return
+      }
+
+      if (parsed.action === 'setProps' && parsed.changes) {
+        for (const [k, v] of Object.entries(parsed.changes)) {
+          await pageEval('JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+            JSON.stringify(path) + ',' + JSON.stringify(k) + ',' + JSON.stringify(v) + '))')
+        }
+        resultEl.textContent = 'Updated props: ' + Object.keys(parsed.changes).join(', ')
+        resultEl.style.color = 'var(--type-color)'
+      } else if (parsed.action === 'setState' && parsed.changes) {
+        for (const [k, v] of Object.entries(parsed.changes)) {
+          await pageEval('JSON.stringify(window.__DOMQL_INSPECTOR__.updateState(' +
+            JSON.stringify(path) + ',' + JSON.stringify(k) + ',' + JSON.stringify(v) + '))')
+        }
+        resultEl.textContent = 'Updated state: ' + Object.keys(parsed.changes).join(', ')
+        resultEl.style.color = 'var(--type-color)'
+      } else if (parsed.action === 'setText' && parsed.value !== undefined) {
+        await pageEval('JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+          JSON.stringify(path) + ',"text",' + JSON.stringify(parsed.value) + '))')
+        resultEl.textContent = 'Updated text'
+        resultEl.style.color = 'var(--type-color)'
+      } else if (parsed.action === 'update' && parsed.changes) {
+        await pageEval('(function(){var el=window.__DOMQL_INSPECTOR__.getElementByPath(' +
+          JSON.stringify(path) + ');if(el)el.update(' + JSON.stringify(parsed.changes) + ')})()')
+        resultEl.textContent = 'Applied update'
+        resultEl.style.color = 'var(--type-color)'
+      } else {
+        resultEl.textContent = response
+        resultEl.style.color = 'var(--text)'
+      }
+
+      setTimeout(() => selectElement(path), 200)
+    } catch (e) {
+      // Not JSON — show as text response
+      resultEl.textContent = response
+      resultEl.style.color = 'var(--text)'
     }
   }
 
@@ -1138,8 +2506,12 @@ User request: ${prompt}`
         tab.classList.add('active')
         document.getElementById('tab-' + tab.dataset.tab).classList.add('active')
 
-        if (tab.dataset.tab === 'source' && currentSourcePath) {
-          renderSourceTab(currentSourcePath)
+        if (tab.dataset.tab === 'source') {
+          if (connectionMode === 'platform' && platformProjectData) {
+            renderPlatformDataTab()
+          } else if (currentSourcePath) {
+            renderSourceTab(currentSourcePath)
+          }
         }
       })
     })
@@ -1206,19 +2578,67 @@ User request: ${prompt}`
     })
 
     document.getElementById('btn-connect-platform').addEventListener('click', () => {
-      connectPlatform()
+      connectPlatform(null)
     })
+
+    // Auth buttons
+    const signInBtn = document.getElementById('btn-sign-in')
+    if (signInBtn) {
+      signInBtn.addEventListener('click', handleSignIn)
+      const passwordInput = document.getElementById('auth-password')
+      if (passwordInput) {
+        passwordInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleSignIn()
+        })
+      }
+    }
+    const signInBrowserBtn = document.getElementById('btn-sign-in-browser')
+    if (signInBrowserBtn) signInBrowserBtn.addEventListener('click', handleBrowserSignIn)
+    const signOutBtn = document.getElementById('btn-sign-out')
+    if (signOutBtn) signOutBtn.addEventListener('click', handleSignOut)
 
     // Inspector toolbar
     document.getElementById('btn-pick').addEventListener('click', startPicker)
     document.getElementById('btn-refresh').addEventListener('click', loadTree)
     document.getElementById('btn-inspect').addEventListener('click', inspectSelected)
     document.getElementById('btn-disconnect').addEventListener('click', disconnect)
+    document.getElementById('btn-sync').addEventListener('click', syncChanges)
+    document.getElementById('btn-undo').addEventListener('click', undo)
+    document.getElementById('btn-redo').addEventListener('click', redo)
 
-    // AI prompt
+    // Keyboard shortcuts for undo/redo
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        undo()
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && e.shiftKey) {
+        e.preventDefault()
+        redo()
+      }
+    })
+    document.getElementById('btn-reload').addEventListener('click', () => location.reload())
+
+    // AI prompt — show if signed in OR Chrome AI available
     const aiInput = document.getElementById('ai-input')
     const aiSend = document.getElementById('ai-send')
+    const aiBar = document.getElementById('ai-bar')
     if (aiInput && aiSend) {
+      // Check if user is signed in or Chrome AI is available
+      Promise.all([
+        window.SymbolsAuth ? window.SymbolsAuth.getStoredAuth().then(a => !!a.accessToken) : Promise.resolve(false),
+        pageEval('typeof LanguageModel !== "undefined"').catch(() => false)
+      ]).then(([signedIn, chromeAI]) => {
+        if (signedIn || chromeAI) {
+          aiBar.style.display = ''
+          if (signedIn) {
+            aiInput.placeholder = 'Ask AI to modify components...'
+          } else {
+            aiInput.placeholder = 'Ask Chrome AI (sign in for platform AI)...'
+          }
+        }
+      })
+
       aiSend.addEventListener('click', () => {
         const prompt = aiInput.value.trim()
         if (prompt) handleAIPrompt(prompt)
