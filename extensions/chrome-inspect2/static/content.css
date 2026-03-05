@@ -1,0 +1,46 @@
+#symbols-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999999998;
+  opacity: 0;
+  transition: opacity 350ms cubic-bezier(0.29, 0.67, 0.51, 0.97);
+}
+
+body:not(.symbols-grabber-active) #symbols-overlay {
+  pointer-events: none;
+}
+
+:not(#symbols-overlay) .symbols-grabber-hovered {
+  outline: 3px solid #0085ff !important;
+  outline-offset: 1px !important;
+}
+
+iframe#symbols-frame {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 85vw;
+  height: 85vh;
+  border-radius: 0.618em;
+  transform: translate(-50%, -50%);
+  border: none;
+  box-shadow: #121212f7 0 0 0 1000em;
+  background: #121212f7;
+}
+
+div#close-btn {
+  cursor: pointer;
+  z-index: 9999999999999;
+  position: fixed;
+  top: 5vh;
+  right: 6.4vw;
+  font-size: 1.5rem;
+  line-height: 0.9;
+  width: 1em;
+  height: 1em;
+  color: white;
+  font-family: monospace;
+}

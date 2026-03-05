@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Symbols Connect",
+  "version": "3.0.0",
+  "description": "symbols.app connect — DOMQL Inspector and element grabber for the Symbols design system",
+  "permissions": ["scripting", "tabs", "activeTab", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "icons": {
+    "48": "assets/48x48.png",
+    "144": "assets/144x144.png"
+  },
+  "action": {
+    "default_icon": {
+      "48": "assets/48x48.png",
+      "72": "assets/72x72.png",
+      "144": "assets/144x144.png"
+    },
+    "default_title": "Symbols Connect"
+  },
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "devtools_page": "devtools.html",
+  "options_page": "settings.html",
+  "commands": {
+    "toggleGrabber": {
+      "suggested_key": {
+        "default": "Ctrl+E",
+        "mac": "Command+E"
+      },
+      "description": "Toggle grabber mode"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "exclude_globs": ["https://symbols.app/*", "https://platform.symbo.ls/*"],
+      "js": ["content.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    },
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "css": ["content.css"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [{
+    "resources": ["page-agent.js", "picker.html"],
+    "matches": ["<all_urls>"]
+  }],
+  "externally_connectable": {
+    "matches": ["https://symbols.app/*", "https://platform.symbo.ls/*"]
+  }
+}

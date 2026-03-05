@@ -1,8 +1,8 @@
 {
-  "name": "domql-intellisense",
-  "displayName": "DOMQL IntelliSense",
-  "description": "IntelliSense for DOMQL / Symbols.app syntax — properties, events, components, element methods, state and more",
-  "version": "0.1.0",
+  "name": "@symbo.ls/vscode",
+  "displayName": "Symbols.app Connect",
+  "description": "IntelliSense for Symbols.app / DOMQL syntax — properties, events, components, element methods, state and more",
+  "version": "3.2.4",
   "publisher": "symbo-ls",
   "repository": {
     "type": "git",
@@ -11,33 +11,42 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Other", "Programming Languages"],
-  "keywords": ["domql", "smbls", "symbols", "intellisense", "autocomplete"],
+  "categories": [
+    "Other",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "domql",
+    "smbls",
+    "symbols",
+    "intellisense",
+    "autocomplete"
+  ],
   "icon": "icon.png",
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "domqlIntelliSense.toggle",
-        "title": "Toggle DOMQL IntelliSense",
-        "category": "DOMQL"
+        "command": "symbolsApp.toggle",
+        "title": "Toggle Symbols.app IntelliSense",
+        "category": "Symbols.app"
       }
     ],
     "configuration": {
-      "title": "DOMQL IntelliSense",
+      "title": "Symbols.app",
       "properties": {
-        "domqlIntelliSense.enable": {
+        "symbolsApp.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Enable DOMQL IntelliSense"
+          "description": "Enable Symbols.app IntelliSense"
         },
-        "domqlIntelliSense.detectByImports": {
+        "symbolsApp.detectByImports": {
           "type": "boolean",
           "default": true,
           "description": "Activate only in files importing from domql/smbls packages. When false, activates in all JS/TS files."
         },
-        "domqlIntelliSense.completeCssProps": {
+        "symbolsApp.completeCssProps": {
           "type": "boolean",
           "default": true,
           "description": "Suggest CSS properties as top-level element keys (they get promoted to props automatically)"

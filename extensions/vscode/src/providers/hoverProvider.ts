@@ -33,10 +33,10 @@ export class DomqlHoverProvider implements vscode.HoverProvider {
     document: vscode.TextDocument,
     position: vscode.Position
   ): vscode.Hover | null {
-    if (!vscode.workspace.getConfiguration('domqlIntelliSense').get('enable', true)) return null
+    if (!vscode.workspace.getConfiguration('symbolsApp').get('enable', true)) return null
 
     const fullText = document.getText()
-    const config = vscode.workspace.getConfiguration('domqlIntelliSense')
+    const config = vscode.workspace.getConfiguration('symbolsApp')
     if (!isDomqlFile(fullText, config.get('detectByImports', true))) return null
 
     const wordRange = document.getWordRangeAtPosition(position, /[\w.]+/)

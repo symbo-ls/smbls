@@ -66,7 +66,7 @@ export function detectContext(
   if (/\bstate\.\s*$/.test(linePrefix)) return 'state-method'
 
   const fullText = document.getText()
-  const config = vscode.workspace.getConfiguration('domqlIntelliSense')
+  const config = vscode.workspace.getConfiguration('symbolsApp')
   if (!isDomqlFile(fullText, config.get('detectByImports', true))) return 'none'
 
   const offset = document.offsetAt(position)
@@ -104,7 +104,7 @@ function mkItem(
 }
 
 function getElementKeyCompletions(): vscode.CompletionItem[] {
-  const config = vscode.workspace.getConfiguration('domqlIntelliSense')
+  const config = vscode.workspace.getConfiguration('symbolsApp')
   const items: vscode.CompletionItem[] = []
 
   // 1 – DOMQL built-in keys
@@ -217,7 +217,7 @@ export class DomqlCompletionProvider implements vscode.CompletionItemProvider {
     document: vscode.TextDocument,
     position: vscode.Position
   ): vscode.CompletionItem[] {
-    if (!vscode.workspace.getConfiguration('domqlIntelliSense').get('enable', true)) return []
+    if (!vscode.workspace.getConfiguration('symbolsApp').get('enable', true)) return []
 
     switch (detectContext(document, position)) {
       case 'el-method':    return getElementMethodCompletions()

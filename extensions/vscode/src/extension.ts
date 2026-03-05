@@ -1,10 +1,25 @@
 import * as vscode from 'vscode'
+import * as fs from 'fs'
+import * as path from 'path'
 import { DomqlCompletionProvider } from './providers/completionProvider'
 import { DomqlHoverProvider } from './providers/hoverProvider'
 
 const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact']
 
+function hasSymbolsJson(dir: string): boolean {
+  let current = dir
+  while (true) {
+    if (fs.existsSync(path.join(current, 'symbols.json'))) return true
+    const parent = path.dirname(current)
+    if (parent === current) return false
+    current = parent
+  }
+}
+
 export function activate(context: vscode.ExtensionContext): void {
+  const workspaceFolders = vscode.workspace.workspaceFolders
+  if (!workspaceFolders || !workspaceFolders.some(f => hasSymbolsJson(f.uri.fsPath))) return
+
   const completionProvider = new DomqlCompletionProvider()
   const hoverProvider = new DomqlHoverProvider()
 
@@ -32,18 +47,18 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Command: toggle the extension on/off
   context.subscriptions.push(
-    vscode.commands.registerCommand('domqlIntelliSense.toggle', () => {
-      const config = vscode.workspace.getConfiguration('domqlIntelliSense')
+    vscode.commands.registerCommand('symbolsApp.toggle', () => {
+      const config = vscode.workspace.getConfiguration('symbolsApp')
       const current: boolean = config.get('enable', true)
       config.update('enable', !current, vscode.ConfigurationTarget.Global)
       vscode.window.showInformationMessage(
-        `DOMQL IntelliSense ${!current ? 'enabled' : 'disabled'}`
+        `Symbols.app ${!current ? 'enabled' : 'disabled'}`
       )
     })
   )
 
   // Add toggle command to contributes
-  vscode.window.setStatusBarMessage('DOMQL IntelliSense active', 3000)
+  vscode.window.setStatusBarMessage('Symbols.app active', 3000)
 }
 
 export function deactivate(): void {

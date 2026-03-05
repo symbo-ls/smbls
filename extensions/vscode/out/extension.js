@@ -35,6 +35,8 @@ __export(extension_exports, {
 });
 module.exports = __toCommonJS(extension_exports);
 var vscode3 = __toESM(require("vscode"));
+var fs = __toESM(require("fs"));
+var path = __toESM(require("path"));
 
 // src/providers/completionProvider.ts
 var vscode = __toESM(require("vscode"));
@@ -1428,10 +1430,8 @@ var HTML_ATTRIBUTES = [
 var DOMQL_IMPORT_RE = /from\s+['"](@domql\/|domql|@symbo\.ls\/|smbls)/;
 var DOMQL_SIGNATURE_RE = /\b(extends|childExtends|childExtendsRecursive|onRender|onStateUpdate|onInit)\s*:/;
 function isDomqlFile(text, detectByImports) {
-  if (DOMQL_IMPORT_RE.test(text))
-    return true;
-  if (!detectByImports)
-    return true;
+  if (DOMQL_IMPORT_RE.test(text)) return true;
+  if (!detectByImports) return true;
   return DOMQL_SIGNATURE_RE.test(text);
 }
 function findEnclosingKey(text, offset) {
@@ -1457,26 +1457,18 @@ function isAtKeyPosition(linePrefix) {
 }
 function detectContext(document, position) {
   const linePrefix = document.lineAt(position).text.substring(0, position.character);
-  if (/\bel\.\s*$/.test(linePrefix))
-    return "el-method";
-  if (/\bstate\.\s*$/.test(linePrefix))
-    return "state-method";
+  if (/\bel\.\s*$/.test(linePrefix)) return "el-method";
+  if (/\bstate\.\s*$/.test(linePrefix)) return "state-method";
   const fullText = document.getText();
-  const config = vscode.workspace.getConfiguration("domqlIntelliSense");
-  if (!isDomqlFile(fullText, config.get("detectByImports", true)))
-    return "none";
+  const config = vscode.workspace.getConfiguration("symbolsApp");
+  if (!isDomqlFile(fullText, config.get("detectByImports", true))) return "none";
   const offset = document.offsetAt(position);
   const enclosingKey = findEnclosingKey(fullText, offset);
-  if (enclosingKey === "attr")
-    return "attr-key";
-  if (enclosingKey === "state")
-    return "state-key";
-  if (enclosingKey === "on")
-    return "on-key";
-  if (enclosingKey === "define")
-    return "define-key";
-  if (isAtKeyPosition(linePrefix))
-    return "element-key";
+  if (enclosingKey === "attr") return "attr-key";
+  if (enclosingKey === "state") return "state-key";
+  if (enclosingKey === "on") return "on-key";
+  if (enclosingKey === "define") return "define-key";
+  if (isAtKeyPosition(linePrefix)) return "element-key";
   return "none";
 }
 function mkItem(label, kind, detail, docs, snippet, sort = "5") {
@@ -1485,13 +1477,12 @@ function mkItem(label, kind, detail, docs, snippet, sort = "5") {
   const md = new vscode.MarkdownString(docs);
   md.isTrusted = true;
   item.documentation = md;
-  if (snippet)
-    item.insertText = new vscode.SnippetString(snippet);
+  if (snippet) item.insertText = new vscode.SnippetString(snippet);
   item.sortText = sort + label;
   return item;
 }
 function getElementKeyCompletions() {
-  const config = vscode.workspace.getConfiguration("domqlIntelliSense");
+  const config = vscode.workspace.getConfiguration("symbolsApp");
   const items = [];
   for (const k of DOMQL_ALL_KEYS) {
     items.push(mkItem(k.label, vscode.CompletionItemKind.Property, k.detail, k.documentation, k.snippet, "1"));
@@ -1586,8 +1577,7 @@ function getStateKeyCompletions() {
 }
 var DomqlCompletionProvider = class {
   provideCompletionItems(document, position) {
-    if (!vscode.workspace.getConfiguration("domqlIntelliSense").get("enable", true))
-      return [];
+    if (!vscode.workspace.getConfiguration("symbolsApp").get("enable", true)) return [];
     switch (detectContext(document, position)) {
       case "el-method":
         return getElementMethodCompletions();
@@ -1645,26 +1635,21 @@ for (const c of ALL_COMPONENTS) {
 ${c.documentation}`);
 }
 for (const p of ALL_CSS_PROPS) {
-  if (p.documentation)
-    keyMap.set(p.label, `**${p.detail}**
+  if (p.documentation) keyMap.set(p.label, `**${p.detail}**
 
 ${p.documentation}`);
 }
 var DomqlHoverProvider = class {
   provideHover(document, position) {
-    if (!vscode2.workspace.getConfiguration("domqlIntelliSense").get("enable", true))
-      return null;
+    if (!vscode2.workspace.getConfiguration("symbolsApp").get("enable", true)) return null;
     const fullText = document.getText();
-    const config = vscode2.workspace.getConfiguration("domqlIntelliSense");
-    if (!isDomqlFile(fullText, config.get("detectByImports", true)))
-      return null;
+    const config = vscode2.workspace.getConfiguration("symbolsApp");
+    if (!isDomqlFile(fullText, config.get("detectByImports", true))) return null;
     const wordRange = document.getWordRangeAtPosition(position, /[\w.]+/);
-    if (!wordRange)
-      return null;
+    if (!wordRange) return null;
     const word = document.getText(wordRange);
     const docs = keyMap.get(word) ?? keyMap.get(word);
-    if (!docs)
-      return null;
+    if (!docs) return null;
     const md = new vscode2.MarkdownString(docs);
     md.isTrusted = true;
     return new vscode2.Hover(md, wordRange);
@@ -1673,7 +1658,18 @@ var DomqlHoverProvider = class {
 
 // src/extension.ts
 var LANGUAGES = ["javascript", "typescript", "javascriptreact", "typescriptreact"];
+function hasSymbolsJson(dir) {
+  let current = dir;
+  while (true) {
+    if (fs.existsSync(path.join(current, "symbols.json"))) return true;
+    const parent = path.dirname(current);
+    if (parent === current) return false;
+    current = parent;
+  }
+}
 function activate(context) {
+  const workspaceFolders = vscode3.workspace.workspaceFolders;
+  if (!workspaceFolders || !workspaceFolders.some((f) => hasSymbolsJson(f.uri.fsPath))) return;
   const completionProvider = new DomqlCompletionProvider();
   const hoverProvider = new DomqlHoverProvider();
   for (const lang of LANGUAGES) {
@@ -1697,16 +1693,16 @@ function activate(context) {
     );
   }
   context.subscriptions.push(
-    vscode3.commands.registerCommand("domqlIntelliSense.toggle", () => {
-      const config = vscode3.workspace.getConfiguration("domqlIntelliSense");
+    vscode3.commands.registerCommand("symbolsApp.toggle", () => {
+      const config = vscode3.workspace.getConfiguration("symbolsApp");
       const current = config.get("enable", true);
       config.update("enable", !current, vscode3.ConfigurationTarget.Global);
       vscode3.window.showInformationMessage(
-        `DOMQL IntelliSense ${!current ? "enabled" : "disabled"}`
+        `Symbols.app ${!current ? "enabled" : "disabled"}`
       );
     })
   );
-  vscode3.window.setStatusBarMessage("DOMQL IntelliSense active", 3e3);
+  vscode3.window.setStatusBarMessage("Symbols.app active", 3e3);
 }
 function deactivate() {
 }

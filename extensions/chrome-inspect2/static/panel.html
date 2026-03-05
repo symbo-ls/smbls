@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+
+  <!-- Connect Screen -->
+  <div id="connect-screen">
+    <div class="connect-inner">
+      <div class="connect-logo"><svg viewBox="0 0 24 24"><path d="M13.843 2.7C19.063 2.7 23 6.366 23 11.228c0 3.754-2.862 6.584-6.658 6.584-3.287 0-5.007-2.318-5.007-4.609 0-2.395 1.923-4.344 4.287-4.344.566 0 1.023.12 1.309.223a.212.212 0 01.137.229l-.016.058-.514 1.18a.223.223 0 01-.245.13 2.965 2.965 0 00-.506-.046c-1.245 0-2.258 1.027-2.258 2.288 0 1.33 1.165 2.373 2.651 2.373 2.195 0 3.913-1.777 3.913-4.046 0-3.024-2.294-5.135-5.58-5.135-4.076 0-7.393 3.36-7.393 7.491a7.519 7.519 0 002.871 5.924l-4.96 3.18A12.042 12.042 0 012 14.7c0-6.617 5.313-12 11.843-12z" fill-rule="evenodd"/></svg></div>
+      <h1 class="connect-title">Symbols Connect</h1>
+      <p class="connect-desc">Connect to a project to inspect and edit DOMQL components</p>
+
+      <div id="connect-error" class="connect-error" style="display:none"></div>
+
+      <div class="connect-options">
+        <button id="btn-connect-local" class="connect-btn">
+          <span class="connect-btn-icon">&#128193;</span>
+          <span class="connect-btn-label">Open Local Folder</span>
+          <span class="connect-btn-hint">Select a folder with symbols.json</span>
+        </button>
+
+        <button id="btn-connect-platform" class="connect-btn">
+          <span class="connect-btn-icon">&#9729;</span>
+          <span class="connect-btn-label">Connect Platform</span>
+          <span class="connect-btn-hint">symbols.app project</span>
+        </button>
+      </div>
+
+      <div id="connect-recent" class="connect-recent" style="display:none">
+        <div class="section-header">Recent</div>
+        <div id="recent-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inspector (hidden until connected) -->
+  <div id="inspector" style="display:none">
+    <div id="toolbar">
+      <button id="btn-pick" title="Pick an element on the page">Pick Element</button>
+      <button id="btn-inspect" title="Inspect element selected in Elements panel ($0)">Inspect $0</button>
+      <button id="btn-refresh" title="Refresh element tree">Refresh</button>
+      <span id="connection-badge"></span>
+      <button id="btn-disconnect" title="Disconnect and return to connect screen">Disconnect</button>
+      <span id="status"></span>
+    </div>
+    <div id="main">
+      <div id="tree-pane">
+        <!-- Active nodes (top) -->
+        <div id="active-section">
+          <span class="tree-section-label">Active Nodes</span>
+          <div id="tree-container"></div>
+        </div>
+        <!-- Symbols context (bottom) -->
+        <div id="symbols-section" style="display:none">
+          <span class="tree-section-label">Symbols Context</span>
+          <div id="symbols-container"></div>
+        </div>
+      </div>
+      <div id="resizer"></div>
+      <div id="detail-pane">
+        <div id="detail-header">
+          <span id="detail-key">No element selected</span>
+          <span id="detail-tag"></span>
+          <span id="detail-path"></span>
+        </div>
+        <div id="detail-tabs">
+          <button class="tab active" data-tab="state">State</button>
+          <button class="tab" data-tab="props">Props</button>
+          <button class="tab" data-tab="children">Children</button>
+          <button class="tab" data-tab="ref">__ref</button>
+          <button class="tab" data-tab="source" style="display:none">Source</button>
+          <span class="tab-spacer"></span>
+          <button class="tab" data-tab="methods">Methods</button>
+        </div>
+        <div id="detail-content">
+          <div id="tab-state" class="tab-panel active"></div>
+          <div id="tab-props" class="tab-panel"></div>
+          <div id="tab-children" class="tab-panel"></div>
+          <div id="tab-ref" class="tab-panel"></div>
+          <div id="tab-source" class="tab-panel"></div>
+          <div id="tab-methods" class="tab-panel"></div>
+        </div>
+      </div>
+    </div>
+    <div id="ai-bar">
+      <div id="ai-result"></div>
+      <div id="ai-input-row">
+        <input id="ai-input" type="text" placeholder="Ask AI to modify components..." />
+        <button id="ai-send">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+</html>
