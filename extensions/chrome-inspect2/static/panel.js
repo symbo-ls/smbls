@@ -689,37 +689,49 @@
   }
 
   function showConnectDialog () {
-    // Show a small inline dialog with options
     let dialog = document.getElementById('connect-dialog')
     if (dialog) { dialog.style.display = dialog.style.display === 'none' ? 'flex' : 'none'; return }
 
     dialog = document.createElement('div')
     dialog.id = 'connect-dialog'
     dialog.className = 'connect-dialog'
-    dialog.innerHTML = `
-      <div class="connect-dialog-inner">
-        <div class="connect-dialog-title">Save changes to:</div>
-        <button id="cd-local" class="connect-dialog-btn">Local Folder</button>
-        <button id="cd-platform" class="connect-dialog-btn">Platform (sign in)</button>
-        <button id="cd-close" class="connect-dialog-close">&times;</button>
-      </div>
-    `
-    document.getElementById('app').appendChild(dialog)
 
-    document.getElementById('cd-local').addEventListener('click', () => {
+    const inner = document.createElement('div')
+    inner.className = 'connect-dialog-inner'
+
+    const title = document.createElement('div')
+    title.className = 'connect-dialog-title'
+    title.textContent = 'Save changes to:'
+
+    const localBtn = document.createElement('button')
+    localBtn.className = 'connect-dialog-btn'
+    localBtn.textContent = 'Local Folder'
+    localBtn.addEventListener('click', () => {
       dialog.style.display = 'none'
       chrome.runtime.sendMessage({ type: 'open-picker' })
       setStatus('Select a folder in the opened tab...')
     })
-    document.getElementById('cd-platform').addEventListener('click', () => {
+
+    const platformBtn = document.createElement('button')
+    platformBtn.className = 'connect-dialog-btn'
+    platformBtn.textContent = 'Platform (sign in)'
+    platformBtn.addEventListener('click', () => {
       dialog.style.display = 'none'
-      // Go to connect screen for platform sign-in
       document.getElementById('connect-screen').style.display = 'flex'
       document.getElementById('app').style.display = 'none'
     })
-    document.getElementById('cd-close').addEventListener('click', () => {
-      dialog.style.display = 'none'
-    })
+
+    const closeBtn = document.createElement('button')
+    closeBtn.className = 'connect-dialog-close'
+    closeBtn.textContent = '\u00d7'
+    closeBtn.addEventListener('click', () => { dialog.style.display = 'none' })
+
+    inner.appendChild(title)
+    inner.appendChild(localBtn)
+    inner.appendChild(platformBtn)
+    inner.appendChild(closeBtn)
+    dialog.appendChild(inner)
+    document.getElementById('app').appendChild(dialog)
   }
 
   function promptSaveConnection () {
@@ -3231,11 +3243,29 @@
         e.stopPropagation()
         if (isArray) { workingCopy.push(''); rebuild() }
         else {
-          const newKey = prompt('Key name:')
-          if (newKey && !(newKey in workingCopy)) {
-            workingCopy[newKey] = ''
-            rebuild()
-          }
+          // Inline key input instead of prompt()
+          const keyRow = document.createElement('div')
+          keyRow.className = 'obj-editor-row'
+          const keyInput = document.createElement('input')
+          keyInput.className = 'prop-edit-input'
+          keyInput.placeholder = 'key name'
+          keyInput.style.maxWidth = '120px'
+          keyRow.appendChild(keyInput)
+          addRow.before(keyRow)
+          keyInput.focus()
+          keyInput.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Enter') {
+              const k = keyInput.value.trim()
+              if (k && !(k in workingCopy)) { workingCopy[k] = ''; rebuild() }
+              else keyRow.remove()
+            }
+            if (ev.key === 'Escape') keyRow.remove()
+          })
+          keyInput.addEventListener('blur', () => {
+            const k = keyInput.value.trim()
+            if (k && !(k in workingCopy)) { workingCopy[k] = ''; rebuild() }
+            else keyRow.remove()
+          })
         }
       })
       addRow.appendChild(addBtn)
