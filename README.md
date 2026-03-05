@@ -15,13 +15,23 @@
 
 ### Create a new project
 
+Using `create-smbls`:
+
 ```bash
 npx create-smbls my-app
 cd my-app
 npm start
 ```
 
-This scaffolds a project with a design system, example components, and a dev server.
+Using the CLI:
+
+```bash
+smbls create my-app
+cd my-app
+npm start
+```
+
+The CLI version gives you an interactive prompt to choose between local-only, creating a new platform project, or linking to an existing one.
 
 ### Add to an existing project
 
