@@ -18,7 +18,7 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "browser": "./dist/iife/index.js",
+      "browser": "./dist/esm/index.js",
       "default": "./dist/esm/index.js"
     }
   },
@@ -26,8 +26,8 @@
   "publishConfig": {},
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
-    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild $(find src -name '*.js') --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild $(find src -name '*.js') --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
     "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild src/index.js --bundle --target=es2020 --format=iife --global-name=SmblsScratch --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
     "build": "node ../../build/build.js",
     "prepublish": "npm run build && npm run copy:package:cjs"
@@ -38,6 +38,6 @@
     "color-contrast-checker": "^1.5.0"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
-  "browser": "./dist/iife/index.js",
+  "browser": "./dist/esm/index.js",
   "sideEffects": false
 }

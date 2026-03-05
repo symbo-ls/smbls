@@ -64,6 +64,6 @@
   "devDependencies": {
     "@babel/core": "^7.26.0"
   },
-  "browser": "./dist/iife/index.js",
+  "browser": "./dist/esm/index.js",
   "sideEffects": false
 }

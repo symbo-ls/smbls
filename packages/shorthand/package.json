@@ -11,7 +11,7 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "browser": "./dist/iife/index.js",
+      "browser": "./dist/esm/index.js",
       "default": "./dist/esm/index.js"
     }
   },
@@ -33,7 +33,7 @@
   ],
   "license": "ISC",
   "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc",
-  "browser": "./dist/iife/index.js",
+  "browser": "./dist/esm/index.js",
   "unpkg": "./dist/iife/index.js",
   "jsdelivr": "./dist/iife/index.js",
   "sideEffects": false

@@ -9,7 +9,7 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "browser": "./dist/iife/index.js",
+      "browser": "./dist/esm/index.js",
       "default": "./dist/esm/index.js"
     }
   },
@@ -32,7 +32,7 @@
     "@domql/utils": "^3.4.5"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
-  "browser": "./dist/iife/index.js",
+  "browser": "./dist/esm/index.js",
   "unpkg": "./dist/iife/index.js",
   "jsdelivr": "./dist/iife/index.js",
   "sideEffects": false
