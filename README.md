@@ -26,6 +26,7 @@ npm start
 Using the CLI:
 
 ```bash
+npm i -g @symbo.ls/cli
 smbls create my-app
 cd my-app
 npm start
@@ -34,6 +35,16 @@ npm start
 The CLI version gives you an interactive prompt to choose between local-only, creating a new platform project, or linking to an existing one.
 
 ### Add to an existing project
+
+Run `smbls init` inside any project with a `package.json`:
+
+```bash
+smbls init
+```
+
+This will interactively merge Symbols config files into your project, run `smbls config` to set up your project key and settings, and install dependencies. If a v2 project is detected, it offers to migrate to v3 automatically.
+
+You can also set up manually:
 
 ```bash
 npm install smbls
