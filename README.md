@@ -329,6 +329,50 @@ smbls completion            # Shell completions (bash/zsh)
 
 See the full CLI reference in [`@symbo.ls/cli`](packages/cli/).
 
+## Migrating from v2
+
+If you have an existing v2 Symbols project, there are two ways to upgrade:
+
+### Automatic migration
+
+```bash
+smbls migrate
+```
+
+This will:
+- Rename `smbls/` directory to `symbols/` and `.symbols/` to `.symbols_cache/`
+- Lowercase all `designSystem/` files (e.g. `COLOR.js` → `color.js`)
+- Rewrite `designSystem/index.js` to v3 format (lowercase keys, shorthand exports)
+- Move config options (`useReset`, `useVariable`, etc.) from designSystem to `config.js`
+- Create `symbols/app.js` if missing
+- Rewrite `symbols/index.js` to v3 format
+- Update `package.json` scripts and dependencies
+
+### Via `smbls init`
+
+Running `smbls init` in a v2 project auto-detects the old structure and offers to migrate:
+
+```bash
+cd my-v2-project
+smbls init
+# → "Existing v2 Symbols project detected."
+# → Choose: Migrate to v3 / Init anyway / Create subfolder
+```
+
+### Key v3 syntax changes
+
+| v2 | v3 |
+|----|-----|
+| `extend: 'X'` | `extends: 'X'` |
+| `childExtend: 'X'` | `childExtends: 'X'` |
+| `on: { click: fn }` | `onClick: fn` |
+| `props: { color: 'red' }` | `color: 'red'` (flattened) |
+| `align: 'center center'` | `flexAlign: 'center center'` |
+| `color: 'white .7'` | Define as named token in `designSystem/color.js` |
+| `border: '1px solid blue'` | `borderWidth: '1px'`, `borderStyle: 'solid'`, `borderColor: 'blue'` |
+
+After migration, review your components and update any remaining v2 patterns.
+
 ## Deployment
 
 ```bash
