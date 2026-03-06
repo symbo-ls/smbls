@@ -17,13 +17,11 @@ import * as routerUtils from '@domql/router'
 // @preserve-env
 
 export const prepareWindow = (context) => {
-  if (typeof window === 'undefined') window = globalThis || {} // eslint-disable-line
-  if (typeof document === 'undefined') {
-    if (!window.document) window.document = globalThis.document || { body: {} }
-    document = window.document // eslint-disable-line
-  }
-  context.document = context.document || document
-  context.window = context.window || window
+  const win = typeof window !== 'undefined' ? window : globalThis || {}
+  if (!win.document) win.document = { body: {} }
+  const doc = typeof document !== 'undefined' ? document : win.document
+  context.document = context.document || doc
+  context.window = context.window || win
   return context.window
 }
 
