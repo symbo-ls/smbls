@@ -13,17 +13,26 @@ const getOnOrPropsEvent = (param, element) => {
 
 export const applyEvent = (param, element, state, context, options) => {
   if (!isFunction(param)) return
-  const result = param.call(
-    element,
-    element,
-    state || element.state,
-    context || element.context,
-    options
-  )
-  if (result && typeof result.then === 'function') {
-    result.catch(() => {})
+  try {
+    const result = param.call(
+      element,
+      element,
+      state || element.state,
+      context || element.context,
+      options
+    )
+    if (result && typeof result.then === 'function') {
+      result.catch((err) => {
+        element.error = err
+        console.error('[DomQL] Async event error:', err)
+      })
+    }
+    return result
+  } catch (err) {
+    element.error = err
+    console.error('[DomQL] Event handler error:', err)
+    if (element.context?.strictMode) throw err
   }
-  return result
 }
 
 export const triggerEventOn = (param, element, options) => {
@@ -46,18 +55,27 @@ export const applyEventUpdate = (
   options
 ) => {
   if (!isFunction(param)) return
-  const result = param.call(
-    element,
-    updatedObj,
-    element,
-    state || element.state,
-    context || element.context,
-    options
-  )
-  if (result && typeof result.then === 'function') {
-    result.catch(() => {})
+  try {
+    const result = param.call(
+      element,
+      updatedObj,
+      element,
+      state || element.state,
+      context || element.context,
+      options
+    )
+    if (result && typeof result.then === 'function') {
+      result.catch((err) => {
+        element.error = err
+        console.error('[DomQL] Async event update error:', err)
+      })
+    }
+    return result
+  } catch (err) {
+    element.error = err
+    console.error('[DomQL] Event update error:', err)
+    if (element.context?.strictMode) throw err
   }
-  return result
 }
 
 export const triggerEventOnUpdate = (param, updatedObj, element, options) => {

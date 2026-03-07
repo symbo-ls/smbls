@@ -377,12 +377,25 @@ export function variables (obj = {}) {
  */
 export function call (fnKey, ...args) {
   const context = this.context
-  return (
+  const fn = (
     context.utils?.[fnKey] ||
     context.functions?.[fnKey] ||
     context.methods?.[fnKey] ||
     context.snippets?.[fnKey]
-  )?.call(this, ...args)
+  )
+  if (!fn) return
+  try {
+    const result = fn.call(this, ...args)
+    if (result && typeof result.then === 'function') {
+      result.catch((err) => {
+        this.error = err
+      })
+    }
+    return result
+  } catch (err) {
+    this.error = err
+    if (context?.strictMode) throw err
+  }
 }
 
 export function isMethod (param, element) {

@@ -175,12 +175,13 @@ const renderElement = (element, parent, options, attachOptions) => {
   }
 
   // CREATE a real NODE
-  if (ENV === 'test' || ENV === 'development') {
+  if (ENV === 'test' || ENV === 'development' || element.context?.strictMode) {
     createNestedChild()
   } else {
     try {
       createNestedChild()
     } catch (e) {
+      element.error = e
       const path = ref.path
       if (path.includes('ComponentsGrid')) {
         path.splice(0, path.indexOf('ComponentsGrid') + 2)
@@ -194,7 +195,7 @@ const renderElement = (element, parent, options, attachOptions) => {
         isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.')
       )
       element.verbose()
-      element.error(e, options)
+      console.error('[DomQL] Render error:', e)
       if (element.on?.error) {
         element.on.error(e, element, element.state, element.context, options)
       }

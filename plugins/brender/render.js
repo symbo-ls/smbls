@@ -163,12 +163,19 @@ export const renderElement = async (elementDef, options = {}) => {
 
   resetKeys()
 
-  const element = create(elementDef, { node: body }, 'root', {
-    context: { document, window, ...context, components, utils }
-  })
+  let element
+  try {
+    element = create(elementDef, { node: body }, 'root', {
+      context: { document, window, ...context, components, utils }
+    })
+  } catch (err) {
+    // Lifecycle events (onRender, onDone, etc.) may throw in SSR
+    // because they access browser-only APIs. The DOM tree is built
+    // before these fire, so we can still extract HTML.
+  }
 
   assignKeys(body)
-  const registry = mapKeysToElements(element)
+  const registry = element ? mapKeysToElements(element) : {}
   const html = body.innerHTML
 
   return { html, registry, element }

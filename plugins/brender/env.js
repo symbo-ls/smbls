@@ -31,6 +31,23 @@ export const createEnv = (html = '<!DOCTYPE html><html><head></head><body></body
     window.scrollTo = () => {}
   }
 
+  // Storage stubs
+  const createStorage = () => {
+    const store = {}
+    return {
+      getItem: (k) => store[k] ?? null,
+      setItem: (k, v) => { store[k] = String(v) },
+      removeItem: (k) => { delete store[k] },
+      clear: () => { for (const k in store) delete store[k] },
+      get length () { return Object.keys(store).length },
+      key: (i) => Object.keys(store)[i] ?? null
+    }
+  }
+  if (!window.localStorage) window.localStorage = createStorage()
+  if (!window.sessionStorage) window.sessionStorage = createStorage()
+  if (!globalThis.localStorage) globalThis.localStorage = window.localStorage
+  if (!globalThis.sessionStorage) globalThis.sessionStorage = window.sessionStorage
+
   // Expose linkedom constructors on globalThis so @domql/utils isDOMNode
   // can use instanceof checks (it reads from globalThis.Node, etc.)
   globalThis.window = window

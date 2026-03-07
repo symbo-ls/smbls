@@ -27,16 +27,25 @@ const registerNodeEvent = (param, element, node, options) => {
 
     const handler = event => {
       const { state, context } = element
-      const result = appliedFunction.call(
-        element,
-        event,
-        element,
-        state,
-        context,
-        options
-      )
-      if (result && typeof result.then === 'function') {
-        result.catch(() => {})
+      try {
+        const result = appliedFunction.call(
+          element,
+          event,
+          element,
+          state,
+          context,
+          options
+        )
+        if (result && typeof result.then === 'function') {
+          result.catch((err) => {
+            element.error = err
+            console.error('[DomQL] Async DOM event error:', err)
+          })
+        }
+      } catch (err) {
+        element.error = err
+        console.error('[DomQL] DOM event error:', err)
+        if (context?.strictMode) throw err
       }
     }
 

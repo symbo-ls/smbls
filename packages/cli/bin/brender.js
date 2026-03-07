@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, watch } from 'fs'
+import { existsSync, readFileSync, mkdirSync, writeFileSync, watch } from 'fs'
 import { resolve } from 'path'
 import chalk from 'chalk'
 import { program } from './program.js'
@@ -47,6 +47,16 @@ program
     const symbols = getSymbols(cwd)
     const outDir = opts.outDir || config.distDir
     const symbolsDir = resolve(cwd, symbols.dir || 'symbols')
+
+    const pkgPath = resolve(cwd, 'package.json')
+    if (existsSync(pkgPath)) {
+      try {
+        const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
+        if (pkg.type !== 'module') {
+          console.warn(chalk.yellow('⚠') + ` Add ${chalk.bold('"type": "module"')} to your package.json to avoid module resolution warnings`)
+        }
+      } catch {}
+    }
 
     try {
       console.log(chalk.dim('Pre-rendering pages with brender...'))
