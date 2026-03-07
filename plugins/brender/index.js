@@ -4,6 +4,7 @@ import { loadProject, loadAndRenderAll } from './load.js'
 import { render, renderElement, renderRoute, renderPage } from './render.js'
 import { extractMetadata, generateHeadHtml } from './metadata.js'
 import { collectBrNodes, hydrate } from './hydrate.js'
+import { generateSitemap } from './sitemap.js'
 
 export {
   createEnv,
@@ -19,7 +20,8 @@ export {
   extractMetadata,
   generateHeadHtml,
   collectBrNodes,
-  hydrate
+  hydrate,
+  generateSitemap
 }
 
 export default {
@@ -36,5 +38,6 @@ export default {
   extractMetadata,
   generateHeadHtml,
   collectBrNodes,
-  hydrate
+  hydrate,
+  generateSitemap
 }

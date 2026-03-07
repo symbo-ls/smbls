@@ -8,6 +8,8 @@ export * from './date.js'
 export * from './fibonacci.js'
 export * from './load.js'
 export * from './files.js'
+export * from './cdn.js'
+export * from './metadata.js'
 
 export const copyStringToClipboard = async (str) => {
   try {

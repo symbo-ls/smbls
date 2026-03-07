@@ -1910,6 +1910,7 @@
     renderStateTab()
     renderPropsTab()
     renderChildrenTab()
+    renderScopeTab()
     renderMethodsTab()
     renderRefTab()
 
@@ -2493,6 +2494,7 @@
       let activeDropdown = null
 
       function showKeyDropdown () {
+        if (type === 'state') { keyDropdown.style.display = 'none'; return }
         activeDropdown = 'key'
         valDropdown.style.display = 'none'
         const text = keyInput.value.toLowerCase()
@@ -2526,6 +2528,7 @@
       }
 
       function showValDropdown () {
+        if (type === 'state') { valDropdown.style.display = 'none'; return }
         activeDropdown = 'val'
         keyDropdown.style.display = 'none'
         const propName = keyInput.value.trim()
@@ -3708,6 +3711,33 @@
     return item
   }
 
+  function renderScopeTab () {
+    const panel = document.getElementById('tab-scope')
+    panel.innerHTML = ''
+
+    if (!selectedInfo.scope || Object.keys(selectedInfo.scope).length === 0) {
+      panel.innerHTML = '<div class="empty-message">No scope data</div>'
+      return
+    }
+
+    for (const [key, val] of Object.entries(selectedInfo.scope)) {
+      const row = document.createElement('div')
+      row.className = 'prop-row'
+
+      const keyEl = document.createElement('span')
+      keyEl.className = 'prop-key'
+      keyEl.textContent = key
+
+      const valEl = document.createElement('span')
+      valEl.className = 'prop-value'
+      valEl.appendChild(renderValue(val))
+
+      row.appendChild(keyEl)
+      row.appendChild(valEl)
+      panel.appendChild(row)
+    }
+  }
+
   function renderRefTab () {
     const panel = document.getElementById('tab-ref')
     panel.innerHTML = ''
@@ -3862,7 +3892,7 @@
           valInput.className = 'prop-edit-input'
           valInput.value = v === null ? 'null' : String(v)
           valInput.dataset.origType = v === null ? 'null' : typeof v
-          valInput.addEventListener('change', () => {
+          valInput.addEventListener('input', () => {
             const parsed = parsePreservingType(valInput.value, valInput.dataset.origType)
             if (isArr) obj[parseInt(k)] = parsed
             else obj[k] = parsed
@@ -3964,7 +3994,39 @@
     }
 
     async function commitObj () {
-      // workingCopy is already updated in-place by input change handlers and recursive buildLevel
+      // Flush any pending input values from DOM into workingCopy
+      collectInputValues(editor, workingCopy)
+      await doCommit()
+    }
+
+    // Recursively collect input values from editor DOM into the target object
+    function collectInputValues (container, target) {
+      const rows = container.querySelectorAll(':scope > .obj-editor-row:not(.obj-editor-add)')
+      const tIsArr = Array.isArray(target)
+      let arrIdx = 0
+      for (const row of rows) {
+        const keyEl = row.querySelector('.obj-key-input')
+        const valEl = row.querySelector('.prop-edit-input:not(.obj-key-input)')
+        const key = tIsArr ? arrIdx : (keyEl ? keyEl.value : null)
+        if (key === null) { arrIdx++; continue }
+
+        // Check if this row has a nested container sibling
+        const nestedContainer = row.nextElementSibling
+        if (nestedContainer && nestedContainer.classList.contains('obj-editor-nested') && nestedContainer.style.display !== 'none') {
+          // Recursively collect from nested
+          if (target[key] && typeof target[key] === 'object') {
+            collectInputValues(nestedContainer, target[key])
+          }
+        } else if (valEl) {
+          const parsed = parsePreservingType(valEl.value, valEl.dataset.origType)
+          if (tIsArr) target[arrIdx] = parsed
+          else target[key] = parsed
+        }
+        arrIdx++
+      }
+    }
+
+    async function doCommit () {
 
       el.classList.remove('editing')
       el.innerHTML = ''
@@ -4027,8 +4089,8 @@
     input.focus()
     input.select()
 
-    // Build suggestion list
-    const allSuggestions = getSuggestionsForProp(key) || []
+    // Build suggestion list (only for props, not state)
+    const allSuggestions = type !== 'state' ? (getSuggestionsForProp(key) || []) : []
     let filtered = []
     let activeIndex = -1
     let dropdown = null

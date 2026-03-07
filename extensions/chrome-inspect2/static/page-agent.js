@@ -296,6 +296,19 @@
       info.stateMethods = STATE_METHOD_NAMES.filter(m => typeof el.state[m] === 'function')
     }
 
+    // Scope
+    if (el.scope && typeof el.scope === 'object') {
+      info.scope = {}
+      for (const k of Object.keys(el.scope)) {
+        if (k === 'parent' || k === 'root' || k.startsWith('__')) continue
+        try {
+          info.scope[k] = serialize(el.scope[k], 0, 3, new WeakSet())
+        } catch (e) {
+          info.scope[k] = { __type: 'error', message: e.message }
+        }
+      }
+    }
+
     // __ref info
     if (el.__ref) {
       info.ref = {}
