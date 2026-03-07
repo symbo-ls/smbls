@@ -3,14 +3,16 @@
 export const ContactSection = {
   tag: 'section',
   id: 'contact',
-  background: 'bgSubtle',
-  padding: '96px 0',
+  background: 'warmWhite',
+  padding: '104px 0',
+  '@tablet': { padding: '80px 0' },
+  '@mobile': { padding: '60px 0' },
 
   Inner: {
-    maxWidth: '1120px',
+    maxWidth: '1200px',
     margin: '0 auto',
-    padding: '0 32px',
-    '@tablet': { padding: '0 20px' },
+    padding: '0 48px',
+    '@tablet': { padding: '0 24px' },
 
     Grid: {
       display: 'grid',
@@ -44,11 +46,12 @@ export const ContactSection = {
 
           EmailDetail: {
             Label: {
+              fontFamily: "'DM Mono', monospace",
               fontSize: '10px',
-              fontWeight: '500',
-              letterSpacing: '0.12em',
+              fontWeight: '400',
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              color: 'textQuaternary',
+              color: 'textTertiary',
               marginBottom: '4px',
               display: 'block',
               text: 'Email'
@@ -60,8 +63,8 @@ export const ContactSection = {
                 tag: 'a',
                 attr: { href: 'mailto:rk@rita-katona.com' },
                 color: 'dark',
-                transition: 'opacity 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
-                ':hover': { opacity: '0.5' },
+                transition: 'color 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
+                ':hover': { color: 'accent' },
                 text: 'rk@rita-katona.com'
               }
             }
@@ -69,11 +72,12 @@ export const ContactSection = {
 
           LocationDetail: {
             Label: {
+              fontFamily: "'DM Mono', monospace",
               fontSize: '10px',
-              fontWeight: '500',
-              letterSpacing: '0.12em',
+              fontWeight: '400',
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              color: 'textQuaternary',
+              color: 'textTertiary',
               marginBottom: '4px',
               display: 'block',
               text: 'Location'
@@ -87,11 +91,12 @@ export const ContactSection = {
 
           LinkedInDetail: {
             Label: {
+              fontFamily: "'DM Mono', monospace",
               fontSize: '10px',
-              fontWeight: '500',
-              letterSpacing: '0.12em',
+              fontWeight: '400',
+              letterSpacing: '0.06em',
               textTransform: 'uppercase',
-              color: 'textQuaternary',
+              color: 'textTertiary',
               marginBottom: '4px',
               display: 'block',
               text: 'LinkedIn'
@@ -101,10 +106,11 @@ export const ContactSection = {
               color: 'dark',
               Link: {
                 tag: 'a',
-                attr: { href: 'https://linkedin.com/in/rita-katona-growth/', target: '_blank', rel: 'noopener' },
+                attr: { href: 'https://www.linkedin.com/in/rita-kato-growth/', target: '_blank', rel: 'noopener' },
                 color: 'dark',
-                transition: 'opacity 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
-                ':hover': { opacity: '0.5' },
+                transition: 'color 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
+                ':hover': { color: 'accent' },
+                whiteSpace: 'nowrap',
                 text: 'rita-katona-growth \u2197'
               }
             }
@@ -113,6 +119,9 @@ export const ContactSection = {
       },
 
       FormWrap: {
+        paddingTop: '168px',
+        '@tablet': { paddingTop: '0' },
+
         Form: {
           tag: 'form',
           extends: 'Flex',
@@ -144,9 +153,11 @@ export const ContactSection = {
             minHeight: '128px'
           },
           Submit: {
-            extends: 'BtnPrimary',
+            extends: 'BtnAccent',
             tag: 'button',
             attr: { type: 'submit' },
+            width: '100%',
+            justifyContent: 'center',
             text: 'Send Message'
           }
         }
@@ -159,19 +170,19 @@ export const ContactSection = {
 
 export const Field = {
   width: '100%',
-  padding: '13px 15px',
-  background: 'white',
+  padding: '13px 16px',
+  background: 'transparent',
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: 'borderMedium',
-  borderRadius: '2px',
+  borderRadius: '6px',
   fontSize: '14px',
   color: 'dark',
   outline: 'none',
   transition: 'border-color 140ms cubic-bezier(0.0, 0.0, 0.2, 1), box-shadow 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
   ':focus': {
-    borderColor: 'dark',
-    boxShadow: '0 0 0 3px rgba(0,0,0,0.05)'
+    borderColor: 'accent',
+    boxShadow: '0 0 0 3px rgba(85,127,177,0.08)'
   },
   '::placeholder': {
     color: 'textQuaternary'

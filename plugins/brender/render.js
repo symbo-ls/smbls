@@ -4,6 +4,59 @@ import { extractMetadata, generateHeadHtml } from './metadata.js'
 import { hydrate } from './hydrate.js'
 import { parseHTML } from 'linkedom'
 
+// ── Minimal uikit stubs ──────────────────────────────────────────────────────
+// Lightweight versions of uikit components so DOMQL can resolve extends chains
+// (tag, display, attrs) without importing the full @symbo.ls/uikit package.
+const UIKIT_STUBS = {
+  Box: {},
+  Focusable: {},
+  Block: { display: 'block' },
+  Inline: { display: 'inline' },
+  Flex: { display: 'flex' },
+  InlineFlex: { display: 'inline-flex' },
+  Grid: { display: 'grid' },
+  InlineGrid: { display: 'inline-grid' },
+  Link: {
+    tag: 'a',
+    attr: {
+      href: (el) => el.props?.href,
+      target: (el) => el.props?.target,
+      rel: (el) => el.props?.rel
+    }
+  },
+  A: { extends: 'Link' },
+  RouteLink: { extends: 'Link' },
+  Img: {
+    tag: 'img',
+    attr: {
+      src: (el) => el.props?.src,
+      alt: (el) => el.props?.alt,
+      loading: (el) => el.props?.loading
+    }
+  },
+  Image: { extends: 'Img' },
+  Button: { tag: 'button' },
+  FocusableComponent: { tag: 'button' },
+  Form: { tag: 'form' },
+  Input: { tag: 'input' },
+  TextArea: { tag: 'textarea' },
+  Textarea: { tag: 'textarea' },
+  Select: { tag: 'select' },
+  Label: { tag: 'label' },
+  Iframe: { tag: 'iframe' },
+  Video: { tag: 'video' },
+  Audio: { tag: 'audio' },
+  Canvas: { tag: 'canvas' },
+  Span: { tag: 'span' },
+  P: { tag: 'p' },
+  H1: { tag: 'h1' },
+  H2: { tag: 'h2' },
+  H3: { tag: 'h3' },
+  H4: { tag: 'h4' },
+  H5: { tag: 'h5' },
+  H6: { tag: 'h6' }
+}
+
 /**
  * Renders a Symbols/DomQL project to HTML on the server.
  *
@@ -89,10 +142,14 @@ export const renderElement = async (elementDef, options = {}) => {
 
   const { create } = await import('@domql/element')
 
+  // Merge minimal uikit stubs so DOMQL resolves extends chains
+  // (e.g. extends: 'Link' → tag: 'a', extends: 'Flex' → display: flex)
+  const components = { ...UIKIT_STUBS, ...(context.components || {}) }
+
   resetKeys()
 
   const element = create(elementDef, { node: body }, 'root', {
-    context: { document, window, ...context }
+    context: { document, window, ...context, components }
   })
 
   assignKeys(body)
@@ -216,7 +273,19 @@ const NON_CSS_PROPS = new Set([
 const camelToKebab = (str) => str.replace(/[A-Z]/g, m => '-' + m.toLowerCase())
 
 const resolveShorthand = (key, val) => {
-  if (key === 'flexAlign' && typeof val === 'string') {
+  if (typeof val === 'undefined' || val === null) return null
+
+  // Flex shorthands
+  if (key === 'flow' && typeof val === 'string') {
+    let [direction, wrap] = (val || 'row').split(' ')
+    if (val.startsWith('x') || val === 'row') direction = 'row'
+    if (val.startsWith('y') || val === 'column') direction = 'column'
+    return { display: 'flex', 'flex-flow': (direction || '') + ' ' + (wrap || '') }
+  }
+  if (key === 'wrap') {
+    return { display: 'flex', 'flex-wrap': val }
+  }
+  if ((key === 'align' || key === 'flexAlign') && typeof val === 'string') {
     const [alignItems, justifyContent] = val.split(' ')
     return { display: 'flex', 'align-items': alignItems, 'justify-content': justifyContent }
   }
@@ -224,12 +293,49 @@ const resolveShorthand = (key, val) => {
     const [alignItems, justifyContent] = val.split(' ')
     return { display: 'grid', 'align-items': alignItems, 'justify-content': justifyContent }
   }
-  if (key === 'round' && val) {
+  if (key === 'flexFlow' && typeof val === 'string') {
+    let [direction, wrap] = (val || 'row').split(' ')
+    if (val.startsWith('x') || val === 'row') direction = 'row'
+    if (val.startsWith('y') || val === 'column') direction = 'column'
+    return { display: 'flex', 'flex-flow': (direction || '') + ' ' + (wrap || '') }
+  }
+  if (key === 'flexWrap') {
+    return { display: 'flex', 'flex-wrap': val }
+  }
+
+  // Box/size shorthands
+  if (key === 'round' || (key === 'borderRadius' && val)) {
     return { 'border-radius': typeof val === 'number' ? val + 'px' : val }
   }
-  if (key === 'boxSize' && val) {
-    return { width: val, height: val }
+  if (key === 'boxSize' && typeof val === 'string') {
+    const [height, width] = val.split(' ')
+    return { height, width: width || height }
   }
+  if (key === 'widthRange' && typeof val === 'string') {
+    const [minWidth, maxWidth] = val.split(' ')
+    return { 'min-width': minWidth, 'max-width': maxWidth || minWidth }
+  }
+  if (key === 'heightRange' && typeof val === 'string') {
+    const [minHeight, maxHeight] = val.split(' ')
+    return { 'min-height': minHeight, 'max-height': maxHeight || minHeight }
+  }
+
+  // Grid aliases
+  if (key === 'column') return { 'grid-column': val }
+  if (key === 'columns') return { 'grid-template-columns': val }
+  if (key === 'templateColumns') return { 'grid-template-columns': val }
+  if (key === 'row') return { 'grid-row': val }
+  if (key === 'rows') return { 'grid-template-rows': val }
+  if (key === 'templateRows') return { 'grid-template-rows': val }
+  if (key === 'area') return { 'grid-area': val }
+  if (key === 'template') return { 'grid-template': val }
+  if (key === 'templateAreas') return { 'grid-template-areas': val }
+  if (key === 'autoColumns') return { 'grid-auto-columns': val }
+  if (key === 'autoRows') return { 'grid-auto-rows': val }
+  if (key === 'autoFlow') return { 'grid-auto-flow': val }
+  if (key === 'columnStart') return { 'grid-column-start': val }
+  if (key === 'rowStart') return { 'grid-row-start': val }
+
   return null
 }
 
@@ -300,6 +406,25 @@ const renderCSSRule = (selector, { base, mediaRules, pseudoRules }) => {
   return lines.join('\n')
 }
 
+// Map of component names to their implicit CSS from extends
+const EXTENDS_CSS = {
+  Flex: { display: 'flex' },
+  InlineFlex: { display: 'inline-flex' },
+  Grid: { display: 'grid' },
+  InlineGrid: { display: 'inline-grid' },
+  Block: { display: 'block' },
+  Inline: { display: 'inline' }
+}
+
+const getExtendsCSS = (el) => {
+  const exts = el.__ref?.__extends
+  if (!exts || !Array.isArray(exts)) return null
+  for (const ext of exts) {
+    if (EXTENDS_CSS[ext]) return EXTENDS_CSS[ext]
+  }
+  return null
+}
+
 const extractCSS = (element, ds) => {
   const colorMap = ds?.color || {}
   const mediaMap = ds?.media || {}
@@ -316,6 +441,16 @@ const extractCSS = (element, ds) => {
       if (cls && !seen.has(cls)) {
         seen.add(cls)
         const cssResult = buildCSSFromProps(props, colorMap, mediaMap)
+
+        // Inject CSS from extends chain (e.g. extends: 'Flex' → display: flex)
+        const extsCss = getExtendsCSS(el)
+        if (extsCss) {
+          for (const [k, v] of Object.entries(extsCss)) {
+            const kebab = camelToKebab(k)
+            if (!cssResult.base[kebab]) cssResult.base[kebab] = v
+          }
+        }
+
         const has = Object.keys(cssResult.base).length || Object.keys(cssResult.mediaRules).length || Object.keys(cssResult.pseudoRules).length
         if (has) rules.push(renderCSSRule('.' + cls.split(' ')[0], cssResult))
 
