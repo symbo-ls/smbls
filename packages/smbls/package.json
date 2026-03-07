@@ -1,6 +1,6 @@
 {
   "name": "smbls",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "license": "MIT",
   "repository": "https://github.com/symbo-ls/smbls",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
@@ -28,20 +28,20 @@
     "src"
   ],
   "dependencies": {
-    "@symbo.ls/emotion": "^3.5.0",
-    "@domql/report": "^3.5.0",
-    "@domql/router": "^3.5.0",
-    "@domql/utils": "^3.5.0",
-    "@symbo.ls/cli": "^3.5.0",
-    "@symbo.ls/default-config": "^3.5.0",
-    "@symbo.ls/fetch": "^3.5.0",
-    "@symbo.ls/scratch": "^3.5.0",
-    "@symbo.ls/sync": "^3.5.0",
-    "@symbo.ls/uikit": "^3.5.0",
-    "@symbo.ls/smbls-utils": "^3.5.0",
-    "attrs-in-props": "^3.5.0",
-    "css-in-props": "^3.5.0",
-    "domql": "^3.5.0"
+    "@symbo.ls/emotion": "^3.5.1",
+    "@domql/report": "^3.5.1",
+    "@domql/router": "^3.5.1",
+    "@domql/utils": "^3.5.1",
+    "@symbo.ls/cli": "^3.5.1",
+    "@symbo.ls/default-config": "^3.5.1",
+    "@symbo.ls/fetch": "^3.5.1",
+    "@symbo.ls/scratch": "^3.5.1",
+    "@symbo.ls/sync": "^3.5.1",
+    "@symbo.ls/uikit": "^3.5.1",
+    "@symbo.ls/smbls-utils": "^3.5.1",
+    "attrs-in-props": "^3.5.1",
+    "css-in-props": "^3.5.1",
+    "domql": "^3.5.1"
   },
   "publishConfig": {},
   "scripts": {
