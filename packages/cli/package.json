@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/cli",
-  "version": "3.4.11",
+  "version": "3.4.12",
   "description": "Fetch your Symbols configuration",
   "main": "bin/fetch.js",
   "author": "Symbols",
@@ -15,10 +15,10 @@
     "vpatch": "npm version patch && npm publish"
   },
   "dependencies": {
-    "@symbo.ls/fetch": "^3.4.11",
-    "smbls": "^3.4.11",
-    "@symbo.ls/runner": "^3.4.11",
-    "@symbo.ls/sync": "^3.4.11",
+    "@symbo.ls/fetch": "^3.4.12",
+    "smbls": "^3.4.12",
+    "@symbo.ls/runner": "^3.4.12",
+    "@symbo.ls/sync": "^3.4.12",
     "chalk": "^5.4.1",
     "chokidar": "^4.0.3",
     "commander": "^13.1.0",
