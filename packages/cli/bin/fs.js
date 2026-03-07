@@ -663,8 +663,9 @@ export async function createFs (
       if (isPlainObjectValue(value)) {
         const safeStem = String(entryKey).replace(/[/\\]/g, '-').toLowerCase()
         if (!safeStem) continue
-        const rawImportName = safeStem.replace(/-/g, '_')
-        const importName = isReservedIdentifier(rawImportName) ? `_${rawImportName}` : rawImportName
+        const rawImportName = safeStem.replace(/[-.]/g, '_')
+        const safeName = /^[0-9]/.test(rawImportName) ? `_${rawImportName}` : rawImportName
+        const importName = isReservedIdentifier(safeName) ? `_${safeName}` : safeName
         objectEntries.push({
           entryKey,
           value,
@@ -719,13 +720,14 @@ export async function createFs (
 
     const propLines = []
 
-    // Object entries first (in order) — use lowercase keys
-    for (const { importName, exportKey } of objectEntries) {
-      if (exportKey && exportKey !== importName) {
-        // reserved word: e.g. class_ var exported as class
-        propLines.push(`${exportKey}: ${importName},`)
-      } else {
+    // Object entries first (in order) — use original key for property name
+    for (const { importName, entryKey } of objectEntries) {
+      if (isValidIdentifierName(entryKey) && entryKey === importName) {
         propLines.push(`${importName},`)
+      } else if (isValidIdentifierName(entryKey)) {
+        propLines.push(`${entryKey}: ${importName},`)
+      } else {
+        propLines.push(`${JSON.stringify(entryKey)}: ${importName},`)
       }
     }
 

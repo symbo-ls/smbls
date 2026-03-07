@@ -122,7 +122,7 @@ async function confirmChanges (changes, base, local) {
       type: 'confirm',
       name: 'proceed',
       message: 'Proceed with these changes?',
-      default: false
+      default: true
     }
   ])
 

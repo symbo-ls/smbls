@@ -90,9 +90,9 @@ export async function runProjectCreate (destArg, options = {}) {
     skipRunnerFiles = !include
   }
 
-  // Post-scaffold: ask about project config
+  // Post-scaffold: ask about project config (skip for libraries without runner files)
   async function maybeRunConfig () {
-    if (!interactive) return
+    if (!interactive || skipRunnerFiles) return
     console.log()
     const action = await promptRunConfig()
     if (action === 'config') {
