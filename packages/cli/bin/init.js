@@ -9,6 +9,7 @@ import inquirer from 'inquirer'
 import { program } from './program.js'
 import { mergeStarterKit } from './init-helpers/mergeStarterKit.js'
 import { detectPackageManager, detectRuntime, runInstall } from '../helpers/packageManager.js'
+import { ensureBundlerDeps } from './bundler.js'
 import { detectV2Project } from './init-helpers/v2detect.js'
 import { isCdnMode, patchProjectForBrowserMode } from './init-helpers/browserMode.js'
 
@@ -120,6 +121,12 @@ program
     if (isCdnMode(runtime, pm)) {
       const symbolsDirName = (savedConfig.dir || './symbols').replace(/^\.\//, '')
       patchProjectForBrowserMode(resolve(projectDir, symbolsDirName), pm)
+    }
+
+    // Add bundler devDependencies before running install
+    const bundler = savedConfig.bundler || 'parcel'
+    if (bundler !== 'browser') {
+      ensureBundlerDeps(bundler, projectDir)
     }
 
     if (pm !== 'browser' && !['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'].includes(pm)) {

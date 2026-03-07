@@ -119,7 +119,7 @@ smbls project link . --id <projectId>
 
 ### Fetch the latest platform project into files
 
-`fetch` downloads the latest project snapshot and can generate/update files under a `distDir`.
+`fetch` downloads the latest project snapshot and generates/updates files in the project directory.
 
 ```bash
 smbls fetch --update

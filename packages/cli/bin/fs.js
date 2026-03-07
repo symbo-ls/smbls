@@ -3,6 +3,7 @@ import chalk from 'chalk'
 import path from 'path'
 import * as utils from '@domql/utils'
 import * as smblsUtils from '@symbo.ls/smbls-utils'
+import { CONTEXT_MODULES } from './init-helpers/v2detect.js'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 
@@ -19,17 +20,32 @@ const {
 
 // Keys that are materialized as directories with per-entry files.
 const directoryKeys = ['components', 'snippets', 'pages', 'functions', 'methods']
-// Local-only directories that should be written/synced, but NOT exported from root `index.js`.
-const localOnlyDirectoryKeys = ['libs']
 
 // Keys that used to be single files, but are now split into a directory with:
 // - `index.js` exporting a default object
 // - per-entry `*.js` files for object values (primitives stay in index.js)
 const splitObjectKeys = ['designSystem', 'files']
 
-const ALL_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys, ...localOnlyDirectoryKeys]
+const ALL_DIRECTORY_KEYS = [...directoryKeys, ...splitObjectKeys]
 
 const defaultExports = ['pages', 'designSystem', 'state', 'files', 'dependencies', 'schema', 'sharedLibraries']
+
+/**
+ * Generate context.js content from a list of CONTEXT_MODULES entries.
+ */
+function generateContextJsContent (modules) {
+  if (!modules.length) return 'export default {}\n'
+
+  const imports = modules.map(m =>
+    m.style === 'namespace'
+      ? `import * as ${m.name} from '${m.path}'`
+      : `import ${m.name} from '${m.path}'`
+  ).join('\n')
+
+  const keys = modules.map(m => m.name === 'config' ? '  ...config' : `  ${m.name}`).join(',\n')
+
+  return `${imports}\n\nexport default {\n${keys}\n}\n`
+}
 
 // Minimal reserved identifier set to avoid invalid named exports like "export const default"
 const RESERVED_IDENTIFIERS = new Set(['default', 'class'])
@@ -89,13 +105,6 @@ async function removeStaleFiles (body, targetDir, { allDirectoryKeys, splitObjec
 
     const existingFiles = await fs.promises.readdir(dirPath)
     const currentEntries = (() => {
-      if (key === 'libs') {
-        const libs = Array.isArray(body?.sharedLibraries) ? body.sharedLibraries : []
-        return libs
-          .map((lib, idx) => toLibFileStem(lib, idx))
-          .filter(Boolean)
-          .map((stem) => `${stem}.js`)
-      }
       if (!body[key] || typeof body[key] !== 'object') return []
 
       // For splitObjectKeys we only materialize object-valued entries as files
@@ -168,7 +177,7 @@ export async function createFs (
     body = { ...(body || {}), sharedLibraries: [] }
   }
 
-  const { update, metadata } = opts
+  const { update, metadata, librariesDir, libsConfig } = opts
 
   // `designSystem` and `files` are now directories (splitObjectKeys)
   const scope = String(opts.scope || 'full')
@@ -176,10 +185,8 @@ export async function createFs (
 
   const scopedDirectoryKeys = isLibsScope ? [] : directoryKeys
   const scopedSplitObjectKeys = isLibsScope ? [] : splitObjectKeys
-  const scopedLocalOnlyDirectoryKeys = ['libs']
-  const scopedAllDirectoryKeys = [...scopedDirectoryKeys, ...scopedSplitObjectKeys, ...scopedLocalOnlyDirectoryKeys]
+  const scopedAllDirectoryKeys = [...scopedDirectoryKeys, ...scopedSplitObjectKeys]
 
-  // Root exports should never include local-only directories like `libs/`.
   const scopedRootExportDirectoryKeys = isLibsScope ? [] : [...scopedDirectoryKeys, ...scopedSplitObjectKeys]
 
   const singleFileKeys = isLibsScope
@@ -207,11 +214,17 @@ export async function createFs (
           if (fs.existsSync(legacyPath)) await fs.promises.unlink(legacyPath)
         } catch (_) {}
       }
+
+      // Migration: remove legacy libs/ directory inside symbols dir
+      const legacyLibsDir = path.join(targetDir, 'libs')
+      try {
+        if (fs.existsSync(legacyLibsDir)) await fs.promises.rm(legacyLibsDir, { recursive: true })
+      } catch (_) {}
     }
 
     const promises = [
-      // Local-only, derived data
-      createLibsDirectoryAndFiles(body?.sharedLibraries, targetDir, update),
+      // Scaffold shared libraries into librariesDir (separate from symbols dir)
+      scaffoldSharedLibraries(body?.sharedLibraries, targetDir, librariesDir, update, libsConfig),
       ...scopedDirectoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, targetDir, update)
       ),
@@ -226,7 +239,7 @@ export async function createFs (
         }
         return undefined
       }),
-      ...singleFileKeys.map((key) => {
+      ...singleFileKeys.filter(k => k !== 'sharedLibraries').map((key) => {
         if (body[key] !== undefined) {
           return createSingleFileFolderAndFile(
             key,
@@ -263,8 +276,7 @@ export async function createFs (
       }
 
       const cachePromises = [
-        // Local-only, derived data
-        createLibsDirectoryAndFiles(body?.sharedLibraries, cacheDir, true),
+        scaffoldSharedLibraries(body?.sharedLibraries, cacheDir, librariesDir, true, libsConfig),
         ...scopedDirectoryKeys.map((key) =>
           createKeyDirectoryAndFiles(key, body, cacheDir, true)
         ),
@@ -274,7 +286,7 @@ export async function createFs (
           }
           return undefined
         }),
-        ...singleFileKeys.map((key) => {
+        ...singleFileKeys.filter(k => k !== 'sharedLibraries').map((key) => {
           if (body[key] !== undefined) {
             return createSingleFileFolderAndFile(key, body[key], cacheDir, true)
           }
@@ -502,45 +514,114 @@ export async function createFs (
     return String(str).replaceAll('\n', `\n${indent}`)
   }
 
-  async function createLibsDirectoryAndFiles (sharedLibraries, distDir, update) {
+  /**
+   * Scaffold each shared library as a full project folder under librariesDir.
+   * Writes sharedLibraries.js in symbolsDir that imports from the external librariesDir.
+   */
+  async function scaffoldSharedLibraries (sharedLibraries, symbolsDir, librariesDir, update, libsConfig) {
     const libs = Array.isArray(sharedLibraries) ? sharedLibraries : []
-    const dirPath = path.join(distDir, 'libs')
-    await fs.promises.mkdir(dirPath, { recursive: true })
+    const libsConfigMap = new Map()
+    if (Array.isArray(libsConfig)) {
+      for (const lc of libsConfig) {
+        if (lc?.key) libsConfigMap.set(lc.key, lc)
+      }
+    }
+
+    // If no shared libraries, write sharedLibraries.js exporting [] and skip folder creation
+    if (!libs.length) {
+      const sharedLibsPath = path.join(symbolsDir, 'sharedLibraries.js')
+      if (update || !fs.existsSync(sharedLibsPath)) {
+        await fs.promises.writeFile(sharedLibsPath, 'export default []\n', 'utf8')
+      }
+      return
+    }
+
+    // Resolve librariesDir — if not provided, default to symbols_libs next to symbolsDir
+    const resolvedLibsDir = librariesDir || path.join(path.dirname(symbolsDir), 'symbols_libs')
+
+    await fs.promises.mkdir(resolvedLibsDir, { recursive: true })
 
     const usedImportNames = new Set()
     const entries = libs.map((lib, idx) => {
       const stem = toLibFileStem(lib, idx)
       const importName = toSafeImportName(stem, usedImportNames)
-      return { lib, stem, importName }
+      const libKey = lib?.key || stem
+      const config = libsConfigMap.get(libKey) || {}
+      return { lib, stem, importName, config }
     })
 
-    // Write per-lib files (default export for easy consumption).
-    await Promise.all(entries.map(async ({ stem, lib }) => {
-      const filePath = path.join(dirPath, `${stem}.js`)
-      if (!update && fs.existsSync(filePath)) return
+    // Scaffold each library as a full project folder
+    await Promise.all(entries.map(async ({ stem, lib, config }) => {
+      // Per-lib destDir override from symbols.json config
+      const libDir = config.destDir
+        ? path.resolve(path.dirname(symbolsDir), config.destDir)
+        : path.join(resolvedLibsDir, stem)
+      await fs.promises.mkdir(libDir, { recursive: true })
+
       const decoded = safeDeepDestringify(lib)
       const content = reorderWithOrderKeys(decoded)
-      const stringified = `export default ${objectToString(content)};`
-      await fs.promises.writeFile(filePath, stringified, 'utf8')
+
+      // Scaffold the lib with the same directory structure as symbols/
+      const libDirectoryKeys = directoryKeys.filter(k => content[k] && typeof content[k] === 'object')
+      const libSplitObjectKeys = splitObjectKeys.filter(k => content[k] && typeof content[k] === 'object')
+      const libSingleFileKeys = ['state', 'dependencies'].filter(k => content[k] !== undefined)
+
+      const libPromises = [
+        ...libDirectoryKeys.map(key =>
+          createKeyDirectoryAndFiles(key, content, libDir, update)
+        ),
+        ...libSplitObjectKeys.map(key =>
+          createSplitObjectDirectoryAndFiles(key, content[key], libDir, update)
+        ),
+        ...libSingleFileKeys.map(key =>
+          createSingleFileFolderAndFile(key, content[key], libDir, update)
+        )
+      ]
+
+      await Promise.all(libPromises)
+
+      // Generate context.js for this lib (same pattern as main symbols/context.js)
+      // Use body keys to determine which modules exist (files written in parallel)
+      const allLibKeys = new Set([...libDirectoryKeys, ...libSplitObjectKeys, ...libSingleFileKeys])
+      const contextModules = CONTEXT_MODULES
+        .filter(m => m.name !== 'sharedLibraries' && m.name !== 'config' && m.name !== 'envs')
+        .filter(m => allLibKeys.has(m.name))
+
+      const contextContent = generateContextJsContent(contextModules)
+      await fs.promises.writeFile(path.join(libDir, 'context.js'), contextContent, 'utf8')
     }))
 
-    // Write libs/index.js for convenience. This is local-only (root index does not export it).
+    // Remove stale lib directories that no longer exist
+    try {
+      const existingDirs = await fs.promises.readdir(resolvedLibsDir, { withFileTypes: true })
+      const currentStems = new Set(entries.map(e => e.stem))
+      for (const ent of existingDirs) {
+        if (ent.isDirectory() && !currentStems.has(ent.name)) {
+          console.log(chalk.yellow(`Removing stale library: ${ent.name}`))
+          await fs.promises.rm(path.join(resolvedLibsDir, ent.name), { recursive: true })
+        }
+      }
+    } catch (_) {}
+
+    // Write sharedLibraries.js that imports context from each lib
     const importLines = entries
-      .map(({ importName, stem }) => `import ${importName} from './${stem}.js'`)
-      .join('\n')
-    const defaultMapLines = entries
-      .map(({ stem, importName }) => `${JSON.stringify(stem)}: ${importName},`)
-      .join('\n  ')
-    const namedExportLines = entries
-      .map(({ importName }) => `export { ${importName} };`)
+      .map(({ importName, stem, config }) => {
+        const libDir = config.destDir
+          ? path.resolve(path.dirname(symbolsDir), config.destDir)
+          : path.join(resolvedLibsDir, stem)
+        const relPath = path.relative(symbolsDir, libDir)
+        return `import ${importName} from '${relPath}/context.js'`
+      })
       .join('\n')
 
-    const indexContent =
-      (importLines ? `${importLines}\n\n` : '') +
-      `export default {\n  ${defaultMapLines}\n}\n` +
-      (namedExportLines ? `\n${namedExportLines}\n` : '')
+    const sharedLibsContent =
+      `${importLines}\n\nexport default [${entries.map(e => e.importName).join(', ')}]\n`
 
-    await fs.promises.writeFile(path.join(dirPath, 'index.js'), indexContent, 'utf8')
+    await fs.promises.writeFile(
+      path.join(symbolsDir, 'sharedLibraries.js'),
+      sharedLibsContent,
+      'utf8'
+    )
   }
 
   async function createSplitObjectDirectoryAndFiles (key, section, distDir, update) {

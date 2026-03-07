@@ -189,6 +189,7 @@ smbls config --dist-dir src/design
 | Flag | Description |
 |------|-------------|
 | `--dist-dir <dir>` | Set distDir non-interactively |
+| `--libraries-dir <dir>` | Set librariesDir non-interactively |
 
 ### Collaboration
 

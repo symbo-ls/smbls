@@ -303,7 +303,7 @@ export const hasFunction = str => {
   return true
 }
 
-export const deepDestringify = (obj, destringified = {}) => {
+export const deepDestringifyFunctions = (obj, destringified = {}) => {
   for (const prop in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, prop)) continue
 
@@ -334,13 +334,13 @@ export const deepDestringify = (obj, destringified = {}) => {
             arr.push(arrProp)
           }
         } else if (isObject(arrProp)) {
-          arr.push(deepDestringify(arrProp))
+          arr.push(deepDestringifyFunctions(arrProp))
         } else {
           arr.push(arrProp)
         }
       }
     } else if (isObject(objProp)) {
-      destringified[prop] = deepDestringify(objProp, destringified[prop])
+      destringified[prop] = deepDestringifyFunctions(objProp, destringified[prop])
     } else {
       destringified[prop] = objProp
     }

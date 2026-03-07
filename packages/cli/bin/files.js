@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { program } from './program.js'
-import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { uploadFile, downloadFile, listFiles as listFilesApi } from '../helpers/filesApiUtils.js'
@@ -172,11 +172,11 @@ async function readBaseSnapshotOrFetch ({ authToken, projectKey, branch }) {
   return applyOrderFields(payload)
 }
 
-async function writeSnapshotAndFs ({ snapshot, distDir }) {
+async function writeSnapshotAndFs ({ snapshot, distDir, librariesDir, libsConfig }) {
   const { projectPath } = getConfigPaths()
   await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
   await fs.promises.writeFile(projectPath, JSON.stringify(snapshot, null, 2))
-  await createFs(snapshot, distDir, { update: true, metadata: false })
+  await createFs(snapshot, distDir, { update: true, metadata: false, librariesDir, libsConfig })
 }
 
 function getDistDir (symbolsConfig, opts = {}) {
@@ -336,6 +336,8 @@ filesCmd
     const projectKey = cliConfig.projectKey || symbolsConfig.key
     const branch = cliConfig.branch || symbolsConfig.branch || 'main'
     const distDir = getDistDir(symbolsConfig, { distDir: opts.distDir })
+    const librariesDir = resolveLibrariesDir(symbolsConfig)
+    const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
 
     const paths = Array.isArray(pathsArg) ? pathsArg : [pathsArg]
     if (!paths.length) {
@@ -411,7 +413,7 @@ filesCmd
     }
 
     // Persist locally (always).
-    await writeSnapshotAndFs({ snapshot: next, distDir })
+    await writeSnapshotAndFs({ snapshot: next, distDir, librariesDir, libsConfig })
     console.log(chalk.gray(`Updated local project files (${uploadedEntries.length} entries).`))
 
     // Patch server (unless local-only, or collab is running).
@@ -439,7 +441,7 @@ filesCmd
 
     const latest = await fetchLatestSnapshot({ authToken, projectKey, projectId, branch })
     writeLock({ etag: latest.etag || null, projectId, branch, pulledAt: new Date().toISOString() })
-    await writeSnapshotAndFs({ snapshot: latest.snapshot, distDir })
+    await writeSnapshotAndFs({ snapshot: latest.snapshot, distDir, librariesDir, libsConfig })
     console.log(chalk.green('Server updated and local snapshot refreshed.'))
   })
 
@@ -513,6 +515,8 @@ filesCmd
     const projectKey = cliConfig.projectKey || symbolsConfig.key
     const branch = cliConfig.branch || symbolsConfig.branch || 'main'
     const distDir = getDistDir(symbolsConfig, { distDir: opts.distDir })
+    const librariesDir = resolveLibrariesDir(symbolsConfig)
+    const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
 
     const base = await readBaseSnapshotOrFetch({ authToken, projectKey, branch })
     const next = { ...(base || {}) }
@@ -535,7 +539,7 @@ filesCmd
     }
 
     delete next.files[selectedKey]
-    await writeSnapshotAndFs({ snapshot: next, distDir })
+    await writeSnapshotAndFs({ snapshot: next, distDir, librariesDir, libsConfig })
     console.log(chalk.gray(`Removed files.${selectedKey} locally.`))
 
     if (opts.localOnly) {
@@ -561,6 +565,6 @@ filesCmd
 
     const latest = await fetchLatestSnapshot({ authToken, projectKey, projectId, branch })
     writeLock({ etag: latest.etag || null, projectId, branch, pulledAt: new Date().toISOString() })
-    await writeSnapshotAndFs({ snapshot: latest.snapshot, distDir })
+    await writeSnapshotAndFs({ snapshot: latest.snapshot, distDir, librariesDir, libsConfig })
     console.log(chalk.green('Server updated and local snapshot refreshed.'))
   })

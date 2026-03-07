@@ -11,6 +11,7 @@ program
   .command('config')
   .description('Interactively configure Symbols project settings')
   .option('--dist-dir <dir>', 'Set distDir non-interactively')
+  .option('--libraries-dir <dir>', 'Set librariesDir non-interactively')
   .action(async (options) => {
     const symbolsConfig =
       (await loadSymbolsConfig({ required: false, validateKey: false, silent: true })) || {}
@@ -18,6 +19,12 @@ program
     if (options.distDir) {
       updateLegacySymbolsJson({ ...symbolsConfig, distDir: options.distDir })
       console.log(chalk.green(`Updated symbols.json distDir to "${options.distDir}"`))
+      return
+    }
+
+    if (options.librariesDir) {
+      updateLegacySymbolsJson({ ...symbolsConfig, librariesDir: options.librariesDir })
+      console.log(chalk.green(`Updated symbols.json librariesDir to "${options.librariesDir}"`))
       return
     }
 

@@ -12,7 +12,7 @@ import { createFs } from './fs.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
-import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies, syncDependenciesJs } from '../helpers/dependenciesUtils.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
@@ -148,6 +148,9 @@ export const fetchFromCli = async (opts) => {
       distDirOverride: opts.distDir
     }) ||
     path.join(process.cwd(), 'symbols')
+
+  const librariesDir = resolveLibrariesDir(symbolsConfig)
+  const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
 
   console.log('\nFetching project data...\n')
 
@@ -286,11 +289,11 @@ export const fetchFromCli = async (opts) => {
     })
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { update: true, metadata: false, scope })
+    createFs(ordered, distDir, { update: true, metadata: false, scope, librariesDir, libsConfig })
   } else {
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=false)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { metadata: false, scope })
+    createFs(ordered, distDir, { metadata: false, scope, librariesDir, libsConfig })
   }
 }
 

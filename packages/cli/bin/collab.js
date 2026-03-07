@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import { program } from './program.js'
 import { syncProjectChanges } from './sync.js'
-import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
@@ -302,6 +302,9 @@ export async function startCollab (options) {
     resolveDistDir(symbolsConfig) ||
     path.join(process.cwd(), 'symbols')
 
+  const librariesDir = resolveLibrariesDir(symbolsConfig)
+  const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
+
   const packageJsonPath = findNearestPackageJson(process.cwd())
 
   if (!appKey) {
@@ -490,7 +493,7 @@ export async function startCollab (options) {
     } catch (_) {}
     // Avoid echoing the changes we are about to materialize
     try {
-      await createFs(persistedObj, distDir, { update: true, metadata: false })
+      await createFs(persistedObj, distDir, { update: true, metadata: false, librariesDir, libsConfig })
     } finally {
       // Extend suppression window to allow file events to settle fully
       suppressUntil = Date.now() + suppressionWindowMs

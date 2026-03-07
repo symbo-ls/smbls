@@ -1,9 +1,56 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { resolve, dirname } from 'path'
-import { spawn } from 'child_process'
+import { spawn, spawnSync } from 'child_process'
 import chalk from 'chalk'
 
 const BUNDLERS = ['parcel', 'vite', 'browser']
+
+export const BUNDLER_PACKAGES = {
+  parcel: ['parcel'],
+  vite: ['vite'],
+  webpack: ['webpack', 'webpack-cli', 'webpack-dev-server'],
+  rollup: ['rollup'],
+  turbopack: ['@next/turbo']
+}
+
+/**
+ * Add bundler devDependencies to package.json if missing.
+ * Optionally installs them immediately with the given package manager.
+ */
+export const ensureBundlerDeps = (bundler, cwd = process.cwd(), { install, pm } = {}) => {
+  const pkgs = BUNDLER_PACKAGES[bundler]
+  if (!pkgs || !pkgs.length) return false
+
+  const pkgPath = resolve(cwd, 'package.json')
+  if (!existsSync(pkgPath)) return false
+
+  let pkg
+  try { pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) } catch { return false }
+
+  const devDeps = pkg.devDependencies || {}
+  const deps = pkg.dependencies || {}
+  const missing = pkgs.filter(p => !devDeps[p] && !deps[p])
+  if (!missing.length) return false
+
+  pkg.devDependencies = devDeps
+  for (const p of missing) pkg.devDependencies[p] = 'latest'
+  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+
+  if (install && pm) {
+    console.log(chalk.dim(`Installing ${missing.join(', ')}...`))
+    const cmds = {
+      npm: ['npm', ['install', '--save-dev', ...missing]],
+      yarn: ['yarn', ['add', '--dev', ...missing]],
+      pnpm: ['pnpm', ['add', '-D', ...missing]],
+      bun: ['bun', ['add', '--dev', ...missing]],
+      deno: ['deno', ['install']]
+    }
+    const [cmd, args] = cmds[pm] || cmds.npm
+    spawnSync(cmd, args, { stdio: 'inherit', cwd })
+  }
+
+  return true
+}
 
 export const findBin = (name, cwd = process.cwd()) => {
   let dir = resolve(cwd)
@@ -92,6 +139,11 @@ export const resolveBundler = async (cwd = process.cwd()) => {
   console.log(chalk.yellow('No bundler found. Please choose one to install:'))
   const chosen = await promptBundler()
   saveSymbols({ bundler: chosen }, cwd)
+
+  const { detectPackageManager } = await import('../helpers/packageManager.js')
+  const pm = detectPackageManager(cwd)
+  ensureBundlerDeps(chosen, cwd, { install: true, pm })
+
   return chosen
 }
 

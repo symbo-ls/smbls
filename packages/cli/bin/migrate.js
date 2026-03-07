@@ -6,7 +6,7 @@ import { execSync } from 'child_process'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { program } from './program.js'
-import { detectV2Project, generateV3IndexJs } from './init-helpers/v2detect.js'
+import { detectV2Project, generateV3IndexJs, generateContextJs } from './init-helpers/v2detect.js'
 import { runInstall } from '../helpers/packageManager.js'
 import { runConfigPrompts } from '../helpers/configPrompts.js'
 
@@ -215,6 +215,13 @@ program
       ? JSON.parse(fs.readFileSync(path.join(cwd, 'symbols.json'), 'utf8'))
       : {}
     const isCdnMode = earlySymbols.runtime === 'browser' || CDN_PMs.has(earlySymbols.packageManager)
+    // Generate context.js first (contains all module imports/exports)
+    const contextJsPath = path.join(symbolsDir, 'context.js')
+    const contextContent = generateContextJs(symbolsDir)
+    if (contextContent) {
+      writeFile(contextJsPath, contextContent, 'symbols/context.js')
+    }
+
     const v3Index = generateV3IndexJs(symbolsDir, { isCdnMode })
     if (v3Index) {
       writeFile(indexJsPath, v3Index, 'symbols/index.js')

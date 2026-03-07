@@ -64,3 +64,60 @@ export function resolveDistDir (symbolsConfig, options = {}) {
   if (path.isAbsolute(raw)) return raw
   return path.resolve(cwd, raw)
 }
+
+/**
+ * Resolve the effective libraries directory for shared libraries.
+ *
+ * Precedence:
+ *  - explicit override (e.g. CLI flag)
+ *  - symbols.json.librariesDir
+ *  - default: ./symbols_libs
+ *
+ * Returns an absolute path.
+ */
+export function resolveLibrariesDir (symbolsConfig, options = {}) {
+  const cfg = symbolsConfig || {}
+  const {
+    librariesDirOverride,
+    cwd = process.cwd()
+  } = options
+
+  const raw = librariesDirOverride || cfg.librariesDir || './symbols_libs'
+
+  if (path.isAbsolute(raw)) return raw
+  return path.resolve(cwd, raw)
+}
+
+/**
+ * Normalize shared libraries config from symbols.json into a uniform array.
+ *
+ * Supported formats in symbols.json:
+ *   1. Array of keys:     ["one", "two"]
+ *   2. Object key:version: { one: "1.0.0", two: "latest" }
+ *   3. Object key:config:  { one: { version: "1.0.0", destDir: "./custom" } }
+ *
+ * Returns: [{ key: "one", version: "1.0.0", destDir: null }, ...]
+ */
+export function normalizeSharedLibrariesConfig (raw) {
+  if (!raw) return []
+
+  // Format 1: array of strings (or objects with key)
+  if (Array.isArray(raw)) {
+    return raw.map(item => {
+      if (typeof item === 'string') return { key: item, version: null, destDir: null }
+      if (item && typeof item === 'object') return { key: item.key || item.name, version: item.version || null, destDir: item.destDir || null }
+      return null
+    }).filter(Boolean)
+  }
+
+  // Formats 2 & 3: object
+  if (typeof raw === 'object') {
+    return Object.entries(raw).map(([key, value]) => {
+      if (typeof value === 'string') return { key, version: value, destDir: null }
+      if (value && typeof value === 'object') return { key, version: value.version || null, destDir: value.destDir || null, ...value }
+      return { key, version: null, destDir: null }
+    })
+  }
+
+  return []
+}

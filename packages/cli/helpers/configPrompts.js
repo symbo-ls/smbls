@@ -151,6 +151,13 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     },
     {
       type: 'input',
+      name: 'librariesDir',
+      message: 'Shared libraries directory:',
+      default: symbolsConfig.librariesDir || './symbols_libs',
+      filter: (v) => v.trim() || './symbols_libs'
+    },
+    {
+      type: 'input',
       name: 'apiBaseUrl',
       message: 'API base URL:',
       default: cliConfig.apiBaseUrl || 'https://api.symbols.app',
@@ -192,6 +199,7 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     branch: answers.branch,
     version: answers.version,
     dir: answers.dir,
+    librariesDir: answers.librariesDir,
     runtime,
     bundler,
     packageManager,

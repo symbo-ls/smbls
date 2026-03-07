@@ -38,26 +38,28 @@ export function detectV2Project (cwd = process.cwd()) {
 }
 
 /**
- * Generate new v3 symbols/index.js content based on which files exist in srcDir.
+ * Context modules that get imported and re-exported from context.js.
+ * Each shared library and the main symbols folder share this structure.
  */
-const CDN_PMs = new Set(['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'])
+export const CONTEXT_MODULES = [
+  { name: 'state', path: './state.js', style: 'default' },
+  { name: 'dependencies', path: './dependencies.js', style: 'default' },
+  { name: 'components', path: './components/index.js', style: 'namespace' },
+  { name: 'snippets', path: './snippets/index.js', style: 'namespace' },
+  { name: 'pages', path: './pages/index.js', style: 'default' },
+  { name: 'functions', path: './functions/index.js', style: 'namespace' },
+  { name: 'methods', path: './methods/index.js', style: 'namespace' },
+  { name: 'designSystem', path: './designSystem/index.js', style: 'default' },
+  { name: 'files', path: './files/index.js', style: 'default' },
+  { name: 'sharedLibraries', path: './sharedLibraries.js', style: 'default' },
+  { name: 'config', path: './config.js', style: 'default' },
+  { name: 'envs', path: './envs.js', style: 'default' }
+]
 
-export function generateV3IndexJs (srcDir, { isCdnMode = false } = {}) {
-  const modules = [
-    { name: 'state', path: './state.js', style: 'default' },
-    { name: 'dependencies', path: './dependencies.js', style: 'default' },
-    { name: 'components', path: './components/index.js', style: 'namespace' },
-    { name: 'snippets', path: './snippets/index.js', style: 'namespace' },
-    { name: 'pages', path: './pages/index.js', style: 'default' },
-    { name: 'functions', path: './functions/index.js', style: 'namespace' },
-    { name: 'methods', path: './methods/index.js', style: 'namespace' },
-    { name: 'designSystem', path: './designSystem/index.js', style: 'default' },
-    { name: 'files', path: './files/index.js', style: 'default' },
-    { name: 'sharedLibraries', path: './sharedLibraries.js', style: 'default' },
-    { name: 'config', path: './config.js', style: 'default' },
-    { name: 'envs', path: './envs.js', style: 'default' }
-  ]
-
+/**
+ * Generate context.js content based on which modules exist in srcDir.
+ */
+export function generateContextJs (srcDir, modules = CONTEXT_MODULES) {
   const present = modules.filter(m => fs.existsSync(path.join(srcDir, m.path.replace('./', ''))))
 
   if (!present.length) return null
@@ -68,16 +70,25 @@ export function generateV3IndexJs (srcDir, { isCdnMode = false } = {}) {
       : `import ${m.name} from '${m.path}'`
   ).join('\n')
 
-  const contextKeys = present.map(m => m.name === 'config' ? `  ...config` : `  ${m.name}`).join(',\n')
+  const contextKeys = present.map(m => m.name === 'config' ? '  ...config' : `  ${m.name}`).join(',\n')
 
+  return `${imports}
+
+export default {
+${contextKeys}
+}
+`
+}
+
+/**
+ * Generate new v3 symbols/index.js content based on which files exist in srcDir.
+ */
+export function generateV3IndexJs (srcDir, { isCdnMode = false } = {}) {
   const smblsImport = isCdnMode ? '' : "import { create } from 'smbls'\n"
 
   return `${smblsImport}import app from './app.js'
+import context from './context.js'
 
-${imports}
-
-create(app, {
-${contextKeys}
-})
+create(app, context)
 `
 }

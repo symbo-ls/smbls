@@ -13,7 +13,7 @@ import { threeWayRebase, computeOrdersForTuples, preprocessChanges } from '../he
 import { createFs } from './fs.js'
 import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
-import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
 import { applyOrderFields, stripOrderFields } from '../helpers/orderUtils.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
@@ -212,6 +212,9 @@ export async function syncProjectChanges (options) {
     const distDir =
       resolveDistDir(symbolsConfig) ||
       path.join(process.cwd(), 'symbols')
+
+    const librariesDir = resolveLibrariesDir(symbolsConfig)
+    const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
 
     const packageJsonPath = findNearestPackageJson(process.cwd())
 
@@ -465,7 +468,7 @@ export async function syncProjectChanges (options) {
     if (options.verbose) {
       logDesignSystemFlags('sync: after applyOrderFields (before createFs)', orderedUpdatedServerData?.designSystem, { enabled: true })
     }
-    await createFs(orderedUpdatedServerData, distDir, { update: true, metadata: false })
+    await createFs(orderedUpdatedServerData, distDir, { update: true, metadata: false, librariesDir, libsConfig })
     await debugDesignSystemFiles('sync: after createFs')
     console.log(chalk.gray('Local files updated successfully'))
 

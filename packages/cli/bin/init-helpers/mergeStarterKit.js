@@ -5,6 +5,7 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { execSync } from 'child_process'
+import { BUNDLER_PACKAGES } from '../bundler.js'
 
 const STARTER_KIT_REPO = 'https://github.com/symbo-ls/starter-kit'
 const STARTER_KIT_BRANCH = 'next'
@@ -127,17 +128,44 @@ export async function mergeStarterKit (cwd) {
     fs.writeFileSync(symbolsPath, JSON.stringify(mergedSymbols, null, 2) + '\n')
     console.log(chalk.green('update ') + 'symbols.json')
 
-    // --- smbls/ folder from cloned starter-kit (app.js + index.html only if missing) ---
+    // --- symbols/ folder from cloned starter-kit (app.js + index.html only if missing) ---
     const smblsDir = path.join(cwd, 'symbols')
     if (!fs.existsSync(smblsDir)) fs.mkdirSync(smblsDir, { recursive: true })
     copyIfMissing(path.join(tmpDir, 'symbols', 'index.js'), path.join(smblsDir, 'index.js'))
     copyIfMissing(path.join(tmpDir, 'symbols', 'index.html'), path.join(smblsDir, 'index.html'))
 
-    // --- bundler config ---
+    // --- sharedLibraries.js (default empty export) ---
+    writeIfMissing(path.join(smblsDir, 'sharedLibraries.js'), 'export default []\n')
+
+    // --- context.js (auto-generated, imports all present modules) ---
+    // Only create if index.js was also just created (fresh project)
+    if (fs.existsSync(path.join(smblsDir, 'index.js'))) {
+      const { generateContextJs } = await import('./v2detect.js')
+      const contextContent = generateContextJs(smblsDir)
+      if (contextContent) writeIfMissing(path.join(smblsDir, 'context.js'), contextContent)
+    }
+
+    // --- bundler config + devDependencies ---
     const bundler = mergedSymbols.bundler || 'parcel'
     const bundlerConfig = BUNDLER_CONFIGS[bundler]
     if (bundlerConfig) {
       writeIfMissing(path.join(cwd, bundlerConfig.file), bundlerConfig.content)
+    }
+
+    const bundlerPkgs = BUNDLER_PACKAGES[bundler]
+    if (bundlerPkgs && bundlerPkgs.length) {
+      pkg.devDependencies = pkg.devDependencies || {}
+      let depsChanged = false
+      for (const p of bundlerPkgs) {
+        if (!pkg.devDependencies[p] && !pkg.dependencies[p]) {
+          pkg.devDependencies[p] = 'latest'
+          depsChanged = true
+        }
+      }
+      if (depsChanged) {
+        fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+        console.log(chalk.green('update ') + `package.json (added ${bundlerPkgs.join(', ')})`)
+      }
     }
 
     // --- .eslintrc ---
