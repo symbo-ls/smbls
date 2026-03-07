@@ -1,10 +1,12 @@
 // ─── Stats ──────────────────────────────────────────────────────────────────
 
 export const Stat = {
-  padding: '28px 20px 28px 0',
+  padding: '24px 20px',
   borderRightWidth: '1px',
   borderRightStyle: 'solid',
   borderRightColor: 'borderLight',
+
+  ':first-child': { paddingLeft: '0' },
 
   Num: {
     fontFamily: "'Inter Tight', system-ui, -apple-system, sans-serif",
@@ -17,10 +19,11 @@ export const Stat = {
     '@mobile': { fontSize: '38px' }
   },
   Lbl: {
+    fontFamily: "'DM Mono', monospace",
     fontSize: '11px',
     color: 'textTertiary',
-    marginTop: '6px',
-    letterSpacing: '0.04em',
+    marginTop: '8px',
+    letterSpacing: '0.02em',
     fontWeight: '400'
   }
 }
@@ -31,7 +34,7 @@ export const StatsRow = {
   borderTopWidth: '1px',
   borderTopStyle: 'solid',
   borderTopColor: 'borderLight',
-  margin: '40px 0',
+  margin: '32px 0',
   '@mobile': {
     gridTemplateColumns: '1fr 1fr'
   },

@@ -152,6 +152,14 @@ const renderCSS = (el, emotion, colorMap, mediaMap) => {
     hasCss = true
   }
 
+  // Inject CSS from extends chain (e.g. extends: 'Flex' → display: flex)
+  const extsCss = getExtendsCSS(el)
+  if (extsCss) {
+    for (const [k, v] of Object.entries(extsCss)) {
+      if (!css[k]) { css[k] = v; hasCss = true }
+    }
+  }
+
   // Handle element.style object
   if (el.style && typeof el.style === 'object') {
     Object.assign(css, el.style)
@@ -236,9 +244,40 @@ const NON_CSS_PROPS = new Set([
   'theme', '__element', 'update'
 ])
 
+// Map of component names to their implicit CSS from extends
+const EXTENDS_CSS = {
+  Flex: { display: 'flex' },
+  InlineFlex: { display: 'inline-flex' },
+  Grid: { display: 'grid' },
+  InlineGrid: { display: 'inline-grid' },
+  Block: { display: 'block' },
+  Inline: { display: 'inline' }
+}
+
+const getExtendsCSS = (el) => {
+  const exts = el.__ref?.__extends
+  if (!exts || !Array.isArray(exts)) return null
+  for (const ext of exts) {
+    if (EXTENDS_CSS[ext]) return EXTENDS_CSS[ext]
+  }
+  return null
+}
+
 // DomQL shorthand props that expand to multiple CSS properties
 const resolveShorthand = (key, val) => {
-  if (key === 'flexAlign' && typeof val === 'string') {
+  if (typeof val === 'undefined' || val === null) return null
+
+  // Flex shorthands
+  if (key === 'flow' && typeof val === 'string') {
+    let [direction, wrap] = (val || 'row').split(' ')
+    if (val.startsWith('x') || val === 'row') direction = 'row'
+    if (val.startsWith('y') || val === 'column') direction = 'column'
+    return { display: 'flex', flexFlow: (direction || '') + ' ' + (wrap || '') }
+  }
+  if (key === 'wrap') {
+    return { display: 'flex', flexWrap: val }
+  }
+  if ((key === 'align' || key === 'flexAlign') && typeof val === 'string') {
     const [alignItems, justifyContent] = val.split(' ')
     return { display: 'flex', alignItems, justifyContent }
   }
@@ -246,12 +285,49 @@ const resolveShorthand = (key, val) => {
     const [alignItems, justifyContent] = val.split(' ')
     return { display: 'grid', alignItems, justifyContent }
   }
-  if (key === 'round' && val) {
+  if (key === 'flexFlow' && typeof val === 'string') {
+    let [direction, wrap] = (val || 'row').split(' ')
+    if (val.startsWith('x') || val === 'row') direction = 'row'
+    if (val.startsWith('y') || val === 'column') direction = 'column'
+    return { display: 'flex', flexFlow: (direction || '') + ' ' + (wrap || '') }
+  }
+  if (key === 'flexWrap') {
+    return { display: 'flex', flexWrap: val }
+  }
+
+  // Box/size shorthands
+  if (key === 'round' || (key === 'borderRadius' && val)) {
     return { borderRadius: typeof val === 'number' ? val + 'px' : val }
   }
-  if (key === 'boxSize' && val) {
-    return { width: val, height: val }
+  if (key === 'boxSize' && typeof val === 'string') {
+    const [height, width] = val.split(' ')
+    return { height, width: width || height }
   }
+  if (key === 'widthRange' && typeof val === 'string') {
+    const [minWidth, maxWidth] = val.split(' ')
+    return { minWidth, maxWidth: maxWidth || minWidth }
+  }
+  if (key === 'heightRange' && typeof val === 'string') {
+    const [minHeight, maxHeight] = val.split(' ')
+    return { minHeight, maxHeight: maxHeight || minHeight }
+  }
+
+  // Grid aliases
+  if (key === 'column') return { gridColumn: val }
+  if (key === 'columns') return { gridTemplateColumns: val }
+  if (key === 'templateColumns') return { gridTemplateColumns: val }
+  if (key === 'row') return { gridRow: val }
+  if (key === 'rows') return { gridTemplateRows: val }
+  if (key === 'templateRows') return { gridTemplateRows: val }
+  if (key === 'area') return { gridArea: val }
+  if (key === 'template') return { gridTemplate: val }
+  if (key === 'templateAreas') return { gridTemplateAreas: val }
+  if (key === 'autoColumns') return { gridAutoColumns: val }
+  if (key === 'autoRows') return { gridAutoRows: val }
+  if (key === 'autoFlow') return { gridAutoFlow: val }
+  if (key === 'columnStart') return { gridColumnStart: val }
+  if (key === 'rowStart') return { gridRowStart: val }
+
   return null
 }
 
@@ -289,7 +365,15 @@ const CSS_PROPERTIES = new Set([
   'gap', 'rowGap', 'columnGap',
   'gridTemplateColumns', 'gridTemplateRows', 'gridColumn', 'gridRow',
   'gridArea', 'gridAutoFlow', 'gridAutoColumns', 'gridAutoRows',
-  'transform', 'transformOrigin', 'transition', 'animation', 'animationDelay',
+  'inset',
+  'inlineSize', 'blockSize', 'minInlineSize', 'maxInlineSize', 'minBlockSize', 'maxBlockSize',
+  'paddingBlockStart', 'paddingBlockEnd', 'paddingInlineStart', 'paddingInlineEnd',
+  'marginBlockStart', 'marginBlockEnd', 'marginInlineStart', 'marginInlineEnd',
+  'transform', 'transformOrigin', 'transition',
+  'animation', 'animationName', 'animationDuration', 'animationDelay',
+  'animationTimingFunction', 'animationFillMode', 'animationIterationCount',
+  'animationPlayState', 'animationDirection',
+  'gridTemplate', 'gridTemplateAreas', 'gridColumnStart', 'gridRowStart',
   'boxShadow', 'outline', 'outlineColor', 'outlineWidth', 'outlineStyle', 'outlineOffset',
   'whiteSpace', 'wordBreak', 'wordWrap', 'overflowWrap',
   'visibility', 'boxSizing', 'objectFit', 'objectPosition',

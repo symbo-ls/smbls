@@ -8,22 +8,29 @@ export const Btn = {
   gap: '6px',
   fontSize: '13px',
   fontWeight: '500',
-  padding: '10px 22px',
-  borderRadius: '2px',
+  padding: '11px 24px',
+  borderRadius: '6px',
   borderWidth: '0',
   borderStyle: 'solid',
   borderColor: 'transparent',
   cursor: 'pointer',
   letterSpacing: '-0.005em',
-  transition: 'background 140ms cubic-bezier(0.0, 0.0, 0.2, 1), color 140ms cubic-bezier(0.0, 0.0, 0.2, 1), border-color 140ms cubic-bezier(0.0, 0.0, 0.2, 1), opacity 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
-  ':active': { opacity: '0.7' }
+  transition: 'background 180ms cubic-bezier(0.16, 1, 0.3, 1), color 180ms cubic-bezier(0.16, 1, 0.3, 1), border-color 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 180ms cubic-bezier(0.16, 1, 0.3, 1)',
+  ':active': { transform: 'scale(0.97)' }
 }
 
 export const BtnPrimary = {
   extends: 'Btn',
   background: 'dark',
+  color: 'cream',
+  ':hover': { background: 'dark3' }
+}
+
+export const BtnAccent = {
+  extends: 'Btn',
+  background: 'accent',
   color: 'white',
-  ':hover': { background: 'dark2' }
+  ':hover': { background: 'accentHover' }
 }
 
 export const BtnGhost = {
@@ -43,6 +50,6 @@ export const BtnOutline = {
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: 'borderStrong',
-  borderRadius: '2px',
-  ':hover': { background: 'dark', color: 'white' }
+  borderRadius: '6px',
+  ':hover': { background: 'dark', color: 'cream' }
 }

@@ -4,18 +4,17 @@ export const PageLayout = {
   extends: 'Flex',
   flexFlow: 'column',
   minHeight: '100vh',
-  background: 'white',
-  animation: 'pageEnter 520ms cubic-bezier(0.16, 1, 0.3, 1) both'
+  background: 'cream'
 }
 
 // ─── Page Header (dark banner for sub-pages) ────────────────────────────────
 
 export const PageHeader = {
   tag: 'section',
-  padding: '144px 32px 80px',
+  padding: '148px 0 88px',
   position: 'relative',
   overflow: 'hidden',
-  '@tablet': { padding: '116px 20px 60px' },
+  '@tablet': { padding: '120px 0 64px' },
 
   Bg: {
     position: 'absolute',
@@ -29,73 +28,136 @@ export const PageHeader = {
   Inner: {
     position: 'relative',
     zIndex: '1',
-    maxWidth: '680px',
+    maxWidth: '1200px',
     margin: '0 auto',
-    textAlign: 'center'
+    padding: '0 48px',
+    textAlign: 'center',
+    '@tablet': { padding: '0 24px' }
   }
+}
+
+export const PageHeaderBack = {
+  position: 'absolute',
+  top: '76px',
+  left: '0',
+  right: '0',
+  zIndex: '2',
+  maxWidth: '1200px',
+  margin: '0 auto',
+  padding: '0 48px',
+  '@tablet': { padding: '0 24px', top: '68px' }
+}
+
+// ─── Centered text wrapper for PageHeader ────────────────────────────────────
+
+export const PageHeaderCenter = {
+  maxWidth: '700px',
+  margin: '0 auto'
 }
 
 // ─── Back Link ──────────────────────────────────────────────────────────────
 
 export const BackLink = {
-  tag: 'a',
+  extends: 'Link',
   display: 'inline-flex',
   alignItems: 'center',
   gap: '7px',
   fontSize: '11px',
-  color: 'white20',
-  marginBottom: '32px',
-  letterSpacing: '0.06em',
+  fontFamily: "'DM Mono', monospace",
+  color: 'cream48',
+  letterSpacing: '0.04em',
   transition: 'color 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
-  ':hover': { color: 'darkWhite48' }
+  ':hover': { color: 'cream80' }
 }
 
 // ─── Section wrappers ───────────────────────────────────────────────────────
 
 export const Section = {
   tag: 'section',
-  background: 'white',
-  padding: '96px 0'
+  background: 'warmWhite',
+  padding: '104px 0',
+  '@tablet': { padding: '80px 0' },
+  '@mobile': { padding: '60px 0' }
 }
 
 export const SectionAlt = {
   tag: 'section',
-  background: 'bgSubtle',
-  padding: '96px 0'
+  background: 'cream',
+  padding: '104px 0',
+  '@tablet': { padding: '80px 0' },
+  '@mobile': { padding: '60px 0' }
 }
 
 export const SectionDark = {
   tag: 'section',
   background: 'dark',
-  padding: '96px 0'
+  padding: '104px 0',
+  '@tablet': { padding: '80px 0' },
+  '@mobile': { padding: '60px 0' }
 }
 
 // ─── Inner container ────────────────────────────────────────────────────────
 
 export const Inner = {
-  maxWidth: '1120px',
+  maxWidth: '1200px',
   margin: '0 auto',
-  padding: '0 32px',
-  '@tablet': { padding: '0 20px' }
+  padding: '0 48px',
+  '@tablet': { padding: '0 24px' }
 }
 
 // ─── Section Header ─────────────────────────────────────────────────────────
 
 export const SectionHeader = {
-  marginBottom: '72px'
+  marginBottom: '72px',
+  '@mobile': { marginBottom: '48px' }
 }
 
 // ─── Chips ──────────────────────────────────────────────────────────────────
 
 export const Chip = {
-  padding: '5px 12px',
+  padding: '6px 14px',
   background: 'transparent',
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: 'borderMedium',
-  borderRadius: '2px',
+  borderRadius: '6px',
   fontSize: '11px',
+  fontWeight: '500',
   color: 'textSecondary',
-  transition: 'border-color 140ms cubic-bezier(0.0, 0.0, 0.2, 1), color 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
-  ':hover': { borderColor: 'borderStrong', color: 'dark' }
+  whiteSpace: 'nowrap',
+  transition: 'border-color 140ms cubic-bezier(0.0, 0.0, 0.2, 1), color 140ms cubic-bezier(0.0, 0.0, 0.2, 1), background 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
+  ':hover': { borderColor: 'borderStrong', color: 'dark', background: 'accentLight' }
+}
+
+// ─── Partner Chip (with logo) ────────────────────────────────────────────────
+
+export const PartnerChip = {
+  extends: 'Flex',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '8px',
+  padding: '7px 13px',
+  whiteSpace: 'nowrap',
+  background: 'transparent',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'borderMedium',
+  borderRadius: '8px',
+  transition: 'border-color 140ms cubic-bezier(0.0, 0.0, 0.2, 1), background 140ms cubic-bezier(0.0, 0.0, 0.2, 1)',
+  ':hover': { borderColor: 'borderStrong', background: 'bgSubtle' },
+
+  Logo: {
+    tag: 'img',
+    width: '24px',
+    height: '24px',
+    objectFit: 'contain',
+    flexShrink: '0',
+    borderRadius: '4px'
+  },
+  Name: {
+    fontSize: '12px',
+    fontWeight: '500',
+    letterSpacing: '-0.01em',
+    color: 'dark'
+  }
 }

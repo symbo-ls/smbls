@@ -10,7 +10,7 @@ export default {
     fontFeatureSettings: '"ss01", "cv01", "cv03"'
   },
   body: {
-    fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+    fontFamily: "'DM Sans', system-ui, -apple-system, sans-serif",
     lineHeight: '1.6',
     overflowX: 'hidden'
   },
@@ -32,7 +32,7 @@ export default {
     background: 'transparent'
   },
   '::-webkit-scrollbar-thumb': {
-    background: 'rgba(0,0,0,0.10)',
+    background: 'rgba(29,27,22,0.10)',
     borderRadius: '99px'
   }
 }

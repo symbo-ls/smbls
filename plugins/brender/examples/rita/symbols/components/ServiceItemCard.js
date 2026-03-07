@@ -1,19 +1,20 @@
 // ─── Service Item Card (for sub-pages grid items) ───────────────────────────
 
 export const ServiceItemCard = {
-  background: 'white',
-  padding: '32px',
+  background: 'warmWhite',
+  padding: '36px',
   transition: 'background 180ms cubic-bezier(0.0, 0.0, 0.2, 1)',
   ':hover': { background: 'bgSubtle' },
 
   Number: {
-    fontFamily: "'Inter Tight', system-ui, -apple-system, sans-serif",
-    fontSize: '10px',
-    fontWeight: '500',
-    color: 'textTertiary',
-    letterSpacing: '0.10em',
+    fontFamily: "'DM Mono', monospace",
+    fontSize: '11px',
+    fontWeight: '400',
+    color: 'accent',
+    letterSpacing: '0.06em',
     marginBottom: '20px',
-    fontVariantNumeric: 'tabular-nums'
+    fontVariantNumeric: 'tabular-nums',
+    opacity: '0.7'
   },
   Title: {
     tag: 'h3',
@@ -29,7 +30,7 @@ export const ServiceItemCard = {
     fontSize: '13px',
     color: 'textSecondary',
     lineHeight: '1.72',
-    fontWeight: '300'
+    fontWeight: '400'
   }
 }
 
@@ -40,6 +41,8 @@ export const ItemsGrid = {
   gridTemplateColumns: 'repeat(3, 1fr)',
   gap: '1px',
   background: 'borderLight',
+  borderRadius: '12px',
+  overflow: 'hidden',
   '@tablet': { gridTemplateColumns: '1fr 1fr' },
   '@mobile': { gridTemplateColumns: '1fr' }
 }
@@ -56,20 +59,21 @@ export const Criterion = {
   borderBottomColor: 'borderLight',
 
   Check: {
-    width: '18px',
-    height: '18px',
+    width: '20px',
+    height: '20px',
     flexShrink: '0',
     marginTop: '2px',
-    fontSize: '11px',
-    color: 'dark',
+    fontSize: '12px',
+    color: 'accent',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    fontWeight: '600'
   },
   Text: {
     fontSize: '14px',
     color: 'textSecondary',
     lineHeight: '1.68',
-    fontWeight: '300'
+    fontWeight: '400'
   }
 }

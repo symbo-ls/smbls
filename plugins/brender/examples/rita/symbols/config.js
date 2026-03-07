@@ -6,6 +6,6 @@ export default {
   useSvgSprite: true,
   useDefaultConfig: true,
   useDocumentTheme: true,
-  globalTheme: 'dark',
+  globalTheme: 'light',
   verbose: false,
 }

@@ -2,20 +2,20 @@ export default {
   document: {
     '@light': {
       color: 'dark',
-      background: 'white'
+      background: 'cream'
     },
     '@dark': {
-      color: 'white',
+      color: 'cream92',
       background: 'dark'
     }
   },
   dark: {
-    color: 'white',
+    color: 'cream92',
     background: 'dark'
   },
   blue: {
     color: 'white',
-    background: 'blue'
+    background: 'accent'
   },
   none: {
     color: 'none',
