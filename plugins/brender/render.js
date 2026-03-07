@@ -29,7 +29,13 @@ const UIKIT_STUBS = {
   Img: {
     tag: 'img',
     attr: {
-      src: (el) => el.props?.src,
+      src: (el) => {
+        let src = el.props?.src
+        if (typeof src === 'string' && src.includes('{{')) {
+          src = el.call('replaceLiteralsWithObjectFields', src, el.state)
+        }
+        return src
+      },
       alt: (el) => el.props?.alt,
       loading: (el) => el.props?.loading
     }
@@ -141,15 +147,24 @@ export const renderElement = async (elementDef, options = {}) => {
   const body = document.body
 
   const { create } = await import('@domql/element')
+  const domqlUtils = await import('@domql/utils')
 
   // Merge minimal uikit stubs so DOMQL resolves extends chains
   // (e.g. extends: 'Link' → tag: 'a', extends: 'Flex' → display: flex)
   const components = { ...UIKIT_STUBS, ...(context.components || {}) }
 
+  // Register utility functions so element.call() can resolve them
+  // (e.g. replaceLiteralsWithObjectFields for {{ }} templates)
+  const utils = {
+    ...domqlUtils,
+    ...(context.utils || {}),
+    ...(context.functions || {})
+  }
+
   resetKeys()
 
   const element = create(elementDef, { node: body }, 'root', {
-    context: { document, window, ...context, components }
+    context: { document, window, ...context, components, utils }
   })
 
   assignKeys(body)
@@ -255,6 +270,120 @@ ${result.html}
   return { html, route, brKeyCount: result.brKeyCount }
 }
 
+// ── Design system token resolution ──────────────────────────────────────────
+
+const LETTER_TO_INDEX = {
+  U: -6, V: -5, W: -4, X: -3, Y: -2, Z: -1,
+  A: 0, B: 1, C: 2, D: 3, E: 4, F: 5, G: 6, H: 7, I: 8, J: 9,
+  K: 10, L: 11, M: 12, N: 13, O: 14, P: 15
+}
+
+const SPACING_PROPS = new Set([
+  'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+  'paddingBlock', 'paddingInline', 'paddingBlockStart', 'paddingBlockEnd',
+  'paddingInlineStart', 'paddingInlineEnd',
+  'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+  'marginBlock', 'marginInline', 'marginBlockStart', 'marginBlockEnd',
+  'marginInlineStart', 'marginInlineEnd',
+  'gap', 'rowGap', 'columnGap',
+  'top', 'right', 'bottom', 'left',
+  'width', 'height', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight',
+  'flexBasis', 'fontSize', 'lineHeight', 'letterSpacing',
+  'borderWidth', 'borderRadius', 'outlineWidth', 'outlineOffset',
+  'inset', 'insetBlock', 'insetInline',
+  'boxSize', 'round'
+])
+
+/**
+ * Resolves a spacing token like 'B2', 'A', 'E3' to a px/em value.
+ * Uses base * ratio^index for main steps (A=0, B=1, etc.)
+ * and sub-ratio interpolation for sub-steps (B1, B2, B3).
+ */
+const resolveSpacingToken = (token, spacingConfig) => {
+  if (!token || typeof token !== 'string') return null
+  if (!spacingConfig) return null
+
+  const base = spacingConfig.base || 16
+  const ratio = spacingConfig.ratio || 1.618
+  const unit = spacingConfig.unit || 'px'
+  const hasSubSequence = spacingConfig.subSequence !== false
+
+  // Handle compound values like 'B2 - -' or 'A1 B C1'
+  if (token.includes(' ')) {
+    const parts = token.split(' ').map(part => {
+      if (part === '-' || part === '') return part
+      return resolveSpacingToken(part, spacingConfig) || part
+    })
+    return parts.join(' ')
+  }
+
+  // Skip CSS keywords and values with units
+  if (/^(none|auto|inherit|initial|unset|0)$/i.test(token)) return null
+  if (/\d+(px|em|rem|%|vh|vw|vmin|vmax|ch|ex|cm|mm|in|pt|pc|fr|s|ms)$/i.test(token)) return null
+  // Skip hex colors, rgb(), etc.
+  if (/^(#|rgb|hsl|var\()/i.test(token)) return null
+
+  const isNegative = token.startsWith('-')
+  const abs = isNegative ? token.slice(1) : token
+
+  // Match letter + optional digit: A, B, B2, E3, etc.
+  const m = abs.match(/^([A-Z])(\d)?$/i)
+  if (!m) return null
+
+  const letter = m[1].toUpperCase()
+  const subStep = m[2] ? parseInt(m[2]) : 0
+  const idx = LETTER_TO_INDEX[letter]
+  if (idx === undefined) return null
+
+  let value = base * Math.pow(ratio, idx)
+
+  if (subStep > 0 && hasSubSequence) {
+    const next = base * Math.pow(ratio, idx + 1)
+    const diff = next - value
+    const subRatio = diff / ratio
+    // Sub-steps: 1 = value + (diff - subRatio), 2 = midpoint, 3 = value + subRatio
+    const first = next - subRatio
+    const second = value + subRatio
+    const middle = (first + second) / 2
+    const subs = (~~next - ~~value > 16) ? [first, middle, second] : [first, second]
+    if (subStep <= subs.length) {
+      value = subs[subStep - 1]
+    }
+  }
+
+  const rounded = Math.round(value * 100) / 100
+  const sign = isNegative ? '-' : ''
+  return `${sign}${rounded}${unit}`
+}
+
+// Kebab-case versions of spacing props for post-shorthand resolution
+const SPACING_PROPS_KEBAB = new Set(
+  [...SPACING_PROPS].map(k => k.replace(/[A-Z]/g, m => '-' + m.toLowerCase()))
+)
+
+/**
+ * Try to resolve a CSS value through the design system.
+ * Returns the resolved value or the original if not a token.
+ */
+const resolveDSValue = (key, val, ds) => {
+  if (typeof val !== 'string') return val
+
+  // Color resolution
+  if (CSS_COLOR_PROPS.has(key)) {
+    const colorMap = ds?.color || {}
+    if (colorMap[val]) return colorMap[val]
+  }
+
+  // Spacing resolution (check both camelCase and kebab-case keys)
+  if (SPACING_PROPS.has(key) || SPACING_PROPS_KEBAB.has(key)) {
+    const spacing = ds?.spacing || {}
+    const resolved = resolveSpacingToken(val, spacing)
+    if (resolved) return resolved
+  }
+
+  return val
+}
+
 // ── CSS helpers ─────────────────────────────────────────────────────────────
 
 const CSS_COLOR_PROPS = new Set([
@@ -267,7 +396,8 @@ const NON_CSS_PROPS = new Set([
   'href', 'src', 'alt', 'title', 'id', 'name', 'type', 'value', 'placeholder',
   'target', 'rel', 'loading', 'srcset', 'sizes', 'media', 'role', 'tabindex',
   'for', 'action', 'method', 'enctype', 'autocomplete', 'autofocus',
-  'theme', '__element', 'update'
+  'theme', '__element', 'update',
+  'childrenAs', 'childExtends', 'childProps', 'children'
 ])
 
 const camelToKebab = (str) => str.replace(/[A-Z]/g, m => '-' + m.toLowerCase())
@@ -287,11 +417,15 @@ const resolveShorthand = (key, val) => {
   }
   if ((key === 'align' || key === 'flexAlign') && typeof val === 'string') {
     const [alignItems, justifyContent] = val.split(' ')
-    return { display: 'flex', 'align-items': alignItems, 'justify-content': justifyContent }
+    const result = { display: 'flex', 'align-items': alignItems }
+    if (justifyContent) result['justify-content'] = justifyContent
+    return result
   }
   if (key === 'gridAlign' && typeof val === 'string') {
     const [alignItems, justifyContent] = val.split(' ')
-    return { display: 'grid', 'align-items': alignItems, 'justify-content': justifyContent }
+    const result = { display: 'grid', 'align-items': alignItems }
+    if (justifyContent) result['justify-content'] = justifyContent
+    return result
   }
   if (key === 'flexFlow' && typeof val === 'string') {
     let [direction, wrap] = (val || 'row').split(' ')
@@ -301,6 +435,11 @@ const resolveShorthand = (key, val) => {
   }
   if (key === 'flexWrap') {
     return { display: 'flex', 'flex-wrap': val }
+  }
+
+  // Background image shorthand
+  if (key === 'backgroundImage' && typeof val === 'string' && !val.startsWith('url(') && !val.startsWith('linear-gradient') && !val.startsWith('radial-gradient') && !val.startsWith('none')) {
+    return { 'background-image': `url(${val})` }
   }
 
   // Box/size shorthands
@@ -339,19 +478,24 @@ const resolveShorthand = (key, val) => {
   return null
 }
 
-const resolveInnerProps = (obj, colorMap) => {
+const resolveInnerProps = (obj, ds) => {
   const result = {}
   for (const k in obj) {
     const v = obj[k]
     const expanded = resolveShorthand(k, v)
-    if (expanded) { Object.assign(result, expanded); continue }
+    if (expanded) {
+      for (const ek in expanded) {
+        result[ek] = resolveDSValue(ek, expanded[ek], ds)
+      }
+      continue
+    }
     if (typeof v !== 'string' && typeof v !== 'number') continue
-    result[camelToKebab(k)] = CSS_COLOR_PROPS.has(k) && colorMap[v] ? colorMap[v] : v
+    result[camelToKebab(k)] = resolveDSValue(k, v, ds)
   }
   return result
 }
 
-const buildCSSFromProps = (props, colorMap, mediaMap) => {
+const buildCSSFromProps = (props, ds, mediaMap) => {
   const base = {}
   const mediaRules = {}
   const pseudoRules = {}
@@ -362,14 +506,14 @@ const buildCSSFromProps = (props, colorMap, mediaMap) => {
     if (key.charCodeAt(0) === 64 && typeof val === 'object') {
       const bp = mediaMap?.[key.slice(1)]
       if (bp) {
-        const inner = resolveInnerProps(val, colorMap)
+        const inner = resolveInnerProps(val, ds)
         if (Object.keys(inner).length) mediaRules[bp] = inner
       }
       continue
     }
 
     if (key.charCodeAt(0) === 58 && typeof val === 'object') {
-      const inner = resolveInnerProps(val, colorMap)
+      const inner = resolveInnerProps(val, ds)
       if (Object.keys(inner).length) pseudoRules[key] = inner
       continue
     }
@@ -379,9 +523,14 @@ const buildCSSFromProps = (props, colorMap, mediaMap) => {
     if (NON_CSS_PROPS.has(key)) continue
 
     const expanded = resolveShorthand(key, val)
-    if (expanded) { Object.assign(base, expanded); continue }
+    if (expanded) {
+      for (const ek in expanded) {
+        base[ek] = resolveDSValue(ek, expanded[ek], ds)
+      }
+      continue
+    }
 
-    base[camelToKebab(key)] = CSS_COLOR_PROPS.has(key) && colorMap[val] ? colorMap[val] : val
+    base[camelToKebab(key)] = resolveDSValue(key, val, ds)
   }
 
   return { base, mediaRules, pseudoRules }
@@ -426,7 +575,6 @@ const getExtendsCSS = (el) => {
 }
 
 const extractCSS = (element, ds) => {
-  const colorMap = ds?.color || {}
   const mediaMap = ds?.media || {}
   const animations = ds?.animation || {}
   const rules = []
@@ -440,7 +588,7 @@ const extractCSS = (element, ds) => {
       const cls = el.node.getAttribute?.('class')
       if (cls && !seen.has(cls)) {
         seen.add(cls)
-        const cssResult = buildCSSFromProps(props, colorMap, mediaMap)
+        const cssResult = buildCSSFromProps(props, ds, mediaMap)
 
         // Inject CSS from extends chain (e.g. extends: 'Flex' → display: flex)
         const extsCss = getExtendsCSS(el)
@@ -486,6 +634,7 @@ const generateResetCSS = (reset) => {
   if (!reset) return ''
   const rules = []
   for (const [selector, props] of Object.entries(reset)) {
+    if (!props || typeof props !== 'object') continue
     const decls = Object.entries(props)
       .map(([k, v]) => `${camelToKebab(k)}: ${v}`)
       .join('; ')
@@ -501,6 +650,7 @@ const generateFontLinks = (ds) => {
 
   // Collect font family names from the design system
   for (const val of Object.values(families)) {
+    if (typeof val !== 'string') continue
     const match = val.match(/'([^']+)'/)
     if (match) fontNames.add(match[1])
   }
