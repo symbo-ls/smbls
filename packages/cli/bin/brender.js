@@ -224,7 +224,7 @@ program
   .command('brender')
   .description('Pre-render pages with brender')
   .option('--out-dir <dir>', 'Output directory (default from symbols.json or dist)')
-  .option('--isr', 'Enable ISR: bundle client SPA for hydration + data fetching')
+  .option('--no-isr', 'Disable ISR (skip client SPA bundle for hydration + data fetching)')
   .option('-w, --watch', 'Watch for changes and re-render')
   .action(async (opts) => {
     const cwd = process.cwd()
@@ -245,8 +245,9 @@ program
 
     try {
       console.log(chalk.dim('Pre-rendering pages with brender...'))
-      if (opts.isr) console.log(chalk.dim('  ISR enabled — bundling client SPA'))
-      await renderAll(cwd, outDir, { isr: opts.isr })
+      const isr = opts.isr !== false
+      if (isr) console.log(chalk.dim('  ISR enabled — bundling client SPA'))
+      await renderAll(cwd, outDir, { isr })
       console.log(chalk.green('✓') + ` Brender complete -> ${outDir}/`)
 
       if (opts.watch) {
@@ -257,7 +258,7 @@ program
           debounce = setTimeout(async () => {
             console.log(chalk.dim(`\n${filename} changed, re-rendering...`))
             try {
-              await renderAll(cwd, outDir, { isr: opts.isr })
+              await renderAll(cwd, outDir, { isr })
               console.log(chalk.green('✓') + ` Brender complete -> ${outDir}/`)
             } catch (err) {
               console.error(chalk.red('Brender failed:'), err.message)
