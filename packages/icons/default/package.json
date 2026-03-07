@@ -17,19 +17,15 @@
   "exports": {
     ".": {
       "import": "./index.js",
-      "require": "./index.js",
-      "browser": "./index.js",
-      "default": "./index.js"
+      "require": "./index.js"
     },
     "./*.js": {
       "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.js"
+      "require": "./dist/cjs/*.js"
     },
     "./*": {
       "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.js"
+      "require": "./dist/cjs/*.js"
     }
   },
   "source": "index.js",

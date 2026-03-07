@@ -9,8 +9,7 @@
   "module": "index.js",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "default": "./index.js"
+      "import": "./index.js"
     }
   }
 }

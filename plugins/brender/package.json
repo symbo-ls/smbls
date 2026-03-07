@@ -8,16 +8,13 @@
   "exports": {
     ".": {
       "import": "./index.js",
-      "require": "./dist/cjs/index.js",
-      "default": "./index.js"
+      "require": "./dist/cjs/index.js"
     },
     "./hydrate": {
-      "import": "./hydrate.js",
-      "default": "./hydrate.js"
+      "import": "./hydrate.js"
     },
     "./load": {
-      "import": "./load.js",
-      "default": "./load.js"
+      "import": "./load.js"
     }
   },
   "source": "index.js",

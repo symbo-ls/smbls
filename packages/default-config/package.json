@@ -12,8 +12,7 @@
   "module": "./blank/index.js",
   "exports": {
     ".": {
-      "import": "./blank/index.js",
-      "default": "./blank/index.js"
+      "import": "./blank/index.js"
     }
   }
 }

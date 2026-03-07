@@ -11,7 +11,7 @@ import * as CONF from './defaultConfig'
 export const CSS_VARS = {}
 
 // Build CONFIG with lowercase keys as canonical
-const _CONF = CONF.default || CONF
+const _CONF = CONF
 const _confLower = {}
 for (const key in _CONF) {
   const lower = key.toLowerCase()

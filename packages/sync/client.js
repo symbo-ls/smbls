@@ -1,7 +1,5 @@
-import * as utils from '@domql/utils'
+import { window, isFunction, isArray } from '@domql/utils'
 import io from 'socket.io-client'
-
-const { window, isFunction, isArray } = utils.default || utils
 
 const defautlOpts = {}
 

@@ -8,24 +8,19 @@
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "browser": "./dist/esm/index.js",
-      "default": "./dist/esm/index.js"
+      "require": "./dist/cjs/index.js"
     },
     "./methods": {
       "import": "./dist/esm/methods.js",
-      "require": "./dist/cjs/methods.js",
-      "default": "./dist/esm/methods.js"
+      "require": "./dist/cjs/methods.js"
     },
     "./*.js": {
       "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.js"
+      "require": "./dist/cjs/*.js"
     },
     "./*": {
       "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.js"
+      "require": "./dist/cjs/*.js"
     }
   },
   "source": "index.js",

@@ -8,29 +8,23 @@
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "browser": "./dist/esm/index.js",
-      "default": "./dist/esm/index.js"
+      "require": "./dist/cjs/index.js"
     },
     "./event": {
       "import": "./dist/esm/event/index.js",
-      "require": "./dist/cjs/event/index.js",
-      "default": "./dist/esm/event/index.js"
+      "require": "./dist/cjs/event/index.js"
     },
     "./render": {
       "import": "./dist/esm/render/index.js",
-      "require": "./dist/cjs/render/index.js",
-      "default": "./dist/esm/render/index.js"
+      "require": "./dist/cjs/render/index.js"
     },
     "./*.js": {
       "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.js"
+      "require": "./dist/cjs/*.js"
     },
     "./*": {
       "import": "./dist/esm/*.js",
-      "require": "./dist/cjs/*.js",
-      "default": "./dist/esm/*.js"
+      "require": "./dist/cjs/*.js"
     }
   },
   "source": "index.js",
