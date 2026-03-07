@@ -1,8 +1,55 @@
 import { resolve, join } from 'path'
+import { existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs'
+import { tmpdir } from 'os'
+import { randomBytes } from 'crypto'
+
+/**
+ * Bundles a module entry point with esbuild so that extensionless imports,
+ * bare specifiers, and other bundler conventions resolve correctly.
+ * Returns the default + named exports of the bundled module, or null on failure.
+ */
+const bundleAndImport = async (entryPath) => {
+  if (!existsSync(entryPath)) return null
+
+  let esbuild
+  try {
+    esbuild = await import('esbuild')
+  } catch {
+    // Fallback: try raw import if esbuild is not available
+    try { return await import(entryPath) } catch { return null }
+  }
+
+  const outFile = join(tmpdir(), `brender_${randomBytes(8).toString('hex')}.mjs`)
+
+  try {
+    await esbuild.build({
+      entryPoints: [entryPath],
+      bundle: true,
+      format: 'esm',
+      platform: 'node',
+      outfile: outFile,
+      write: true,
+      logLevel: 'silent',
+      // Mark node builtins as external
+      external: ['fs', 'path', 'os', 'crypto', 'url', 'http', 'https', 'stream', 'util', 'events', 'buffer', 'child_process', 'worker_threads', 'net', 'tls', 'dns', 'dgram', 'zlib', 'assert', 'querystring', 'string_decoder', 'readline', 'perf_hooks', 'async_hooks', 'v8', 'vm', 'cluster', 'inspector', 'module', 'process', 'tty'],
+    })
+
+    const mod = await import(`file://${outFile}`)
+    return mod
+  } catch {
+    // Fallback: try raw import
+    try { return await import(entryPath) } catch { return null }
+  } finally {
+    try { unlinkSync(outFile) } catch {}
+  }
+}
 
 /**
  * Loads a Symbols project from a filesystem path.
  * Expects the standard symbols/ directory structure.
+ *
+ * Uses esbuild to bundle each module so that extensionless imports
+ * and other bundler conventions work in Node.js.
  *
  * Used for prebuild scenarios where brender runs locally
  * against a project directory (e.g. `smbls build --prerender`).
@@ -12,14 +59,6 @@ import { resolve, join } from 'path'
  */
 export const loadProject = async (projectPath) => {
   const symbolsDir = resolve(projectPath, 'symbols')
-
-  const tryImport = async (modulePath) => {
-    try {
-      return await import(modulePath)
-    } catch {
-      return null
-    }
-  }
 
   const [
     appModule,
@@ -34,17 +73,17 @@ export const loadProject = async (projectPath) => {
     designSystemModule,
     filesModule
   ] = await Promise.all([
-    tryImport(join(symbolsDir, 'app.js')),
-    tryImport(join(symbolsDir, 'state.js')),
-    tryImport(join(symbolsDir, 'config.js')),
-    tryImport(join(symbolsDir, 'dependencies.js')),
-    tryImport(join(symbolsDir, 'components', 'index.js')),
-    tryImport(join(symbolsDir, 'snippets', 'index.js')),
-    tryImport(join(symbolsDir, 'pages', 'index.js')),
-    tryImport(join(symbolsDir, 'functions', 'index.js')),
-    tryImport(join(symbolsDir, 'methods', 'index.js')),
-    tryImport(join(symbolsDir, 'designSystem', 'index.js')),
-    tryImport(join(symbolsDir, 'files', 'index.js'))
+    bundleAndImport(join(symbolsDir, 'app.js')),
+    bundleAndImport(join(symbolsDir, 'state.js')),
+    bundleAndImport(join(symbolsDir, 'config.js')),
+    bundleAndImport(join(symbolsDir, 'dependencies.js')),
+    bundleAndImport(join(symbolsDir, 'components', 'index.js')),
+    bundleAndImport(join(symbolsDir, 'snippets', 'index.js')),
+    bundleAndImport(join(symbolsDir, 'pages', 'index.js')),
+    bundleAndImport(join(symbolsDir, 'functions', 'index.js')),
+    bundleAndImport(join(symbolsDir, 'methods', 'index.js')),
+    bundleAndImport(join(symbolsDir, 'designSystem', 'index.js')),
+    bundleAndImport(join(symbolsDir, 'files', 'index.js'))
   ])
 
   return {

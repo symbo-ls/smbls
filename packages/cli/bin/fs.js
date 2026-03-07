@@ -915,7 +915,7 @@ async function generateIndexjsFile (dirs, dirPath, key) {
               d.includes('-') || d.includes('/')
                 ? removeChars(toCamelCase(d))
                 : d
-            } } from './${d.replaceAll('/', '-')}';`
+            } } from './${d.replaceAll('/', '-')}.js';`
         )
         .join('\n') +
       '\n' +
