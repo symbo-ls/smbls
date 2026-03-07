@@ -204,8 +204,7 @@ export const fetchFromCli = async (opts) => {
         pulledAt: new Date().toISOString()
       })
 
-      // Update legacy symbols.json with version and branch
-      updateLegacySymbolsJson({ ...(symbolsConfig || {}), version: payload.version, branch })
+      // version and branch are tracked in lock.json (already written above)
 
       if (verbose) {
         console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
@@ -238,7 +237,7 @@ export const fetchFromCli = async (opts) => {
   // Sync project dependencies — browser bundler writes to dependencies.js, others to package.json
   try {
     if (String(scope || '') !== 'libs' && payload?.dependencies) {
-      if (symbolsConfig.runtime === 'browser') {
+      if (cliConfig.runtime === 'browser') {
         const depsJsPath = path.join(distDir, 'dependencies.js')
         const res = syncDependenciesJs(depsJsPath, payload.dependencies, { overwriteExisting: true })
         if (verbose && res?.ok && res.changed) {

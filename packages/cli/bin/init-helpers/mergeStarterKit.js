@@ -134,16 +134,13 @@ export async function mergeStarterKit (cwd) {
     copyIfMissing(path.join(tmpDir, 'symbols', 'index.js'), path.join(smblsDir, 'index.js'))
     copyIfMissing(path.join(tmpDir, 'symbols', 'index.html'), path.join(smblsDir, 'index.html'))
 
-    // --- sharedLibraries.js (default empty export) ---
+    // --- sharedLibraries.js (default empty export, before context.js so it gets picked up) ---
     writeIfMissing(path.join(smblsDir, 'sharedLibraries.js'), 'export default []\n')
 
     // --- context.js (auto-generated, imports all present modules) ---
-    // Only create if index.js was also just created (fresh project)
-    if (fs.existsSync(path.join(smblsDir, 'index.js'))) {
-      const { generateContextJs } = await import('./v2detect.js')
-      const contextContent = generateContextJs(smblsDir)
-      if (contextContent) writeIfMissing(path.join(smblsDir, 'context.js'), contextContent)
-    }
+    const { generateContextJs } = await import('./v2detect.js')
+    const contextContent = generateContextJs(smblsDir)
+    if (contextContent) writeIfMissing(path.join(smblsDir, 'context.js'), contextContent)
 
     // --- bundler config + devDependencies ---
     const bundler = mergedSymbols.bundler || 'parcel'

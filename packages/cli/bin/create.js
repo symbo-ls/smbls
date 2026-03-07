@@ -7,6 +7,7 @@ program
   .command('create')
   .description('Create and initialize a new project (alias for `project create`)')
   .argument('[dir]', 'Project directory')
+  .option('--workspace', 'Scaffold only symbols source files (no full repo, dir: ".")', false)
   .option('--create-new', 'Force create new platform project', false)
   .option('--link-existing', 'Force link to existing platform project', false)
   .option('--local-only', 'Local-only (no platform)', false)
@@ -31,6 +32,7 @@ program
   .action(async (dir, opts) => {
     await runProjectCreate(dir, {
       ...opts,
+      workspace: !!opts.workspace,
       createNew: !!opts.createNew,
       linkExisting: !!opts.linkExisting
     })

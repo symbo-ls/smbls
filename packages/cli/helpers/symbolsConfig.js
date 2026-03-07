@@ -1,8 +1,9 @@
 import path from 'path'
 import chalk from 'chalk'
 import { loadModule } from '../bin/require.js'
+import { getConfigPaths } from './config.js'
 
-const RC_PATH = process.cwd() + '/symbols.json'
+const RC_PATH = getConfigPaths().legacySymbolsJson
 
 export const loadSymbolsConfig = async (options = {}) => {
   const {
@@ -68,10 +69,8 @@ export function resolveDistDir (symbolsConfig, options = {}) {
 /**
  * Resolve the effective libraries directory for shared libraries.
  *
- * Precedence:
- *  - explicit override (e.g. CLI flag)
- *  - symbols.json.librariesDir
- *  - default: ./symbols_libs
+ * Default: .symbols_local/libs/
+ * Can be overridden via symbols.json.librariesDir or CLI flag.
  *
  * Returns an absolute path.
  */
@@ -79,10 +78,10 @@ export function resolveLibrariesDir (symbolsConfig, options = {}) {
   const cfg = symbolsConfig || {}
   const {
     librariesDirOverride,
-    cwd = process.cwd()
+    cwd = getConfigPaths().projectRoot
   } = options
 
-  const raw = librariesDirOverride || cfg.librariesDir || './symbols_libs'
+  const raw = librariesDirOverride || cfg.librariesDir || './.symbols_local/libs'
 
   if (path.isAbsolute(raw)) return raw
   return path.resolve(cwd, raw)

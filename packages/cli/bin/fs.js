@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import path from 'path'
 import * as utils from '@domql/utils'
 import * as smblsUtils from '@symbo.ls/smbls-utils'
-import { CONTEXT_MODULES } from './init-helpers/v2detect.js'
+import { CONTEXT_MODULES, generateContextJs } from './init-helpers/v2detect.js'
 import inquirer from 'inquirer'
 import { createPatch } from 'diff'
 
@@ -259,6 +259,15 @@ export async function createFs (
         targetDir,
         'root'
       )
+
+      // Generate context.js if missing (never overwrite user edits)
+      const contextPath = path.join(targetDir, 'context.js')
+      if (!fs.existsSync(contextPath)) {
+        const contextContent = generateContextJs(targetDir)
+        if (contextContent) {
+          await fs.promises.writeFile(contextPath, contextContent, 'utf8')
+        }
+      }
     }
   }
 

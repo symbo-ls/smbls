@@ -3,7 +3,7 @@
 import fs from 'fs'
 import path from 'path'
 import inquirer from 'inquirer'
-import { loadCliConfig, saveCliConfig, updateLegacySymbolsJson } from './config.js'
+import { loadCliConfig, saveCliConfig, updateSymbolsJson, writeLock } from './config.js'
 import { detectRuntime, detectPackageManager } from './packageManager.js'
 
 const RUNTIME_CHOICES = [
@@ -51,7 +51,6 @@ const CDN_PACKAGE_MANAGERS = CDN_VALUES
 
 /**
  * Merge packageManager (CDN only) into symbols/config.js without overwriting existing keys.
- * bundler is stored in symbols.json only; config.js is a browser-safe runtime file.
  */
 function writeProjectConfigJs (cwd, { distDir, packageManager }) {
   if (!CDN_PACKAGE_MANAGERS.includes(packageManager)) return
@@ -59,7 +58,7 @@ function writeProjectConfigJs (cwd, { distDir, packageManager }) {
   fs.mkdirSync(path.dirname(configJsPath), { recursive: true })
   if (fs.existsSync(configJsPath)) {
     const src = fs.readFileSync(configJsPath, 'utf8')
-    if (/\bpackageManager\b/.test(src)) return // already present, don't overwrite
+    if (/\bpackageManager\b/.test(src)) return
     const merged = src.replace(/\}\s*$/, `  packageManager: '${packageManager}',\n}\n`)
     fs.writeFileSync(configJsPath, merged)
   } else {
@@ -68,8 +67,11 @@ function writeProjectConfigJs (cwd, { distDir, packageManager }) {
 }
 
 /**
- * Run interactive config prompts and save results to symbols.json + .symbols_cache/config.json.
- * Also rewrites symbols/config.js if present.
+ * Run interactive config prompts and save results.
+ *
+ * - Project identity (key, branch, version, dir) → symbols.json
+ * - Tooling + API (bundler, pm, runtime, deploy, apiBaseUrl) → .symbols_local/config.json
+ *
  * @param {object} symbolsConfig - existing symbols.json content
  * @returns {{ runtime: string, bundler: string|null, packageManager: string }}
  */
@@ -112,21 +114,21 @@ export async function runConfigPrompts (symbolsConfig = {}) {
       name: 'runtime',
       message: 'Environment:',
       choices: RUNTIME_CHOICES,
-      default: symbolsConfig.runtime || detectedRuntime
+      default: cliConfig.runtime || symbolsConfig.runtime || detectedRuntime
     },
     {
       type: 'list',
       name: 'bundler',
       message: 'Build tool:',
       choices: BUNDLER_CHOICES,
-      default: symbolsConfig.bundler || 'parcel',
+      default: cliConfig.bundler || symbolsConfig.bundler || 'parcel',
       when: (a) => a.runtime === 'node'
     },
     {
       type: 'input',
       name: 'bundlerCustom',
       message: 'Bundler name:',
-      default: symbolsConfig.bundler !== 'other' ? symbolsConfig.bundler : '',
+      default: (cliConfig.bundler || symbolsConfig.bundler) !== 'other' ? (cliConfig.bundler || symbolsConfig.bundler) : '',
       filter: (v) => v.trim(),
       when: (a) => a.runtime === 'node' && a.bundler === 'other'
     },
@@ -138,23 +140,15 @@ export async function runConfigPrompts (symbolsConfig = {}) {
         : 'Package manager:',
       choices: (a) => a.runtime === 'browser' ? CDN_CHOICES : PM_CHOICES,
       default: (a) => {
+        const currentPm = cliConfig.packageManager || symbolsConfig.packageManager
         if (a.runtime === 'browser') {
-          return CDN_VALUES.includes(symbolsConfig.packageManager)
-            ? symbolsConfig.packageManager
-            : 'esm.sh'
+          return CDN_VALUES.includes(currentPm) ? currentPm : 'esm.sh'
         }
-        return PM_CHOICES.find(c => c.value === symbolsConfig.packageManager)
-          ? symbolsConfig.packageManager
+        return PM_CHOICES.find(c => c.value === currentPm)
+          ? currentPm
           : detectedPm
       },
       when: (a) => a.runtime === 'node' || a.runtime === 'browser'
-    },
-    {
-      type: 'input',
-      name: 'librariesDir',
-      message: 'Shared libraries directory:',
-      default: symbolsConfig.librariesDir || './symbols_libs',
-      filter: (v) => v.trim() || './symbols_libs'
     },
     {
       type: 'input',
@@ -168,7 +162,7 @@ export async function runConfigPrompts (symbolsConfig = {}) {
       name: 'deploy',
       message: 'Deploy target:',
       choices: DEPLOY_CHOICES,
-      default: symbolsConfig.deploy || 'symbols'
+      default: cliConfig.deploy || symbolsConfig.deploy || 'symbols'
     }
   ])
 
@@ -180,7 +174,6 @@ export async function runConfigPrompts (symbolsConfig = {}) {
   } else if (runtime === 'bun') {
     bundler = 'vite'
   }
-  // deno and browser: no bundler
 
   let packageManager
   if (runtime === 'browser') {
@@ -193,23 +186,27 @@ export async function runConfigPrompts (symbolsConfig = {}) {
     packageManager = 'deno'
   }
 
-  updateLegacySymbolsJson({
+  // Project identity → symbols.json (git-tracked)
+  updateSymbolsJson({
     ...symbolsConfig,
     key: answers.key || undefined,
-    branch: answers.branch,
-    version: answers.version,
-    dir: answers.dir,
-    librariesDir: answers.librariesDir,
-    runtime,
-    bundler,
-    packageManager,
-    deploy: answers.deploy || symbolsConfig.deploy
+    dir: answers.dir
   })
 
+  // Tooling + API → .symbols_local/config.json (git-tracked)
   saveCliConfig({
     apiBaseUrl: answers.apiBaseUrl,
     projectKey: answers.key || cliConfig.projectKey,
-    branch: answers.branch
+    runtime,
+    bundler,
+    packageManager,
+    deploy: answers.deploy || cliConfig.deploy
+  })
+
+  // Branch + version → .symbols_local/lock.json
+  writeLock({
+    branch: answers.branch,
+    version: answers.version
   })
 
   writeProjectConfigJs(process.cwd(), {

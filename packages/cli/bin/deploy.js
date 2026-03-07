@@ -6,7 +6,7 @@ import chalk from 'chalk'
 import inquirer from 'inquirer'
 import { program } from './program.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
-import { updateLegacySymbolsJson } from '../helpers/config.js'
+import { loadCliConfig, updateSymbolsJson } from '../helpers/config.js'
 import { resolveBundler, getRunnerConfig, findBin, spawnBin } from './bundler.js'
 
 const DEPLOY_PROVIDERS = [
@@ -198,8 +198,8 @@ program
   .action(async (opts) => {
     const cwd = process.cwd()
     const symbolsConfig = await loadSymbolsConfig({ required: false, validateKey: false, silent: true }) || {}
-
-    let provider = opts.provider || symbolsConfig.deploy
+    const cliConfig = loadCliConfig()
+    let provider = opts.provider || cliConfig.deploy || symbolsConfig.deploy
 
     if (!provider) {
       const { selectedProvider } = await inquirer.prompt([{

@@ -9,7 +9,7 @@ import inquirer from 'inquirer'
 import { createInterface } from 'readline'
 import { program } from './program.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
-import { updateLegacySymbolsJson } from '../helpers/config.js'
+import { updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 
 const AI_PROVIDERS = [
   { name: 'Symbols AI — native Symbols assistant (coming soon)', value: 'symbols', disabled: 'Soon' },
@@ -578,7 +578,7 @@ async function runInit () {
 
 // ── Chat History ──
 
-const CHAT_DIR = path.join(process.cwd(), '.symbols_cache', 'chat')
+const CHAT_DIR = path.join(getConfigPaths().symbolsLocalDir, 'chat')
 
 function getChatSessionId () {
   return new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
@@ -721,7 +721,7 @@ async function startChat (opts) {
   try {
     const symbolsConfig = await loadSymbolsConfig({ required: false, validateKey: false, silent: true })
     if (symbolsConfig) {
-      projectContext = `\nProject: ${symbolsConfig.key || 'unnamed'}, bundler: ${symbolsConfig.bundler || 'parcel'}, dir: ${symbolsConfig.dir || './symbols'}`
+      projectContext = `\nProject: ${symbolsConfig.key || 'unnamed'}, dir: ${symbolsConfig.dir || './symbols'}`
     }
   } catch (_) {}
 

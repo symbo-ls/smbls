@@ -54,7 +54,7 @@ program
 
     console.log(chalk.bold('\nSymbols v2 → v3 Migration\n'))
     console.log('Detected:')
-    if (info.hasLegacyCacheDir) console.log(chalk.yellow('  • .symbols/') + chalk.dim(' → will rename to .symbols_cache/'))
+    if (info.hasLegacyCacheDir) console.log(chalk.yellow('  • .symbols/') + chalk.dim(' → will rename to .symbols_local/'))
     if (info.hasLegacySmblsDir) console.log(chalk.yellow('  • smbls/') + chalk.dim(' → will rename to symbols/'))
     if (!info.hasAppJs) console.log(chalk.yellow('  • symbols/app.js missing') + chalk.dim(' → will create'))
     if (info.hasIndexJs && !info.hasCreateCall) console.log(chalk.yellow('  • symbols/index.js') + chalk.dim(' → will rewrite to v3 format'))
@@ -75,12 +75,12 @@ program
 
     console.log()
 
-    // 1. Rename .symbols → .symbols_cache
+    // 1. Rename .symbols → .symbols_local
     const legacyCacheDir = path.join(cwd, '.symbols')
-    const newCacheDir = path.join(cwd, '.symbols_cache')
-    if (fs.existsSync(legacyCacheDir) && !fs.existsSync(newCacheDir)) {
-      fs.renameSync(legacyCacheDir, newCacheDir)
-      console.log(chalk.green('rename ') + '.symbols → .symbols_cache')
+    const newLocalDir = path.join(cwd, '.symbols_local')
+    if (fs.existsSync(legacyCacheDir) && !fs.existsSync(newLocalDir)) {
+      fs.renameSync(legacyCacheDir, newLocalDir)
+      console.log(chalk.green('rename ') + '.symbols → .symbols_local')
     }
 
     // 2. Rename smbls/ → symbols/ (old source dir name)
@@ -209,13 +209,19 @@ program
       console.log(chalk.dim('skip   symbols/app.js (exists)'))
     }
 
-    // 4. Rewrite symbols/index.js to v3 format
+    // 4. Create sharedLibraries.js if missing (before context.js so it gets picked up)
+    const sharedLibsPath = path.join(symbolsDir, 'sharedLibraries.js')
+    if (!fs.existsSync(sharedLibsPath)) {
+      writeFile(sharedLibsPath, 'export default []\n', 'symbols/sharedLibraries.js')
+    }
+
+    // 5. Rewrite symbols/index.js to v3 format
     const indexJsPath = path.join(symbolsDir, 'index.js')
     const earlySymbols = fs.existsSync(path.join(cwd, 'symbols.json'))
       ? JSON.parse(fs.readFileSync(path.join(cwd, 'symbols.json'), 'utf8'))
       : {}
     const isCdnMode = earlySymbols.runtime === 'browser' || CDN_PMs.has(earlySymbols.packageManager)
-    // Generate context.js first (contains all module imports/exports)
+    // Generate context.js (contains all module imports/exports)
     const contextJsPath = path.join(symbolsDir, 'context.js')
     const contextContent = generateContextJs(symbolsDir)
     if (contextContent) {

@@ -469,7 +469,7 @@ export async function startCollab (options) {
         const nextDeps = persistedObj.dependencies && typeof persistedObj.dependencies === 'object'
           ? persistedObj.dependencies
           : {}
-        if (symbolsConfig.runtime === 'browser') {
+        if (cliConfig.runtime === 'browser') {
           const depsJsPath = path.join(distDir, 'dependencies.js')
           syncDependenciesJs(depsJsPath, nextDeps, { overwriteExisting: true })
         } else if (packageJsonPath) {
@@ -517,7 +517,7 @@ export async function startCollab (options) {
   try {
     ensureSchemaDependencies(baseSnapshot)
     if (baseSnapshot?.dependencies) {
-      if (symbolsConfig.runtime === 'browser') {
+      if (cliConfig.runtime === 'browser') {
         const depsJsPath = path.join(distDir, 'dependencies.js')
         syncDependenciesJs(depsJsPath, baseSnapshot.dependencies, { overwriteExisting: true })
       } else if (packageJsonPath) {
@@ -741,7 +741,7 @@ export async function startCollab (options) {
         suppressLocalChanges = false
       }
     }
-    // Base snapshot is our last pulled .symbols_cache/project.json
+    // Base snapshot is our last pulled .symbols_local/project.json
     const changes = computeCoarseChanges(safeBase, safeLocal)
     if (!changes.length) return
     if (options.verbose) {

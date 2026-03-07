@@ -4,27 +4,20 @@ import path from 'path'
 import chalk from 'chalk'
 import { program } from './program.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
-import { updateLegacySymbolsJson } from '../helpers/config.js'
+import { updateSymbolsJson, getConfigPaths } from '../helpers/config.js'
 import { runConfigPrompts } from '../helpers/configPrompts.js'
 
 program
   .command('config')
   .description('Interactively configure Symbols project settings')
-  .option('--dist-dir <dir>', 'Set distDir non-interactively')
-  .option('--libraries-dir <dir>', 'Set librariesDir non-interactively')
+  .option('--dist-dir <dir>', 'Set dir non-interactively')
   .action(async (options) => {
     const symbolsConfig =
       (await loadSymbolsConfig({ required: false, validateKey: false, silent: true })) || {}
 
     if (options.distDir) {
-      updateLegacySymbolsJson({ ...symbolsConfig, distDir: options.distDir })
-      console.log(chalk.green(`Updated symbols.json distDir to "${options.distDir}"`))
-      return
-    }
-
-    if (options.librariesDir) {
-      updateLegacySymbolsJson({ ...symbolsConfig, librariesDir: options.librariesDir })
-      console.log(chalk.green(`Updated symbols.json librariesDir to "${options.librariesDir}"`))
+      updateSymbolsJson({ ...symbolsConfig, dir: options.distDir })
+      console.log(chalk.green(`Updated symbols.json dir to "${options.distDir}"`))
       return
     }
 
@@ -32,10 +25,11 @@ program
 
     console.log('\n')
     console.log(chalk.green('Configuration updated successfully.'))
-    const symbolsPath = path.join(process.cwd(), 'symbols.json')
-    const cliConfigPath = path.join(process.cwd(), '.symbols_cache', 'config.json')
-    console.log(chalk.gray(`symbols.json          ${chalk.cyan(symbolsPath)}`))
-    console.log(chalk.gray(`.symbols_cache/config ${chalk.cyan(cliConfigPath)}`))
+    const paths = getConfigPaths()
+    const symbolsPath = paths.legacySymbolsJson
+    const configPath = paths.configPath
+    console.log(chalk.gray(`symbols.json              ${chalk.cyan(symbolsPath)}`))
+    console.log(chalk.gray(`.symbols_local/config.json ${chalk.cyan(configPath)}`))
 
     if (bundler === 'browser') {
       console.log(chalk.dim(`\nBrowser mode: dependencies will be resolved via ${packageManager} — no install needed.`))
