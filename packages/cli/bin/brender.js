@@ -20,18 +20,40 @@ const renderAll = async (cwd, outDir) => {
   const dest = resolve(cwd, outDir)
   mkdirSync(dest, { recursive: true })
 
+  // Suppress console noise during SSR — lifecycle handlers often log
+  // errors about missing browser APIs / services (supabase, auth, etc.)
+  const _warn = console.warn
+  const _error = console.error
+  const _log = console.log
+
   for (const route of routes) {
     try {
+      // Suppress during render, restore for our own output
+      console.warn = () => {}
+      console.error = () => {}
+      console.log = () => {}
+
       const result = await renderPage(data, route)
+
+      // Allow async microtasks to flush with console still suppressed
+      await new Promise(r => setTimeout(r, 0))
+
+      console.warn = _warn
+      console.error = _error
+      console.log = _log
+
       if (!result) continue
 
       const fileName = route === '/' ? 'index.html' : route.replace(/^\//, '').replace(/\/$/, '') + '.html'
       const filePath = resolve(dest, fileName)
       mkdirSync(resolve(filePath, '..'), { recursive: true })
       writeFileSync(filePath, result.html)
-      console.log(chalk.dim(`  ${route} -> ${fileName} (${result.brKeyCount} keys)`))
+      _log(chalk.dim(`  ${route} -> ${fileName} (${result.brKeyCount} keys)`))
     } catch (err) {
-      console.error(chalk.yellow(`  ${route} failed: ${err.message}`))
+      console.warn = _warn
+      console.error = _error
+      console.log = _log
+      _error(chalk.yellow(`  ${route} failed: ${err.message}`))
     }
   }
 }
