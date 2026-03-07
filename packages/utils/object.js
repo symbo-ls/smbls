@@ -180,7 +180,7 @@ export const deepClone = (obj, options = {}) => {
 /**
  * Stringify object
  */
-export const deepStringify = (obj, stringified = {}) => {
+export const deepStringifyFunctions = (obj, stringified = {}) => {
   if (obj.node || obj.__ref || obj.parent || obj.__element || obj.parse) {
     ;(obj.__element || obj.parent?.__element).warn(
       'Trying to clone element or state at',
@@ -195,14 +195,14 @@ export const deepStringify = (obj, stringified = {}) => {
       stringified[prop] = objProp.toString()
     } else if (isObject(objProp)) {
       stringified[prop] = {}
-      deepStringify(objProp, stringified[prop])
+      deepStringifyFunctions(objProp, stringified[prop])
     } else if (isArray(objProp)) {
       const arr = stringified[prop] = []
       for (let i = 0; i < objProp.length; i++) {
         const v = objProp[i]
         if (isObject(v)) {
           arr[i] = {}
-          deepStringify(v, arr[i])
+          deepStringifyFunctions(v, arr[i])
         } else if (isFunction(v)) {
           arr[i] = v.toString()
         } else {

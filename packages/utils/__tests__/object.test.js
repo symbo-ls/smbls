@@ -16,8 +16,8 @@ import {
   makeObjectWithoutPrototype,
   createObjectWithoutPrototype,
   deepMerge,
-  deepStringify,
-  deepDestringify,
+  deepStringifyFunctions,
+  deepDestringifyFunctions,
   overwrite,
   overwriteShallow,
   overwriteDeep,
@@ -212,7 +212,7 @@ describe('Object Utils', () => {
     })
   })
 
-  describe('deepStringify and deepDestringify', () => {
+  describe('deepStringifyFunctions and deepDestringifyFunctions', () => {
     test('stringifies and destringifies objects with functions', () => {
       const original = {
         a: 1,
@@ -221,11 +221,11 @@ describe('Object Utils', () => {
         },
         c: { d: () => 3 }
       }
-      const stringified = deepStringify(original)
+      const stringified = deepStringifyFunctions(original)
       expect(typeof stringified.b).toBe('string')
       expect(typeof stringified.c.d).toBe('string')
 
-      const destringified = deepDestringify(stringified)
+      const destringified = deepDestringifyFunctions(stringified)
       expect(typeof destringified.b).toBe('function')
       expect(typeof destringified.c.d).toBe('function')
       expect(destringified.b()).toBe(2)
