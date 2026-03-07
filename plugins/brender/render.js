@@ -1,3 +1,4 @@
+import { resolve, join } from 'path'
 import { createEnv } from './env.js'
 import { resetKeys, assignKeys, mapKeysToElements } from './keys.js'
 import { extractMetadata, generateHeadHtml } from './metadata.js'
@@ -60,7 +61,15 @@ const UIKIT_STUBS = {
   H3: { tag: 'h3' },
   H4: { tag: 'h4' },
   H5: { tag: 'h5' },
-  H6: { tag: 'h6' }
+  H6: { tag: 'h6' },
+  Svg: {
+    tag: 'svg',
+    attr: {
+      xmlns: 'http://www.w3.org/2000/svg',
+      'xmlns:xlink': 'http://www.w3.org/1999/xlink'
+    }
+  },
+  Text: { tag: 'span' }
 }
 
 /**
@@ -176,10 +185,187 @@ export const renderElement = async (elementDef, options = {}) => {
 
   assignKeys(body)
   const registry = element ? mapKeysToElements(element) : {}
-  const html = body.innerHTML
+  const html = fixSvgContent(body.innerHTML)
 
   return { html, registry, element }
 }
+
+// ── SVG content post-processing ───────────────────────────────────────────────
+// DOMQL's html mixin uses textContent for SVG nodes, which escapes HTML entities.
+// This post-processor unescapes content inside <svg> tags so paths/circles render.
+const fixSvgContent = (html) => {
+  return html.replace(
+    /(<svg\b[^>]*>)([\s\S]*?)(<\/svg>)/gi,
+    (match, open, content, close) => {
+      if (content.includes('&lt;')) {
+        const unescaped = content
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+        return open + unescaped + close
+      }
+      return match
+    }
+  )
+}
+
+// ── Global CSS generation ─────────────────────────────────────────────────────
+
+/**
+ * Runs the scratch design-system pipeline (via esbuild bundling to work around
+ * bare-import issues) to produce CSS variables and reset styles — the same
+ * globals that the SPA runtime injects via emotion.injectGlobal.
+ */
+let _cachedGlobalCSS = null
+
+const generateGlobalCSS = async (ds, config) => {
+  if (_cachedGlobalCSS) return _cachedGlobalCSS
+
+  try {
+    const { existsSync, writeFileSync, unlinkSync } = await import('fs')
+    const { tmpdir } = await import('os')
+    const { randomBytes } = await import('crypto')
+    const esbuild = await import('esbuild')
+
+    // Write a temporary script that imports scratch, runs set(), and
+    // serialises the CSS_VARS + RESET objects as JSON.
+    const dsJson = JSON.stringify(ds || {})
+    const cfgJson = JSON.stringify(config || {})
+    const tmpEntry = join(tmpdir(), `br_global_${randomBytes(6).toString('hex')}.mjs`)
+    const tmpOut = join(tmpdir(), `br_global_${randomBytes(6).toString('hex')}_out.mjs`)
+
+    writeFileSync(tmpEntry, `
+      import { set, getActiveConfig, getFontFaceString } from '@symbo.ls/scratch'
+      import { DEFAULT_CONFIG } from '@symbo.ls/default-config'
+
+      const ds = ${dsJson}
+      const cfg = ${cfgJson}
+
+      // Merge with defaults (same as initEmotion)
+      const merged = {}
+      for (const k in DEFAULT_CONFIG) merged[k] = DEFAULT_CONFIG[k]
+      for (const k in ds) {
+        if (typeof ds[k] === 'object' && !Array.isArray(ds[k]) && typeof merged[k] === 'object' && !Array.isArray(merged[k])) {
+          merged[k] = { ...merged[k], ...ds[k] }
+        } else {
+          merged[k] = ds[k]
+        }
+      }
+
+      const conf = set({
+        useReset: true,
+        useVariable: true,
+        useFontImport: true,
+        useDocumentTheme: true,
+        useDefaultConfig: true,
+        globalTheme: "'light'",
+        ...merged,
+        ...cfg
+      }, { newConfig: {} })
+
+      const result = {
+        CSS_VARS: conf.CSS_VARS || {},
+        RESET: conf.RESET || conf.reset || {},
+        ANIMATION: conf.animation || conf.ANIMATION || {}
+      }
+      // Export as globalThis so we can read it
+      globalThis.__BR_GLOBAL_CSS__ = result
+      export default result
+    `)
+
+    // Resolve the monorepo root from the brender plugin location
+    // so esbuild can find @symbo.ls/* packages
+    const brenderDir = new URL('.', import.meta.url).pathname
+    const monorepoRoot = resolve(brenderDir, '../..')
+
+    // Workspace resolve plugin: maps @symbo.ls/* and @domql/* to source paths
+    const workspacePlugin = {
+      name: 'workspace-resolve',
+      setup (build) {
+        build.onResolve({ filter: /^@symbo\.ls\// }, args => {
+          const pkg = args.path.replace('@symbo.ls/', '')
+          // Try packages/ then plugins/
+          for (const dir of ['packages', 'plugins']) {
+            const src = resolve(monorepoRoot, dir, pkg, 'src', 'index.js')
+            if (existsSync(src)) return { path: src }
+            const dist = resolve(monorepoRoot, dir, pkg, 'index.js')
+            if (existsSync(dist)) return { path: dist }
+          }
+          // default-config special case
+          const blank = resolve(monorepoRoot, 'packages', 'default-config', 'blank', 'index.js')
+          if (pkg === 'default-config' && existsSync(blank)) return { path: blank }
+        })
+        build.onResolve({ filter: /^@domql\// }, args => {
+          const pkg = args.path.replace('@domql/', '')
+          const src = resolve(monorepoRoot, 'packages', 'domql', 'packages', pkg, 'src', 'index.js')
+          if (existsSync(src)) return { path: src }
+        })
+      }
+    }
+
+    await esbuild.build({
+      entryPoints: [tmpEntry],
+      bundle: true,
+      format: 'esm',
+      platform: 'node',
+      outfile: tmpOut,
+      write: true,
+      logLevel: 'silent',
+      plugins: [workspacePlugin],
+      external: ['fs', 'path', 'os', 'crypto', 'url', 'http', 'https', 'stream', 'util', 'events', 'buffer', 'child_process', 'worker_threads', 'net', 'tls', 'dns', 'dgram', 'zlib', 'assert', 'querystring', 'string_decoder', 'readline', 'perf_hooks', 'async_hooks', 'v8', 'vm', 'cluster', 'inspector', 'module', 'process', 'tty', 'color-contrast-checker']
+    })
+
+    const mod = await import(`file://${tmpOut}`)
+    const data = mod.default || {}
+    try { unlinkSync(tmpEntry) } catch {}
+    try { unlinkSync(tmpOut) } catch {}
+
+    const cssVars = data.CSS_VARS || {}
+    const reset = data.RESET || {}
+    const animations = data.ANIMATION || {}
+
+    // ── :root CSS variables ──
+    const varDecls = Object.entries(cssVars)
+      .map(([k, v]) => `  ${k}: ${v}`)
+      .join(';\n')
+    const rootRule = varDecls ? `:root {\n${varDecls};\n}` : ''
+
+    // ── Reset styles ──
+    const resetRules = generateResetCSS(reset)
+
+    // ── @keyframes animations ──
+    const keyframeRules = []
+    for (const name in animations) {
+      const frames = animations[name]
+      if (!frames || typeof frames !== 'object') continue
+      const frameRules = Object.entries(frames).map(([step, p]) => {
+        if (typeof p !== 'object') return ''
+        const decls = Object.entries(p).map(([k, v]) => `${camelToKebab(k)}: ${v}`).join('; ')
+        return `  ${step} { ${decls}; }`
+      }).join('\n')
+      keyframeRules.push(`@keyframes ${name} {\n${frameRules}\n}`)
+    }
+
+    _cachedGlobalCSS = {
+      rootRule,
+      resetRules,
+      fontFaceCSS: '',
+      keyframeRules: keyframeRules.join('\n')
+    }
+    return _cachedGlobalCSS
+  } catch (err) {
+    console.warn('generateGlobalCSS failed:', err.message, err.stack)
+    _cachedGlobalCSS = { rootRule: '', resetRules: '', fontFaceCSS: '', keyframeRules: '' }
+    return _cachedGlobalCSS
+  }
+}
+
+/**
+ * Reset the cached global CSS (useful when rendering multiple projects).
+ */
+export const resetGlobalCSSCache = () => { _cachedGlobalCSS = null }
 
 // ── Route-level SSR ───────────────────────────────────────────────────────────
 
@@ -226,10 +412,14 @@ export const renderRoute = async (data, options = {}) => {
     designSystem: ds
   })
 
+  // Generate global CSS (variables, reset, keyframes) via scratch pipeline
+  const globalCSS = await generateGlobalCSS(ds, data.config || data.settings)
+
   return {
     html: cssDoc.body.innerHTML,
     css: extractCSS(result.element, ds),
-    resetCss: generateResetCSS(ds.reset),
+    globalCSS,
+    resetCss: globalCSS.resetRules || generateResetCSS(ds.reset),
     fontLinks: generateFontLinks(ds),
     metadata: extractMetadata(data, route),
     brKeyCount: Object.keys(result.registry).length
@@ -250,7 +440,7 @@ export const renderRoute = async (data, options = {}) => {
  * @returns {Promise<{ html: string, route: string, brKeyCount: number }>}
  */
 export const renderPage = async (data, route = '/', options = {}) => {
-  const { lang = 'en', themeColor } = options
+  const { lang = 'en', themeColor, isr } = options
 
   const result = await renderRoute(data, { route })
   if (!result) return null
@@ -259,18 +449,54 @@ export const renderPage = async (data, route = '/', options = {}) => {
   if (themeColor) metadata['theme-color'] = themeColor
   const headTags = generateHeadHtml(metadata)
 
+  const globalCSS = result.globalCSS || {}
+
+  // ISR: include client SPA bundle for hydration + data fetching
+  let isrBody = ''
+  if (isr && isr.clientScript) {
+    // Calculate relative path from route directory to root
+    const depth = route === '/' ? 0 : route.replace(/^\/|\/$/g, '').split('/').length
+    const prefix = depth > 0 ? '../'.repeat(depth) : './'
+    // Inline handoff script: when the SPA adds its root element to <body>,
+    // remove the pre-rendered brender content for a seamless transition.
+    isrBody = `<script type="module">
+{
+  const brEls = document.querySelectorAll('body > :not(script):not(style)')
+  const observer = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && !node.hasAttribute('data-br')) {
+          brEls.forEach(el => { if (el.hasAttribute('data-br') || el.querySelector('[data-br]')) el.remove() })
+          observer.disconnect()
+          return
+        }
+      }
+    }
+  })
+  observer.observe(document.body, { childList: true })
+}
+</script>
+<script type="module" src="${prefix}${isr.clientScript}"></script>`
+  }
+
   const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
 ${headTags}
 ${result.fontLinks}
-<style>${result.resetCss}</style>
+${globalCSS.fontFaceCSS ? `<style>${globalCSS.fontFaceCSS}</style>` : ''}
+<style>
+${globalCSS.rootRule || ''}
+${result.resetCss}
+${globalCSS.keyframeRules || ''}
+</style>
 <style data-emotion="smbls">
 ${result.css}
 </style>
 </head>
 <body>
 ${result.html}
+${isrBody}
 </body>
 </html>`
 
@@ -581,6 +807,41 @@ const getExtendsCSS = (el) => {
   return null
 }
 
+/**
+ * Resolve function-valued CSS props by evaluating them with (element, state).
+ * In SSR, this gives correct initial values (e.g. display: 'none' when no auth).
+ * Uses fallback mock state if element state is incomplete.
+ */
+const resolveElementProps = (el) => {
+  const { props } = el
+  if (!props) return props
+  let resolved
+  for (const key in props) {
+    if (typeof props[key] !== 'function') continue
+    // Skip non-CSS props and component children
+    if (NON_CSS_PROPS.has(key)) continue
+    if (key.charCodeAt(0) >= 65 && key.charCodeAt(0) <= 90) continue
+    if (key.startsWith('on')) continue
+    if (!resolved) resolved = { ...props }
+    let result
+    try {
+      result = props[key](el, el.state || {})
+    } catch {
+      // State prototype chain may be incomplete in SSR — try with mock
+      try {
+        const mockState = { root: {}, ...(el.state || {}) }
+        result = props[key](el, mockState)
+      } catch { /* skip prop */ }
+    }
+    if (result !== undefined && result !== null && result !== false) {
+      resolved[key] = result
+    } else {
+      delete resolved[key]
+    }
+  }
+  return resolved || props
+}
+
 const extractCSS = (element, ds) => {
   const mediaMap = ds?.media || {}
   const animations = ds?.animation || {}
@@ -590,7 +851,7 @@ const extractCSS = (element, ds) => {
 
   const walk = (el) => {
     if (!el || !el.__ref) return
-    const { props } = el
+    const props = resolveElementProps(el)
     if (props && el.node) {
       const cls = el.node.getAttribute?.('class')
       if (cls && !seen.has(cls)) {
@@ -616,7 +877,7 @@ const extractCSS = (element, ds) => {
         }
       }
     }
-    if (el.__ref.__children) {
+    if (el.__ref?.__children) {
       for (const ck of el.__ref.__children) {
         if (el[ck]?.__ref) walk(el[ck])
       }
@@ -642,10 +903,24 @@ const generateResetCSS = (reset) => {
   const rules = []
   for (const [selector, props] of Object.entries(reset)) {
     if (!props || typeof props !== 'object') continue
-    const decls = Object.entries(props)
-      .map(([k, v]) => `${camelToKebab(k)}: ${v}`)
-      .join('; ')
-    if (decls) rules.push(`${selector} { ${decls}; }`)
+    const baseDecls = []
+    const mediaRules = []
+    for (const [k, v] of Object.entries(props)) {
+      if (typeof v === 'object' && v !== null) {
+        // Nested object: @media query or sub-selector
+        if (k.startsWith('@media') || k.startsWith('@')) {
+          const inner = Object.entries(v)
+            .filter(([, iv]) => typeof iv !== 'object')
+            .map(([ik, iv]) => `${camelToKebab(ik)}: ${iv}`)
+            .join('; ')
+          if (inner) mediaRules.push(`${k} { ${selector} { ${inner}; } }`)
+        }
+        continue
+      }
+      baseDecls.push(`${camelToKebab(k)}: ${v}`)
+    }
+    if (baseDecls.length) rules.push(`${selector} { ${baseDecls.join('; ')}; }`)
+    rules.push(...mediaRules)
   }
   return rules.join('\n')
 }

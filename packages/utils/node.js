@@ -29,8 +29,8 @@ export const isHtmlElement = obj => {
 export const isDOMNode = obj => {
   return (
     typeof window !== 'undefined' &&
-    (obj instanceof window.Node ||
-      obj instanceof window.Window ||
+    ((window.Node && obj instanceof window.Node) ||
+      (window.Window && obj instanceof window.Window) ||
       obj === window ||
       obj === document)
   )

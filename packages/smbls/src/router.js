@@ -18,6 +18,7 @@ export const initRouter = (element, context) => {
   const routerOptions = context.router
 
   const onRouterRenderDefault = async (el, s) => {
+    if (!window.location) return
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
     if (el.routes) await defaultRouter(url, el, {}, { initialRender: true })

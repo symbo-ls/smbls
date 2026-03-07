@@ -15,7 +15,9 @@
       "require": "./dist/cjs/index.js",
       "browser": "./dist/esm/index.js",
       "default": "./dist/esm/index.js"
-    }
+    },
+    "./src/*": "./src/*.js",
+    "./src/props": "./src/props/index.js"
   },
   "source": "src/index.js",
   "publishConfig": {},

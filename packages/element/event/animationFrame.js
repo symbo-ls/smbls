@@ -51,7 +51,8 @@ const processFrameListeners = (frameListeners) => {
 }
 
 const startFrameLoop = (frameListeners) => {
-  if (_frameRunning) return
+  const raf = typeof window !== 'undefined' && window.requestAnimationFrame
+  if (_frameRunning || !raf) return
   _frameRunning = true
 
   function requestFrame () {
@@ -60,10 +61,10 @@ const startFrameLoop = (frameListeners) => {
       return
     }
     processFrameListeners(frameListeners)
-    window.requestAnimationFrame(requestFrame)
+    raf(requestFrame)
   }
 
-  window.requestAnimationFrame(requestFrame)
+  raf(requestFrame)
 }
 
 export const applyAnimationFrame = element => {

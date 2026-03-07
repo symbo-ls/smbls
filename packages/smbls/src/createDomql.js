@@ -96,7 +96,10 @@ export const createDomqlElement = async (app, ctx) => {
   // initializeInspect(app, ctx)
   initializeNotifications(app, ctx)
 
-  const parentNode = ctx.parent || ctx.document.body
+  const doc = ctx.document
+  if (!doc || !doc.createElement) return app
+
+  const parentNode = ctx.parent || doc.body
   const domqlCreate = (DOM.default && DOM.default.create) || DOM.create
   const smblsApp = await domqlCreate(app, parentNode, ctx.key, {
     verbose: ctx.verbose,
