@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@symbo.ls/fetch": "^3.5.1",
+    "@symbo.ls/frank": "^3.5.1",
     "smbls": "^3.5.1",
     "@symbo.ls/runner": "^3.5.1",
     "@symbo.ls/sync": "^3.5.1",
