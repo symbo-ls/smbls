@@ -54,6 +54,25 @@ init({
 })
 ```
 
+### Theme Switching
+
+Themes switch automatically via CSS — no JavaScript re-renders needed:
+
+```javascript
+init({
+  theme: {
+    document: {
+      '@dark': { color: 'white', background: 'black' },
+      '@light': { color: 'black', background: 'white' }
+    }
+  }
+})
+
+// Auto: system preference drives switching
+// Force: document.documentElement.dataset.theme = 'dark'
+// Custom: add @ocean, @sunset, etc. — activate with data-theme="ocean"
+```
+
 ### Create an Application
 
 ```javascript
@@ -112,7 +131,8 @@ init(config, {
   useDocumentTheme: true,       // apply document-level theme
   useSvgSprite: true,           // create SVG sprite sheet
   useDefaultConfig: false,      // use built-in default config
-  globalTheme: 'dark',          // set global theme
+  globalTheme: 'auto',          // 'auto' (system preference), 'dark', 'light', or custom theme name
+  useThemeSuffixedVars: false,  // also generate --theme-name-dark-prop vars (opt-in)
   verbose: false                // enable verbose logging
 })
 ```

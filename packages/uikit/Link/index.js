@@ -1,6 +1,7 @@
 'use strict'
 
 import { router as defaultRouter } from '@domql/router'
+import { resolvePropValue } from '@symbo.ls/attrs-in-props'
 
 export const Link = {
   extends: 'Focusable',
@@ -13,19 +14,12 @@ export const Link = {
   draggable: false,
 
   attr: {
-    href: (el, s, ctx) => {
+    href: (el) => {
       const props = el.props
-      const href =
-        el.call('exec', props.href, el) ||
-        el.call('exec', el.call('exec', props, el).href, el)
-      if (el.call('isString', href) && href.includes('{{')) {
-        return el.call('replaceLiteralsWithObjectFields', href)
-      }
-      return href
+      return resolvePropValue(el, props.href) ||
+        resolvePropValue(el, el.call('exec', props, el).href)
     },
-    target: ({ props }) => props.target,
-    'aria-label': ({ props }) => (props.aria ? props.aria.label : props.text),
-    draggable: ({ props }) => props.draggable
+    'aria-label': ({ props }) => (props.aria ? props.aria.label : props.text)
   }
 }
 

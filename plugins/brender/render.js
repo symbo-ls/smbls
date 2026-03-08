@@ -260,13 +260,14 @@ const generateGlobalCSS = async (ds, config) => {
         useFontImport: true,
         useDocumentTheme: true,
         useDefaultConfig: true,
-        globalTheme: "'light'",
+        globalTheme: 'auto',
         ...merged,
         ...cfg
       }, { newConfig: {} })
 
       const result = {
         CSS_VARS: conf.CSS_VARS || {},
+        CSS_MEDIA_VARS: conf.CSS_MEDIA_VARS || {},
         RESET: conf.RESET || conf.reset || {},
         ANIMATION: conf.animation || conf.ANIMATION || {}
       }
@@ -323,6 +324,7 @@ const generateGlobalCSS = async (ds, config) => {
     try { unlinkSync(tmpOut) } catch {}
 
     const cssVars = data.CSS_VARS || {}
+    const cssMediaVars = data.CSS_MEDIA_VARS || {}
     const reset = data.RESET || {}
     const animations = data.ANIMATION || {}
 
@@ -330,7 +332,25 @@ const generateGlobalCSS = async (ds, config) => {
     const varDecls = Object.entries(cssVars)
       .map(([k, v]) => `  ${k}: ${v}`)
       .join(';\n')
-    const rootRule = varDecls ? `:root {\n${varDecls};\n}` : ''
+    let rootRule = varDecls ? `:root {\n${varDecls};\n}` : ''
+
+    // ── Theme-switching CSS vars (media queries + data-theme selectors) ──
+    const themeVarRules = Object.entries(cssMediaVars)
+      .map(([key, vars]) => {
+        const decls = Object.entries(vars)
+          .map(([k, v]) => `    ${k}: ${v}`)
+          .join(';\n')
+        if (!decls) return ''
+        if (key.startsWith('@media')) {
+          // Media query — only when no data-theme forces a theme
+          return `${key} {\n  :root:not([data-theme]) {\n${decls};\n  }\n}`
+        }
+        // Selector ([data-theme="..."]) — apply directly
+        return `${key} {\n${decls};\n}`
+      })
+      .filter(Boolean)
+      .join('\n\n')
+    if (themeVarRules) rootRule += '\n\n' + themeVarRules
 
     // ── Reset styles ──
     const resetRules = generateResetCSS(reset)

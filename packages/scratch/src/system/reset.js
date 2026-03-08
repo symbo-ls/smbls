@@ -16,7 +16,7 @@ export const applyReset = (reset = {}) => {
 
       configReset.body = {
         ...(CONFIG.useDocumentTheme
-          ? getMediaTheme('document', `@${CONFIG.globalTheme}`)
+          ? getMediaTheme('document')
           : {}),
         ...configTemplates.body
       }
@@ -30,7 +30,7 @@ export const applyReset = (reset = {}) => {
 
     const { body, ...templates } = TYPOGRAPHY.templates
     const globalTheme = CONFIG.useDocumentTheme
-      ? getMediaTheme('document', `@${CONFIG.globalTheme}`)
+      ? getMediaTheme('document')
       : {}
     if (RESET.html) overwriteDeep(RESET.html, globalTheme)
 

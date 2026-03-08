@@ -123,6 +123,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (useIconSprite !== undefined) CONFIG.useIconSprite = useIconSprite
   if (useDocumentTheme !== undefined) CONFIG.useDocumentTheme = useDocumentTheme
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
+  if (recivedConfig.useThemeSuffixedVars !== undefined) CONFIG.useThemeSuffixedVars = recivedConfig.useThemeSuffixedVars
   if (useDefaultConfig !== undefined) CONFIG.useDefaultConfig = useDefaultConfig
   const _semanticIcons = SEMANTIC_ICONS || semantic_icons
   if (_semanticIcons !== undefined) {

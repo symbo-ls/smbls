@@ -1,16 +1,14 @@
 'use strict'
 
+import { resolvePropValue } from '@symbo.ls/attrs-in-props'
+
 export const Img = {
   tag: 'img',
 
   attr: {
     src: (el) => {
       const { props, context } = el
-      let src = (props.preSrc || '') + el.call('exec', props.src, el)
-
-      if (el.call('isString', src) && src.includes('{{')) {
-        src = el.call('replaceLiteralsWithObjectFields', src)
-      }
+      let src = (props.preSrc || '') + resolvePropValue(el, props.src)
 
       let isUrl
       try { isUrl = new URL(src) } catch (e) { }

@@ -1082,3 +1082,46 @@ export const executeAttr = (elem, element) => {
   }
   return attrObj
 }
+
+/**
+ * Resolves a prop value: executes dynamic values and replaces template literals.
+ * Shared logic for src, href, action, poster, data, etc.
+ */
+export const resolvePropValue = (el, value) => {
+  let resolved = el.call('exec', value, el)
+  if (!resolved) return
+  if (isString(resolved) && resolved.includes('{{')) {
+    resolved = el.call('replaceLiteralsWithObjectFields', resolved)
+  }
+  return resolved
+}
+
+/**
+ * Auto-resolve attribute transformers.
+ * Attributes listed here are automatically resolved from props
+ * via resolvePropValue (exec + template literal replacement).
+ */
+export const ATTR_TRANSFORMS = {
+  src: (el) => resolvePropValue(el, el.props.src),
+  href: (el) => resolvePropValue(el, el.props.href),
+  action: (el) => resolvePropValue(el, el.props.action),
+  poster: (el) => resolvePropValue(el, el.props.poster),
+  data: (el) => resolvePropValue(el, el.props.data)
+}
+
+/**
+ * Applies ATTR_TRANSFORMS for valid attributes on the element's tag.
+ * Returns resolved attribute values from props.
+ */
+export const applyAttrTransforms = (element) => {
+  const tag = element.tag || 'div'
+  const { props } = element
+  const result = {}
+  for (const attr in ATTR_TRANSFORMS) {
+    if (props[attr] !== undefined && checkAttributeByTagName(tag, attr)) {
+      const val = ATTR_TRANSFORMS[attr](element)
+      if (val !== undefined) result[attr] = val
+    }
+  }
+  return result
+}

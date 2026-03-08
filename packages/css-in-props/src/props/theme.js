@@ -22,16 +22,15 @@ export const getSystemGlobalTheme = ({ context, state }) => {
 export const THEME_PROPS = {
   theme: (val, element) => {
     const { props } = element
-    const globalTheme = getSystemGlobalTheme(element)
     if (!val) return
-    const hasSubtheme = val.includes(' ') && !val.includes('@')
-    const globalThemeForced = `@${props.themeModifier || globalTheme}`
-    if (hasSubtheme) {
-      const themeAppliedInVal = val.split(' ')
-      themeAppliedInVal.splice(1, 0, globalThemeForced)
-      return getMediaTheme(themeAppliedInVal)
-    } else if (val.includes('@{globalTheme}')) val.replace('@{globalTheme}', globalThemeForced)
-    return getMediaTheme(val, `@${props.themeModifier || globalTheme}`)
+
+    // themeModifier explicitly forces a scheme on this component
+    if (props.themeModifier) {
+      return getMediaTheme(val, `@${props.themeModifier}`)
+    }
+
+    // CSS vars handle dark/light switching — no modifier needed, no DOMQL re-render
+    return getMediaTheme(val)
   },
 
   color: (val, element) => {

@@ -17,19 +17,6 @@ export const Box = {
 
   boxSizing: 'border-box',
 
-  attr: {
-    id: el => el.call('isString', el.props.id) && el.props.id,
-    title: el => el.call('isString', el.props.title) && el.props.title,
-    contentEditable: el => el.props.contentEditable || el.props.contenteditable,
-    dir: el => el.props.dir,
-    draggable: el => el.props.draggable,
-    hidden: el => el.props.hidden,
-    lang: el => el.props.lang,
-    spellcheck: el => el.props.spellcheck,
-    tabindex: el => el.props.tabindex,
-    translate: el => el.props.translate
-  },
-
   onBeforeClassAssign
 }
 

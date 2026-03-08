@@ -9,6 +9,7 @@ import {
 import * as CONF from './defaultConfig'
 
 export const CSS_VARS = {}
+export const CSS_MEDIA_VARS = {}
 
 // Build CONFIG with lowercase keys as canonical
 const _CONF = CONF
@@ -24,7 +25,9 @@ export const CONFIG = {
   verbose: false,
   useVariable: true,
   useReset: true,
+  globalTheme: 'auto',
   CSS_VARS,
+  CSS_MEDIA_VARS,
   ..._confLower
 }
 

@@ -40,16 +40,22 @@ describe('html', () => {
     expect(node.innerHTML).toBe('existing')
   })
 
-  it('prioritizes param over element.props.html', () => {
+  it('prioritizes el.html (param) over element.props.html', () => {
     element.props.html = 'props-content'
     html('param-content', element, node)
     expect(node.innerHTML).toBe('param-content')
   })
 
-  it('falls back to element.props.html when param is falsy', () => {
+  it('falls back to element.props.html when param is null', () => {
     element.props.html = 'fallback-content'
     html(null, element, node)
     expect(node.innerHTML).toBe('fallback-content')
+  })
+
+  it('uses props.html as alias when el.html is undefined', () => {
+    element.props.html = 'props-alias'
+    html(undefined, element, node)
+    expect(node.innerHTML).toBe('props-alias')
   })
 
   it('handles function parameters', () => {

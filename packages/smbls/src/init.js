@@ -65,7 +65,23 @@ export const init = (config, options = SET_OPTIONS) => {
   const hasIcons = config.icons || config.ICONS
 
   if (useFontImport) emotion.injectGlobal(FontFace)
-  if (useVariable) emotion.injectGlobal({ ':root': conf.CSS_VARS })
+  if (useVariable) {
+    emotion.injectGlobal({ ':root': conf.CSS_VARS })
+    // Inject theme-switching CSS vars (media queries + data-theme selectors)
+    if (conf.CSS_MEDIA_VARS) {
+      const themeStyles = {}
+      for (const key in conf.CSS_MEDIA_VARS) {
+        if (key.startsWith('@media')) {
+          // Media query — only apply when no data-theme forces a theme
+          themeStyles[key] = { ':root:not([data-theme])': conf.CSS_MEDIA_VARS[key] }
+        } else {
+          // Selector ([data-theme="..."]) — apply directly
+          themeStyles[key] = conf.CSS_MEDIA_VARS[key]
+        }
+      }
+      emotion.injectGlobal(themeStyles)
+    }
+  }
   if (useReset) emotion.injectGlobal(conf.reset || conf.RESET)
 
   // Register all ANIMATION entries as global @keyframes
@@ -100,6 +116,17 @@ export const reinit = (config, options = UPDATE_OPTIONS) => {
   })
   if (!options.preventInject) {
     emotion.injectGlobal({ ':root': conf.CSS_VARS })
+    if (conf.CSS_MEDIA_VARS) {
+      const themeStyles = {}
+      for (const key in conf.CSS_MEDIA_VARS) {
+        if (key.startsWith('@media')) {
+          themeStyles[key] = { ':root:not([data-theme])': conf.CSS_MEDIA_VARS[key] }
+        } else {
+          themeStyles[key] = conf.CSS_MEDIA_VARS[key]
+        }
+      }
+      emotion.injectGlobal(themeStyles)
+    }
     emotion.injectGlobal(conf.RESET)
   }
   return conf
@@ -113,6 +140,17 @@ export const applyCSS = (styles, options = UPDATE_OPTIONS) => {
 export const updateVars = (config, options = UPDATE_OPTIONS) => {
   const emotion = options.emotion || defaultEmotion
   emotion.injectGlobal({ ':root': config.CSS_VARS })
+  if (config.CSS_MEDIA_VARS) {
+    const themeStyles = {}
+    for (const key in config.CSS_MEDIA_VARS) {
+      if (key.startsWith('@media')) {
+        themeStyles[key] = { ':root:not([data-theme])': config.CSS_MEDIA_VARS[key] }
+      } else {
+        themeStyles[key] = config.CSS_MEDIA_VARS[key]
+      }
+    }
+    emotion.injectGlobal(themeStyles)
+  }
 }
 
 export const setClass = (props, options = UPDATE_OPTIONS) => {} // setClassname(props, options.emotion.css)

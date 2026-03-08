@@ -17,3 +17,21 @@ const Poster = {
 
 DOM.create(Poster, document.body)
 ```
+
+### html mixin
+
+The `html` mixin sets raw HTML content on an element. It supports both direct assignment and props:
+
+```javascript
+// Direct assignment (el.html)
+const MyComponent = {
+  html: '<strong>Hello</strong>'
+}
+
+// Via props (el.props.html) — works as an alias
+const MyComponent = {
+  props: { html: '<strong>Hello</strong>' }
+}
+```
+
+`el.html` takes priority when both are set. `props.html` is used as a fallback when `el.html` is not defined.

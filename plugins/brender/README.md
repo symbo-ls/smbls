@@ -280,3 +280,17 @@ This means the server and client don't need to exchange the registry — as long
 - `hydrate.js` is browser-only code (no linkedom dependency) — it's exported separately via `@symbo.ls/brender/hydrate`
 - `createEnv()` sets `globalThis.window/document/Node/HTMLElement` because `@domql/utils` `isDOMNode` uses `instanceof` checks against global constructors
 - `onRender` callbacks that do network requests or call `s.update()` will error during SSR — this is expected and harmless since the HTML is already produced before those callbacks fire
+
+## Theme support
+
+Brender defaults to `globalTheme: 'auto'`, generating CSS with both `prefers-color-scheme` media queries and `[data-theme]` selectors. The SSR output includes theme-switching CSS variables that work without JavaScript:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { --theme-document-background: #000; }
+}
+[data-theme="dark"] { --theme-document-background: #000; }
+[data-theme="ocean"] { --theme-document-background: #0a2e4e; }
+```
+
+Custom themes beyond dark/light are activated via `data-theme` attribute on the root element.

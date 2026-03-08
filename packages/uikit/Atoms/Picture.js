@@ -20,14 +20,14 @@ export const Picture = {
           return '(max-width: 0px)'
 
         return MEDIA[mediaName]
-      },
+      }
     }
   },
 
-  Img: ({ props }) => ({
+  Img: {
     width: 'inherit',
     ignoreChildExtends: true,
     height: 'inherit',
-    src: props.src
-  })
+    src: (element, state) => element.parent.src || state.src
+  }
 }

@@ -1,7 +1,6 @@
 'use strict'
 
 import { merge, isArray, overwriteDeep, overwriteShallow } from '@domql/utils'
-import { getSystemGlobalTheme } from './Theme.js'
 
 export const keySetters = {
   '@': (key, props, result, element, isSubtree) =>
@@ -136,20 +135,11 @@ const convertPropsToClass = (props, result, element) => {
 const applyMediaProps = (key, props, result, element) => {
   const { context } = element
   if (!context.designSystem || !context.designSystem.MEDIA) return
-  const globalTheme = getSystemGlobalTheme(element)
   const { MEDIA } = context.designSystem
   const mediaValue = MEDIA[key.slice(1)]
   const generatedClass = convertPropsToClass(props, result, element)
 
-  const name = key.slice(1)
-  const isTheme = ['dark', 'light'].includes(name)
-  const matchesGlobal = name === globalTheme
-
-  if (globalTheme && isTheme) {
-    if (matchesGlobal) return merge(result, generatedClass)
-    return
-  }
-
+  // Always use media queries — CSS vars handle theme switching, no JS flattening
   const printValue =
     '@media ' +
     (mediaValue === 'print' ? `${mediaValue}` : `screen and ${mediaValue}`)
@@ -216,26 +206,9 @@ export const beforeClassAssign = (element, s, ctx) => {
   }
 
   if (!context) return
-  const globalTheme = context.designSystem.globalTheme
 
   for (const key in props) {
     const setter = keySetters[key.slice(0, 1)]
-    if (globalTheme) {
-      if (key === 'theme' && !props.themeModifier) {
-        props.themeModifier = globalTheme
-        // props.update(
-        //   {
-        //     themeModifier: globalTheme
-        //   },
-        //   {
-        //     preventListeners: true,
-        //     preventRecursive: true,
-        //     isForced: true,
-        //     preventDefineUpdate: true
-        //   }
-        // )
-      }
-    }
     if (setter) setter(key, props[key], CLASS_NAMES, element)
     else if (key === 'class') {
       const value = element.props.class
