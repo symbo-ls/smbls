@@ -150,7 +150,9 @@ const resetOptions = (element, parent, options) => {
 
 const addElementIntoParentChildren = (element, parent) => {
   if (parent.__ref && parent.__ref.__children) {
-    parent.__ref.__children.push(element.key)
+    if (!parent.__ref.__children.includes(element.key)) {
+      parent.__ref.__children.push(element.key)
+    }
   }
 }
 

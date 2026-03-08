@@ -288,6 +288,43 @@ export const update = function (params = {}, opts) {
   }
 }
 
+const findSiblingAttachOptions = (element, parent) => {
+  const { __children } = parent.__ref || {}
+  if (!__children) return false
+
+  const currentIndex = __children.indexOf(element.key)
+
+  // Walk backwards to find nearest previous sibling with a DOM node
+  let previousNode
+  for (let i = currentIndex - 1; i >= 0; i--) {
+    const sibling = parent[__children[i]]
+    if (sibling?.node?.parentNode) {
+      previousNode = sibling.node
+      break
+    }
+  }
+
+  if (previousNode) {
+    return { position: 'after', node: previousNode }
+  }
+
+  // Walk forwards to find nearest next sibling with a DOM node
+  let nextNode
+  for (let i = currentIndex + 1; i < __children.length; i++) {
+    const sibling = parent[__children[i]]
+    if (sibling?.node?.parentNode) {
+      nextNode = sibling.node
+      break
+    }
+  }
+
+  if (nextNode) {
+    return { position: 'before', node: nextNode }
+  }
+
+  return false
+}
+
 const checkIfOnUpdate = (element, parent, options) => {
   if ((!isFunction(element.if) && !isFunction(element.props?.if)) || !parent) {
     return
@@ -331,18 +368,7 @@ const checkIfOnUpdate = (element, parent, options) => {
         element[contentKey] = element[contentKey].parseDeep()
       }
 
-      const previousElement = element.previousElement()
-      const previousNode = previousElement?.node // document.body.contains(previousElement.node)
-      const hasPrevious = previousNode?.parentNode // document.body.contains(previousElement.node)
-
-      const nextElement = element.nextElement()
-      const nextNode = nextElement?.node // document.body.contains(previousElement.node)
-      const hasNext = nextNode?.parentNode
-
-      const attachOptions = (hasPrevious || hasNext) && {
-        position: hasPrevious ? 'after' : hasNext ? 'before' : null,
-        node: (hasPrevious && previousNode) || (hasNext && nextNode)
-      }
+      const attachOptions = findSiblingAttachOptions(element, parent)
 
       delete element.__ref
       delete element.parent
