@@ -25,6 +25,11 @@ const ENTRIES = [
     in: path.join(srcDir, 'service_worker.js'),
     out: path.join(outDir, 'service_worker.js'),
     name: 'service_worker'
+  },
+  {
+    in: path.join(srcDir, 'popup.js'),
+    out: path.join(outDir, 'popup.js'),
+    name: 'popup'
   }
 ]
 
@@ -132,7 +137,7 @@ const buildOnce = async ({ minify = false, local = false } = {}) => {
       )
     )
   )
-  console.log('Bundles written: content.js, settings_ui.js, service_worker.js')
+  console.log('Bundles written: content.js, settings_ui.js, service_worker.js, popup.js')
   copyStatic()
   syncManifestVersion()
 

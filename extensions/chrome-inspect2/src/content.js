@@ -51,6 +51,20 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
   if (sender.id === chrome.runtime.id) {
     const { type, state } = msg
 
+    if (type === 'open-inspector') {
+      // Enable the Symbols inspector UI overlay (same as editor preview)
+      document.body.classList.add('symbols-inspector-active')
+      console.log('%c[Symbols] inspector opened', 'color: green')
+      respond({ ok: true })
+      return true
+    }
+
+    if (type === 'personalize') {
+      console.log('%c[Symbols] personalize mode', 'color: blue')
+      respond({ ok: true })
+      return true
+    }
+
     if (type === 'toggle' && typeof state === 'number') {
       console.log(
         `%c[Symbols] grabber ${state ? 'enabled' : 'disabled'}`,
@@ -99,6 +113,16 @@ chrome.runtime.onMessage.addListener((msg, sender, respond) => {
   }
 
   return true
+})
+
+// Listen for element selections from the editor/preview inspector (via page-agent)
+document.addEventListener('__symbols_inspect_pick__', (e) => {
+  try {
+    const detail = JSON.parse(e.detail)
+    chrome.runtime.sendMessage({ type: 'editor-element-selected', ...detail })
+  } catch (err) {
+    // ignore
+  }
 })
 
 console.log('[Symbols] Content script loaded (inspector + grabber)')

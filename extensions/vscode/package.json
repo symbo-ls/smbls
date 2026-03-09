@@ -1,5 +1,6 @@
 {
   "name": "symbols-app-connect",
+  "private": true,
   "displayName": "Symbols.app Connect",
   "description": "Symbols.app Connect for DOMQL syntax — properties, events, components, element methods, AI chat, and MCP integration",
   "version": "3.5.1",

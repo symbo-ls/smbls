@@ -72,6 +72,8 @@ pre:hover .code-actions{opacity:1}
 .tool-item:last-child{border-bottom:none}
 .tool-name{font-weight:600;font-size:12px}
 .tool-desc{font-size:11px;color:var(--vscode-descriptionForeground);margin-top:1px}
+.cli-group{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.cli-btn{font-size:11px;padding:4px 10px}
 .cursor{display:inline-block;width:6px;height:13px;background:var(--vscode-editor-foreground);animation:blink .8s infinite;margin-left:1px;vertical-align:text-bottom}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 </style>
@@ -82,6 +84,7 @@ pre:hover .code-actions{opacity:1}
   <button class="tab active" data-tab="chat">Chat</button>
   <button class="tab" data-tab="project">Project</button>
   <button class="tab" data-tab="libraries">Shared Libs</button>
+  <button class="tab" data-tab="cli">CLI</button>
   <button class="tab" data-tab="mcp">MCP</button>
   <button class="tab" data-tab="settings">Settings</button>
 </div>
@@ -111,6 +114,13 @@ pre:hover .code-actions{opacity:1}
 <!-- PROJECT -->
 <div class="panel" id="panel-project">
   <div class="sp">
+    <h4>Status</h4>
+    <div id="projStatusInfo" class="info-box" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px"><span class="dot dot-off" id="projAuthDot"></span><span id="projAuthLabel">Not signed in</span></div>
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px"><span class="dot dot-off" id="projMcpDot"></span><span id="projMcpLabel">MCP not configured</span></div>
+      <div id="projIdRow" style="font-size:11px;color:var(--vscode-descriptionForeground);display:none">Project ID: <code id="projIdValue"></code></div>
+    </div>
+
     <h4>Project Configuration</h4>
     <div id="projectNotFound" style="display:none" class="info-box">No symbols.json found in workspace. Run <code>smbls config</code> or configure below.</div>
     <div class="sg"><label>App Key</label><input type="text" id="projKey" placeholder="e.g. myproject.symbo.ls"></div>
@@ -157,6 +167,13 @@ pre:hover .code-actions{opacity:1}
     </div>
     <button class="btn" id="projSaveBtn">Save Configuration</button>
     <div id="projSaveStatus" style="font-size:11px;margin-top:6px;color:var(--vscode-descriptionForeground)"></div>
+
+    <h4 style="margin-top:16px">Environment</h4>
+    <div id="projEnvInfo" class="info-box" style="font-size:12px;color:var(--vscode-descriptionForeground)">
+      <div id="projEnvCli">CLI: checking...</div>
+      <div id="projEnvNode">Node: checking...</div>
+      <div id="projEnvWorkspace">Workspace: —</div>
+    </div>
   </div>
 </div>
 
@@ -172,6 +189,59 @@ pre:hover .code-actions{opacity:1}
     </div>
     <div id="availableLibs"><div class="lib-empty">Search or type /libraries in chat</div></div>
     <div id="libsErr" style="display:none;color:var(--vscode-errorForeground,#f44);font-size:12px;padding:6px 0"></div>
+  </div>
+</div>
+
+<!-- CLI -->
+<div class="panel" id="panel-cli">
+  <div class="sp">
+    <h4>Project</h4>
+    <div class="cli-group">
+      <button class="btn cli-btn" data-cmd="smbls init">Init</button>
+      <button class="btn cli-btn" data-cmd="smbls config">Config</button>
+      <button class="btn cli-btn" data-cmd="smbls create">Create</button>
+    </div>
+    <h4 style="margin-top:12px">Development</h4>
+    <div class="cli-group">
+      <button class="btn cli-btn" data-cmd="smbls start">Start</button>
+      <button class="btn cli-btn" data-cmd="smbls build">Build</button>
+      <button class="btn cli-btn" data-cmd="smbls brender">Brender</button>
+    </div>
+    <h4 style="margin-top:12px">Sync</h4>
+    <div class="cli-group">
+      <button class="btn cli-btn" data-cmd="smbls fetch">Fetch</button>
+      <button class="btn cli-btn" data-cmd="smbls sync">Sync</button>
+      <button class="btn cli-btn" data-cmd="smbls push">Push</button>
+    </div>
+    <h4 style="margin-top:12px">Deploy</h4>
+    <div class="cli-group">
+      <button class="btn cli-btn" data-cmd="smbls deploy">Deploy</button>
+      <button class="btn cli-btn" data-cmd="smbls clean">Clean</button>
+    </div>
+    <h4 style="margin-top:12px">Account</h4>
+    <div class="cli-group">
+      <button class="btn cli-btn" data-cmd="smbls login">Login</button>
+      <button class="btn cli-btn" data-cmd="smbls logout">Logout</button>
+    </div>
+    <h4 style="margin-top:12px">Project Management</h4>
+    <div class="cli-group">
+      <button class="btn cli-btn" data-cmd="smbls project list">List</button>
+      <button class="btn cli-btn" data-cmd="smbls project link">Link</button>
+      <button class="btn cli-btn" data-cmd="smbls project libs">Libs</button>
+      <button class="btn cli-btn" data-cmd="smbls project members">Members</button>
+      <button class="btn cli-btn" data-cmd="smbls project versions">Versions</button>
+    </div>
+    <h4 style="margin-top:12px">Utilities</h4>
+    <div class="cli-group">
+      <button class="btn cli-btn" data-cmd="smbls convert">Convert</button>
+      <button class="btn cli-btn" data-cmd="smbls migrate">Migrate</button>
+      <button class="btn cli-btn" data-cmd="smbls ask">Ask AI</button>
+    </div>
+    <h4 style="margin-top:14px">Custom Command</h4>
+    <div style="display:flex;gap:5px">
+      <input type="text" id="cliCustomInput" placeholder="smbls ..." style="flex:1;background:var(--vscode-input-background);color:var(--vscode-input-foreground);border:1px solid var(--vscode-input-border,#444);border-radius:4px;padding:5px 7px;font-family:inherit;font-size:12px;outline:none">
+      <button class="btn btn-sm" id="cliCustomRun">Run</button>
+    </div>
   </div>
 </div>
 
@@ -240,6 +310,7 @@ pre:hover .code-actions{opacity:1}
     {cmd:'/libraries remove', desc:'Remove shared library by id'},
     {cmd:'/mcp', desc:'MCP configuration status'},
     {cmd:'/project', desc:'Project configuration'},
+    {cmd:'/cli', desc:'Open CLI commands panel'},
     {cmd:'/config', desc:'Open AI settings'},
     {cmd:'/clear', desc:'Clear chat history'}
   ];
@@ -258,7 +329,7 @@ pre:hover .code-actions{opacity:1}
     document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab===name); });
     document.querySelectorAll('.panel').forEach(function(p){ p.classList.toggle('active', p.id==='panel-'+name); });
     if(name==='libraries') vscode.postMessage({type:'listProjectLibs'});
-    if(name==='project') vscode.postMessage({type:'getProjectConfig'});
+    if(name==='project'){vscode.postMessage({type:'getProjectConfig'});vscode.postMessage({type:'getProjectStatus'});}
   }
 
   // --- Autocomplete ---
@@ -344,6 +415,20 @@ pre:hover .code-actions{opacity:1}
   // --- Lib search ---
   $('libSearchBtn').addEventListener('click', function(){vscode.postMessage({type:'listAvailableLibs',search:$('libSearch').value.trim()||undefined});});
   $('libSearch').addEventListener('keydown', function(e){if(e.key==='Enter')vscode.postMessage({type:'listAvailableLibs',search:this.value.trim()||undefined});});
+
+  // --- CLI commands ---
+  document.querySelectorAll('.cli-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      vscode.postMessage({type:'runCliCommand', command:btn.dataset.cmd});
+    });
+  });
+  $('cliCustomRun').addEventListener('click', function(){
+    var cmd=$('cliCustomInput').value.trim();
+    if(cmd) vscode.postMessage({type:'runCliCommand', command:cmd});
+  });
+  $('cliCustomInput').addEventListener('keydown', function(e){
+    if(e.key==='Enter'){var cmd=this.value.trim();if(cmd)vscode.postMessage({type:'runCliCommand', command:cmd});}
+  });
 
   // --- Project config ---
   $('projRuntime').addEventListener('change', updateProjUI);
@@ -463,6 +548,17 @@ pre:hover .code-actions{opacity:1}
         if(m.config.bundler)$('projBundler').value=m.config.bundler;
         if(m.config.packageManager)$('projPm').value=m.config.packageManager;
         if(m.config.deploy)$('projDeploy').value=m.config.deploy;
+        break;
+      case 'projectStatus':
+        $('projAuthDot').className='dot '+(m.authenticated?'dot-on':'dot-off');
+        $('projAuthLabel').textContent=m.authenticated?'Signed in to Symbols.app':'Not signed in';
+        $('projMcpDot').className='dot '+(m.mcpConfigured?'dot-on':'dot-off');
+        $('projMcpLabel').textContent=m.mcpConfigured?'MCP configured':'MCP not configured';
+        if(m.projectId){$('projIdRow').style.display='block';$('projIdValue').textContent=m.projectId;}
+        else $('projIdRow').style.display='none';
+        $('projEnvCli').textContent='CLI: '+(m.cliVersion||'not found');
+        $('projEnvNode').textContent='Node: '+(m.nodeVersion||'not found');
+        $('projEnvWorkspace').textContent='Workspace: '+(m.workspace||'—');
         break;
       case 'projectConfigSaved':
         $('projSaveStatus').textContent='Saved!';$('projSaveStatus').style.color='#4caf50';

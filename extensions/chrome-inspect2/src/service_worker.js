@@ -174,19 +174,19 @@ chrome.tabs.onActivated.addListener(({ tabId }) => {
 })
 
 // ============================================================
-// Keyboard shortcut (Ctrl+E / Cmd+E)
+// Keyboard shortcuts
 // ============================================================
 chrome.commands.onCommand.addListener(async (command) => {
   if (command === 'toggleGrabber') {
     await toggleActiveTabsState()
   }
-})
-
-// ============================================================
-// Toolbar icon click -> toggle grabber
-// ============================================================
-chrome.action.onClicked.addListener(async () => {
-  await toggleActiveTabsState()
+  if (command === 'openInspector') {
+    const tabs = await getActiveTabs()
+    for (const tab of tabs) {
+      chrome.tabs.sendMessage(tab.id, { type: 'open-inspector' }).catch(() => {})
+      chrome.runtime.sendMessage({ type: 'show-symbols-panel', tabId: tab.id }).catch(() => {})
+    }
+  }
 })
 
 // ============================================================
@@ -195,6 +195,54 @@ chrome.action.onClicked.addListener(async () => {
 let pickerTabId = null
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  // Popup menu actions
+  if (msg.type === 'toggle-grabber') {
+    toggleActiveTabsState()
+    sendResponse({ ok: true })
+    return true
+  }
+
+  if (msg.type === 'editor-element-selected') {
+    // Forward element selection from editor/preview to DevTools panel
+    chrome.runtime.sendMessage({
+      type: 'editor-element-selected',
+      path: msg.path,
+      info: msg.info,
+      tabId: sender.tab?.id
+    }).catch(() => {})
+    sendResponse({ ok: true })
+    return true
+  }
+
+  if (msg.type === 'open-inspector') {
+    const tabId = msg.tabId
+    if (tabId) {
+      chrome.tabs.sendMessage(tabId, { type: 'open-inspector' }).catch(() => {})
+      chrome.runtime.sendMessage({ type: 'show-symbols-panel', tabId }).catch(() => {})
+    }
+    sendResponse({ ok: true })
+    return true
+  }
+
+  if (msg.type === 'personalize') {
+    const tabId = msg.tabId
+    if (tabId) {
+      chrome.tabs.sendMessage(tabId, { type: 'personalize' }).catch(() => {})
+    }
+    sendResponse({ ok: true })
+    return true
+  }
+
+  if (msg.type === 'export-to-symbols') {
+    const tabId = msg.tabId
+    if (tabId) {
+      // Enable grabber, then on capture open symbols.app
+      toggleActiveTabsState()
+    }
+    sendResponse({ ok: true })
+    return true
+  }
+
   if (msg.type === 'open-picker') {
     const pickerUrl = chrome.runtime.getURL('picker.html')
     chrome.tabs.create({ url: pickerUrl, active: true }, (tab) => {

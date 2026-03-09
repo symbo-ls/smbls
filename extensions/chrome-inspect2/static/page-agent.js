@@ -129,6 +129,21 @@
     return origins
   }
 
+  // Serialize a sourcemap object (string values = component names, objects = nested)
+  function serializeSourcemap (sm) {
+    if (!sm || typeof sm !== 'object') return sm
+    var result = {}
+    for (var key of Object.keys(sm)) {
+      var val = sm[key]
+      if (typeof val === 'string') {
+        result[key] = val
+      } else if (typeof val === 'object' && val !== null) {
+        result[key] = serializeSourcemap(val)
+      }
+    }
+    return result
+  }
+
   // Get serialized info about a DOMQL element
   function getElementInfo (el) {
     if (!el) return null
@@ -319,6 +334,11 @@
         } catch (e) {
           info.ref[k] = { __type: 'error', message: e.message }
         }
+      }
+
+      // Sourcemap — tracks which extend each property came from
+      if (el.__ref.__sourcemap) {
+        info.sourcemap = serializeSourcemap(el.__ref.__sourcemap)
       }
     }
 
@@ -735,6 +755,18 @@
       return result
     }
   }
+
+  // Listen for element selections from the Symbols editor/preview inspector
+  document.addEventListener('symbols-element-selected', function (e) {
+    var detail = e.detail
+    if (detail && detail.path) {
+      window.__DOMQL_INSPECTOR__._lastPick = { path: detail.path, info: detail.info }
+      // Also dispatch to content script world via DOM event
+      document.dispatchEvent(new CustomEvent('__symbols_inspect_pick__', {
+        detail: JSON.stringify({ path: detail.path, info: detail.info })
+      }))
+    }
+  })
 
   console.log('[Symbols Connect] Page agent loaded')
 })()

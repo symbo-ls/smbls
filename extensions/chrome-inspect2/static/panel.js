@@ -1792,6 +1792,10 @@
         selectedInfo = JSON.parse(raw)
         renderDetail()
         updateSourceForElement()
+        // Sync selection to VSCode
+        sendVscodeSyncSelection(path, selectedInfo)
+        // Sync selection to editor/preview (if running on same page)
+        notifyPreviewSelection(path, selectedInfo)
       } else {
         selectedInfo = null
         document.getElementById('detail-key').textContent = 'Element not found'
@@ -1815,6 +1819,8 @@
         setStatus('Inspecting: ' + selectedPath)
         expandAndSelectTreePath(selectedPath)
         updateSourceForElement()
+        sendVscodeSyncSelection(selectedPath, selectedInfo)
+        notifyPreviewSelection(selectedPath, selectedInfo)
       } else {
         setStatus('Selected element has no DOMQL ref')
       }
@@ -1855,6 +1861,8 @@
             setStatus('Picked: ' + pick.path)
             expandAndSelectTreePath(pick.path)
             updateSourceForElement()
+            sendVscodeSyncSelection(pick.path, pick.info)
+            notifyPreviewSelection(pick.path, pick.info)
           }
         }
 
@@ -2051,6 +2059,87 @@
     }
   }
 
+  function addFuncBadge (row, key, funcProps) {
+    row.classList.add('is-function')
+    const badge = document.createElement('span')
+    badge.className = 'prop-fn-badge'
+    badge.textContent = 'f()'
+    badge.title = 'Dynamic value from: ' + (funcProps[key].name || 'function')
+    row.querySelector('.prop-key').appendChild(badge)
+    const valEl = row.querySelector('.prop-value')
+    if (valEl) {
+      valEl.replaceWith(valEl.cloneNode(true))
+      const newValEl = row.querySelector('.prop-value')
+      newValEl.classList.remove('editable')
+      newValEl.addEventListener('click', () => {
+        row.parentElement?.querySelectorAll('.prop-fn-tooltip').forEach(t => t.remove())
+        const tip = document.createElement('div')
+        tip.className = 'prop-fn-tooltip'
+        tip.textContent = 'This value is computed by a function (' + (funcProps[key].name || 'anonymous') +
+          '). Edit the source code to change it.'
+        row.after(tip)
+        setTimeout(() => tip.remove(), 4000)
+      })
+    }
+  }
+
+  function showUpdateLayerPrompt (key, value, source, row) {
+    // Remove any existing prompts
+    document.querySelectorAll('.prop-layer-prompt').forEach(p => p.remove())
+
+    const prompt = document.createElement('div')
+    prompt.className = 'prop-layer-prompt'
+
+    const msg = document.createElement('div')
+    msg.className = 'prop-layer-msg'
+    msg.textContent = 'Update \u201c' + key + '\u201d in:'
+
+    const btnWrap = document.createElement('div')
+    btnWrap.className = 'prop-layer-btns'
+
+    const thisBtn = document.createElement('button')
+    thisBtn.className = 'prop-layer-btn'
+    thisBtn.textContent = 'This element'
+    thisBtn.title = 'Override on this element only'
+    thisBtn.addEventListener('click', async () => {
+      const expr = 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+        JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(value) + '))'
+      await pageEval(expr).catch(() => {})
+      setStatus('Updated ' + key + ' on this element')
+      prompt.remove()
+      refreshSelectedElement()
+    })
+
+    const origBtn = document.createElement('button')
+    origBtn.className = 'prop-layer-btn prop-layer-btn-orig'
+    origBtn.textContent = source
+    origBtn.title = 'Update in original ' + source + ' component'
+    origBtn.addEventListener('click', async () => {
+      const expr = 'JSON.stringify(window.__DOMQL_INSPECTOR__.updateProp(' +
+        JSON.stringify(selectedPath) + ',' + JSON.stringify(key) + ',' + JSON.stringify(value) + '))'
+      await pageEval(expr).catch(() => {})
+      // Track as a change to the source component
+      if (!pendingChanges[source]) pendingChanges[source] = {}
+      pendingChanges[source][key] = value
+      setStatus('Updated ' + key + ' in ' + source)
+      prompt.remove()
+      refreshSelectedElement()
+    })
+
+    const cancelBtn = document.createElement('button')
+    cancelBtn.className = 'prop-layer-btn prop-layer-btn-cancel'
+    cancelBtn.textContent = '\u2715'
+    cancelBtn.title = 'Cancel'
+    cancelBtn.addEventListener('click', () => prompt.remove())
+
+    btnWrap.appendChild(thisBtn)
+    btnWrap.appendChild(origBtn)
+    btnWrap.appendChild(cancelBtn)
+    prompt.appendChild(msg)
+    prompt.appendChild(btnWrap)
+    row.after(prompt)
+  }
+
   function renderPropsTab () {
     const panel = document.getElementById('tab-props')
 
@@ -2091,69 +2180,108 @@
     if (!hasProps) {
       computedPanel.innerHTML = '<div class="empty-message">No computed props</div>'
     } else {
+      // Use __sourcemap.props for grouping when available, fallback to propsOrigin
+      const sourcemap = selectedInfo.sourcemap || {}
+      const propsSourcemap = sourcemap.props || {}
       const origins = selectedInfo.propsOrigin || {}
-      const groups = {}
-      for (const [key, val] of Object.entries(selectedInfo.props)) {
-        const source = origins[key] || 'self'
-        if (!groups[source]) groups[source] = []
-        groups[source].push({ key, val })
+
+      // Resolve source for each prop key
+      function getSource (key) {
+        if (propsSourcemap[key]) return propsSourcemap[key]
+        if (origins[key]) return origins[key]
+        return 'self'
       }
 
-      const sourceNames = Object.keys(groups)
-      for (const source of sourceNames) {
-        const filePath = connectionMode === 'local' && source !== 'self'
-          ? findSourceForElement(source) : null
-
-        if (sourceNames.length > 1 || source !== 'self') {
-          const header = document.createElement('div')
-          header.className = 'section-header prop-source-header'
-          const headerLabel = document.createElement('span')
-          headerLabel.textContent = source === 'self' ? 'Own' : source
-          header.appendChild(headerLabel)
-          if (filePath) {
-            const fileLink = document.createElement('span')
-            fileLink.className = 'prop-source-file'
-            fileLink.textContent = filePath
-            fileLink.title = 'View source'
-            fileLink.addEventListener('click', (e) => {
-              e.stopPropagation()
-              showPropertySource(filePath, source)
-            })
-            header.appendChild(fileLink)
-          }
-          computedPanel.appendChild(header)
+      // Group: own props first, then by inherited component
+      const ownProps = []
+      const inheritedGroups = {}
+      for (const [key, val] of Object.entries(selectedInfo.props)) {
+        const source = getSource(key)
+        if (source === 'self') {
+          ownProps.push({ key, val })
+        } else {
+          if (!inheritedGroups[source]) inheritedGroups[source] = []
+          inheritedGroups[source].push({ key, val })
         }
+      }
 
-        for (const { key, val } of groups[source]) {
+      // Also group top-level DOMQL sourcemap keys (tag, text, etc.) that aren't inside props
+      const topLevelInherited = {}
+      for (const [smKey, smVal] of Object.entries(sourcemap)) {
+        if (smKey === 'props' || typeof smVal !== 'string') continue
+        // Check if this key is in selectedInfo.props
+        if (selectedInfo.props[smKey] !== undefined) {
+          const source = smVal
+          // Move from ownProps to inherited if it was there
+          const ownIdx = ownProps.findIndex(p => p.key === smKey)
+          if (ownIdx >= 0) ownProps.splice(ownIdx, 1)
+          if (!inheritedGroups[source]) inheritedGroups[source] = []
+          inheritedGroups[source].push({ key: smKey, val: selectedInfo.props[smKey] })
+        }
+      }
+
+      const hasInherited = Object.keys(inheritedGroups).length > 0
+
+      // Render own props section
+      if (ownProps.length > 0 || hasInherited) {
+        const header = document.createElement('div')
+        header.className = 'section-header prop-source-header'
+        const headerLabel = document.createElement('span')
+        headerLabel.textContent = 'Own'
+        header.appendChild(headerLabel)
+        computedPanel.appendChild(header)
+      }
+
+      for (const { key, val } of ownProps) {
+        const isFunc = key in funcProps
+        const row = createPropRow(key, val, 'prop', 'self', null)
+        if (isFunc) addFuncBadge(row, key, funcProps)
+        computedPanel.appendChild(row)
+      }
+      if (ownProps.length === 0 && hasInherited) {
+        const empty = document.createElement('div')
+        empty.className = 'empty-message'
+        empty.style.padding = '6px 12px'
+        empty.style.fontSize = '11px'
+        empty.textContent = 'No own properties'
+        computedPanel.appendChild(empty)
+      }
+
+      // Render inherited groups
+      for (const [source, props] of Object.entries(inheritedGroups)) {
+        const filePath = connectionMode === 'local' ? findSourceForElement(source) : null
+
+        const header = document.createElement('div')
+        header.className = 'section-header prop-source-header prop-inherited-header'
+        const headerLabel = document.createElement('span')
+        headerLabel.textContent = source
+        headerLabel.title = 'Inherited from ' + source
+        header.appendChild(headerLabel)
+
+        const inheritedBadge = document.createElement('span')
+        inheritedBadge.className = 'prop-inherited-badge'
+        inheritedBadge.textContent = 'inherited'
+        header.appendChild(inheritedBadge)
+
+        if (filePath) {
+          const fileLink = document.createElement('span')
+          fileLink.className = 'prop-source-file'
+          fileLink.textContent = filePath
+          fileLink.title = 'View source'
+          fileLink.addEventListener('click', (e) => {
+            e.stopPropagation()
+            showPropertySource(filePath, source)
+          })
+          header.appendChild(fileLink)
+        }
+        computedPanel.appendChild(header)
+
+        for (const { key, val } of props) {
           const isFunc = key in funcProps
           const row = createPropRow(key, val, 'prop', source, filePath)
-          if (isFunc) {
-            row.classList.add('is-function')
-            // Add function badge
-            const badge = document.createElement('span')
-            badge.className = 'prop-fn-badge'
-            badge.textContent = 'f()'
-            badge.title = 'Dynamic value from: ' + (funcProps[key].name || 'function')
-            row.querySelector('.prop-key').appendChild(badge)
-
-            // Replace click handler — show tooltip instead of editing
-            const valEl = row.querySelector('.prop-value')
-            if (valEl) {
-              valEl.replaceWith(valEl.cloneNode(true))
-              const newValEl = row.querySelector('.prop-value')
-              newValEl.classList.remove('editable')
-              newValEl.addEventListener('click', () => {
-                // Remove existing tooltips
-                row.parentElement?.querySelectorAll('.prop-fn-tooltip').forEach(t => t.remove())
-                const tip = document.createElement('div')
-                tip.className = 'prop-fn-tooltip'
-                tip.textContent = 'This value is computed by a function (' + (funcProps[key].name || 'anonymous') +
-                  '). Edit the source code to change it.'
-                row.after(tip)
-                setTimeout(() => tip.remove(), 4000)
-              })
-            }
-          }
+          row.classList.add('prop-inherited')
+          row.dataset.inheritedFrom = source
+          if (isFunc) addFuncBadge(row, key, funcProps)
           computedPanel.appendChild(row)
         }
       }
@@ -4207,6 +4335,14 @@
         selectedInfo.state[key] = newValue
       }
 
+      // Check if this is an inherited prop — show layer prompt
+      const propRow = el.closest('.prop-row')
+      const inheritedFrom = propRow && propRow.dataset.inheritedFrom
+      if (inheritedFrom && type !== 'state') {
+        showUpdateLayerPrompt(key, newValue, inheritedFrom, propRow)
+        return
+      }
+
       // Apply final change (may already be previewed)
       try {
         const expr = type === 'state'
@@ -5809,6 +5945,14 @@ Do NOT include any explanation, only valid JSON.`
       intgSearch.addEventListener('input', () => renderMarketplace(intgSearch.value))
     }
 
+    // CLI commands
+    initCli()
+
+    // VSCode sync
+    const syncBadge = document.getElementById('app-connection-badge')
+    if (syncBadge) syncBadge.dataset.originalHtml = syncBadge.innerHTML
+    initVscodeSync()
+
     // Tree pane tabs (Active Nodes / State Tree / Design System)
     document.querySelectorAll('.tree-pane-tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -5989,8 +6133,31 @@ Do NOT include any explanation, only valid JSON.`
   }
 
   window.panelShown = function () {
-    if (connectionMode) loadTree()
+    if (connectionMode) {
+      loadTree()
+      // Auto-inspect $0 when Symbols panel is activated
+      inspectSelected()
+    }
   }
+
+  // Called from devtools.js when editor/preview sends element selection
+  window.handleExternalSelection = function (path, info) {
+    if (info) {
+      selectedInfo = info
+      selectedPath = path || info.key || ''
+      renderDetail()
+      setStatus('Inspecting: ' + selectedPath)
+      expandAndSelectTreePath(selectedPath)
+      updateSourceForElement()
+      // Also sync selection back to the page so preview highlights match
+      if (selectedPath) {
+        pageEval('window.__DOMQL_INSPECTOR__ && window.__DOMQL_INSPECTOR__.navigatePath(' + JSON.stringify(selectedPath) + ')')
+      }
+    }
+  }
+
+  // Note: editor-element-selected and show-symbols-panel are handled by
+  // devtools.js which forwards to handleExternalSelection() above
 
   // ============================================================
   // Gallery mode — display all components
@@ -6799,6 +6966,171 @@ Do NOT include any explanation, only valid JSON.`
         }
       } catch (e) { /* ignore polling errors */ }
     }, 2000)
+  }
+
+  // ============================================================
+  // Preview sync — notify editor/preview on the page of selection
+  // ============================================================
+  function notifyPreviewSelection (path, info) {
+    // Dispatch event to page so the editor/preview inspector can update its highlight
+    const detail = JSON.stringify({ path: path, info: info || null })
+    pageEval(
+      "document.dispatchEvent(new CustomEvent('symbols-chrome-select', { detail: " + detail + " }))"
+    ).catch(() => {})
+  }
+
+  // ============================================================
+  // VSCode Sync
+  // ============================================================
+  const SYNC_URL = 'http://127.0.0.1:24691'
+  let vscodeSyncConnected = false
+  let vscodeSyncSource = null // EventSource for SSE
+  let vscodeSyncSuppressNext = false // prevent echo loops
+
+  function initVscodeSync () {
+    // Try to connect to VSCode sync server via SSE
+    tryVscodeSyncConnect()
+    // Retry every 10s if not connected
+    setInterval(() => {
+      if (!vscodeSyncConnected) tryVscodeSyncConnect()
+    }, 10000)
+  }
+
+  function tryVscodeSyncConnect () {
+    if (vscodeSyncSource) {
+      vscodeSyncSource.close()
+      vscodeSyncSource = null
+    }
+
+    try {
+      vscodeSyncSource = new EventSource(SYNC_URL + '/sync/events')
+
+      vscodeSyncSource.onopen = () => {
+        vscodeSyncConnected = true
+        updateVscodeSyncBadge()
+        // Auto-switch to Editor (Symbols) tab when VSCode sync connects
+        switchMode('editor')
+      }
+
+      vscodeSyncSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data)
+          if (data.type === 'select' && data.path && !vscodeSyncSuppressNext) {
+            // Selection came from VSCode, apply it
+            selectElement(data.path)
+            expandAndSelectTreePath(data.path)
+          }
+          vscodeSyncSuppressNext = false
+        } catch (e) { /* ignore parse errors */ }
+      }
+
+      vscodeSyncSource.onerror = () => {
+        vscodeSyncConnected = false
+        vscodeSyncSource.close()
+        vscodeSyncSource = null
+        updateVscodeSyncBadge()
+      }
+    } catch (e) {
+      vscodeSyncConnected = false
+      updateVscodeSyncBadge()
+    }
+  }
+
+  function sendVscodeSyncSelection (path, info) {
+    if (!vscodeSyncConnected) return
+    vscodeSyncSuppressNext = true // suppress the echo we'll receive back
+    fetch(SYNC_URL + '/sync/select', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path, info: info || null })
+    }).catch(() => {})
+  }
+
+  function updateVscodeSyncBadge () {
+    const badge = document.getElementById('app-connection-badge')
+    if (!badge) return
+    if (vscodeSyncConnected) {
+      badge.innerHTML = '<span style="font-size:10px;color:#4caf50;margin-right:4px" title="VSCode sync active">&#9679; VS Code</span>' + (badge.dataset.originalHtml || '')
+    } else {
+      badge.innerHTML = badge.dataset.originalHtml || ''
+    }
+  }
+
+  // ============================================================
+  // CLI Mode
+  // ============================================================
+  function initCli () {
+    const output = document.getElementById('cli-output')
+    const customInput = document.getElementById('cli-custom-input')
+    const customRun = document.getElementById('cli-custom-run')
+
+    function appendCliOutput (text, isError) {
+      if (!output) return
+      const placeholder = output.querySelector('.cli-output-placeholder')
+      if (placeholder) placeholder.remove()
+      const line = document.createElement('div')
+      line.textContent = text
+      if (isError) line.style.color = 'var(--error, #f44)'
+      output.appendChild(line)
+      output.scrollTop = output.scrollHeight
+    }
+
+    function runCliCommand (cmd) {
+      if (!cmd) return
+      appendCliOutput('$ ' + cmd)
+
+      // Chrome extensions cannot run local CLI commands directly.
+      // If connected in local mode with a picker tab, we proxy through it.
+      // Otherwise show instructions.
+      if (connectionMode === 'local') {
+        // Send command to service worker which forwards to picker tab
+        chrome.runtime.sendMessage({ type: 'run-cli', command: cmd }, (response) => {
+          if (chrome.runtime.lastError) {
+            appendCliOutput('Error: ' + chrome.runtime.lastError.message, true)
+            return
+          }
+          if (response && response.output) {
+            appendCliOutput(response.output)
+          } else if (response && response.error) {
+            appendCliOutput(response.error, true)
+          } else {
+            appendCliOutput('Command sent. Check your terminal for output.')
+          }
+        })
+      } else {
+        appendCliOutput('Copy and run in your terminal:', false)
+        appendCliOutput(cmd, false)
+
+        // Try to copy to clipboard
+        try {
+          navigator.clipboard.writeText(cmd)
+          appendCliOutput('(copied to clipboard)', false)
+        } catch (e) {
+          // clipboard may not be available in devtools
+        }
+      }
+    }
+
+    // Bind command buttons
+    document.querySelectorAll('.cli-cmd-btn').forEach(btn => {
+      btn.addEventListener('click', () => runCliCommand(btn.dataset.cmd))
+    })
+
+    // Custom command input
+    if (customRun) {
+      customRun.addEventListener('click', () => {
+        const cmd = customInput.value.trim()
+        if (cmd) { runCliCommand(cmd); customInput.value = '' }
+      })
+    }
+    if (customInput) {
+      customInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const cmd = customInput.value.trim()
+          if (cmd) { runCliCommand(cmd); customInput.value = '' }
+        }
+      })
+    }
   }
 
   if (document.readyState === 'loading') {

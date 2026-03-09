@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
+import { execSync } from 'child_process'
 import { streamChat, AI_PROVIDERS, PROVIDER_MODELS, LLMMessage } from './llmProvider'
 import { loadAiConfig, saveAiConfig, getApiKey, setApiKey } from './configManager'
 import { getMcpStatus, installMcpForEditor, removeMcpForEditor, checkMcpServerAvailable } from './mcpManager'
@@ -42,6 +43,8 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
         case 'removeLib': this._removeLib(msg.libraryId); break
         case 'getProjectConfig': this._sendProjectConfig(); break
         case 'saveProjectConfig': this._saveProjectConfig(msg.config); break
+        case 'getProjectStatus': this._sendProjectStatus(); break
+        case 'runCliCommand': this._runCliCommand(msg.command); break
       }
     })
 
@@ -215,6 +218,43 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
     }
   }
 
+  private _sendProjectStatus(): void {
+    const root = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath
+    const projectId = this._getProjectId()
+    const authenticated = isAuthenticated()
+    const { editors } = getMcpStatus()
+    const mcpConfigured = editors.some(e => e.hasSymbolsMcp)
+
+    let cliVersion = ''
+    try {
+      cliVersion = execSync('smbls --version 2>/dev/null', { timeout: 3000, stdio: 'pipe' }).toString().trim()
+    } catch {
+      cliVersion = 'not installed'
+    }
+
+    let nodeVersion = ''
+    try {
+      nodeVersion = execSync('node --version 2>/dev/null', { timeout: 2000, stdio: 'pipe' }).toString().trim()
+    } catch {}
+
+    this._post({
+      type: 'projectStatus',
+      authenticated,
+      mcpConfigured,
+      projectId: projectId || null,
+      cliVersion,
+      nodeVersion,
+      workspace: root ? path.basename(root) : null
+    })
+  }
+
+  private _runCliCommand(command: string): void {
+    const terminal = vscode.window.terminals.find(t => t.name === 'Symbols CLI') ||
+      vscode.window.createTerminal('Symbols CLI')
+    terminal.show()
+    terminal.sendText(command)
+  }
+
   private async _handleSendMessage(text: string): Promise<void> {
     const trimmed = text.trim()
 
@@ -240,12 +280,13 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
         }
         return
       }
+      if (cmd === '/cli') { this._post({ type: 'switchTab', tab: 'cli' }); return }
       if (cmd === '/mcp') { this._post({ type: 'switchTab', tab: 'mcp' }); this._sendMcpStatus(); return }
       if (cmd === '/project') { this._post({ type: 'switchTab', tab: 'project' }); this._sendProjectConfig(); return }
       if (cmd === '/clear') { this._messages = []; this._post({ type: 'chatCleared' }); return }
       if (cmd === '/config' || cmd === '/settings') { this._post({ type: 'switchTab', tab: 'settings' }); return }
       if (cmd === '/help') {
-        this._post({ type: 'systemMessage', text: '**Commands:** /libraries, /mcp, /project, /config, /clear, /help' })
+        this._post({ type: 'systemMessage', text: '**Commands:** /libraries, /mcp, /project, /cli, /config, /clear, /help' })
         return
       }
     }

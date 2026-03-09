@@ -34,7 +34,7 @@ __export(extension_exports, {
   deactivate: () => deactivate
 });
 module.exports = __toCommonJS(extension_exports);
-var vscode6 = __toESM(require("vscode"));
+var vscode7 = __toESM(require("vscode"));
 
 // src/providers/completionProvider.ts
 var vscode2 = __toESM(require("vscode"));
@@ -2740,6 +2740,7 @@ function isInsideQuotes(line, charIndex) {
 var vscode5 = __toESM(require("vscode"));
 var fs5 = __toESM(require("fs"));
 var path5 = __toESM(require("path"));
+var import_child_process2 = require("child_process");
 
 // src/chat/llmProvider.ts
 var https = __toESM(require("https"));
@@ -3340,6 +3341,12 @@ var ChatViewProvider = class {
         case "saveProjectConfig":
           this._saveProjectConfig(msg.config);
           break;
+        case "getProjectStatus":
+          this._sendProjectStatus();
+          break;
+        case "runCliCommand":
+          this._runCliCommand(msg.command);
+          break;
       }
     });
     setTimeout(() => {
@@ -3508,6 +3515,38 @@ var ChatViewProvider = class {
       this._post({ type: "projectConfigError", text: err.message });
     }
   }
+  _sendProjectStatus() {
+    const root = vscode5.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    const projectId = this._getProjectId();
+    const authenticated = isAuthenticated();
+    const { editors } = getMcpStatus();
+    const mcpConfigured = editors.some((e) => e.hasSymbolsMcp);
+    let cliVersion = "";
+    try {
+      cliVersion = (0, import_child_process2.execSync)("smbls --version 2>/dev/null", { timeout: 3e3, stdio: "pipe" }).toString().trim();
+    } catch {
+      cliVersion = "not installed";
+    }
+    let nodeVersion = "";
+    try {
+      nodeVersion = (0, import_child_process2.execSync)("node --version 2>/dev/null", { timeout: 2e3, stdio: "pipe" }).toString().trim();
+    } catch {
+    }
+    this._post({
+      type: "projectStatus",
+      authenticated,
+      mcpConfigured,
+      projectId: projectId || null,
+      cliVersion,
+      nodeVersion,
+      workspace: root ? path5.basename(root) : null
+    });
+  }
+  _runCliCommand(command) {
+    const terminal = vscode5.window.terminals.find((t) => t.name === "Symbols CLI") || vscode5.window.createTerminal("Symbols CLI");
+    terminal.show();
+    terminal.sendText(command);
+  }
   async _handleSendMessage(text) {
     const trimmed = text.trim();
     if (trimmed.startsWith("/")) {
@@ -3530,6 +3569,10 @@ var ChatViewProvider = class {
         }
         return;
       }
+      if (cmd === "/cli") {
+        this._post({ type: "switchTab", tab: "cli" });
+        return;
+      }
       if (cmd === "/mcp") {
         this._post({ type: "switchTab", tab: "mcp" });
         this._sendMcpStatus();
@@ -3550,7 +3593,7 @@ var ChatViewProvider = class {
         return;
       }
       if (cmd === "/help") {
-        this._post({ type: "systemMessage", text: "**Commands:** /libraries, /mcp, /project, /config, /clear, /help" });
+        this._post({ type: "systemMessage", text: "**Commands:** /libraries, /mcp, /project, /cli, /config, /clear, /help" });
         return;
       }
     }
@@ -3613,11 +3656,131 @@ ${text}`;
   }
 };
 
+// src/chat/syncServer.ts
+var http2 = __toESM(require("http"));
+var vscode6 = __toESM(require("vscode"));
+var SYNC_PORT = 24691;
+var SyncServer = class {
+  constructor() {
+    this._server = null;
+    this._state = { selectedPath: null, selectedInfo: null, workspaceRoot: null, projectKey: null };
+    this._listeners = [];
+    this._sseClients = /* @__PURE__ */ new Set();
+  }
+  start() {
+    if (this._server) return;
+    this._server = http2.createServer((req, res) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+      if (req.method === "OPTIONS") {
+        res.writeHead(204);
+        res.end();
+        return;
+      }
+      const url = req.url || "";
+      if (req.method === "GET" && url === "/sync/state") {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ...this._state, connected: true }));
+        return;
+      }
+      if (req.method === "GET" && url === "/sync/events") {
+        res.writeHead(200, {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive"
+        });
+        res.write("data: " + JSON.stringify({ type: "connected", ...this._state }) + "\n\n");
+        this._sseClients.add(res);
+        req.on("close", () => {
+          this._sseClients.delete(res);
+        });
+        return;
+      }
+      if (req.method === "POST" && url === "/sync/select") {
+        let body = "";
+        req.on("data", (chunk) => {
+          body += chunk.toString();
+        });
+        req.on("end", () => {
+          try {
+            const data = JSON.parse(body);
+            if (data.path) {
+              this._state.selectedPath = data.path;
+              this._state.selectedInfo = data.info || null;
+              this._notifyListeners(data.path, data.info);
+              this._broadcast({ type: "select", path: data.path, info: data.info });
+            }
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ ok: true }));
+          } catch {
+            res.writeHead(400, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ error: "Invalid JSON" }));
+          }
+        });
+        return;
+      }
+      res.writeHead(404);
+      res.end("Not found");
+    });
+    this._server.on("error", (err) => {
+      if (err.code === "EADDRINUSE") {
+        vscode6.window.showWarningMessage(`Symbols sync port ${SYNC_PORT} already in use`);
+      }
+      this._server = null;
+    });
+    this._server.listen(SYNC_PORT, "127.0.0.1", () => {
+    });
+  }
+  stop() {
+    for (const client of this._sseClients) {
+      client.end();
+    }
+    this._sseClients.clear();
+    this._server?.close();
+    this._server = null;
+  }
+  /** Update state from VSCode side (e.g., user navigates to a component) */
+  updateSelection(path6, info) {
+    this._state.selectedPath = path6;
+    this._state.selectedInfo = info || null;
+    this._broadcast({ type: "select", path: path6, info: info || null });
+  }
+  updateProject(workspaceRoot, projectKey) {
+    this._state.workspaceRoot = workspaceRoot;
+    this._state.projectKey = projectKey;
+  }
+  /** Register listener for selections coming from Chrome */
+  onSelection(listener) {
+    this._listeners.push(listener);
+  }
+  get isRunning() {
+    return this._server !== null && this._server.listening;
+  }
+  _notifyListeners(path6, info) {
+    for (const listener of this._listeners) {
+      try {
+        listener(path6, info);
+      } catch {
+      }
+    }
+  }
+  _broadcast(data) {
+    const msg = "data: " + JSON.stringify(data) + "\n\n";
+    for (const client of this._sseClients) {
+      try {
+        client.write(msg);
+      } catch {
+      }
+    }
+  }
+};
+
 // src/extension.ts
 var LANGUAGES = ["javascript", "typescript", "javascriptreact", "typescriptreact"];
 var output;
 function activate(context) {
-  output = vscode6.window.createOutputChannel("Symbols.app");
+  output = vscode7.window.createOutputChannel("Symbols.app");
   output.appendLine("Symbols.app extension activating...");
   const completionProvider = new DomqlCompletionProvider();
   const hoverProvider = new DomqlHoverProvider();
@@ -3625,7 +3788,7 @@ function activate(context) {
   for (const lang of LANGUAGES) {
     const selector = { language: lang, scheme: "file" };
     context.subscriptions.push(
-      vscode6.languages.registerCompletionItemProvider(
+      vscode7.languages.registerCompletionItemProvider(
         selector,
         completionProvider,
         ".",
@@ -3638,33 +3801,33 @@ function activate(context) {
       )
     );
     context.subscriptions.push(
-      vscode6.languages.registerHoverProvider(selector, hoverProvider)
+      vscode7.languages.registerHoverProvider(selector, hoverProvider)
     );
     context.subscriptions.push(
-      vscode6.languages.registerDefinitionProvider(selector, definitionProvider)
+      vscode7.languages.registerDefinitionProvider(selector, definitionProvider)
     );
   }
-  const watcher = vscode6.workspace.createFileSystemWatcher("**/*.{js,ts,jsx,tsx}");
+  const watcher = vscode7.workspace.createFileSystemWatcher("**/*.{js,ts,jsx,tsx}");
   watcher.onDidChange(() => invalidateCache());
   watcher.onDidCreate(() => invalidateCache());
   watcher.onDidDelete(() => invalidateCache());
   context.subscriptions.push(watcher);
   context.subscriptions.push(
-    vscode6.commands.registerCommand("symbolsApp.toggle", () => {
-      const config = vscode6.workspace.getConfiguration("symbolsApp");
+    vscode7.commands.registerCommand("symbolsApp.toggle", () => {
+      const config = vscode7.workspace.getConfiguration("symbolsApp");
       const current = config.get("enable", true);
-      config.update("enable", !current, vscode6.ConfigurationTarget.Global);
-      vscode6.window.showInformationMessage(
+      config.update("enable", !current, vscode7.ConfigurationTarget.Global);
+      vscode7.window.showInformationMessage(
         `Symbols.app ${!current ? "enabled" : "disabled"}`
       );
     })
   );
   context.subscriptions.push(
-    vscode6.commands.registerCommand("symbolsApp.diagnose", () => {
+    vscode7.commands.registerCommand("symbolsApp.diagnose", () => {
       output.show();
       output.appendLine("--- Diagnostics ---");
-      output.appendLine(`Workspace folders: ${vscode6.workspace.workspaceFolders?.map((f) => f.uri.fsPath).join(", ")}`);
-      const editor = vscode6.window.activeTextEditor;
+      output.appendLine(`Workspace folders: ${vscode7.workspace.workspaceFolders?.map((f) => f.uri.fsPath).join(", ")}`);
+      const editor = vscode7.window.activeTextEditor;
       if (editor) {
         output.appendLine(`Active file: ${editor.document.uri.fsPath}`);
         output.appendLine(`Language: ${editor.document.languageId}`);
@@ -3676,20 +3839,97 @@ function activate(context) {
         output.appendLine(`Has component export: ${/export\s+(?:const|let|var)\s+[A-Z][a-zA-Z0-9]+\s*=\s*\{/.test(text)}`);
       }
       output.appendLine("--- End ---");
-      vscode6.window.showInformationMessage("Symbols.app: Check Output panel (Symbols.app channel)");
+      vscode7.window.showInformationMessage("Symbols.app: Check Output panel (Symbols.app channel)");
     })
   );
   const chatProvider = new ChatViewProvider(context.extensionUri);
   context.subscriptions.push(
-    vscode6.window.registerWebviewViewProvider(ChatViewProvider.viewType, chatProvider)
+    vscode7.window.registerWebviewViewProvider(ChatViewProvider.viewType, chatProvider)
   );
   context.subscriptions.push(
-    vscode6.commands.registerCommand("symbolsApp.openChat", () => {
-      vscode6.commands.executeCommand("symbolsChat.focus");
+    vscode7.commands.registerCommand("symbolsApp.openChat", () => {
+      vscode7.commands.executeCommand("symbolsChat.focus");
     })
   );
+  const syncServer = new SyncServer();
+  syncServer.start();
+  const root = vscode7.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  if (root) {
+    try {
+      const cfgPath = require("path").join(root, "symbols.json");
+      const fs6 = require("fs");
+      if (fs6.existsSync(cfgPath)) {
+        const cfg = JSON.parse(fs6.readFileSync(cfgPath, "utf8"));
+        syncServer.updateProject(root, cfg.key || null);
+      } else {
+        syncServer.updateProject(root, null);
+      }
+    } catch {
+      syncServer.updateProject(root, null);
+    }
+  }
+  syncServer.onSelection((path6, info) => {
+    output.appendLine(`Chrome sync: selected ${path6}`);
+    if (info?.sourceFile) {
+      const filePath = require("path").isAbsolute(info.sourceFile) ? info.sourceFile : require("path").join(root || "", info.sourceFile);
+      vscode7.workspace.openTextDocument(filePath).then((doc) => {
+        vscode7.window.showTextDocument(doc, { preview: true });
+      }).catch(() => {
+      });
+    }
+  });
+  context.subscriptions.push({ dispose: () => syncServer.stop() });
+  autoConnect(context, output);
   output.appendLine("Symbols.app extension activated successfully");
-  vscode6.window.showInformationMessage("Symbols.app Connect active");
+  vscode7.window.showInformationMessage("Symbols.app Connect active");
+}
+async function autoConnect(context, output2) {
+  const SKIP_KEY = "symbolsApp.skipAutoConnect";
+  if (context.globalState.get(SKIP_KEY)) return;
+  try {
+    const server = checkMcpServerAvailable();
+    if (server.available) {
+      const { editors } = getMcpStatus();
+      const unconfigured = editors.filter((e) => e.exists && !e.hasSymbolsMcp);
+      if (unconfigured.length > 0) {
+        const names = unconfigured.map((e) => e.label).join(", ");
+        const choice = await vscode7.window.showInformationMessage(
+          `Symbols MCP server available. Install for ${names}?`,
+          "Install",
+          "Not now",
+          "Don't ask again"
+        );
+        if (choice === "Install") {
+          for (const ed of unconfigured) {
+            const r = installMcpForEditor(ed);
+            output2.appendLine(r.message);
+          }
+          vscode7.window.showInformationMessage("symbols-mcp installed for detected editors");
+        } else if (choice === "Don't ask again") {
+          context.globalState.update(SKIP_KEY, true);
+        }
+      }
+    } else {
+      output2.appendLine("symbols-mcp not found \u2014 install via: pip install symbols-mcp or npm i -g @symbo.ls/mcp");
+    }
+  } catch (err) {
+    output2.appendLine(`Auto-connect MCP check failed: ${err.message}`);
+  }
+  if (!isAuthenticated()) {
+    const choice = await vscode7.window.showInformationMessage(
+      "Symbols.app: Sign in to sync projects and shared libraries.",
+      "Run smbls login",
+      "Later",
+      "Don't ask again"
+    );
+    if (choice === "Run smbls login") {
+      const terminal = vscode7.window.createTerminal("Symbols Login");
+      terminal.show();
+      terminal.sendText("smbls login");
+    } else if (choice === "Don't ask again") {
+      context.globalState.update(SKIP_KEY, true);
+    }
+  }
 }
 function deactivate() {
 }

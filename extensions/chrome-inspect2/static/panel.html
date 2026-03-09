@@ -73,6 +73,7 @@
       <button class="mode-tab" data-mode="gallery">Gallery</button>
       <button class="mode-tab" data-mode="content">Content</button>
       <button class="mode-tab" data-mode="network">Network</button>
+      <button class="mode-tab" data-mode="cli">CLI</button>
       <button class="mode-tab" data-mode="integrations">Integrations</button>
       <span class="mode-tab-spacer"></span>
       <span id="app-connection-badge"></span>
@@ -297,6 +298,80 @@
           <div class="section-header">Deployment</div>
           <div id="network-deployment" class="network-info">
             <div class="empty-message">Connect to view deployment configuration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CLI MODE
+         ============================================================ -->
+    <div id="mode-cli" class="mode-panel">
+      <div class="cli-panel">
+        <div class="cli-section">
+          <div class="section-header">Project</div>
+          <div class="cli-btn-group">
+            <button class="cli-cmd-btn" data-cmd="smbls init">Init</button>
+            <button class="cli-cmd-btn" data-cmd="smbls config">Config</button>
+            <button class="cli-cmd-btn" data-cmd="smbls create">Create</button>
+          </div>
+        </div>
+        <div class="cli-section">
+          <div class="section-header">Development</div>
+          <div class="cli-btn-group">
+            <button class="cli-cmd-btn" data-cmd="smbls start">Start</button>
+            <button class="cli-cmd-btn" data-cmd="smbls build">Build</button>
+            <button class="cli-cmd-btn" data-cmd="smbls brender">Brender</button>
+          </div>
+        </div>
+        <div class="cli-section">
+          <div class="section-header">Sync</div>
+          <div class="cli-btn-group">
+            <button class="cli-cmd-btn" data-cmd="smbls fetch">Fetch</button>
+            <button class="cli-cmd-btn" data-cmd="smbls sync">Sync</button>
+            <button class="cli-cmd-btn" data-cmd="smbls push">Push</button>
+          </div>
+        </div>
+        <div class="cli-section">
+          <div class="section-header">Deploy</div>
+          <div class="cli-btn-group">
+            <button class="cli-cmd-btn" data-cmd="smbls deploy">Deploy</button>
+            <button class="cli-cmd-btn" data-cmd="smbls clean">Clean</button>
+          </div>
+        </div>
+        <div class="cli-section">
+          <div class="section-header">Account</div>
+          <div class="cli-btn-group">
+            <button class="cli-cmd-btn" data-cmd="smbls login">Login</button>
+            <button class="cli-cmd-btn" data-cmd="smbls logout">Logout</button>
+          </div>
+        </div>
+        <div class="cli-section">
+          <div class="section-header">Project Management</div>
+          <div class="cli-btn-group">
+            <button class="cli-cmd-btn" data-cmd="smbls project list">List</button>
+            <button class="cli-cmd-btn" data-cmd="smbls project link">Link</button>
+            <button class="cli-cmd-btn" data-cmd="smbls project libs">Libs</button>
+            <button class="cli-cmd-btn" data-cmd="smbls project members">Members</button>
+            <button class="cli-cmd-btn" data-cmd="smbls project versions">Versions</button>
+          </div>
+        </div>
+        <div class="cli-section">
+          <div class="section-header">Utilities</div>
+          <div class="cli-btn-group">
+            <button class="cli-cmd-btn" data-cmd="smbls convert">Convert</button>
+            <button class="cli-cmd-btn" data-cmd="smbls migrate">Migrate</button>
+            <button class="cli-cmd-btn" data-cmd="smbls ask">Ask AI</button>
+          </div>
+        </div>
+        <div class="cli-section">
+          <div class="section-header">Output</div>
+          <div id="cli-output" class="cli-output">
+            <div class="cli-output-placeholder">Run a command to see output here. Commands require smbls CLI installed locally.</div>
+          </div>
+          <div class="cli-input-row">
+            <input id="cli-custom-input" type="text" placeholder="smbls ..." class="cli-custom-input" />
+            <button id="cli-custom-run" class="cli-run-btn">Run</button>
           </div>
         </div>
       </div>
