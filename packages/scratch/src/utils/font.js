@@ -1,5 +1,13 @@
 'use strict'
 
+export const resolveFileUrl = (url, files) => {
+  if (!url || !files) return null
+  try { new URL(url); return null } catch (e) { }
+  const file = files[url]
+  if (file) return file.content && file.content.src
+  return null
+}
+
 export const getDefaultOrFirstKey = (LIBRARY, key) => {
   if (LIBRARY[key]) return LIBRARY[key].value
   if (LIBRARY.default) return LIBRARY[LIBRARY.default].value
@@ -53,11 +61,12 @@ export const setCustomFontMedia = (
 ) => `@font-face {${setCustomFont(name, url, weight, options)}
 }`
 
-export const getFontFaceEach = (name, weights) => {
+export const getFontFaceEach = (name, weights, files) => {
   const keys = Object.keys(weights)
   return keys.map((key) => {
     const { url, fontWeight } = weights[key]
-    return setCustomFont(name, url, fontWeight)
+    const resolvedUrl = resolveFileUrl(url, files) || url
+    return setCustomFont(name, resolvedUrl, fontWeight)
   })
 }
 
@@ -66,22 +75,24 @@ export const getFontFace = (LIBRARY) => {
   return keys.map((key) => getFontFaceEach(key, LIBRARY[key].value))
 }
 
-export const getFontFaceEachString = (name, weights) => {
+export const getFontFaceEachString = (name, weights, files) => {
   if (weights && weights.isVariable) {
-    if (isGoogleFontsUrl(weights.url)) {
-      return setFontImport(weights.url)
+    const url = resolveFileUrl(weights.url, files) || weights.url
+    if (isGoogleFontsUrl(url)) {
+      return setFontImport(url)
     }
-    return setCustomFontMedia(name, weights.url, weights.fontWeight, {
+    return setCustomFontMedia(name, url, weights.fontWeight, {
       fontStretch: weights.fontStretch,
       fontDisplay: weights.fontDisplay || 'swap'
     })
   }
   const isArr = weights[0]
-  if (isArr) return getFontFaceEach(name, weights).map(setInCustomFontMedia)
-  return setCustomFontMedia(name, weights.url)
+  if (isArr) return getFontFaceEach(name, weights, files).map(setInCustomFontMedia)
+  const url = resolveFileUrl(weights.url, files) || weights.url
+  return setCustomFontMedia(name, url)
 }
 
-export const getFontFaceString = (LIBRARY) => {
+export const getFontFaceString = (LIBRARY, files) => {
   const keys = Object.keys(LIBRARY)
-  return keys.map((key) => getFontFaceEachString(key, LIBRARY[key].value))
+  return keys.map((key) => getFontFaceEachString(key, LIBRARY[key].value, files))
 }

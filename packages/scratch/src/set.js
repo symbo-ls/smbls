@@ -108,6 +108,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     useDefaultConfig,
     SEMANTIC_ICONS,
     semantic_icons,
+    files,
     ...config
   } = recivedConfig
 
@@ -115,6 +116,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     CONFIG = setActiveConfig(options.newConfig)
   }
 
+  if (files !== undefined) CONFIG.files = files
   if (verbose !== undefined) CONFIG.verbose = verbose
   if (useVariable !== undefined) CONFIG.useVariable = useVariable
   if (useReset !== undefined) CONFIG.useReset = useReset

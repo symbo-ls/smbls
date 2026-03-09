@@ -49,12 +49,13 @@ export const init = (config, options = SET_OPTIONS) => {
       useIconSprite: options.useIconSprite,
       useDefaultConfig: options.useDefaultConfig,
       globalTheme: options.globalTheme,
+      files: options.files,
       ...resultConfig
     },
     { newConfig: options.newConfig }
   )
 
-  const FontFace = getFontFaceString(conf.font || conf.FONT)
+  const FontFace = getFontFaceString(conf.font || conf.FONT, conf.files)
 
   const useReset = conf.useReset
   const useVariable = conf.useVariable

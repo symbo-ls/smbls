@@ -37,6 +37,7 @@ export const initEmotion = (key, options = {}) => {
     key,
     emotion,
     document: doc,
+    files: options.files,
     ...DEFAULT_CONTEXT,
     ...contextOverrides,
     ...initOptions

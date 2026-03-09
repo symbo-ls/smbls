@@ -9,28 +9,32 @@ import {
   getFontFaceEach,
   isGoogleFontsUrl,
   setCustomFontMedia,
-  setFontImport
+  setFontImport,
+  resolveFileUrl
 } from '../utils'
 
 export const setFont = (val, key) => {
+  const CONFIG = getActiveConfig()
   const CSSvar = `--font-${key}`
 
   if (!val || (isArray(val) && !val[0])) return
 
   let fontFace
   if (val.isVariable) {
-    if (isGoogleFontsUrl(val.url)) {
-      fontFace = setFontImport(val.url)
+    const url = resolveFileUrl(val.url, CONFIG.files) || val.url
+    if (isGoogleFontsUrl(url)) {
+      fontFace = setFontImport(url)
     } else {
-      fontFace = setCustomFontMedia(key, val.url, val.fontWeight, {
+      fontFace = setCustomFontMedia(key, url, val.fontWeight, {
         fontStretch: val.fontStretch,
         fontDisplay: val.fontDisplay || 'swap'
       })
     }
   } else if (val[0]) {
-    fontFace = getFontFaceEach(key, val)
+    fontFace = getFontFaceEach(key, val, CONFIG.files)
   } else {
-    fontFace = setCustomFontMedia(key, val.url)
+    const url = resolveFileUrl(val.url, CONFIG.files) || val.url
+    fontFace = setCustomFontMedia(key, url)
   }
 
   return { var: CSSvar, value: val, fontFace }
