@@ -15,6 +15,7 @@
     "vpatch": "npm version patch && npm publish"
   },
   "dependencies": {
+    "@symbo.ls/sdk": "^3.5.1",
     "@symbo.ls/fetch": "^3.5.1",
     "@symbo.ls/frank": "^3.5.1",
     "smbls": "^3.5.1",

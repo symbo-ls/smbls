@@ -12,7 +12,9 @@ import { isObject, deepMerge, deepClone } from '@domql/utils'
 
 import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 
-import DYNAMIC_JSON from '../dynamic.json' with { type: 'json' }
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+const DYNAMIC_JSON = require('../dynamic.json')
 
 const CONFIG = getActiveConfig()
 

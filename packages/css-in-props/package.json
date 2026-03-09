@@ -38,8 +38,7 @@
     "@domql/utils": "^3.5.1",
     "@symbo.ls/atoms": "^3.5.1",
     "@symbo.ls/emotion": "^3.5.1",
-    "@symbo.ls/scratch": "^3.5.1",
-    "smbls": "^3.5.1"
+    "@symbo.ls/scratch": "^3.5.1"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "browser": "./dist/esm/index.js",

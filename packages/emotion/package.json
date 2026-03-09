@@ -8,8 +8,7 @@
   "dependencies": {
     "@domql/utils": "^3.5.1",
     "@emotion/css": "^11.10.0",
-    "@symbo.ls/default-config": "^3.5.1",
-    "smbls": "^3.5.1"
+    "@symbo.ls/default-config": "^3.5.1"
   },
   "publishConfig": {
     "access": "restricted"

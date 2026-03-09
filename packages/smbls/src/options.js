@@ -1,7 +1,9 @@
 'use strict'
 
 import { defaultDefine } from './define.js'
-import { version } from '../package.json' with { type: 'json' }
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+const { version } = require('../package.json')
 
 export const DESIGN_SYSTEM_OPTIONS = {
   useReset: true,
