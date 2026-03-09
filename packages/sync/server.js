@@ -9,8 +9,8 @@ import { createRequire } from 'module'
 import * as utils from '@domql/utils'
 const { overwriteDeep } = utils.default || utils
 
-const require = createRequire(import.meta.url) // construct the require method
-const DES_SYS_DEFAULT_FILE = require('./dynamic.json') // Bring in the ability to create the 'require' method
+const require = createRequire(import.meta.url)
+const DES_SYS_DEFAULT_FILE = require('./dynamic.json')
 
 const app = express()
 let io
