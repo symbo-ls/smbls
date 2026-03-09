@@ -7,7 +7,10 @@
  *   - page.helmet (legacy)
  *   - page.state (fallback: state-level title/description)
  *
- * Global SEO is merged from data.integrations.seo
+ * Merge priority (lowest → highest):
+ *   1. data.integrations.seo (global SEO)
+ *   2. data.app.metadata (app-level from app.js)
+ *   3. page-level metadata
  */
 /**
  * Check if a string looks like a bare filename (not an absolute path or URL).
@@ -47,9 +50,14 @@ export const extractMetadata = (data, route = '/') => {
 
   let metadata = {}
 
-  // Merge global SEO settings first (lower priority)
+  // Merge global SEO settings first (lowest priority)
   if (data.integrations?.seo) {
     metadata = { ...data.integrations.seo }
+  }
+
+  // Merge app-level metadata (medium priority)
+  if (data.app?.metadata) {
+    metadata = { ...metadata, ...data.app.metadata }
   }
 
   if (page) {

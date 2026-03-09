@@ -213,8 +213,11 @@ export function getPageMetadata (data, pathname) {
   const currentPage = data.pages?.[pathname]
   const stateObject = isObject(currentPage?.state) && currentPage?.state
   let pageMetadata = currentPage?.metadata || currentPage?.helmet || stateObject || {}
+  const appMetadata = data.app?.metadata || {}
   if (data.integrations?.seo) {
-    pageMetadata = { ...data.integrations.seo, ...pageMetadata }
+    pageMetadata = { ...data.integrations.seo, ...appMetadata, ...pageMetadata }
+  } else if (Object.keys(appMetadata).length) {
+    pageMetadata = { ...appMetadata, ...pageMetadata }
   }
   if (!pageMetadata.title) pageMetadata.title = data.name + ' / symbo.ls' || 'Symbols demo'
   pageMetadata = resolveFileReferences(pageMetadata, data.files)

@@ -7,6 +7,7 @@ export const Picture = {
   tag: 'picture',
 
   childExtends: {
+    deps: { getSystemGlobalTheme },
     tag: 'source',
     attr: {
       media: (element) => {

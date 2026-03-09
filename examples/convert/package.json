@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@domql/utils": "^3.2.3",
-    "smbls": "^3.2.3",
+    "smbls": "^3.5.1",
     "jsdom": "^26.0.0"
   },
   "peerDependencies": {
