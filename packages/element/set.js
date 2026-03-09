@@ -130,7 +130,7 @@ export const set = function (params, options = {}, el) {
     return
   }
 
-  if (!params) return element
+  if (!params || typeof params !== 'object') return element
 
   let { childExtends, props, tag } = params
   if (!props) props = params.props = {}
