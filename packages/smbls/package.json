@@ -43,7 +43,9 @@
     "css-in-props": "^3.5.1",
     "domql": "^3.5.1"
   },
-  "publishConfig": {},
+  "publishConfig": {
+    "access": "restricted"
+  },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild *.js src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV && cp dynamic.json dist/esm/dynamic.json && node -e \"const p=require('./package.json');require('fs').writeFileSync('dist/esm/package.json',JSON.stringify({name:p.name,version:p.version}));\"",

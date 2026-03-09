@@ -31,5 +31,8 @@
     "@babel/core": "^7.26.0"
   },
   "browser": "./dist/esm/index.js",
-  "sideEffects": false
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

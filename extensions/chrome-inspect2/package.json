@@ -16,5 +16,8 @@
   },
   "dependencies": {
     "@domql/utils": "^3.5.1"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

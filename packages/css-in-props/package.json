@@ -18,7 +18,9 @@
     "./src/props": "./src/props/index.js"
   },
   "source": "src/index.js",
-  "publishConfig": {},
+  "publishConfig": {
+    "access": "restricted"
+  },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild $(find src -name '*.js') --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",

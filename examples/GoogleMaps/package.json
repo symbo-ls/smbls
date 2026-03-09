@@ -9,5 +9,8 @@
     "@googlemaps/js-api-loader": "^1.15.1"
   },
   "type": "module",
-  "source": "index.js"
+  "source": "index.js",
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

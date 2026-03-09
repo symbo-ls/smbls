@@ -31,5 +31,8 @@
     "@domql/utils": "^3.5.1"
   },
   "browser": "./dist/esm/index.js",
-  "sideEffects": false
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

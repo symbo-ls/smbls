@@ -32,5 +32,8 @@
     "build": "node ../../build/build.js",
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
     "prepublish": "npm run build && npm run copy:package:cjs"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

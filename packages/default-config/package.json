@@ -14,5 +14,8 @@
     ".": {
       "import": "./blank/index.js"
     }
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

@@ -14,7 +14,9 @@
     }
   },
   "source": "src/index.js",
-  "publishConfig": {},
+  "publishConfig": {
+    "access": "restricted"
+  },
   "scripts": {
     "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",

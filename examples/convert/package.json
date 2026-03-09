@@ -27,5 +27,8 @@
     "kalduna": {
       "optional": true
     }
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

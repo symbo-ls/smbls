@@ -58,5 +58,8 @@
   "browser": "./dist/esm/index.js",
   "unpkg": "./dist/iife/index.js",
   "jsdelivr": "./dist/iife/index.js",
-  "sideEffects": false
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

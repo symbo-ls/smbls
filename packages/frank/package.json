@@ -21,5 +21,8 @@
     "@symbo.ls/smbls-utils": "^3.5.1",
     "esbuild": "^0.26.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

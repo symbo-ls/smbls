@@ -9,5 +9,8 @@
     "@domql/utils": "^3.2.3"
   },
   "type": "module",
-  "source": "index.js"
+  "source": "index.js",
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

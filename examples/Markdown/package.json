@@ -10,5 +10,8 @@
     "remark-gfm": "latest"
   },
   "type": "module",
-  "source": "index.js"
+  "source": "index.js",
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

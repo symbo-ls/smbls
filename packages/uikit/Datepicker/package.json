@@ -17,5 +17,8 @@
     ".": {
       "import": "./index.js"
     }
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

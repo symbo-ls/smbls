@@ -51,5 +51,8 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.32.0",
     "standard": "^17.1.2"
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }

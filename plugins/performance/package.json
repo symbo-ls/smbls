@@ -29,5 +29,8 @@
   "files": [
     "dist",
     "*.js"
-  ]
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  }
 }
