@@ -31,8 +31,8 @@ function isPidAlive (pid) {
 }
 
 function getCollabStatePath () {
-  const { symbolsDir } = getConfigPaths()
-  return path.join(symbolsDir, 'collab.json')
+  const { symbolsLocalDir } = getConfigPaths()
+  return path.join(symbolsLocalDir, 'collab.json')
 }
 
 function isCollabRunning () {
@@ -320,7 +320,7 @@ filesCmd
 filesCmd
   .command('upload')
   .description('Upload one or more files and add them to the project `files` map')
-  .argument('<paths...>', 'Paths to local files')
+  .arguments('<paths...>')
   .option('--key <key>', 'Project files map key (only valid when uploading a single file)')
   .option('--visibility <visibility>', 'File visibility (public/private)', 'public')
   .option('--tags <csv>', 'Comma-separated tags')

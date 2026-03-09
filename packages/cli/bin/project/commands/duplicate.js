@@ -17,7 +17,7 @@ export function registerProjectDuplicateCommand (projectCmd) {
   projectCmd
     .command('duplicate <sourceProjectKeyOrId> [dir]')
     .description('Duplicate a project on the platform and (optionally) set up a local folder')
-    .option('--name <name>', 'New project name')
+    .option('--project-name <name>', 'New project name')
     .option('--key <projectKey>', 'New project key')
     .option('--type <projectType>', 'New project type (optional; server may infer)')
     .option('--non-interactive', 'Disable prompts', false)
@@ -35,7 +35,7 @@ export function registerProjectDuplicateCommand (projectCmd) {
       const sourceId = await resolveProjectIdOrExit({ value: source, authToken })
 
       const interactive = !!process.stdin.isTTY && !!process.stdout.isTTY && !opts.nonInteractive
-      const name = opts.name || (interactive ? await promptProjectName({ defaultName: `Copy of ${source}` }) : null)
+      const name = opts.projectName || (interactive ? await promptProjectName({ defaultName: `Copy of ${source}` }) : null)
       let key = opts.key ? normalizeProjectKey(opts.key) : null
       if (interactive && !key) {
         const suggested = suggestProjectKeyFromName(name || '') || ''

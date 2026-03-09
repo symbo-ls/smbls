@@ -9,13 +9,13 @@ export function registerProjectMembersInviteCommand (membersCmd) {
     .description('Invite an email address to join the project')
     .option('--project <projectKeyOrId>', 'Override project (defaults to linked workspace)')
     .option('--role <role>', 'Invite role (guest/editor/admin/owner)', 'guest')
-    .option('--name <name>', 'Invitee name (optional)')
+    .option('--invitee-name <name>', 'Invitee name (optional)')
     .option('--json', 'Output raw JSON', false)
     .action(async (email, opts) => {
       const { authToken } = await resolveAuthOrExit({ nonInteractive: opts.nonInteractive })
       const projectId = await resolveWorkspaceProjectIdOrExit({ projectArg: opts.project, authToken })
 
-      const payload = await inviteProjectMember(projectId, { email, role: opts.role, name: opts.name }, authToken)
+      const payload = await inviteProjectMember(projectId, { email, role: opts.role, name: opts.inviteeName }, authToken)
       if (opts.json) {
         console.log(JSON.stringify(payload, null, 2))
         return

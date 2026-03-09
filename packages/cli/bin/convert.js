@@ -16,10 +16,7 @@ export function convertFromCli (data, opts) {
 program
   .command('convert')
   .description('Convert and copy all DOMQL components under a directory')
-  .argument('[src]', 'Source directory/file. By default, it is "src/"')
-  .argument('[dest]',
-    'Destination directory/file. Will be overwritten. By ' +
-            'default, it becomes the name of the desired format')
+  .arguments('[src] [dest]')
   .option('--react', 'Convert all DomQL components to React')
   .option('--angular', 'Convert all DomQL components to Angular')
   .option('--vue2', 'Convert all DomQL components to Vue2')

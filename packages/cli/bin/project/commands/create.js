@@ -363,7 +363,7 @@ export function registerProjectCreateCommand (projectCmd) {
     .option('--workspace', 'Scaffold only symbols source files (no full repo, dir: ".")', false)
     .option('--local-only', 'Local-only (no platform)', false)
     .option('--non-interactive', 'Disable prompts (require flags)', false)
-    .option('--name <name>', 'Platform project name')
+    .option('--project-name <name>', 'Platform project name')
     .option('--type <projectType>', 'Platform projectType (API-required)')
     .option('--key <projectKey>', 'Platform project key')
     .option('--id <projectId>', 'Platform project id (for link mode)')

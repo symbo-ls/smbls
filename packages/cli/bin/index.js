@@ -29,6 +29,7 @@ import './deploy.js'
 import './ask.js'
 import './eject.js'
 import './frank.js'
+import './sdk.js'
 
 // Gracefully handle Ctrl+C / ESC in interactive prompts
 process.on('uncaughtException', (err) => {

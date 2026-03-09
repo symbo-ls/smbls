@@ -13,7 +13,7 @@ const frankCmd = program
 frankCmd
   .command('to-json')
   .description('Convert a Symbols filesystem project to JSON')
-  .argument('[src]', 'Source symbols/ directory (default: ./symbols)')
+  .arguments('[src]')
   .option('-o, --output <path>', 'Output JSON file path')
   .option('--no-stringify', 'Keep functions as-is (not stringified)')
   .option('-v, --verbose', 'Verbose output')
@@ -55,8 +55,7 @@ frankCmd
 frankCmd
   .command('to-fs')
   .description('Convert a Symbols JSON file to filesystem project')
-  .argument('<json>', 'Source JSON file path')
-  .argument('[dest]', 'Destination symbols/ directory (default: ./symbols)')
+  .arguments('<json> [dest]')
   .option('--overwrite', 'Overwrite existing files')
   .option('-v, --verbose', 'Verbose output')
   .action(async (jsonPath, dest, opts) => {

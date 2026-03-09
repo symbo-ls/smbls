@@ -199,7 +199,7 @@ function renderInstallInstructions (shell) {
 program
   .command('completion')
   .description('Generate shell completion script for smbls')
-  .argument('[shell]', 'bash|zsh', detectShell())
+  .arguments('[shell]')
   .option('--install', 'Print install instructions (no file writes)', false)
   .action((shell, opts) => {
     const sh = String(shell || '').toLowerCase()
@@ -221,8 +221,7 @@ program
 const completeCmd = program
   .command('__complete')
   .description('Internal: shell completion hook')
-  .argument('[words...]')
-  .allowExcessArguments(true)
+  .arguments('[words...]')
   .allowUnknownOption(true)
   .action((words = []) => {
     const ws = Array.isArray(words) ? words.map(String) : []
