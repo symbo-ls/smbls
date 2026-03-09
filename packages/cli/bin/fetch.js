@@ -81,7 +81,7 @@ async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm 
     const t = Date.parse(String(pulledAt))
     if (!Number.isNaN(t)) {
       hasLocalChanges = await hasFilesModifiedAfter(distDir, t, {
-        ignore: new Set(['.cache', 'node_modules', '.git'])
+        ignore: new Set(['.cache', '.symbols-cache', 'node_modules', '.git'])
       })
     }
   }
@@ -95,7 +95,7 @@ async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm 
   if (hasLocalChanges === null) {
     console.log(chalk.dim('Unable to determine if local changes exist.\n'))
   }
-  console.log(chalk.dim('This fetch will overwrite local files without a per-file diff prompt.\n'))
+  console.log(chalk.dim('Local files with conflicts will be backed up to .symbols-cache/ before overwriting.\n'))
 
   const { consent } = await inquirer.prompt([
     {

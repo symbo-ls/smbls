@@ -174,6 +174,41 @@ export const generateMetaTags = (metadata, isProduction) => {
  * Extract page-level metadata from project data for a given pathname.
  * Merges global SEO (data.integrations.seo) with page-level metadata/helmet/state.
  */
+/**
+ * Check if a string looks like a bare filename (not an absolute path or URL).
+ * These are references to project files from `data.files`.
+ */
+const isBareFilename = (val) =>
+  typeof val === 'string' && val.length > 0 && !val.startsWith('/') && !val.startsWith('http')
+
+/**
+ * Resolve bare filename references in metadata values against `data.files`.
+ * If a metadata value is a plain filename (e.g. "logo.png") and a matching
+ * entry exists in `data.files`, replace it with the file's `src` URL.
+ */
+function resolveFileReferences (metadata, files) {
+  if (!files || typeof files !== 'object') return metadata
+
+  const resolve = (val) => {
+    if (!isBareFilename(val)) return val
+    const fileEntry = files[val]
+    if (fileEntry?.src) return fileEntry.src
+    return val
+  }
+
+  const result = { ...metadata }
+  for (const [key, value] of Object.entries(result)) {
+    if (typeof value === 'string') {
+      result[key] = resolve(value)
+    } else if (Array.isArray(value)) {
+      result[key] = value.map((item) =>
+        typeof item === 'string' ? resolve(item) : item
+      )
+    }
+  }
+  return result
+}
+
 export function getPageMetadata (data, pathname) {
   const currentPage = data.pages?.[pathname]
   const stateObject = isObject(currentPage?.state) && currentPage?.state
@@ -182,5 +217,6 @@ export function getPageMetadata (data, pathname) {
     pageMetadata = { ...data.integrations.seo, ...pageMetadata }
   }
   if (!pageMetadata.title) pageMetadata.title = data.name + ' / symbo.ls' || 'Symbols demo'
+  pageMetadata = resolveFileReferences(pageMetadata, data.files)
   return pageMetadata
 }

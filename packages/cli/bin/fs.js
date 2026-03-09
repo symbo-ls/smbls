@@ -202,25 +202,26 @@ export async function createFs (
 
   const filesExist = fs.existsSync(targetDir)
 
-  if (!filesExist || update) {
-    await fs.promises.mkdir(targetDir, { recursive: true })
-
-    if (!isLibsScope) {
-      // Migration: `designSystem.js` and `files.js` used to be generated as single files.
-      // Now that they're directories, remove legacy single files to avoid ambiguity.
-      for (const k of splitObjectKeys) {
-        const legacyPath = path.join(targetDir, `${k}.js`)
-        try {
-          if (fs.existsSync(legacyPath)) await fs.promises.unlink(legacyPath)
-        } catch (_) {}
-      }
-
-      // Migration: remove legacy libs/ directory inside symbols dir
-      const legacyLibsDir = path.join(targetDir, 'libs')
+  // Migration: clean up legacy files when target dir exists
+  if (filesExist && !isLibsScope) {
+    // `designSystem.js` and `files.js` used to be generated as single files.
+    // Now that they're directories, remove legacy single files to avoid ambiguity.
+    for (const k of splitObjectKeys) {
+      const legacyPath = path.join(targetDir, `${k}.js`)
       try {
-        if (fs.existsSync(legacyLibsDir)) await fs.promises.rm(legacyLibsDir, { recursive: true })
+        if (fs.existsSync(legacyPath)) await fs.promises.unlink(legacyPath)
       } catch (_) {}
     }
+
+    // Migration: remove legacy libs/ directory inside symbols dir
+    const legacyLibsDir = path.join(targetDir, 'libs')
+    try {
+      if (fs.existsSync(legacyLibsDir)) await fs.promises.rm(legacyLibsDir, { recursive: true })
+    } catch (_) {}
+  }
+
+  if (!filesExist) {
+    await fs.promises.mkdir(targetDir, { recursive: true })
 
     const promises = [
       // Scaffold shared libraries into librariesDir (separate from symbols dir)
@@ -328,6 +329,8 @@ export async function createFs (
         if (!update) {
           const { consent } = await askForConsent()
           if (consent) {
+            // Backup conflicting local files before overwriting
+            await backupLocalFiles(targetDir, distDir, diffs)
             await overrideFiles(cacheDir, targetDir, {
               allDirectoryKeys: scopedAllDirectoryKeys,
               singleFileKeys
@@ -348,6 +351,8 @@ export async function createFs (
             console.log('Files not overridden.')
           }
         } else {
+          // Backup conflicting local files before overwriting
+          await backupLocalFiles(targetDir, distDir, diffs)
           await overrideFiles(cacheDir, targetDir, {
             allDirectoryKeys: scopedAllDirectoryKeys,
             singleFileKeys
@@ -825,6 +830,40 @@ export { ${removeChars(toTitleCase(itemKey))} as '${itemKey}' }`
 
   // fs.writeFileSync(destPath, genStr)
   // }
+}
+
+/**
+ * Backup conflicting local files to .symbols-cache before overwriting.
+ */
+async function backupLocalFiles (targetDir, distDir, diffs) {
+  if (!diffs.length) return
+
+  const backupDir = path.join(path.dirname(distDir), '.symbols-cache')
+
+  // Clear previous backup
+  try {
+    if (fs.existsSync(backupDir)) await fs.promises.rm(backupDir, { recursive: true })
+  } catch (_) {}
+
+  await fs.promises.mkdir(backupDir, { recursive: true })
+
+  let backedUp = 0
+  for (const diff of diffs) {
+    const srcPath = path.join(targetDir, diff.file)
+    try {
+      if (!fs.existsSync(srcPath)) continue
+      const destPath = path.join(backupDir, diff.file)
+      await fs.promises.mkdir(path.dirname(destPath), { recursive: true })
+      await fs.promises.copyFile(srcPath, destPath)
+      backedUp++
+    } catch (_) {}
+  }
+
+  if (backedUp > 0) {
+    const relBackup = path.relative(process.cwd(), backupDir)
+    console.log(chalk.yellow(`\nBacked up ${backedUp} local file(s) to ${chalk.bold(relBackup)}/`))
+    console.log(chalk.dim('You can restore them manually if needed.\n'))
+  }
 }
 
 async function findDiff (targetDir, distDir, { allDirectoryKeys, singleFileKeys, splitObjectKeys } = {}) {

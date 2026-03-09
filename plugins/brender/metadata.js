@@ -9,6 +9,38 @@
  *
  * Global SEO is merged from data.integrations.seo
  */
+/**
+ * Check if a string looks like a bare filename (not an absolute path or URL).
+ */
+const isBareFilename = (val) =>
+  typeof val === 'string' && val.length > 0 && !val.startsWith('/') && !val.startsWith('http')
+
+/**
+ * Resolve bare filename references in metadata values against `data.files`.
+ */
+const resolveFileReferences = (metadata, files) => {
+  if (!files || typeof files !== 'object') return metadata
+
+  const resolve = (val) => {
+    if (!isBareFilename(val)) return val
+    const fileEntry = files[val]
+    if (fileEntry?.src) return fileEntry.src
+    return val
+  }
+
+  const result = { ...metadata }
+  for (const [key, value] of Object.entries(result)) {
+    if (typeof value === 'string') {
+      result[key] = resolve(value)
+    } else if (Array.isArray(value)) {
+      result[key] = value.map((item) =>
+        typeof item === 'string' ? resolve(item) : item
+      )
+    }
+  }
+  return result
+}
+
 export const extractMetadata = (data, route = '/') => {
   const pages = data.pages || {}
   const page = pages[route]
@@ -38,6 +70,9 @@ export const extractMetadata = (data, route = '/') => {
   if (!metadata.title) {
     metadata.title = data.name || 'Symbols'
   }
+
+  // Resolve bare filenames to actual file URLs
+  metadata = resolveFileReferences(metadata, data.files)
 
   return metadata
 }
