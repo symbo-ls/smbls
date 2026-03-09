@@ -76,14 +76,46 @@ const EXTERNAL_PACKAGES = [
   'react',
   'react-dom',
   'lodash',
-  'lodash/*'
+  'lodash/*',
+  'motion'
 ]
+
+/**
+ * esbuild plugin that stubs externalized packages as empty modules
+ * instead of emitting require() calls that fail at runtime.
+ */
+function stubExternalsPlugin (patterns) {
+  const wildcards = patterns.filter(p => p.endsWith('/*')).map(p => p.slice(0, -2))
+  const exact = new Set(patterns.filter(p => !p.endsWith('/*')))
+
+  function isMatch (id) {
+    if (exact.has(id)) return true
+    return wildcards.some(prefix => id === prefix || id.startsWith(prefix + '/'))
+  }
+
+  return {
+    name: 'stub-externals',
+    setup (build) {
+      build.onResolve({ filter: /.*/ }, args => {
+        if (args.kind !== 'import-statement' && args.kind !== 'require-call') return
+        if (isMatch(args.path)) {
+          return { path: args.path, namespace: 'stub-external' }
+        }
+      })
+      build.onLoad({ filter: /.*/, namespace: 'stub-external' }, () => ({
+        contents: 'module.exports = { __esModule: true, __isStub: true }',
+        loader: 'js'
+      }))
+    }
+  }
+}
 
 /**
  * Bundle a JS entry file using esbuild into a single CJS module loadable in Node.
  */
 async function bundleEntry (entryPath, outFile, external = []) {
   const source = await fs.promises.readFile(entryPath, 'utf8')
+  const allExternals = [...EXTERNAL_PACKAGES, ...external]
   await build({
     stdin: {
       contents: source,
@@ -98,9 +130,22 @@ async function bundleEntry (entryPath, outFile, external = []) {
     format: 'cjs',
     bundle: true,
     mainFields: ['module', 'main'],
-    external: [...EXTERNAL_PACKAGES, ...external],
+    plugins: [stubExternalsPlugin(allExternals)],
     define: { global: 'globalThis' },
     banner: { js: getBannerCode() },
+    loader: {
+      '.png': 'dataurl',
+      '.jpg': 'dataurl',
+      '.jpeg': 'dataurl',
+      '.gif': 'dataurl',
+      '.webp': 'dataurl',
+      '.svg': 'dataurl',
+      '.woff2': 'dataurl',
+      '.woff': 'dataurl',
+      '.ttf': 'dataurl',
+      '.otf': 'dataurl',
+      '.eot': 'dataurl'
+    },
     logLevel: 'warning'
   })
 }
@@ -223,6 +268,15 @@ export async function toJSON (projectDir, options = {}) {
   try {
     await fs.promises.mkdir(buildDir, { recursive: true })
     await bundleEntry(entryPath, outFile, external)
+
+    // Patch __toESM in the bundle so stub-external modules return a Proxy
+    // that makes any property access return a no-op function
+    let code = await fs.promises.readFile(outFile, 'utf8')
+    code = code.replace(
+      /var __toESM\s*=\s*([^;]+);/,
+      'var __origToESM = $1; var __toESM = function(mod) { var r = __origToESM.apply(null, arguments); if (mod && mod.__isStub) return new Proxy(r, { get: function(t,p) { return p in t ? t[p] : function() {} } }); return r; };'
+    )
+    await fs.promises.writeFile(outFile, code, 'utf8')
 
     const project = loadCjs(outFile)
     const cleaned = stripEmptyDefaults(project)
