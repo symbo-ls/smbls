@@ -1,7 +1,8 @@
 'use strict'
 
 import { transformDOMQLEmotion, emotion as defaultEmotion } from './index.js'
-import { init, DEFAULT_CONTEXT } from 'smbls'
+import { init } from 'smbls/src/init.js'
+import { DEFAULT_CONTEXT } from 'smbls/src/options.js'
 import { deepClone, deepMerge } from '@domql/utils'
 
 import { DEFAULT_CONFIG } from '@symbo.ls/default-config'

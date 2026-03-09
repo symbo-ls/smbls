@@ -13,7 +13,8 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
-    }
+    },
+    "./src/*": "./src/*"
   },
   "bin": {
     "smbls": "./bin/smbls.js"

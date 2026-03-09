@@ -5,6 +5,7 @@ import { matchesComponentNaming } from './component.js'
 import { deepClone, exec } from './object.js'
 import { isArray, isObject, isString } from './types.js'
 const ENV = process.env.NODE_ENV
+const isSourcemapEnabled = (options) => options.sourcemap !== false && ENV !== 'production'
 
 export const createExtendsFromKeys = key => {
   if (key.includes('+')) {
@@ -112,19 +113,21 @@ export const extractArrayExtend = (
   extend,
   stack,
   context,
-  processed = new Set()
+  processed = new Set(),
+  nameStack,
+  componentNameMap
 ) => {
   for (const each of extend) {
     if (isArray(each)) {
-      extractArrayExtend(each, stack, context, processed)
+      extractArrayExtend(each, stack, context, processed, nameStack, componentNameMap)
     } else {
-      flattenExtend(each, stack, context, processed)
+      flattenExtend(each, stack, context, processed, nameStack, undefined, componentNameMap)
     }
   }
   return stack
 }
 
-export const deepExtend = (extend, stack, context, processed = new Set()) => {
+export const deepExtend = (extend, stack, context, processed = new Set(), nameStack, currentName, componentNameMap) => {
   const extendOflattenExtend = extend.extends || extend.extend
   // Remove extends/extend properties before adding to stack
   const cleanExtend = { ...extend }
@@ -134,9 +137,10 @@ export const deepExtend = (extend, stack, context, processed = new Set()) => {
   for (const _k in cleanExtend) { hasKeys = true; break } // eslint-disable-line
   if (hasKeys) {
     stack.push(cleanExtend)
+    if (nameStack) nameStack.push(currentName)
   }
   if (extendOflattenExtend) {
-    flattenExtend(extendOflattenExtend, stack, context, processed)
+    flattenExtend(extendOflattenExtend, stack, context, processed, nameStack, currentName, componentNameMap)
   }
   return stack
 }
@@ -145,25 +149,34 @@ export const flattenExtend = (
   extend,
   stack,
   context,
-  processed = new Set()
+  processed = new Set(),
+  nameStack,
+  parentName,
+  componentNameMap
 ) => {
   if (!extend) return stack
   if (processed.has(extend)) return stack
 
   if (isArray(extend)) {
-    return extractArrayExtend(extend, stack, context, processed)
+    return extractArrayExtend(extend, stack, context, processed, nameStack, componentNameMap)
   }
 
+  let currentName = parentName
   if (isString(extend)) {
+    currentName = extend
     extend = mapStringsWithContextComponents(extend, context)
+  } else if (componentNameMap && isObject(extend) && componentNameMap.has(extend)) {
+    // Resolve name from pre-built map (top-level resolved extends)
+    currentName = componentNameMap.get(extend)
   }
 
   processed.add(extend)
 
   if (extend?.extends || extend?.extend) {
-    deepExtend(extend, stack, context, processed)
+    deepExtend(extend, stack, context, processed, nameStack, currentName, componentNameMap)
   } else if (extend) {
     stack.push(extend)
+    if (nameStack) nameStack.push(currentName)
   }
 
   return stack
@@ -173,7 +186,7 @@ const MERGE_EXTENDS_SKIP = new Set([
   'parent', 'node', '__ref', '__proto__', 'extend', 'childExtend', 'childExtendRecursive'
 ])
 
-export const deepMergeExtends = (element, extend) => {
+export const deepMergeExtends = (element, extend, sourcemap, sourceName, preBuiltSourcemap) => {
   // Clone extend to prevent mutations
   extend = deepClone(extend)
 
@@ -194,14 +207,28 @@ export const deepMergeExtends = (element, extend) => {
       if (elementProp === undefined) {
         // For undefined properties in element, copy from extend
         element[e] = extendProp
+        // Track sourcemap for this property
+        if (sourcemap && sourceName) {
+          if (isObject(extendProp) && !isArray(extendProp)) {
+            sourcemap[e] = sourcemap[e] || {}
+            trackSourcemapDeep(sourcemap[e], extendProp, sourceName)
+          } else {
+            sourcemap[e] = sourceName
+          }
+        } else if (sourcemap && preBuiltSourcemap?.[e]) {
+          // Copy sourcemap entry from pre-built sourcemap (used in finalizeExtends)
+          sourcemap[e] = preBuiltSourcemap[e]
+        }
       } else if (isObject(elementProp) && isObject(extendProp)) {
         // For objects, merge based on type
+        const nestedSourcemap = sourcemap ? (sourcemap[e] = sourcemap[e] || {}) : undefined
+        const nestedPreBuilt = preBuiltSourcemap?.[e]
         if (matchesComponentNaming(e)) {
           // For components, override base properties with extended ones
-          element[e] = deepMergeExtends(elementProp, extendProp)
+          element[e] = deepMergeExtends(elementProp, extendProp, nestedSourcemap, sourceName, nestedPreBuilt)
         } else {
           // For other objects, merge normally
-          deepMergeExtends(elementProp, extendProp)
+          deepMergeExtends(elementProp, extendProp, nestedSourcemap, sourceName, nestedPreBuilt)
         }
       }
 
@@ -225,12 +252,27 @@ export const deepMergeExtends = (element, extend) => {
   return element
 }
 
-export const cloneAndMergeArrayExtend = stack => {
-  return stack.reduce((acc, current) => {
+const trackSourcemapDeep = (sourcemap, obj, sourceName) => {
+  for (const key in obj) {
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue
+    const val = obj[key]
+    if (isObject(val) && !isArray(val)) {
+      sourcemap[key] = sourcemap[key] || {}
+      trackSourcemapDeep(sourcemap[key], val, sourceName)
+    } else {
+      sourcemap[key] = sourceName
+    }
+  }
+}
+
+export const cloneAndMergeArrayExtend = (stack, sourcemap, extendNames) => {
+  return stack.reduce((acc, current, i) => {
     // Clone current extend to avoid mutations
     const cloned = deepClone(current)
+    const sourceName = extendNames ? extendNames[i] : undefined
     // Merge into accumulator, giving priority to current extend
-    return deepMergeExtends(acc, cloned)
+    return deepMergeExtends(acc, cloned, sourcemap, sourceName)
   }, {})
 }
 
@@ -271,11 +313,12 @@ export const jointStacks = (extendStack, childExtendsStack) => {
 }
 
 // init
-export const getExtendsStack = (extend, context) => {
+export const getExtendsStack = (extend, context, nameStack, componentNameMap) => {
   if (!extend) return []
   if (extend.__hash) return getHashedExtend(extend) || []
   const processed = new Set()
-  const stack = flattenExtend(extend, [], context, processed)
+  const stack = flattenExtend(extend, [], context, processed, nameStack, undefined, componentNameMap)
+  if (nameStack) return stack
   return getExtendsStackRegistry(extend, stack)
 }
 
@@ -416,6 +459,10 @@ export const createExtendsStack = (element, parent, options = {}) => {
 
   const variant = element.variant || props?.variant
 
+  // Keep original string names before resolution for sourcemap tracking
+  const sourcemap = isSourcemapEnabled(options)
+  const originalExtendNames = sourcemap ? [...ref.__extends] : null
+
   const __extends = removeDuplicatesInArray(
     ref.__extends.map((val, i) => {
       return mapStringsWithContextComponents(
@@ -427,8 +474,24 @@ export const createExtendsStack = (element, parent, options = {}) => {
     })
   )
 
-  const stack = getExtendsStack(__extends, context)
-  ref.__extendsStack = stack
+  if (sourcemap) {
+    // Build a map from resolved component objects to their original string names
+    const componentNameMap = new WeakMap()
+    for (let i = 0; i < __extends.length; i++) {
+      const resolved = __extends[i]
+      const originalName = originalExtendNames[i]
+      if (resolved && isObject(resolved) && isString(originalName)) {
+        componentNameMap.set(resolved, originalName)
+      }
+    }
+    const nameStack = []
+    const stack = getExtendsStack(__extends, context, nameStack, componentNameMap)
+    ref.__extendsStack = stack
+    ref.__extendsNames = nameStack
+  } else {
+    const stack = getExtendsStack(__extends, context)
+    ref.__extendsStack = stack
+  }
 
   return ref.__extendsStack
 }
@@ -436,9 +499,21 @@ export const createExtendsStack = (element, parent, options = {}) => {
 export const finalizeExtends = (element, parent, options = {}) => {
   const { __ref: ref } = element
   const { __extendsStack } = ref
-  const flattenExtends = cloneAndMergeArrayExtend(__extendsStack)
 
-  return deepMergeExtends(element, flattenExtends)
+  if (isSourcemapEnabled(options)) {
+    const sourcemapAcc = {}
+    const extendNames = ref.__extendsNames || []
+    const flattenExtends = cloneAndMergeArrayExtend(__extendsStack, sourcemapAcc, extendNames)
+    // Only keep sourcemap entries for properties actually merged into element
+    const appliedSourcemap = {}
+    deepMergeExtends(element, flattenExtends, appliedSourcemap, undefined, sourcemapAcc)
+    ref.__sourcemap = appliedSourcemap
+  } else {
+    const flattenExtends = cloneAndMergeArrayExtend(__extendsStack)
+    deepMergeExtends(element, flattenExtends)
+  }
+
+  return element
 }
 
 export const applyExtends = (element, parent, options = {}) => {

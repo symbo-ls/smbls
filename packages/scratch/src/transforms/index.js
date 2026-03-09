@@ -246,7 +246,7 @@ export function transformSize(propertyName, val, props = {}, opts = {}) {
 
     const shouldScaleBoxSize = props.scaleBoxSize
     const isBoxSize = checkIfBoxSize(propertyName)
-    if (!shouldScaleBoxSize && isBoxSize) {
+    if (!shouldScaleBoxSize && isBoxSize && !opts.ratio) {
       value = splitSpacedValue(value)
     }
   }

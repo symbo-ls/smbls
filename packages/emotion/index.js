@@ -77,4 +77,4 @@ export const transformDOMQLEmotion = (emotion, options) => {
   }
 }
 
-export * from './initEmotion.js'
+// initEmotion is imported directly from '@symbo.ls/emotion/initEmotion.js' to avoid circular dependency

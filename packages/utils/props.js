@@ -9,6 +9,20 @@ import { lowercaseFirstLetter } from './string.js'
 const RE_UPPER = /^[A-Z]/
 const RE_DIGITS = /^\d+$/
 
+const ELEMENT_INDICATOR_KEYS = new Set([
+  'extend', 'props', 'text', 'tag', 'on', 'if', 'childExtend',
+  '$collection', '$stateCollection', 'state', 'html', 'attr',
+  'define', 'content'
+])
+const looksLikeElement = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  for (const k in value) {
+    if (ELEMENT_INDICATOR_KEYS.has(k)) return true
+    if (RE_UPPER.test(k)) return true
+  }
+  return false
+}
+
 export const createProps = (element, parent, key) => {
   const { props, __ref: ref } = element
   ref.__propsStack = []
@@ -38,7 +52,7 @@ export function pickupPropsFromElement (obj, opts = {}) {
 
     const hasDefine = isObject(this.define?.[key])
     const hasGlobalDefine = isObject(this.context?.define?.[key])
-    const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key)
+    const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key) || looksLikeElement(value)
     const isBuiltin = DOMQ_PROPERTIES.has(key)
 
     // If it's not a special case, move to props
