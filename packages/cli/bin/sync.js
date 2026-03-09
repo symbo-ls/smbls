@@ -58,6 +58,30 @@ function ensureDesignSystemBuckets (designSystem) {
   return designSystem
 }
 
+function isInteractiveSession (options = {}) {
+  return !!process.stdin?.isTTY && !!process.stdout?.isTTY && !options.nonInteractive
+}
+
+function requireExplicitConfirmation ({ command, flag = '--yes' }) {
+  console.error(chalk.red(`${command} requires ${flag} when prompts are disabled.`))
+  console.error(chalk.dim(`Re-run with ${flag} or use an interactive terminal.`))
+  process.exit(1)
+}
+
+function normalizeSyncMode (value) {
+  const mode = String(value || '').trim().toLowerCase()
+  if (!mode) return null
+  if (['merge', 'remote', 'local', 'cancel'].includes(mode)) return mode
+  return null
+}
+
+function normalizeConflictResolution (value) {
+  const mode = String(value || '').trim().toLowerCase()
+  if (!mode) return null
+  if (['local', 'remote'].includes(mode)) return mode
+  return null
+}
+
 async function buildLocalProject (distDir) {
   try {
     const outputDirectory = path.join(distDir, 'dist')
@@ -188,6 +212,18 @@ async function confirmChanges (localChanges, remoteChanges, base, local, remote)
 
 export async function syncProjectChanges (options) {
   try {
+    const interactive = isInteractiveSession(options)
+    const requestedMode = normalizeSyncMode(options.mode)
+    if (options.mode && !requestedMode) {
+      console.error(chalk.red('Invalid --mode. Expected one of: merge, remote, local.'))
+      process.exit(1)
+    }
+    const conflictResolution = normalizeConflictResolution(options.conflictResolution)
+    if (options.conflictResolution && !conflictResolution) {
+      console.error(chalk.red('Invalid --conflict-resolution. Expected one of: local, remote.'))
+      process.exit(1)
+    }
+
     // Load configuration
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
@@ -309,24 +345,8 @@ export async function syncProjectChanges (options) {
 
     // Handle conflicts if any
     let toApply = finalChanges && finalChanges.length ? finalChanges : [...localChanges]
-    if (conflicts.length) {
-      console.log(chalk.yellow(`\nFound ${conflicts.length} conflicts`))
-      const chosen = await resolveTopLevelConflicts(conflicts, ours, theirs)
-      // Combine non-conflicting ours with chosen resolutions
-      const nonConflictOurs = ours.filter(([_, [k]]) => !conflicts.includes(k))
-      toApply = [...nonConflictOurs, ...chosen]
-    }
-
-    // Confirm sync
-    const shouldProceed = await confirmChanges(localChanges, remoteChanges, base, local, remote)
-    if (!shouldProceed) {
-      console.log(chalk.yellow('Sync cancelled'))
-      return
-    }
-
-    const isInteractive = !!(process.stdin && process.stdin.isTTY && process.stdout && process.stdout.isTTY)
-    let mode = 'merge' // merge | remote | local
-    if (isInteractive && localChanges.length && remoteChanges.length) {
+    let mode = requestedMode || 'merge' // merge | remote | local
+    if (interactive && !requestedMode && localChanges.length && remoteChanges.length) {
       const ans = await inquirer.prompt([{
         type: 'list',
         name: 'mode',
@@ -340,14 +360,40 @@ export async function syncProjectChanges (options) {
         default: 0
       }])
       mode = ans.mode
-      if (mode === 'cancel') {
-        console.log(chalk.yellow('Sync cancelled'))
-        return
-      }
+    }
+    if (mode === 'cancel') {
+      console.log(chalk.yellow('Sync cancelled'))
+      return
+    }
+
+    if (conflicts.length) {
+      console.log(chalk.yellow(`\nFound ${conflicts.length} conflicts`))
+      const nonConflictOurs = ours.filter(([_, [k]]) => !conflicts.includes(k))
       if (mode === 'remote') {
-        // Discard local changes for this sync run.
         toApply = []
+      } else if (conflictResolution === 'local' || mode === 'local') {
+        toApply = [...ours]
+      } else if (conflictResolution === 'remote') {
+        toApply = nonConflictOurs
+      } else if (interactive) {
+        const chosen = await resolveTopLevelConflicts(conflicts, ours, theirs)
+        toApply = [...nonConflictOurs, ...chosen]
+      } else {
+        console.error(chalk.red('Conflicts detected. Re-run interactively or pass --conflict-resolution <local|remote>.'))
+        process.exit(1)
       }
+    } else if (mode === 'remote') {
+      toApply = []
+    }
+
+    // Confirm sync
+    if (!interactive && !options.yes) {
+      requireExplicitConfirmation({ command: 'Sync', flag: '--yes' })
+    }
+    const shouldProceed = options.yes ? true : await confirmChanges(localChanges, remoteChanges, base, local, remote)
+    if (!shouldProceed) {
+      console.log(chalk.yellow('Sync cancelled'))
+      return
     }
 
     const projectId = lock.projectId || serverProject?.projectInfo?.id
@@ -493,6 +539,10 @@ program
   .description('Sync local changes with remote server')
   .option('-b, --branch <branch>', 'Branch to sync')
   .option('-m, --message <message>', 'Specify a commit message')
+  .option('--mode <mode>', 'Sync mode: merge, remote, or local')
+  .option('--conflict-resolution <mode>', 'Conflict strategy: local or remote')
+  .option('--non-interactive', 'Disable prompts (require --yes)', false)
+  .option('-y, --yes', 'Skip confirmation prompts', false)
   .option('-d, --dev', 'Run against local server')
   .option('-v, --verbose', 'Show verbose output')
   .action(syncProjectChanges)

@@ -88,6 +88,16 @@ function buildDiffsFromChanges (changes, base, local) {
   return diffs
 }
 
+function isInteractiveSession (options = {}) {
+  return !!process.stdin?.isTTY && !!process.stdout?.isTTY && !options.nonInteractive
+}
+
+function requireExplicitConfirmation ({ command, flag = '--yes' }) {
+  console.error(chalk.red(`${command} requires ${flag} when prompts are disabled.`))
+  console.error(chalk.dim(`Re-run with ${flag} or use an interactive terminal.`))
+  process.exit(1)
+}
+
 async function confirmChanges (changes, base, local) {
   if (changes.length === 0) {
     console.log(chalk.bold.yellow('No changes detected'))
@@ -132,6 +142,7 @@ async function confirmChanges (changes, base, local) {
 export async function pushProjectChanges (options) {
   const { verbose, type = 'patch' } = options
   try {
+    const interactive = isInteractiveSession(options)
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
     let authToken
@@ -238,7 +249,10 @@ export async function pushProjectChanges (options) {
     })
 
     // Confirm push
-    const shouldProceed = await confirmChanges(changes, base, local)
+    if (!interactive && !options.yes) {
+      requireExplicitConfirmation({ command: 'Push', flag: '--yes' })
+    }
+    const shouldProceed = options.yes ? true : await confirmChanges(changes, base, local)
     if (!shouldProceed) {
       console.log(chalk.yellow('Push cancelled'))
       return
@@ -300,4 +314,6 @@ program
   .command('push')
   .description('Push changes to platform')
   .option('-m, --message <message>', 'Specify a commit message')
+  .option('--non-interactive', 'Disable prompts (require --yes)', false)
+  .option('-y, --yes', 'Skip confirmation prompts', false)
   .action(pushProjectChanges)
