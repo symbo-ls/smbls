@@ -2,8 +2,14 @@
 
 import { defaultDefine } from './define.js'
 import { createRequire } from 'module'
-const require = createRequire(import.meta.url)
-const { version } = require('../package.json')
+
+let version = '0.0.0'
+try {
+  const _url = typeof __filename !== 'undefined' ? __filename : import.meta.url
+  const require = createRequire(_url)
+  const pkg = require('../package.json')
+  version = pkg.version
+} catch {}
 
 export const DESIGN_SYSTEM_OPTIONS = {
   useReset: true,
