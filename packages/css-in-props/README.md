@@ -45,3 +45,24 @@ const Button = {
   '.active': { background: 'green' }
 }
 ```
+
+### `transformersByPrefix`
+
+The prefix-to-handler registry that powers media queries, selectors, conditionals, and variables. Each key is a single-character prefix that triggers a specific transformer when found at the start of a prop key:
+
+| Prefix | Handler | Example |
+|--------|---------|---------|
+| `@` | Media query | `@mobileS`, `@dark`, `@print` |
+| `:` | Pseudo selector | `:hover`, `:focus`, `:first-child` |
+| `[` | Attribute selector | `[disabled]`, `[data-active]` |
+| `>` | Child combinator | `> .child` |
+| `&` | Self selector | `&.active` |
+| `$` | Case conditional | `$isActive` |
+| `.` | Truthy conditional | `.visible` |
+| `!` | Falsy conditional | `!hidden` |
+| `-` | CSS variable | `--my-var` |
+| `*`, `+`, `~` | CSS combinators | `* div`, `+ .sibling`, `~ .general` |
+
+```javascript
+import { transformersByPrefix } from 'css-in-props'
+```

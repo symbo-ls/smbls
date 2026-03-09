@@ -30,7 +30,7 @@ This package re-exports everything from:
 | `css-in-props` | CSS properties as props |
 | `attrs-in-props` | HTML attributes as props |
 
-It also includes the `@symbo.ls/cli` binary, `@symbo.ls/fetch`, `@symbo.ls/sync`, and `@domql/router`.
+It also includes the `@symbo.ls/cli` binary, `@symbo.ls/fetch`, `@symbo.ls/sync`, `@symbo.ls/helmet`, and `@domql/router`.
 
 ## Quick Start
 
@@ -152,6 +152,32 @@ import {
   ROUTER_OPTIONS
 } from 'smbls'
 ```
+
+## Page Metadata
+
+Define SEO metadata on your app or individual pages. Values can be static or functions:
+
+```javascript
+// app.js — app-level defaults
+export default {
+  metadata: {
+    title: 'My App',
+    description: 'Built with Symbols',
+    'og:image': '/social.png'
+  }
+}
+
+// pages/about.js — page-level overrides
+export const about = {
+  metadata: {
+    title: 'About Us',
+    description: (el, s) => s.aboutDescription
+  },
+  // ... page content
+}
+```
+
+Metadata is applied at runtime (updates `<title>` and `<meta>` tags in the DOM) and during SSR (generates `<head>` HTML via brender). See [`@symbo.ls/helmet`](../../plugins/helmet/) for the full API.
 
 ## CLI
 

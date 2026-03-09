@@ -29,6 +29,6 @@
     }
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }

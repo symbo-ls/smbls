@@ -30,6 +30,6 @@
   "jsdelivr": "./dist/iife/index.js",
   "sideEffects": false,
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }

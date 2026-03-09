@@ -19,7 +19,7 @@
   },
   "source": "src/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
@@ -36,7 +36,6 @@
   ],
   "dependencies": {
     "@domql/utils": "^3.5.1",
-    "@symbo.ls/atoms": "^3.5.1",
     "@symbo.ls/emotion": "^3.5.1",
     "@symbo.ls/scratch": "^3.5.1"
   },

@@ -11,7 +11,7 @@ const RE_DIGITS = /^\d+$/
 
 const ELEMENT_INDICATOR_KEYS = new Set([
   'extend', 'props', 'text', 'tag', 'on', 'if', 'childExtend',
-  '$collection', '$stateCollection', 'state', 'html', 'attr',
+  'children', 'childrenAs', 'state', 'html', 'attr',
   'define', 'content'
 ])
 const looksLikeElement = (value) => {

@@ -1,8 +1,18 @@
 'use strict'
 
+import { resolveMetadata, applyMetadata } from '@symbo.ls/helmet'
+
 export const defaultDefine = {
   routes: param => param,
   // deps: (param, el) => param || el.parent.deps,
+
+  metadata: (param, el, state) => {
+    if (!param) return
+    const doc = el.context?.document || (typeof document !== 'undefined' && document)
+    if (!doc) return
+    const resolved = resolveMetadata(param, el, state)
+    applyMetadata(resolved, doc)
+  },
 
   $router: async (param, el) => {
     if (!param) return

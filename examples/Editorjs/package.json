@@ -11,6 +11,6 @@
   "type": "module",
   "source": "index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }

@@ -260,6 +260,45 @@ const Hero = () => (
 )
 ```
 
+### Children from data
+
+Map arrays or objects to child elements using `children` and `childrenAs`:
+
+```javascript
+export const UserList = {
+  extends: 'Flex',
+  flow: 'column',
+  childExtends: 'UserCard',
+  children: ({ state }) => state.users
+}
+
+// childrenAs controls how each item maps to child elements:
+// 'props' (default) — item becomes child props
+// 'state' — item becomes child state
+// 'element' — item is used directly as element definition
+export const StateList = {
+  childrenAs: 'state',
+  children: ({ state }) => state.items
+}
+```
+
+### Page metadata
+
+Define SEO metadata on pages or app. Values can be functions:
+
+```javascript
+export const about = {
+  metadata: {
+    title: 'About Us',
+    description: (el, s) => s.aboutText,
+    'og:image': '/about.png'
+  },
+  // ... page content
+}
+```
+
+Metadata works at runtime (updates `<head>` tags) and during SSR (generates HTML via brender). See [`@symbo.ls/helmet`](plugins/helmet/).
+
 Learn more at the [components](https://symbols.app/docs/components) page.
 
 ## UIKit
@@ -268,8 +307,7 @@ Ready-to-use components built on [Scratch](packages/scratch/) and DOMQL:
 
 | Component | Package | Component | Package |
 |-----------|---------|-----------|---------|
-| Atoms | `@symbo.ls/atoms` | Link | `@symbo.ls/link` |
-| Avatar | `@symbo.ls/avatar` | Notification | `@symbo.ls/notification` |
+| Avatar | `@symbo.ls/avatar` | Link | `@symbo.ls/link` |
 | Button | `@symbo.ls/button` | Range | `@symbo.ls/range` |
 | Datepicker | `@symbo.ls/datepicker` | Select | `@symbo.ls/select` |
 | Dialog | `@symbo.ls/dialog` | TimePicker | `@symbo.ls/timepicker` |
@@ -478,6 +516,7 @@ Location: [`extensions/chrome-inspect2/`](extensions/chrome-inspect2/)
 | Plugin | Description |
 |--------|-------------|
 | [`@symbo.ls/brender`](plugins/brender/) | Server-side rendering & hydration |
+| [`@symbo.ls/helmet`](plugins/helmet/) | SEO metadata — shared between runtime and SSR |
 | [`emotion`](plugins/emotion/) | Emotion CSS plugin |
 | [`parse`](plugins/parse/) | Parser utilities |
 | [`performance`](plugins/performance/) | Performance monitoring |

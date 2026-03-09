@@ -63,7 +63,7 @@ Browser DOM (static)              DOMQL Tree (no nodes)         After hydrate()
 | `hydrate.js` | `collectBrNodes()` — scans DOM for data-br nodes; `hydrate()` — reconnects DOMQL tree to DOM |
 | `env.js` | `createEnv()` — linkedom virtual DOM with browser API stubs (requestAnimationFrame, history, location, etc.) |
 | `keys.js` | `resetKeys()`, `assignKeys()` — stamps data-br on DOM nodes; `mapKeysToElements()` — builds registry |
-| `metadata.js` | `extractMetadata()`, `generateHeadHtml()` — SEO meta tags from page definitions |
+| `metadata.js` | Re-exports from [`@symbo.ls/helmet`](../helmet/) — `extractMetadata()`, `generateHeadHtml()`, `resolveMetadata()`, `applyMetadata()` |
 | `load.js` | `loadProject()` — imports a symbols/ directory; `loadAndRenderAll()` — renders every route |
 | `index.js` | Re-exports everything |
 
@@ -168,12 +168,14 @@ Creates a linkedom virtual DOM environment with stubs for browser APIs that DOMQ
 
 ### `generateHeadHtml(metadata)`
 
-Converts a metadata object into HTML head tags:
+Converts a metadata object into HTML head tags. Provided by [`@symbo.ls/helmet`](../helmet/):
 
 ```js
 generateHeadHtml({ title: 'My Page', description: 'About', 'og:image': '/img.png' })
 // -> '<meta charset="UTF-8">\n<title>My Page</title>\n<meta name="description" content="About">\n<meta property="og:image" content="/img.png">'
 ```
+
+Metadata values can also be functions — see the [helmet plugin](../helmet/) for details.
 
 ## Examples
 

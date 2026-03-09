@@ -53,6 +53,6 @@
     "standard": "^17.1.2"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }

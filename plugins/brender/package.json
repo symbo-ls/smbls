@@ -36,6 +36,7 @@
     "dev:rita": "node examples/serve-rita.js"
   },
   "dependencies": {
+    "@symbo.ls/helmet": "^3.5.1",
     "linkedom": "^0.16.8"
   },
   "devDependencies": {
@@ -43,6 +44,6 @@
   },
   "sideEffects": false,
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }

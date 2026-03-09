@@ -15,7 +15,7 @@
   },
   "source": "src/index.js",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "scripts": {
     "test": "node --experimental-vm-modules ../../node_modules/.bin/jest",

@@ -23,6 +23,6 @@
   },
   "sideEffects": false,
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   }
 }
