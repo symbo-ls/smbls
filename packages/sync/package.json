@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/sync",
-  "version": "3.5.1",
+  "version": "3.6.0",
   "main": "./index.js",
   "module": "./index.js",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
@@ -47,10 +47,10 @@
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/router": "^3.5.1",
-    "@domql/utils": "^3.5.1",
-    "@symbo.ls/scratch": "^3.5.1",
-    "@symbo.ls/uikit": "^3.5.1",
+    "@domql/router": "^3.6.0",
+    "@domql/utils": "^3.6.0",
+    "@symbo.ls/scratch": "^3.6.0",
+    "@symbo.ls/uikit": "^3.6.0",
     "chalk": "^5.4.1",
     "express": "^4.21.2",
     "socket.io": "^4.8.1",
