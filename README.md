@@ -488,8 +488,8 @@ Location: [`extensions/chrome-inspect2/`](extensions/chrome-inspect2/)
 | Package | Description |
 |---------|-------------|
 | [`@symbo.ls/scratch`](packages/scratch/) | CSS framework and methodology |
-| [`@symbo.ls/css-in-props`](packages/css-in-props/) | CSS properties as props |
-| [`@symbo.ls/attrs-in-props`](packages/attrs-in-props/) | HTML attributes as props |
+| [`css-in-props`](packages/css-in-props/) | CSS properties as props |
+| [`attrs-in-props`](packages/attrs-in-props/) | HTML attributes as props |
 | [`@symbo.ls/emotion`](packages/emotion/) | Emotion CSS-in-JS integration |
 | [`@symbo.ls/shorthand`](packages/shorthand/) | Shorthand syntax transpiler |
 

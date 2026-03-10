@@ -15,6 +15,8 @@
     "dist"
   ],
   "dependencies": {
+    "attrs-in-props": "^3.5.1",
+    "css-in-props": "^3.5.1",
     "@domql/utils": "^3.5.1",
     "@symbo.ls/atoms": "^3.5.1",
     "@symbo.ls/avatar": "^3.5.1",

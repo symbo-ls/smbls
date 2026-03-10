@@ -1,7 +1,7 @@
 'use strict'
 
 import { router as defaultRouter } from '@domql/router'
-import { resolvePropValue } from '@symbo.ls/attrs-in-props'
+import { resolvePropValue } from 'attrs-in-props'
 
 export const Link = {
   extends: 'Focusable',

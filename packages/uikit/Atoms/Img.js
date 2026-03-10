@@ -1,6 +1,6 @@
 'use strict'
 
-import { resolvePropValue } from '@symbo.ls/attrs-in-props'
+import { resolvePropValue } from 'attrs-in-props'
 
 export const Img = {
   tag: 'img',
