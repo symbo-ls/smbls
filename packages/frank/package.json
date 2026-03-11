@@ -1,6 +1,10 @@
 {
   "name": "@symbo.ls/frank",
+<<<<<<< HEAD
   "version": "3.6.2",
+=======
+  "version": "3.6.3",
+>>>>>>> next
   "description": "Bidirectional transformation between Symbols project JSON and filesystem formats",
   "license": "MIT",
   "type": "module",
@@ -17,8 +21,13 @@
     "*.js"
   ],
   "dependencies": {
+<<<<<<< HEAD
     "@domql/utils": "^3.6.2",
     "@symbo.ls/smbls-utils": "^3.6.2",
+=======
+    "@domql/utils": "^3.6.3",
+    "@symbo.ls/smbls-utils": "^3.6.3",
+>>>>>>> next
     "esbuild": "^0.26.0"
   },
   "sideEffects": false,

@@ -1,6 +1,10 @@
 {
   "name": "@symbo.ls/brender",
+<<<<<<< HEAD
   "version": "3.6.2",
+=======
+  "version": "3.6.3",
+>>>>>>> next
   "license": "MIT",
   "type": "module",
   "module": "./dist/esm/index.js",
@@ -36,7 +40,11 @@
     "dev:rita": "node examples/serve-rita.js"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@symbo.ls/helmet": "^3.6.2",
+=======
+    "@symbo.ls/helmet": "^3.6.3",
+>>>>>>> next
     "linkedom": "^0.16.8"
   },
   "devDependencies": {

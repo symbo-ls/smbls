@@ -1,6 +1,10 @@
 {
   "name": "@symbo.ls/default-icons",
+<<<<<<< HEAD
   "version": "3.6.2",
+=======
+  "version": "3.6.3",
+>>>>>>> next
   "main": "./index.js",
   "author": "symbo.ls",
   "license": "ISC",
