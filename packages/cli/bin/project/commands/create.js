@@ -210,7 +210,7 @@ export async function runProjectCreate (destArg, options = {}) {
   // mode === create_new
   const defaultName = path.basename(absDest)
   const branch = options.branch || 'main'
-  const name = options.name || (interactive ? await promptProjectName({ defaultName }) : null)
+  const name = options.projectName || options.name || (interactive ? await promptProjectName({ defaultName }) : null)
   if (!projectType && interactive) projectType = await promptProjectType()
   if (!name) {
     console.error(chalk.red('Missing --name (or run in interactive mode).'))

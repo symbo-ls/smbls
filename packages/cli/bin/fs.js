@@ -177,7 +177,7 @@ export async function createFs (
     body = { ...(body || {}), sharedLibraries: [] }
   }
 
-  const { update, metadata, librariesDir, libsConfig } = opts
+  const { update, metadata, librariesDir, libsConfig, lockedLibVersions } = opts
 
   // `designSystem` and `files` are now directories (splitObjectKeys)
   const scope = String(opts.scope || 'full')
@@ -225,7 +225,7 @@ export async function createFs (
 
     const promises = [
       // Scaffold shared libraries into librariesDir (separate from symbols dir)
-      scaffoldSharedLibraries(body?.sharedLibraries, targetDir, librariesDir, update, libsConfig),
+      scaffoldSharedLibraries(body?.sharedLibraries, targetDir, librariesDir, update, libsConfig, lockedLibVersions),
       ...scopedDirectoryKeys.map((key) =>
         createKeyDirectoryAndFiles(key, body, targetDir, update)
       ),
@@ -286,7 +286,7 @@ export async function createFs (
       }
 
       const cachePromises = [
-        scaffoldSharedLibraries(body?.sharedLibraries, cacheDir, librariesDir, true, libsConfig),
+        scaffoldSharedLibraries(body?.sharedLibraries, cacheDir, librariesDir, true, libsConfig, lockedLibVersions, targetDir),
         ...scopedDirectoryKeys.map((key) =>
           createKeyDirectoryAndFiles(key, body, cacheDir, true)
         ),
@@ -532,7 +532,7 @@ export async function createFs (
    * Scaffold each shared library as a full project folder under librariesDir.
    * Writes sharedLibraries.js in symbolsDir that imports from the external librariesDir.
    */
-  async function scaffoldSharedLibraries (sharedLibraries, symbolsDir, librariesDir, update, libsConfig) {
+  async function scaffoldSharedLibraries (sharedLibraries, symbolsDir, librariesDir, update, libsConfig, lockedLibVersions, importBaseDir) {
     const libs = Array.isArray(sharedLibraries) ? sharedLibraries : []
     const libsConfigMap = new Map()
     if (Array.isArray(libsConfig)) {
@@ -555,21 +555,33 @@ export async function createFs (
 
     await fs.promises.mkdir(resolvedLibsDir, { recursive: true })
 
+    const locked = lockedLibVersions || {}
+
     const usedImportNames = new Set()
     const entries = libs.map((lib, idx) => {
       const stem = toLibFileStem(lib, idx)
       const importName = toSafeImportName(stem, usedImportNames)
       const libKey = lib?.key || stem
       const config = libsConfigMap.get(libKey) || {}
-      return { lib, stem, importName, config }
+      return { lib, stem, importName, config, libKey }
     })
 
     // Scaffold each library as a full project folder
-    await Promise.all(entries.map(async ({ stem, lib, config }) => {
+    await Promise.all(entries.map(async ({ stem, lib, config, libKey }) => {
       // Per-lib destDir override from symbols.json config
       const libDir = config.destDir
         ? path.resolve(path.dirname(symbolsDir), config.destDir)
         : path.join(resolvedLibsDir, stem)
+
+      // Skip scaffolding if version hasn't changed and lib directory already exists
+      const rawVersion = lib?.version
+      const libVersion = typeof rawVersion === 'string' ? rawVersion : (rawVersion?.value || null)
+      const rawLocked = locked[libKey]
+      const lockedVersion = typeof rawLocked === 'string' ? rawLocked : (rawLocked?.value || null)
+      if (libVersion && lockedVersion === libVersion && fs.existsSync(path.join(libDir, 'context.js'))) {
+        return
+      }
+
       await fs.promises.mkdir(libDir, { recursive: true })
 
       const decoded = safeDeepDestringify(lib)
@@ -618,12 +630,15 @@ export async function createFs (
     } catch (_) {}
 
     // Write sharedLibraries.js that imports context from each lib
+    // Use importBaseDir (the final target dir) for relative path calculation when
+    // writing to a cache dir, so paths are correct once copied to the target.
+    const pathBase = importBaseDir || symbolsDir
     const importLines = entries
       .map(({ importName, stem, config }) => {
         const libDir = config.destDir
-          ? path.resolve(path.dirname(symbolsDir), config.destDir)
+          ? path.resolve(path.dirname(pathBase), config.destDir)
           : path.join(resolvedLibsDir, stem)
-        const relPath = path.relative(symbolsDir, libDir)
+        const relPath = path.relative(pathBase, libDir)
         return `import ${importName} from '${relPath}/context.js'`
       })
       .join('\n')

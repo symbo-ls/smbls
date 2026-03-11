@@ -156,9 +156,11 @@ export const fetchFromCli = async (opts) => {
 
   let payload
   let prevPulledAt = null
+  let lockedLibVersions = {}
   try {
     const lock = readLock()
     prevPulledAt = lock?.pulledAt || null
+    lockedLibVersions = lock?.sharedLibraryVersions || {}
 
     // `--force` must bypass ETag short-circuiting so it can re-materialize local files
     // even when the remote project data hasn't changed.
@@ -195,13 +197,27 @@ export const fetchFromCli = async (opts) => {
       const etag = result.etag || null
       logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
 
+      // Build shared library version map from payload
+      const sharedLibVersions = {}
+      if (Array.isArray(payload.sharedLibraries)) {
+        for (const lib of payload.sharedLibraries) {
+          const key = lib?.key || lib?.id || lib?._id
+          if (!key) continue
+          const v = lib?.version
+          // version can be a string or { value, branch } object
+          const versionStr = typeof v === 'string' ? v : (v?.value || null)
+          if (versionStr) sharedLibVersions[key] = versionStr
+        }
+      }
+
       // Update lock.json
       writeLock({
         etag,
         version: payload.version,
         branch,
         projectId: payload?.projectInfo?.id || lock.projectId,
-        pulledAt: new Date().toISOString()
+        pulledAt: new Date().toISOString(),
+        sharedLibraryVersions: sharedLibVersions
       })
 
       // version and branch are tracked in lock.json (already written above)
@@ -280,6 +296,9 @@ export const fetchFromCli = async (opts) => {
   const shouldAutoUpdate = !!(update || force)
   const shouldSkipConfirm = !!(yes || skipConfirm)
 
+  // --force bypasses lib version caching to re-scaffold all shared libraries
+  const effectiveLockedLibVersions = force ? {} : lockedLibVersions
+
   if (shouldAutoUpdate) {
     await confirmOverwriteIfLocalChanges({
       distDir,
@@ -288,11 +307,11 @@ export const fetchFromCli = async (opts) => {
     })
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { update: true, metadata: false, scope, librariesDir, libsConfig })
+    createFs(ordered, distDir, { update: true, metadata: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
   } else {
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=false)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { metadata: false, scope, librariesDir, libsConfig })
+    createFs(ordered, distDir, { metadata: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
   }
 }
 
