@@ -334,7 +334,7 @@ export const getExtendsInElement = obj => {
   function traverse (o) {
     for (const key in o) {
       if (Object.prototype.hasOwnProperty.call(o, key)) {
-        // Check if the key starts with a capital letter and exclude keys like @mobileL, $propsCollection
+        // Check if the key starts with a capital letter and exclude keys like @mobileL, $router
         if (matchesComponentNaming(key)) {
           result.push(key)
         }

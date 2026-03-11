@@ -5590,7 +5590,7 @@ export const SurveySelect = {
                   }
                 }
       },
-      $setCollection: ({
+      children: ({
               parent
             }) => {
               return parent.parent.props.options
