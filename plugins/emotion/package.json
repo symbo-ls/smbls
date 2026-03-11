@@ -1,14 +1,14 @@
 {
   "name": "@symbo.ls/emotion",
-  "version": "3.6.3",
+  "version": "3.6.4",
   "license": "MIT",
   "type": "module",
   "main": "index.js",
   "source": "index.js",
   "dependencies": {
-    "@domql/utils": "^3.6.3",
+    "@domql/utils": "^3.6.4",
     "@emotion/css": "^11.10.0",
-    "@symbo.ls/default-config": "^3.6.3"
+    "@symbo.ls/default-config": "^3.6.4"
   },
   "publishConfig": {
     "access": "public"
