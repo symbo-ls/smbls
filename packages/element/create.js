@@ -22,6 +22,7 @@ import {
 
 import { applyAnimationFrame, triggerEventOn } from './event/index.js'
 import { assignNode } from './render/index.js'
+import { detectTag } from './render/cache.js'
 import { createState } from '@domql/state'
 
 import { REGISTRY } from './mixins/index.js'
@@ -98,6 +99,8 @@ export const create = (
   initProps(element, parent, options)
   // Re-pickup component-named properties that entered props via childProps/inheritParentProps
   pickupElementFromProps.call(element, element, { cachedKeys: [] })
+  // Detect tag early so applyPropsAsAttrs can filter by tag
+  if (!element.tag) element.tag = detectTag(element)
   // Populate element.attr from props matching the tag's HTML spec
   applyPropsAsAttrs(element)
   if (element.scope === 'props' || element.scope === true) {

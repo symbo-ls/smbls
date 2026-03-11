@@ -245,8 +245,23 @@ export const router = (path, el, state = {}, options = {}) => {
       element[contentElementKey].remove()
     }
 
+    // Merge parent's original content definition (styles like overflow, maxHeight)
+    // with the route's content component
+    const originContent = element.__ref?.origin?.content
+    const contentStyles = {}
+    if (originContent) {
+      for (const k in originContent) {
+        const v = originContent[k]
+        if (k === '__ref' || k === 'props' || k === 'node' || k === 'parent' || k === 'key') continue
+        if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean' || (typeof v === 'object' && v !== null && !v.node && !v.__ref)) {
+          contentStyles[k] = v
+        }
+      }
+    }
+
     element.set(
       {
+        ...contentStyles,
         tag: opts.useFragment && 'fragment',
         extends: content
       },

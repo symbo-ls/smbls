@@ -59,9 +59,24 @@ export const RouterLink = {
     if (href && !linkIsExternal) {
       event.preventDefault()
       try {
+        let targetEl = root
+        if (routerOptions && routerOptions.customRouterElement) {
+          const parts = Array.isArray(routerOptions.customRouterElement)
+            ? routerOptions.customRouterElement
+            : routerOptions.customRouterElement.split('.')
+          let resolved = root
+          for (const part of parts) {
+            if (!resolved || !resolved[part]) { resolved = null; break }
+            resolved = resolved[part]
+          }
+          if (resolved) {
+            targetEl = resolved
+            if (root.routes) targetEl.routes = root.routes
+          }
+        }
         ;(functions.router || snippets.router || utils.router || defaultRouter)(
           href,
-          root,
+          targetEl,
           {},
           {
             scrollToOptions: { behaviour: 'instant' },

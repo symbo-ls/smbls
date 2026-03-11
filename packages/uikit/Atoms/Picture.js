@@ -29,6 +29,6 @@ export const Picture = {
     width: 'inherit',
     ignoreChildExtends: true,
     height: 'inherit',
-    src: (element, state) => element.parent.src || state.src
+    src: (element, state) => element.parent.props?.src || element.parent.src || state.src
   }
 }
