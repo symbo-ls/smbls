@@ -10,6 +10,17 @@ const DEFAULT_ROUTING_OPTIONS = {
   popState: true
 }
 
+export const resolveRouterElement = (root, path) => {
+  if (!path) return root
+  const parts = Array.isArray(path) ? path : path.split('.')
+  let el = root
+  for (const part of parts) {
+    if (!el || !el[part]) return null
+    el = el[part]
+  }
+  return el
+}
+
 export const initRouter = (element, context) => {
   if (context.router === false) return
   else if (context.router === true) context.router = DEFAULT_ROUTING_OPTIONS
@@ -21,7 +32,17 @@ export const initRouter = (element, context) => {
     if (!window.location) return
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    if (el.routes) await defaultRouter(url, el, {}, { initialRender: true })
+
+    let targetEl = el
+    if (routerOptions.customRouterElement) {
+      const resolved = resolveRouterElement(el, routerOptions.customRouterElement)
+      if (resolved) {
+        targetEl = resolved
+        if (el.routes) targetEl.routes = el.routes
+      }
+    }
+
+    if (targetEl.routes) await defaultRouter(url, targetEl, {}, { initialRender: true })
   }
 
   const hasRenderRouter =
@@ -50,13 +71,24 @@ export const onpopstateRouter = (element, context) => {
   if (!routerOptions.popState) return
   const router =
     context.utils && context.utils.router ? context.utils.router : defaultRouter
+
   window.onpopstate = async e => {
     const { pathname, search, hash } = window.location
     const url = pathname + search + hash
-    await element.call(
+
+    let targetEl = element
+    if (routerOptions.customRouterElement) {
+      const resolved = resolveRouterElement(element, routerOptions.customRouterElement)
+      if (resolved) {
+        targetEl = resolved
+        if (element.routes) targetEl.routes = element.routes
+      }
+    }
+
+    await targetEl.call(
       'router',
       url,
-      element,
+      targetEl,
       {},
       { pushState: false, scrollToTop: false, level: 0, event: e }
     )

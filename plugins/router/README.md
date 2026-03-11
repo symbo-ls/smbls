@@ -115,6 +115,44 @@ router('/unknown', element, {}, {
 
 You can also define a `/*` wildcard route as a catch-all fallback.
 
+## Custom Router Element
+
+Use `customRouterElement` in your `config.js` to route pages into a specific element within the component tree instead of the root. This is useful for persistent layouts where only the content area changes between routes.
+
+```js
+// symbols/config.js
+export default {
+  router: {
+    customRouterElement: 'Folder.Content'
+  }
+}
+```
+
+The value is a dot-separated path resolved from the root element. For example, `'Folder.Content'` means the router will find `root.Folder.Content` and render page content inside it.
+
+This allows you to define a layout once in the `/` (main) page and have sub-pages render inside a specific container:
+
+```js
+// pages/main.js — defines the persistent layout
+export const main = {
+  extends: 'Layout',
+  Folder: {
+    Content: {
+      // default content for '/' route
+    }
+  }
+}
+
+// pages/team.js — only defines content (rendered inside Folder.Content)
+export const team = {
+  state: 'team',
+  extends: 'Grid',
+  childExtends: 'TeamItem',
+  childrenAs: 'state',
+  children: (el, s) => s.data,
+}
+```
+
 ## Options
 
 | Option | Type | Default | Description |
