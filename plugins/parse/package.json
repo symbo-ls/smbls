@@ -1,18 +1,10 @@
 {
   "name": "@domql/parse",
-<<<<<<< HEAD
-  "version": "3.6.2",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {
-    "@domql/element": "^3.6.2"
-=======
   "version": "3.6.3",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
     "@domql/element": "^3.6.3"
->>>>>>> next
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "source": "index.js",

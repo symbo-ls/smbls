@@ -1,21 +1,12 @@
 {
   "name": "@symbo.ls/link",
-<<<<<<< HEAD
-  "version": "3.6.2",
-=======
   "version": "3.6.3",
->>>>>>> next
   "main": "index.js",
   "license": "MIT",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "dependencies": {
-<<<<<<< HEAD
-    "@domql/router": "^3.6.2",
-    "@symbo.ls/atoms": "^3.6.2"
-=======
     "@domql/router": "^3.6.3",
     "@symbo.ls/atoms": "^3.6.3"
->>>>>>> next
   },
   "source": "index.js",
   "type": "module",

@@ -1,11 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-<<<<<<< HEAD
-  "version": "3.6.2",
-=======
   "version": "3.6.3",
->>>>>>> next
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -19,24 +15,6 @@
     "dist"
   ],
   "dependencies": {
-<<<<<<< HEAD
-    "attrs-in-props": "^3.6.2",
-    "css-in-props": "^3.6.2",
-    "@domql/utils": "^3.6.2",
-    "@symbo.ls/atoms": "^3.6.2",
-    "@symbo.ls/avatar": "^3.6.2",
-    "@symbo.ls/button": "^3.6.2",
-    "@symbo.ls/dialog": "^3.6.2",
-    "@symbo.ls/dropdown": "^3.6.2",
-    "@symbo.ls/icon": "^3.6.2",
-    "@symbo.ls/input": "^3.6.2",
-    "@symbo.ls/link": "^3.6.2",
-    "@symbo.ls/notification": "^3.6.2",
-    "@symbo.ls/range": "^3.6.2",
-    "@symbo.ls/scratch": "^3.6.2",
-    "@symbo.ls/select": "^3.6.2",
-    "@symbo.ls/tooltip": "^3.6.2"
-=======
     "attrs-in-props": "^3.6.3",
     "css-in-props": "^3.6.3",
     "@domql/utils": "^3.6.3",
@@ -53,7 +31,6 @@
     "@symbo.ls/scratch": "^3.6.3",
     "@symbo.ls/select": "^3.6.3",
     "@symbo.ls/tooltip": "^3.6.3"
->>>>>>> next
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
