@@ -197,4 +197,48 @@ See the [@symbo.ls/cli](../cli/) package for the full command reference.
 
 ## Documentation
 
+## Define System
+
+The define system (`context.define` and `element.define`) maps special keys to handler functions. When a key with a matching define handler appears on an element, `throughInitialDefine` calls the handler instead of treating the key as a child or prop.
+
+### Built-in define handlers (in `defaultDefine`)
+
+| Key | Purpose |
+|-----|---------|
+| `routes` | Route definitions — passed through as-is |
+| `metadata` | SEO metadata — resolves and applies `<title>` and `<meta>` tags via helmet |
+| `$router` | Router content — wraps params in a fragment and calls `el.set()` |
+
+### Collection define handlers (deprecated in v3)
+
+The following collection define handlers existed in v2 but are **deprecated in v3**:
+
+| Key (deprecated) | Data source | v3 replacement |
+|-------------------|-------------|----------------|
+| `$collection` | Direct data array/object | Use `children` + `childExtends` |
+| `$propsCollection` | `element.props` as data source | Use `children: ({ props }) => props.items` |
+| `$stateCollection` | `element.state` as data source | Use `children: ({ state }) => state.items` |
+| `$setCollection` | Uses `set()` to update content | Use `content` or `children` |
+
+Some older projects still use these handlers via project-level `context.define`. The framework's propertization layer (`@domql/utils/props.js`) is define-aware to avoid moving these keys into `props` when define handlers are present.
+
+> **Lesson learned:** The `$` prefix overlaps between css-in-props selectors and define handlers. The propertization in `props.js` checks for define handlers before applying `CSS_SELECTOR_PREFIXES` to prevent define keys from being swallowed into props. This matters for backwards compatibility with v2 projects that still use `$propsCollection` etc.
+
+## Emotion Integration (`prepare.js`)
+
+`prepareDesignSystem()` calls `initEmotion()` from `@symbo.ls/emotion/initEmotion.js` to initialize the CSS-in-JS engine. This import must be present for Emotion to work.
+
+```javascript
+import { initEmotion } from '@symbo.ls/emotion/initEmotion.js'
+
+export const prepareDesignSystem = (key, context) => {
+  const [scratchDesignSystem, emotion, registry] = initEmotion(key, context)
+  return [scratchDesignSystem, emotion, registry]
+}
+```
+
+> **Lesson learned:** If the `initEmotion` import is missing or broken, no CSS classes are generated and components render unstyled (Bazaar rendering issue).
+
+## Documentation
+
 For full documentation visit [symbols.app/developers](https://symbols.app/developers).

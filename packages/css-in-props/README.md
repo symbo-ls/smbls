@@ -66,3 +66,25 @@ The prefix-to-handler registry that powers media queries, selectors, conditional
 ```javascript
 import { transformersByPrefix } from 'css-in-props'
 ```
+
+## Interaction with the define system
+
+The `$` prefix is used both by css-in-props (`$isActive` case conditional) and by the define system (e.g. `$router`, and deprecated v2 handlers like `$propsCollection`, `$collection`). The propertization layer in `@domql/utils/props.js` uses `CSS_SELECTOR_PREFIXES` to decide which keys to move into `props`.
+
+**The `$` prefix requires special handling:**
+
+Keys starting with `$` that have a matching define handler (either `element.define[key]` or `context.define[key]`) must **stay at the element root** so that `throughInitialDefine` can process them. Only `$`-prefixed keys without define handlers should be moved into `props` for css-in-props processing. This matters for the built-in `$router` handler and for backwards compatibility with older v2 projects using deprecated collection handlers.
+
+```javascript
+// In props.js — check define handlers BEFORE checking CSS_SELECTOR_PREFIXES
+const defineValue = this.define?.[key]
+const globalDefineValue = this.context?.define?.[key]
+if (isFunction(defineValue) || isFunction(globalDefineValue)) continue
+
+// Only then check the prefix
+if (CSS_SELECTOR_PREFIXES.has(firstChar)) {
+  obj.props[key] = value  // move to props for css-in-props
+}
+```
+
+> **Lesson learned:** Without the define-awareness check, keys like `$propsCollection` were moved into `props` and became invisible to the define system, breaking collection-based rendering in projects like Rosi and BigBrother.
