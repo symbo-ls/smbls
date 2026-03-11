@@ -98,6 +98,20 @@ export const set = function (params, options = {}, el) {
   const element = el || this
   const { __ref: ref } = element
 
+  // Guard against infinite set loops
+  if (ref.__settingContent) return element
+  ref.__settingContent = true
+
+  try {
+    return _setInner(params, options, element)
+  } finally {
+    ref.__settingContent = false
+  }
+}
+
+const _setInner = function (params, options, element) {
+  const { __ref: ref } = element
+
   const contentElementKey = setContentKey(element, options)
   const content = element[contentElementKey]
   const __contentRef = content && content.__ref
@@ -136,15 +150,20 @@ export const set = function (params, options = {}, el) {
   if (!props) props = params.props = {}
 
   if (tag === 'fragment') {
-    if (!childExtends && element.childExtends) {
-      params.childExtends = element.childExtends
+    const elementChildExtends = element.childExtends || element.childExtend
+    if (!childExtends && elementChildExtends) {
+      params.childExtends = elementChildExtends
       props.ignoreChildExtends = true
     }
 
-    if (!props?.childProps && element.props?.childProps) {
-      props.childProps = element.props.childProps
-      props.ignoreChildProps = true
+    const elementChildProps = element.childProps || element.props?.childProps
+    if (!props?.childProps && elementChildProps) {
+      props.childProps = elementChildProps
     }
+
+    // Prevent the fragment from inheriting parent's childProps via inheritParentProps
+    // (childProps is already forwarded explicitly above for the fragment's children)
+    props.ignoreChildProps = true
   }
 
   if (lazyLoad) {

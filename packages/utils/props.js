@@ -9,6 +9,10 @@ import { lowercaseFirstLetter } from './string.js'
 const RE_UPPER = /^[A-Z]/
 const RE_DIGITS = /^\d+$/
 
+// Characters that mark css-in-props selectors (pseudo-selectors, media queries, etc.)
+// These properties must always live in props so useCssInProps() can process them
+const CSS_SELECTOR_PREFIXES = new Set([':', '@', '[', '*', '+', '~', '&', '>', '$', '-', '.', '!'])
+
 const ELEMENT_INDICATOR_KEYS = new Set([
   'extend', 'props', 'text', 'tag', 'on', 'if', 'childExtend',
   'children', 'childrenAs', 'state', 'html', 'attr',
@@ -50,13 +54,38 @@ export function pickupPropsFromElement (obj, opts = {}) {
       continue
     }
 
-    const hasDefine = isObject(this.define?.[key])
-    const hasGlobalDefine = isObject(this.context?.define?.[key])
+    // childProps is a framework property that must always live in props
+    // even though its value may contain uppercase keys (Icon, Hgroup, etc.)
+    if (key === 'childProps') {
+      obj.props[key] = value
+      delete obj[key]
+      cachedKeys.push(key)
+      continue
+    }
+
+    // Check define handlers - keys with define handlers must stay at root
+    // for throughInitialDefine to process them
+    const defineValue = this.define?.[key]
+    const globalDefineValue = this.context?.define?.[key]
+    const hasDefine = isObject(defineValue) || isFunction(defineValue)
+    const hasGlobalDefine = isObject(globalDefineValue) || isFunction(globalDefineValue)
+    if (hasDefine || hasGlobalDefine) continue
+
+    // CSS-in-props selectors (:after, :hover, @mobileS, etc.) must always
+    // live in props so useCssInProps() can process them via transformersByPrefix
+    const firstChar = key.charAt(0)
+    if (CSS_SELECTOR_PREFIXES.has(firstChar)) {
+      obj.props[key] = value
+      delete obj[key]
+      cachedKeys.push(key)
+      continue
+    }
+
     const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key) || looksLikeElement(value)
     const isBuiltin = DOMQ_PROPERTIES.has(key)
 
     // If it's not a special case, move to props
-    if (!isElement && !isBuiltin && !hasDefine && !hasGlobalDefine) {
+    if (!isElement && !isBuiltin) {
       obj.props[key] = value
       delete obj[key]
       cachedKeys.push(key)
@@ -85,8 +114,17 @@ export function pickupElementFromProps (obj = this, opts) {
     // Skip if key was originally from obj
     if (cachedKeys.includes(key)) continue
 
-    const hasDefine = isObject(this.define?.[key])
-    const hasGlobalDefine = isObject(this.context?.define?.[key])
+    // childProps must stay in props - it's consumed by inheritParentProps
+    if (key === 'childProps') continue
+
+    // CSS-in-props selectors must stay in props
+    const firstChar = key.charAt(0)
+    if (CSS_SELECTOR_PREFIXES.has(firstChar)) continue
+
+    const defineValue = this.define?.[key]
+    const globalDefineValue = this.context?.define?.[key]
+    const hasDefine = isObject(defineValue) || isFunction(defineValue)
+    const hasGlobalDefine = isObject(globalDefineValue) || isFunction(globalDefineValue)
     const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key)
     const isBuiltin = DOMQ_PROPERTIES.has(key)
 
@@ -140,7 +178,7 @@ export const inheritParentProps = (element, parent) => {
   if (!parentProps) return propsStack
 
   const matchParentKeyProps = parentProps[element.key]
-  const matchParentChildProps = parentProps.childProps
+  const matchParentChildProps = parentProps.childProps || parent.childProps
 
   // Order matters: key-specific props should be added after childProps
   const ignoreChildProps = element.props?.ignoreChildProps
