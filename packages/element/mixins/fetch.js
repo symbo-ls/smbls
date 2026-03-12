@@ -215,9 +215,9 @@ const runFetch = async (config, element, context, eventData) => {
       let rpcParams = params
       if (config.on === 'submit') {
         const formData = collectFormData(element)
-        rpcParams = transform ? transform(formData, element, element.state) : formData
-      } else if (transform) {
-        rpcParams = transform(params, element, element.state)
+        rpcParams = config.transformParams
+          ? config.transformParams(formData, element, element.state)
+          : formData
       }
       request.params = rpcParams
     }

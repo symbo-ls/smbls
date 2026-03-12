@@ -43,6 +43,8 @@ Configure `db` on your root context. The adapter is resolved lazily — only the
 
 ## Usage with `fetch` property
 
+### Basic usage
+
 ```js
 // Minimal — state key = table name
 { state: 'articles', fetch: true, children: '.' }
@@ -61,14 +63,219 @@ Configure `db` on your root context. The adapter is resolved lazily — only the
   },
   children: '.'
 }
+```
 
-// RPC call
+### State key mapping with `as`
+
+Use `as` to place fetched data at a specific key in state (instead of replacing the entire state):
+
+```js
+{
+  state: { articles: [], loading: false },
+  fetch: {
+    from: 'articles',
+    as: 'articles'   // sets state.articles, preserves state.loading
+  }
+}
+```
+
+### RPC calls
+
+```js
+// Simple RPC
 { state: 'stats', fetch: { method: 'rpc', from: 'get_dashboard_stats' } }
 
-// With auth requirement
-{ state: 'profile', fetch: { auth: true } }
+// RPC with params and state key
+{
+  state: { articles: [] },
+  fetch: {
+    method: 'rpc',
+    from: 'get_content_rows',
+    params: { p_table: 'articles', p_order_column: 'published_at', p_order_asc: false, p_limit: 50 },
+    as: 'articles',
+    cache: '5m'
+  }
+}
+```
 
-// Callbacks via props
+### Transform
+
+Use `transform` to reshape data before it hits state:
+
+```js
+{
+  state: { featured: null, items: [] },
+  fetch: {
+    from: 'videos',
+    transform: (data) => {
+      const featured = data.find(v => v.is_featured) || data[0]
+      const items = data.filter(v => !v.is_featured)
+      return { featured, items }
+    }
+  }
+}
+```
+
+### Detail pages with dynamic params
+
+Use a function for `params` to resolve values at fetch time:
+
+```js
+{
+  state: { item: null },
+  fetch: {
+    method: 'rpc',
+    from: 'get_content_rows',
+    params: (el) => ({
+      p_table: 'articles',
+      p_id: window.location.pathname.split('/').pop()
+    }),
+    transform: (data) => ({ item: data && data[0] || null })
+  }
+}
+```
+
+### Array fetch (multiple operations)
+
+Use an array to run multiple fetches on the same element:
+
+```js
+{
+  state: { articles: [], events: [], campaigns: [] },
+  fetch: [
+    {
+      method: 'rpc',
+      from: 'get_content_rows',
+      params: { p_table: 'articles' },
+      as: 'articles',
+      cache: '5m'
+    },
+    {
+      method: 'rpc',
+      from: 'get_content_rows',
+      params: { p_table: 'events' },
+      as: 'events',
+      cache: '5m'
+    },
+    {
+      method: 'rpc',
+      from: 'get_content_rows',
+      params: { p_table: 'campaigns' },
+      as: 'campaigns',
+      cache: '5m'
+    }
+  ]
+}
+```
+
+### Triggers with `on`
+
+Control when fetch fires:
+
+```js
+// on: 'create' — fires on element creation (default)
+{ fetch: { from: 'articles' } }
+
+// on: 'submit' — fires on form submit, collects form data
+{
+  tag: 'form',
+  fetch: {
+    method: 'insert',
+    from: 'contacts',
+    on: 'submit'
+  },
+  children: [
+    { tag: 'input', attr: { name: 'email', type: 'email' } },
+    { tag: 'input', attr: { name: 'message' } },
+    { tag: 'button', text: 'Send', attr: { type: 'submit' } }
+  ]
+}
+
+// on: 'click' — fires on click
+{
+  extends: 'Button',
+  text: 'Delete',
+  fetch: {
+    method: 'delete',
+    from: 'items',
+    params: (el) => ({ id: el.state.itemId }),
+    on: 'click'
+  }
+}
+
+// on: 'stateChange' — re-fetches when state updates
+{
+  state: 'search_results',
+  fetch: {
+    from: 'articles',
+    params: (el, s) => ({ title: { ilike: '%' + s.query + '%' } }),
+    on: 'stateChange'
+  }
+}
+```
+
+### Mutations (insert, update, delete)
+
+```js
+// Insert from form
+{
+  tag: 'form',
+  fetch: {
+    method: 'insert',
+    from: 'articles',
+    on: 'submit',
+    fields: true,  // collect all form fields
+    transform: (data) => ({ ...data, status: 'draft' })
+  }
+}
+
+// Insert specific fields only
+{
+  tag: 'form',
+  fetch: {
+    method: 'insert',
+    from: 'contacts',
+    on: 'submit',
+    fields: ['name', 'email', 'message']
+  }
+}
+
+// Upsert from state
+{
+  fetch: {
+    method: 'upsert',
+    from: 'settings',
+    on: 'click'
+  }
+}
+```
+
+### Auth requirement
+
+```js
+// Require authentication before fetching
+{ fetch: { from: 'profile', auth: true } }
+
+// Skip auth check (default is auth: false for reads)
+{ fetch: { from: 'public_data', auth: false } }
+```
+
+### Realtime subscribe
+
+```js
+{
+  state: 'messages',
+  fetch: {
+    method: 'subscribe',
+    from: 'messages',
+    subscribeOn: 'INSERT'  // INSERT | UPDATE | DELETE | *
+  }
+}
+```
+
+### Callbacks via props
+
+```js
 {
   state: 'articles',
   fetch: true,
@@ -83,10 +290,19 @@ Configure `db` on your root context. The adapter is resolved lazily — only the
 ## Direct adapter usage
 
 ```js
-import { supabaseAdapter } from '@symbo.ls/db/supabase'
-import { restAdapter } from '@symbo.ls/db/rest'
-import { localAdapter } from '@symbo.ls/db/local'
+import { setup } from '@symbo.ls/db/supabase'
+import { setup as setupRest } from '@symbo.ls/db/rest'
+import { setup as setupLocal } from '@symbo.ls/db/local'
 import { createAdapter } from '@symbo.ls/db'
+```
+
+## Element method: `getDB()`
+
+Any element can access the resolved adapter:
+
+```js
+const db = await this.getDB()
+const { data, error } = await db.select({ from: 'articles' })
 ```
 
 ## Adapter interface
@@ -191,3 +407,5 @@ fetch: {
   }
 }
 ```
+
+Cache works for both `select` and `rpc` methods. Stale-while-revalidate: if data is stale but not expired, the cached version is served immediately while a background refetch happens.
