@@ -35,7 +35,6 @@
     "@domql/utils": "^3.6.4",
     "@symbo.ls/cli": "^3.6.4",
     "@symbo.ls/default-config": "^3.6.4",
-    "@symbo.ls/fetch": "^3.6.4",
     "@symbo.ls/scratch": "^3.6.4",
     "@symbo.ls/sync": "^3.6.4",
     "@symbo.ls/uikit": "^3.6.4",

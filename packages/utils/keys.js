@@ -35,6 +35,7 @@ export const DOMQ_PROPERTIES = new Set([
   'node',
   'variables',
   'on',
+  'fetch',
   'component',
   'context'
 ])
@@ -138,6 +139,8 @@ export const METHODS = new Set([
   'getRootData',
   'getRootContext',
   'getContext',
+  'getQuery',
+  'getDB',
   'getChildren'
 ])
 
@@ -163,5 +166,7 @@ export const DOMQL_EVENTS = new Set([
   'create',
   'complete',
   'frame',
-  'update'
+  'update',
+  'fetchError',
+  'fetchComplete'
 ])

@@ -5,6 +5,8 @@ import {
   deepClone,
   exec,
   getChildStateInKey,
+  getParentStateInKey,
+  getRootStateInKey,
   isArray,
   isDefined,
   isNot,
@@ -45,6 +47,32 @@ const deepChildrenEqual = (a, b) => {
   return a === b
 }
 
+const SELF_STATE_PATHS = new Set(['.', '/', './'])
+
+const resolveChildrenFromState = (path, state) => {
+  if (!isString(path) || !state) return
+
+  // children: 'state' | '/' | './' → current state
+  if (SELF_STATE_PATHS.has(path)) return state.parse ? state.parse() : state
+
+  // children: '~/path' → from root state
+  const rootState = getRootStateInKey(path, state)
+  if (rootState) {
+    const cleanKey = path.replaceAll('~/', '')
+    return getChildStateInKey(cleanKey, rootState)
+  }
+
+  // children: '../path' → from ancestor state
+  const parentState = getParentStateInKey(path, state)
+  if (parentState) {
+    const cleanKey = path.replaceAll('../', '')
+    return getChildStateInKey(cleanKey, parentState)
+  }
+
+  // children: 'key' or 'key/nested' → from current state
+  return getChildStateInKey(path, state)
+}
+
 /**
  * Apply data parameters on the DOM nodes
  * this should only work if `showOnNode: true` is passed
@@ -57,18 +85,20 @@ export function setChildren (param, element, opts) {
   let execChildren = exec(children, element, state)
   children = execParam || execChildren
 
+  let childrenStatePath
+
   if (children) {
-    if (isState(children)) children = children.parse()
+    if (isState(children)) {
+      childrenAs = childrenAs || 'state'
+      children = children.parse()
+    }
     if (isString(children) || isNumber(children)) {
-      if (children === 'state') children = state.parse()
-      else {
-        const pathInState = getChildStateInKey(children, state)
-        if (pathInState) {
-          childrenAs = 'state'
-          children = getChildStateInKey(children, state) || { value: children }
-        } else {
-          children = { text: children }
-        }
+      const resolved = resolveChildrenFromState(children, state)
+      if (resolved !== undefined) {
+        childrenStatePath = SELF_STATE_PATHS.has(children) ? '' : children
+        children = isState(resolved) ? resolved.parse() : resolved
+      } else {
+        children = { text: children }
       }
     }
 
@@ -124,13 +154,19 @@ export function setChildren (param, element, opts) {
   for (const key in children) {
     const value = Object.prototype.hasOwnProperty.call(children, key) && children[key]
     if (isDefined(value) && value !== null && value !== false) {
-      content[key] = isObjectLike(value)
-        ? childrenAs
-          ? { [childrenAs]: value }
-          : value
-        : childrenAs
-        ? { [childrenAs]: childrenAs === 'state' ? { value } : { text: value } }
-        : { text: value }
+      if (childrenStatePath !== undefined && childrenAs !== 'props') {
+        // Set inherited state path so DOMQL resolves at runtime with hoisting
+        const statePath = childrenStatePath ? `${childrenStatePath}/${key}` : key
+        content[key] = { state: statePath }
+      } else {
+        content[key] = isObjectLike(value)
+          ? childrenAs
+            ? { [childrenAs]: value }
+            : value
+          : childrenAs
+          ? { [childrenAs]: childrenAs === 'state' ? { value } : { text: value } }
+          : { text: value }
+      }
     }
   }
 

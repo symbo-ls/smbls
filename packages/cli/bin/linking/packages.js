@@ -2,7 +2,6 @@ export default [
   'create-smbls',
   'attrs-in-props',
   '@symbo.ls/default-icons',
-  '@symbo.ls/fetch',
   '@symbo.ls/fluent-icons',
   '@symbo.ls/feather-icons',
   '@symbo.ls/material-icons',

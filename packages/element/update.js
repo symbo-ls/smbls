@@ -2,7 +2,6 @@
 
 import {
   window,
-  exec,
   isArray,
   isFunction,
   isNumber,
@@ -286,6 +285,13 @@ export const update = function (params = {}, opts) {
   if (!preventUpdateListener && !options.preventListeners) {
     triggerEventOn('update', element, options)
   }
+
+  // Trigger fetch on stateChange if configured
+  if (!options.preventFetch && ref.__fetchOnStateChange) {
+    import('./mixins/fetch.js').then(({ runFetchConfig }) => {
+      runFetchConfig(ref.__fetchOnStateChange, element, element.context)
+    })
+  }
 }
 
 const findSiblingAttachOptions = (element, parent) => {
@@ -402,8 +408,6 @@ const checkIfOnUpdate = (element, parent, options) => {
  * @param {Object} options - Configuration options for state update inheritance.
  * @param {boolean} [options.preventUpdateTriggerStateUpdate] - If true, prevent triggering state updates.
  * @param {boolean} [options.isHoisted] - Whether the state is hoisted.
- * @param {boolean} [options.execStateFunction] - Execute the state functions.
- * @param {boolean} [options.stateFunctionOverwrite] - If true, overwrite (not merge) current state with what function returns.
  * @param {boolean} [options.preventInheritedStateUpdate] - If true, prevent inheriting state updates.
  * @param {boolean} [options.preventBeforeStateUpdateListener] - If true, prevent the 'beforeStateUpdate' event listener.
  * @param {boolean} [options.preventStateUpdateListener] - If true, prevent the 'stateUpdate' event listener.
@@ -412,29 +416,14 @@ const checkIfOnUpdate = (element, parent, options) => {
 const inheritStateUpdates = (element, options) => {
   const { __ref: ref } = element
   const stateKey = ref.__state
-  const { parent, state } = element
-  const { preventUpdateTriggerStateUpdate, isHoisted, execStateFunction } =
-    options
+  const { parent } = element
+  const { preventUpdateTriggerStateUpdate } = options
 
   if (preventUpdateTriggerStateUpdate) return
 
   // If does not have own state inherit from parent
   if (!stateKey && !ref.__hasRootState) {
     element.state = parent?.state || {}
-    return
-  }
-
-  // If state is function, decide execution and apply setting a current state
-  const shouldForceFunctionState =
-    isFunction(stateKey) && !isHoisted && execStateFunction
-  if (shouldForceFunctionState) {
-    const execState = exec(stateKey, element)
-    state.set(execState, {
-      ...options,
-      preventUpdate: true,
-      preventStateUpdateListener: false,
-      updatedByStateFunction: true
-    })
     return
   }
 

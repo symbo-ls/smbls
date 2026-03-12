@@ -1,6 +1,7 @@
 'use strict'
 
 import { resolveMetadata, applyMetadata } from '@symbo.ls/helmet'
+import { executeFetch } from '@domql/element/mixins/fetch.js'
 
 export const defaultDefine = {
   routes: param => param,
@@ -11,6 +12,11 @@ export const defaultDefine = {
     if (!doc) return
     const resolved = resolveMetadata(param, el, state)
     applyMetadata(resolved, doc)
+  },
+
+  fetch: (param, el, state, context) => {
+    if (!param) return
+    executeFetch(param, el, state, context)
   },
 
   $router: async (param, el) => {

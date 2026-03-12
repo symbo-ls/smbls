@@ -17,8 +17,7 @@ const STATE_UPDATE_OPTIONS = {
   overwrite: true,
   preventHoistElementUpdate: false,
   updateByState: true,
-  isHoisted: true,
-  execStateFunction: true
+  isHoisted: true
 }
 
 export const updateState = function (obj, options = STATE_UPDATE_OPTIONS) {
@@ -82,15 +81,15 @@ export const hoistStateUpdate = (state, obj, options) => {
 
   const findRootState = getRootStateInKey(stateKey, parent.state)
   const findGrandParentState = getParentStateInKey(stateKey, parent.state)
-  const changesValue = createNestedObjectByKeyPath(stateKey, passedValue)
+  const cleanKey = stateKey.replaceAll('~/', '').replaceAll('../', '')
+  const changesValue = createNestedObjectByKeyPath(cleanKey, passedValue)
   const targetParent = findRootState || findGrandParentState || parent.state
-  if (options.replace) overwriteDeep(targetParent, changesValue || value) // check with createNestedObjectByKeyPath
+  if (options.replace) overwriteDeep(targetParent, changesValue || value)
   targetParent.update(changesValue, {
-    execStateFunction: false,
+    ...options,
     isHoisted: true,
     preventUpdate: options.preventHoistElementUpdate,
-    overwrite: !options.replace,
-    ...options
+    overwrite: !options.replace
   })
   const hasNotUpdated =
     options.preventUpdate !== true || !options.preventHoistElementUpdate

@@ -8,7 +8,6 @@ import scope from './scope.js'
 import state from './state.js'
 import style from './style.js'
 import text from './text.js'
-
 export const REGISTRY = {
   attr,
   style,
@@ -18,6 +17,7 @@ export const REGISTRY = {
   classlist: classList,
   state,
   scope,
+  fetch: {},
   deps: (param, el) => param || el.parent.deps,
 
   extends: {},

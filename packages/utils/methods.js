@@ -6,6 +6,7 @@ import { isDefined, isFunction, isObject, isObjectLike } from './types.js'
 import { deepClone } from './object.js'
 import { isProduction } from './env.js'
 import { removeValueFromArray } from './array.js'
+import { OPTIONS } from './cache.js'
 const ENV = process.env.NODE_ENV
 
 // TODO: update these files
@@ -396,6 +397,220 @@ export function call (fnKey, ...args) {
     this.error = err
     if (context?.strictMode) throw err
   }
+}
+
+export async function getDB () {
+  const element = this
+  const db = element.context?.db
+  if (!db) return null
+  if (typeof db.select === 'function') return db
+  if (db.__resolved) return db.__resolved
+  if (db.__resolving) return db.__resolving
+  const { resolveDb } = await import('@symbo.ls/db')
+  db.__resolving = resolveDb(db)
+  const resolved = await db.__resolving
+  db.__resolved = resolved
+  element.context.db = resolved
+  delete db.__resolving
+  return resolved
+}
+
+export function getQuery (format) {
+  const element = this
+  const useStateQuery = format || OPTIONS.useStateQuery || element.context?.useStateQuery
+  if (!useStateQuery) return null
+
+  const query = {}
+  buildQueryFromElement(element, query)
+
+  if (useStateQuery === true) return query
+  const formatter = QUERY_FORMATTERS[useStateQuery]
+  return formatter ? formatter(query) : query
+}
+
+const buildQueryFromElement = (element, query) => {
+  const ref = element.__ref
+  if (!ref) return
+
+  const stateKey = ref.__state
+  if (stateKey && typeof stateKey === 'string') {
+    setQueryPath(query, stateKey)
+  }
+
+  const children = ref.__children
+  if (children) {
+    for (let i = 0; i < children.length; i++) {
+      const child = element[children[i]]
+      if (child && child.__ref) {
+        buildQueryFromElement(child, query)
+      }
+    }
+  }
+
+  const contentKey = ref.contentElementKey || 'content'
+  const content = element[contentKey]
+  if (content && content.__ref) {
+    buildQueryFromElement(content, query)
+  }
+}
+
+const setQueryPath = (query, path) => {
+  const clean = path.replaceAll('../', '').replaceAll('~/', '')
+  const parts = clean.split('/')
+  let current = query
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i]
+    if (i === parts.length - 1) {
+      if (!current[part]) current[part] = true
+    } else {
+      if (current[part] === true) current[part] = {}
+      if (!current[part]) current[part] = {}
+      current = current[part]
+    }
+  }
+}
+
+// --- Query formatters ---
+
+const queryToGraphQL = (query, indent = 0) => {
+  const pad = '  '.repeat(indent)
+  const entries = Object.entries(query)
+  if (!entries.length) return ''
+  const fields = entries.map(([key, value]) => {
+    if (value === true) return `${pad}${key}`
+    return `${pad}${key} {\n${queryToGraphQL(value, indent + 1)}\n${pad}}`
+  })
+  return fields.join('\n')
+}
+
+const formatGraphQL = query => {
+  return `{\n${queryToGraphQL(query, 1)}\n}`
+}
+
+const formatJsonApi = query => {
+  const result = { fields: {}, include: [] }
+  const walk = (obj, prefix) => {
+    const fields = []
+    for (const key in obj) {
+      if (obj[key] === true) {
+        fields.push(key)
+      } else {
+        const nested = prefix ? `${prefix}.${key}` : key
+        result.include.push(nested)
+        walk(obj[key], nested)
+      }
+    }
+    if (fields.length) {
+      result.fields[prefix || '_root'] = fields
+    }
+  }
+  walk(query, '')
+  return result
+}
+
+const formatOData = query => {
+  const build = obj => {
+    const select = []
+    const expand = []
+    for (const key in obj) {
+      if (obj[key] === true) {
+        select.push(key)
+      } else {
+        const nested = build(obj[key])
+        const parts = []
+        if (nested.select) parts.push(`$select=${nested.select}`)
+        if (nested.expand) parts.push(`$expand=${nested.expand}`)
+        expand.push(parts.length ? `${key}(${parts.join(';')})` : key)
+      }
+    }
+    return {
+      select: select.length ? select.join(',') : '',
+      expand: expand.length ? expand.join(',') : ''
+    }
+  }
+  const { select, expand } = build(query)
+  const parts = []
+  if (select) parts.push(`$select=${select}`)
+  if (expand) parts.push(`$expand=${expand}`)
+  return parts.join('&')
+}
+
+const formatSQL = (query, options) => {
+  const columns = []
+  const joins = []
+  const tables = new Set()
+
+  const walk = (obj, table, parentTable) => {
+    tables.add(table)
+    if (parentTable) {
+      joins.push(
+        `LEFT JOIN ${table} ON ${table}.${parentTable}_id = ${parentTable}.id`
+      )
+    }
+    for (const key in obj) {
+      if (obj[key] === true) {
+        columns.push(`${table}.${key}`)
+      } else {
+        walk(obj[key], key, table)
+      }
+    }
+  }
+
+  const roots = Object.keys(query)
+  if (roots.length === 1 && query[roots[0]] !== true) {
+    walk(query[roots[0]], roots[0], null)
+  } else {
+    walk(query, '_root', null)
+  }
+
+  const from = [...tables][0] || '_root'
+  const select = columns.length ? columns.join(', ') : '*'
+  const joinStr = joins.length ? '\n' + joins.join('\n') : ''
+  return `SELECT ${select}\nFROM ${from}${joinStr}`
+}
+
+const formatPaths = query => {
+  const paths = []
+  const walk = (obj, prefix) => {
+    for (const key in obj) {
+      const path = prefix ? `${prefix}/${key}` : key
+      if (obj[key] === true) {
+        paths.push(path)
+      } else {
+        walk(obj[key], path)
+      }
+    }
+  }
+  walk(query, '')
+  return paths
+}
+
+const formatSupabase = query => {
+  const build = obj => {
+    const parts = []
+    for (const key in obj) {
+      if (obj[key] === true) {
+        parts.push(key)
+      } else {
+        parts.push(`${key}(${build(obj[key])})`)
+      }
+    }
+    return parts.join(', ')
+  }
+  const roots = Object.keys(query)
+  if (roots.length === 1 && query[roots[0]] !== true) {
+    return { from: roots[0], select: build(query[roots[0]]) }
+  }
+  return { from: null, select: build(query) }
+}
+
+const QUERY_FORMATTERS = {
+  graphql: formatGraphQL,
+  'json-api': formatJsonApi,
+  odata: formatOData,
+  sql: formatSQL,
+  supabase: formatSupabase,
+  paths: formatPaths
 }
 
 export function isMethod (param, element) {
