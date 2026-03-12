@@ -1,118 +1,77 @@
 # @symbo.ls/fetch
 
-Declarative data fetching plugin for DOMQL. Pluggable database adapters (Supabase, REST, local) with a unified interface.
+Declarative data fetching for DOMQL with pluggable adapters.
 
 ## Setup
 
-Configure `db` in your `config.js` (which ends up in context). The adapter is resolved lazily — only the adapter you use gets loaded.
+Add `db` to `config.js`:
 
 ```js
 // Supabase
-{
-  db: {
-    adapter: 'supabase',
-    projectId: 'your-project-id',
-    key: 'your-anon-key'
+db: { adapter: 'supabase', projectId: '...', key: '...' }
+
+// Supabase — config from state
+db: { adapter: 'supabase', state: 'supabase' }  // merges root state.supabase
+
+// REST
+db: {
+  adapter: 'rest',
+  url: 'https://api.example.com',
+  headers: { Authorization: 'Bearer token' },
+  fetchOptions: { credentials: 'include', mode: 'cors' },
+  auth: {
+    baseUrl: 'https://api.example.com/auth',
+    sessionUrl: '/me',
+    signInUrl: '/login',
+    signOutUrl: '/logout'
   }
 }
 
-// REST API
-{
-  db: {
-    adapter: 'rest',
-    url: 'https://api.example.com',
-    headers: { Authorization: 'Bearer token' }
-  }
-}
-
-// Local (prototyping / offline)
-{
-  db: {
-    adapter: 'local',
-    data: { articles: [{ id: 1, title: 'Hello' }] },
-    persist: true  // saves to localStorage
-  }
-}
+// Local
+db: { adapter: 'local', data: { articles: [] }, persist: true }
 ```
 
-## Usage with `fetch` property
-
-### Basic usage
+## Declarative `fetch`
 
 ```js
-// Minimal — state key = table name
-{ state: 'articles', fetch: true, children: '.' }
-
-// String shorthand for different table name
-{ state: 'data', fetch: 'blog_posts', children: '.' }
+// Minimal
+{ state: 'articles', fetch: true }
 
 // With options
-{
-  state: 'articles',
-  fetch: {
-    params: { status: 'published' },
-    cache: '5m',
-    order: { by: 'created_at', asc: false },
-    limit: 20
-  },
-  children: '.'
-}
+{ state: 'articles', fetch: { params: { status: 'published' }, cache: '5m', order: { by: 'created_at', asc: false }, limit: 20 } }
+
+// String shorthand
+{ state: 'data', fetch: 'blog_posts' }
 ```
 
-### State key mapping with `as`
-
-Use `as` to place fetched data at a specific key in state (instead of replacing the entire state):
+### `as` — state key mapping
 
 ```js
-{
-  state: { articles: [], loading: false },
-  fetch: {
-    from: 'articles',
-    as: 'articles'   // sets state.articles, preserves state.loading
-  }
-}
+{ state: { articles: [], loading: false }, fetch: { from: 'articles', as: 'articles' } }
 ```
 
-### RPC calls
+### RPC
 
 ```js
-// Simple RPC
-{ state: 'stats', fetch: { method: 'rpc', from: 'get_dashboard_stats' } }
-
-// RPC with params and state key
-{
-  state: { articles: [] },
-  fetch: {
-    method: 'rpc',
-    from: 'get_content_rows',
-    params: { p_table: 'articles', p_order_column: 'published_at', p_order_asc: false, p_limit: 50 },
-    as: 'articles',
-    cache: '5m'
-  }
-}
+{ state: { articles: [] }, fetch: { method: 'rpc', from: 'get_content_rows', params: { p_table: 'articles' }, as: 'articles', cache: '5m' } }
 ```
 
-### Transform
-
-Use `transform` to reshape data before it hits state:
+### `transform`
 
 ```js
 {
   state: { featured: null, items: [] },
   fetch: {
     from: 'videos',
-    transform: (data) => {
-      const featured = data.find(v => v.is_featured) || data[0]
-      const items = data.filter(v => !v.is_featured)
-      return { featured, items }
-    }
+    transform: (data) => ({
+      featured: data.find(v => v.is_featured) || data[0],
+      items: data.filter(v => !v.is_featured)
+    })
   }
 }
 ```
 
-### Detail pages with dynamic params
-
-Use a function for `params` to resolve values at fetch time:
+### Dynamic params
 
 ```js
 {
@@ -120,177 +79,153 @@ Use a function for `params` to resolve values at fetch time:
   fetch: {
     method: 'rpc',
     from: 'get_content_rows',
-    params: (el) => ({
-      p_table: 'articles',
-      p_id: window.location.pathname.split('/').pop()
-    }),
+    params: (el) => ({ p_table: 'articles', p_id: window.location.pathname.split('/').pop() }),
     transform: (data) => ({ item: data && data[0] || null })
   }
 }
 ```
 
-### Array fetch (multiple operations)
-
-Use an array to run multiple fetches on the same element:
+### Array fetch
 
 ```js
 {
-  state: { articles: [], events: [], campaigns: [] },
+  state: { articles: [], events: [] },
   fetch: [
-    {
-      method: 'rpc',
-      from: 'get_content_rows',
-      params: { p_table: 'articles' },
-      as: 'articles',
-      cache: '5m'
-    },
-    {
-      method: 'rpc',
-      from: 'get_content_rows',
-      params: { p_table: 'events' },
-      as: 'events',
-      cache: '5m'
-    },
-    {
-      method: 'rpc',
-      from: 'get_content_rows',
-      params: { p_table: 'campaigns' },
-      as: 'campaigns',
-      cache: '5m'
-    }
+    { method: 'rpc', from: 'get_content_rows', params: { p_table: 'articles' }, as: 'articles', cache: '5m' },
+    { method: 'rpc', from: 'get_content_rows', params: { p_table: 'events' }, as: 'events', cache: '5m' }
   ]
 }
 ```
 
-### Triggers with `on`
-
-Control when fetch fires:
+### Triggers
 
 ```js
-// on: 'create' — fires on element creation (default)
-{ fetch: { from: 'articles' } }
-
-// on: 'submit' — fires on form submit, collects form data
-{
-  tag: 'form',
-  fetch: {
-    method: 'insert',
-    from: 'contacts',
-    on: 'submit'
-  },
-  children: [
-    { tag: 'input', attr: { name: 'email', type: 'email' } },
-    { tag: 'input', attr: { name: 'message' } },
-    { tag: 'button', text: 'Send', attr: { type: 'submit' } }
-  ]
-}
-
-// on: 'click' — fires on click
-{
-  extends: 'Button',
-  text: 'Delete',
-  fetch: {
-    method: 'delete',
-    from: 'items',
-    params: (el) => ({ id: el.state.itemId }),
-    on: 'click'
-  }
-}
-
-// on: 'stateChange' — re-fetches when state updates
-{
-  state: 'search_results',
-  fetch: {
-    from: 'articles',
-    params: (el, s) => ({ title: { ilike: '%' + s.query + '%' } }),
-    on: 'stateChange'
-  }
-}
+{ fetch: { from: 'articles' } }                                           // on: 'create' (default)
+{ tag: 'form', fetch: { method: 'insert', from: 'contacts', on: 'submit' } }  // on: 'submit'
+{ fetch: { method: 'delete', from: 'items', params: (el) => ({ id: el.state.itemId }), on: 'click' } }
+{ fetch: { from: 'articles', params: (el, s) => ({ title: { ilike: '%' + s.query + '%' } }), on: 'stateChange' } }
 ```
 
-### Mutations (insert, update, delete)
+### Mutations
 
 ```js
-// Insert from form
-{
-  tag: 'form',
-  fetch: {
-    method: 'insert',
-    from: 'articles',
-    on: 'submit',
-    fields: true,  // collect all form fields
-    transform: (data) => ({ ...data, status: 'draft' })
-  }
-}
-
-// Insert specific fields only
-{
-  tag: 'form',
-  fetch: {
-    method: 'insert',
-    from: 'contacts',
-    on: 'submit',
-    fields: ['name', 'email', 'message']
-  }
-}
-
-// Upsert from state
-{
-  fetch: {
-    method: 'upsert',
-    from: 'settings',
-    on: 'click'
-  }
-}
+{ tag: 'form', fetch: { method: 'insert', from: 'articles', on: 'submit', fields: true } }
+{ tag: 'form', fetch: { method: 'insert', from: 'contacts', on: 'submit', fields: ['name', 'email'] } }
 ```
 
-### Auth requirement
+### Auth guard
 
 ```js
-// Require authentication before fetching
 { fetch: { from: 'profile', auth: true } }
-
-// Skip auth check (default is auth: false for reads)
-{ fetch: { from: 'public_data', auth: false } }
 ```
 
-### Realtime subscribe
+### Subscribe
 
 ```js
-{
-  state: 'messages',
-  fetch: {
-    method: 'subscribe',
-    from: 'messages',
-    subscribeOn: 'INSERT'  // INSERT | UPDATE | DELETE | *
-  }
-}
+{ state: 'messages', fetch: { method: 'subscribe', from: 'messages', subscribeOn: 'INSERT' } }
 ```
 
 ### Callbacks
 
 ```js
 {
-  state: 'articles',
   fetch: true,
-  onFetchComplete: (data, el) => console.log('Loaded', data),
-  onFetchError: (error, el) => console.error(error),
-  onFetchStart: (el) => console.log('Loading...')
+  onFetchComplete: (data, el) => {},
+  onFetchError: (error, el) => {},
+  onFetchStart: (el) => {}
 }
 ```
 
-## Direct adapter usage
+### Per-request overrides (REST)
 
 ```js
-import { setup } from '@symbo.ls/fetch/supabase'
-import { setup as setupRest } from '@symbo.ls/fetch/rest'
-import { setup as setupLocal } from '@symbo.ls/fetch/local'
-import { createAdapter } from '@symbo.ls/fetch'
+{ fetch: { from: '/users', baseUrl: 'https://api.example.com/auth', headers: { 'X-Custom': 'value' } } }
 ```
 
-## Element method: `getDB()`
+## State inheritance
 
-Any element can access the resolved adapter:
+When `state` is a string, the element inherits that key from the parent state. Fetch uses the same string as the default `from` (table name), so declaring `state` is often enough:
+
+```js
+// Parent holds the data, child inherits and fetches into it
+{
+  state: { articles: [], users: [] },
+  ArticleList: {
+    state: 'articles',  // inherits parent.state.articles + fetches from "articles"
+    fetch: true,
+    children: '.'
+  },
+  UserList: {
+    state: 'users',
+    fetch: true,
+    children: '.'
+  }
+}
+```
+
+### How it works
+
+1. `state: 'articles'` tells DOMQL to bind this element's state to `parent.state.articles`
+2. `fetch: true` resolves `from` using the same state key — equivalent to `fetch: { from: 'articles' }`
+3. Fetched data flows into `parent.state.articles`, and all elements inheriting that key update automatically
+
+### Nested paths
+
+Use `/` to traverse deeper into the state tree:
+
+```js
+{
+  state: { dashboard: { stats: {} } },
+  Stats: {
+    state: 'dashboard/stats',
+    fetch: { from: 'get_dashboard_stats', method: 'rpc' }
+  }
+}
+```
+
+### Root and parent references
+
+```js
+// ~/ resolves from root state
+{ state: '~/articles', fetch: true }
+
+// ../ goes up one level in the state tree
+{ state: '../articles', fetch: true }
+```
+
+### Separate `from` and state key
+
+When the table name differs from the state key, use `from` explicitly:
+
+```js
+{
+  state: { posts: [] },
+  Posts: {
+    state: 'posts',
+    fetch: { from: 'blog_posts' }  // fetches from "blog_posts", stores in state.posts
+  }
+}
+```
+
+### `as` with inherited state
+
+Use `as` to place fetched data at a specific key when the element has its own object state:
+
+```js
+{
+  state: { articles: [], total: 0 },
+  Articles: {
+    state: 'articles',
+    fetch: true   // replaces state.articles entirely
+  },
+  Dashboard: {
+    state: { items: [], loading: false },
+    fetch: { from: 'articles', as: 'items' }  // sets state.items, preserves state.loading
+  }
+}
+```
+
+## `getDB()`
 
 ```js
 const db = await this.getDB()
@@ -299,105 +234,68 @@ const { data, error } = await db.select({ from: 'articles' })
 
 ## Adapter interface
 
-All adapters return `{ data, error }` from CRUD operations.
-
-### CRUD
+All return `{ data, error }`.
 
 ```js
-db.select({ from, select, params, limit, offset, order, single })
-db.insert({ from, data, select })
-db.update({ from, data, params, select })
-db.upsert({ from, data, select })         // supabase
-db.delete({ from, params })
-db.rpc({ from, params })
+db.select({ from, select, params, limit, offset, order, single, headers, baseUrl })
+db.insert({ from, data, select, headers, baseUrl })
+db.update({ from, data, params, method, headers, baseUrl })  // method: 'PUT' | 'PATCH'
+db.delete({ from, params, headers, baseUrl })
+db.rpc({ from, params, headers, baseUrl })
+
+// Auth
+db.getSession()
+db.signIn({ email, password })
+db.signOut()
+db.setToken(jwt)                    // REST
+db.signUp({ email, password })      // Supabase
+db.onAuthStateChange(callback)      // Supabase
+
+// Storage (Supabase)
+db.upload({ bucket, path, file })
+db.download({ bucket, path })
+db.getPublicUrl({ bucket, path })
 ```
 
-### Params (filters)
+### Params
 
 ```js
-// Equals
-params: { status: 'published' }
-
-// Operators
-params: { age: { gt: 18 } }
-params: { price: { gte: 10, lte: 100 } }
-params: { name: { neq: 'test' } }
-params: { title: { ilike: '%search%' } }
-
-// Array (IN)
-params: { id: [1, 2, 3] }
-
-// Null check
-params: { deleted_at: null }
+params: { status: 'published' }              // eq
+params: { age: { gt: 18 } }                  // gt, gte, lt, lte, neq
+params: { title: { ilike: '%search%' } }     // like, ilike
+params: { id: [1, 2, 3] }                    // in
+params: { deleted_at: null }                  // is null
 ```
 
-### Auth
+### Order
 
 ```js
-// Supabase
-await db.getSession()
-await db.getUser()
-await db.signIn({ email, password })
-await db.signIn({ provider: 'google' })
-await db.signUp({ email, password })
-await db.signOut()
-db.onAuthStateChange((event, session) => {})
-
-// REST
-db.setToken('jwt-token')
-await db.signIn({ email, password })  // requires auth.signInUrl config
-await db.signOut()
-await db.getSession()
+order: 'created_at'                           // string
+order: { by: 'created_at', asc: false }       // object
+order: [{ by: 'col1' }, { by: 'col2', asc: false }]  // array
 ```
 
-### Realtime (Supabase / Local)
+## Cache
 
 ```js
-const unsubscribe = db.subscribe(
-  { from: 'messages', on: 'INSERT' },
-  (newRow, oldRow, payload) => {}
-)
-// on: 'INSERT' | 'UPDATE' | 'DELETE' | '*'
-unsubscribe()
+cache: true          // 1 min stale
+cache: '5m'          // 5 min stale
+cache: 30000         // 30s stale
+cache: { stale: '1m', expire: '1h', key: 'custom-key' }
 ```
 
-### Storage (Supabase)
-
-```js
-await db.upload({ bucket: 'avatars', path: 'user/photo.png', file })
-await db.download({ bucket: 'avatars', path: 'user/photo.png' })
-db.getPublicUrl({ bucket: 'avatars', path: 'user/photo.png' })
-```
+Stale-while-revalidate for `select` and `rpc`.
 
 ## Custom adapter
 
 ```js
 import { createAdapter } from '@symbo.ls/fetch'
 
-const myAdapter = createAdapter({
+const db = createAdapter({
   name: 'custom',
-  select: async ({ from, params }) => { /* return { data, error } */ },
-  insert: async ({ from, data }) => { /* return { data, error } */ },
-  update: async ({ from, data, params }) => { /* return { data, error } */ },
-  delete: async ({ from, params }) => { /* return { data, error } */ }
+  select: async ({ from, params }) => { /* { data, error } */ },
+  insert: async ({ from, data }) => { /* { data, error } */ },
+  update: async ({ from, data, params }) => { /* { data, error } */ },
+  delete: async ({ from, params }) => { /* { data, error } */ }
 })
-
-{ context: { db: myAdapter } }
 ```
-
-## Cache
-
-```js
-fetch: { cache: true }       // 1 minute stale
-fetch: { cache: '5m' }       // 5 minute stale
-fetch: { cache: 30000 }      // 30 seconds stale
-fetch: {
-  cache: {
-    stale: '1m',              // serve stale data, refetch in background
-    expire: '1h',             // hard expiry
-    key: 'custom-cache-key'
-  }
-}
-```
-
-Cache works for both `select` and `rpc` methods. Stale-while-revalidate: if data is stale but not expired, the cached version is served immediately while a background refetch happens.

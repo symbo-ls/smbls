@@ -131,10 +131,10 @@ const resolveAdapter = async (db, context) => {
 }
 
 const triggerCallback = (element, name, ...args) => {
-  const props = element.props
-  if (props && isFunction(props[name])) {
-    props[name].call(element, ...args, element, element.state, element.context)
-  }
+  const fn = isFunction(element[name]) ? element[name]
+    : (element.props && isFunction(element.props[name])) ? element.props[name]
+      : null
+  if (fn) fn.call(element, ...args, element, element.state, element.context)
 }
 
 const collectFormData = (element) => {
@@ -178,13 +178,8 @@ const runFetch = async (config, element, context) => {
 
   let select
   if (query && isFunction(element.getQuery)) {
-    if (adapter.name === 'supabase') {
-      const q = element.getQuery('supabase')
-      if (q) select = q.select
-    } else {
-      const q = element.getQuery('paths')
-      if (q && q.length) select = q.join(',')
-    }
+    const q = element.getQuery(adapter.name || 'paths')
+    if (q) select = q.select || (q.length && q.join(',')) || undefined
   }
 
   const params = resolveParams(rawParams, element)
