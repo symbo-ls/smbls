@@ -48,6 +48,25 @@ function pickVersionId (v) {
   return s || ''
 }
 
+async function scaffoldLocalTemplate (absDest, options = {}) {
+  if (options.domql === false) {
+    console.error(chalk.red('Only DOMQL templates are supported right now.'))
+    process.exit(1)
+  }
+
+  await createLocalTemplate({
+    destDir: absDest,
+    framework: 'domql',
+    packageManager: options.packageManager || 'npm',
+    clone: options.clone !== false,
+    remote: options.remote !== false,
+    cleanFromGit: options.cleanFromGit !== false,
+    dependencies: options.dependencies !== false,
+    verbose: !!options.verbose,
+    templateUrl: options.template
+  })
+}
+
 export async function runProjectCreate (destArg, options = {}) {
   const dest = destArg || 'symbols-starter-kit'
   const absDest = path.resolve(dest)
@@ -65,7 +84,12 @@ export async function runProjectCreate (destArg, options = {}) {
     : await resolveAuthOrExit({ nonInteractive: options.nonInteractive })
 
   if (mode === 'link_existing') {
-    ensureDir(absDest)
+    if (options.bootstrap) {
+      await scaffoldLocalTemplate(absDest, options)
+    } else {
+      ensureDir(absDest)
+    }
+
     let projectKey = options.key ? normalizeProjectKey(options.key) : null
     let projectId = options.id ? String(options.id).trim() : null
 
@@ -100,7 +124,7 @@ export async function runProjectCreate (destArg, options = {}) {
       branch: options.branch || 'main'
     })
 
-    console.log(chalk.green('Linked project:'))
+    console.log(chalk.green(options.bootstrap ? 'Local project created and linked:' : 'Linked project:'))
     if (projectKey) console.log(' ', chalk.cyan(projectKey))
     if (projectId) console.log(' ', chalk.dim(projectId))
     console.log(chalk.dim(`Config written to ${path.join(dest, '.symbols/config.json')}`))
@@ -108,21 +132,7 @@ export async function runProjectCreate (destArg, options = {}) {
   }
 
   if (mode === 'local_only') {
-    if (options.domql === false) {
-      console.error(chalk.red('Only DOMQL templates are supported right now.'))
-      process.exit(1)
-    }
-    await createLocalTemplate({
-      destDir: absDest,
-      framework: 'domql',
-      packageManager: options.packageManager || 'npm',
-      clone: options.clone !== false,
-      remote: options.remote !== false,
-      cleanFromGit: options.cleanFromGit !== false,
-      dependencies: options.dependencies !== false,
-      verbose: !!options.verbose,
-      templateUrl: options.template
-    })
+    await scaffoldLocalTemplate(absDest, options)
     return
   }
 
@@ -227,21 +237,7 @@ export async function runProjectCreate (destArg, options = {}) {
     }
   }
 
-  if (options.domql === false) {
-    console.error(chalk.red('Only DOMQL templates are supported right now.'))
-    process.exit(1)
-  }
-  await createLocalTemplate({
-    destDir: absDest,
-    framework: 'domql',
-    packageManager: options.packageManager || 'npm',
-    clone: options.clone !== false,
-    remote: options.remote !== false,
-    cleanFromGit: options.cleanFromGit !== false,
-    dependencies: options.dependencies !== false,
-    verbose: !!options.verbose,
-    templateUrl: options.template
-  })
+  await scaffoldLocalTemplate(absDest, options)
 
   linkWorkspaceToProject({
     baseDir: absDest,
@@ -266,8 +262,9 @@ export function registerProjectCreateCommand (projectCmd) {
     .command('create [dir]')
     .description('Create a new project (platform/local) or link an existing one')
     .option('--create-new', 'Force create new platform project', false)
-    .option('--link-existing', 'Force link to existing platform project', false)
+    .option('--link-existing', 'Force link an existing local folder to a platform project', false)
     .option('--local-only', 'Local-only (no platform)', false)
+    .option('--bootstrap', 'Create the local starter project before linking an existing platform project', false)
     .option('--non-interactive', 'Disable prompts (require flags)', false)
     .option('--name <name>', 'Platform project name')
     .option('--type <projectType>', 'Platform projectType (API-required)')

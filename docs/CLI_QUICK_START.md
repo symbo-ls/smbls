@@ -113,6 +113,31 @@ smbls project link . --key your-project.symbo.ls
 smbls project link . --id <projectId>
 ```
 
+This only writes the project link/config into the target folder. It does not clone the starter kit.
+
+### 4) Create a new local starter folder and link it to an existing platform project
+
+If the project already exists on the server and you do not have a local workspace yet:
+
+```bash
+smbls project link my-app --key your-project.symbo.ls --bootstrap
+# or
+smbls project link my-app --id <projectId> --bootstrap
+```
+
+Equivalent explicit two-step flow:
+
+```bash
+smbls project create my-app --local-only
+smbls project link my-app --key your-project.symbo.ls
+```
+
+If you prefer the `create` entrypoint, this is also supported:
+
+```bash
+smbls project create my-app --link-existing --key your-project.symbo.ls --bootstrap
+```
+
 ---
 
 ## The core “sync” commands you’ll use day-to-day
@@ -205,4 +230,3 @@ npm start
 
 - **Commit `symbols.json`**: it’s the minimal project identity/config used by the CLI.
 - **Decide on committing `.symbols/config.json`**: it contains the project link (`projectId`, `projectKey`, `apiBaseUrl`, `branch`). Some teams commit it for consistency; others treat it as local-only.
-
