@@ -268,9 +268,37 @@ const resolveParams = (params, element) => {
   return resolved
 }
 
+export const initAdapterAuth = async (adapter, context) => {
+  if (adapter.__authInitialized) return
+  adapter.__authInitialized = true
+  if (!adapter.getSession) return
+  const updateAuth = (user, session) => {
+    const root = context.state?.root
+    if (root?.update) {
+      root.update({ auth: { user, session, loading: false } })
+    }
+  }
+  try {
+    const session = await adapter.getSession()
+    updateAuth(session?.user || null, session)
+  } catch (e) {}
+  if (adapter.onAuthStateChange) {
+    adapter.onAuthStateChange((event, session) => {
+      updateAuth(session?.user || null, session)
+    })
+  }
+}
+
 const resolveAdapter = async (db, context) => {
-  if (isFunction(db.select)) return db
-  if (db.__resolved) return db.__resolved
+  // When adapter is already resolved (e.g. by getDB()), still init auth
+  if (isFunction(db.select)) {
+    if (db.auth !== false) await initAdapterAuth(db, context)
+    return db
+  }
+  if (db.__resolved) {
+    if (db.auth !== false) await initAdapterAuth(db.__resolved, context)
+    return db.__resolved
+  }
   if (db.__resolving) return db.__resolving
 
   db.__resolving = resolveDb(db)
@@ -280,24 +308,7 @@ const resolveAdapter = async (db, context) => {
   delete db.__resolving
 
   // Auto-init auth when adapter supports it and db.auth is enabled
-  if (db.auth !== false && resolved.getSession && !resolved.__authInitialized) {
-    resolved.__authInitialized = true
-    const updateAuth = (user, session) => {
-      const root = context.state?.root
-      if (root?.update) {
-        root.update({ auth: { user, session, loading: false } })
-      }
-    }
-    try {
-      const session = await resolved.getSession()
-      updateAuth(session?.user || null, session)
-    } catch (e) {}
-    if (resolved.onAuthStateChange) {
-      resolved.onAuthStateChange((event, session) => {
-        updateAuth(session?.user || null, session)
-      })
-    }
-  }
+  if (db.auth !== false) await initAdapterAuth(resolved, context)
 
   return resolved
 }

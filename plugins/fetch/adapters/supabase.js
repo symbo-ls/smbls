@@ -6,7 +6,8 @@ export const setup = async ({ url, key, projectId, createClient, ...options }) =
     throw new Error('@symbo.ls/fetch supabase: url (or projectId) and key are required')
   }
   if (!createClient) {
-    const mod = await import('@supabase/supabase-js')
+    const pkg = '@supabase/' + 'supabase-js'
+    const mod = await import(/* webpackIgnore: true */ pkg)
     createClient = mod.createClient
   }
   return supabaseAdapter(createClient(supabaseUrl, key, options))

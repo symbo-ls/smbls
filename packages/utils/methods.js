@@ -403,15 +403,33 @@ export async function getDB () {
   const element = this
   const db = element.context?.db
   if (!db) return null
-  if (typeof db.select === 'function') return db
-  if (db.__resolved) return db.__resolved
+  if (typeof db.select === 'function') {
+    if (!db.__authInitialized && db.getSession) {
+      const { initAdapterAuth } = await import('@symbo.ls/fetch')
+      await initAdapterAuth(db, element.context)
+    }
+    return db
+  }
+  if (db.__resolved) {
+    if (!db.__resolved.__authInitialized && db.__resolved.getSession) {
+      const { initAdapterAuth } = await import('@symbo.ls/fetch')
+      await initAdapterAuth(db.__resolved, element.context)
+    }
+    return db.__resolved
+  }
   if (db.__resolving) return db.__resolving
-  const { resolveDb } = await import('@symbo.ls/fetch')
-  db.__resolving = resolveDb(db)
-  const resolved = await db.__resolving
+  // Set __resolving synchronously BEFORE the async import to prevent
+  // resolveAdapter() from starting a parallel resolveDb() during the yield
+  const resolvePromise = import('@symbo.ls/fetch').then(({ resolveDb }) => resolveDb(db))
+  db.__resolving = resolvePromise
+  const resolved = await resolvePromise
   db.__resolved = resolved
   element.context.db = resolved
   delete db.__resolving
+  if (resolved.getSession) {
+    const { initAdapterAuth } = await import('@symbo.ls/fetch')
+    await initAdapterAuth(resolved, element.context)
+  }
   return resolved
 }
 
