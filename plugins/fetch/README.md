@@ -1,6 +1,6 @@
 # @symbo.ls/fetch
 
-Declarative data fetching for DOMQL with pluggable adapters.
+Declarative data fetching for DOMQL with pluggable adapters. Inspired by TanStack Query — supports caching, stale-while-revalidate, pagination, infinite queries, retry, deduplication, optimistic updates, and more.
 
 ## Setup
 
@@ -71,6 +71,20 @@ db: { adapter: 'local', data: { articles: [] }, persist: true }
 }
 ```
 
+### `select` — data selector
+
+Like TanStack's `select`, pick or reshape data before it hits state. Runs after cache read and before `transform`:
+
+```js
+{
+  state: { titles: [] },
+  fetch: {
+    from: 'articles',
+    select: (data) => data.map(a => a.title)
+  }
+}
+```
+
 ### Dynamic params
 
 ```js
@@ -85,7 +99,7 @@ db: { adapter: 'local', data: { articles: [] }, persist: true }
 }
 ```
 
-### Array fetch
+### Array fetch (parallel)
 
 ```js
 {
@@ -106,26 +120,316 @@ db: { adapter: 'local', data: { articles: [] }, persist: true }
 { fetch: { from: 'articles', params: (el, s) => ({ title: { ilike: '%' + s.query + '%' } }), on: 'stateChange' } }
 ```
 
-### Mutations
+### Enabled / disabled queries
+
+```js
+// Boolean
+{ fetch: { from: 'profile', enabled: false } }
+
+// Function — resolves at fetch time
+{ fetch: { from: 'profile', enabled: (el, state) => !!state.userId } }
+```
+
+## Cache
+
+Default: all queries cache with `staleTime: 1m`, `gcTime: 5m`.
+
+```js
+cache: true                // staleTime 1m, gcTime 5m (default)
+cache: false               // no caching
+cache: '5m'                // 5 min stale
+cache: 30000               // 30s stale
+cache: { stale: '1m', gc: '10m' }
+cache: { staleTime: '30s', gcTime: '1h', key: 'custom-key' }
+```
+
+### Stale-while-revalidate
+
+When cached data exists but is stale, it's served immediately while a background refetch happens. Fresh data replaces it once the refetch completes — no loading spinner for stale data.
+
+### Garbage collection
+
+Unused cache entries (no active subscribers) are cleaned up after `gcTime` (default 5 minutes).
+
+## Retry
+
+Failed queries automatically retry with exponential backoff.
+
+```js
+// Default: 3 retries with exponential backoff (1s, 2s, 4s... max 30s)
+{ fetch: { from: 'articles' } }
+
+// Disable retry
+{ fetch: { from: 'articles', retry: false } }
+
+// Custom count
+{ fetch: { from: 'articles', retry: 5 } }
+
+// Full control
+{
+  fetch: {
+    from: 'articles',
+    retry: {
+      count: 3,
+      delay: (attempt, error) => Math.min(1000 * 2 ** attempt, 30000)
+    }
+  }
+}
+```
+
+## Query deduplication
+
+Multiple elements fetching the same query simultaneously share a single network request. The cache key is built from `from`, `method`, and `params`.
+
+```js
+// Both share one request
+{ Header: { state: 'user', fetch: { from: 'profile', cache: '5m' } } }
+{ Sidebar: { state: 'user', fetch: { from: 'profile', cache: '5m' } } }
+```
+
+## Refetch on window focus
+
+Stale queries automatically refetch when the user returns to the tab. Enabled by default.
+
+```js
+// Disable
+{ fetch: { from: 'articles', refetchOnWindowFocus: false } }
+```
+
+## Refetch on reconnect
+
+Queries refetch when the browser comes back online. Enabled by default.
+
+```js
+// Disable
+{ fetch: { from: 'articles', refetchOnReconnect: false } }
+```
+
+## Polling / refetch interval
+
+```js
+// Poll every 30 seconds
+{ fetch: { from: 'notifications', refetchInterval: 30000 } }
+{ fetch: { from: 'notifications', refetchInterval: '30s' } }
+
+// Also poll when tab is in background
+{ fetch: { from: 'alerts', refetchInterval: '1m', refetchIntervalInBackground: true } }
+```
+
+## Placeholder data
+
+Show temporary data immediately while the real query loads:
+
+```js
+{
+  state: { articles: [] },
+  fetch: {
+    from: 'articles',
+    placeholderData: []   // show empty array instead of undefined while loading
+  }
+}
+
+// Function form
+{
+  fetch: {
+    from: 'article_detail',
+    placeholderData: (el, state) => state.articles?.find(a => a.id === state.currentId)
+  }
+}
+```
+
+## Initial data
+
+Pre-populate the cache (counts as fresh data, won't trigger a refetch until stale):
+
+```js
+{
+  fetch: {
+    from: 'settings',
+    initialData: { theme: 'dark', lang: 'en' }
+  }
+}
+
+// Function form
+{
+  fetch: {
+    from: 'settings',
+    initialData: () => JSON.parse(localStorage.getItem('settings'))
+  }
+}
+```
+
+## Keep previous data
+
+Prevent UI flicker during page changes — keep showing current data while the next page loads:
+
+```js
+{
+  state: { items: [], page: 1 },
+  fetch: {
+    from: 'articles',
+    page: (el, s) => s.page,
+    keepPreviousData: true
+  }
+}
+```
+
+## Pagination
+
+### Offset-based
+
+```js
+// Page number — auto-calculates offset from pageSize
+{
+  state: { items: [], currentPage: 1 },
+  fetch: {
+    from: 'articles',
+    page: 1,
+    pageSize: 20,         // default: limit or 20
+    keepPreviousData: true
+  }
+}
+
+// Manual offset/limit
+{
+  fetch: {
+    from: 'articles',
+    page: { offset: 0, limit: 20 }
+  }
+}
+```
+
+### Cursor-based
+
+```js
+{
+  fetch: {
+    from: 'articles',
+    page: { cursor: 'abc123', limit: 20 }
+  }
+}
+```
+
+## Infinite queries
+
+Load pages incrementally with automatic page tracking:
+
+```js
+{
+  state: { items: [] },
+  fetch: {
+    from: 'articles',
+    limit: 20,
+    infinite: true,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < 20) return null  // no more pages
+      return lastPage[lastPage.length - 1].id  // cursor
+    }
+  }
+}
+```
+
+### Fetching pages
+
+After mount, use the imperative methods exposed on `element.__ref`:
+
+```js
+// In an event handler or callback
+el.__ref.fetchNextPage()     // loads next page, appends to state
+el.__ref.fetchPreviousPage() // loads previous page, prepends to state
+
+// Status
+el.__ref.__hasNextPage       // boolean
+el.__ref.__hasPreviousPage   // boolean
+el.__ref.__pages             // array of page arrays
+el.__ref.__nextPageParam     // current next cursor
+el.__ref.__prevPageParam     // current previous cursor
+```
+
+### Bidirectional infinite scroll
+
+```js
+{
+  fetch: {
+    from: 'messages',
+    infinite: true,
+    getNextPageParam: (lastPage) => lastPage[lastPage.length - 1]?.id,
+    getPreviousPageParam: (firstPage) => firstPage[0]?.id
+  }
+}
+```
+
+## Mutations
+
+Mutations (`insert`, `update`, `upsert`, `delete`) support optimistic updates, cache invalidation, and lifecycle callbacks.
 
 ```js
 { tag: 'form', fetch: { method: 'insert', from: 'articles', on: 'submit', fields: true } }
 { tag: 'form', fetch: { method: 'insert', from: 'contacts', on: 'submit', fields: ['name', 'email'] } }
 ```
 
-### Auth guard
+### Optimistic updates
+
+Update the UI immediately, roll back if the mutation fails:
 
 ```js
-{ fetch: { from: 'profile', auth: true } }
+{
+  extends: 'Button',
+  text: 'Like',
+  fetch: {
+    method: 'update',
+    from: 'posts',
+    params: (el) => ({ id: el.state.postId }),
+    on: 'click',
+    optimistic: (mutationData, currentState) => ({
+      ...currentState,
+      likes: currentState.likes + 1
+    }),
+    invalidates: ['posts']
+  }
+}
 ```
 
-### Subscribe
+### Cache invalidation
+
+After a mutation, invalidate related queries so they refetch:
 
 ```js
-{ state: 'messages', fetch: { method: 'subscribe', from: 'messages', subscribeOn: 'INSERT' } }
+{
+  fetch: {
+    method: 'insert',
+    from: 'articles',
+    on: 'submit',
+    fields: true,
+    invalidates: true          // invalidates all "articles:*" cache keys
+  }
+}
+
+// Invalidate specific keys
+{ fetch: { method: 'delete', from: 'items', invalidates: ['items:select:'] } }
+
+// Invalidate everything
+{ fetch: { method: 'update', from: 'settings', invalidates: ['*'] } }
 ```
 
-### Callbacks
+### Mutation callbacks
+
+```js
+{
+  fetch: {
+    method: 'insert',
+    from: 'contacts',
+    on: 'submit',
+    fields: true,
+    onMutate: (data, el) => console.log('Sending...', data),
+    onSuccess: (responseData, sentData, el) => console.log('Done!', responseData),
+    onError: (error, sentData, el) => console.error('Failed', error),
+    onSettled: (data, error, sentData, el) => console.log('Finished')
+  }
+}
+```
+
+## Callbacks
 
 ```js
 {
@@ -136,7 +440,96 @@ db: { adapter: 'local', data: { articles: [] }, persist: true }
 }
 ```
 
-### Per-request overrides (REST)
+## Fetch status
+
+Every fetch exposes status on `element.__ref.__fetchStatus`:
+
+```js
+{
+  isFetching,   // true while any request is in-flight (including background)
+  isLoading,    // true only on first load (no cached data)
+  isStale,      // true if data is past staleTime
+  isSuccess,    // true after successful fetch
+  isError,      // alias: !!error
+  error,        // error object or null
+  status,       // 'pending' | 'success' | 'error'
+  fetchStatus   // 'fetching' | 'idle'
+}
+```
+
+Also available: `el.__ref.__fetching`, `el.__ref.__fetchError`.
+
+## Imperative refetch
+
+```js
+// Refetch all queries on this element
+el.__ref.refetch()
+
+// Force (skip dedup)
+el.__ref.refetch({ force: true })
+```
+
+## Query client
+
+Global cache management, importable anywhere:
+
+```js
+import { queryClient } from '@symbo.ls/fetch'
+```
+
+### Invalidate queries
+
+```js
+queryClient.invalidateQueries('articles')       // all keys containing "articles"
+queryClient.invalidateQueries(['articles', 'select'])
+queryClient.invalidateQueries()                  // invalidate everything
+```
+
+### Get / set cache
+
+```js
+const articles = queryClient.getQueryData('articles:select:')
+
+// Direct set
+queryClient.setQueryData('articles:select:', newArticles)
+
+// Updater function
+queryClient.setQueryData('articles:select:', (old) => [...old, newArticle])
+```
+
+### Remove queries
+
+```js
+queryClient.removeQueries('articles')
+queryClient.removeQueries()  // clear all
+```
+
+### Prefetch
+
+Prefetch data before it's needed (e.g. on hover):
+
+```js
+await queryClient.prefetchQuery({
+  from: 'article_detail',
+  method: 'select',
+  params: { id: 42 },
+  cache: '5m'
+}, context)
+```
+
+## Auth guard
+
+```js
+{ fetch: { from: 'profile', auth: true } }
+```
+
+## Subscribe (realtime)
+
+```js
+{ state: 'messages', fetch: { method: 'subscribe', from: 'messages', subscribeOn: 'INSERT' } }
+```
+
+## Per-request overrides (REST)
 
 ```js
 { fetch: { from: '/users', baseUrl: 'https://api.example.com/auth', headers: { 'X-Custom': 'value' } } }
@@ -275,17 +668,6 @@ order: { by: 'created_at', asc: false }       // object
 order: [{ by: 'col1' }, { by: 'col2', asc: false }]  // array
 ```
 
-## Cache
-
-```js
-cache: true          // 1 min stale
-cache: '5m'          // 5 min stale
-cache: 30000         // 30s stale
-cache: { stale: '1m', expire: '1h', key: 'custom-key' }
-```
-
-Stale-while-revalidate for `select` and `rpc`.
-
 ## Custom adapter
 
 ```js
@@ -299,3 +681,44 @@ const db = createAdapter({
   delete: async ({ from, params }) => { /* { data, error } */ }
 })
 ```
+
+## All `fetch` options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `from` | string | state key or element key | Table/endpoint name |
+| `method` | string | `'select'` | `select`, `rpc`, `insert`, `update`, `upsert`, `delete`, `subscribe` |
+| `params` | object/function | — | Filter params or function `(el, state) => params` |
+| `cache` | boolean/string/number/object | `true` (1m stale) | Cache configuration |
+| `retry` | boolean/number/object | `3` | Retry on failure |
+| `transform` | function | — | Reshape data before state update |
+| `select` | function | — | Pick/reshape data (runs before transform) |
+| `as` | string | — | Target state key |
+| `on` | string | `'create'` | Trigger: `create`, `click`, `submit`, `stateChange` |
+| `enabled` | boolean/function | `true` | Enable/disable query |
+| `placeholderData` | any/function | — | Temporary data while loading |
+| `initialData` | any/function | — | Pre-populate cache |
+| `keepPreviousData` | boolean | `false` | Keep current data during refetch |
+| `page` | number/object | — | Pagination: page number or `{ offset, limit, cursor }` |
+| `pageSize` | number | `limit` or `20` | Items per page |
+| `infinite` | boolean | `false` | Enable infinite query mode |
+| `getNextPageParam` | function | — | `(lastPage, allPages) => cursor \| null` |
+| `getPreviousPageParam` | function | — | `(firstPage, allPages) => cursor \| null` |
+| `refetchInterval` | number/string | — | Polling interval |
+| `refetchIntervalInBackground` | boolean | `false` | Poll when tab hidden |
+| `refetchOnWindowFocus` | boolean | `true` | Refetch on tab focus |
+| `refetchOnReconnect` | boolean | `true` | Refetch on online |
+| `optimistic` | any/function | — | Optimistic update data |
+| `invalidates` | string/array/boolean | — | Cache keys to invalidate after mutation |
+| `onMutate` | function | — | Before mutation fires |
+| `onSuccess` | function | — | After successful mutation |
+| `onError` | function | — | After failed mutation |
+| `onSettled` | function | — | After mutation completes (success or error) |
+| `auth` | boolean | `false` | Require authentication |
+| `fields` | boolean/array | — | Collect form fields for mutations |
+| `single` | boolean | `false` | Return single row |
+| `limit` | number | — | Row limit |
+| `offset` | number | — | Row offset |
+| `order` | string/object/array | — | Sort order |
+| `headers` | object | — | Per-request headers (REST) |
+| `baseUrl` | string | — | Per-request base URL (REST) |
