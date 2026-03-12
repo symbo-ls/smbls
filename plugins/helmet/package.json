@@ -1,13 +1,13 @@
 {
   "name": "@symbo.ls/helmet",
-  "version": "3.6.5",
+  "version": "3.6.6",
   "main": "index.js",
   "author": "symbo.ls",
   "license": "ISC",
   "type": "module",
   "source": "index.js",
   "dependencies": {
-    "@domql/utils": "^3.6.5"
+    "@domql/utils": "^3.6.6"
   },
   "publishConfig": {
     "access": "public"
