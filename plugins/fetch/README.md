@@ -267,17 +267,15 @@ Control when fetch fires:
 }
 ```
 
-### Callbacks via props
+### Callbacks
 
 ```js
 {
   state: 'articles',
   fetch: true,
-  props: {
-    onFetchComplete: (data, el) => console.log('Loaded', data),
-    onFetchError: (error, el) => console.error(error),
-    onFetchStart: (el) => console.log('Loading...')
-  }
+  onFetchComplete: (data, el) => console.log('Loaded', data),
+  onFetchError: (error, el) => console.error(error),
+  onFetchStart: (el) => console.log('Loading...')
 }
 ```
 
