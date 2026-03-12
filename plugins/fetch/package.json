@@ -1,0 +1,34 @@
+{
+  "name": "@symbo.ls/fetch",
+  "version": "3.6.4",
+  "license": "MIT",
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./supabase": {
+      "import": "./adapters/supabase.js"
+    },
+    "./rest": {
+      "import": "./adapters/rest.js"
+    },
+    "./local": {
+      "import": "./adapters/local.js"
+    }
+  },
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "adapters"
+  ],
+  "dependencies": {
+    "@domql/utils": "^3.6.4"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}
