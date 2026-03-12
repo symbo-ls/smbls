@@ -55,7 +55,7 @@
     "extensions/*"
   ],
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "version": "3.6.4",
+  "version": "3.6.5",
   "publishConfig": {
     "access": "restricted"
   }
