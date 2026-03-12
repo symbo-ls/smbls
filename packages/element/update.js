@@ -286,11 +286,9 @@ export const update = function (params = {}, opts) {
     triggerEventOn('update', element, options)
   }
 
-  // Trigger fetch on stateChange if configured
+  // Trigger fetch on stateChange if configured (bound by define-level fetch handler)
   if (!options.preventFetch && ref.__fetchOnStateChange) {
-    import('./mixins/fetch.js').then(({ runFetchConfig }) => {
-      runFetchConfig(ref.__fetchOnStateChange, element, element.context)
-    })
+    ref.__fetchOnStateChange()
   }
 }
 

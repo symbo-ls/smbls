@@ -406,7 +406,7 @@ export async function getDB () {
   if (typeof db.select === 'function') return db
   if (db.__resolved) return db.__resolved
   if (db.__resolving) return db.__resolving
-  const { resolveDb } = await import('@symbo.ls/db')
+  const { resolveDb } = await import('@symbo.ls/fetch')
   db.__resolving = resolveDb(db)
   const resolved = await db.__resolving
   db.__resolved = resolved

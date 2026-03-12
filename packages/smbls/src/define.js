@@ -1,7 +1,7 @@
 'use strict'
 
 import { resolveMetadata, applyMetadata } from '@symbo.ls/helmet'
-import { executeFetch } from '@domql/element/mixins/fetch.js'
+import { executeFetch } from '@symbo.ls/fetch'
 
 export const defaultDefine = {
   routes: param => param,
