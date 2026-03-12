@@ -1,6 +1,6 @@
 # @symbo.ls/fetch
 
-Declarative data fetching for DOMQL with pluggable adapters. Inspired by TanStack Query — supports caching, stale-while-revalidate, pagination, infinite queries, retry, deduplication, optimistic updates, and more.
+Declarative data fetching for DOMQL with pluggable adapters. Supports caching, stale-while-revalidate, pagination, infinite queries, retry, deduplication, optimistic updates, and more.
 
 ## Setup
 
