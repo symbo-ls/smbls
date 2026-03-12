@@ -1,11 +1,14 @@
 'use strict'
 
-export const setup = async ({ url, key, projectId, ...options }) => {
+export const setup = async ({ url, key, projectId, createClient, ...options }) => {
   const supabaseUrl = url || (projectId && `https://${projectId}.supabase.co`)
   if (!supabaseUrl || !key) {
     throw new Error('@symbo.ls/fetch supabase: url (or projectId) and key are required')
   }
-  const { createClient } = await import('@supabase/supabase-js')
+  if (!createClient) {
+    const mod = await import('@supabase/supabase-js')
+    createClient = mod.createClient
+  }
   return supabaseAdapter(createClient(supabaseUrl, key, options))
 }
 

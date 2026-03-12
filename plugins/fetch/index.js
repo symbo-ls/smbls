@@ -12,6 +12,10 @@ const BUILTIN_ADAPTERS = {
   local: () => import('./adapters/local.js')
 }
 
+export const registerAdapter = (name, loader) => {
+  BUILTIN_ADAPTERS[name] = loader
+}
+
 export const createAdapter = (config) => {
   const adapter = {}
   for (const method of ADAPTER_METHODS) {
@@ -30,7 +34,7 @@ export const resolveDb = async (config) => {
   if (!name) return null
 
   const loader = BUILTIN_ADAPTERS[name]
-  if (!loader) throw new Error(`Unknown db adapter: "${name}"`)
+  if (!loader) throw new Error(`Unknown db adapter: "${name}". Use registerAdapter() for adapters with optional deps.`)
 
   const mod = await loader()
   return mod.setup(options)
@@ -274,6 +278,27 @@ const resolveAdapter = async (db, context) => {
   db.__resolved = resolved
   context.db = resolved
   delete db.__resolving
+
+  // Auto-init auth when adapter supports it and db.auth is enabled
+  if (db.auth !== false && resolved.getSession && !resolved.__authInitialized) {
+    resolved.__authInitialized = true
+    const updateAuth = (user, session) => {
+      const root = context.state?.root
+      if (root?.update) {
+        root.update({ auth: { user, session, loading: false } })
+      }
+    }
+    try {
+      const session = await resolved.getSession()
+      updateAuth(session?.user || null, session)
+    } catch (e) {}
+    if (resolved.onAuthStateChange) {
+      resolved.onAuthStateChange((event, session) => {
+        updateAuth(session?.user || null, session)
+      })
+    }
+  }
+
   return resolved
 }
 
