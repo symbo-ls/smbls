@@ -30,6 +30,7 @@ import './ask.js'
 import './eject.js'
 import './frank.js'
 import './sdk.js'
+import './github.js'
 
 // Gracefully handle Ctrl+C / ESC in interactive prompts
 process.on('uncaughtException', (err) => {
