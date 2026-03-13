@@ -169,20 +169,56 @@ const esc = (text) => {
  */
 export const generateHeadHtml = (metadata) => {
   const tags = [
-    '<meta charset="UTF-8">',
-    '<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">'
+    '<meta charset="UTF-8">'
   ]
+
+  // Track which keys we've already handled via the hardcoded tags above
+  const SKIP_KEYS = new Set(['charset'])
+  let hasViewport = false
 
   for (const [key, value] of Object.entries(metadata)) {
     if (!value && value !== 0 && value !== false) continue
+    if (SKIP_KEYS.has(key)) continue
 
     if (key === 'title') {
       tags.push(`<title>${esc(value)}</title>`)
       continue
     }
 
+    // Viewport — emit once, prefer metadata value over default
+    if (key === 'viewport') {
+      if (!hasViewport) {
+        tags.push(`<meta name="viewport" content="${esc(value)}">`)
+        hasViewport = true
+      }
+      continue
+    }
+
     if (key === 'canonical') {
       tags.push(`<link rel="canonical" href="${esc(value)}">`)
+      continue
+    }
+
+    // Icon / favicon → <link rel="icon">
+    if (key === 'icon' || key === 'favicon') {
+      const href = esc(value)
+      const type = href.endsWith('.svg') ? ' type="image/svg+xml"' : href.endsWith('.png') ? ' type="image/png"' : ''
+      tags.push(`<link rel="icon" href="${href}"${type}>`)
+      continue
+    }
+
+    // Multiple favicons (different sizes)
+    if (key === 'favicons' && Array.isArray(value)) {
+      value.forEach(fav => {
+        if (typeof fav === 'object') {
+          const attrs = Object.entries(fav)
+            .map(([k, v]) => `${k}="${esc(v)}"`)
+            .join(' ')
+          tags.push(`<link rel="icon" ${attrs}>`)
+        } else if (typeof fav === 'string') {
+          tags.push(`<link rel="icon" href="${esc(fav)}">`)
+        }
+      })
       continue
     }
 
@@ -217,13 +253,18 @@ export const generateHeadHtml = (metadata) => {
       }
     } else if (isName) {
       tags.push(`<meta name="${esc(key)}" content="${esc(value)}">`)
-    } else if (key !== 'favicon' && key !== 'favicons') {
+    } else {
       if (Array.isArray(value)) {
         value.forEach(v => tags.push(`<meta name="${esc(key)}" content="${esc(v)}">`))
       } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
         tags.push(`<meta name="${esc(key)}" content="${esc(value)}">`)
       }
     }
+  }
+
+  // Ensure viewport is always present
+  if (!hasViewport) {
+    tags.splice(1, 0, '<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">')
   }
 
   return tags.join('\n')

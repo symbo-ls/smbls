@@ -30,7 +30,7 @@
     "build": "node ../../build/build.js",
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
-  "license": "ISC",
+  "license": "CC-BY-NC-4.0",
   "dependencies": {
     "@domql/element": "^3.6.6",
     "@domql/utils": "^3.6.6"

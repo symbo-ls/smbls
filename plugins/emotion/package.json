@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/emotion",
   "version": "3.6.6",
-  "license": "MIT",
+  "license": "CC-BY-NC-4.0",
   "type": "module",
   "main": "index.js",
   "source": "index.js",

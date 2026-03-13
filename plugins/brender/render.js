@@ -1,9 +1,227 @@
 import { resolve, join } from 'path'
+import { existsSync, writeFileSync, unlinkSync, readFileSync } from 'fs'
+import { tmpdir } from 'os'
+import { randomBytes } from 'crypto'
 import { createEnv } from './env.js'
 import { resetKeys, assignKeys, mapKeysToElements } from './keys.js'
 import { extractMetadata, generateHeadHtml } from './metadata.js'
 import { hydrate } from './hydrate.js'
+import { prefetchPageData, injectPrefetchedState } from './prefetch.js'
 import { parseHTML } from 'linkedom'
+
+// Deep clone that preserves functions and avoids circular refs
+const structuredCloneDeep = (obj, seen = new WeakMap()) => {
+  if (obj === null || typeof obj !== 'object') return obj
+  if (seen.has(obj)) return seen.get(obj)
+  if (Array.isArray(obj)) {
+    const arr = []
+    seen.set(obj, arr)
+    for (const v of obj) arr.push(typeof v === 'object' && v !== null ? structuredCloneDeep(v, seen) : v)
+    return arr
+  }
+  const clone = {}
+  seen.set(obj, clone)
+  for (const k of Object.keys(obj)) {
+    const v = obj[k]
+    clone[k] = typeof v === 'object' && v !== null ? structuredCloneDeep(v, seen) : v
+  }
+  return clone
+}
+
+// JSON replacer that drops functions, circular refs, and non-serializable values
+const safeJsonReplacer = () => {
+  const seen = new WeakSet()
+  return (key, value) => {
+    if (typeof value === 'function') return undefined
+    if (typeof value === 'object' && value !== null) {
+      if (seen.has(value)) return undefined
+      seen.add(value)
+    }
+    return value
+  }
+}
+
+// ── Bundled import of createDomqlElement ──────────────────────────────────────
+// The smbls source tree uses extensionless/directory imports that Node.js ESM
+// cannot resolve natively. We bundle createDomql.js with esbuild (once, cached)
+// so all bare/directory specifiers are resolved at bundle time.
+let _cachedCreateDomql = null
+
+const bundleCreateDomql = async () => {
+  if (_cachedCreateDomql) return _cachedCreateDomql
+
+  const brenderDir = new URL('.', import.meta.url).pathname
+  const monorepoRoot = resolve(brenderDir, '../..')
+  const entry = resolve(monorepoRoot, 'packages', 'smbls', 'src', 'createDomql.js')
+
+  const esbuild = await import('esbuild')
+  const outFile = join(tmpdir(), `br_createDomql_${randomBytes(6).toString('hex')}.mjs`)
+
+  const workspacePlugin = {
+    name: 'workspace-resolve',
+    setup (build) {
+      // Resolve smbls bare import
+      build.onResolve({ filter: /^smbls/ }, (args) => {
+        const subpath = args.path.replace(/^smbls\/?/, '')
+        if (!subpath) {
+          const src = resolve(monorepoRoot, 'packages', 'smbls', 'src', 'index.js')
+          if (existsSync(src)) return { path: src }
+        }
+        const full = resolve(monorepoRoot, 'packages', 'smbls', subpath)
+        if (existsSync(full)) return { path: full }
+        if (existsSync(full + '.js')) return { path: full + '.js' }
+        const idx = resolve(full, 'index.js')
+        if (existsSync(idx)) return { path: idx }
+      })
+      // Resolve domql bare import
+      build.onResolve({ filter: /^domql$/ }, (args) => {
+        const src = resolve(monorepoRoot, 'packages', 'domql', 'src', 'index.js')
+        if (existsSync(src)) return { path: src }
+        const dist = resolve(monorepoRoot, 'packages', 'domql', 'index.js')
+        if (existsSync(dist)) return { path: dist }
+      })
+      // Resolve @symbo.ls/* packages (skip sync — stubbed above)
+      build.onResolve({ filter: /^@symbo\.ls\// }, args => {
+        const pkg = args.path.replace('@symbo.ls/', '')
+        if (pkg === 'sync') return { path: 'sync-stub', namespace: 'brender-stub' }
+        for (const dir of ['packages', 'plugins']) {
+          const src = resolve(monorepoRoot, dir, pkg, 'src', 'index.js')
+          if (existsSync(src)) return { path: src }
+          const dist = resolve(monorepoRoot, dir, pkg, 'index.js')
+          if (existsSync(dist)) return { path: dist }
+        }
+        const blank = resolve(monorepoRoot, 'packages', 'default-config', 'blank', 'index.js')
+        if (pkg === 'default-config' && existsSync(blank)) return { path: blank }
+      })
+      // Resolve @domql/* packages
+      build.onResolve({ filter: /^@domql\// }, args => {
+        const pkg = args.path.replace('@domql/', '')
+        const src = resolve(monorepoRoot, 'packages', 'domql', 'packages', pkg, 'src', 'index.js')
+        if (existsSync(src)) return { path: src }
+        const dist = resolve(monorepoRoot, 'packages', 'domql', 'packages', pkg, 'index.js')
+        if (existsSync(dist)) return { path: dist }
+      })
+      // Resolve css-in-props
+      build.onResolve({ filter: /^css-in-props/ }, args => {
+        const base = resolve(monorepoRoot, 'packages', 'css-in-props')
+        const subpath = args.path.replace(/^css-in-props\/?/, '')
+        if (subpath) {
+          const full = resolve(base, subpath)
+          const idx = resolve(full, 'index.js')
+          if (existsSync(idx)) return { path: idx }
+          if (existsSync(full + '.js')) return { path: full + '.js' }
+          if (existsSync(full)) return { path: full }
+        }
+        const src = resolve(base, 'src', 'index.js')
+        if (existsSync(src)) return { path: src }
+        const idx = resolve(base, 'index.js')
+        if (existsSync(idx)) return { path: idx }
+      })
+      // Resolve @emotion/* from monorepo node_modules
+      build.onResolve({ filter: /^@emotion\// }, args => {
+        const nm = resolve(monorepoRoot, 'node_modules', args.path)
+        if (existsSync(nm)) {
+          const pkg = resolve(nm, 'package.json')
+          if (existsSync(pkg)) {
+            try {
+              const p = JSON.parse(readFileSync(pkg, 'utf8'))
+              const main = p.module || p.main || 'dist/emotion-css.esm.js'
+              return { path: resolve(nm, main) }
+            } catch {}
+          }
+          return { path: nm }
+        }
+      })
+      // Handle JSON imports
+      build.onResolve({ filter: /\.json$/ }, args => {
+        if (args.resolveDir) {
+          const full = resolve(args.resolveDir, args.path)
+          if (existsSync(full)) return { path: full }
+        }
+      })
+      // Fix options.js: replace createRequire + package.json version import
+      // Match both src/ and dist/esm/src/ paths
+      build.onLoad({ filter: /smbls\/.*options\.js$/ }, async (args) => {
+        if (!args.path.includes('smbls/') || !args.path.endsWith('options.js')) return
+        let contents = readFileSync(args.path, 'utf8')
+        // Replace import attributes (package.json with { type: 'json' })
+        contents = contents.replace(
+          /import\s*\{[^}]*version[^}]*\}\s*from\s*['"][^'"]*package\.json['"][^;\n]*/,
+          "const version = '0.0.0'"
+        )
+        contents = contents.replace(
+          /import\s*\{[^}]*createRequire[^}]*\}\s*from\s*['"]module['"][^;\n]*/g,
+          '// createRequire removed for brender build'
+        )
+        return { contents, loader: 'js' }
+      })
+      // Fix init.js: remove createRequire (match both src/ and dist/)
+      build.onLoad({ filter: /smbls\/.*init\.js$/ }, async (args) => {
+        if (!args.path.includes('smbls/') || !args.path.endsWith('init.js')) return
+        let contents = readFileSync(args.path, 'utf8')
+        contents = contents.replace(
+          /import\s*\{[^}]*createRequire[^}]*\}\s*from\s*['"]module['"][^;\n]*/g,
+          '// createRequire removed for brender build'
+        )
+        return { contents, loader: 'js' }
+      })
+      // No-op: globals.js keeps window = globalThis
+      // We set globalThis.document/location before import to make it SSR-safe
+      // Stub loader for brender-stub namespace (used for @symbo.ls/sync etc.)
+      build.onLoad({ filter: /.*/, namespace: 'brender-stub' }, () => {
+        return { contents: 'export const SyncComponent = {}; export const Inspect = {}; export const Notifications = {}; export default {}', loader: 'js' }
+      })
+      // Fix router.js: break circular import of Link from smbls
+      build.onLoad({ filter: /smbls\/src\/router\.js$/ }, async (args) => {
+        let contents = readFileSync(args.path, 'utf8')
+        contents = contents.replace(
+          /import\s*\{\s*Link\s*\}\s*from\s*['"]smbls['"]/,
+          `const Link = { tag: 'a', attr: { href: (el) => el.props?.href } }`
+        )
+        return { contents, loader: 'js' }
+      })
+      // Fix fetchOnCreate.js: guard window.location access
+      build.onLoad({ filter: /fetchOnCreate\.js$/ }, async (args) => {
+        if (!args.path.includes('smbls/')) return
+        let contents = readFileSync(args.path, 'utf8')
+        // Make window.location.host access safe for SSR
+        contents = contents.replace(
+          /window\s*&&\s*window\.location\s*\?\s*window\.location\.host\.includes/g,
+          'window && window.location && window.location.host ? window.location.host.includes'
+        )
+        return { contents, loader: 'js' }
+      })
+      // Let esbuild handle remaining npm deps via nodePaths
+    }
+  }
+
+  await esbuild.build({
+    entryPoints: [entry],
+    bundle: true,
+    format: 'esm',
+    platform: 'node',
+    outfile: outFile,
+    write: true,
+    logLevel: 'warning',
+    plugins: [workspacePlugin],
+    nodePaths: [resolve(monorepoRoot, 'node_modules')],
+    supported: { 'import-attributes': false },
+    external: [
+      'fs', 'path', 'os', 'crypto', 'url', 'http', 'https', 'stream',
+      'util', 'events', 'buffer', 'child_process', 'worker_threads',
+      'net', 'tls', 'dns', 'dgram', 'zlib', 'assert', 'querystring',
+      'string_decoder', 'readline', 'perf_hooks', 'async_hooks', 'v8',
+      'vm', 'cluster', 'inspector', 'module', 'process', 'tty',
+      'color-contrast-checker', 'linkedom'
+    ]
+  })
+
+  const mod = await import(`file://${outFile}`)
+  try { unlinkSync(outFile) } catch {}
+
+  _cachedCreateDomql = mod
+  return mod
+}
 
 // ── Minimal uikit stubs ──────────────────────────────────────────────────────
 // Lightweight versions of uikit components so DOMQL can resolve extends chains
@@ -88,7 +306,43 @@ const UIKIT_STUBS = {
  * @returns {Promise<{ html: string, metadata: object, registry: object, element: object }>}
  */
 export const render = async (data, options = {}) => {
-  const { route = '/', state: stateOverrides, context: contextOverrides } = options
+  const { route = '/', state: stateOverrides, context: contextOverrides, prefetch = false } = options
+
+  // ── SSR data prefetching ──
+  // When prefetch is enabled, walk the page definition to find fetch
+  // declarations, execute them against the DB adapter, and inject
+  // the results into element state before rendering.
+  let prefetchedPages
+  if (prefetch) {
+    try {
+      const pages = data.pages || {}
+      prefetchedPages = { ...pages }
+      const stateUpdates = await prefetchPageData(data, route)
+      if (stateUpdates.size) {
+        // Deep clone the page def to avoid mutating the original
+        const pageDef = JSON.parse(JSON.stringify(pages[route], (key, value) => {
+          if (typeof value === 'function') return undefined
+          return value
+        }))
+        // Re-attach functions from original
+        const copyFunctions = (src, dst) => {
+          if (!src || !dst) return
+          for (const k in src) {
+            if (typeof src[k] === 'function') {
+              dst[k] = src[k]
+            } else if (typeof src[k] === 'object' && src[k] !== null && !Array.isArray(src[k]) && typeof dst[k] === 'object' && dst[k] !== null) {
+              copyFunctions(src[k], dst[k])
+            }
+          }
+        }
+        copyFunctions(pages[route], pageDef)
+        injectPrefetchedState(pageDef, stateUpdates)
+        prefetchedPages[route] = pageDef
+      }
+    } catch {
+      prefetchedPages = data.pages
+    }
+  }
 
   const { window, document } = createEnv()
   const body = document.body
@@ -96,23 +350,30 @@ export const render = async (data, options = {}) => {
   // Set route on location so the router picks it up
   window.location.pathname = route
 
-  // Lazily import smbls createDomqlElement — this avoids requiring
-  // the whole smbls package at module load time
-  // Import from source directly — the smbls package doesn't export this subpath
-  const smblsSrc = new URL('../../packages/smbls/src/createDomql.js', import.meta.url)
-  const { createDomqlElement } = await import(smblsSrc.href)
+  // Set globalThis.document/location so the bundled smbls code
+  // (which uses `window = globalThis`) can access them during SSR.
+  const _prevDoc = globalThis.document
+  const _prevLoc = globalThis.location
+  globalThis.document = document
+  globalThis.location = window.location
 
-  const app = data.app || {}
+  // Import createDomqlElement via bundled smbls source.
+  // The smbls monorepo uses extensionless/directory imports that Node.js ESM
+  // can't resolve natively, so we bundle it with esbuild first.
+  const { createDomqlElement } = await bundleCreateDomql()
+
+  const app = structuredCloneDeep(data.app || {})
 
   const ctx = {
-    state: { ...data.state, ...(stateOverrides || {}) },
-    dependencies: data.dependencies || {},
-    components: data.components || {},
-    snippets: data.snippets || {},
-    pages: data.pages || {},
+    state: structuredCloneDeep(data.state || {}),
+    ...(stateOverrides ? { state: { ...structuredCloneDeep(data.state || {}), ...stateOverrides } } : {}),
+    dependencies: structuredCloneDeep(data.dependencies || {}),
+    components: structuredCloneDeep(data.components || {}),
+    snippets: structuredCloneDeep(data.snippets || {}),
+    pages: structuredCloneDeep(prefetchedPages || data.pages || {}),
     functions: data.functions || {},
     methods: data.methods || {},
-    designSystem: data.designSystem || {},
+    designSystem: structuredCloneDeep(data.designSystem || {}),
     files: data.files || {},
     ...(data.config || data.settings || {}),
     // Virtual DOM environment
@@ -127,6 +388,9 @@ export const render = async (data, options = {}) => {
 
   const element = await createDomqlElement(app, ctx)
 
+  // Allow async microtasks (fetch callbacks, state updates) to flush
+  await new Promise(r => setTimeout(r, 50))
+
   // Assign data-br keys for hydration
   assignKeys(body)
 
@@ -135,9 +399,60 @@ export const render = async (data, options = {}) => {
   // Extract metadata for the rendered route
   const metadata = extractMetadata(data, route)
 
-  const html = body.innerHTML
+  // Extract emotion-generated CSS
+  // Emotion uses insertRule() (CSSOM) which doesn't populate textContent in linkedom.
+  // We extract from: (1) emotion cache.inserted, (2) CSSOM sheet rules, (3) textContent fallback.
+  const emotionCSS = []
+  const emotionInstance = ctx.emotion || (element && element.context && element.context.emotion)
+  if (emotionInstance && emotionInstance.cache) {
+    const cache = emotionInstance.cache
+    // cache.inserted: hash → CSS string (or true if inserted via CSSOM)
+    if (cache.inserted) {
+      for (const key in cache.inserted) {
+        const rule = cache.inserted[key]
+        if (typeof rule === 'string' && rule) emotionCSS.push(rule)
+      }
+    }
+    // Extract from CSSOM sheet rules (covers insertRule-based insertion)
+    if (cache.sheet && cache.sheet.tags) {
+      for (const tag of cache.sheet.tags) {
+        if (tag.sheet && tag.sheet.cssRules) {
+          for (const rule of tag.sheet.cssRules) {
+            if (rule.cssText) emotionCSS.push(rule.cssText)
+          }
+        }
+      }
+    }
+  }
+  // Fallback: scan all style tags in virtual head
+  if (!emotionCSS.length) {
+    const head = document.head || document.querySelector('head')
+    if (head) {
+      for (const style of head.querySelectorAll('style')) {
+        // Try CSSOM rules first
+        if (style.sheet && style.sheet.cssRules) {
+          for (const rule of style.sheet.cssRules) {
+            if (rule.cssText) emotionCSS.push(rule.cssText)
+          }
+        }
+        // Fallback to textContent
+        if (!emotionCSS.length) {
+          const content = style.textContent || ''
+          if (content) emotionCSS.push(content)
+        }
+      }
+    }
+  }
 
-  return { html, metadata, registry, element }
+  const html = fixSvgContent(body.innerHTML)
+
+  // Restore globalThis after render
+  if (_prevDoc !== undefined) globalThis.document = _prevDoc
+  else delete globalThis.document
+  if (_prevLoc !== undefined) globalThis.location = _prevLoc
+  else delete globalThis.location
+
+  return { html, metadata, registry, element, emotionCSS, document, window }
 }
 
 /**
@@ -231,8 +546,10 @@ const generateGlobalCSS = async (ds, config) => {
 
     // Write a temporary script that imports scratch, runs set(), and
     // serialises the CSS_VARS + RESET objects as JSON.
-    const dsJson = JSON.stringify(ds || {})
-    const cfgJson = JSON.stringify(config || {})
+    const dsJson = JSON.stringify(ds || {}, safeJsonReplacer())
+    // Config may contain non-serializable values (e.g. Supabase client with
+    // circular refs, functions). Strip those for the CSS generation script.
+    const cfgJson = JSON.stringify(config || {}, safeJsonReplacer())
     const tmpEntry = join(tmpdir(), `br_global_${randomBytes(6).toString('hex')}.mjs`)
     const tmpOut = join(tmpdir(), `br_global_${randomBytes(6).toString('hex')}_out.mjs`)
 
@@ -382,10 +699,16 @@ const generateGlobalCSS = async (ds, config) => {
   }
 }
 
+// Emotion CSS is generated by a singleton cache in the bundled smbls module.
+// After the first render, emotion's cache.inserted marks all classes as done,
+// so subsequent renders don't re-insert CSS. We capture the emotion CSS from
+// the first render and reuse it for all pages (all pages share the same components).
+let _cachedEmotionCSS = null
+
 /**
- * Reset the cached global CSS (useful when rendering multiple projects).
+ * Reset the cached global CSS and emotion CSS (useful when rendering multiple projects).
  */
-export const resetGlobalCSSCache = () => { _cachedGlobalCSS = null }
+export const resetGlobalCSSCache = () => { _cachedGlobalCSS = null; _cachedEmotionCSS = null }
 
 // ── Route-level SSR ───────────────────────────────────────────────────────────
 
@@ -450,6 +773,9 @@ export const renderRoute = async (data, options = {}) => {
 
 /**
  * Renders a complete HTML page for a route — ready to serve.
+ * Uses the full smbls pipeline (createDomqlElement) so the output
+ * matches exactly what the SPA produces in the browser.
+ *
  * Includes head, metadata, fonts, reset CSS, component CSS, and body.
  *
  * @param {object} data - Full project data (from loadProject)
@@ -457,19 +783,40 @@ export const renderRoute = async (data, options = {}) => {
  * @param {object} [options]
  * @param {string} [options.lang='en'] - HTML lang attribute
  * @param {string} [options.themeColor] - theme-color meta
+ * @param {object} [options.isr] - ISR options with clientScript path
+ * @param {boolean} [options.prefetch=true] - Whether to prefetch data via DB adapter
  * @returns {Promise<{ html: string, route: string, brKeyCount: number }>}
  */
 export const renderPage = async (data, route = '/', options = {}) => {
-  const { lang = 'en', themeColor, isr } = options
+  const { lang, themeColor, isr, prefetch = true } = options
 
-  const result = await renderRoute(data, { route })
+  // Detect lang from project config, app metadata, or default
+  const htmlLang = lang || data.state?.lang || data.app?.metadata?.lang || 'en'
+
+  // Use the full smbls pipeline for rendering
+  const result = await render(data, { route, prefetch })
   if (!result) return null
 
   const metadata = { ...result.metadata }
   if (themeColor) metadata['theme-color'] = themeColor
   const headTags = generateHeadHtml(metadata)
 
-  const globalCSS = result.globalCSS || {}
+  // Extract CSS: emotion-generated styles from the full pipeline.
+  // Emotion uses a singleton cache in the bundled module — after the first render,
+  // subsequent renders don't re-insert CSS. Cache the first result and reuse.
+  if (!_cachedEmotionCSS && result.emotionCSS && result.emotionCSS.length) {
+    _cachedEmotionCSS = result.emotionCSS.join('\n')
+  }
+  const emotionCSS = _cachedEmotionCSS || (result.emotionCSS || []).join('\n')
+
+  // Generate global CSS (variables, reset, keyframes) via scratch pipeline
+  const ds = data.designSystem || {}
+  const globalCSS = await generateGlobalCSS(ds, data.config || data.settings)
+
+  // Generate font links from design system
+  const fontLinks = generateFontLinks(ds)
+
+  const brKeyCount = Object.keys(result.registry).length
 
   // ISR: include client SPA bundle for hydration + data fetching
   let isrBody = ''
@@ -500,19 +847,17 @@ export const renderPage = async (data, route = '/', options = {}) => {
   }
 
   const html = `<!DOCTYPE html>
-<html lang="${lang}">
+<html lang="${htmlLang}">
 <head>
 ${headTags}
-${result.fontLinks}
+${fontLinks}
 ${globalCSS.fontFaceCSS ? `<style>${globalCSS.fontFaceCSS}</style>` : ''}
 <style>
 ${globalCSS.rootRule || ''}
-${result.resetCss}
+${globalCSS.resetRules || ''}
 ${globalCSS.keyframeRules || ''}
 </style>
-<style data-emotion="smbls">
-${result.css}
-</style>
+${emotionCSS ? `<style data-emotion="smbls">\n${emotionCSS}\n</style>` : ''}
 </head>
 <body>
 ${result.html}
@@ -520,7 +865,7 @@ ${isrBody}
 </body>
 </html>`
 
-  return { html, route, brKeyCount: result.brKeyCount }
+  return { html, route, brKeyCount }
 }
 
 // ── Design system token resolution ──────────────────────────────────────────

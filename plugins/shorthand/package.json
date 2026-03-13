@@ -31,7 +31,7 @@
     "*.js",
     "src"
   ],
-  "license": "ISC",
+  "license": "CC-BY-NC-4.0",
   "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc",
   "browser": "./dist/esm/index.js",
   "unpkg": "./dist/iife/index.js",

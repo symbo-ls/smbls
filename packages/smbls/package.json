@@ -1,7 +1,7 @@
 {
   "name": "smbls",
   "version": "3.6.6",
-  "license": "MIT",
+  "license": "CC-BY-NC-4.0",
   "repository": "https://github.com/symbo-ls/smbls",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "type": "module",
@@ -11,6 +11,7 @@
   "jsdelivr": "./dist/iife/index.js",
   "exports": {
     ".": {
+      "browser": "./dist/browser/index.js",
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     },
@@ -49,12 +50,13 @@
   },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild *.js src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV && cp dynamic.json dist/esm/dynamic.json && node -e \"const p=require('./package.json');require('fs').writeFileSync('dist/esm/package.json',JSON.stringify({name:p.name,version:p.version}));\"",
-    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild *.js src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV && cp dynamic.json dist/cjs/dynamic.json && node -e \"const p=require('./package.json');require('fs').writeFileSync('dist/cjs/package.json',JSON.stringify({name:p.name,version:p.version}));\"",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild *.js src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV && node -e \"const p=require('./package.json');require('fs').writeFileSync('dist/esm/package.json',JSON.stringify({name:p.name,version:p.version}));\"",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild *.js src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV && node -e \"const p=require('./package.json');require('fs').writeFileSync('dist/cjs/package.json',JSON.stringify({name:p.name,version:p.version}));\"",
     "build": "node ../../build/build.js",
     "prepublish": "npm run build && npm run copy:package:cjs",
-    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild index.js --bundle --target=es2020 --format=iife --global-name=Smbls --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV --external:css-in-props --external:@symbo.ls/* --external:@domql/* --external:domql --external:attrs-in-props --external:*.json --external:module"
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild index.js --bundle --target=es2020 --format=iife --global-name=Smbls --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV --external:module --external:*.json --minify",
+    "build:browser": "cross-env NODE_ENV=$NODE_ENV esbuild index.js --bundle --target=es2020 --format=esm --outfile=dist/browser/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV --external:module --external:*.json --minify"
   },
-  "browser": "./dist/esm/index.js",
+  "browser": "./dist/browser/index.js",
   "sideEffects": false
 }

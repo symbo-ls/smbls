@@ -8,13 +8,12 @@ import { onpopstateRouter } from './router.js'
 import { fetchAsync, fetchSync } from './fetchOnCreate.js'
 
 import DEFAULT_CREATE_OPTIONS from './options.js'
-import { DYNAMIC_JSON } from './init.js'
 import { createDomqlElement } from './createDomql.js'
 
 const mergeWithLocalFile = (options, optionsExternalFile) =>
   deepMerge(
     options,
-    isObject(optionsExternalFile) ? optionsExternalFile : DYNAMIC_JSON || {}
+    isObject(optionsExternalFile) ? optionsExternalFile : {}
   )
 
 export const create = (

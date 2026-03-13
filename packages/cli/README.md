@@ -107,6 +107,26 @@ smbls build --no-optimize --no-brender
 | `--out-dir <dir>` | Output directory (default from symbols.json or dist) |
 | `--bundler <bundler>` | Force bundler: parcel, vite, or browser |
 
+#### `smbls brender`
+
+Pre-render all static pages to HTML using server-side rendering. Produces a `dist-brender/` directory with static HTML files that include metadata, CSS, and optionally a client bundle for hydration.
+
+```bash
+smbls brender
+smbls brender --out-dir build
+smbls brender --no-isr --no-prefetch
+smbls brender --watch
+```
+
+| Flag | Description |
+|------|-------------|
+| `--out-dir <dir>` | Output directory (default: `brenderDistDir` from symbols.json, or `dist-brender`) |
+| `--no-isr` | Disable ISR (skip client SPA bundle for hydration + data fetching) |
+| `--no-prefetch` | Disable SSR data prefetching (skip DB queries during render) |
+| `-w, --watch` | Watch for changes and re-render |
+
+Param routes (e.g. `/blog/:id`) are automatically skipped — they need runtime data. See [`@symbo.ls/brender`](../../plugins/brender/) for the full API.
+
 #### `smbls deploy`
 
 Deploy project to a hosting provider.

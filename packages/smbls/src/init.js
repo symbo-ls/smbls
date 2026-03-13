@@ -12,21 +12,12 @@ import { isObject, deepMerge, deepClone } from '@domql/utils'
 
 import { emotion as defaultEmotion } from '@symbo.ls/emotion'
 
-import { createRequire } from 'module'
-
-let DYNAMIC_JSON = {}
-try {
-  const _url = typeof __filename !== 'undefined' ? __filename : import.meta.url
-  const require = createRequire(_url)
-  DYNAMIC_JSON = require('../dynamic.json')
-} catch {}
-
 const CONFIG = getActiveConfig()
 
 const mergeWithLocalFile = (config = CONFIG, options) => {
   const rcfile = isObject(options.localFile)
     ? options.localFile
-    : DYNAMIC_JSON || {}
+    : {}
   const clonedFile = deepClone(rcfile.designSystem || {})
   return deepMerge(config, clonedFile)
 }
@@ -163,4 +154,3 @@ export const updateVars = (config, options = UPDATE_OPTIONS) => {
 
 export const setClass = (props, options = UPDATE_OPTIONS) => {} // setClassname(props, options.emotion.css)
 
-export { DYNAMIC_JSON }

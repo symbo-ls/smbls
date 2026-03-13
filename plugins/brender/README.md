@@ -59,12 +59,14 @@ Browser DOM (static)              DOMQL Tree (no nodes)         After hydrate()
 
 | File | Purpose |
 |------|---------|
-| `render.js` | `render()` — full project render via smbls pipeline; `renderElement()` — single component via @domql/element |
+| `render.js` | `render()` — full project render via smbls pipeline; `renderElement()` — single component; `renderPage()` — complete HTML page |
 | `hydrate.js` | `collectBrNodes()` — scans DOM for data-br nodes; `hydrate()` — reconnects DOMQL tree to DOM |
 | `env.js` | `createEnv()` — linkedom virtual DOM with browser API stubs (requestAnimationFrame, history, location, etc.) |
 | `keys.js` | `resetKeys()`, `assignKeys()` — stamps data-br on DOM nodes; `mapKeysToElements()` — builds registry |
 | `metadata.js` | Re-exports from [`@symbo.ls/helmet`](../helmet/) — `extractMetadata()`, `generateHeadHtml()`, `resolveMetadata()`, `applyMetadata()` |
+| `prefetch.js` | `prefetchPageData()` — SSR data prefetching via DB adapter (Supabase); `injectPrefetchedState()` — injects fetched data into page definitions |
 | `load.js` | `loadProject()` — imports a symbols/ directory; `loadAndRenderAll()` — renders every route |
+| `sitemap.js` | `generateSitemap()` — generates sitemap.xml from routes |
 | `index.js` | Re-exports everything |
 
 ## API
@@ -101,7 +103,7 @@ const result = await renderElement(pageDef, {
 
 ### `render(data, options?)`
 
-Renders a full Symbols project. Requires the smbls pipeline (createDomqlElement) — handles routing, state, designSystem initialization, the full app context.
+Renders a full Symbols project. Requires the smbls pipeline (createDomqlElement) — handles routing, state, designSystem initialization, the full app context. Uses esbuild to bundle the smbls source tree (cached after first call).
 
 ```js
 import { render, loadProject } from '@symbo.ls/brender'
@@ -109,10 +111,40 @@ import { render, loadProject } from '@symbo.ls/brender'
 const data = await loadProject('/path/to/project')
 const result = await render(data, { route: '/about' })
 
-// result.html      -> full page HTML with data-br keys
-// result.metadata  -> { title, description, og:image, ... }
-// result.registry  -> { br-key: domqlElement }
-// result.element   -> root DOMQL element
+// result.html       -> full page HTML with data-br keys
+// result.metadata   -> { title, description, og:image, ... }
+// result.emotionCSS -> array of CSS rule strings from emotion
+// result.registry   -> { br-key: domqlElement }
+// result.element    -> root DOMQL element
+```
+
+### `renderPage(data, route, options?)`
+
+Renders a complete, ready-to-serve HTML page. Combines `render()` output with metadata, CSS (emotion + global), fonts, and optional ISR client bundle.
+
+```js
+import { renderPage, loadProject } from '@symbo.ls/brender'
+
+const data = await loadProject('/path/to/project')
+const result = await renderPage(data, '/about', {
+  lang: 'ka',
+  prefetch: true  // enable SSR data prefetching
+})
+
+// result.html       -> complete <!DOCTYPE html> page
+// result.route      -> '/about'
+// result.brKeyCount -> number of data-br keys
+```
+
+### `prefetchPageData(data, route, options?)`
+
+Fetches data for a page's declarative `fetch` definitions during SSR, using the project's DB adapter (e.g. Supabase).
+
+```js
+import { prefetchPageData } from '@symbo.ls/brender'
+
+const stateUpdates = await prefetchPageData(data, '/blog')
+// stateUpdates -> { articles: [...], events: [...] }
 ```
 
 ### `hydrate(element, options?)`
@@ -176,6 +208,40 @@ generateHeadHtml({ title: 'My Page', description: 'About', 'og:image': '/img.png
 ```
 
 Metadata values can also be functions — see the [helmet plugin](../helmet/) for details.
+
+## CLI
+
+The `smbls brender` command renders all static routes for a project:
+
+```bash
+# Basic usage — renders all static routes to dist-brender/
+smbls brender
+
+# Custom output directory
+smbls brender --out-dir build
+
+# Disable ISR client bundle
+smbls brender --no-isr
+
+# Disable SSR data prefetching
+smbls brender --no-prefetch
+
+# Watch mode — re-renders on file changes
+smbls brender --watch
+```
+
+Output directory defaults to `dist-brender` (or `brenderDistDir` from `symbols.json`) to avoid conflicting with the SPA's `dist/` folder.
+
+Param routes (e.g. `/blog/:id`) are automatically skipped — they need runtime data.
+
+### symbols.json
+
+```json
+{
+  "brender": true,
+  "brenderDistDir": "dist-brender"
+}
+```
 
 ## Examples
 
@@ -279,9 +345,13 @@ This means the server and client don't need to exchange the registry — as long
 
 - `renderElement()` uses `@domql/element` create directly — lightweight, no smbls bootstrap. Good for individual components
 - `render()` uses the full `smbls/src/createDomql.js` pipeline — handles routing, designSystem initialization, uikit defaults, the works. Needed for complete apps
+- The smbls source is bundled with esbuild (cached after first call) because the monorepo uses extensionless/directory imports that Node.js ESM can't resolve natively. The esbuild plugin patches SSR-incompatible code (window references, createRequire, circular imports) and stubs out browser-only packages (@symbo.ls/sync)
+- `render()` sets `globalThis.document` and `globalThis.location` before each render to match the linkedom virtual env, then restores them after. This allows the bundled smbls code (which reads `window = globalThis`) to work in SSR
 - `hydrate.js` is browser-only code (no linkedom dependency) — it's exported separately via `@symbo.ls/brender/hydrate`
 - `createEnv()` sets `globalThis.window/document/Node/HTMLElement` because `@domql/utils` `isDOMNode` uses `instanceof` checks against global constructors
+- Emotion CSS is extracted from the CSSOM sheet rules (emotion uses `insertRule()` which doesn't populate `textContent` in linkedom)
 - `onRender` callbacks that do network requests or call `s.update()` will error during SSR — this is expected and harmless since the HTML is already produced before those callbacks fire
+- Data prefetching (`prefetch.js`) walks page definitions to find `fetch` declarations, then executes them against the DB adapter before rendering. Fetched data is injected into page state so components render with real content
 
 ## Theme support
 

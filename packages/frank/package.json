@@ -2,7 +2,7 @@
   "name": "@symbo.ls/frank",
   "version": "3.6.6",
   "description": "Bidirectional transformation between Symbols project JSON and filesystem formats",
-  "license": "MIT",
+  "license": "CC-BY-NC-4.0",
   "type": "module",
   "main": "./index.js",
   "module": "./index.js",

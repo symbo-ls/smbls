@@ -441,21 +441,25 @@ Supports Claude, OpenAI, Gemini, and Ollama (local). On setup, it auto-configure
 
 ## Server-Side Rendering
 
-Brender provides SSR and hydration for Symbols apps:
+Brender provides SSR/SSG and hydration for Symbols apps. Pre-render all static routes via the CLI:
 
-```javascript
-import { renderElement } from '@symbo.ls/brender'
-
-const result = await renderElement({
-  tag: 'div',
-  text: 'Hello',
-  Child: { tag: 'span', text: 'World' }
-})
-
-// result.html -> '<div data-br="br-1">Hello<span data-br="br-2">World</span></div>'
+```bash
+smbls brender                    # render all static routes to dist-brender/
+smbls brender --no-prefetch      # skip DB queries during render
+smbls brender --watch            # re-render on file changes
 ```
 
-Client-side hydration reconnects the static HTML to live DOMQL elements without re-rendering. See [`@symbo.ls/brender`](plugins/brender/) for the full API.
+Or render programmatically:
+
+```javascript
+import { renderPage, loadProject } from '@symbo.ls/brender'
+
+const data = await loadProject('/path/to/project')
+const result = await renderPage(data, '/about', { prefetch: true })
+// result.html -> complete <!DOCTYPE html> with metadata, CSS, fonts
+```
+
+Includes metadata generation, Emotion CSS extraction, theme support (`prefers-color-scheme` + `[data-theme]`), SSR data prefetching via DB adapter, and optional ISR client bundle for hydration. Client-side hydration reconnects the static HTML to live DOMQL elements without re-rendering. See [`@symbo.ls/brender`](plugins/brender/) for the full API.
 
 ## Extensions
 

@@ -35,12 +35,26 @@ const bundleClient = async (cwd, outDir) => {
           if (existsSync(full)) return { path: full }
         }
       })
-      // Fix source issues: import attributes and circular imports
+      // Fix source issues: import attributes, node builtins, and circular imports
       build.onLoad({ filter: /smbls\/src\/options\.js$/ }, async (args) => {
         let contents = readFileSync(args.path, 'utf8')
         contents = contents.replace(
           /import\s*\{[^}]*version[^}]*\}\s*from\s*['"][^'"]*package\.json['"][^;\n]*/,
           `const version = '${smblsVersion}'`
+        )
+        // Remove node-only imports (createRequire) that fail in browser builds
+        contents = contents.replace(
+          /import\s*\{[^}]*createRequire[^}]*\}\s*from\s*['"]module['"][^;\n]*/g,
+          '// createRequire removed for browser build'
+        )
+        return { contents, loader: 'js' }
+      })
+      // Strip node-only imports from init.js too
+      build.onLoad({ filter: /smbls\/src\/init\.js$/ }, async (args) => {
+        let contents = readFileSync(args.path, 'utf8')
+        contents = contents.replace(
+          /import\s*\{[^}]*createRequire[^}]*\}\s*from\s*['"]module['"][^;\n]*/g,
+          '// createRequire removed for browser build'
         )
         return { contents, loader: 'js' }
       })
@@ -150,9 +164,9 @@ const bundleClient = async (cwd, outDir) => {
   return 'client.js'
 }
 
-const renderAll = async (cwd, outDir, { isr } = {}) => {
+const renderAll = async (cwd, outDir, { isr, prefetch = true } = {}) => {
   const { loadProject } = await import('@symbo.ls/brender/load')
-  const { renderPage } = await import('@symbo.ls/brender')
+  const { renderPage, resetGlobalCSSCache } = await import('@symbo.ls/brender')
 
   const data = await loadProject(cwd)
   const pages = data.pages || {}
@@ -162,6 +176,10 @@ const renderAll = async (cwd, outDir, { isr } = {}) => {
     console.log(chalk.dim('  No pages found, nothing to render'))
     return
   }
+
+  // Skip param routes (e.g. /blog/:id) — they need runtime data
+  const staticRoutes = routes.filter(r => !r.includes(':'))
+  const paramRoutes = routes.filter(r => r.includes(':'))
 
   const dest = resolve(cwd, outDir)
   mkdirSync(dest, { recursive: true })
@@ -186,14 +204,21 @@ const renderAll = async (cwd, outDir, { isr } = {}) => {
   const _error = console.error
   const _log = console.log
 
-  for (const route of routes) {
+  if (prefetch) {
+    _log(chalk.dim('  SSR data prefetching enabled'))
+  }
+
+  // Reset global CSS cache before rendering a batch
+  resetGlobalCSSCache()
+
+  for (const route of staticRoutes) {
     try {
       // Suppress during render, restore for our own output
       console.warn = () => {}
       console.error = () => {}
       console.log = () => {}
 
-      const result = await renderPage(data, route, isrOpts)
+      const result = await renderPage(data, route, { ...isrOpts, prefetch })
 
       // Allow async microtasks to flush with console still suppressed
       await new Promise(r => setTimeout(r, 0))
@@ -218,19 +243,26 @@ const renderAll = async (cwd, outDir, { isr } = {}) => {
       _error(chalk.yellow(`  ${route} failed: ${err.message}`))
     }
   }
+
+  if (paramRoutes.length) {
+    _log(chalk.dim(`  Skipped ${paramRoutes.length} param routes: ${paramRoutes.join(', ')}`))
+  }
 }
 
 program
   .command('brender')
   .description('Pre-render pages with brender')
-  .option('--out-dir <dir>', 'Output directory (default from symbols.json or dist)')
+  .option('--out-dir <dir>', 'Output directory (default: brenderDistDir from symbols.json, or dist-brender)')
   .option('--no-isr', 'Disable ISR (skip client SPA bundle for hydration + data fetching)')
+  .option('--no-prefetch', 'Disable SSR data prefetching (skip DB queries during render)')
   .option('-w, --watch', 'Watch for changes and re-render')
   .action(async (opts) => {
     const cwd = process.cwd()
     const config = getRunnerConfig(cwd)
     const symbols = getSymbols(cwd)
-    const outDir = opts.outDir || config.distDir
+    // Use brenderDistDir from symbols.json, or --out-dir, or default to 'dist-brender'
+    // This avoids conflicting with the SPA's 'dist' folder
+    const outDir = opts.outDir || symbols.brenderDistDir || 'dist-brender'
     const symbolsDir = resolve(cwd, symbols.dir || 'symbols')
 
     const pkgPath = resolve(cwd, 'package.json')
@@ -246,8 +278,9 @@ program
     try {
       console.log(chalk.dim('Pre-rendering pages with brender...'))
       const isr = opts.isr !== false
+      const prefetch = opts.prefetch !== false
       if (isr) console.log(chalk.dim('  ISR enabled — bundling client SPA'))
-      await renderAll(cwd, outDir, { isr })
+      await renderAll(cwd, outDir, { isr, prefetch })
       console.log(chalk.green('✓') + ` Brender complete -> ${outDir}/`)
 
       if (opts.watch) {
@@ -258,7 +291,7 @@ program
           debounce = setTimeout(async () => {
             console.log(chalk.dim(`\n${filename} changed, re-rendering...`))
             try {
-              await renderAll(cwd, outDir, { isr })
+              await renderAll(cwd, outDir, { isr, prefetch })
               console.log(chalk.green('✓') + ` Brender complete -> ${outDir}/`)
             } catch (err) {
               console.error(chalk.red('Brender failed:'), err.message)

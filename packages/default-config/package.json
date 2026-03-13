@@ -7,7 +7,7 @@
   "dependencies": {
     "@symbo.ls/default-icons": "^3.6.6"
   },
-  "license": "MIT",
+  "license": "CC-BY-NC-4.0",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "module": "./blank/index.js",
   "exports": {
