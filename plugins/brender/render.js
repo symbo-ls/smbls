@@ -585,8 +585,8 @@ const generateGlobalCSS = async (ds, config) => {
       const result = {
         CSS_VARS: conf.CSS_VARS || {},
         CSS_MEDIA_VARS: conf.CSS_MEDIA_VARS || {},
-        RESET: conf.RESET || conf.reset || {},
-        ANIMATION: conf.animation || conf.ANIMATION || {}
+        reset: conf.reset || {},
+        animation: conf.animation || {}
       }
       // Export as globalThis so we can read it
       globalThis.__BR_GLOBAL_CSS__ = result

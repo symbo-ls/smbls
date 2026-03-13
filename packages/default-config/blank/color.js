@@ -1,6 +1,6 @@
 'use strict'
 
-export const COLOR = {
+export const color = {
   transparent: 'rgba(0, 0, 0, 0)',
   black: 'black',
   white: 'white',
@@ -26,4 +26,4 @@ export const COLOR = {
   ]
 }
 
-export const GRADIENT = {}
+export const gradient = {}

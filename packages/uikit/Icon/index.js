@@ -27,7 +27,7 @@ export const Icon = {
 
   props: (el, s, ctx) => {
     const { props, parent } = el
-    const { ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
+    const { icons: ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
     const { toCamelCase } = ctx && ctx.utils
 
     const inheritFromIsActive = (el) => {
@@ -38,7 +38,7 @@ export const Icon = {
     }
 
     const getSemanticIcon = (el, s, ctx) => {
-      const { SEMANTIC_ICONS } = ctx && ctx.designSystem
+      const { semanticIcons: SEMANTIC_ICONS } = ctx && ctx.designSystem
       const { toCamelCase } = ctx && ctx.utils
 
       let iconName = getIconName(el, s)
@@ -189,7 +189,7 @@ export const FileIcon = {
 }
 
 const getSemanticIcon = (el, s, ctx) => {
-  const { SEMANTIC_ICONS } = ctx && ctx.designSystem
+  const { semanticIcons: SEMANTIC_ICONS } = ctx && ctx.designSystem
   const { toCamelCase } = ctx && ctx.utils
 
   let iconName = getIconName(el, s)

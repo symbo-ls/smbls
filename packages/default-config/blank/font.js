@@ -1,8 +1,8 @@
 'use strict'
 
-export const FONT = {}
+export const font = {}
 
-export const FONT_FAMILY = {
+export const font_family = {
   system: {
     value: ['"Helvetica Neue"', 'Helvetica', 'Arial'],
     type: 'sans-serif'

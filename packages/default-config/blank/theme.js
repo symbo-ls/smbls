@@ -119,7 +119,7 @@ const UI = {
   }
 }
 
-export const THEME = {
+export const theme = {
   document: {
     '@light': {
       color: 'black',

@@ -1,3 +1,3 @@
 'use strict'
 
-export const DOCUMENT = {}
+export const document = {}

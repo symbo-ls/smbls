@@ -177,7 +177,7 @@ export const transformBackgroundImage = (backgroundImage, globalTheme) => {
       if (isCSSVar(v)) return `var(${v})`
       if (v.includes('url')) return v
       if (v.includes('gradient')) return resolveColorsInGradient(v, globalTheme)
-      else if (CONFIG.GRADIENT[backgroundImage]) {
+      else if (CONFIG.gradient[backgroundImage]) {
         return {
           backgroundImage: getMediaColor(
             backgroundImage,

@@ -1,286 +1,325 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tic Tac Toe</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; }
-</style>
-</head>
-<body>
-<script type="module">
-import { create } from 'https://cdn.jsdelivr.net/npm/smbls@latest/+esm'
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import { create } from 'https://cdn.jsdelivr.net/npm/smbls@latest/+esm'
 
-/* ── game logic ──────────────────────────────────────────────── */
-const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-const getWinner = b => { for (const [a,c,d] of LINES) if (b[a]&&b[a]===b[c]&&b[a]===b[d]) return b[a]; return null }
-const fresh = () => Array(9).fill(null)
+      /* ── game logic ──────────────────────────────────────────────── */
+      const LINES = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+      ]
+      const getWinner = (b) => {
+        for (const [a, c, d] of LINES)
+          if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]
+        return null
+      }
+      const fresh = () => Array(9).fill(null)
 
-/* ── design system ───────────────────────────────────────────── */
-const designSystem = {
-  color: {
-    background: '#F3F0E8',
-    surface:    '#FFFFFF',
-    title:      '#1C1C1C',
-    label:      '#AAA49A',
-    border:     '#E0DBD3',
-    x:          '#C8341F',
-    o:          '#1A5EAD',
-    xBorder:    '#F2C4BE',
-    oBorder:    '#BAD0EC',
-    win:        '#E8A800',
-    winBg:      '#FFFAE0',
-  },
-  space: {
-    // A=4, B=8, C=12, D=16, E=24, F=32, G=48, H=64
-    A: '4px', B: '8px', C: '12px', D: '16px',
-    E: '24px', F: '32px', G: '48px', H: '64px',
-  },
-  fontSize: {
-    A: '10px', B: '12px', C: '14px', D: '16px',
-    E: '20px', F: '28px', G: '36px', H: '48px',
-  },
-}
+      /* ── design system ───────────────────────────────────────────── */
+      const designSystem = {
+        color: {
+          background: '#F3F0E8',
+          surface: '#FFFFFF',
+          title: '#1C1C1C',
+          label: '#AAA49A',
+          border: '#E0DBD3',
+          x: '#C8341F',
+          o: '#1A5EAD',
+          xBorder: '#F2C4BE',
+          oBorder: '#BAD0EC',
+          win: '#E8A800',
+          winBg: '#FFFAE0'
+        }
+      }
 
-/* ── functions ───────────────────────────────────────────────── */
-const move = function move(idx) {
-  const s = this.state.root
-  if (s.board[idx] || s.winner || s.draw) return
-  const nb = [...s.board]; nb[idx] = s.turn
-  const w  = getWinner(nb)
-  const d  = !w && nb.every(Boolean)
-  s.update({
-    board:  nb,
-    turn:   s.turn === 'X' ? 'O' : 'X',
-    winner: w || null,
-    draw:   d,
-    scores: w ? { ...s.scores, [w]: s.scores[w] + 1 } : s.scores,
-  })
-}
+      /* ── functions ───────────────────────────────────────────────── */
+      const move = function move(idx) {
+        const s = this.state.root
+        if (s.board[idx] || s.winner || s.draw) return
+        const nb = [...s.board]
+        nb[idx] = s.turn
+        const w = getWinner(nb)
+        const d = !w && nb.every(Boolean)
+        s.update({
+          board: nb,
+          turn: s.turn === 'X' ? 'O' : 'X',
+          winner: w || null,
+          draw: d,
+          scores: w ? { ...s.scores, [w]: s.scores[w] + 1 } : s.scores
+        })
+      }
 
-const reset = function reset() {
-  this.state.root.update({ board: fresh(), winner: null, draw: false, turn: 'X' })
-}
+      const reset = function reset() {
+        this.state.root.update({
+          board: fresh(),
+          winner: null,
+          draw: false,
+          turn: 'X'
+        })
+      }
 
-/* ── Cell ────────────────────────────────────────────────────── */
-const Cell = {
-  tag: 'button',
-  // Static dimensions — always present on first paint
-  minWidth:  '96px',
-  minHeight: '96px',
-  width:     '96px',
-  height:    '96px',
-  background: 'surface',
-  border: '1.5px solid border',
-  borderRadius: '14px',
-  fontFamily: 'monospace',
-  fontWeight: '500',
-  fontSize: '36px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transition: 'background .12s, border-color .12s',
-  outline: 'none',
-  cursor: 'pointer',
+      /* ── Cell ────────────────────────────────────────────────────── */
+      const Cell = {
+        tag: 'button',
+        // Static dimensions — always present on first paint
+        minWidth: '96px',
+        minHeight: '96px',
+        width: '96px',
+        height: '96px',
+        background: 'surface',
+        border: '1.5px solid border',
+        borderRadius: '14px',
+        fontFamily: 'monospace',
+        fontWeight: '500',
+        fontSize: '36px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'background .12s, border-color .12s',
+        outline: 'none',
+        cursor: 'pointer',
 
-  // Reactive text — shows X/O or empty
-  text: (el, s) => s.root.board[el.props.idx] || '',
+        // Reactive text — shows X/O or empty
+        text: (el, s) => s.root.board[el.props.idx] || '',
 
-  // Reactive color
-  color: (el, s) => {
-    const v = s.root.board[el.props.idx]
-    return v === 'X' ? 'x' : v === 'O' ? 'o' : 'transparent'
-  },
+        // Reactive color
+        color: (el, s) => {
+          const v = s.root.board[el.props.idx]
+          return v === 'X' ? 'x' : v === 'O' ? 'o' : 'transparent'
+        },
 
-  onClick: (e, el) => el.call('move', el.props.idx),
+        onClick: (e, el) => el.call('move', el.props.idx),
 
-  // Update border+bg imperatively after state change (works post-render)
-  onUpdate: (el) => {
-    const s   = el.state.root
-    const val = s.board[el.props.idx]
-    const win = s.winner && val === s.winner
-    el.node.style.background  = win ? '#FFFAE0' : ''
-    el.node.style.borderColor = win ? '#E8A800'
-      : val === 'X' ? '#F2C4BE'
-      : val === 'O' ? '#BAD0EC'
-      : ''
-  },
-}
+        // Update border+bg imperatively after state change (works post-render)
+        onUpdate: (el) => {
+          const s = el.state.root
+          const val = s.board[el.props.idx]
+          const win = s.winner && val === s.winner
+          el.node.style.background = win ? '#FFFAE0' : ''
+          el.node.style.borderColor = win
+            ? '#E8A800'
+            : val === 'X'
+              ? '#F2C4BE'
+              : val === 'O'
+                ? '#BAD0EC'
+                : ''
+        }
+      }
 
-/* ── ScoreCard ───────────────────────────────────────────────── */
-const ScoreCard = {
-  extends: 'Flex',
-  flexFlow: 'column',
-  flexAlign: 'center center',
-  gap: 'B',
-  padding: 'C D',
-  background: 'surface',
-  border: '1.5px solid border',
-  borderRadius: 'C',
-  minWidth: '80px',
+      /* ── ScoreCard ───────────────────────────────────────────────── */
+      const ScoreCard = {
+        extends: 'Flex',
+        flexFlow: 'column',
+        flexAlign: 'center center',
+        gap: 'B',
+        padding: 'C D',
+        background: 'surface',
+        border: '1.5px solid border',
+        borderRadius: 'C',
+        minWidth: '80px',
 
-  Lbl: {
-    tag: 'span',
-    fontFamily: 'monospace',
-    fontSize: '10px',
-    letterSpacing: '0.14em',
-    text: (el) => el.parent.props.player,
-    color: (el) => el.parent.props.player === 'X' ? 'x' : 'o',
-  },
-  Num: {
-    tag: 'span',
-    fontWeight: '800',
-    fontSize: 'F',
-    color: 'title',
-    text: (el, s) => String(s.root.scores[el.parent.props.player] || 0),
-  },
-}
+        Lbl: {
+          tag: 'span',
+          fontFamily: 'monospace',
+          fontSize: '10px',
+          letterSpacing: '0.14em',
+          text: (el) => el.parent.props.player,
+          color: (el) => (el.parent.props.player === 'X' ? 'x' : 'o')
+        },
+        Num: {
+          tag: 'span',
+          fontWeight: '800',
+          fontSize: 'F',
+          color: 'title',
+          text: (el, s) => String(s.root.scores[el.parent.props.player] || 0)
+        }
+      }
 
-/* ── StatusLine ──────────────────────────────────────────────── */
-const StatusLine = {
-  tag: 'p',
-  fontFamily: 'monospace',
-  fontSize: 'B',
-  letterSpacing: '0.06em',
-  minHeight: '18px',
-  display: 'flex',
-  alignItems: 'center',
+      /* ── StatusLine ──────────────────────────────────────────────── */
+      const StatusLine = {
+        tag: 'p',
+        fontFamily: 'monospace',
+        fontSize: 'B',
+        letterSpacing: '0.06em',
+        minHeight: '18px',
+        display: 'flex',
+        alignItems: 'center',
 
-  text: (el, s) => {
-    const { turn, winner: w, draw } = s.root
-    if (w) return `${w} wins this round`
-    if (draw) return "it's a draw"
-    return `${turn}'s turn`
-  },
+        text: (el, s) => {
+          const { turn, winner: w, draw } = s.root
+          if (w) return `${w} wins this round`
+          if (draw) return "it's a draw"
+          return `${turn}'s turn`
+        },
 
-  color: (el, s) => {
-    const { turn, winner: w, draw } = s.root
-    if (w) return w === 'X' ? 'x' : 'o'
-    if (draw) return 'label'
-    return turn === 'X' ? 'x' : 'o'
-  },
-}
+        color: (el, s) => {
+          const { turn, winner: w, draw } = s.root
+          if (w) return w === 'X' ? 'x' : 'o'
+          if (draw) return 'label'
+          return turn === 'X' ? 'x' : 'o'
+        }
+      }
 
-/* ── Dot ─────────────────────────────────────────────────────── */
-const Dot = {
-  tag: 'span',
-  display: 'block',
-  width: '7px',
-  height: '7px',
-  borderRadius: '50%',
-  transition: 'background .2s, transform .2s',
+      /* ── Dot ─────────────────────────────────────────────────────── */
+      const Dot = {
+        tag: 'span',
+        display: 'block',
+        width: '7px',
+        height: '7px',
+        borderRadius: '50%',
+        transition: 'background .2s, transform .2s',
 
-  onRender: (el) => syncDot(el),
-  onUpdate: (el) => syncDot(el),
-}
+        onRender: (el) => syncDot(el),
+        onUpdate: (el) => syncDot(el)
+      }
 
-function syncDot(el) {
-  const { turn, winner: w, draw } = el.state.root
-  const p = el.props.player
-  const active = turn === p && !w && !draw
-  el.node.style.background = active
-    ? (p === 'X' ? '#C8341F' : '#1A5EAD')
-    : '#E0DBD3'
-  el.node.style.transform = active ? 'scale(1.5)' : 'scale(1)'
-}
+      function syncDot(el) {
+        const { turn, winner: w, draw } = el.state.root
+        const p = el.props.player
+        const active = turn === p && !w && !draw
+        el.node.style.background = active
+          ? p === 'X'
+            ? '#C8341F'
+            : '#1A5EAD'
+          : '#E0DBD3'
+        el.node.style.transform = active ? 'scale(1.5)' : 'scale(1)'
+      }
 
-const TurnDots = {
-  extends: 'Flex',
-  flexAlign: 'center center',
-  gap: 'B',
-  DotX: { extends: 'Dot', player: 'X' },
-  DotO: { extends: 'Dot', player: 'O' },
-}
+      const TurnDots = {
+        extends: 'Flex',
+        flexAlign: 'center center',
+        gap: 'B',
+        DotX: { extends: 'Dot', player: 'X' },
+        DotO: { extends: 'Dot', player: 'O' }
+      }
 
-/* ── NewGameBtn ──────────────────────────────────────────────── */
-const NewGameBtn = {
-  tag: 'button',
-  text: 'new game',
-  fontFamily: 'monospace',
-  fontSize: '11px',
-  letterSpacing: '0.1em',
-  background: 'transparent',
-  border: '1.5px solid border',
-  borderRadius: 'B',
-  color: 'label',
-  padding: 'B D',
-  cursor: 'pointer',
-  transition: 'border-color .15s, color .15s',
-  outline: 'none',
-  onClick: (e, el) => el.call('reset'),
-}
+      /* ── NewGameBtn ──────────────────────────────────────────────── */
+      const NewGameBtn = {
+        tag: 'button',
+        text: 'new game',
+        fontFamily: 'monospace',
+        fontSize: '11px',
+        letterSpacing: '0.1em',
+        background: 'transparent',
+        border: '1.5px solid border',
+        borderRadius: 'B',
+        color: 'label',
+        padding: 'B D',
+        cursor: 'pointer',
+        transition: 'border-color .15s, color .15s',
+        outline: 'none',
+        onClick: (e, el) => el.call('reset')
+      }
 
-/* ── Board ───────────────────────────────────────────────────── */
-const Board = {
-  tag: 'div',
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 96px)',
-  gridTemplateRows: 'repeat(3, 96px)',
-  columnGap: '8px',
-  rowGap: '8px',
+      /* ── Board ───────────────────────────────────────────────────── */
+      const Board = {
+        tag: 'div',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 96px)',
+        gridTemplateRows: 'repeat(3, 96px)',
+        columnGap: '8px',
+        rowGap: '8px',
 
-  C0: { extends: 'Cell', idx: 0 },
-  C1: { extends: 'Cell', idx: 1 },
-  C2: { extends: 'Cell', idx: 2 },
-  C3: { extends: 'Cell', idx: 3 },
-  C4: { extends: 'Cell', idx: 4 },
-  C5: { extends: 'Cell', idx: 5 },
-  C6: { extends: 'Cell', idx: 6 },
-  C7: { extends: 'Cell', idx: 7 },
-  C8: { extends: 'Cell', idx: 8 },
-}
+        C0: { extends: 'Cell', idx: 0 },
+        C1: { extends: 'Cell', idx: 1 },
+        C2: { extends: 'Cell', idx: 2 },
+        C3: { extends: 'Cell', idx: 3 },
+        C4: { extends: 'Cell', idx: 4 },
+        C5: { extends: 'Cell', idx: 5 },
+        C6: { extends: 'Cell', idx: 6 },
+        C7: { extends: 'Cell', idx: 7 },
+        C8: { extends: 'Cell', idx: 8 }
+      }
 
-/* ── App ─────────────────────────────────────────────────────── */
-const App = {
-  extends: 'Flex',
-  flexFlow: 'column',
-  flexAlign: 'center center',
-  gap: 'D',
-  padding: 'F',
-  minHeight: '100vh',
-  width: '100%',
-  background: 'background',
+      /* ── App ─────────────────────────────────────────────────────── */
+      const App = {
+        extends: 'Flex',
+        flexFlow: 'column',
+        flexAlign: 'center center',
+        gap: 'D',
+        padding: 'F',
+        minHeight: '100vh',
+        width: '100%',
+        background: 'background',
 
-  Title: {
-    tag: 'h1',
-    text: 'TIC TAC TOE',
-    fontFamily: 'monospace',
-    fontWeight: '500',
-    fontSize: '11px',
-    letterSpacing: '0.28em',
-    color: 'label',
-  },
+        Title: {
+          tag: 'h1',
+          text: 'TIC TAC TOE',
+          fontFamily: 'monospace',
+          fontWeight: '500',
+          fontSize: '11px',
+          letterSpacing: '0.28em',
+          color: 'label'
+        },
 
-  Scores: {
-    extends: 'Flex',
-    flexAlign: 'center center',
-    gap: 'E',
-    XCard: { extends: 'ScoreCard', player: 'X' },
-    Sep: { tag: 'span', text: '–', fontFamily: 'monospace', fontSize: 'E', color: 'border' },
-    OCard: { extends: 'ScoreCard', player: 'O' },
-  },
+        Scores: {
+          extends: 'Flex',
+          flexAlign: 'center center',
+          gap: 'E',
+          XCard: { extends: 'ScoreCard', player: 'X' },
+          Sep: {
+            tag: 'span',
+            text: '–',
+            fontFamily: 'monospace',
+            fontSize: 'E',
+            color: 'border'
+          },
+          OCard: { extends: 'ScoreCard', player: 'O' }
+        },
 
-  Dots:  { extends: 'TurnDots' },
-  Grid:  { extends: 'Board' },
-  Msg:   { extends: 'StatusLine' },
-  Btn:   { extends: 'NewGameBtn' },
-}
+        Dots: { extends: 'TurnDots' },
+        Grid: { extends: 'Board' },
+        Msg: { extends: 'StatusLine' },
+        Btn: { extends: 'NewGameBtn' }
+      }
 
-/* ── mount ───────────────────────────────────────────────────── */
-create(App, {
-  designSystem,
-  components: { Cell, ScoreCard, StatusLine, Dot, TurnDots, NewGameBtn, Board },
-  functions:  { move, reset },
-  state: {
-    board:  fresh(),
-    turn:   'X',
-    winner: null,
-    draw:   false,
-    scores: { X: 0, O: 0 },
-  },
-})
-</script>
-</body>
+      /* ── mount ───────────────────────────────────────────────────── */
+      create(App, {
+        designSystem,
+        components: {
+          Cell,
+          ScoreCard,
+          StatusLine,
+          Dot,
+          TurnDots,
+          NewGameBtn,
+          Board
+        },
+        functions: { move, reset },
+        state: {
+          board: fresh(),
+          turn: 'X',
+          winner: null,
+          draw: false,
+          scores: { X: 0, O: 0 }
+        }
+      })
+    </script>
+  </body>
 </html>

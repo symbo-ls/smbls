@@ -2,4 +2,4 @@
 
 const defaultProps = {}
 
-export const GRID = defaultProps
+export const grid = defaultProps

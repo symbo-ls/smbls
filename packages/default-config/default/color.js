@@ -1,6 +1,6 @@
 'use strict'
 
-export const COLOR = {
+export const color = {
   blue: '#213eb0',
   green: '#389d34',
   red: '#e15c55',
@@ -32,7 +32,7 @@ export const COLOR = {
   ]
 }
 
-export const GRADIENT = {
+export const gradient = {
   'gradient-blue-light': `linear-gradient(to right,
     rgba(4, 116, 242, 1),
     rgba(0, 48, 103, 1)

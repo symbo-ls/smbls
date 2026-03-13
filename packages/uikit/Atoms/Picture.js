@@ -12,7 +12,7 @@ export const Picture = {
     attr: {
       media: (element) => {
         const { props, key, context, deps } = element
-        const { MEDIA } = context.designSystem
+        const { media: MEDIA } = context.designSystem
         const globalTheme = deps.getSystemGlobalTheme(element)
         const mediaName = (props.media || key).slice(1)
 

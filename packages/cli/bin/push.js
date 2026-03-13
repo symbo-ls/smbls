@@ -39,22 +39,22 @@ async function buildLocalProject (distDir) {
 // The platform may omit empty designSystem buckets. `sync` normalizes these
 // buckets before diffing, so `push` should do the same to avoid noisy `{}` diffs.
 const DESIGN_SYSTEM_BUCKET_KEYS = [
-  'ANIMATION',
-  'CASES',
-  'CLASS',
-  'COLOR',
-  'FONT',
-  'FONT_FAMILY',
-  'GRADIENT',
-  'GRID',
-  'ICONS',
-  'MEDIA',
-  'RESET',
-  'SHAPE',
-  'SPACING',
-  'THEME',
-  'TIMING',
-  'TYPOGRAPHY'
+  'animation',
+  'cases',
+  'class',
+  'color',
+  'font',
+  'fontFamily',
+  'gradient',
+  'grid',
+  'icons',
+  'media',
+  'reset',
+  'shape',
+  'spacing',
+  'theme',
+  'timing',
+  'typography'
 ]
 
 function ensureDesignSystemBuckets (designSystem) {

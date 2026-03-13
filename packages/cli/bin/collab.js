@@ -85,22 +85,22 @@ function clonePlain (obj) {
 // representation uses per-bucket files under `designSystem/`, so we keep
 // these keys present (at least as `{}`) to avoid removing local bucket files.
 const DESIGN_SYSTEM_BUCKET_KEYS = [
-  'ANIMATION',
-  'CASES',
-  'CLASS',
-  'COLOR',
-  'FONT',
-  'FONT_FAMILY',
-  'GRADIENT',
-  'GRID',
-  'ICONS',
-  'MEDIA',
-  'RESET',
-  'SHAPE',
-  'SPACING',
-  'THEME',
-  'TIMING',
-  'TYPOGRAPHY'
+  'animation',
+  'cases',
+  'class',
+  'color',
+  'font',
+  'fontFamily',
+  'gradient',
+  'grid',
+  'icons',
+  'media',
+  'reset',
+  'shape',
+  'spacing',
+  'theme',
+  'timing',
+  'typography'
 ]
 
 function ensureDesignSystemBuckets (designSystem) {
@@ -152,14 +152,14 @@ function debounce (fn, wait) {
 function debugDesignSystemBuckets (label, designSystem, { enabled }) {
   if (!enabled) return
   const ds = designSystem && typeof designSystem === 'object' ? designSystem : null
-  const spacing = ds?.SPACING
-  const theme = ds?.THEME
-  const typography = ds?.TYPOGRAPHY
+  const spacing = ds?.spacing
+  const theme = ds?.theme
+  const typography = ds?.typography
   const summary = {
     hasDesignSystem: !!ds,
-    SPACING: spacing && typeof spacing === 'object' ? Object.keys(spacing).length : null,
-    THEME: theme && typeof theme === 'object' ? Object.keys(theme).length : null,
-    TYPOGRAPHY: typography && typeof typography === 'object' ? Object.keys(typography).length : null
+    spacing: spacing && typeof spacing === 'object' ? Object.keys(spacing).length : null,
+    theme: theme && typeof theme === 'object' ? Object.keys(theme).length : null,
+    typography: typography && typeof typography === 'object' ? Object.keys(typography).length : null
   }
   console.log(chalk.gray(`${label} designSystem bucket summary: ${JSON.stringify(summary)}`))
 }

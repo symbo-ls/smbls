@@ -42,13 +42,13 @@ export const setFont = (val, key) => {
 
 export const getFontFamily = (key, factory) => {
   const CONFIG = getActiveConfig()
-  const { FONT_FAMILY } = CONFIG
+  const { font_family: FONT_FAMILY } = CONFIG
   return getDefaultOrFirstKey(factory || FONT_FAMILY, key)
 }
 
 export const setFontFamily = (val, key) => {
   const CONFIG = getActiveConfig()
-  const { FONT_FAMILY, FONT_FAMILY_TYPES } = CONFIG
+  const { font_family: FONT_FAMILY, font_family_types: FONT_FAMILY_TYPES } = CONFIG
   let { value, type } = val
   if (val.isDefault) FONT_FAMILY.default = key
 

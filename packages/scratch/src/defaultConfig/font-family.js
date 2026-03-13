@@ -6,10 +6,10 @@ var defaultFont = { // eslint-disable-line
   type: ''
 }
 
-export const FONT_FAMILY = {}
-export const FONT_FAMILY_TYPES = {
+export const font_family = {}
+export const font_family_types = {
   'sans-serif': 'Helvetica, Arial, sans-serif, --system-default',
   serif: 'Times New Roman, Georgia, serif, --system-default',
   monospace: 'Courier New, monospace, --system-default'
 }
-export const FONT_FACE = {}
+export const font_face = {}

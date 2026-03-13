@@ -54,6 +54,6 @@ test('should set MULTIPLE GRADIENTS', () => {
 })
 
 test('should set COLORS from entire config', () => {
-  const CONFIG = { GRADIENT }
-  expect(set(CONFIG).GRADIENT).toStrictEqual(EXPECTED)
+  const CONFIG = { gradient: GRADIENT }
+  expect(set(CONFIG).gradient).toStrictEqual(EXPECTED)
 })

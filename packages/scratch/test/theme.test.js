@@ -114,11 +114,11 @@ test('should set up HELPER themes', () => {
     helpers: ['darkMode', { color: 'red', background: 'yellow' }]
   }
   setValue('THEME', themeB, 'whiteWHelper')
-  expect(CONFIG.THEME.whiteWHelper.helpers[0].value).toStrictEqual({
+  expect(CONFIG.theme.whiteWHelper.helpers[0].value).toStrictEqual({
     color: 'rgba(255, 255, 255, 1)',
     background: 'rgba(0, 0, 0, 0.65)'
   })
-  expect(CONFIG.THEME.whiteWHelper.helpers[1].value).toStrictEqual({
+  expect(CONFIG.theme.whiteWHelper.helpers[1].value).toStrictEqual({
     color: 'rgba(237, 84, 63, 1)',
     background: 'rgba(247, 201, 67, 1)'
   })

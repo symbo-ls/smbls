@@ -32,7 +32,7 @@ const getThemeValue = theme => {
 export const getTheme = (value, modifier) => {
   const CONFIG = getActiveConfig()
   if (CONFIG.useVariable) return getMediaTheme(value, modifier)
-  const { THEME } = CONFIG
+  const THEME = CONFIG.theme
 
   if (isString(value)) {
     const [theme, subtheme] = value.split(' ')
@@ -112,12 +112,14 @@ const setHelpers = (theme, value) => {
   const keys = Object.keys(helpers)
   keys.map(key => {
     const helper = helpers[key]
-    if (isString(helper)) helpers[key] = CONFIG.THEME[helper]
+    if (isString(helper)) helpers[key] = CONFIG.theme[helper]
     else getThemeValue(helpers[key])
     return theme
   })
   return theme
 }
+
+
 
 export const setTheme = (val, key) => {
   const CONFIG = getActiveConfig()
@@ -288,7 +290,7 @@ export const setMediaTheme = (val, key, suffix, prefers) => {
   }
 
   if (isString(val) && isCSSVar(val)) {
-    const { THEME } = CONFIG
+    const THEME = CONFIG.theme
     const value = THEME[val.slice(2)]
     const getReferenced = getMediaTheme(value, prefers)
     return getReferenced
@@ -348,7 +350,7 @@ export const getMediaTheme = (value, modifier) => {
   }
 
   const [themeName, ...themeModifiers] = isArray(value) ? value : value.split(' ')
-  let themeValue = activeConfig.THEME[themeName]
+  let themeValue = activeConfig.theme[themeName]
 
   if (themeValue && themeModifiers.length) {
     themeValue = findModifier(themeValue, themeModifiers)

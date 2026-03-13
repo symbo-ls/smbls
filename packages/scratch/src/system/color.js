@@ -34,7 +34,7 @@ export const getColor = (value, key, config) => {
     tone = parsed.tone
   }
 
-  const { COLOR, GRADIENT } = CONFIG
+  const { color: COLOR, gradient: GRADIENT } = CONFIG
 
   let val = (COLOR[name] || GRADIENT[name])
 
@@ -87,7 +87,7 @@ export const getMediaColor = (value, globalTheme, config) => {
     name = parsed.name
   }
 
-  const { COLOR, GRADIENT } = CONFIG
+  const { color: COLOR, gradient: GRADIENT } = CONFIG
   const val = COLOR[name] || GRADIENT[name]
   const isObj = isObject(val)
 
@@ -97,7 +97,7 @@ export const getMediaColor = (value, globalTheme, config) => {
     else {
       const obj = {}
       for (const mediaName in val) {
-        const query = CONFIG.MEDIA[mediaName.slice(1)]
+        const query = CONFIG.media[mediaName.slice(1)]
         const media = '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
         obj[media] = getColor(value, mediaName, config)
       }
@@ -122,7 +122,7 @@ export const setColor = (val, key, suffix) => {
     )) {
       // Handle space-separated format: '--colorName alpha' (e.g. '--gray1 1')
       const parts = rawRef.split(' ')
-      const refColor = CONFIG.COLOR[parts[0]]
+      const refColor = CONFIG.color[parts[0]]
       if (refColor && refColor.value) {
         let rgb = refColor.rgb
         const alpha = parts[1] !== undefined ? parts[1] : '1'

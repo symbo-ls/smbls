@@ -30,7 +30,7 @@ export const usePropsAsCSS = (sourceObj, element, opts) => {
     if (key === 'class' && element.call('isString', sourceObj.class)) {
       const val = value.split(' ')
       if (val.length) {
-        const CLASS = element.context.designSystem.CLASS
+        const CLASS = element.context.designSystem.class
         const result = val
           .reduce((acc, curr) => merge(acc, CLASS[curr]), {})
         obj.designSystemClass = result

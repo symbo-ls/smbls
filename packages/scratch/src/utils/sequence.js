@@ -230,7 +230,7 @@ export const generateSequencePosition = (sequenceProps, position = 0) => {
 
 export const getSequenceValue = (value = 'A', sequenceProps) => {
   const CONFIG = getActiveConfig()
-  const { UNIT } = CONFIG
+  const { unit: UNIT } = CONFIG
 
   if (isString(value) && isCSSVar(value)) return `var(${value})`
 

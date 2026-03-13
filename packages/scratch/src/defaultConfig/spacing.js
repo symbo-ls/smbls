@@ -1,12 +1,12 @@
 'use strict'
 
-import { SEQUENCE } from './sequence.js'
-import { TYPOGRAPHY } from './typography.js'
+import { sequence } from './sequence.js'
+import { typography } from './typography.js'
 
 const defaultProps = {
-  base: TYPOGRAPHY.base,
+  base: typography.base,
   type: 'spacing',
-  ratio: SEQUENCE.phi,
+  ratio: sequence.phi,
   range: [-5, +15],
   subSequence: true,
   mediaRegenerate: false,
@@ -16,4 +16,4 @@ const defaultProps = {
   vars: {}
 }
 
-export const SPACING = defaultProps
+export const spacing = defaultProps

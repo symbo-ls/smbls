@@ -31,9 +31,11 @@ export const VALUE_TRANSFORMERS = {
   gradient: setGradient,
   font: setFont,
   font_family: setFontFamily,
+  fontfamily: setFontFamily,
   theme: setTheme,
   icons: setSvgIcon,
   semantic_icons: setSameValue,
+  semanticicons: setSameValue,
   svg: setSVG,
   svg_data: setSameValue,
   typography: setSameValue,
@@ -106,6 +108,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     globalTheme,
     useDocumentTheme,
     useDefaultConfig,
+    semanticIcons,
     SEMANTIC_ICONS,
     semantic_icons,
     files,
@@ -127,9 +130,10 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
   if (recivedConfig.useThemeSuffixedVars !== undefined) CONFIG.useThemeSuffixedVars = recivedConfig.useThemeSuffixedVars
   if (useDefaultConfig !== undefined) CONFIG.useDefaultConfig = useDefaultConfig
-  const _semanticIcons = SEMANTIC_ICONS || semantic_icons
+  const _semanticIcons = semanticIcons || SEMANTIC_ICONS || semantic_icons
   if (_semanticIcons !== undefined) {
     CONFIG.semantic_icons = _semanticIcons
+    CONFIG.semanticIcons = CONFIG.semantic_icons
     CONFIG.SEMANTIC_ICONS = CONFIG.semantic_icons // backward compat alias
   }
   if (CONFIG.verbose) console.log(CONFIG)
@@ -155,17 +159,17 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   })
 
   // apply generic configs
-  if (config.TYPOGRAPHY || config.typography) {
+  if (config.typography || config.TYPOGRAPHY) {
     try { applyTypographySequence() } catch (e) {
       if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
     }
   }
-  if (config.SPACING || config.spacing) {
+  if (config.spacing || config.SPACING) {
     try { applySpacingSequence() } catch (e) {
       if (CONFIG.verbose) console.warn('Error applying spacing sequence', e)
     }
   }
-  if (config.TIMING || config.timing) {
+  if (config.timing || config.TIMING) {
     try { applyTimingSequence() } catch (e) {
       if (CONFIG.verbose) console.warn('Error applying timing sequence', e)
     }

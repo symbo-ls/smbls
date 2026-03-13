@@ -10,20 +10,20 @@ import {
 
 export const applyTimingSequence = () => {
   const CONFIG = getActiveConfig()
-  const { TIMING } = CONFIG
+  const { timing: TIMING } = CONFIG
   generateSequence(TIMING)
   applySequenceVars(TIMING)
 }
 
 export const getTimingFunction = value => {
   const CONFIG = getActiveConfig()
-  const { TIMING } = CONFIG
+  const { timing: TIMING } = CONFIG
   return TIMING[value] || TIMING[toCamelCase(value)] || value
 }
 
 export const getTimingByKey = (value, property = 'timing') => {
   const CONFIG = getActiveConfig()
-  const { TIMING } = CONFIG
+  const { timing: TIMING } = CONFIG
   return getSequenceValuePropertyPair(
     value,
     property,

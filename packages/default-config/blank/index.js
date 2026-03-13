@@ -1,38 +1,31 @@
 'use strict'
 
 import { DEFAULT_ICONS } from '@symbo.ls/default-icons'
-import { COLOR, GRADIENT } from './color'
-import { THEME } from './theme'
-import { FONT, FONT_FAMILY } from './font'
-import { MEDIA } from './media'
-import { TIMING } from './timing'
+import { color, gradient } from './color'
+import { theme } from './theme'
+import { typography } from './typography'
+import { spacing } from './spacing'
+import { font, font_family } from './font'
+import { media } from './media'
+import { timing } from './timing'
 
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
-  COLOR,
-  GRADIENT,
-  THEME,
-  TYPOGRAPHY: {
-    base: 16,
-    ratio: 1.25,
-    subSequence: true,
-    templates: {}
-  },
-  SPACING: {
-    base: 16,
-    ratio: 1.618,
-    subSequence: true
-  },
-  FONT,
-  FONT_FAMILY,
-  TIMING,
-  ICONS: DEFAULT_ICONS,
-  MEDIA,
-  RESET: {
+  color,
+  gradient,
+  theme,
+  typography,
+  spacing,
+  font,
+  font_family,
+  timing,
+  icons: DEFAULT_ICONS,
+  media,
+  reset: {
     html: {},
     body: {}
   },
-  ANIMATION: {
+  animation: {
     fadeIn: {
       from: {
         opacity: 0
@@ -42,12 +35,12 @@ export const DEFAULT_CONFIG = {
       }
     }
   },
-  DEVICES: {},
-  CASES: {},
-  CLASS: {},
-  SVG: {},
-  GRID: {},
-  SHAPE: {},
+  devices: {},
+  cases: {},
+  class: {},
+  svg: {},
+  grid: {},
+  shape: {},
   useReset: true,
   useVariable: true,
   useFontImport: true,

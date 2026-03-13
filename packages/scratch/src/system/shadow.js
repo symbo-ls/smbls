@@ -75,7 +75,7 @@ export const getShadow = (value, globalTheme) => {
 
   const [name] = isArray(value) ? value : value.split(' ')
 
-  const { SHADOW } = CONFIG
+  const SHADOW = CONFIG.shadow
   const val = SHADOW[name]
   const isObj = isObject(val)
 
@@ -94,7 +94,7 @@ export const getShadow = (value, globalTheme) => {
   if (isObj) {
     const obj = {}
     for (const mediaName in val) {
-      const query = CONFIG.MEDIA[mediaName.slice(1)]
+      const query = CONFIG.media[mediaName.slice(1)]
       const media = '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
       obj[media] = val.value
     }

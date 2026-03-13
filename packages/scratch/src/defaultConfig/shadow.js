@@ -5,4 +5,4 @@ const shadow = { // eslint-disable-line
   boxShadow: 'gray12, 0 0px 50px 50px'
 }
 
-export const SHADOW = {}
+export const shadow = {}

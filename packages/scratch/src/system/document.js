@@ -6,7 +6,7 @@ import { getDefaultOrFirstKey } from '../utils'
 
 export const applyDocument = () => {
   const CONFIG = getActiveConfig()
-  const { DOCUMENT, FONT_FAMILY, THEME, TYPOGRAPHY } = CONFIG
+  const { document: DOCUMENT, font_family: FONT_FAMILY, theme: THEME, typography: TYPOGRAPHY } = CONFIG
   return merge(DOCUMENT, {
     theme: THEME.document,
     fontFamily: getDefaultOrFirstKey(FONT_FAMILY),

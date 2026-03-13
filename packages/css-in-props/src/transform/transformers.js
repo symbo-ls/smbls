@@ -10,9 +10,9 @@ import { useCssInProps } from './executors'
 // Media query handler
 const applyMediaProps = (key, selectorProps, element) => {
   const { context } = element
-  if (!context.designSystem?.MEDIA) return
+  if (!context.designSystem?.media) return
 
-  const mediaValue = context.designSystem.MEDIA[key.slice(1)]
+  const mediaValue = context.designSystem.media[key.slice(1)]
   const generatedClass = useCssInProps(selectorProps, element)
 
   const mediaKey = mediaValue
@@ -34,7 +34,7 @@ const applySelectorProps = (key, selectorProps, element) => {
 
 // Conditional applicators
 const applyCaseProps = (key, selectorProps, element) => {
-  const { CASES } = element.context?.designSystem || {}
+  const { cases: CASES } = element.context?.designSystem || {}
   const caseKey = key.slice(1)
   const isCaseTrue = !CASES?.[caseKey] && !element.props[caseKey]
   if (!isCaseTrue) return

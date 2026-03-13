@@ -1,31 +1,31 @@
 'use strict'
 
 import { DEFAULT_ICONS } from '@symbo.ls/default-icons'
-import { COLOR, GRADIENT } from './color.js'
-import { THEME } from './theme.js'
-import { TYPOGRAPHY } from './typography.js'
-import { SPACING } from './spacing.js'
-import { FONT, FONT_FAMILY } from './font.js'
-import { MEDIA } from './media.js'
-import { TIMING } from './timing.js'
+import { color, gradient } from './color.js'
+import { theme } from './theme.js'
+import { typography } from './typography.js'
+import { spacing } from './spacing.js'
+import { font, font_family } from './font.js'
+import { media } from './media.js'
+import { timing } from './timing.js'
 
 export const DEFAULT_CONFIG = {
   version: '0.0.1',
-  COLOR,
-  GRADIENT,
-  THEME,
-  TYPOGRAPHY,
-  SPACING,
-  FONT,
-  FONT_FAMILY,
-  TIMING,
-  ICONS: DEFAULT_ICONS,
-  MEDIA,
-  RESET: {
+  color,
+  gradient,
+  theme,
+  typography,
+  spacing,
+  font,
+  font_family,
+  timing,
+  icons: DEFAULT_ICONS,
+  media,
+  reset: {
     html: {},
     body: {}
   },
-  ANIMATION: {
+  animation: {
     fadeIn: {
       from: {
         opacity: 0
@@ -35,10 +35,10 @@ export const DEFAULT_CONFIG = {
       }
     }
   },
-  DEVICES: {},
-  CASES: {},
-  CLASS: {},
-  SVG: {} // TODO: Check with @nikoloza on this
+  devices: {},
+  cases: {},
+  class: {},
+  svg: {} // TODO: Check with @nikoloza on this
 }
 
 export default DEFAULT_CONFIG
