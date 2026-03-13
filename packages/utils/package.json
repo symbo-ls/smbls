@@ -1,6 +1,6 @@
 {
   "name": "@domql/utils",
-  "version": "3.6.8",
+  "version": "3.7.0",
   "license": "CC-BY-NC-4.0",
   "type": "module",
   "module": "./dist/esm/index.js",
@@ -38,7 +38,7 @@
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "peerDependencies": {
-    "@symbo.ls/fetch": "^3.6.8"
+    "@symbo.ls/fetch": "^3.7.0"
   },
   "peerDependenciesMeta": {
     "@symbo.ls/fetch": {

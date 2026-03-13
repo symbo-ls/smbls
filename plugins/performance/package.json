@@ -1,6 +1,6 @@
 {
   "name": "@domql/performance",
-  "version": "3.6.8",
+  "version": "3.7.0",
   "main": "./index.js",
   "license": "CC-BY-NC-4.0",
   "scripts": {
