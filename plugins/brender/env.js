@@ -2,12 +2,12 @@ import { parseHTML } from 'linkedom'
 
 /**
  * Creates a virtual DOM environment for server-side rendering.
- * Returns window and document that DomQL can use as context.
+ * Returns window and document that DOMQL can use as context.
  */
 export const createEnv = (html = '<!DOCTYPE html><html><head></head><body></body></html>') => {
   const { window, document } = parseHTML(html)
 
-  // Stub APIs that DomQL/smbls may call during rendering
+  // Stub APIs that DOMQL/smbls may call during rendering
   if (!window.requestAnimationFrame) {
     window.requestAnimationFrame = (fn) => setTimeout(fn, 0)
   }

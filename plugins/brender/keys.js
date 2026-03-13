@@ -6,7 +6,7 @@ export const resetKeys = () => {
 
 /**
  * Recursively assigns `data-br` attributes to all element nodes.
- * These keys allow qsql to remap static HTML back onto DomQL elements.
+ * These keys allow qsql to remap static HTML back onto DOMQL elements.
  */
 export const assignKeys = (node) => {
   if (!node) return
@@ -25,8 +25,8 @@ export const assignKeys = (node) => {
 }
 
 /**
- * Walks a DomQL element tree and builds a registry
- * mapping data-br keys to DomQL elements.
+ * Walks a DOMQL element tree and builds a registry
+ * mapping data-br keys to DOMQL elements.
  */
 export const mapKeysToElements = (element, registry = {}) => {
   if (!element) return registry

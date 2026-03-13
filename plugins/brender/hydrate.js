@@ -1,10 +1,10 @@
 /**
  * Client-side hydration — reconnects pre-rendered HTML (with data-br keys)
- * to a live DomQL element tree, attaches events, and fires lifecycle hooks.
+ * to a live DOMQL element tree, attaches events, and fires lifecycle hooks.
  *
- * After hydration the DomQL tree owns every DOM node:
+ * After hydration the DOMQL tree owns every DOM node:
  * - el.node points to the real DOM element
- * - node.ref points back to the DomQL element
+ * - node.ref points back to the DOMQL element
  * - CSS classes are generated via emotion and applied
  * - DOM events (click, input, etc.) are bound
  * - on.render / on.renderRouter callbacks fire
@@ -25,11 +25,11 @@ export const collectBrNodes = (root) => {
 }
 
 /**
- * Walks a DomQL element tree that was created with onlyResolveExtends.
+ * Walks a DOMQL element tree that was created with onlyResolveExtends.
  * For each element with a __brKey, attaches the matching real DOM node,
  * renders CSS via emotion, binds DOM events, and fires lifecycle hooks.
  *
- * @param {object} element - Root DomQL element (from create with onlyResolveExtends)
+ * @param {object} element - Root DOMQL element (from create with onlyResolveExtends)
  * @param {object} [options]
  * @param {Element} [options.root] - Root DOM element to scan for data-br nodes
  * @param {boolean} [options.events=true] - Attach DOM events (click, input, etc.)
@@ -134,7 +134,7 @@ const renderCSS = (el, emotion, colorMap, mediaMap) => {
       continue
     }
 
-    // Resolve DomQL shorthands (flexAlign, round, boxSize, etc.)
+    // Resolve DOMQL shorthands (flexAlign, round, boxSize, etc.)
     const expanded = resolveShorthand(key, val)
     if (expanded) {
       for (const ek in expanded) {
@@ -263,7 +263,7 @@ const getExtendsCSS = (el) => {
   return null
 }
 
-// DomQL shorthand props that expand to multiple CSS properties
+// DOMQL shorthand props that expand to multiple CSS properties
 const resolveShorthand = (key, val) => {
   if (typeof val === 'undefined' || val === null) return null
 
@@ -438,7 +438,7 @@ const addListener = (node, eventName, handler, el) => {
 
 /**
  * Walks the tree and fires on.render, on.renderRouter, on.done, on.create
- * lifecycle events — the same ones that fire during normal DomQL create.
+ * lifecycle events — the same ones that fire during normal DOMQL create.
  */
 const fireLifecycle = (el) => {
   if (!el || !el.__ref || !el.node) return

@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * Renders a Symbols project via brender (DomQL -> HTML).
+ * Renders a Symbols project via brender (DOMQL -> HTML).
  * Outputs: HTML file, element tree JSON, and a liquidate.html
  * that demonstrates browser-side hydration.
  *

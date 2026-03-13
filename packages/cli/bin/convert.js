@@ -17,10 +17,10 @@ program
   .command('convert')
   .description('Convert and copy all DOMQL components under a directory')
   .arguments('[src] [dest]')
-  .option('--react', 'Convert all DomQL components to React')
-  .option('--angular', 'Convert all DomQL components to Angular')
-  .option('--vue2', 'Convert all DomQL components to Vue2')
-  .option('--vue3', 'Convert all DomQL components to Vue3')
+  .option('--react', 'Convert all DOMQL components to React')
+  .option('--angular', 'Convert all DOMQL components to Angular')
+  .option('--vue2', 'Convert all DOMQL components to Vue2')
+  .option('--vue3', 'Convert all DOMQL components to Vue3')
   .option('-t, --tmp-dir <path>',
     'Use this directory for storing intermediate & build files instead of ' +
           `the default (dest/${TMP_DIR_NAME})`)

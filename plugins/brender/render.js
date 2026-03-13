@@ -291,10 +291,10 @@ const UIKIT_STUBS = {
 }
 
 /**
- * Renders a Symbols/DomQL project to HTML on the server.
+ * Renders a Symbols/DOMQL project to HTML on the server.
  *
  * Accepts project data as a plain object (matching what ProjectDataService provides)
- * or as a pre-loaded smbls context. Runs DomQL in a linkedom virtual DOM,
+ * or as a pre-loaded smbls context. Runs DOMQL in a linkedom virtual DOM,
  * assigns data-br keys for hydration, and extracts page metadata for SEO.
  *
  * @param {object} data - Project data object with: pages, components, designSystem,
@@ -456,12 +456,12 @@ export const render = async (data, options = {}) => {
 }
 
 /**
- * Renders a single DomQL element definition to HTML.
+ * Renders a single DOMQL element definition to HTML.
  * Useful for rendering individual components without a full project.
  *
- * @param {object} elementDef - DomQL element definition
+ * @param {object} elementDef - DOMQL element definition
  * @param {object} [options]
- * @param {object} [options.context] - DomQL context (components, designSystem, etc.)
+ * @param {object} [options.context] - DOMQL context (components, designSystem, etc.)
  * @returns {Promise<{ html: string, registry: object, element: object }>}
  */
 export const renderElement = async (elementDef, options = {}) => {

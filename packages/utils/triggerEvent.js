@@ -24,13 +24,13 @@ export const applyEvent = (param, element, state, context, options) => {
     if (result && typeof result.then === 'function') {
       result.catch((err) => {
         element.error = err
-        console.error('[DomQL] Async event error:', err)
+        console.error('[DOMQL] Async event error:', err)
       })
     }
     return result
   } catch (err) {
     element.error = err
-    console.error('[DomQL] Event handler error:', err)
+    console.error('[DOMQL] Event handler error:', err)
     if (element.context?.strictMode) throw err
   }
 }
@@ -67,13 +67,13 @@ export const applyEventUpdate = (
     if (result && typeof result.then === 'function') {
       result.catch((err) => {
         element.error = err
-        console.error('[DomQL] Async event update error:', err)
+        console.error('[DOMQL] Async event update error:', err)
       })
     }
     return result
   } catch (err) {
     element.error = err
-    console.error('[DomQL] Event update error:', err)
+    console.error('[DOMQL] Event update error:', err)
     if (element.context?.strictMode) throw err
   }
 }

@@ -39,12 +39,12 @@ const registerNodeEvent = (param, element, node, options) => {
         if (result && typeof result.then === 'function') {
           result.catch((err) => {
             element.error = err
-            console.error('[DomQL] Async DOM event error:', err)
+            console.error('[DOMQL] Async DOM event error:', err)
           })
         }
       } catch (err) {
         element.error = err
-        console.error('[DomQL] DOM event error:', err)
+        console.error('[DOMQL] DOM event error:', err)
         if (context?.strictMode) throw err
       }
     }

@@ -200,7 +200,7 @@ const renderElement = (element, parent, options, attachOptions) => {
         isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.')
       )
       element.verbose()
-      console.error('[DomQL] Render error:', e)
+      console.error('[DOMQL] Render error:', e)
       if (element.on?.error) {
         element.on.error(e, element, element.state, element.context, options)
       }

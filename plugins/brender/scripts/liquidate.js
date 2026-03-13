@@ -3,14 +3,14 @@
 /**
  * Liquidation: the reverse of rendering.
  * Simulates what happens in the browser when pre-rendered HTML
- * gets reconnected to live DomQL elements.
+ * gets reconnected to live DOMQL elements.
  *
  * Flow:
  *   1. Render project -> HTML with data-br keys
  *   2. Parse that HTML into DOM (simulating browser)
- *   3. Re-create DomQL element tree (extends-only, no DOM creation)
- *   4. Hydrate: walk DomQL tree, match data-br keys to real DOM nodes
- *   5. Verify: every DomQL element now owns its DOM node
+ *   3. Re-create DOMQL element tree (extends-only, no DOM creation)
+ *   4. Hydrate: walk DOMQL tree, match data-br keys to real DOM nodes
+ *   5. Verify: every DOMQL element now owns its DOM node
  *
  * Usage:
  *   node liquidate.js <project> [route]
@@ -38,7 +38,7 @@ console.log(`\n  Liquidation experiment: ${projectName} "${route}"\n`)
 
 // ── Step 1: Server render ───────────────────────────────────────────────────
 
-console.log('  Step 1: Render DomQL -> HTML (server side)\n')
+console.log('  Step 1: Render DOMQL -> HTML (server side)\n')
 
 const data = await loadProject(projectPath)
 const pageDef = data.pages[route]
@@ -77,9 +77,9 @@ console.log(`    DOM nodes with data-br: ${brNodeKeys.length}`)
 console.log(`    Sample: ${brNodeKeys.slice(0, 5).join(', ')}...`)
 console.log()
 
-// ── Step 3: Re-create DomQL tree (extends-only, no DOM) ──────────────────
+// ── Step 3: Re-create DOMQL tree (extends-only, no DOM) ──────────────────
 // In the real browser, this is what happens when the app JS loads:
-// DomQL creates the element tree from the same source definitions,
+// DOMQL creates the element tree from the same source definitions,
 // but with onlyResolveExtends mode — it resolves the component
 // hierarchy without touching the DOM.
 //
@@ -87,7 +87,7 @@ console.log()
 // In production, you'd call:
 //   create(pageDef, parent, 'root', { onlyResolveExtends: true, context })
 
-console.log('  Step 3: DomQL element tree ready\n')
+console.log('  Step 3: DOMQL element tree ready\n')
 
 const elementTree = renderResult.element
 
@@ -104,14 +104,14 @@ const countElements = (el) => {
   }
 }
 countElements(elementTree)
-console.log(`    DomQL elements: ${elementCount}`)
+console.log(`    DOMQL elements: ${elementCount}`)
 console.log(`    Root key: ${elementTree.key}`)
 console.log(`    Root tag: <${elementTree.tag}>`)
 console.log()
 
 // ── Step 4: Hydrate — match data-br keys to DOM nodes ────────────────────
 
-console.log('  Step 4: Hydrate — remap DomQL elements to DOM nodes\n')
+console.log('  Step 4: Hydrate — remap DOMQL elements to DOM nodes\n')
 
 // Initialize emotion for CSS class generation
 const emotion = createInstance({ key: 'br' })
@@ -158,7 +158,7 @@ console.log()
 
 // ── Step 5: Show the mapping ─────────────────────────────────────────────
 
-console.log('  Step 5: data-br -> DomQL element mapping\n')
+console.log('  Step 5: data-br -> DOMQL element mapping\n')
 
 const sample = linkDetails.slice(0, 20)
 for (const { brKey, path, tag, text } of sample) {
@@ -174,7 +174,7 @@ console.log()
 
 // ── Step 6: Demonstrate live mutation ────────────────────────────────────
 
-console.log('  Step 6: Mutate via DomQL (proves elements own their nodes)\n')
+console.log('  Step 6: Mutate via DOMQL (proves elements own their nodes)\n')
 
 // Find a text element to mutate
 const textEl = linkDetails.find(d => d.text && d.text.length > 5 && d.tag !== 'svg')
@@ -199,4 +199,4 @@ if (textEl) {
 }
 
 console.log('\n  Liquidation complete.')
-console.log('  DomQL tree owns the DOM. Updates flow through elements, not innerHTML.\n')
+console.log('  DOMQL tree owns the DOM. Updates flow through elements, not innerHTML.\n')

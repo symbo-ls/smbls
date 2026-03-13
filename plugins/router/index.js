@@ -180,7 +180,8 @@ export const router = (path, el, state = {}, options = {}) => {
 
   const contentElementKey = setContentKey(element, opts)
 
-  const urlObj = new win.URL(win.location.origin + path)
+  const origin = win.location.origin !== 'null' ? win.location.origin : 'http://localhost'
+  const urlObj = new win.URL(origin + path)
   const { pathname, search, hash } = urlObj
 
   const query = parseQuery(search)
