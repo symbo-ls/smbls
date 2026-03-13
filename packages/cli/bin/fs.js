@@ -177,7 +177,7 @@ export async function createFs (
     body = { ...(body || {}), sharedLibraries: [] }
   }
 
-  const { update, metadata, librariesDir, libsConfig, lockedLibVersions } = opts
+  const { update, schema, librariesDir, libsConfig, lockedLibVersions } = opts
 
   // `designSystem` and `files` are now directories (splitObjectKeys)
   const scope = String(opts.scope || 'full')
@@ -194,7 +194,7 @@ export async function createFs (
     : (() => {
         let keys = ['state', 'dependencies', 'sharedLibraries']
         keys = removeValueFromArray(keys, 'schema')
-        if (metadata) keys.push('schema')
+        if (schema) keys.push('schema')
         return keys
       })()
 

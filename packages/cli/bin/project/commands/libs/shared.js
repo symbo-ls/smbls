@@ -94,7 +94,7 @@ export async function refreshWorkspaceProjectFiles ({ verbose } = {}) {
     update: true,
     force: true,
     convert: false,
-    metadata: false,
+    schema: false,
     ignoreEtag: true,
     verbose: !!verbose,
     scope: 'libs',

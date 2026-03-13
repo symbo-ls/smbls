@@ -4,9 +4,7 @@
   "source": "./blank/index.js",
   "main": "./blank/index.js",
   "type": "module",
-  "dependencies": {
-    "@symbo.ls/default-icons": "^3.7.0"
-  },
+  "dependencies": {},
   "license": "CC-BY-NC-4.0",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "module": "./blank/index.js",

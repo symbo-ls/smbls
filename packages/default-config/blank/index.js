@@ -1,6 +1,5 @@
 'use strict'
 
-import { DEFAULT_ICONS } from '@symbo.ls/default-icons'
 import { color, gradient } from './color'
 import { theme } from './theme'
 import { typography } from './typography'
@@ -19,7 +18,6 @@ export const DEFAULT_CONFIG = {
   font,
   font_family,
   timing,
-  icons: DEFAULT_ICONS,
   media,
   reset: {
     html: {},
@@ -40,15 +38,7 @@ export const DEFAULT_CONFIG = {
   class: {},
   svg: {},
   grid: {},
-  shape: {},
-  useReset: true,
-  useVariable: true,
-  useFontImport: true,
-  useIconSprite: true,
-  useSvgSprite: true,
-  useDefaultConfig: true,
-  useDocumentTheme: true,
-  verbose: false
+  shape: {}
 }
 
 export default DEFAULT_CONFIG

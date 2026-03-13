@@ -493,7 +493,7 @@ export async function startCollab (options) {
     } catch (_) {}
     // Avoid echoing the changes we are about to materialize
     try {
-      await createFs(persistedObj, distDir, { update: true, metadata: false, librariesDir, libsConfig })
+      await createFs(persistedObj, distDir, { update: true, schema: false, librariesDir, libsConfig })
     } finally {
       // Extend suppression window to allow file events to settle fully
       suppressUntil = Date.now() + suppressionWindowMs

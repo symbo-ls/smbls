@@ -468,7 +468,7 @@ export async function syncProjectChanges (options) {
     if (options.verbose) {
       logDesignSystemFlags('sync: after applyOrderFields (before createFs)', orderedUpdatedServerData?.designSystem, { enabled: true })
     }
-    await createFs(orderedUpdatedServerData, distDir, { update: true, metadata: false, librariesDir, libsConfig })
+    await createFs(orderedUpdatedServerData, distDir, { update: true, schema: false, librariesDir, libsConfig })
     await debugDesignSystemFiles('sync: after createFs')
     console.log(chalk.gray('Local files updated successfully'))
 

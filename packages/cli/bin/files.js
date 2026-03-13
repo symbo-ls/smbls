@@ -176,7 +176,7 @@ async function writeSnapshotAndFs ({ snapshot, distDir, librariesDir, libsConfig
   const { projectPath } = getConfigPaths()
   await fs.promises.mkdir(path.dirname(projectPath), { recursive: true })
   await fs.promises.writeFile(projectPath, JSON.stringify(snapshot, null, 2))
-  await createFs(snapshot, distDir, { update: true, metadata: false, librariesDir, libsConfig })
+  await createFs(snapshot, distDir, { update: true, schema: false, librariesDir, libsConfig })
 }
 
 function getDistDir (symbolsConfig, opts = {}) {

@@ -307,11 +307,11 @@ export const fetchFromCli = async (opts) => {
     })
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { update: true, metadata: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
+    createFs(ordered, distDir, { update: true, schema: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
   } else {
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=false)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { metadata: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
+    createFs(ordered, distDir, { schema: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
   }
 }
 
@@ -321,7 +321,7 @@ program
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('--convert', 'Verbose errors and warnings', true)
-  .option('--metadata', 'Include metadata', false)
+  .option('--schema', 'Include schema', false)
   .option('--force', 'Force overriding changes from platform')
   .option('--update', 'Overriding changes from platform')
   .option('-y, --yes', 'Skip confirmation prompts', false)

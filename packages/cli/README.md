@@ -161,7 +161,7 @@ smbls fetch --dist-dir src/config
 | `-d, --dev` | Run against local server |
 | `-v, --verbose` | Verbose output |
 | `--convert` | Convert fetched config (default: true) |
-| `--metadata` | Include metadata (default: false) |
+| `--schema` | Include schema (default: false) |
 | `--force` | Force override local changes |
 | `--update` | Override local changes from platform |
 | `-y, --yes` | Skip confirmation prompts |
