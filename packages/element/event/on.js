@@ -1,6 +1,6 @@
 'use strict'
 
-import { DOMQL_EVENTS, isFunction } from '@domql/utils'
+import { DOMQL_EVENTS, isFunction, resolveHandler } from '@domql/utils'
 
 // Re-export event trigger functions from @domql/utils (moved there to break circular dep)
 export { applyEvent, triggerEventOn, applyEventUpdate, triggerEventOnUpdate } from '@domql/utils'
@@ -15,7 +15,7 @@ const getOnOrPropsEvent = (param, element) => {
 }
 
 const registerNodeEvent = (param, element, node, options) => {
-  const appliedFunction = getOnOrPropsEvent(param, element)
+  const appliedFunction = resolveHandler(getOnOrPropsEvent(param, element), element)
   if (isFunction(appliedFunction)) {
     const { __ref: ref } = element
     if (!ref.__eventListeners) ref.__eventListeners = {}
@@ -55,26 +55,10 @@ const registerNodeEvent = (param, element, node, options) => {
 }
 
 export const applyEventsOnNode = (element, options) => {
-  const { node, on, props } = element
-  const handled = new Set()
+  const { node, on } = element
 
-  // Register events from on: { click: ..., input: ... }
   for (const param in on) {
     if (DOMQL_EVENTS.has(param)) continue
-    handled.add(param)
     registerNodeEvent(param, element, node, options)
-  }
-
-  // Also pick up props.onClick, props.onInput, etc.
-  if (props) {
-    for (const key in props) {
-      if (key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && isFunction(props[key])) {
-        const thirdChar = key[2]
-        if (thirdChar !== thirdChar.toUpperCase()) continue
-        const eventName = thirdChar.toLowerCase() + key.slice(3)
-        if (handled.has(eventName) || DOMQL_EVENTS.has(eventName)) continue
-        registerNodeEvent(eventName, element, node, options)
-      }
-    }
   }
 }

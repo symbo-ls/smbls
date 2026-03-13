@@ -58,6 +58,7 @@ export const prepareContext = async (app, context = {}) => {
   context.defaultExtends = [uikit.Box]
   context.snippets = context.snippets || {}
   context.functions = context.functions || {}
+  context.plugins = context.plugins || []
   return context
 }
 

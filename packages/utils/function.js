@@ -73,6 +73,48 @@ export const isStringFunction = inputString => {
   return RE_STRING_FUNCTION.test(inputString)
 }
 
+/**
+ * Resolve an event handler through context plugins.
+ *
+ * If `handler` is already a function it is returned as-is.
+ * Otherwise, iterates `context.plugins` looking for a plugin
+ * with a `resolveHandler` method that can compile the handler
+ * (e.g. a funcql schema) into a callable function.
+ *
+ * @param {*} handler - event handler (function, object, array, string)
+ * @param {object} element - domql element
+ * @returns {function|*} resolved handler
+ */
+export const resolveHandler = (handler, element) => {
+  if (typeof handler === 'function') return handler
+  const plugins = element?.context?.plugins
+  if (!plugins) return handler
+  for (const plugin of plugins) {
+    if (plugin.resolveHandler) {
+      const resolved = plugin.resolveHandler(handler, element)
+      if (typeof resolved === 'function') return resolved
+    }
+  }
+  return handler
+}
+
+/**
+ * Run a named hook across all context plugins.
+ *
+ * @param {string} hookName - lifecycle hook name
+ * @param {object} element - domql element
+ * @param {*[]} args - additional arguments forwarded to each plugin hook
+ */
+export const runPluginHook = (hookName, element, ...args) => {
+  const plugins = element?.context?.plugins
+  if (!plugins) return
+  for (const plugin of plugins) {
+    if (typeof plugin[hookName] === 'function') {
+      plugin[hookName](element, ...args)
+    }
+  }
+}
+
 export function cloneFunction (fn, win = window) {
   const temp = function () {
     return fn.apply(win, arguments)

@@ -1,6 +1,7 @@
 'use strict'
 
 import { isFunction } from './types.js'
+import { resolveHandler, runPluginHook } from './function.js'
 
 const getOnOrPropsEvent = (param, element) => {
   const onEvent = element.on?.[param]
@@ -12,6 +13,7 @@ const getOnOrPropsEvent = (param, element) => {
 }
 
 export const applyEvent = (param, element, state, context, options) => {
+  param = resolveHandler(param, element)
   if (!isFunction(param)) return
   try {
     const result = param.call(
@@ -39,6 +41,7 @@ export const triggerEventOn = (param, element, options) => {
   if (!element) {
     throw new Error('Element is required')
   }
+  runPluginHook(param, element, options)
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
@@ -54,6 +57,7 @@ export const applyEventUpdate = (
   context,
   options
 ) => {
+  param = resolveHandler(param, element)
   if (!isFunction(param)) return
   try {
     const result = param.call(
@@ -79,6 +83,7 @@ export const applyEventUpdate = (
 }
 
 export const triggerEventOnUpdate = (param, updatedObj, element, options) => {
+  runPluginHook(param, element, updatedObj, options)
   const appliedFunction = getOnOrPropsEvent(param, element)
   if (appliedFunction) {
     const { state, context } = element
