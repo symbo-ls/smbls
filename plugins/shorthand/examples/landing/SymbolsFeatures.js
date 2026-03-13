@@ -138,7 +138,7 @@ export const SymbolsFeatures = {
             color: 'title-reversed',
           },
           '& span': {
-            color: 'title-reversed .9',
+            color: 'title-reversed.9',
           },
         },
         Icon: {

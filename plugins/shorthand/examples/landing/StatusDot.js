@@ -4,11 +4,11 @@ export const StatusDot = {
   round: '100%',
   theme: 'success',
   '@light': {
-    border: 'solid, gray 1 +170',
+    border: 'solid gray+170',
     borderWidth: 'X',
   },
   '@dark': {
-    border: 'solid, black',
+    border: 'solid black',
     borderWidth: 'X',
   },
 };

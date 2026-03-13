@@ -31,7 +31,7 @@ export const SearchDropdown_copy = {
     show: (el, s) => s.isOpen,
     borderWidth: '1px 0 0 0',
     borderStyle: 'solid',
-    borderColor: 'line .35',
+    borderColor: 'line.35',
     padding: 'Z Z2',
     theme: 'dialog',
     flexFlow: 'y',

@@ -188,7 +188,7 @@ export const ComponentsPage = {
       fontWeight: '400',
       round: 'D',
       flow: 'row',
-      border: 'solid, #252527',
+      border: 'solid #252527',
       borderWidth: '1px',
       width: 'G+D',
       padding: 'Z A Z B',

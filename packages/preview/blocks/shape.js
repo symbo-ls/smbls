@@ -9,7 +9,7 @@ export const shape = {
     // gap: 'E',
     columns: 'repeat(8, 1fr)',
     childProps: {
-      border: 'solid, white .05',
+      border: 'solid white.05',
       borderWidth: '2px',
       style: {
         boxShadow:

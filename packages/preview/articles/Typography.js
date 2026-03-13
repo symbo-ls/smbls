@@ -36,7 +36,7 @@ export const Typography = {
     padding: 'B - C -',
     childProps: {
       ':not(:last-child)': {
-        border: 'solid, white .15',
+        border: 'solid white.15',
         borderWidth: '0 0 1px 0'
       }
     },

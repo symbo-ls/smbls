@@ -281,6 +281,27 @@ export async function toJSON (projectDir, options = {}) {
     const project = loadCjs(outFile)
     const cleaned = stripEmptyDefaults(project)
 
+    // Also capture app.js if it exists (root element: onRender, metadata, etc.)
+    const appPath = path.join(absProjectDir, 'app.js')
+    if (fs.existsSync(appPath)) {
+      const appOutFile = path.join(buildDir, 'app_bundle.cjs')
+      try {
+        await bundleEntry(appPath, appOutFile, external)
+        let appCode = await fs.promises.readFile(appOutFile, 'utf8')
+        appCode = appCode.replace(
+          /var __toESM\s*=\s*([^;]+);/,
+          'var __origToESM = $1; var __toESM = function(mod) { var r = __origToESM.apply(null, arguments); if (mod && mod.__isStub) return new Proxy(r, { get: function(t,p) { return p in t ? t[p] : function() {} } }); return r; };'
+        )
+        await fs.promises.writeFile(appOutFile, appCode, 'utf8')
+        const appModule = loadCjs(appOutFile)
+        if (appModule && Object.keys(appModule).length > 0) {
+          cleaned.app = stripEmptyDefaults(appModule)
+        }
+      } catch (e) {
+        // app.js bundle failed — skip silently, context still works
+      }
+    }
+
     return stringify ? stringifyFunctions(cleaned) : cleaned
   } finally {
     try {

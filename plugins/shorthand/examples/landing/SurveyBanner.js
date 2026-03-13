@@ -5,7 +5,7 @@ export const SurveyBanner = {
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
   aspectRatio: '1149 / 432',
-  border: '1px, solid',
+  border: '1px solid',
   margin: 'A 0',
   '@dark': {
     borderColor: 'gray4',

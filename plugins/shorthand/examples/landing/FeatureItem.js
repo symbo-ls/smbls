@@ -20,7 +20,7 @@ export const FeatureItem = {
     color: 'title',
     borderColor: 'line-highlight',
     '& span': {
-      color: 'highlight .9',
+      color: 'highlight.9',
     },
   },
   H3: {

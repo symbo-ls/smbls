@@ -106,7 +106,7 @@ export const Packages = {
       {
         padding: '- D - C1',
         borderStyle: 'solid',
-        borderColor: 'blue .25',
+        borderColor: 'blue.25',
         borderWidth: '0 1px 0',
         '@tabletL': {
           borderWidth: '0 0 0 1px',

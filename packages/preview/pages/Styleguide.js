@@ -25,7 +25,7 @@ export const Styleguide = {
   childExtends: {
     flow: 'column',
     '> header': {
-      border: 'solid, white .15',
+      border: 'solid white.15',
       borderWidth: '.5px 0 .5px 0'
     },
     theme: null

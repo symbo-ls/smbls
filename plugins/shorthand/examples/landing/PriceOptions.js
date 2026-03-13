@@ -24,7 +24,7 @@ export const PriceOptions = {
           },
         },
         Flex: {
-          border: 'solid, gray .5',
+          border: 'solid gray.5',
           borderWidth: '.5px',
           theme: 'transparent',
           padding: 'V',

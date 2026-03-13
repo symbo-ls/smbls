@@ -21,7 +21,7 @@ export const BannerButtonCopy = {
   round: 'A2',
   ':hover': {
     '> h1': {
-      textShadow: 'gray1, 10px, 10px',
+      textShadow: 'gray1 10px 10px',
       transform: 'translate3d(-1%, -2%, 1px)',
     },
   },

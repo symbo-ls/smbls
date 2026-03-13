@@ -39,7 +39,7 @@ export const UserStoryDone = {
     text: 'Try it out',
     fontWeight: '700',
     theme: 'field',
-    border: 'solid, gray, 1px',
+    border: 'solid gray 1px',
     padding: 'Z1 D+Y2',
   },
 };

@@ -49,7 +49,7 @@ export const ComponentsView = {
         fontWeight: '400',
         round: 'D',
         flow: 'row',
-        border: 'solid, #252527',
+        border: 'solid #252527',
         borderWidth: '1px',
         width: 'G+D',
         padding: 'Z A Z B',
@@ -96,7 +96,7 @@ export const ComponentsView = {
         left: '0',
         top: '-C',
         fontSize: '14px',
-        color: 'white .35',
+        color: 'white.35',
         text: ({ parent }) => parent.key
       }
     },

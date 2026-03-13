@@ -249,7 +249,7 @@ export const AvatarSet = {
   extends: 'Flex',
   childExtends: 'Avatar',
   childProps: {
-    border: 'solid, codGray',
+    border: 'solid codGray',
     borderWidth: 'X+W',
     ":first-child": {
       margin: '0 -Z1 0 0'
@@ -2536,11 +2536,11 @@ export const StatusDot = {
   round: '100%',
   theme: 'success',
   "@light": {
-    border: 'solid, gray+170',
+    border: 'solid gray+170',
     borderWidth: 'X'
   },
   "@dark": {
-    border: 'solid, black',
+    border: 'solid black',
     borderWidth: 'X'
   }
 }
@@ -3565,7 +3565,7 @@ export const BannerButton = {
   round: 'A2',
   ":hover, &:focus-within": {
     "> h1": {
-      textShadow: 'gray1, 6px, 6px',
+      textShadow: 'gray1 6px 6px',
       transform: 'translate3d(-0.5%, -1%, 1px)'
     }
   },
@@ -3726,7 +3726,7 @@ export const BannerButtonCopy = {
   round: 'A2',
   ":hover": {
     "> h1": {
-      textShadow: 'gray1, 10px, 10px',
+      textShadow: 'gray1 10px 10px',
       transform: 'translate3d(-1%, -2%, 1px)'
     }
   },
@@ -7868,7 +7868,7 @@ export const PriceOptions = {
           }
         },
         Flex: {
-          border: 'solid, gray.5',
+          border: 'solid gray.5',
           borderWidth: '.5px',
           theme: 'transparent',
           padding: 'V',
@@ -8251,7 +8251,7 @@ export const SurveyBanner = {
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
   aspectRatio: '1149 / 432',
-  border: '1px, solid',
+  border: '1px solid',
   margin: 'A 0',
   "@dark": {
     borderColor: 'gray4'
@@ -9501,7 +9501,7 @@ export const UserStoryDone = {
     text: 'Try it out',
     fontWeight: '700',
     theme: 'field',
-    border: 'solid, gray, 1px',
+    border: 'solid gray 1px',
     padding: 'Z1 D+Y2'
   }
 }

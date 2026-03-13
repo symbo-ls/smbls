@@ -30,7 +30,7 @@ export const StoryCard = {
         text: 'Symbols',
       },
       P: {
-        color: 'white .65',
+        color: 'white.65',
       },
     },
     ProgressStepSet: {
