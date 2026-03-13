@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/brender",
-  "version": "3.6.7",
+  "version": "3.6.8",
   "license": "CC-BY-NC-4.0",
   "type": "module",
   "module": "./dist/esm/index.js",
@@ -36,7 +36,7 @@
     "dev:rita": "node examples/serve-rita.js"
   },
   "dependencies": {
-    "@symbo.ls/helmet": "^3.6.7",
+    "@symbo.ls/helmet": "^3.6.8",
     "linkedom": "^0.16.8"
   },
   "devDependencies": {

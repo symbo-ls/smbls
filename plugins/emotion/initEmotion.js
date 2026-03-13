@@ -22,10 +22,9 @@ export const initEmotion = (key, options = {}) => {
 
   const registry =
     options.registry || transformDOMQLEmotion(initOptions.emotion, options)
-  const designSystem =
-    initOptions.useDefaultConfig || options.useDefaultConfig || options.designSystem?.useDefaultConfig
-      ? deepMerge(options.designSystem, deepClone(DEFAULT_CONFIG))
-      : options.designSystem || deepClone(DEFAULT_CONFIG)
+  const designSystem = options.designSystem
+    ? deepMerge(deepClone(DEFAULT_CONFIG), options.designSystem)
+    : deepClone(DEFAULT_CONFIG)
 
   // Pick context-level overrides (from user's config.js spread into context)
   const contextOverrides = {}
