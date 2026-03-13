@@ -2,7 +2,6 @@
 
 import { window, deepMerge, merge, isUndefined } from '@domql/utils'
 import { router as defaultRouter } from '@domql/router'
-import { Link } from 'smbls'
 
 const DEFAULT_ROUTING_OPTIONS = {
   initRouter: true,
