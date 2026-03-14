@@ -1,6 +1,6 @@
 {
   "name": "@domql/report",
-  "version": "3.7.0",
+  "version": "3.7.3",
   "license": "CC-BY-NC-4.0",
   "type": "module",
   "module": "./index.js",

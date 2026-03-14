@@ -1,11 +1,11 @@
 {
   "name": "@symbo.ls/tooltip",
-  "version": "3.7.0",
+  "version": "3.7.3",
   "main": "index.js",
   "license": "CC-BY-NC-4.0",
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "dependencies": {
-    "@symbo.ls/atoms": "^3.7.0"
+    "@symbo.ls/atoms": "^3.7.3"
   },
   "source": "index.js",
   "type": "module",
