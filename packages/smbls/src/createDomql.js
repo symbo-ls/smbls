@@ -124,12 +124,55 @@ export const createDomqlElement = async (app, ctx) => {
   const doc = ctx.document
   if (!doc || !doc.createElement) return app
 
+  // Detect brender pre-rendered DOM and hydrate instead of re-creating
+  const win = ctx.window || (typeof window !== 'undefined' ? window : null)
+  const shouldHydrate = win?.__BRENDER__ && doc.querySelector('[data-br]')
+
+  if (shouldHydrate) {
+    return hydrateFromBrender(app, ctx, doc, win)
+  }
+
   const parentNode = ctx.parent || doc.body
   const domqlCreate = (DOM.default && DOM.default.create) || DOM.create
   const smblsApp = await domqlCreate(app, parentNode, ctx.key, {
     verbose: ctx.verbose,
     ...ctx.domqlOptions
   })
+
+  return smblsApp
+}
+
+/**
+ * Hydrates a brender pre-rendered page.
+ * Removes brender DOM and lets DOMQL create normally into body.
+ * CSS is preserved in <style> tags, so re-render is instant.
+ */
+const hydrateFromBrender = async (app, ctx, doc, win) => {
+  const parentNode = ctx.parent || doc.body
+  const domqlCreate = (DOM.default && DOM.default.create) || DOM.create
+
+  // Remove brender content but keep <style>, <script>, and <link> tags
+  // This prevents flash since emotion CSS styles remain
+  const toRemove = []
+  for (const child of parentNode.childNodes) {
+    if (child.nodeType === 1) { // Element node
+      const tag = child.tagName.toLowerCase()
+      if (tag === 'style' || tag === 'script' || tag === 'link') continue
+    }
+    toRemove.push(child)
+  }
+  toRemove.forEach(n => n.remove())
+
+  // Create DOMQL normally into the now-empty body
+  // Explicitly disable onlyResolveExtends to ensure full DOM creation
+  const smblsApp = await domqlCreate(app, parentNode, ctx.key, {
+    verbose: ctx.verbose,
+    ...ctx.domqlOptions,
+    onlyResolveExtends: false
+  })
+
+  // Clean up brender flag — subsequent navigations use normal SPA rendering
+  delete win.__BRENDER__
 
   return smblsApp
 }

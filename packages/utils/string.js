@@ -53,8 +53,10 @@ export function replaceLiteralsWithObjectFields (str, state, options = {}) {
     if (filter) {
       const filterFn = element?.context?.functions?.[filter]
       if (filterFn) {
-        const stateValue = getNestedValue(obj, key)
-        return String(filterFn.call(element, stateValue !== undefined ? stateValue : key) ?? '')
+        try {
+          const stateValue = getNestedValue(obj, key)
+          return String(filterFn.call(element, stateValue != null ? stateValue : key) ?? '')
+        } catch (e) { return '' }
       }
       return ''
     }

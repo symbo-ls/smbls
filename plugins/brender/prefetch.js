@@ -214,9 +214,15 @@ export const prefetchPageData = async (data, route = '/', options = {}) => {
   const results = await Promise.allSettled(
     declarations.map(async ({ config, stateKey, path }) => {
       const fetchedData = await executeSingle(adapter, config)
-      if (fetchedData !== null && stateKey) {
+      if (fetchedData !== null) {
         const existing = stateUpdates.get(path) || {}
-        existing[stateKey] = fetchedData
+        if (stateKey) {
+          // Named: store under the `as` key
+          existing[stateKey] = fetchedData
+        } else if (isObject(fetchedData)) {
+          // No `as` key + transform returned an object: spread into state
+          Object.assign(existing, fetchedData)
+        }
         stateUpdates.set(path, existing)
       }
     })

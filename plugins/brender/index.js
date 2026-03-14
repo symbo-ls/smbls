@@ -1,7 +1,7 @@
 import { createEnv } from './env.js'
 import { resetKeys, assignKeys, mapKeysToElements } from './keys.js'
 import { loadProject, loadAndRenderAll } from './load.js'
-import { render, renderElement, renderRoute, renderPage, resetGlobalCSSCache } from './render.js'
+import { render, renderElement, renderRoute, renderPage, resetGlobalCSSCache, getAccumulatedEmotionCSS, replaceEmotionCSS } from './render.js'
 import { extractMetadata, generateHeadHtml } from './metadata.js'
 import { collectBrNodes, hydrate } from './hydrate.js'
 import { generateSitemap } from './sitemap.js'
@@ -19,6 +19,8 @@ export {
   renderRoute,
   renderPage,
   resetGlobalCSSCache,
+  getAccumulatedEmotionCSS,
+  replaceEmotionCSS,
   extractMetadata,
   generateHeadHtml,
   collectBrNodes,
@@ -40,6 +42,8 @@ export default {
   renderRoute,
   renderPage,
   resetGlobalCSSCache,
+  getAccumulatedEmotionCSS,
+  replaceEmotionCSS,
   extractMetadata,
   generateHeadHtml,
   collectBrNodes,

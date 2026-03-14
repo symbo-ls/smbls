@@ -156,6 +156,9 @@ export async function loadTranslations (lang) {
   // No server fetch configured — nothing to do
   if (!poly.fetch) return
 
+  // Skip if a previous fetch for this lang already failed (e.g. missing RPC)
+  if (poly._fetchFailed?.[lang]) return
+
   // 1. Serve cached immediately (localStorage > state)
   if (!root.translations?.[lang]) {
     const raw = storage.get(prefix + lang)
@@ -204,7 +207,12 @@ export async function loadTranslations (lang) {
         }
 
         const res = await db.rpc({ from: rpcName, params })
-        if (res.error) throw res.error
+        if (res.error) {
+          // Mark as failed to avoid repeated calls for missing RPCs
+          if (!poly._fetchFailed) poly._fetchFailed = {}
+          poly._fetchFailed[lang] = true
+          throw res.error
+        }
 
         const result = res.data
         if (!result || !result.changed) return
@@ -227,7 +235,8 @@ export async function loadTranslations (lang) {
       if (root.update) root.update(patch)
     } catch (err) {
       if (poly.verbose !== false) {
-        console.error('[polyglot] Failed to load translations for', lang, err)
+        const msg = err?.message || err?.details || (typeof err === 'object' ? JSON.stringify(err) : String(err))
+        console.warn('[polyglot] Failed to load translations for', lang, '-', msg)
       }
     } finally {
       delete loading[loadingKey]
@@ -328,19 +337,23 @@ export async function initPolyglot () {
  * {{ item.title_ | getLocalStateLang }} → state.item.title_ka
  */
 export function getLocalStateLang (key) {
-  const lang = this.call('getActiveLang')
-  const state = this?.state
-  if (!state) return ''
-  const dotIdx = key.lastIndexOf('.')
-  if (dotIdx === -1) return state[key + lang] ?? ''
-  const parts = key.substring(0, dotIdx).split('.')
-  let obj = state
-  for (let i = 0; i < parts.length; i++) {
+  try {
+    const poly = this?.context?.polyglot
+    const root = this?.state?.root || this?.context?.state?.root
+    const lang = root?.lang || poly?.defaultLang || 'en'
+    const state = this?.state
+    if (!state) return ''
+    const dotIdx = key.lastIndexOf('.')
+    if (dotIdx === -1) return state[key + lang] ?? ''
+    const parts = key.substring(0, dotIdx).split('.')
+    let obj = state
+    for (let i = 0; i < parts.length; i++) {
+      if (obj == null) return ''
+      obj = obj[parts[i]]
+    }
     if (obj == null) return ''
-    obj = obj[parts[i]]
-  }
-  if (obj == null) return ''
-  return obj[key.substring(dotIdx + 1) + lang] ?? ''
+    return obj[key.substring(dotIdx + 1) + lang] ?? ''
+  } catch (e) { return '' }
 }
 
 // --- domql plugin ---

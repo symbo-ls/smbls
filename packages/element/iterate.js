@@ -19,13 +19,19 @@ export const throughInitialExec = (element, exclude = {}) => {
     const prop = element[param]
     if (isFunction(prop) && !isMethod(param, element)) {
       ref.__exec[param] = prop
-      const result = prop(element, element.state, element.context)
-      if (result && typeof result.then === 'function') {
-        result.then(resolved => {
-          element[param] = resolved
-        })
-      } else {
-        element[param] = result
+      try {
+        const result = prop(element, element.state, element.context)
+        if (result && typeof result.then === 'function') {
+          result.then(resolved => {
+            element[param] = resolved
+          }).catch(e => {
+            console.warn('[DOMQL] Async exec error in', param, ':', e?.message || e)
+          })
+        } else {
+          element[param] = result
+        }
+      } catch (e) {
+        console.warn('[DOMQL] Exec error in', param, ':', e?.message || e)
       }
     }
   }

@@ -286,7 +286,11 @@ const onlyResolveExtends = (element, parent, key, options) => {
         !optionsHasDefine &&
         !contextHasDefine
       ) {
-        create(exec(element[k], element), element, k, options)
+        try {
+          create(exec(element[k], element), element, k, options)
+        } catch (e) {
+          console.warn('[DOMQL] onlyResolveExtends child error in', k, ':', e?.message || e)
+        }
       }
     }
   }

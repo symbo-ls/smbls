@@ -164,9 +164,9 @@ const bundleClient = async (cwd, outDir) => {
   return 'client.js'
 }
 
-const renderAll = async (cwd, outDir, { isr, prefetch = true } = {}) => {
+const renderAll = async (cwd, outDir, { isr, hydrate = true, prefetch = true } = {}) => {
   const { loadProject } = await import('@symbo.ls/brender/load')
-  const { renderPage, resetGlobalCSSCache } = await import('@symbo.ls/brender')
+  const { renderPage, resetGlobalCSSCache, getAccumulatedEmotionCSS, replaceEmotionCSS } = await import('@symbo.ls/brender')
 
   const data = await loadProject(cwd)
   const pages = data.pages || {}
@@ -211,6 +211,9 @@ const renderAll = async (cwd, outDir, { isr, prefetch = true } = {}) => {
   // Reset global CSS cache before rendering a batch
   resetGlobalCSSCache()
 
+  // Two-pass rendering:
+  // Pass 1: Render all pages and collect results (accumulates emotion CSS)
+  const renderResults = []
   for (const route of staticRoutes) {
     try {
       // Suppress during render, restore for our own output
@@ -218,7 +221,7 @@ const renderAll = async (cwd, outDir, { isr, prefetch = true } = {}) => {
       console.error = () => {}
       console.log = () => {}
 
-      const result = await renderPage(data, route, { ...isrOpts, prefetch })
+      const result = await renderPage(data, route, { ...isrOpts, hydrate, prefetch })
 
       // Allow async microtasks to flush with console still suppressed
       await new Promise(r => setTimeout(r, 0))
@@ -228,20 +231,26 @@ const renderAll = async (cwd, outDir, { isr, prefetch = true } = {}) => {
       console.log = _log
 
       if (!result) continue
-
-      // Use directory structure so static servers resolve clean URLs:
-      // /about → about/index.html, / → index.html
-      const fileName = route === '/' ? 'index.html' : route.replace(/^\//, '').replace(/\/$/, '') + '/index.html'
-      const filePath = resolve(dest, fileName)
-      mkdirSync(resolve(filePath, '..'), { recursive: true })
-      writeFileSync(filePath, result.html)
-      _log(chalk.dim(`  ${route} -> ${fileName} (${result.brKeyCount} keys)`))
+      renderResults.push({ route, result })
+      _log(chalk.dim(`  ${route} rendered (${result.brKeyCount} keys)`))
     } catch (err) {
       console.warn = _warn
       console.error = _error
       console.log = _log
       _error(chalk.yellow(`  ${route} failed: ${err.message}`))
     }
+  }
+
+  // Pass 2: Write all pages with the complete accumulated CSS
+  const fullEmotionCSS = getAccumulatedEmotionCSS()
+  for (const { route, result } of renderResults) {
+    const fileName = route === '/' ? 'index.html' : route.replace(/^\//, '').replace(/\/$/, '') + '/index.html'
+    const filePath = resolve(dest, fileName)
+    mkdirSync(resolve(filePath, '..'), { recursive: true })
+    // Replace per-page emotion CSS with the full accumulated CSS
+    const html = replaceEmotionCSS(result.html, fullEmotionCSS)
+    writeFileSync(filePath, html)
+    _log(chalk.dim(`  ${route} -> ${fileName}`))
   }
 
   if (paramRoutes.length) {
@@ -254,6 +263,7 @@ program
   .description('Pre-render pages with brender')
   .option('--out-dir <dir>', 'Output directory (default: brenderDistDir from symbols.json, or dist-brender)')
   .option('--no-isr', 'Disable ISR (skip client SPA bundle for hydration + data fetching)')
+  .option('--no-hydrate', 'Disable true hydration (use legacy SPA swap instead)')
   .option('--no-prefetch', 'Disable SSR data prefetching (skip DB queries during render)')
   .option('-w, --watch', 'Watch for changes and re-render')
   .action(async (opts) => {
@@ -278,9 +288,10 @@ program
     try {
       console.log(chalk.dim('Pre-rendering pages with brender...'))
       const isr = opts.isr !== false
+      const hydrate = opts.hydrate !== false
       const prefetch = opts.prefetch !== false
       if (isr) console.log(chalk.dim('  ISR enabled — bundling client SPA'))
-      await renderAll(cwd, outDir, { isr, prefetch })
+      await renderAll(cwd, outDir, { isr, hydrate, prefetch })
       console.log(chalk.green('✓') + ` Brender complete -> ${outDir}/`)
 
       if (!opts.watch) {
@@ -295,7 +306,7 @@ program
           debounce = setTimeout(async () => {
             console.log(chalk.dim(`\n${filename} changed, re-rendering...`))
             try {
-              await renderAll(cwd, outDir, { isr, prefetch })
+              await renderAll(cwd, outDir, { isr, hydrate, prefetch })
               console.log(chalk.green('✓') + ` Brender complete -> ${outDir}/`)
             } catch (err) {
               console.error(chalk.red('Brender failed:'), err.message)
