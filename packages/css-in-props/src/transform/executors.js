@@ -73,7 +73,17 @@ export const useSelectorsAsCSS = (sourceObj, element) => {
     const selectroSetter = transformersByPrefix[key.slice(0, 1)]
     if (selectroSetter) {
       const result = selectroSetter(key, sourceObj[key], element)
-      if (result) overwriteDeep(obj, result)
+      if (result) {
+        for (const k in result) {
+          if (Object.prototype.hasOwnProperty.call(result, k)) {
+            if (obj[k] && typeof obj[k] === 'object' && typeof result[k] === 'object') {
+              overwriteDeep(obj[k], result[k])
+            } else {
+              obj[k] = result[k]
+            }
+          }
+        }
+      }
     }
   }
   return obj

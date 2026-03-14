@@ -198,7 +198,8 @@ export const prefetchPageData = async (data, route = '/', options = {}) => {
   const pageDef = pages[route]
   if (!pageDef) return new Map()
 
-  const dbConfig = data.config?.db || data.settings?.db || data.db
+  const config = data.config || data.settings || {}
+  const dbConfig = config.fetch || config.db || data.db
   if (!dbConfig) return new Map()
 
   const adapter = await createSSRAdapter(dbConfig)
@@ -231,6 +232,99 @@ export const prefetchPageData = async (data, route = '/', options = {}) => {
  * @param {object} pageDef - Page definition (will be mutated)
  * @param {Map<string, object>} stateUpdates - Map from prefetchPageData
  */
+/**
+ * Fetch polyglot translations from the DB for SSR use.
+ * Returns a map of { [lang]: { key: text, ... } } for all configured languages.
+ *
+ * @param {object} data - Full project data (from loadProject)
+ * @returns {Promise<object|null>} Translation map keyed by language, or null on failure
+ */
+export const fetchSSRTranslations = async (data) => {
+  const config = data.config || data.settings || {}
+  const polyglot = config.polyglot
+  if (!polyglot?.fetch) return null
+
+  const dbConfig = config.fetch || config.db || data.db
+  if (!dbConfig) return null
+
+  const adapter = await createSSRAdapter(dbConfig)
+  if (!adapter) return null
+
+  const fetchConfig = polyglot.fetch
+  const rpcName = fetchConfig.rpc || fetchConfig.from || 'get_translations_if_changed'
+  const languages = polyglot.languages || [polyglot.defaultLang || 'en']
+
+  const translations = {}
+
+  // Fetch translations for all languages in parallel
+  const results = await Promise.allSettled(
+    languages.map(async (lang) => {
+      try {
+        const res = await adapter.rpc({
+          from: rpcName,
+          params: { p_lang: lang, p_cached_version: 0 }
+        })
+        if (res.error || !res.data) return
+        const result = res.data
+        if (result.translations) {
+          translations[lang] = result.translations
+        }
+      } catch {}
+    })
+  )
+
+  return Object.keys(translations).length ? translations : null
+}
+
+/**
+ * Pre-evaluate children functions and replace them with static results.
+ * During SSR, DOMQL's runtime state cascading and async re-render cycle
+ * may not work correctly (trackSourcemapDeep stack overflows, etc.).
+ * By pre-evaluating the children functions, we produce static element
+ * definitions that DOMQL can render directly.
+ */
+const preEvaluateChildren = (def, inheritedState) => {
+  if (!def || typeof def !== 'object') return
+  for (const key in def) {
+    if (key === 'state' || key === 'fetch' || key === 'props' ||
+        key === 'attr' || key === 'on' || key === 'define' ||
+        key === 'childExtends' || key === 'childProps' || key === 'childrenAs') continue
+    if (key.charAt(0) >= 'A' && key.charAt(0) <= 'Z' && isObject(def[key])) {
+      const child = def[key]
+      // Determine effective state for this element (own state or inherited)
+      const effectiveState = child.state && typeof child.state === 'object'
+        ? { ...inheritedState, ...child.state }
+        : inheritedState
+
+      // Pre-evaluate children function
+      if (isFunction(child.children)) {
+        try {
+          const mockEl = {
+            state: effectiveState,
+            props: {},
+            call: (fn) => {
+              if (fn === 'getActiveLang' || fn === 'getLang') return effectiveState?.lang || 'ka'
+              if (fn === 'polyglot') return arguments[1] || ''
+              return undefined
+            },
+            __ref: {}
+          }
+          const result = child.children(mockEl, effectiveState)
+          if (isArray(result) && result.length > 0) {
+            // Replace children function with static array
+            child.children = result
+          }
+        } catch {
+          // If evaluation fails, leave the function as-is
+        }
+      }
+
+      // Recurse deeper
+      preEvaluateChildren(child, effectiveState)
+    }
+  }
+}
+
 export const injectPrefetchedState = (pageDef, stateUpdates) => {
   if (!stateUpdates || !stateUpdates.size) return
 
@@ -251,6 +345,10 @@ export const injectPrefetchedState = (pageDef, stateUpdates) => {
         target.state = {}
       }
       Object.assign(target.state, data)
+
+      // Pre-evaluate children functions with the injected state
+      // so DOMQL gets static element definitions instead of functions
+      preEvaluateChildren(target, target.state)
     }
   }
 }

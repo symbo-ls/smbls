@@ -9,7 +9,7 @@
     "build:watch": "nodemon --exec \"npm run build:packages\" --ignore 'dist/*'",
     "prepare": "echo 'Run npm run build:packages to build all packages'",
     "update-linkable-list": "npx smbls link-packages -c",
-    "test:lint": "npx standard \"packages/**/*.js\"",
+    "test:lint": "npx eslint \"packages/**/*.js\"",
     "test": "jest",
     "test:watch": "jest --watch",
     "clean": "npm run clean:dist; npm run clean:packages; npm run clean:modules",
@@ -30,23 +30,16 @@
     "caniuse-lite": "^1.0.30001707",
     "commander": "^13.1.0",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.26.0",
-    "eslint": "^9.28.0",
+    "esbuild": "^0.27.4",
+    "eslint": "^9.37.0",
     "globusa": "^1.1.4",
     "jest": "^29.7.0",
     "linkedom": "^0.16.11",
     "parcel": "^2.15.2",
     "process": "^0.11.10",
     "rimraf": "^5.0.1",
-    "standard": "^17.1.2",
+    "neostandard": "^0.13.0",
     "svgo": "^3.3.2"
-  },
-  "standard": {
-    "parser": "@babel/eslint-parser",
-    "ignore": [
-      "**test**",
-      "**copy**"
-    ]
   },
   "workspaces": [
     "packages/*",

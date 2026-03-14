@@ -6,8 +6,9 @@ import { createEnv } from './env.js'
 import { resetKeys, assignKeys, mapKeysToElements } from './keys.js'
 import { extractMetadata, generateHeadHtml } from './metadata.js'
 import { hydrate } from './hydrate.js'
-import { prefetchPageData, injectPrefetchedState } from './prefetch.js'
+import { prefetchPageData, injectPrefetchedState, fetchSSRTranslations } from './prefetch.js'
 import { parseHTML } from 'linkedom'
+import createEmotionInstance from '@emotion/css/create-instance'
 
 // Deep clone that preserves functions and avoids circular refs
 const structuredCloneDeep = (obj, seen = new WeakMap()) => {
@@ -339,9 +340,19 @@ export const render = async (data, options = {}) => {
         injectPrefetchedState(pageDef, stateUpdates)
         prefetchedPages[route] = pageDef
       }
-    } catch {
+    } catch (prefetchErr) {
+      console.error('[brender] Prefetch error:', prefetchErr)
       prefetchedPages = data.pages
     }
+  }
+
+  // ── SSR polyglot translations ──
+  // Fetch translations from the DB so polyglot resolves during render
+  let ssrTranslations
+  if (prefetch) {
+    try {
+      ssrTranslations = await fetchSSRTranslations(data)
+    } catch {}
   }
 
   const { window, document } = createEnv()
@@ -364,9 +375,45 @@ export const render = async (data, options = {}) => {
 
   const app = structuredCloneDeep(data.app || {})
 
+  const config = data.config || data.settings || {}
+
+  // Inject SSR translations into polyglot config and root state
+  const polyglotConfig = config.polyglot ? { ...config.polyglot } : undefined
+  if (ssrTranslations && polyglotConfig) {
+    polyglotConfig.translations = {
+      ...(polyglotConfig.translations || {}),
+      ...ssrTranslations
+    }
+  }
+
+  const baseState = structuredCloneDeep(data.state || {})
+  // Ensure root state has lang and translations for polyglot resolution
+  if (ssrTranslations || polyglotConfig) {
+    if (!baseState.root) baseState.root = {}
+    if (polyglotConfig) {
+      baseState.root.lang = baseState.root.lang || polyglotConfig.defaultLang || 'en'
+    }
+    if (ssrTranslations) {
+      baseState.root.translations = {
+        ...(baseState.root.translations || {}),
+        ...ssrTranslations
+      }
+    }
+  }
+
+  // Create SSR emotion instance with speedy: false.
+  // In linkedom, emotion's insertRule() doesn't handle @media rules properly,
+  // so responsive CSS is lost. Non-speedy mode uses text nodes instead,
+  // which preserves @media rules in cache.inserted as strings.
+  const ssrEmotion = createEmotionInstance({
+    key: 'smbls',
+    container: document.head,
+    speedy: false
+  })
+
   const ctx = {
-    state: structuredCloneDeep(data.state || {}),
-    ...(stateOverrides ? { state: { ...structuredCloneDeep(data.state || {}), ...stateOverrides } } : {}),
+    state: baseState,
+    ...(stateOverrides ? { state: { ...baseState, ...stateOverrides } } : {}),
     dependencies: structuredCloneDeep(data.dependencies || {}),
     components: structuredCloneDeep(data.components || {}),
     snippets: structuredCloneDeep(data.snippets || {}),
@@ -375,11 +422,18 @@ export const render = async (data, options = {}) => {
     methods: data.methods || {},
     designSystem: structuredCloneDeep(data.designSystem || {}),
     files: data.files || {},
-    ...(data.config || data.settings || {}),
+    ...config,
+    // Override polyglot with SSR-enriched version
+    ...(polyglotConfig ? { polyglot: polyglotConfig } : {}),
     // Virtual DOM environment
     document,
     window,
     parent: { node: body },
+    // Use SSR emotion instance (non-speedy) for proper @media rule extraction
+    initOptions: { emotion: ssrEmotion },
+    // Disable sourcemap tracking in SSR — it causes stack overflows
+    // when state contains large data arrays (articles, events, etc.)
+    domqlOptions: { sourcemap: false },
     // Caller overrides
     ...(contextOverrides || {})
   }
@@ -388,8 +442,12 @@ export const render = async (data, options = {}) => {
 
   const element = await createDomqlElement(app, ctx)
 
-  // Allow async microtasks (fetch callbacks, state updates) to flush
-  await new Promise(r => setTimeout(r, 50))
+  // Allow async operations (fetch callbacks, state updates, re-renders) to flush.
+  // DOMQL's fetch plugin fires on element creation and updates state asynchronously.
+  // With prefetch enabled, data is pre-injected but DOMQL's fetch may also fire
+  // and trigger state updates. Give enough time for these to complete.
+  const flushDelay = prefetch ? 2000 : 50
+  await new Promise(r => setTimeout(r, flushDelay))
 
   // Assign data-br keys for hydration
   assignKeys(body)
@@ -444,7 +502,18 @@ export const render = async (data, options = {}) => {
     }
   }
 
-  const html = fixSvgContent(body.innerHTML)
+  let html = fixSvgContent(body.innerHTML)
+
+  // Post-process: resolve any remaining {{ key | polyglot }} templates
+  // that weren't resolved during DOMQL rendering (e.g. due to timing)
+  if (ssrTranslations) {
+    const defaultLang = polyglotConfig?.defaultLang || 'en'
+    const langMap = ssrTranslations[defaultLang] || Object.values(ssrTranslations)[0] || {}
+    html = html.replace(/\{\{\s*([^|{}]+?)\s*\|\s*polyglot\s*\}\}/g, (match, key) => {
+      const trimmed = key.trim()
+      return langMap[trimmed] ?? match
+    })
+  }
 
   // Restore globalThis after render
   if (_prevDoc !== undefined) globalThis.document = _prevDoc
@@ -452,7 +521,7 @@ export const render = async (data, options = {}) => {
   if (_prevLoc !== undefined) globalThis.location = _prevLoc
   else delete globalThis.location
 
-  return { html, metadata, registry, element, emotionCSS, document, window }
+  return { html, metadata, registry, element, emotionCSS, document, window, ssrTranslations }
 }
 
 /**
@@ -846,10 +915,28 @@ export const renderPage = async (data, route = '/', options = {}) => {
 <script type="module" src="${prefix}${isr.clientScript}"></script>`
   }
 
+  // Resolve any {{ key | polyglot }} templates in head tags (title, meta, etc.)
+  const config = data.config || data.settings || {}
+  const polyglotCfg = config.polyglot
+  let resolvedHeadTags = headTags
+  if (polyglotCfg) {
+    const defaultLang = polyglotCfg.defaultLang || 'en'
+    // Use SSR-fetched translations (from render result) merged with static translations
+    const translations = {
+      ...(polyglotCfg.translations || {}),
+      ...(result.ssrTranslations || {})
+    }
+    const langMap = translations[defaultLang] || {}
+    resolvedHeadTags = headTags.replace(/\{\{\s*([^|{}]+?)\s*\|\s*polyglot\s*\}\}/g, (match, key) => {
+      const trimmed = key.trim()
+      return langMap[trimmed] ?? match
+    })
+  }
+
   const html = `<!DOCTYPE html>
 <html lang="${htmlLang}">
 <head>
-${headTags}
+${resolvedHeadTags}
 ${fontLinks}
 ${globalCSS.fontFaceCSS ? `<style>${globalCSS.fontFaceCSS}</style>` : ''}
 <style>

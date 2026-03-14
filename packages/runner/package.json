@@ -12,9 +12,7 @@
     "@babel/eslint-parser": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "eslint": "^9.37.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.32.0",
-    "standard": "^17.1.2"
+    "neostandard": "^0.13.0"
   },
   "peerDependencies": {
     "parcel": ">=2.0.0",
@@ -48,9 +46,7 @@
     "@babel/eslint-parser": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "eslint": "^9.37.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.32.0",
-    "standard": "^17.1.2"
+    "neostandard": "^0.13.0"
   },
   "publishConfig": {
     "access": "public"

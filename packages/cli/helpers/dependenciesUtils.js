@@ -258,7 +258,7 @@ export function syncDependenciesJs(dependenciesJsPath, depsMap, { overwriteExist
   try {
     fs.writeFileSync(dependenciesJsPath, content)
     try {
-      execSync(`npx standard --fix "${dependenciesJsPath}"`, { stdio: 'pipe' })
+      execSync(`npx eslint --fix "${dependenciesJsPath}"`, { stdio: 'pipe' })
     } catch (_) {}
     return { ok: true, changed: true }
   } catch (_) {

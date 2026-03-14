@@ -1,6 +1,6 @@
 'use strict'
 
-import { deepMerge, exec, isNot } from '@domql/utils'
+import { deepMerge, exec, isNot, isString } from '@domql/utils'
 import { report } from '@domql/report'
 
 /**
@@ -14,7 +14,10 @@ export function attr (params, element, node) {
     const attrs = exec(params, element)
     if (props.attr) deepMerge(attrs, props.attr)
     for (const attr in attrs) {
-      const val = exec(attrs[attr], element)
+      let val = exec(attrs[attr], element)
+      if (isString(val) && val.includes('{{') && element.call) {
+        val = element.call('replaceLiteralsWithObjectFields', val, element.state)
+      }
       if (val === __attr[attr]) continue
       if (
         val !== false &&

@@ -6,7 +6,8 @@ import { useCssInProps } from 'css-in-props'
 const onBeforeClassAssign = (element) => {
   if (!element.context) return
   const { props, __ref: ref } = element
-  ref.__class = useCssInProps(props, element, { unpack: false })
+  const result = useCssInProps(props, element, { unpack: false })
+  ref.__class = result
 }
 
 export const Box = {

@@ -19,7 +19,7 @@
   "dependencies": {
     "@domql/utils": "^3.7.3",
     "@symbo.ls/smbls-utils": "^3.7.3",
-    "esbuild": "^0.26.0"
+    "esbuild": "^0.27.4"
   },
   "sideEffects": false,
   "publishConfig": {
