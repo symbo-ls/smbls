@@ -1,6 +1,6 @@
 {
   "name": "@domql/state",
-  "version": "3.7.3",
+  "version": "3.7.4",
   "license": "CC-BY-NC-4.0",
   "type": "module",
   "module": "./dist/esm/index.js",
@@ -35,8 +35,8 @@
     "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/report": "^3.7.3",
-    "@domql/utils": "^3.7.3"
+    "@domql/report": "^3.7.4",
+    "@domql/utils": "^3.7.4"
   },
   "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "browser": "./dist/esm/index.js",
