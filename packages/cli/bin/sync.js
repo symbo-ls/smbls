@@ -151,6 +151,45 @@ function buildDiffsFromChanges (changes, base, target) {
   return diffs
 }
 
+function getConflictChangesForDisplay (changes, conflictKey) {
+  const dataChanges = changes.filter(([, path]) => Array.isArray(path) && path[0] === conflictKey)
+  if (dataChanges.length) return dataChanges
+  return changes.filter(([, path]) => Array.isArray(path) && path[0] === 'schema' && path[1] === conflictKey)
+}
+
+function indentBlock (value, prefix = '    ') {
+  return String(value)
+    .replace(/\n$/, '')
+    .split('\n')
+    .map((line) => `${prefix}${line}`)
+    .join('\n')
+}
+
+function formatConflictDiffs (changes, base, target) {
+  if (!changes.length) {
+    return indentBlock(chalk.dim('No item-level changes to display'))
+  }
+
+  return buildDiffsFromChanges(changes, base, target)
+    .map((diff) => indentBlock(diff))
+    .join(`\n${indentBlock(chalk.dim('---'))}\n`)
+}
+
+function formatConflictDetails (conflictKeys, ours, theirs, base, local, remote) {
+  return conflictKeys.map((key) => {
+    const localChanges = getConflictChangesForDisplay(ours, key)
+    const remoteChanges = getConflictChangesForDisplay(theirs, key)
+
+    return [
+      `${chalk.bold(`- ${key}`)} ${chalk.dim(`(local: ${localChanges.length}, remote: ${remoteChanges.length})`)}`,
+      chalk.green('  Local changes:'),
+      formatConflictDiffs(localChanges, base, local),
+      chalk.red('  Remote changes:'),
+      formatConflictDiffs(remoteChanges, base, remote)
+    ].join('\n')
+  }).join('\n\n')
+}
+
 async function confirmChanges (localChanges, remoteChanges, base, local, remote) {
   if (localChanges.length === 0 && remoteChanges.length === 0) {
     console.log(chalk.bold.yellow('No changes detected'))
@@ -379,6 +418,8 @@ export async function syncProjectChanges (options) {
         const chosen = await resolveTopLevelConflicts(conflicts, ours, theirs)
         toApply = [...nonConflictOurs, ...chosen]
       } else {
+        console.error(chalk.red('\nConflict details:'))
+        console.error(formatConflictDetails(conflicts, ours, theirs, base, local, remote))
         console.error(chalk.red('Conflicts detected. Re-run interactively or pass --conflict-resolution <local|remote>.'))
         process.exit(1)
       }
