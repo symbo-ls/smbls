@@ -1,0 +1,39 @@
+{
+  "name": "@symbo.ls/grabber-kid",
+  "description": "Grab DOM nodes and compile into Symbols components",
+  "author": "symbo.ls",
+  "version": "3.7.4",
+  "repository": "https://github.com/symbo-ls/smbls",
+  "type": "module",
+  "module": "./dist/esm/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
+  "main": "./dist/cjs/index.js",
+  "dependencies": {
+    "@domql/utils": "^3.7.4"
+  },
+  "source": "index.js",
+  "browser": "./dist/esm/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "*.js"
+  ],
+  "scripts": {
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild *.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild index.js --bundle --target=es2020 --format=iife --global-name=GrabberKid --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "node ../../build/build.js",
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "prepublish": "npm run build && npm run copy:package:cjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
