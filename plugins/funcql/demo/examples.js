@@ -588,3 +588,162 @@ export const onStateUpdateProgress = {
     ['setProps', { width: 'progress', background: 'blue' }]
   ]]
 }
+
+// ─── 31. Toggle visibility ─────────────────────────────────────────────────
+//
+// Original:
+//   onClick: (e, el, s) => {
+//     s.update({ visible: !s.visible })
+//   }
+//
+export const onClickToggleVisibility = [
+  ['update', { visible: '!visible' }]
+]
+
+// ─── 32. Set value from event target ────────────────────────────────────────
+//
+// Original:
+//   onInput: (e, el, s) => {
+//     s.update({ value: e.target.value })
+//   }
+//
+export const onInputSetValue = [
+  ['update', { value: 'event.target.value' }]
+]
+
+// ─── 33. Prevent default and stop propagation ──────────────────────────────
+//
+// Original:
+//   onClick: (e, el) => {
+//     e.preventDefault()
+//     e.stopPropagation()
+//     el.call('handleClick')
+//   }
+//
+export const onClickPreventAndStop = [
+  'event.preventDefault()',
+  'event.stopPropagation()',
+  ['call', 'handleClick']
+]
+
+// ─── 34. Select all / deselect all ─────────────────────────────────────────
+//
+// Original:
+//   onClick: (e, el, s) => {
+//     const allSelected = s.items.every(i => i.selected)
+//     s.items.forEach(i => { i.selected = !allSelected })
+//     s.update({ items: s.items })
+//   }
+//
+export const onClickSelectAll = {
+  allSelected: ['items.every', { selected: true }],
+  if: ['allSelected', [
+    ['call', 'deselectAll']
+  ], [
+    ['call', 'selectAll']
+  ]]
+}
+
+// ─── 35. Increment with max limit ──────────────────────────────────────────
+//
+// Original:
+//   onClick: (e, el, s) => {
+//     if (s.count < s.max) {
+//       s.update({ count: s.count + 1 })
+//     }
+//   }
+//
+export const onClickIncrementLimited = {
+  if: ['count < max', [
+    ['update', { count: ['+', 'count', 1] }]
+  ]]
+}
+
+// ─── 36. Close on outside click ─────────────────────────────────────────────
+//
+// Original:
+//   onClick: (e, el, s) => {
+//     if (!el.node.contains(e.target)) {
+//       s.update({ open: false })
+//     }
+//   }
+//
+export const onClickOutside = {
+  contains: ['node.contains', 'event.target'],
+  if: ['!contains', [
+    ['update', { open: false }]
+  ]]
+}
+
+// ─── 37. Batch API calls ───────────────────────────────────────────────────
+//
+// Original:
+//   onClick: async (e, el, s) => {
+//     s.update({ loading: true })
+//     await Promise.all([
+//       el.call('saveProfile'),
+//       el.call('saveSettings'),
+//       el.call('savePreferences')
+//     ])
+//     s.update({ loading: false, saved: true })
+//   }
+//
+export const onClickBatchSave = {
+  async: true,
+  _loading: ['update', { loading: true }],
+  await: [
+    ['call', 'saveProfile'],
+    ['call', 'saveSettings'],
+    ['call', 'savePreferences']
+  ],
+  _done: ['update', { loading: false, saved: true }]
+}
+
+// ─── 38. Delegate to parent ────────────────────────────────────────────────
+//
+// Original:
+//   onClick: (e, el, s) => {
+//     el.parent.update({ selectedChild: s.key })
+//   }
+//
+export const onClickDelegateToParent = [
+  ['parent.update', { selectedChild: 'key' }]
+]
+
+// ─── 39. Focus next input ──────────────────────────────────────────────────
+//
+// Original:
+//   onKeydown: (e, el) => {
+//     if (e.key === 'Tab') {
+//       e.preventDefault()
+//       el.call('focusNext')
+//     }
+//   }
+//
+export const onKeydownFocusNext = {
+  if: ['event.key', {
+    if: ['event.key === "Tab"', [
+      'event.preventDefault()',
+      ['call', 'focusNext']
+    ]]
+  }]
+}
+
+// ─── 40. Counter with reset ────────────────────────────────────────────────
+//
+// Original:
+//   onClick: (e, el, s) => {
+//     if (s.count >= 10) {
+//       s.update({ count: 0 })
+//     } else {
+//       s.update({ count: s.count + 1 })
+//     }
+//   }
+//
+export const onClickCounterWithReset = {
+  if: ['count >= 10', [
+    ['update', { count: 0 }]
+  ], [
+    ['update', { count: ['+', 'count', 1] }]
+  ]]
+}

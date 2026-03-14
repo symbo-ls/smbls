@@ -401,7 +401,7 @@ export function call (fnKey, ...args) {
 
 export async function getDB () {
   const element = this
-  const db = element.context?.db
+  const db = element.context?.fetch
   if (!db) return null
   if (typeof db.select === 'function') {
     if (!db.__authInitialized && db.getSession) {
@@ -424,7 +424,7 @@ export async function getDB () {
   db.__resolving = resolvePromise
   const resolved = await resolvePromise
   db.__resolved = resolved
-  element.context.db = resolved
+  element.context.fetch = resolved
   delete db.__resolving
   if (resolved.getSession) {
     const { initAdapterAuth } = await import('@symbo.ls/fetch')

@@ -4,9 +4,8 @@ import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
-import { loadModule } from './require.js'
+import { toJSON } from '@symbo.ls/frank'
 import { program } from './program.js'
-import { buildDirectory } from '../helpers/fileUtils.js'
 import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
@@ -21,13 +20,8 @@ import { stripEmptyDefaultNamespaceEntries } from '../helpers/projectNormalizati
 
 async function buildLocalProject (distDir) {
   try {
-    const outputDirectory = path.join(distDir, 'dist')
-
-    await buildDirectory(distDir, outputDirectory)
-    const outputFile = path.join(outputDirectory, 'index.js')
-    return await loadModule(outputFile, { silent: false })
+    return await toJSON(distDir, { stringify: false })
   } catch (error) {
-    // Enhance error with build context
     error.buildContext = {
       command: 'push',
       workspace: process.cwd()

@@ -37,6 +37,7 @@
     "@symbo.ls/cli": "^3.7.0",
     "@symbo.ls/default-config": "^3.7.0",
     "@symbo.ls/fetch": "^3.7.0",
+    "@symbo.ls/polyglot": "^1.0.0",
     "@symbo.ls/scratch": "^3.7.0",
     "@symbo.ls/sync": "^3.7.0",
     "@symbo.ls/uikit": "^3.7.0",

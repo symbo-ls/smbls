@@ -2,63 +2,64 @@
 
 [![npm version](https://img.shields.io/npm/v/smbls.svg)](https://www.npmjs.com/package/smbls)
 [![npm downloads](https://img.shields.io/npm/dm/smbls.svg)](https://www.npmjs.com/package/smbls)
-[![bundle size](https://img.shields.io/bundlephobia/minzip/smbls)](https://bundlephobia.com/package/smbls)
 [![license](https://img.shields.io/npm/l/smbls.svg)](https://github.com/symbo-ls/smbls/blob/main/LICENSE)
-[![node](https://img.shields.io/node/v/smbls.svg)](https://nodejs.org)
-[![ESM](https://img.shields.io/badge/module-ESM%20%7C%20CJS%20%7C%20IIFE-blue)](https://www.npmjs.com/package/smbls)
 
-> The main Symbols package — bundles the entire design system ecosystem into a single import.
+The main Symbols package. Bundles the design system framework, UI components, and rendering engine into a single import.
 
-## Installation
+## Install
 
 ```bash
 npm install smbls
 ```
 
-## What's Included
+## Quick start
 
-This package re-exports everything from:
-
-| Package | Description |
-|---------|-------------|
-| `@domql/utils` | Utility functions |
-| `@symbo.ls/scratch` | CSS framework and methodology |
-| `@symbo.ls/emotion` | Emotion CSS-in-JS integration |
-| `@symbo.ls/default-config` | Default design system configuration |
-| `@symbo.ls/uikit` | Complete UI component library |
-| `@symbo.ls/smbls-utils` | Symbols-specific utilities |
-| `css-in-props` | CSS properties as props |
-| `attrs-in-props` | HTML attributes as props |
-
-It also includes the `@symbo.ls/cli` binary, `@symbo.ls/fetch`, `@symbo.ls/sync`, `@symbo.ls/helmet`, and `@domql/router`.
-
-## Quick Start
-
-### Initialize Design System
-
-```javascript
-import { init } from 'smbls'
+```js
+import { init, create } from 'smbls'
 
 init({
   color: {
     primary: '#3B82F6',
-    gray: ['#1F2937', '#9CA3AF']  // [light, dark]
+    gray: ['#1F2937', '#9CA3AF']
   },
   theme: {
     primary: {
       color: 'white',
-      background: 'primary',
-      ':hover': { opacity: '0.85' }
+      background: 'primary'
     }
   }
 })
+
+create({
+  Header: {
+    tag: 'header',
+    H1: { text: 'Hello Symbols' }
+  },
+  Main: {
+    Button: {
+      text: 'Get Started',
+      theme: 'primary'
+    }
+  }
+}, { key: 'my-app' })
 ```
 
-### Theme Switching
+## Create variants
 
-Themes switch automatically via CSS — no JavaScript re-renders needed:
+```js
+import { create, createAsync, createSync, createSkeleton } from 'smbls'
 
-```javascript
+create(App, ctx)          // render immediately
+createAsync(App, ctx)     // render first, fetch remote config after
+await createSync(App, ctx) // fetch remote config first, then render
+createSkeleton(App, ctx)  // resolve extends only, no DOM rendering
+```
+
+## Themes
+
+Themes switch via CSS custom properties — no JavaScript re-renders:
+
+```js
 init({
   theme: {
     document: {
@@ -67,99 +68,109 @@ init({
     }
   }
 })
-
-// Auto: system preference drives switching
-// Force: document.documentElement.dataset.theme = 'dark'
-// Custom: add @ocean, @sunset, etc. — activate with data-theme="ocean"
 ```
 
-### Create an Application
+- **Auto** — follows system preference
+- **Force** — `document.documentElement.dataset.theme = 'dark'`
+- **Custom** — add `@ocean`, `@sunset`, activate with `data-theme="ocean"`
 
-```javascript
+## Init options
+
+```js
+init(config, {
+  useVariable: true,        // CSS custom properties
+  useReset: true,           // CSS reset
+  useFontImport: true,      // @font-face declarations
+  useIconSprite: true,      // SVG icon sprite
+  useDocumentTheme: true,   // document-level theme
+  globalTheme: 'auto',      // 'auto', 'dark', 'light', or custom name
+  verbose: false
+})
+```
+
+## Plugins
+
+domql supports a plugin system via `context.plugins`. Plugins hook into the element lifecycle and can extend how event handlers, props, and metadata are processed.
+
+```js
+import { funcqlPlugin } from '@domql/funcql'
 import { create } from 'smbls'
 
-const App = {
-  extends: 'Flex',
-  flow: 'column',
+create(App, {
+  plugins: [funcqlPlugin]
+})
+```
 
-  Header: {
-    extends: 'Flex',
-    H1: { text: 'Hello Symbols!' }
-  },
+### Plugin interface
 
-  Main: {
-    extends: 'Flex',
-    Button: {
-      text: 'Get Started',
-      theme: 'primary'
+A plugin is a plain object with optional lifecycle hooks and a handler resolver:
+
+```js
+{
+  name: 'my-plugin',
+
+  // Lifecycle hooks — called on every element at each stage
+  start (element, options) {},
+  init (element, options) {},
+  render (element, options) {},
+  done (element, options) {},
+  create (element, options) {},
+  update (element, updatedObj, options) {},
+
+  // Resolve non-function event handlers into callable functions
+  resolveHandler (handler, element) {}
+}
+```
+
+### Available plugins
+
+| Plugin | Package | Purpose |
+|--------|---------|---------|
+| funcql | `@domql/funcql` | Declare event handlers as JSON schemas instead of functions |
+| helmet | `@symbo.ls/helmet` | SEO metadata via lifecycle hooks |
+| shorthand | `@symbo.ls/shorthand` | Expand abbreviated component definitions |
+
+```js
+import { funcqlPlugin } from '@domql/funcql'
+
+create(App, {
+  plugins: [funcqlPlugin]
+})
+
+// Now event handlers can be JSON schemas
+const Button = {
+  text: 'Play',
+  on: {
+    click: {
+      audio: 'scope.audio',
+      if: ['audio.paused', 'audio.play()', 'audio.pause()']
     }
   }
 }
-
-create(App, {
-  key: 'your-project-key'
-})
 ```
 
-### Create Variants
+## Included packages
 
-```javascript
-import { create, createAsync, createSync, createSkeleton } from 'smbls'
+| Package | Description |
+|---------|-------------|
+| `domql` | Reactive DOM element engine |
+| `@domql/utils` | Utility functions |
+| `@symbo.ls/scratch` | CSS framework |
+| `@symbo.ls/emotion` | Emotion CSS-in-JS integration |
+| `@symbo.ls/default-config` | Default design system configuration |
+| `@symbo.ls/uikit` | UI component library |
+| `@domql/router` | Client-side router |
+| `css-in-props` | CSS properties as component props |
+| `attrs-in-props` | HTML attributes as component props |
 
-// Standard — renders immediately
-create(App, options)
+Also includes `@symbo.ls/cli`, `@symbo.ls/fetch`, `@symbo.ls/sync`, and `@symbo.ls/helmet`.
 
-// Async — renders first, then fetches remote config
-createAsync(App, options)
+## SEO metadata
 
-// Sync — fetches remote config first, then renders
-await createSync(App, options)
+Define metadata on your app or pages. Values can be static or functions:
 
-// Skeleton — resolves extends only, no full rendering
-createSkeleton(App, options)
-```
-
-## Init Options
-
-```javascript
-init(config, {
-  emotion: customEmotion,       // custom Emotion instance
-  useVariable: true,            // inject CSS custom properties
-  useReset: true,               // inject CSS reset
-  useFontImport: true,          // inject @font-face declarations
-  useIconSprite: true,          // create SVG icon sprite
-  useDocumentTheme: true,       // apply document-level theme
-  useSvgSprite: true,           // create SVG sprite sheet
-  useDefaultConfig: false,      // use built-in default config
-  globalTheme: 'auto',          // 'auto' (system preference), 'dark', 'light', or custom theme name
-  useThemeSuffixedVars: false,  // also generate --theme-name-dark-prop vars (opt-in)
-  verbose: false                // enable verbose logging
-})
-```
-
-## Additional Exports
-
-```javascript
-import {
-  // Re-initialization
-  reinit,        // re-apply config changes
-  applyCSS,      // inject global CSS
-  updateVars,    // update CSS custom properties
-
-  // Constants
-  DEFAULT_CONTEXT,
-  DESIGN_SYSTEM_OPTIONS,
-  ROUTER_OPTIONS
-} from 'smbls'
-```
-
-## Page Metadata
-
-Define SEO metadata on your app or individual pages. Values can be static or functions:
-
-```javascript
-// app.js — app-level defaults
-export default {
+```js
+const App = {
   metadata: {
     title: 'My App',
     description: 'Built with Symbols',
@@ -167,78 +178,33 @@ export default {
   }
 }
 
-// pages/about.js — page-level overrides
-export const about = {
+const AboutPage = {
   metadata: {
     title: 'About Us',
-    description: (el, s) => s.aboutDescription
-  },
-  // ... page content
+    description: (el, s) => s.aboutText
+  }
 }
 ```
 
-Metadata is applied at runtime (updates `<title>` and `<meta>` tags in the DOM) and during SSR (generates `<head>` HTML via brender). See [`@symbo.ls/helmet`](../../plugins/helmet/) for the full API.
+See [`@symbo.ls/helmet`](../../plugins/helmet/) for the full API.
 
 ## CLI
 
-This package also provides the `smbls` CLI binary:
-
 ```bash
-smbls init          # Initialize a project
-smbls start         # Start dev server
-smbls build         # Build for production
-smbls deploy        # Deploy to hosting
-smbls fetch         # Fetch remote config
-smbls push          # Push changes to platform
-smbls ask           # AI assistant
+smbls init       # initialize a project
+smbls start      # start dev server
+smbls build      # build for production
+smbls fetch      # fetch remote config
+smbls push       # push changes to platform
+smbls ask        # AI assistant
 ```
 
-See the [@symbo.ls/cli](../cli/) package for the full command reference.
+See [`@symbo.ls/cli`](../cli/) for the full command reference.
 
 ## Documentation
 
-## Define System
+[symbols.app/developers](https://symbols.app/developers)
 
-The define system (`context.define` and `element.define`) maps special keys to handler functions. When a key with a matching define handler appears on an element, `throughInitialDefine` calls the handler instead of treating the key as a child or prop.
+## License
 
-### Built-in define handlers (in `defaultDefine`)
-
-| Key | Purpose |
-|-----|---------|
-| `routes` | Route definitions — passed through as-is |
-| `metadata` | SEO metadata — resolves and applies `<title>` and `<meta>` tags via helmet |
-| `$router` | Router content — wraps params in a fragment and calls `el.set()` |
-
-### Collection define handlers (deprecated in v3)
-
-The following collection define handlers existed in v2 but are **deprecated in v3**:
-
-| Key (deprecated) | Data source | v3 replacement |
-|-------------------|-------------|----------------|
-| `$collection` | Direct data array/object | Use `children` + `childExtends` |
-| `$propsCollection` | `element.props` as data source | Use `children: ({ props }) => props.items` |
-| `$stateCollection` | `element.state` as data source | Use `children: ({ state }) => state.items` |
-| `$setCollection` | Uses `set()` to update content | Use `content` or `children` |
-
-Some older projects still use these handlers via project-level `context.define`. The framework's propertization layer (`@domql/utils/props.js`) is define-aware to avoid moving these keys into `props` when define handlers are present.
-
-> **Lesson learned:** The `$` prefix overlaps between css-in-props selectors and define handlers. The propertization in `props.js` checks for define handlers before applying `CSS_SELECTOR_PREFIXES` to prevent define keys from being swallowed into props. This matters for backwards compatibility with v2 projects that still use `$propsCollection` etc.
-
-## Emotion Integration (`prepare.js`)
-
-`prepareDesignSystem()` calls `initEmotion()` from `@symbo.ls/emotion/initEmotion.js` to initialize the CSS-in-JS engine. This import must be present for Emotion to work.
-
-```javascript
-import { initEmotion } from '@symbo.ls/emotion/initEmotion.js'
-
-export const prepareDesignSystem = (key, context) => {
-  const [scratchDesignSystem, emotion, registry] = initEmotion(key, context)
-  return [scratchDesignSystem, emotion, registry]
-}
-```
-
-> **Lesson learned:** If the `initEmotion` import is missing or broken, no CSS classes are generated and components render unstyled (Bazaar rendering issue).
-
-## Documentation
-
-For full documentation visit [symbols.app/developers](https://symbols.app/developers).
+CC-BY-NC-4.0

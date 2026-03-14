@@ -11,7 +11,9 @@ export function addEventFromProps (key, obj) {
   if (isFunction(origEvent)) {
     on[eventName] = (...args) => {
       const originalEventRetunrs = origEvent(...args)
-      if (originalEventRetunrs !== false) funcFromProps(...args)
+      if (originalEventRetunrs !== false) {
+        if (isFunction(funcFromProps)) return funcFromProps(...args)
+      }
     }
   } else on[eventName] = funcFromProps
 }

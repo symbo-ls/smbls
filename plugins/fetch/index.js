@@ -257,13 +257,24 @@ const resolveParamsSync = (params) => {
   return params
 }
 
-const resolveParams = (params, element) => {
-  if (!params) return undefined
-  if (isFunction(params)) return params(element, element.state)
-  const resolved = {}
-  for (const key in params) {
-    const val = params[key]
-    resolved[key] = isFunction(val) ? val(element, element.state) : val
+const resolveLanguage = (element, context) => {
+  const root = element?.state?.root || context?.state?.root
+  if (root?.lang) return root.lang
+  return undefined
+}
+
+const resolveParams = (params, element, context) => {
+  let resolved
+  if (!params) {
+    resolved = undefined
+  } else if (isFunction(params)) {
+    resolved = params(element, element.state)
+  } else {
+    resolved = {}
+    for (const key in params) {
+      const val = params[key]
+      resolved[key] = isFunction(val) ? val(element, element.state) : val
+    }
   }
   return resolved
 }
@@ -304,7 +315,7 @@ const resolveAdapter = async (db, context) => {
   db.__resolving = resolveDb(db)
   const resolved = await db.__resolving
   db.__resolved = resolved
-  context.db = resolved
+  context.fetch = resolved
   delete db.__resolving
 
   // Auto-init auth when adapter supports it and db.auth is enabled
@@ -368,7 +379,7 @@ const setFetchStatus = (element, status) => {
 // --- Core fetch runner ---
 
 const runFetch = async (config, element, context, opts = {}) => {
-  const db = context?.db
+  const db = context?.fetch
   if (!db) return
 
   // enabled check
@@ -396,7 +407,7 @@ const runFetch = async (config, element, context, opts = {}) => {
     if (q) select = q.select || (q.length && q.join(',')) || undefined
   }
 
-  const params = resolveParams(rawParams, element)
+  const params = resolveParams(rawParams, element, context)
   const cacheConfig = parseCacheConfig(cacheRaw)
   const retryConfig = resolveRetryConfig(config)
 
@@ -483,6 +494,12 @@ const runFetch = async (config, element, context, opts = {}) => {
     if (!isFunction(fn)) return { data: null, error: { message: `Method "${method}" not found on adapter` } }
 
     const request = { from, select, params, single, limit, offset, order, headers, baseUrl }
+
+    // Inject language into request headers
+    const lang = resolveLanguage(element, context)
+    if (lang) {
+      request.headers = { ...request.headers, 'Accept-Language': lang }
+    }
 
     // Pagination support
     if (page !== undefined) {
@@ -722,7 +739,7 @@ const rollbackOptimistic = (element, config) => {
 // --- Mutation runner (insert/update/delete with optimistic + invalidation) ---
 
 const runMutation = async (config, element, context) => {
-  const db = context?.db
+  const db = context?.fetch
   if (!db) return
 
   const adapter = await resolveAdapter(db, context)
@@ -772,7 +789,13 @@ const runMutation = async (config, element, context) => {
     if (!isFunction(fn)) return
 
     const request = { from, data: mutationData, headers, baseUrl }
-    if (config.params) request.params = resolveParams(config.params, element)
+    if (config.params) request.params = resolveParams(config.params, element, context)
+
+    // Inject language into mutation request headers
+    const lang = resolveLanguage(element, context)
+    if (lang) {
+      request.headers = { ...request.headers, 'Accept-Language': lang }
+    }
 
     const retryConfig = resolveRetryConfig(config)
     const result = await withRetry(() => fn(request), retryConfig)
@@ -828,7 +851,7 @@ const runMutation = async (config, element, context) => {
 
 export const executeFetch = (param, element, state, context) => {
   if (!param) return
-  const db = context?.db
+  const db = context?.fetch
   if (!db) return
 
   const fetchProp = exec(param, element)
@@ -933,7 +956,7 @@ export const queryClient = {
   },
 
   prefetchQuery: async (config, context) => {
-    const db = context?.db
+    const db = context?.fetch
     if (!db) return
 
     const adapter = await resolveAdapter(db, context)
@@ -962,6 +985,32 @@ export const queryClient = {
 
   getCache: () => cacheStore,
   clear: () => removeCache()
+}
+
+// --- Plugin interface ---
+
+/**
+ * domql plugin for declarative data fetching.
+ *
+ * Usage:
+ *   context.plugins = [fetchPlugin]
+ *
+ * Or with language:
+ *   context.plugins = [fetchPlugin]
+ *   context.language = 'en'
+ *
+ * When used as a plugin, add `fetch` to `context.define` or
+ * it is automatically registered via `defaultDefine.fetch`.
+ */
+export const fetchPlugin = {
+  name: 'fetch',
+
+  // Hook into element creation to auto-execute fetch configs
+  create (element) {
+    const fetchProp = element.fetch || element.props?.fetch
+    if (!fetchProp) return
+    executeFetch(fetchProp, element, element.state, element.context)
+  }
 }
 
 export { parseDuration }

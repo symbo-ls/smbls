@@ -164,6 +164,34 @@ isSelectorKey('> *') // true
 isSelectorKey('padding') // false
 ```
 
+## domql plugin
+
+Shorthand can be used as a domql plugin to expand abbreviated component definitions during element creation:
+
+```js
+import { shorthandPlugin } from '@symbo.ls/shorthand'
+
+context.plugins = [shorthandPlugin]
+```
+
+This registers shorthand as a lifecycle plugin alongside other plugins:
+
+```js
+import { funcqlPlugin } from '@domql/funcql'
+import { shorthandPlugin } from '@symbo.ls/shorthand'
+
+context.plugins = [funcqlPlugin, shorthandPlugin]
+```
+
+### Plugin interface
+
+```js
+{
+  name: 'shorthand',
+  start (element) { ... }  // expands shorthand props at creation
+}
+```
+
 ## Round-trip guarantee
 
 All three pairs are lossless — the inverse function always reproduces the original:

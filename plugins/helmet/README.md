@@ -139,3 +139,28 @@ metadata: {
 ```
 
 The `generateHeadHtml()` function also handles `article:*`, `product:*`, `fb:*`, `DC:*`, `http-equiv:*`, `itemprop:*`, `alternate`, and `favicon`/`favicons` keys.
+
+## domql plugin
+
+Helmet works out of the box via the `define` system (`context.define` or `element.define`). It can also be used as a domql plugin to hook into the element lifecycle:
+
+```js
+import { helmetPlugin } from '@symbo.ls/helmet'
+
+context.plugins = [helmetPlugin]
+```
+
+This registers helmet as a lifecycle plugin alongside other plugins like `funcqlPlugin` or `shorthandPlugin`:
+
+```js
+context.plugins = [funcqlPlugin, helmetPlugin]
+```
+
+### Plugin interface
+
+```js
+{
+  name: 'helmet',
+  render (element) { ... }  // applies metadata on render
+}
+```

@@ -25,8 +25,8 @@ export const trimStringFromSymbols = (str, characters) => {
  * @returns {string} The modified string with placeholders replaced by values from the object.
  */
 const brackRegex = {
-  2: /{{\s*((?:\.\.\/)*)([\w\d.]+)\s*}}/g,
-  3: /{{{(\s*(?:\.\.\/)*)([\w\d.]+)\s*}}}/g
+  2: /{{\s*((?:\.\.\/)*)([\w\d.]+)\s*(?:\|\s*([\w\d.]+))?\s*}}/g,
+  3: /{{{(\s*(?:\.\.\/)*)([\w\d.]+)\s*(?:\|\s*([\w\d.]+))?\s*}}}/g
 }
 
 const getNestedValue = (obj, path) => {
@@ -43,7 +43,22 @@ export function replaceLiteralsWithObjectFields (str, state, options = {}) {
   const reg = brackRegex[bracketsLength]
   const obj = state || this.state || {}
 
-  return str.replace(reg, (_, parentPath, variable) => {
+  const element = this
+
+  return str.replace(reg, (_, parentPath, variable, filter) => {
+    const key = variable.trim()
+
+    // Pipe filter: {{ key | filterName }}
+    // Resolves key from state first, passes value (or raw key) to filter
+    if (filter) {
+      const filterFn = element?.context?.functions?.[filter]
+      if (filterFn) {
+        const stateValue = getNestedValue(obj, key)
+        return String(filterFn.call(element, stateValue !== undefined ? stateValue : key) ?? '')
+      }
+      return ''
+    }
+
     if (parentPath) {
       const parentLevels = (parentPath.match(/\.\.\//g) || []).length
       let parentState = obj
@@ -54,7 +69,6 @@ export function replaceLiteralsWithObjectFields (str, state, options = {}) {
       }
 
       // If the variable is 'parent', return the value property
-      const key = variable.trim()
       if (key === 'parent') {
         return String(parentState.value ?? '')
       }
@@ -62,7 +76,7 @@ export function replaceLiteralsWithObjectFields (str, state, options = {}) {
       const value = getNestedValue(parentState, key)
       return String(value ?? '')
     } else {
-      const value = getNestedValue(obj, variable.trim())
+      const value = getNestedValue(obj, key)
       return String(value ?? '')
     }
   })

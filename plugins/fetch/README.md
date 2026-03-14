@@ -682,6 +682,66 @@ const db = createAdapter({
 })
 ```
 
+## Language / i18n
+
+Fetch automatically injects the current language into every request — both as a `lang` query parameter and as an `Accept-Language` header.
+
+### Setting the language
+
+Set the language in root state:
+
+```js
+state: { root: { lang: 'ka' } }
+```
+
+Or use the polyglot plugin which manages `state.root.lang` automatically.
+
+### Per-request override
+
+Override the language for a specific fetch by including `lang` in params:
+
+```js
+{
+  fetch: {
+    from: 'articles',
+    params: { lang: 'de' }  // overrides global language for this request
+  }
+}
+```
+
+### How it works
+
+1. `lang` is added to `params` (sent as query parameter / RPC argument)
+2. `Accept-Language` header is set on the request
+3. If `params.lang` is already set explicitly, it is not overwritten
+
+This follows the same pattern as XMA's `t()` function where `state.root.lang` is the source of truth for the current language.
+
+## Disabling fetch
+
+Fetch is included by default in smbls. To disable it:
+
+```js
+import { createDefine } from '@symbo.ls/smbls'
+
+// Disable fetch, keep everything else
+const options = {
+  define: createDefine({ fetch: false })
+}
+```
+
+## domql plugin
+
+Fetch can also be used as a domql plugin:
+
+```js
+import { fetchPlugin } from '@symbo.ls/fetch'
+
+context.plugins = [fetchPlugin]
+```
+
+When used as a plugin, fetch hooks into the `create` lifecycle to auto-execute fetch configs defined on elements.
+
 ## All `fetch` options
 
 | Option | Type | Default | Description |
@@ -722,3 +782,4 @@ const db = createAdapter({
 | `order` | string/object/array | — | Sort order |
 | `headers` | object | — | Per-request headers (REST) |
 | `baseUrl` | string | — | Per-request base URL (REST) |
+| `lang` | string | auto from context/state | Language override (via params) |

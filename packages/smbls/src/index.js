@@ -103,3 +103,8 @@ export default create
 
 export * from './init.js'
 export { DEFAULT_CONTEXT, DESIGN_SYSTEM_OPTIONS, ROUTER_OPTIONS } from './options.js'
+export { defaultDefine, createDefine } from './define.js'
+
+// Polyglot i18n plugin
+export { polyglotPlugin, translate, setLang, getActiveLang, getLanguages, loadTranslations, upsertTranslation, initPolyglot, getLocalStateLang } from '@symbo.ls/polyglot'
+export { polyglotFunctions } from '@symbo.ls/polyglot/functions'

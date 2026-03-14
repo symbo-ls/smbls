@@ -1,0 +1,27 @@
+{
+  "name": "@symbo.ls/polyglot",
+  "version": "1.0.0",
+  "license": "CC-BY-NC-4.0",
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./functions": {
+      "import": "./functions.js"
+    }
+  },
+  "source": "index.js",
+  "files": [
+    "*.js"
+  ],
+  "dependencies": {
+    "@domql/utils": "^3.7.0"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}

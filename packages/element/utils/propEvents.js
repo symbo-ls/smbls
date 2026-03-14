@@ -1,6 +1,6 @@
 'use strict'
 
-import { isFunction, lowercaseFirstLetter } from '@domql/utils'
+import { isFunction, hasHandlerPlugin, lowercaseFirstLetter } from '@domql/utils'
 
 export const propagateEventsFromProps = (element) => {
   const { props, on } = element
@@ -12,7 +12,9 @@ export const propagateEventsFromProps = (element) => {
     if (isFunction(origEvent)) {
       on[eventName] = (...args) => {
         const originalEventRetunrs = origEvent(...args)
-        if (originalEventRetunrs !== false) return funcFromProps(...args)
+        if (originalEventRetunrs !== false) {
+          if (isFunction(funcFromProps)) return funcFromProps(...args)
+        }
       }
     } else on[eventName] = funcFromProps
   }
@@ -20,17 +22,20 @@ export const propagateEventsFromProps = (element) => {
 
 export const propagateEventsFromElement = (element) => {
   const { on } = element
+  const pluginActive = hasHandlerPlugin(element.context)
   for (const param in element) {
     if (param.charCodeAt(0) !== 111 || param.charCodeAt(1) !== 110 || !Object.prototype.hasOwnProperty.call(element, param)) continue
-    const fn = element[param]
-    if (!isFunction(fn)) continue
+    const handler = element[param]
+    if (!isFunction(handler) && !(pluginActive && handler != null)) continue
     const eventName = lowercaseFirstLetter(param.slice(2))
     const origEvent = on[eventName]
     if (isFunction(origEvent)) {
       on[eventName] = (...args) => {
         const ret = origEvent(...args)
-        if (ret !== false) return fn(...args)
+        if (ret !== false) {
+          if (isFunction(handler)) return handler(...args)
+        }
       }
-    } else on[eventName] = fn
+    } else on[eventName] = handler
   }
 }

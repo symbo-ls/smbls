@@ -28,6 +28,11 @@ import {
   PACKAGE_MANAGER_TO_CDN
 } from './prepare.js'
 
+import { polyglotPlugin } from '@symbo.ls/polyglot'
+import { polyglotFunctions } from '@symbo.ls/polyglot/functions'
+import { helmetPlugin } from '@symbo.ls/helmet'
+import { fetchPlugin } from '@symbo.ls/fetch'
+
 export const prepareContext = async (app, context = {}) => {
   const key = (context.key = context.key || (isString(app) ? app : 'smblsapp'))
   context.define = context.define || defaultDefine
@@ -59,6 +64,25 @@ export const prepareContext = async (app, context = {}) => {
   context.snippets = context.snippets || {}
   context.functions = context.functions || {}
   context.plugins = context.plugins || []
+
+  // Auto-register plugins based on context config
+  const hasPlugin = (name) => context.plugins.some(p => p.name === name)
+
+  if (context.polyglot && !hasPlugin('polyglot')) {
+    context.plugins.push(polyglotPlugin)
+    for (const k in polyglotFunctions) {
+      if (!(k in context.functions)) context.functions[k] = polyglotFunctions[k]
+    }
+  }
+
+  if (!hasPlugin('helmet')) {
+    context.plugins.push(helmetPlugin)
+  }
+
+  if (context.fetch && !hasPlugin('fetch')) {
+    context.plugins.push(fetchPlugin)
+  }
+
   return context
 }
 

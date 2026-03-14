@@ -5,6 +5,7 @@ import { addEventFromProps } from './events.js'
 import { deepClone, deepMerge, exec } from './object.js'
 import { is, isArray, isFunction, isObject, isObjectLike } from './types.js'
 import { lowercaseFirstLetter } from './string.js'
+import { hasHandlerPlugin } from './function.js'
 
 const RE_UPPER = /^[A-Z]/
 const RE_DIGITS = /^\d+$/
@@ -46,7 +47,8 @@ export function pickupPropsFromElement (obj, opts = {}) {
     const value = obj[key]
 
     // Move top-level onXxx handlers directly into on.xxx (v3 style)
-    const isEventHandler = key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && key[2] === key[2].toUpperCase() && isFunction(value)
+    const isOnKey = key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && key[2] === key[2].toUpperCase()
+    const isEventHandler = isOnKey && (isFunction(value) || (value != null && hasHandlerPlugin(this.context)))
     if (isEventHandler) {
       const eventName = lowercaseFirstLetter(key.slice(2))
       if (obj.on) obj.on[eventName] = value
@@ -101,11 +103,11 @@ export function pickupElementFromProps (obj = this, opts) {
   for (const key in obj.props) {
     const value = obj.props[key]
 
-    // Handle event handlers
+    // Handle event handlers (functions, or plugin schemas when plugins are active)
     const isEvent = key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110
-    const isFn = isFunction(value)
+    const isHandler = isFunction(value) || (value != null && hasHandlerPlugin(this.context))
 
-    if (isEvent && isFn) {
+    if (isEvent && isHandler) {
       addEventFromProps(key, obj)
       delete obj.props[key]
       continue

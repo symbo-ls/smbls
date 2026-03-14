@@ -85,6 +85,18 @@ export const isStringFunction = inputString => {
  * @param {object} element - domql element
  * @returns {function|*} resolved handler
  */
+/**
+ * Check if context has any plugin that can resolve non-function handlers.
+ */
+export const hasHandlerPlugin = (ctx) => {
+  const plugins = ctx?.plugins
+  if (!plugins || !plugins.length) return false
+  for (const plugin of plugins) {
+    if (plugin.resolveHandler) return true
+  }
+  return false
+}
+
 export const resolveHandler = (handler, element) => {
   if (typeof handler === 'function') return handler
   const plugins = element?.context?.plugins

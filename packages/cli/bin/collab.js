@@ -672,13 +672,8 @@ export async function startCollab (options) {
   // Build loader
   async function loadLocalProject () {
     try {
-      // Reuse build flow from push/sync
-      const { buildDirectory } = await import('../helpers/fileUtils.js')
-      const { loadModule } = await import('./require.js')
-      await buildDirectory(distDir, outputDir)
-      const loaded = await loadModule(outputFile, { silent: true, noCache: true })
-      // `loadModule` returns the module's default export (a plain object)
-      return loaded
+      const { toJSON } = await import('@symbo.ls/frank')
+      return await toJSON(distDir, { stringify: false })
     } catch (e) {
       if (options.verbose) console.error('Build failed while watching:', e.message)
       return null

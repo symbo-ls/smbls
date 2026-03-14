@@ -1,6 +1,6 @@
 'use strict'
 
-import { exec, isFunction, isObject } from '@domql/utils'
+import { exec, isFunction, isObject, isString } from '@domql/utils'
 
 // ── Meta tag registry ──────────────────────────────────────────────────────
 
@@ -52,9 +52,14 @@ export const resolveMetadata = (metadata, element, state) => {
   if (!isObject(resolved)) return {}
 
   for (const key in resolved) {
-    if (isFunction(resolved[key])) {
-      resolved[key] = exec(resolved[key], element, state)
+    let val = resolved[key]
+    if (isFunction(val)) {
+      val = exec(val, element, state)
     }
+    if (isString(val) && val.includes('{{') && element?.call) {
+      val = element.call('replaceLiteralsWithObjectFields', val, state)
+    }
+    resolved[key] = val
   }
 
   return resolved
@@ -294,6 +299,39 @@ export const Helmet = {
       const rootState = el.state?.root
       if (isObject(rootState)) rootState.$helmet = resolved
     }
+  }
+}
+
+// ── domql plugin ─────────────────────────────────────────────────────────
+
+/**
+ * Helmet as a domql plugin.
+ *
+ * Applies metadata on element create/update lifecycle.
+ * Use instead of (or alongside) the define system.
+ *
+ * Usage:
+ *   context.plugins = [helmetPlugin]
+ */
+export const helmetPlugin = {
+  name: 'helmet',
+
+  create (element) {
+    const param = element.metadata || element.props?.metadata
+    if (!param) return
+    const doc = element.context?.document || (typeof document !== 'undefined' && document)
+    if (!doc) return
+    const resolved = resolveMetadata(param, element, element.state)
+    applyMetadata(resolved, doc)
+  },
+
+  update (element) {
+    const param = element.metadata || element.props?.metadata
+    if (!param) return
+    const doc = element.context?.document || (typeof document !== 'undefined' && document)
+    if (!doc) return
+    const resolved = resolveMetadata(param, element, element.state)
+    applyMetadata(resolved, doc)
   }
 }
 
