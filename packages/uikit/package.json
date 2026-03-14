@@ -12,25 +12,22 @@
   },
   "files": [
     "*.js",
+    "Atoms",
+    "Datepicker",
+    "Icon",
+    "Input",
+    "TimePicker",
+    "Tooltip",
     "dist"
   ],
   "dependencies": {
-    "attrs-in-props": "^3.7.3",
-    "css-in-props": "^3.7.3",
+    "@domql/router": "^3.7.3",
+    "@domql/state": "^3.7.3",
     "@domql/utils": "^3.7.3",
-    "@symbo.ls/atoms": "^3.7.3",
-    "@symbo.ls/avatar": "^3.7.3",
-    "@symbo.ls/button": "^3.7.3",
-    "@symbo.ls/dialog": "^3.7.3",
-    "@symbo.ls/dropdown": "^3.7.3",
-    "@symbo.ls/icon": "^3.7.3",
-    "@symbo.ls/input": "^3.7.3",
-    "@symbo.ls/link": "^3.7.3",
-    "@symbo.ls/notification": "^3.7.3",
-    "@symbo.ls/range": "^3.7.3",
     "@symbo.ls/scratch": "^3.7.3",
-    "@symbo.ls/select": "^3.7.3",
-    "@symbo.ls/tooltip": "^3.7.3"
+    "@symbo.ls/smbls-utils": "^3.7.3",
+    "attrs-in-props": "^3.7.3",
+    "css-in-props": "^3.7.3"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"

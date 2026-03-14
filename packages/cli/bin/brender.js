@@ -283,6 +283,10 @@ program
       await renderAll(cwd, outDir, { isr, prefetch })
       console.log(chalk.green('✓') + ` Brender complete -> ${outDir}/`)
 
+      if (!opts.watch) {
+        process.exit(0)
+      }
+
       if (opts.watch) {
         console.log(chalk.dim(`\nWatching ${symbols.dir || 'symbols'}/ for changes...\n`))
         let debounce = null

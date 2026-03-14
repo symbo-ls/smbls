@@ -252,14 +252,17 @@ export const deepMergeExtends = (element, extend, sourcemap, sourceName, preBuil
   return element
 }
 
-const trackSourcemapDeep = (sourcemap, obj, sourceName) => {
+const trackSourcemapDeep = (sourcemap, obj, sourceName, seen) => {
+  if (!seen) seen = new WeakSet()
+  if (seen.has(obj)) return
+  seen.add(obj)
   for (const key in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, key)) continue
     if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue
     const val = obj[key]
     if (isObject(val) && !isArray(val)) {
       sourcemap[key] = sourcemap[key] || {}
-      trackSourcemapDeep(sourcemap[key], val, sourceName)
+      trackSourcemapDeep(sourcemap[key], val, sourceName, seen)
     } else {
       sourcemap[key] = sourceName
     }

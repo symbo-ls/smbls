@@ -389,12 +389,12 @@ export function call (fnKey, ...args) {
     const result = fn.call(this, ...args)
     if (result && typeof result.then === 'function') {
       result.catch((err) => {
-        this.error = err
+        error.call(this, err)
       })
     }
     return result
   } catch (err) {
-    this.error = err
+    error.call(this, err)
     if (context?.strictMode) throw err
   }
 }

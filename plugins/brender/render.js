@@ -1,5 +1,5 @@
 import { resolve, join } from 'path'
-import { existsSync, writeFileSync, unlinkSync, readFileSync } from 'fs'
+import { existsSync, writeFileSync, unlinkSync, readFileSync, realpathSync } from 'fs'
 import { tmpdir } from 'os'
 import { randomBytes } from 'crypto'
 import { createEnv } from './env.js'
@@ -50,7 +50,7 @@ let _cachedCreateDomql = null
 const bundleCreateDomql = async () => {
   if (_cachedCreateDomql) return _cachedCreateDomql
 
-  const brenderDir = new URL('.', import.meta.url).pathname
+  const brenderDir = realpathSync(new URL('.', import.meta.url).pathname)
   const monorepoRoot = resolve(brenderDir, '../..')
   const entry = resolve(monorepoRoot, 'packages', 'smbls', 'src', 'createDomql.js')
 

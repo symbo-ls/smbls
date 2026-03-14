@@ -86,18 +86,20 @@ export const loadProject = async (projectPath) => {
     bundleAndImport(join(symbolsDir, 'files', 'index.js'))
   ])
 
+  // Spread into plain objects — ESM module namespaces are non-extensible,
+  // which breaks downstream code that adds properties (e.g. polyglot functions).
   return {
-    app: appModule?.default || {},
-    state: stateModule?.default || {},
-    dependencies: depsModule?.default || {},
-    components: componentsModule || {},
-    snippets: snippetsModule || {},
-    pages: pagesModule?.default || {},
-    functions: functionsModule || {},
-    methods: methodsModule || {},
-    designSystem: designSystemModule?.default || {},
-    files: filesModule?.default || {},
-    config: configModule?.default || {}
+    app: { ...(appModule?.default || {}) },
+    state: { ...(stateModule?.default || {}) },
+    dependencies: { ...(depsModule?.default || {}) },
+    components: { ...(componentsModule || {}) },
+    snippets: { ...(snippetsModule || {}) },
+    pages: { ...(pagesModule?.default || {}) },
+    functions: { ...(functionsModule || {}) },
+    methods: { ...(methodsModule || {}) },
+    designSystem: { ...(designSystemModule?.default || {}) },
+    files: { ...(filesModule?.default || {}) },
+    config: { ...(configModule?.default || {}) }
   }
 }
 
