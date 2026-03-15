@@ -66,7 +66,11 @@ async function hasFilesModifiedAfter (dir, thresholdMs, { ignore = new Set() } =
   return false
 }
 
-async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm }) {
+function isInteractiveSession (options = {}) {
+  return !!process.stdin?.isTTY && !!process.stdout?.isTTY && !options.nonInteractive
+}
+
+async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm, nonInteractive }) {
   if (skipConfirm) return
   if (!distDir || !fs.existsSync(distDir)) return
 
@@ -89,6 +93,12 @@ async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm 
   // If we can confidently say "no local changes", proceed silently.
   // If changes are detected OR we cannot determine safely, require confirmation.
   if (hasLocalChanges === false) return
+
+  if (!isInteractiveSession({ nonInteractive })) {
+    console.error(chalk.red('Fetch requires --yes when prompts are disabled and local files may be overwritten.'))
+    console.error(chalk.dim('Re-run with --yes or use an interactive terminal.'))
+    process.exit(1)
+  }
 
   console.log(chalk.yellow(`\nWarning: ${hasLocalChanges === true ? 'local changes detected' : 'local changes may exist'}.\n`))
   console.log(chalk.dim(`Path: ${distDir}`))
@@ -303,7 +313,8 @@ export const fetchFromCli = async (opts) => {
     await confirmOverwriteIfLocalChanges({
       distDir,
       pulledAt: prevPulledAt,
-      skipConfirm: shouldSkipConfirm
+      skipConfirm: shouldSkipConfirm,
+      nonInteractive: opts.nonInteractive
     })
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
@@ -324,6 +335,7 @@ program
   .option('--schema', 'Include schema', false)
   .option('--force', 'Force overriding changes from platform')
   .option('--update', 'Overriding changes from platform')
+  .option('--non-interactive', 'Disable prompts (require --yes when overwrite confirmation is needed)', false)
   .option('-y, --yes', 'Skip confirmation prompts', false)
   .option('--verbose-code', 'Verbose errors and warnings')
   .option('--dist-dir <dir>', 'Directory to import files to.')

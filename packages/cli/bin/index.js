@@ -31,6 +31,8 @@ import './eject.js'
 import './frank.js'
 import './sdk.js'
 import './github.js'
+import './validate.js'
+import './validate-domql.js'
 
 // Gracefully handle Ctrl+C / ESC in interactive prompts
 process.on('uncaughtException', (err) => {
