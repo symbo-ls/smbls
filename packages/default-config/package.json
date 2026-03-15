@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/default-config",
-  "version": "3.7.7",
+  "version": "3.7.5",
   "source": "./blank/index.js",
   "main": "./blank/index.js",
   "type": "module",

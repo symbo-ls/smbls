@@ -1,7 +1,7 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "3.7.7",
+  "version": "3.7.5",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
@@ -21,13 +21,13 @@
     "dist"
   ],
   "dependencies": {
-    "@domql/router": "^3.7.4",
-    "@domql/state": "^3.7.4",
-    "@domql/utils": "^3.7.4",
-    "@symbo.ls/scratch": "^3.7.4",
-    "@symbo.ls/smbls-utils": "^3.7.4",
-    "attrs-in-props": "^3.7.4",
-    "css-in-props": "^3.7.4"
+    "@domql/router": "^3.7.5",
+    "@domql/state": "^3.7.5",
+    "@domql/utils": "^3.7.5",
+    "@symbo.ls/scratch": "^3.7.5",
+    "@symbo.ls/smbls-utils": "^3.7.5",
+    "attrs-in-props": "^3.7.5",
+    "css-in-props": "^3.7.5"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"

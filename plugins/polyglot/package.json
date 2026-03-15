@@ -1,6 +1,6 @@
 {
   "name": "@symbo.ls/polyglot",
-  "version": "3.7.7",
+  "version": "3.7.5",
   "license": "CC-BY-NC-4.0",
   "type": "module",
   "module": "./index.js",
@@ -18,7 +18,7 @@
     "*.js"
   ],
   "dependencies": {
-    "@domql/utils": "^3.7.4"
+    "@domql/utils": "^3.7.5"
   },
   "sideEffects": false,
   "publishConfig": {
