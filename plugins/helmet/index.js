@@ -89,21 +89,55 @@ export const extractMetadata = (data, route = '/', element, state) => {
     metadata = { ...metadata, ...appMeta }
   }
 
+  // Track which OG keys the page explicitly sets
+  const pageExplicitKeys = new Set()
+
   if (page) {
     const pageMeta = page.metadata || page.helmet || {}
     const resolved = resolveMetadata(pageMeta, element, state)
+    for (const key in resolved) pageExplicitKeys.add(key)
     metadata = { ...metadata, ...resolved }
 
     if (!metadata.title && page.state?.title) {
       metadata.title = page.state.title
+      pageExplicitKeys.add('title')
     }
     if (!metadata.description && page.state?.description) {
       metadata.description = page.state.description
+      pageExplicitKeys.add('description')
     }
   }
 
   if (!metadata.title) {
     metadata.title = data.name || 'Symbols'
+  }
+
+  // Auto-cascade page-level title/description to OG/Twitter tags
+  // when the page overrides title but doesn't explicitly set og:title
+  if (metadata.title && (pageExplicitKeys.has('title') || !metadata['og:title'])) {
+    if (!pageExplicitKeys.has('og:title')) {
+      metadata['og:title'] = metadata.title
+    }
+  }
+  if (metadata.description && (pageExplicitKeys.has('description') || !metadata['og:description'])) {
+    if (!pageExplicitKeys.has('og:description')) {
+      metadata['og:description'] = metadata.description
+    }
+  }
+  if (metadata.title && !metadata['twitter:title']) {
+    metadata['twitter:title'] = metadata.title
+  }
+  if (metadata.description && !metadata['twitter:description']) {
+    metadata['twitter:description'] = metadata.description
+  }
+
+  // Make og:url route-aware — append the route path to the base URL
+  if (metadata['og:url'] || metadata.url) {
+    const baseUrl = (metadata['og:url'] || metadata.url || '').replace(/\/$/, '')
+    if (baseUrl && route && route !== '/') {
+      const cleanRoute = route.startsWith('/') ? route : '/' + route
+      metadata['og:url'] = baseUrl + cleanRoute
+    }
   }
 
   // Resolve bare filenames

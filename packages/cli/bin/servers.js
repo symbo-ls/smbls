@@ -9,12 +9,21 @@ program
   .command('servers')
   .description('List and switch Symbols CLI servers (API base URLs)')
   .option('-s, --select', 'Interactively select active server')
+  .option('--server <url>', 'Set active server non-interactively')
+  .option('--non-interactive', 'Disable prompts', false)
   .action(async (opts) => {
     const cm = new CredentialManager()
     const profiles = cm.getProfiles()
     const current = cm.getCurrentApiBaseUrl()
 
     const urls = Object.keys(profiles || {})
+
+    // Non-interactive server switch
+    if (opts.server) {
+      cm.setCurrentApiBaseUrl(opts.server)
+      console.log(chalk.green(`Active server set to ${opts.server}`))
+      return
+    }
 
     if (!urls.length) {
       console.log(chalk.yellow('No servers configured yet. Run `smbls login` first.'))
@@ -30,6 +39,12 @@ program
     })
 
     if (!opts.select) return
+
+    const interactive = !!(process.stdin?.isTTY && process.stdout?.isTTY && !opts.nonInteractive)
+    if (!interactive) {
+      console.error(chalk.red('Server selection requires --server <url> when prompts are disabled.'))
+      process.exit(1)
+    }
 
     const { next } = await inquirer.prompt([
       {

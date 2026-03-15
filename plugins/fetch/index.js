@@ -280,7 +280,7 @@ const resolveParams = (params, element, context) => {
 }
 
 export const initAdapterAuth = async (adapter, context) => {
-  if (adapter.__authInitialized) return
+  if (!adapter || adapter.__authInitialized) return
   adapter.__authInitialized = true
   if (!adapter.getSession) return
   const updateAuth = (user, session) => {
@@ -314,9 +314,10 @@ const resolveAdapter = async (db, context) => {
 
   db.__resolving = resolveDb(db)
   const resolved = await db.__resolving
+  delete db.__resolving
+  if (!resolved) return null
   db.__resolved = resolved
   context.fetch = resolved
-  delete db.__resolving
 
   // Auto-init auth when adapter supports it and db.auth is enabled
   if (db.auth !== false) await initAdapterAuth(resolved, context)

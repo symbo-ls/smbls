@@ -12,7 +12,8 @@ import { createFs } from './fs.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
-import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig } from '../helpers/symbolsConfig.js'
+import { toJSON } from '@symbo.ls/frank'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig, resolveUseKV, kvGet, deepMergeOurs } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
 import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies, syncDependenciesJs } from '../helpers/dependenciesUtils.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
@@ -131,7 +132,10 @@ export const fetchFromCli = async (opts) => {
     ignoreEtag,
     yes,
     skipConfirm,
-    scope
+    scope,
+    ours,
+    lockOnly,
+    useKv
   } = opts
 
   const symbolsConfig = await loadSymbolsConfig()
@@ -161,6 +165,7 @@ export const fetchFromCli = async (opts) => {
 
   const librariesDir = resolveLibrariesDir(symbolsConfig)
   const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
+  const kvEnabled = resolveUseKV(symbolsConfig, { useKv })
 
   console.log('\nFetching project data...\n')
 
@@ -172,69 +177,93 @@ export const fetchFromCli = async (opts) => {
     prevPulledAt = lock?.pulledAt || null
     lockedLibVersions = lock?.sharedLibraryVersions || {}
 
-    // `--force` must bypass ETag short-circuiting so it can re-materialize local files
-    // even when the remote project data hasn't changed.
-    const effectiveIgnoreEtag = !!(ignoreEtag || force)
-    const result = await getCurrentProjectData(
-      { projectKey, projectId: lock.projectId },
-      authToken,
-      { branch, includePending: true, etag: effectiveIgnoreEtag ? undefined : lock.etag }
-    )
+    if (kvEnabled) {
+      // KV mode: fetch pure JSON from KV store
+      if (verbose) console.log(chalk.gray('Using KV storage\n'))
+      payload = await kvGet(projectKey)
+      if (!payload) {
+        console.log(chalk.bold.yellow('No data found in KV for:'), projectKey)
+        return
+      }
 
-    if (result.notModified) {
-      // If the user asked us to override local files, still try to re-apply the
-      // last persisted snapshot to repair local drift (even when ETag matched).
-      if (update || force) {
-        try {
-          const { projectPath } = getConfigPaths()
-          const raw = await fs.promises.readFile(projectPath, 'utf8')
-          payload = JSON.parse(raw || '{}') || {}
-          if (verbose) {
-            console.log(chalk.gray('Remote unchanged (ETag matched); re-applying last saved snapshot to local files.\n'))
+      writeLock({
+        version: payload.version,
+        branch,
+        projectId: payload?.id || payload?._id || lock.projectId,
+        pulledAt: new Date().toISOString()
+      })
+    } else {
+      // Standard API mode
+      const effectiveIgnoreEtag = !!(ignoreEtag || force)
+      const result = await getCurrentProjectData(
+        { projectKey, projectId: lock.projectId },
+        authToken,
+        { branch, includePending: true, etag: effectiveIgnoreEtag ? undefined : lock.etag }
+      )
+
+      if (result.notModified) {
+        if (update || force) {
+          try {
+            const { projectPath } = getConfigPaths()
+            const raw = await fs.promises.readFile(projectPath, 'utf8')
+            payload = JSON.parse(raw || '{}') || {}
+            if (verbose) {
+              console.log(chalk.gray('Remote unchanged (ETag matched); re-applying last saved snapshot to local files.\n'))
+            }
+          } catch (_) {
+            console.log(chalk.bold.green('Already up to date (ETag matched)'))
+            return
           }
-        } catch (_) {
+        } else {
           console.log(chalk.bold.green('Already up to date (ETag matched)'))
           return
         }
-      } else {
-        console.log(chalk.bold.green('Already up to date (ETag matched)'))
-        return
+      }
+
+      if (!result.notModified) {
+        payload = result.data || {}
+
+        const etag = result.etag || null
+        logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
+
+        // Build shared library version map from payload
+        const sharedLibVersions = {}
+        if (Array.isArray(payload.sharedLibraries)) {
+          for (const lib of payload.sharedLibraries) {
+            const key = lib?.key || lib?.id || lib?._id
+            if (!key) continue
+            const v = lib?.version
+            const versionStr = typeof v === 'string' ? v : (v?.value || null)
+            if (versionStr) sharedLibVersions[key] = versionStr
+          }
+        }
+
+        writeLock({
+          etag,
+          version: payload.version,
+          branch,
+          projectId: payload?.projectInfo?.id || payload?.id || payload?._id || lock.projectId,
+          pulledAt: new Date().toISOString(),
+          sharedLibraryVersions: sharedLibVersions
+        })
+
+        if (verbose) {
+          console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
+          console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+        }
       }
     }
 
-    if (!result.notModified) {
-      payload = result.data || {}
-      const etag = result.etag || null
-      logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
-
-      // Build shared library version map from payload
-      const sharedLibVersions = {}
-      if (Array.isArray(payload.sharedLibraries)) {
-        for (const lib of payload.sharedLibraries) {
-          const key = lib?.key || lib?.id || lib?._id
-          if (!key) continue
-          const v = lib?.version
-          // version can be a string or { value, branch } object
-          const versionStr = typeof v === 'string' ? v : (v?.value || null)
-          if (versionStr) sharedLibVersions[key] = versionStr
+    // --ours: prioritize local data, only fill in missing keys from remote
+    if (ours && payload) {
+      try {
+        const localProject = await toJSON(distDir, { stringify: false })
+        if (localProject && typeof localProject === 'object' && Object.keys(localProject).length) {
+          payload = deepMergeOurs(localProject, payload)
+          if (verbose) console.log(chalk.gray('--ours: merged remote into local (local takes priority)\n'))
         }
-      }
-
-      // Update lock.json
-      writeLock({
-        etag,
-        version: payload.version,
-        branch,
-        projectId: payload?.projectInfo?.id || lock.projectId,
-        pulledAt: new Date().toISOString(),
-        sharedLibraryVersions: sharedLibVersions
-      })
-
-      // version and branch are tracked in lock.json (already written above)
-
-      if (verbose) {
-        console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
-        console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+      } catch (_) {
+        // No local project yet — use remote as-is
       }
     }
   } catch (e) {
@@ -242,6 +271,12 @@ export const fetchFromCli = async (opts) => {
     if (verbose) console.error(e)
     else console.log(debugMsg)
     process.exit(1)
+  }
+
+  // --lock-only: lock.json is already updated above, skip everything else
+  if (lockOnly) {
+    console.log(chalk.bold.green('Lock updated successfully'))
+    return
   }
 
   // Persist base snapshot for future rebases
@@ -339,4 +374,7 @@ program
   .option('-y, --yes', 'Skip confirmation prompts', false)
   .option('--verbose-code', 'Verbose errors and warnings')
   .option('--dist-dir <dir>', 'Directory to import files to.')
+  .option('--ours', 'Prioritize local data, only merge missing data from remote')
+  .option('--lock-only', 'Only update the lock file, skip writing project files')
+  .option('--use-kv', 'Use KV storage instead of the platform API')
   .action(fetchFromCli)

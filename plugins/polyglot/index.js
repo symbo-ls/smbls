@@ -325,8 +325,8 @@ export async function initPolyglot () {
     root.update({ lang })
   }
 
-  // Load translations
-  if (poly.fetch) {
+  // Load translations — skip if already injected (e.g. SSR prefetch)
+  if (poly.fetch && !(poly.translations && poly.translations[lang])) {
     await this.call('loadTranslations', lang)
   }
 }

@@ -10,6 +10,64 @@ import { prefetchPageData, injectPrefetchedState, fetchSSRTranslations } from '.
 import { parseHTML } from 'linkedom'
 import createEmotionInstance from '@emotion/css/create-instance'
 
+// Lightweight SSR polyglot functions — resolve translations from context
+// without needing the full polyglot plugin runtime
+const ssrResolve = (map, key) => {
+  if (!map || !key) return undefined
+  if (map[key] !== undefined) return map[key]
+  // Try nested dot-path (e.g. "ui.main.latest")
+  const parts = key.split('.')
+  let v = map
+  for (const p of parts) {
+    if (v == null || typeof v !== 'object') return undefined
+    v = v[p]
+  }
+  return v
+}
+
+const ssrTranslate = function (key, lang) {
+  if (!key) return ''
+  const ctx = this?.context
+  const poly = ctx?.polyglot
+  const activeLang = lang || poly?.defaultLang || 'ka'
+
+  // Static translations from context.polyglot.translations
+  if (poly?.translations) {
+    const langMap = poly.translations[activeLang]
+    if (langMap) {
+      const val = ssrResolve(langMap, key)
+      if (val !== undefined) return val
+    }
+  }
+
+  // Server-loaded translations in root state
+  const root = this?.state?.root || ctx?.state?.root
+  if (root?.translations) {
+    const langMap = root.translations[activeLang]
+    if (langMap) {
+      const val = ssrResolve(langMap, key)
+      if (val !== undefined) return val
+    }
+  }
+
+  // Fallback to default lang
+  const defaultLang = poly?.defaultLang || 'en'
+  if (defaultLang !== activeLang && poly?.translations) {
+    const fallback = poly.translations[defaultLang]
+    if (fallback) {
+      const val = ssrResolve(fallback, key)
+      if (val !== undefined) return val
+    }
+  }
+
+  return key
+}
+
+const ssrGetActiveLang = function () {
+  const ctx = this?.context
+  return this?.state?.root?.lang || ctx?.polyglot?.defaultLang || 'ka'
+}
+
 // Deep clone that preserves functions and avoids circular refs
 const structuredCloneDeep = (obj, seen = new WeakMap()) => {
   if (obj === null || typeof obj !== 'object') return obj
@@ -307,12 +365,24 @@ const UIKIT_STUBS = {
  * @returns {Promise<{ html: string, metadata: object, registry: object, element: object }>}
  */
 export const render = async (data, options = {}) => {
-  const { route = '/', state: stateOverrides, context: contextOverrides, prefetch = false } = options
+  const { route = '/', pathname, state: stateOverrides, context: contextOverrides, prefetch = false } = options
+  // pathname is the actual URL path (e.g. /podcast/abc-123), route is the page pattern (e.g. /podcast/:id)
+  const locationPath = pathname || route
 
   // ── SSR data prefetching ──
   // When prefetch is enabled, walk the page definition to find fetch
   // declarations, execute them against the DB adapter, and inject
   // the results into element state before rendering.
+  // Set up globalThis.location early so fetch params that reference
+  // window.location.pathname (e.g. to extract :id from URL) work during prefetch.
+  const _prevLocPrefetch = globalThis.location
+  const _prevWinPrefetch = globalThis.window
+  if (!globalThis.location || globalThis.location.pathname !== locationPath) {
+    globalThis.location = { pathname: locationPath, href: locationPath, search: '', hash: '', origin: '' }
+  }
+  if (!globalThis.window) {
+    globalThis.window = { location: globalThis.location }
+  }
   let prefetchedPages
   if (prefetch) {
     try {
@@ -355,11 +425,17 @@ export const render = async (data, options = {}) => {
     } catch {}
   }
 
+  // Restore location/window before createEnv sets them properly
+  if (_prevLocPrefetch !== undefined) globalThis.location = _prevLocPrefetch
+  else delete globalThis.location
+  if (_prevWinPrefetch !== undefined) globalThis.window = _prevWinPrefetch
+  else delete globalThis.window
+
   const { window, document } = createEnv()
   const body = document.body
 
   // Set route on location so the router picks it up
-  window.location.pathname = route
+  window.location.pathname = locationPath
 
   // Set globalThis.document/location so the bundled smbls code
   // (which uses `window = globalThis`) can access them during SSR.
@@ -375,7 +451,15 @@ export const render = async (data, options = {}) => {
 
   const app = structuredCloneDeep(data.app || {})
 
-  const config = data.config || data.settings || {}
+  // Config fields may be nested under data.config or spread at the top level
+  // (frank spreads config.js exports at the top level of the JSON)
+  const config = { ...(data.config || {}) }
+  if (data.polyglot && !config.polyglot) config.polyglot = data.polyglot
+  if (data.fetch && !config.fetch) config.fetch = data.fetch
+  if (data.router && !config.router) config.router = data.router
+  for (const k of ['useReset', 'useVariable', 'useFontImport', 'useIconSprite', 'useSvgSprite', 'useDefaultConfig', 'useDocumentTheme']) {
+    if (data[k] != null && config[k] == null) config[k] = data[k]
+  }
 
   // Inject SSR translations into polyglot config and root state
   const polyglotConfig = config.polyglot ? { ...config.polyglot } : undefined
@@ -418,7 +502,13 @@ export const render = async (data, options = {}) => {
     components: structuredCloneDeep(data.components || {}),
     snippets: structuredCloneDeep(data.snippets || {}),
     pages: structuredCloneDeep(prefetchedPages || data.pages || {}),
-    functions: data.functions || {},
+    functions: {
+      ...(data.functions || {}),
+      // SSR polyglot functions — enable {{ key | polyglot }} resolution during render
+      polyglot: ssrTranslate,
+      getActiveLang: ssrGetActiveLang,
+      getLang: ssrGetActiveLang
+    },
     methods: data.methods || {},
     designSystem: structuredCloneDeep(data.designSystem || {}),
     files: data.files || {},
@@ -455,7 +545,9 @@ export const render = async (data, options = {}) => {
   const registry = mapKeysToElements(element)
 
   // Extract metadata for the rendered route
-  const metadata = extractMetadata(data, route)
+  // Pass the rendered element and its state so function-valued metadata
+  // (e.g. detail page titles from fetched data) can be resolved
+  const metadata = extractMetadata(data, route, element, element?.state)
 
   // Extract emotion-generated CSS
   // Emotion uses insertRule() (CSSOM) which doesn't populate textContent in linkedom.
@@ -521,7 +613,7 @@ export const render = async (data, options = {}) => {
   if (_prevLoc !== undefined) globalThis.location = _prevLoc
   else delete globalThis.location
 
-  return { html, metadata, registry, element, emotionCSS, document, window, ssrTranslations }
+  return { html, metadata, registry, element, emotionCSS, document, window, ssrTranslations, prefetchedPages }
 }
 
 /**
@@ -810,49 +902,61 @@ export const replaceEmotionCSS = (html, newCSS) => {
  * @returns {Promise<{ html: string, css: string, resetCss: string, fontLinks: string, metadata: object, brKeyCount: number }>}
  */
 export const renderRoute = async (data, options = {}) => {
-  const { route = '/' } = options
+  const { route = '/', pathname } = options
+
+  // Use the full render pipeline which handles polyglot, prefetch, emotion, etc.
+  // Pass pathname so the virtual DOM location reflects the actual URL (for dynamic routes)
+  const result = await render(data, { route, pathname, prefetch: true })
+  if (!result) return null
+
   const ds = data.designSystem || {}
-  const pageDef = (data.pages || {})[route]
-  if (!pageDef) return null
-
-  const result = await renderElement(pageDef, {
-    context: {
-      components: data.components || {},
-      snippets: data.snippets || {},
-      designSystem: ds,
-      state: data.state || {},
-      functions: data.functions || {},
-      methods: data.methods || {}
-    }
-  })
-
-  // Hydrate with emotion → CSS classes on nodes
-  const { document: cssDoc } = parseHTML(`<html><head></head><body>${result.html}</body></html>`)
-  let emotionInstance
-  try {
-    const { default: createInstance } = await import('@emotion/css/create-instance')
-    emotionInstance = createInstance({ key: 'smbls', container: cssDoc.head })
-  } catch {}
-
-  hydrate(result.element, {
-    root: cssDoc.body,
-    renderEvents: false,
-    events: false,
-    emotion: emotionInstance,
-    designSystem: ds
-  })
-
-  // Generate global CSS (variables, reset, keyframes) via scratch pipeline
   const globalCSS = await generateGlobalCSS(ds, data.config || data.settings)
 
+  // Extract prefetched state and language for metadata resolution
+  let prefetchedState = null
+  let activeLang = null
+  try {
+    const el = result.element
+    const polyglot = el?.context?.polyglot || data.polyglot || data.config?.polyglot
+    activeLang = el?.state?.root?.lang || polyglot?.defaultLang || 'en'
+
+    // Get prefetched data from the injected page definitions (pre-DOMQL proxy)
+    if (result.prefetchedPages && result.prefetchedPages[route]) {
+      const pageDef = result.prefetchedPages[route]
+      // Collect all state entries from the page definition tree
+      const collectStates = (def, result = {}) => {
+        if (!def || typeof def !== 'object') return result
+        if (def.state && typeof def.state === 'object') {
+          for (const [k, v] of Object.entries(def.state)) {
+            if (v !== undefined && v !== null && typeof v !== 'function') {
+              result[k] = v
+            }
+          }
+        }
+        // Recurse into all child definitions (not just those with state)
+        for (const [key, child] of Object.entries(def)) {
+          if (key === 'state' || key === 'props' || key === 'attr' || key === 'on' || key === 'define' || key === '__ref' || key.startsWith('__')) continue
+          if (child && typeof child === 'object' && !Array.isArray(child)) {
+            collectStates(child, result)
+          }
+        }
+        return result
+      }
+      prefetchedState = collectStates(pageDef)
+    }
+  } catch (e) { /* ignore */ }
+
   return {
-    html: cssDoc.body.innerHTML,
-    css: extractCSS(result.element, ds),
+    html: result.html,
+    css: result.emotionCSS ? result.emotionCSS.join('\n') : '',
     globalCSS,
     resetCss: globalCSS.resetRules || generateResetCSS(ds.reset),
     fontLinks: generateFontLinks(ds),
-    metadata: extractMetadata(data, route),
-    brKeyCount: Object.keys(result.registry).length
+    metadata: result.metadata || extractMetadata(data, route),
+    brKeyCount: result.registry ? Object.keys(result.registry).length : 0,
+    ssrTranslations: result.ssrTranslations,
+    prefetchedState,
+    activeLang
   }
 }
 
@@ -946,8 +1050,9 @@ export const renderPage = async (data, route = '/', options = {}) => {
   }
 
   // Resolve any {{ key | polyglot }} templates in head tags (title, meta, etc.)
-  const config = data.config || data.settings || {}
-  const polyglotCfg = config.polyglot
+  const headConfig = { ...(data.config || {}) }
+  if (data.polyglot && !headConfig.polyglot) headConfig.polyglot = data.polyglot
+  const polyglotCfg = headConfig.polyglot
   let resolvedHeadTags = headTags
   if (polyglotCfg) {
     const defaultLang = polyglotCfg.defaultLang || 'en'

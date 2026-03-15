@@ -98,6 +98,94 @@ export function resolveLibrariesDir (symbolsConfig, options = {}) {
  *
  * Returns: [{ key: "one", version: "1.0.0", destDir: null }, ...]
  */
+
+// ── KV helpers ────────────────────────────────────────────────────────────────
+
+const KV_BASE_URLS = {
+  development: 'https://smbls-kv-dev.nika-980.workers.dev',
+  staging: 'https://smbls-kv-staging.nika-980.workers.dev',
+  production: 'https://smbls-kv.nika-980.workers.dev'
+}
+
+/**
+ * Resolve whether KV mode is active.
+ * Can be set via CLI flag --use-kv or symbols.json { "useKV": true }
+ */
+export function resolveUseKV (symbolsConfig, options = {}) {
+  if (options.useKv) return true
+  const cfg = symbolsConfig || {}
+  return !!(cfg.useKV)
+}
+
+/**
+ * Get the KV service base URL for the current environment.
+ */
+export function getKvBaseUrl (env) {
+  const kvUrl = process.env.SMBLS_KV_URL
+  if (kvUrl) return kvUrl
+  return KV_BASE_URLS[env] || KV_BASE_URLS.production
+}
+
+/**
+ * Fetch project JSON from KV by key.
+ */
+export async function kvGet (projectKey, opts = {}) {
+  const baseUrl = getKvBaseUrl(opts.env || 'development')
+  const url = `${baseUrl}/kv/${encodeURIComponent(projectKey)}`
+  const response = await fetch(url, { method: 'GET' })
+  if (response.status === 404) return null
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.error || `KV fetch failed (${response.status})`)
+  }
+  const json = await response.json()
+  return json?.value || null
+}
+
+/**
+ * Store project JSON in KV by key.
+ */
+export async function kvPut (projectKey, value, opts = {}) {
+  const baseUrl = getKvBaseUrl(opts.env || 'development')
+  const url = `${baseUrl}/kv/${encodeURIComponent(projectKey)}`
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ value })
+  })
+  if (!response.ok) {
+    const data = await response.json().catch(() => null)
+    throw new Error(data?.error || `KV put failed (${response.status})`)
+  }
+  return await response.json()
+}
+
+/**
+ * Deep merge where `ours` (local) takes priority.
+ * Only fills in keys from `theirs` (remote) that are missing in `ours`.
+ * Works recursively on plain objects; for non-object values, `ours` always wins.
+ */
+export function deepMergeOurs (ours, theirs) {
+  if (!theirs || typeof theirs !== 'object' || Array.isArray(theirs)) return ours
+  if (!ours || typeof ours !== 'object' || Array.isArray(ours)) return ours
+
+  const result = { ...ours }
+  for (const key of Object.keys(theirs)) {
+    if (!Object.prototype.hasOwnProperty.call(result, key)) {
+      // Key missing locally — take from remote
+      result[key] = theirs[key]
+    } else if (
+      result[key] && typeof result[key] === 'object' && !Array.isArray(result[key]) &&
+      theirs[key] && typeof theirs[key] === 'object' && !Array.isArray(theirs[key])
+    ) {
+      // Both are objects — recurse
+      result[key] = deepMergeOurs(result[key], theirs[key])
+    }
+    // Otherwise local wins, do nothing
+  }
+  return result
+}
+
 export function normalizeSharedLibrariesConfig (raw) {
   if (!raw) return []
 

@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import { program } from './program.js'
 import { syncProjectChanges } from './sync.js'
-import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig, resolveUseKV, kvPut, deepMergeOurs } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
@@ -282,6 +282,7 @@ export async function startCollab (options) {
     throw err
   }
 
+  const kvEnabled = resolveUseKV(symbolsConfig, { useKv: options.useKv })
   const branch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
   const appKey = cliConfig.projectKey || symbolsConfig.key
 
@@ -619,7 +620,17 @@ export async function startCollab (options) {
       applyTuples(remoteBase, safeRemoteChanges)
       // Apply remote updates to currentBase (local). This can still overwrite, but
       // will not delete or zero out populated buckets due to the guards above.
-      applyTuples(currentBase, safeRemoteChanges)
+      // --ours: only apply changes for paths that don't already have local data
+      if (options.ours) {
+        const oursOnly = safeRemoteChanges.filter(([op, p]) => {
+          if (op === 'delete' || op === 'del') return false
+          const existing = pathArrGet(currentBase || {}, p)
+          return existing === undefined || existing === null
+        })
+        applyTuples(currentBase, oursOnly)
+      } else {
+        applyTuples(currentBase, safeRemoteChanges)
+      }
       ensureSchemaDependencies(currentBase)
       try { ensureDesignSystemBuckets(currentBase?.designSystem) } catch (_) {}
 
@@ -645,7 +656,17 @@ export async function startCollab (options) {
       if (!Array.isArray(tuples) || !tuples.length) return
       // Track server-side evolution separately for safer snapshot merges
       try { applyTuples(remoteBase, tuples) } catch (_) {}
-      applyTuples(currentBase, tuples)
+      // --ours: only apply ops for paths that don't already have local data
+      if (options.ours) {
+        const oursOnly = tuples.filter(([op, p]) => {
+          if (op === 'delete' || op === 'del') return false
+          const existing = pathArrGet(currentBase || {}, p)
+          return existing === undefined || existing === null
+        })
+        applyTuples(currentBase, oursOnly)
+      } else {
+        applyTuples(currentBase, tuples)
+      }
       // Apply server-provided ordering metadata so newly added keys don't just
       // append to the end locally.
       let orders = payload?.orders
@@ -771,6 +792,16 @@ export async function startCollab (options) {
       }
     }
 
+    // KV mode: push full snapshot to KV instead of emitting ops
+    if (kvEnabled) {
+      try {
+        await kvPut(appKey, safeLocal)
+        if (options.verbose) console.log(chalk.gray('Pushed snapshot to KV'))
+      } catch (e) {
+        if (options.verbose) console.error('Failed to push to KV', e)
+      }
+    }
+
     socket.emit('ops', {
       changes,
       granularChanges,
@@ -828,4 +859,7 @@ program
   .option('-l, --live', 'Enable live collaboration mode', false)
   .option('-d, --debounce-ms <ms>', 'Local changes debounce milliseconds', (v) => parseInt(v, 10), 200)
   .option('-v, --verbose', 'Show verbose output', false)
+  .option('--ours', 'Prioritize local data, only merge missing data from remote')
+  .option('--lock-only', 'Only update the lock file during initial sync, skip file operations')
+  .option('--use-kv', 'Use KV storage instead of the platform API')
   .action(startCollab)

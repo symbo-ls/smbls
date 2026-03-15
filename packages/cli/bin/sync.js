@@ -12,7 +12,7 @@ import { threeWayRebase, computeOrdersForTuples, preprocessChanges } from '../he
 import { createFs } from './fs.js'
 import { showAuthRequiredMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
-import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig, resolveUseKV, kvGet, kvPut, deepMergeOurs } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths, updateLegacySymbolsJson } from '../helpers/config.js'
 import { applyOrderFields, stripOrderFields } from '../helpers/orderUtils.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
@@ -262,6 +262,7 @@ export async function syncProjectChanges (options) {
     // Load configuration
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
+    const kvEnabled = resolveUseKV(symbolsConfig, { useKv: options.useKv })
     let authToken
     try {
       const ensured = await ensureAuthenticated({ apiBaseUrl: cliConfig.apiBaseUrl, nonInteractive: options.nonInteractive })
@@ -324,15 +325,37 @@ export async function syncProjectChanges (options) {
       }
     })()
 
-    // Get latest server data (ignore ETag to ensure latest)
+    // Get latest server data
     console.log(chalk.dim('Fetching server data...'))
-    const serverResp = await getCurrentProjectData(
-      { projectKey: appKey, projectId: lock.projectId },
-      authToken,
-      { branch: localBranch, includePending: true }
-    )
-    const serverProject = serverResp.data || {}
+    let serverProject
+    let serverResp
+    if (kvEnabled) {
+      if (options.verbose) console.log(chalk.gray('Using KV storage\n'))
+      serverProject = await kvGet(appKey) || {}
+      serverResp = { data: serverProject, etag: null }
+    } else {
+      serverResp = await getCurrentProjectData(
+        { projectKey: appKey, projectId: lock.projectId },
+        authToken,
+        { branch: localBranch, includePending: true }
+      )
+      serverProject = serverResp.data || {}
+    }
     console.log(chalk.gray('Server data fetched successfully'))
+
+    // --lock-only: update lock from server state, skip all merge/file operations
+    if (options.lockOnly) {
+      const projectId = lock.projectId || serverProject?.projectInfo?.id || serverProject?.id || serverProject?._id
+      writeLock({
+        etag: serverResp.etag || null,
+        version: serverProject?.version || lock.version,
+        branch: localBranch,
+        projectId,
+        pulledAt: new Date().toISOString()
+      })
+      console.log(chalk.bold.green('Lock updated successfully'))
+      return
+    }
 
     // Ensure schema.dependencies exists wherever dependencies exist (base/remote/local)
     ensureSchemaDependencies(baseSnapshot)
@@ -383,8 +406,16 @@ export async function syncProjectChanges (options) {
 
     // Handle conflicts if any
     let toApply = finalChanges && finalChanges.length ? finalChanges : [...localChanges]
-    let mode = requestedMode || 'merge' // merge | remote | local
-    if (interactive && !requestedMode && localChanges.length && remoteChanges.length) {
+
+    const isInteractive = !!(process.stdin && process.stdin.isTTY && process.stdout && process.stdout.isTTY)
+    let mode = options.ours ? 'local' : 'merge' // merge | remote | local
+
+    // --ours: skip interactive mode selection, force local priority
+    if (options.ours && options.verbose) {
+      console.log(chalk.gray('--ours: keeping local data, only merging missing data from remote'))
+    }
+
+    if (!options.ours && isInteractive && localChanges.length && remoteChanges.length) {
       const ans = await inquirer.prompt([{
         type: 'list',
         name: 'mode',
@@ -436,7 +467,7 @@ export async function syncProjectChanges (options) {
       return
     }
 
-    const projectId = lock.projectId || serverProject?.projectInfo?.id
+    const projectId = lock.projectId || serverProject?.projectInfo?.id || serverProject?.id || serverProject?._id
     if (!projectId) {
       console.log(chalk.red('Unable to resolve projectId. Please fetch first to initialize lock.'))
       process.exit(1)
@@ -450,35 +481,43 @@ export async function syncProjectChanges (options) {
     if (toApply.length) {
       // Update server (push local changes)
       console.log(chalk.dim('\nUpdating server...'))
-      const operationId = `cli-${Date.now()}`
-      // Expand into granular changes against remote/server state, compute orders from local
-      const { granularChanges } = preprocessChanges(remote, toApply)
-      const orders = computeOrdersForTuples(local, granularChanges)
-      const result = await postProjectChanges(projectId, authToken, {
-        branch: localBranch,
-        type: options.type || 'patch',
-        operationId,
-        changes: toApply,
-        granularChanges,
-        orders
-      })
-      const info = result.noOp ? {} : (result.data || {})
-      versionId = info.id
-      version = info.value
 
-      // Update symbols.json with new version
-      if (version) {
-        updateLegacySymbolsJson({ ...(symbolsConfig || {}), version, branch: localBranch, versionId })
+      if (kvEnabled) {
+        // KV mode: merge local changes into remote and push full JSON
+        const merged = options.ours ? deepMergeOurs(localProject, serverProject) : { ...serverProject, ...localProject }
+        const safeMerged = stringifyFunctionsForTransport(merged)
+        await kvPut(appKey, safeMerged)
+        version = safeMerged.version || lock.version
+        updatedServerData = safeMerged
+        updated = { etag: null, data: safeMerged }
+      } else {
+        const operationId = `cli-${Date.now()}`
+        const { granularChanges } = preprocessChanges(remote, toApply)
+        const orders = computeOrdersForTuples(local, granularChanges)
+        const result = await postProjectChanges(projectId, authToken, {
+          branch: localBranch,
+          type: options.type || 'patch',
+          operationId,
+          changes: toApply,
+          granularChanges,
+          orders
+        })
+        const info = result.noOp ? {} : (result.data || {})
+        versionId = info.id
+        version = info.value
+
+        if (version) {
+          updateLegacySymbolsJson({ ...(symbolsConfig || {}), version, branch: localBranch, versionId })
+        }
+
+        console.log(chalk.dim('Fetching latest project data...'))
+        updated = await getCurrentProjectData(
+          { projectKey: appKey, projectId },
+          authToken,
+          { branch: localBranch, includePending: true }
+        )
+        updatedServerData = updated?.data || {}
       }
-
-      // Get latest project data after sync
-      console.log(chalk.dim('Fetching latest project data...'))
-      updated = await getCurrentProjectData(
-        { projectKey: appKey, projectId },
-        authToken,
-        { branch: localBranch, includePending: true }
-      )
-      updatedServerData = updated?.data || {}
     } else {
       // No local changes to push (or user chose Remote-only). Avoid posting an
       // empty patch; just use the already-fetched server snapshot.
@@ -543,7 +582,13 @@ export async function syncProjectChanges (options) {
 
     // Apply changes to local files
     console.log(chalk.dim('Updating local files...'))
-    const snapshotForLocal = mode === 'local' ? localProject : updatedServerData
+    // --ours: local wins, but fill in missing keys from remote
+    let snapshotForLocal
+    if (mode === 'local' && options.ours) {
+      snapshotForLocal = deepMergeOurs(localProject, updatedServerData)
+    } else {
+      snapshotForLocal = mode === 'local' ? localProject : updatedServerData
+    }
     debugDesignSystemBuckets('sync: snapshotForLocal (pre-order)', snapshotForLocal?.designSystem)
     const orderedUpdatedServerData = applyOrderFields(snapshotForLocal)
     debugDesignSystemBuckets('sync: orderedUpdatedServerData (post-order)', orderedUpdatedServerData?.designSystem)
@@ -590,4 +635,7 @@ program
   .option('-y, --yes', 'Skip confirmation prompts', false)
   .option('-d, --dev', 'Run against local server')
   .option('-v, --verbose', 'Show verbose output')
+  .option('--ours', 'Prioritize local data, only merge missing data from remote')
+  .option('--lock-only', 'Only update the lock file, skip merge and file operations')
+  .option('--use-kv', 'Use KV storage instead of the platform API')
   .action(syncProjectChanges)

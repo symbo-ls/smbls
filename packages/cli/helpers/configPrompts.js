@@ -67,104 +67,133 @@ function writeProjectConfigJs (cwd, { distDir, packageManager }) {
 }
 
 /**
- * Run interactive config prompts and save results.
+ * Run config prompts and save results.
+ * In non-interactive mode, uses provided options or defaults — no prompts.
  *
  * - Project identity (key, branch, version, dir) → symbols.json
  * - Tooling + API (bundler, pm, runtime, deploy, apiBaseUrl) → .symbols_local/config.json
  *
  * @param {object} symbolsConfig - existing symbols.json content
+ * @param {object} [options] - non-interactive overrides
+ * @param {boolean} [options.nonInteractive] - skip prompts
+ * @param {string}  [options.key] - app key
+ * @param {string}  [options.branch] - branch
+ * @param {string}  [options.version] - version
+ * @param {string}  [options.dir] - symbols source directory
+ * @param {string}  [options.runtime] - runtime
+ * @param {string}  [options.bundler] - bundler
+ * @param {string}  [options.packageManager] - package manager
+ * @param {string}  [options.apiBaseUrl] - API base URL
+ * @param {string}  [options.deploy] - deploy target
  * @returns {{ runtime: string, bundler: string|null, packageManager: string }}
  */
-export async function runConfigPrompts (symbolsConfig = {}) {
+export async function runConfigPrompts (symbolsConfig = {}, options = {}) {
   const cliConfig = loadCliConfig()
   const detectedRuntime = detectRuntime(process.cwd())
   const detectedPm = detectPackageManager(process.cwd())
+  const interactive = !!(process.stdin?.isTTY && process.stdout?.isTTY && !options.nonInteractive)
 
-  const answers = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'key',
-      message: 'App key (e.g. myproject.symbo.ls):',
-      default: symbolsConfig.key || '',
-      filter: (v) => v.trim()
-    },
-    {
-      type: 'input',
-      name: 'branch',
-      message: 'Default branch:',
-      default: cliConfig.branch || symbolsConfig.branch || 'main',
-      filter: (v) => v.trim() || 'main'
-    },
-    {
-      type: 'input',
-      name: 'version',
-      message: 'Version:',
-      default: symbolsConfig.version || '1.0.0',
-      filter: (v) => v.trim() || '1.0.0'
-    },
-    {
-      type: 'input',
-      name: 'dir',
-      message: 'Symbols source directory:',
-      default: symbolsConfig.dir || symbolsConfig.distDir || './symbols',
-      filter: (v) => v.trim() || './symbols'
-    },
-    {
-      type: 'list',
-      name: 'runtime',
-      message: 'Environment:',
-      choices: RUNTIME_CHOICES,
-      default: cliConfig.runtime || symbolsConfig.runtime || detectedRuntime
-    },
-    {
-      type: 'list',
-      name: 'bundler',
-      message: 'Build tool:',
-      choices: BUNDLER_CHOICES,
-      default: cliConfig.bundler || symbolsConfig.bundler || 'parcel',
-      when: (a) => a.runtime === 'node'
-    },
-    {
-      type: 'input',
-      name: 'bundlerCustom',
-      message: 'Bundler name:',
-      default: (cliConfig.bundler || symbolsConfig.bundler) !== 'other' ? (cliConfig.bundler || symbolsConfig.bundler) : '',
-      filter: (v) => v.trim(),
-      when: (a) => a.runtime === 'node' && a.bundler === 'other'
-    },
-    {
-      type: 'list',
-      name: 'packageManager',
-      message: (a) => a.runtime === 'browser'
-        ? 'CDN provider:'
-        : 'Package manager:',
-      choices: (a) => a.runtime === 'browser' ? CDN_CHOICES : PM_CHOICES,
-      default: (a) => {
-        const currentPm = cliConfig.packageManager || symbolsConfig.packageManager
-        if (a.runtime === 'browser') {
-          return CDN_VALUES.includes(currentPm) ? currentPm : 'esm.sh'
-        }
-        return PM_CHOICES.find(c => c.value === currentPm)
-          ? currentPm
-          : detectedPm
+  let answers
+
+  if (interactive) {
+    answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'key',
+        message: 'App key (e.g. myproject.symbo.ls):',
+        default: symbolsConfig.key || '',
+        filter: (v) => v.trim()
       },
-      when: (a) => a.runtime === 'node' || a.runtime === 'browser'
-    },
-    {
-      type: 'input',
-      name: 'apiBaseUrl',
-      message: 'API base URL:',
-      default: cliConfig.apiBaseUrl || 'https://api.symbols.app',
-      filter: (v) => v.trim() || 'https://api.symbols.app'
-    },
-    {
-      type: 'list',
-      name: 'deploy',
-      message: 'Deploy target:',
-      choices: DEPLOY_CHOICES,
-      default: cliConfig.deploy || symbolsConfig.deploy || 'symbols'
+      {
+        type: 'input',
+        name: 'branch',
+        message: 'Default branch:',
+        default: cliConfig.branch || symbolsConfig.branch || 'main',
+        filter: (v) => v.trim() || 'main'
+      },
+      {
+        type: 'input',
+        name: 'version',
+        message: 'Version:',
+        default: symbolsConfig.version || '1.0.0',
+        filter: (v) => v.trim() || '1.0.0'
+      },
+      {
+        type: 'input',
+        name: 'dir',
+        message: 'Symbols source directory:',
+        default: symbolsConfig.dir || symbolsConfig.distDir || './symbols',
+        filter: (v) => v.trim() || './symbols'
+      },
+      {
+        type: 'list',
+        name: 'runtime',
+        message: 'Environment:',
+        choices: RUNTIME_CHOICES,
+        default: cliConfig.runtime || symbolsConfig.runtime || detectedRuntime
+      },
+      {
+        type: 'list',
+        name: 'bundler',
+        message: 'Build tool:',
+        choices: BUNDLER_CHOICES,
+        default: cliConfig.bundler || symbolsConfig.bundler || 'parcel',
+        when: (a) => a.runtime === 'node'
+      },
+      {
+        type: 'input',
+        name: 'bundlerCustom',
+        message: 'Bundler name:',
+        default: (cliConfig.bundler || symbolsConfig.bundler) !== 'other' ? (cliConfig.bundler || symbolsConfig.bundler) : '',
+        filter: (v) => v.trim(),
+        when: (a) => a.runtime === 'node' && a.bundler === 'other'
+      },
+      {
+        type: 'list',
+        name: 'packageManager',
+        message: (a) => a.runtime === 'browser'
+          ? 'CDN provider:'
+          : 'Package manager:',
+        choices: (a) => a.runtime === 'browser' ? CDN_CHOICES : PM_CHOICES,
+        default: (a) => {
+          const currentPm = cliConfig.packageManager || symbolsConfig.packageManager
+          if (a.runtime === 'browser') {
+            return CDN_VALUES.includes(currentPm) ? currentPm : 'esm.sh'
+          }
+          return PM_CHOICES.find(c => c.value === currentPm)
+            ? currentPm
+            : detectedPm
+        },
+        when: (a) => a.runtime === 'node' || a.runtime === 'browser'
+      },
+      {
+        type: 'input',
+        name: 'apiBaseUrl',
+        message: 'API base URL:',
+        default: cliConfig.apiBaseUrl || 'https://api.symbols.app',
+        filter: (v) => v.trim() || 'https://api.symbols.app'
+      },
+      {
+        type: 'list',
+        name: 'deploy',
+        message: 'Deploy target:',
+        choices: DEPLOY_CHOICES,
+        default: cliConfig.deploy || symbolsConfig.deploy || 'symbols'
+      }
+    ])
+  } else {
+    answers = {
+      key: options.key || symbolsConfig.key || '',
+      branch: options.branch || cliConfig.branch || symbolsConfig.branch || 'main',
+      version: options.version || symbolsConfig.version || '1.0.0',
+      dir: options.dir || symbolsConfig.dir || symbolsConfig.distDir || './symbols',
+      runtime: options.runtime || cliConfig.runtime || symbolsConfig.runtime || detectedRuntime,
+      bundler: options.bundler || cliConfig.bundler || symbolsConfig.bundler || 'parcel',
+      packageManager: options.packageManager || cliConfig.packageManager || symbolsConfig.packageManager || detectedPm,
+      apiBaseUrl: options.apiBaseUrl || cliConfig.apiBaseUrl || 'https://api.symbols.app',
+      deploy: options.deploy || cliConfig.deploy || symbolsConfig.deploy || 'symbols'
     }
-  ])
+  }
 
   const runtime = answers.runtime
   let bundler = null

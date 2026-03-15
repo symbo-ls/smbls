@@ -109,25 +109,85 @@ function withCliSessionKeyHeaders(headers, cliSessionKey) {
 program
   .command('login')
   .description('Sign in to Symbols')
-  .action(async () => {
+  .option('--non-interactive', 'Disable prompts (require --token or --email + --password)', false)
+  .option('--api-base-url <url>', 'API base URL')
+  .option('--token <token>', 'Auth token (for CI/scripts)')
+  .option('--email <email>', 'Email for password login')
+  .option('--password <password>', 'Password for password login')
+  .action(async (opts) => {
+    const currentConfig = loadCliConfig()
+    const credManager = new CredentialManager()
+    const interactive = !!(process.stdin?.isTTY && process.stdout?.isTTY && !opts.nonInteractive)
+    const envApiBaseUrl = process.env.SYMBOLS_API_BASE_URL || process.env.SMBLS_API_URL
+    const defaultApiBaseUrl =
+      envApiBaseUrl || credManager.getCurrentApiBaseUrl() || currentConfig.apiBaseUrl || getApiUrl()
+
+    // Non-interactive token login (for CI)
+    if (opts.token) {
+      const apiBaseUrl = opts.apiBaseUrl || defaultApiBaseUrl
+      credManager.saveCredentials({
+        apiBaseUrl,
+        authToken: opts.token,
+        refreshToken: null,
+        authTokenExpiresAt: null,
+        userId: null,
+        email: opts.email || null
+      })
+      saveCliConfig({ apiBaseUrl })
+      console.log(chalk.green('Token saved.'))
+      console.log(chalk.dim(`API: ${apiBaseUrl}`))
+      return
+    }
+
+    // Non-interactive password login
+    if (!interactive && opts.email && opts.password) {
+      const apiBaseUrl = opts.apiBaseUrl || defaultApiBaseUrl
+      try {
+        console.log(chalk.dim('Authenticating...'))
+        const response = await fetch(`${apiBaseUrl}/core/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: opts.email, password: opts.password })
+        })
+        const data = await response.json()
+        if (!response.ok) {
+          throw new Error(data?.message || data?.error || `Authentication failed (${response.status})`)
+        }
+        const { user, accessToken, refreshToken, accessTokenExp } = extractAuthFromResponse(data)
+        if (!accessToken) throw new Error('Login succeeded but no token was returned')
+        credManager.saveCredentials({
+          apiBaseUrl,
+          authToken: accessToken,
+          refreshToken,
+          authTokenExpiresAt: accessTokenExp,
+          userId: user?.id || data?.userId,
+          email: user?.email || opts.email
+        })
+        saveCliConfig({ apiBaseUrl })
+        console.log(chalk.green('Successfully logged in!'))
+        return
+      } catch (error) {
+        console.error(chalk.red('Login failed:'), error.message)
+        process.exit(1)
+      }
+    }
+
+    if (!interactive) {
+      console.error(chalk.red('Login requires --token or --email + --password when prompts are disabled.'))
+      console.error(chalk.dim('Re-run with credentials or use an interactive terminal.'))
+      process.exit(1)
+    }
+
     console.log(chalk.cyan('\n🔑 Welcome to Symbols CLI'))
     console.log(chalk.white('\nPlease sign in with your Symbols account:'))
     console.log(chalk.dim('Don\'t have an account? Visit https://symbols.app/signup\n'))
 
-    // Prompt for credentials
-    const currentConfig = loadCliConfig()
-    const credManager = new CredentialManager()
-    // If the user selected an active server via `smbls servers -s`, prefer that as the login default.
-    // Env vars should still override everything (useful for CI / debugging).
-    const envApiBaseUrl = process.env.SYMBOLS_API_BASE_URL || process.env.SMBLS_API_URL
-    const defaultApiBaseUrl =
-      envApiBaseUrl || credManager.getCurrentApiBaseUrl() || currentConfig.apiBaseUrl || getApiUrl()
     const first = await inquirer.prompt([
       {
         type: 'input',
         name: 'apiBaseUrl',
         message: 'API Base URL:',
-        default: defaultApiBaseUrl,
+        default: opts.apiBaseUrl || defaultApiBaseUrl,
         validate: input => /^https?:\/\//.test(input) || '❌ Please enter a valid URL'
       },
       {
@@ -136,7 +196,6 @@ program
         message: 'Sign in method:',
         choices: [
           { name: 'Email + Password', value: 'password' },
-          // Uses plugin-style PKCE session flow so providers don't need localhost redirects
           { name: 'Continue with Google (opens browser)', value: 'google_browser' },
           { name: 'Continue with GitHub (opens browser)', value: 'github_browser' },
         ],

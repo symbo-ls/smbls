@@ -41,6 +41,7 @@ program
   .command('migrate')
   .description('Migrate a v2 Symbols project to v3')
   .option('--yes', 'Skip confirmation prompt')
+  .option('--non-interactive', 'Disable all prompts (implies --yes)', false)
   .action(async (opts) => {
     const cwd = process.cwd()
     const CDN_PMs = new Set(['esm.sh', 'unpkg', 'skypack', 'jsdelivr', 'pkg.symbo.ls'])
@@ -60,7 +61,12 @@ program
     if (info.hasIndexJs && !info.hasCreateCall) console.log(chalk.yellow('  • symbols/index.js') + chalk.dim(' → will rewrite to v3 format'))
     console.log()
 
-    if (!opts.yes) {
+    if (!opts.yes && !opts.nonInteractive) {
+      const interactive = !!(process.stdin?.isTTY && process.stdout?.isTTY)
+      if (!interactive) {
+        console.error(chalk.red('Migrate requires --yes when prompts are disabled.'))
+        process.exit(1)
+      }
       const { confirm } = await inquirer.prompt([{
         type: 'confirm',
         name: 'confirm',
@@ -319,8 +325,8 @@ ${cdnHeadTags}</head>
       existingSymbols.dir = './symbols'
     }
     delete existingSymbols.distDir
-    console.log(chalk.bold('\nConfigure your project:\n'))
-    const { packageManager: pm, bundler } = await runConfigPrompts(existingSymbols)
+    if (!opts.nonInteractive) console.log(chalk.bold('\nConfigure your project:\n'))
+    const { packageManager: pm, bundler } = await runConfigPrompts(existingSymbols, { nonInteractive: opts.nonInteractive })
     console.log()
 
     // 8. Install dependencies (skip for browser/CDN mode)

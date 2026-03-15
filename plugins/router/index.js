@@ -270,14 +270,14 @@ export const router = (path, el, state = {}, options = {}) => {
     )
   }
 
-  if (opts.scrollToTop) {
+  if (opts.scrollToTop && scrollNode?.scrollTo) {
     scrollNode.scrollTo({
       ...(opts.scrollToOptions || {}),
       top: 0,
       left: 0
     })
   }
-  if (opts.scrollToNode) {
+  if (opts.scrollToNode && content[contentElementKey]?.node?.scrollTo) {
     content[contentElementKey].node.scrollTo({
       ...(opts.scrollToOptions || {}),
       top: 0,
@@ -287,7 +287,7 @@ export const router = (path, el, state = {}, options = {}) => {
 
   if (hash) {
     const activeNode = doc.getElementById(hash)
-    if (activeNode) {
+    if (activeNode && scrollNode?.scrollTo) {
       const top =
         activeNode.getBoundingClientRect().top +
           rootNode.scrollTop -

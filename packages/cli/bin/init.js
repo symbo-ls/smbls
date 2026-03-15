@@ -25,22 +25,33 @@ const runCreate = (name) => {
 program
   .command('init [dest]')
   .description('Initialize or add Symbols to a project')
-  .action(async (dest) => {
+  .option('--non-interactive', 'Disable prompts (require flags)', false)
+  .option('--name <name>', 'Project name (non-interactive)')
+  .option('--location <location>', 'Where to init: root or subfolder')
+  .option('--v2-action <action>', 'V2 project action: migrate, root, or subfolder')
+  .option('-y, --yes', 'Skip confirmation prompts', false)
+  .action(async (dest, opts) => {
     const cwd = dest ? resolve(process.cwd(), dest) : process.cwd()
     const hasPkg = existsSync(resolve(cwd, 'package.json'))
+    const interactive = !!(process.stdin?.isTTY && process.stdout?.isTTY && !opts.nonInteractive)
 
     // No package.json → redirect to smbls create
     if (!hasPkg) {
       console.log(chalk.yellow('No package.json found.'))
       console.log(chalk.dim('Redirecting to `smbls create`...\n'))
 
-      const { name } = await inquirer.prompt([{
-        type: 'input',
-        name: 'name',
-        message: 'Project name:',
-        default: dest || 'my-symbols-app',
-        filter: (v) => v.trim()
-      }])
+      let name = opts.name
+      if (!name && interactive) {
+        const answers = await inquirer.prompt([{
+          type: 'input',
+          name: 'name',
+          message: 'Project name:',
+          default: dest || 'my-symbols-app',
+          filter: (v) => v.trim()
+        }])
+        name = answers.name
+      }
+      if (!name) name = dest || 'my-symbols-app'
 
       runCreate(name)
       return
@@ -50,17 +61,22 @@ program
     const v2info = detectV2Project(cwd)
     if (v2info.isV2) {
       console.log(chalk.yellow('\nExisting v2 Symbols project detected.'))
-      const { action } = await inquirer.prompt([{
-        type: 'list',
-        name: 'action',
-        message: 'What would you like to do?',
-        choices: [
-          { name: 'Migrate to v3  — upgrade project structure', value: 'migrate' },
-          { name: 'Init anyway    — merge starter-kit files', value: 'root' },
-          { name: 'Create subfolder', value: 'subfolder' }
-        ],
-        default: 'migrate'
-      }])
+      let action = opts.v2Action
+      if (!action && interactive) {
+        const answers = await inquirer.prompt([{
+          type: 'list',
+          name: 'action',
+          message: 'What would you like to do?',
+          choices: [
+            { name: 'Migrate to v3  — upgrade project structure', value: 'migrate' },
+            { name: 'Init anyway    — merge starter-kit files', value: 'root' },
+            { name: 'Create subfolder', value: 'subfolder' }
+          ],
+          default: 'migrate'
+        }])
+        action = answers.action
+      }
+      if (!action) action = 'migrate'
 
       if (action === 'migrate') {
         spawnSync(process.execPath, [CLI_BIN, 'migrate'], { stdio: 'inherit', cwd })
@@ -68,38 +84,53 @@ program
       }
 
       if (action === 'subfolder') {
-        const { name } = await inquirer.prompt([{
-          type: 'input',
-          name: 'name',
-          message: 'Subfolder name:',
-          default: 'symbols-app',
-          filter: (v) => v.trim()
-        }])
+        let name = opts.name
+        if (!name && interactive) {
+          const answers = await inquirer.prompt([{
+            type: 'input',
+            name: 'name',
+            message: 'Subfolder name:',
+            default: 'symbols-app',
+            filter: (v) => v.trim()
+          }])
+          name = answers.name
+        }
+        if (!name) name = 'symbols-app'
         runCreate(name)
         return
       }
       // fall through to root init
     } else {
     // Has package.json → ask: init in root or create in subfolder
-    const { location } = await inquirer.prompt([{
-      type: 'list',
-      name: 'location',
-      message: 'Where do you want to initialize Symbols?',
-      choices: [
-        { name: 'Subfolder          — create a new project folder', value: 'subfolder' },
-        { name: 'Current directory  — merge config files here', value: 'root' }
-      ],
-      default: 'subfolder'
-    }])
+    let location = opts.location
+    if (!location && interactive) {
+      const answers = await inquirer.prompt([{
+        type: 'list',
+        name: 'location',
+        message: 'Where do you want to initialize Symbols?',
+        choices: [
+          { name: 'Subfolder          — create a new project folder', value: 'subfolder' },
+          { name: 'Current directory  — merge config files here', value: 'root' }
+        ],
+        default: 'subfolder'
+      }])
+      location = answers.location
+    }
+    if (!location) location = 'root'
 
     if (location === 'subfolder') {
-      const { name } = await inquirer.prompt([{
-        type: 'input',
-        name: 'name',
-        message: 'Subfolder name:',
-        default: 'symbols-app',
-        filter: (v) => v.trim()
-      }])
+      let name = opts.name
+      if (!name && interactive) {
+        const answers = await inquirer.prompt([{
+          type: 'input',
+          name: 'name',
+          message: 'Subfolder name:',
+          default: 'symbols-app',
+          filter: (v) => v.trim()
+        }])
+        name = answers.name
+      }
+      if (!name) name = 'symbols-app'
       runCreate(name)
       return
     }
@@ -109,8 +140,10 @@ program
     console.log(chalk.bold('\nInitializing Symbols in current directory...\n'))
     const projectDir = await mergeStarterKit(cwd)
 
-    console.log(chalk.bold('Configure your project:\n'))
-    spawnSync(process.execPath, [CLI_BIN, 'config'], { stdio: 'inherit', cwd: projectDir })
+    if (!opts.nonInteractive) console.log(chalk.bold('Configure your project:\n'))
+    const configArgs = [CLI_BIN, 'config']
+    if (opts.nonInteractive) configArgs.push('--non-interactive')
+    spawnSync(process.execPath, configArgs, { stdio: 'inherit', cwd: projectDir })
 
     // Detect package manager from saved config or environment
     const { loadSymbolsConfig } = await import('../helpers/symbolsConfig.js')

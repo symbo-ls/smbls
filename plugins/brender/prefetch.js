@@ -118,15 +118,17 @@ const createSSRAdapter = async (dbConfig) => {
   const supabaseUrl = url || (projectId && `https://${projectId}.supabase.co`)
   if (!supabaseUrl || !key) return null
 
-  let clientFactory = createClient
-  if (!clientFactory) {
-    try {
-      const mod = await import('@supabase/supabase-js')
-      clientFactory = mod.createClient
-    } catch {
-      return null
-    }
+  // Always import @supabase/supabase-js for SSR — the serialized createClient
+  // from project data is a no-op placeholder that won't produce a real client.
+  let clientFactory
+  try {
+    const mod = await import('@supabase/supabase-js')
+    clientFactory = mod.createClient
+  } catch {
+    // Fall back to provided createClient only if import fails
+    clientFactory = createClient
   }
+  if (!clientFactory) return null
 
   const client = clientFactory(supabaseUrl, key)
 
@@ -199,7 +201,7 @@ export const prefetchPageData = async (data, route = '/', options = {}) => {
   if (!pageDef) return new Map()
 
   const config = data.config || data.settings || {}
-  const dbConfig = config.fetch || config.db || data.db
+  const dbConfig = config.fetch || data.fetch || config.db || data.db
   if (!dbConfig) return new Map()
 
   const adapter = await createSSRAdapter(dbConfig)
@@ -246,11 +248,12 @@ export const prefetchPageData = async (data, route = '/', options = {}) => {
  * @returns {Promise<object|null>} Translation map keyed by language, or null on failure
  */
 export const fetchSSRTranslations = async (data) => {
-  const config = data.config || data.settings || {}
-  const polyglot = config.polyglot
+  // Config fields may be nested under data.config or spread at the top level
+  const config = data.config || {}
+  const polyglot = config.polyglot || data.polyglot
   if (!polyglot?.fetch) return null
 
-  const dbConfig = config.fetch || config.db || data.db
+  const dbConfig = config.fetch || data.fetch || config.db || data.db
   if (!dbConfig) return null
 
   const adapter = await createSSRAdapter(dbConfig)

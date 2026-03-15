@@ -195,13 +195,22 @@ program
   .option('--init', 'Initialize deployment config without deploying')
   .option('--out-dir <dir>', 'Output directory for build')
   .option('--bundler <bundler>', 'Force bundler: parcel, vite, browser')
+  .option('--non-interactive', 'Disable prompts (require --provider)', false)
+  .option('-y, --yes', 'Auto-save provider as default', false)
   .action(async (opts) => {
     const cwd = process.cwd()
     const symbolsConfig = await loadSymbolsConfig({ required: false, validateKey: false, silent: true }) || {}
     const cliConfig = loadCliConfig()
+    const interactive = !!(process.stdin?.isTTY && process.stdout?.isTTY && !opts.nonInteractive)
     let provider = opts.provider || cliConfig.deploy || symbolsConfig.deploy
 
     if (!provider) {
+      if (!interactive) {
+        console.error(chalk.red('Deploy requires --provider when prompts are disabled.'))
+        console.error(chalk.dim('Re-run with --provider <target> or use an interactive terminal.'))
+        process.exit(1)
+      }
+
       const { selectedProvider } = await inquirer.prompt([{
         type: 'list',
         name: 'selectedProvider',
@@ -211,12 +220,16 @@ program
       }])
       provider = selectedProvider
 
-      const { save } = await inquirer.prompt([{
-        type: 'confirm',
-        name: 'save',
-        message: `Save "${provider}" as default deploy target?`,
-        default: true
-      }])
+      let save = opts.yes
+      if (!save) {
+        const answers = await inquirer.prompt([{
+          type: 'confirm',
+          name: 'save',
+          message: `Save "${provider}" as default deploy target?`,
+          default: true
+        }])
+        save = answers.save
+      }
 
       if (save) {
         updateLegacySymbolsJson({ ...symbolsConfig, deploy: provider })

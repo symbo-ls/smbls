@@ -209,17 +209,195 @@ function resolveFileReferences (metadata, files) {
   return result
 }
 
-export function getPageMetadata (data, pathname) {
+/**
+ * Resolve a dot-path like "item.title_ka" against an object.
+ */
+function resolveDotPath (obj, path) {
+  if (!obj || !path) return undefined
+  const parts = path.split('.')
+  let v = obj
+  for (const p of parts) {
+    if (v == null || typeof v !== 'object') return undefined
+    v = v[p]
+  }
+  return v
+}
+
+/**
+ * Resolve {{ key | polyglot }} and {{ key | getLocalStateLang }} templates
+ * in metadata string values using project polyglot translations and SSR state.
+ */
+function resolveMetadataTemplates (metadata, data, ssrContext) {
+  const config = data.config || data.settings || {}
+  const polyglot = config.polyglot || data.polyglot
+  const defaultLang = ssrContext?.lang || polyglot?.defaultLang || 'en'
+  const translations = polyglot?.translations || {}
+  const langMap = translations[defaultLang] || {}
+  const state = ssrContext?.state || {}
+
+  const result = { ...metadata }
+  for (const [key, value] of Object.entries(result)) {
+    if (typeof value !== 'string' || !value.includes('{{')) continue
+
+    result[key] = value.replace(/\{\{\s*([^|{}]+?)\s*(?:\|\s*(\w+)\s*)?\}\}/g, (match, k, filter) => {
+      const trimmed = k.trim()
+
+      if (filter === 'polyglot') {
+        return langMap[trimmed] ?? resolveDotPath(langMap, trimmed) ?? match
+      }
+
+      if (filter === 'getLocalStateLang') {
+        // key is like "item.title_" — append lang
+        const resolved = resolveDotPath(state, trimmed + defaultLang)
+        return resolved ?? match
+      }
+
+      // No filter — try state lookup, then polyglot
+      const fromState = resolveDotPath(state, trimmed)
+      if (fromState !== undefined) return fromState
+
+      return langMap[trimmed] ?? resolveDotPath(langMap, trimmed) ?? match
+    })
+  }
+  return result
+}
+
+/**
+ * Convert function-string metadata values to {{ }} templates.
+ * Handles common patterns from Symbols page definitions:
+ *   (el, s) => s.item ? el.call("getLocalStateLang", "item.title_") : ""
+ *   (el, s) => s.item ? s.item.image_url : ""
+ */
+function convertFunctionMetaToTemplates (metadata) {
+  const result = { ...metadata }
+  for (const [key, value] of Object.entries(result)) {
+    if (typeof value === 'function') {
+      const src = value.toString()
+      // Pattern: el.call("getLocalStateLang", "item.title_")
+      const langMatch = src.match(/el\.call\(\s*["']getLocalStateLang["']\s*,\s*["']([^"']+)["']\s*\)/)
+      if (langMatch) {
+        result[key] = `{{ ${langMatch[1]} | getLocalStateLang }}`
+        continue
+      }
+      // Pattern: el.call("polyglot", "item.description")
+      const polyMatch = src.match(/el\.call\(\s*["']polyglot["']\s*,\s*["']([^"']+)["']\s*\)/)
+      if (polyMatch) {
+        result[key] = `{{ ${polyMatch[1]} | polyglot }}`
+        continue
+      }
+      // Pattern: s.item.field or s.item?.field
+      const stateMatch = src.match(/s\.(\w+(?:\.\w+)+)/)
+      if (stateMatch) {
+        result[key] = `{{ ${stateMatch[1]} }}`
+        continue
+      }
+      // Could not parse — drop function value
+      delete result[key]
+    } else if (typeof value === 'string') {
+      // Function-string (not yet destringified)
+      const langMatch = value.match(/el\.call\(\s*["']getLocalStateLang["']\s*,\s*["']([^"']+)["']\s*\)/)
+      if (langMatch) {
+        result[key] = `{{ ${langMatch[1]} | getLocalStateLang }}`
+        continue
+      }
+      const polyMatch = value.match(/el\.call\(\s*["']polyglot["']\s*,\s*["']([^"']+)["']\s*\)/)
+      if (polyMatch) {
+        result[key] = `{{ ${polyMatch[1]} | polyglot }}`
+        continue
+      }
+      // Function-string with s.item.field
+      if (value.includes('=>') && value.includes('s.')) {
+        const stateMatch = value.match(/s\.(\w+(?:\.\w+)+)/)
+        if (stateMatch) {
+          result[key] = `{{ ${stateMatch[1]} }}`
+          continue
+        }
+      }
+    }
+  }
+  return result
+}
+
+/**
+ * Extract page-level metadata from project data for a given pathname.
+ * @param {object} data - Full project data
+ * @param {string} pathname - Route path (e.g. '/blog/:id')
+ * @param {object} [ssrContext] - SSR context for resolving dynamic metadata
+ * @param {object} [ssrContext.state] - Page state with prefetched data
+ * @param {string} [ssrContext.lang] - Active language code (e.g. 'ka')
+ * @param {string} [ssrContext.actualPathname] - Actual URL pathname (e.g. '/blog/abc-123')
+ */
+export function getPageMetadata (data, pathname, ssrContext) {
   const currentPage = data.pages?.[pathname]
   const stateObject = isObject(currentPage?.state) && currentPage?.state
-  let pageMetadata = currentPage?.metadata || currentPage?.helmet || stateObject || {}
+  const rawPageMeta = currentPage?.metadata || currentPage?.helmet || stateObject || {}
+
+  // Convert function values to {{ }} templates instead of filtering them out
+  const pageMetadata = convertFunctionMetaToTemplates(rawPageMeta)
+
+  // Track which keys the page explicitly sets
+  const pageExplicitKeys = new Set(Object.keys(pageMetadata))
+
   const appMetadata = data.app?.metadata || {}
+  const cleanAppMeta = convertFunctionMetaToTemplates(appMetadata)
+
+  let merged = {}
   if (data.integrations?.seo) {
-    pageMetadata = { ...data.integrations.seo, ...appMetadata, ...pageMetadata }
-  } else if (Object.keys(appMetadata).length) {
-    pageMetadata = { ...appMetadata, ...pageMetadata }
+    merged = { ...data.integrations.seo, ...cleanAppMeta, ...pageMetadata }
+  } else if (Object.keys(cleanAppMeta).length) {
+    merged = { ...cleanAppMeta, ...pageMetadata }
+  } else {
+    merged = { ...pageMetadata }
   }
-  if (!pageMetadata.title) pageMetadata.title = data.name + ' / symbo.ls' || 'Symbols demo'
-  pageMetadata = resolveFileReferences(pageMetadata, data.files)
-  return pageMetadata
+
+  if (!merged.title) merged.title = data.name + ' / symbo.ls' || 'Symbols demo'
+
+  // Resolve {{ }} templates in metadata values (polyglot, state, getLocalStateLang)
+  merged = resolveMetadataTemplates(merged, data, ssrContext)
+
+  // Auto-cascade page-level title/description to OG/Twitter tags
+  if (merged.title && (pageExplicitKeys.has('title') || !merged['og:title'])) {
+    if (!pageExplicitKeys.has('og:title')) {
+      merged['og:title'] = merged.title
+    }
+  }
+  if (merged.description && (pageExplicitKeys.has('description') || !merged['og:description'])) {
+    if (!pageExplicitKeys.has('og:description')) {
+      merged['og:description'] = merged.description
+    }
+  }
+  if (merged.title && !merged['twitter:title']) {
+    merged['twitter:title'] = merged.title
+  }
+  if (merged.description && !merged['twitter:description']) {
+    merged['twitter:description'] = merged.description
+  }
+
+  // Make og:url route-aware — use actual pathname if available
+  const routeForUrl = ssrContext?.actualPathname || pathname
+  if (merged['og:url'] || merged.url) {
+    const baseUrl = (merged['og:url'] || merged.url || '').replace(/\/$/, '')
+    if (baseUrl && routeForUrl && routeForUrl !== '/') {
+      const cleanRoute = routeForUrl.startsWith('/') ? routeForUrl : '/' + routeForUrl
+      merged['og:url'] = baseUrl + cleanRoute
+    }
+  }
+
+  merged = resolveFileReferences(merged, data.files)
+
+  // Clean up any unresolved {{ }} templates (when prefetch fails or returns no data)
+  const siteName = data.name || data.app?.metadata?.title || data.app?.name || ''
+  for (const [key, value] of Object.entries(merged)) {
+    if (typeof value === 'string' && value.includes('{{')) {
+      const cleaned = value.replace(/\{\{[^}]*\}\}/g, '').trim()
+      if (!cleaned) {
+        if (key === 'title') merged[key] = siteName
+        else delete merged[key]
+      } else {
+        merged[key] = cleaned
+      }
+    }
+  }
+
+  return merged
 }

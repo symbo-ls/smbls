@@ -10,7 +10,10 @@ export const setup = async ({ url, key, projectId, createClient, ...options }) =
     const mod = await import(/* webpackIgnore: true */ pkg)
     createClient = mod.createClient
   }
-  return supabaseAdapter(createClient(supabaseUrl, key, options))
+  const client = createClient(supabaseUrl, key, options)
+  // Guard against no-op createClient (e.g. deserialized placeholder from SSR)
+  if (!client || !client.auth) return null
+  return supabaseAdapter(client)
 }
 
 const applyFilters = (query, params) => {
