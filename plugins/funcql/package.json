@@ -1,6 +1,6 @@
 {
   "name": "@domql/funcql",
-  "version": "3.7.4",
+  "version": "3.7.6",
   "description": "Declarative function representation as JSON — serialize, interpret, and reverse functions as data",
   "license": "CC-BY-NC-4.0",
   "type": "module",
