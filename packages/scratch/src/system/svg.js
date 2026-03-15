@@ -22,15 +22,15 @@ export const setSVG = (val, key) => {
 export const appendSVGSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const CONFIG = getActiveConfig()
 
-  const lib = Object.keys(LIBRARY).length ? {} : CONFIG.SVG
-  for (const key in LIBRARY) lib[key] = CONFIG.SVG[key]
+  const lib = Object.keys(LIBRARY).length ? {} : CONFIG.svg
+  for (const key in LIBRARY) lib[key] = CONFIG.svg[key]
 
   appendSVG(lib, options)
 }
 
 export const setSvgIcon = (val, key) => {
   const CONFIG = getActiveConfig()
-  if (CONFIG.useIconSprite && !CONFIG.SEMANTIC_ICONS?.[key]) {
+  if (CONFIG.useIconSprite && !CONFIG.semantic_icons?.[key]) {
     return setSVG(val, key)
   } return val
 }
@@ -38,8 +38,8 @@ export const setSvgIcon = (val, key) => {
 export const appendSvgIconsSprite = (LIBRARY, options = DEF_OPTIONS) => {
   const CONFIG = getActiveConfig()
 
-  const lib = Object.keys(LIBRARY).length ? {} : CONFIG.ICONS
-  for (const key in LIBRARY) lib[key] = CONFIG.ICONS[key]
+  const lib = Object.keys(LIBRARY).length ? {} : CONFIG.icons
+  for (const key in LIBRARY) lib[key] = CONFIG.icons[key]
 
   appendSVG(lib, options)
 }

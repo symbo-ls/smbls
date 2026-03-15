@@ -1,0 +1,326 @@
+'use strict'
+
+import { DOMQ_PROPERTIES, PROPS_METHODS } from './keys.js'
+import { addEventFromProps } from './events.js'
+import { deepClone, deepMerge, exec } from './object.js'
+import { is, isArray, isFunction, isObject, isObjectLike } from './types.js'
+import { lowercaseFirstLetter } from './string.js'
+import { hasHandlerPlugin } from './function.js'
+
+const RE_UPPER = /^[A-Z]/
+const RE_DIGITS = /^\d+$/
+
+// Characters that mark css-in-props selectors (pseudo-selectors, media queries, etc.)
+// These properties must always live in props so useCssInProps() can process them
+const CSS_SELECTOR_PREFIXES = new Set([':', '@', '[', '*', '+', '~', '&', '>', '$', '-', '.', '!'])
+
+const ELEMENT_INDICATOR_KEYS = new Set([
+  'extend', 'props', 'text', 'tag', 'on', 'if', 'childExtend',
+  'children', 'childrenAs', 'state', 'html', 'attr',
+  'define', 'content'
+])
+const looksLikeElement = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false
+  for (const k in value) {
+    if (ELEMENT_INDICATOR_KEYS.has(k)) return true
+    if (RE_UPPER.test(k)) return true
+  }
+  return false
+}
+
+export const createProps = (element, parent, key) => {
+  const { props, __ref: ref } = element
+  ref.__propsStack = []
+  if (props) ref.__initialProps = props
+  else return {}
+  if (!isObjectLike(props)) {
+    ref.__propsStack.push(props)
+    return {}
+  }
+  return { ...props }
+}
+
+export function pickupPropsFromElement (obj, opts = {}) {
+  const cachedKeys = opts.cachedKeys || []
+
+  for (const key in obj) {
+    const value = obj[key]
+
+    // Move top-level onXxx handlers directly into on.xxx (v3 style)
+    const isOnKey = key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110 && key[2] === key[2].toUpperCase()
+    const isEventHandler = isOnKey && (isFunction(value) || (value != null && hasHandlerPlugin(this.context)))
+    if (isEventHandler) {
+      const eventName = lowercaseFirstLetter(key.slice(2))
+      if (obj.on) obj.on[eventName] = value
+      delete obj[key]
+      continue
+    }
+
+    // childProps is a framework property that must always live in props
+    // even though its value may contain uppercase keys (Icon, Hgroup, etc.)
+    if (key === 'childProps') {
+      obj.props[key] = value
+      delete obj[key]
+      cachedKeys.push(key)
+      continue
+    }
+
+    // Check define handlers - keys with define handlers must stay at root
+    // for throughInitialDefine to process them
+    const defineValue = this.define?.[key]
+    const globalDefineValue = this.context?.define?.[key]
+    const hasDefine = isObject(defineValue) || isFunction(defineValue)
+    const hasGlobalDefine = isObject(globalDefineValue) || isFunction(globalDefineValue)
+    if (hasDefine || hasGlobalDefine) continue
+
+    // CSS-in-props selectors (:after, :hover, @mobileS, etc.) must always
+    // live in props so useCssInProps() can process them via transformersByPrefix
+    const firstChar = key.charAt(0)
+    if (CSS_SELECTOR_PREFIXES.has(firstChar)) {
+      obj.props[key] = value
+      delete obj[key]
+      cachedKeys.push(key)
+      continue
+    }
+
+    const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key) || looksLikeElement(value)
+    const isBuiltin = DOMQ_PROPERTIES.has(key)
+
+    // If it's not a special case, move to props
+    if (!isElement && !isBuiltin) {
+      obj.props[key] = value
+      delete obj[key]
+      cachedKeys.push(key)
+    }
+  }
+
+  return obj
+}
+
+export function pickupElementFromProps (obj = this, opts) {
+  const cachedKeys = opts.cachedKeys || []
+
+  for (const key in obj.props) {
+    const value = obj.props[key]
+
+    // Handle event handlers (functions, or plugin schemas when plugins are active)
+    const isEvent = key.length > 2 && key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110
+    const isHandler = isFunction(value) || (value != null && hasHandlerPlugin(this.context))
+
+    if (isEvent && isHandler) {
+      addEventFromProps(key, obj)
+      delete obj.props[key]
+      continue
+    }
+
+    // Skip if key was originally from obj
+    if (cachedKeys.includes(key)) continue
+
+    // childProps must stay in props - it's consumed by inheritParentProps
+    if (key === 'childProps') continue
+
+    // CSS-in-props selectors must stay in props
+    const firstChar = key.charAt(0)
+    if (CSS_SELECTOR_PREFIXES.has(firstChar)) continue
+
+    const defineValue = this.define?.[key]
+    const globalDefineValue = this.context?.define?.[key]
+    const hasDefine = isObject(defineValue) || isFunction(defineValue)
+    const hasGlobalDefine = isObject(globalDefineValue) || isFunction(globalDefineValue)
+    const isElement = RE_UPPER.test(key) || RE_DIGITS.test(key)
+    const isBuiltin = DOMQ_PROPERTIES.has(key)
+
+    // Move qualifying properties back to obj root
+    if (isElement || isBuiltin || hasDefine || hasGlobalDefine) {
+      // Don't overwrite if root already has this property explicitly set
+      // Exception: null values should override to allow nullifying children from props
+      if (obj[key] === undefined || value === null) {
+        obj[key] = value
+        if (obj.props) delete obj.props[key]
+      }
+      // If root already has the property (e.g. from extends), keep it in props
+      // so functions like `text: ({ props }) => props.text` can still access it
+    }
+  }
+
+  return obj
+}
+
+// Helper function to maintain compatibility with original propertizeElement
+export function propertizeElement (element = this) {
+  const cachedKeys = []
+  pickupPropsFromElement.call(this, element, { cachedKeys })
+  pickupElementFromProps.call(this, element, { cachedKeys })
+  return element
+}
+
+export function propertizeUpdate (params = {}) {
+  if (!params.on) params.on = {}
+  if (!params.props) params.props = {}
+  return propertizeElement.call(this, params)
+}
+
+export const objectizeStringProperty = propValue => {
+  if (is(propValue)('string', 'number')) {
+    return { inheritedString: propValue }
+  }
+  return propValue
+}
+
+export const propExists = (prop, stack) => {
+  if (!prop || !stack.length) return false
+  return stack.includes(prop)
+}
+
+export const inheritParentProps = (element, parent) => {
+  const { __ref: ref } = element
+  const propsStack = ref.__propsStack || []
+  const parentProps = parent.props
+
+  if (!parentProps) return propsStack
+
+  const matchParentKeyProps = parentProps[element.key]
+  const matchParentChildProps = parentProps.childProps || parent.childProps
+
+  // Order matters: key-specific props should be added after childProps
+  const ignoreChildProps = element.props?.ignoreChildProps
+  if (matchParentChildProps && !ignoreChildProps) {
+    const childProps = objectizeStringProperty(matchParentChildProps)
+    propsStack.unshift(childProps)
+  }
+
+  if (matchParentKeyProps) {
+    const keyProps = objectizeStringProperty(matchParentKeyProps)
+    propsStack.unshift(keyProps)
+  }
+
+  return propsStack
+}
+
+export function update (props, options) {
+  const element = this.__element
+  element.update({ props }, options)
+}
+
+// TODO: check bind with promise
+export function setPropsPrototype (element) {
+  const methods = { update: update.bind(element.props), __element: element }
+  Object.setPrototypeOf(element.props, methods)
+}
+
+export const removeDuplicateProps = propsStack => {
+  const seen = new Set()
+
+  return propsStack.filter(prop => {
+    if (!prop || PROPS_METHODS.has(prop)) return false
+    if (seen.has(prop)) return false
+    seen.add(prop)
+    return true
+  })
+}
+
+export const syncProps = (propsStack, element, opts) => {
+  element.props = propsStack.reduce((mergedProps, v) => {
+    if (PROPS_METHODS.has(v)) return mergedProps
+    while (isFunction(v)) v = exec(v, element)
+    return deepMerge(mergedProps, deepClone(v, { exclude: PROPS_METHODS }))
+  }, {})
+  setPropsPrototype(element)
+  return element.props
+}
+
+export const createPropsStack = (element, parent) => {
+  const { props, __ref: ref } = element
+
+  // Start with parent props
+  let propsStack = ref.__propsStack || []
+
+  // Get parent props
+  if (parent?.props) {
+    const parentStack = inheritParentProps(element, parent)
+    propsStack = [...parentStack]
+  }
+
+  // Add current props
+  if (isObject(props)) propsStack.push(props)
+  else if (props === 'inherit' && parent?.props) propsStack.push(parent.props)
+  else if (props) propsStack.push(props)
+
+  // Add extends props
+  if (isArray(ref.__extendsStack)) {
+    for (let i = 0; i < ref.__extendsStack.length; i++) {
+      const _extends = ref.__extendsStack[i]
+      if (_extends.props && _extends.props !== props) {
+        propsStack.push(_extends.props)
+      }
+    }
+  }
+
+  // Remove duplicates and update reference
+  ref.__propsStack = removeDuplicateProps(propsStack)
+  return ref.__propsStack
+}
+
+export const applyProps = (element, parent) => {
+  const { __ref: ref } = element
+
+  // Create a fresh props stack
+  const propsStack = createPropsStack(element, parent)
+
+  // Update the element
+  if (propsStack.length) {
+    syncProps(propsStack, element)
+  } else {
+    ref.__propsStack = []
+    element.props = {}
+  }
+}
+
+export const initProps = function (element, parent, options) {
+  const { __ref: ref } = element
+
+  if (ref.__if) applyProps(element, parent)
+  else {
+    try {
+      applyProps(element, parent)
+    } catch (e) {
+      if (element.context?.designSystem?.verbose) {
+        console.warn('initProps error at', ref.path?.join('.'), e)
+      }
+      element.props = {}
+      ref.__propsStack = []
+    }
+  }
+
+  setPropsPrototype(element)
+
+  return element
+}
+
+export const updateProps = (newProps, element, parent) => {
+  const { __ref: ref } = element
+  const propsStack = ref.__propsStack || []
+
+  // Create a new array to avoid mutating the original
+  let newStack = [...propsStack]
+
+  // Add parent props first if they exist
+  const parentProps = inheritParentProps(element, parent)
+  if (parentProps.length) {
+    newStack = [...parentProps, ...newStack]
+  }
+
+  // Add new props if they exist
+  if (newProps) {
+    newStack = [newProps, ...newStack]
+  }
+
+  // Clean up duplicates
+  ref.__propsStack = removeDuplicateProps(newStack)
+
+  if (ref.__propsStack.length) {
+    syncProps(ref.__propsStack, element)
+  }
+
+  return element
+}

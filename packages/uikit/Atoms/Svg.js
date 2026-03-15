@@ -3,7 +3,6 @@
 // create SVG symbol
 export const Svg = {
   tag: 'svg',
-  props: {},
   attr: {
     xmlns: 'http://www.w3.org/2000/svg',
     'xmlns:xlink': 'http://www.w3.org/1999/xlink'
@@ -14,7 +13,7 @@ export const Svg = {
     if (props.html) return el.call('exec', props.html, el)
 
     const { designSystem, utils } = context
-    const SVG = designSystem && designSystem.SVG
+    const SVG = designSystem && designSystem.svg
     const useSvgSprite = props.spriteId || (context.designSystem && context.designSystem.useSvgSprite)
 
     const src = el.call('exec', props.src, el)

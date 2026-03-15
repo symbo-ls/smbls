@@ -1,3 +1,3 @@
 'use strict'
 
-export const TEMPLATES = {}
+export const templates = {}

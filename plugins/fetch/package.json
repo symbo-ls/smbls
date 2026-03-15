@@ -1,0 +1,42 @@
+{
+  "name": "@symbo.ls/fetch",
+  "version": "3.7.5",
+  "license": "CC-BY-NC-4.0",
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./supabase": {
+      "import": "./adapters/supabase.js"
+    },
+    "./rest": {
+      "import": "./adapters/rest.js"
+    },
+    "./local": {
+      "import": "./adapters/local.js"
+    }
+  },
+  "source": "index.js",
+  "files": [
+    "*.js",
+    "adapters"
+  ],
+  "dependencies": {
+    "@domql/utils": "^3.7.5"
+  },
+  "peerDependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@supabase/supabase-js": {
+      "optional": true
+    }
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}

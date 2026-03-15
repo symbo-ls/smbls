@@ -1,12 +1,12 @@
 'use strict'
 
-import { SEQUENCE } from './sequence'
+import { sequence } from './sequence'
 
 const defaultProps = {
   default: 150,
   base: 150,
   type: 'timing',
-  ratio: SEQUENCE['perfect-fourth'],
+  ratio: sequence['perfect-fourth'],
   range: [-3, +12],
   mediaRegenerate: false,
   unit: 'ms',
@@ -15,4 +15,4 @@ const defaultProps = {
   vars: {}
 }
 
-export const TIMING = defaultProps
+export const timing = defaultProps

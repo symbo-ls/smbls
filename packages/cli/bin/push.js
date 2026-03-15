@@ -4,15 +4,14 @@ import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
 import inquirer from 'inquirer'
-import { loadModule } from './require.js'
+import { toJSON } from '@symbo.ls/frank'
 import { program } from './program.js'
-import { buildDirectory } from '../helpers/fileUtils.js'
 import { generateDiffDisplay, showDiffPager } from '../helpers/diffUtils.js'
 import { getCurrentProjectData, postProjectChanges } from '../helpers/apiUtils.js'
 import { computeCoarseChanges, computeOrdersForTuples, preprocessChanges } from '../helpers/changesUtils.js'
 import { showAuthRequiredMessages, showProjectNotFoundMessages, showBuildErrorMessages } from '../helpers/buildMessages.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
-import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveUseKV, kvGet, kvPut } from '../helpers/symbolsConfig.js'
 import { getConfigPaths, loadCliConfig, readLock, writeLock, updateLegacySymbolsJson } from '../helpers/config.js'
 import { stripOrderFields } from '../helpers/orderUtils.js'
 import { augmentProjectWithLocalPackageDependencies, findNearestPackageJson } from '../helpers/dependenciesUtils.js'
@@ -21,13 +20,8 @@ import { stripEmptyDefaultNamespaceEntries } from '../helpers/projectNormalizati
 
 async function buildLocalProject (distDir) {
   try {
-    const outputDirectory = path.join(distDir, 'dist')
-
-    await buildDirectory(distDir, outputDirectory)
-    const outputFile = path.join(outputDirectory, 'index.js')
-    return await loadModule(outputFile, { silent: false })
+    return await toJSON(distDir, { stringify: false })
   } catch (error) {
-    // Enhance error with build context
     error.buildContext = {
       command: 'push',
       workspace: process.cwd()
@@ -39,22 +33,22 @@ async function buildLocalProject (distDir) {
 // The platform may omit empty designSystem buckets. `sync` normalizes these
 // buckets before diffing, so `push` should do the same to avoid noisy `{}` diffs.
 const DESIGN_SYSTEM_BUCKET_KEYS = [
-  'ANIMATION',
-  'CASES',
-  'CLASS',
-  'COLOR',
-  'FONT',
-  'FONT_FAMILY',
-  'GRADIENT',
-  'GRID',
-  'ICONS',
-  'MEDIA',
-  'RESET',
-  'SHAPE',
-  'SPACING',
-  'THEME',
-  'TIMING',
-  'TYPOGRAPHY'
+  'animation',
+  'cases',
+  'class',
+  'color',
+  'font',
+  'fontFamily',
+  'gradient',
+  'grid',
+  'icons',
+  'media',
+  'reset',
+  'shape',
+  'spacing',
+  'theme',
+  'timing',
+  'typography'
 ]
 
 function ensureDesignSystemBuckets (designSystem) {
@@ -86,6 +80,16 @@ function buildDiffsFromChanges (changes, base, local) {
     }
   }
   return diffs
+}
+
+function isInteractiveSession (options = {}) {
+  return !!process.stdin?.isTTY && !!process.stdout?.isTTY && !options.nonInteractive
+}
+
+function requireExplicitConfirmation ({ command, flag = '--yes' }) {
+  console.error(chalk.red(`${command} requires ${flag} when prompts are disabled.`))
+  console.error(chalk.dim(`Re-run with ${flag} or use an interactive terminal.`))
+  process.exit(1)
 }
 
 async function confirmChanges (changes, base, local) {
@@ -122,7 +126,7 @@ async function confirmChanges (changes, base, local) {
       type: 'confirm',
       name: 'proceed',
       message: 'Proceed with these changes?',
-      default: false
+      default: true
     }
   ])
 
@@ -130,10 +134,12 @@ async function confirmChanges (changes, base, local) {
 }
 
 export async function pushProjectChanges (options) {
-  const { verbose, type = 'patch' } = options
+  const { verbose, type = 'patch', lockOnly, useKv } = options
   try {
+    const interactive = isInteractiveSession(options)
     const symbolsConfig = await loadSymbolsConfig()
     const cliConfig = loadCliConfig()
+    const kvEnabled = resolveUseKV(symbolsConfig, { useKv })
     let authToken
     try {
       const ensured = await ensureAuthenticated({ apiBaseUrl: cliConfig.apiBaseUrl, nonInteractive: options.nonInteractive })
@@ -151,9 +157,31 @@ export async function pushProjectChanges (options) {
     const branch = cliConfig.branch || symbolsConfig.branch || 'main'
     const { projectPath } = getConfigPaths()
 
+    // --lock-only: just refresh the lock from current server state
+    if (lockOnly) {
+      console.log(chalk.dim('Refreshing lock from server...'))
+      const latest = await getCurrentProjectData(
+        { projectKey: appKey, projectId: lock.projectId },
+        authToken,
+        { branch, includePending: true }
+      )
+      if (!latest.notModified) {
+        const projectId = latest.data?.projectInfo?.id || latest.data?.id || latest.data?._id || lock.projectId
+        writeLock({
+          etag: latest.etag || null,
+          version: latest.data?.version || lock.version,
+          branch,
+          projectId,
+          pulledAt: new Date().toISOString()
+        })
+      }
+      console.log(chalk.bold.green('Lock updated successfully'))
+      return
+    }
+
     const distDir =
       resolveDistDir(symbolsConfig) ||
-      path.join(process.cwd(), 'smbls')
+      path.join(process.cwd(), 'symbols')
 
     const packageJsonPath = findNearestPackageJson(process.cwd())
 
@@ -172,6 +200,22 @@ export async function pushProjectChanges (options) {
       process.exit(1)
     }
 
+    if (kvEnabled) {
+      // KV mode: push full JSON directly to KV store
+      if (verbose) console.log(chalk.gray('Using KV storage\n'))
+      console.log(chalk.dim('\nPushing to KV...'))
+      const safeLocal = stringifyFunctionsForTransport(localProject)
+      await kvPut(appKey, safeLocal)
+      writeLock({
+        version: safeLocal.version || lock.version,
+        branch,
+        projectId: lock.projectId,
+        pulledAt: new Date().toISOString()
+      })
+      console.log(chalk.bold.green('\nPushed to KV successfully!'))
+      return
+    }
+
     // Get current server state (ETag aware)
     console.log(chalk.dim('Fetching current server state...'))
     const serverResp = await getCurrentProjectData(
@@ -179,10 +223,6 @@ export async function pushProjectChanges (options) {
       authToken,
       { branch, includePending: true, etag: lock.etag }
     )
-    // If the server returns 304, we must *not* diff against `{}`; use the last
-    // pulled snapshot on disk. This keeps `push` consistent with `sync`, and
-    // prevents false positives (e.g. designSystem buckets) when the server data
-    // is unchanged.
     let serverProject = null
     if (serverResp.notModified) {
       try {
@@ -192,8 +232,6 @@ export async function pushProjectChanges (options) {
         serverProject = null
       }
 
-      // If we can't load a local snapshot (e.g. first run), fall back to a
-      // non-ETag fetch so we always diff against the real server state.
       if (!serverProject) {
         const freshResp = await getCurrentProjectData(
           { projectKey: appKey, projectId: lock.projectId },
@@ -215,7 +253,6 @@ export async function pushProjectChanges (options) {
     console.log(chalk.gray('Server state fetched successfully'))
 
     // Calculate coarse local changes vs server snapshot (or base)
-    // Prepare safe, JSON-serialisable snapshots for diffing & transport (stringify functions)
     const base = stringifyFunctionsForTransport(stripOrderFields(stripEmptyDefaultNamespaceEntries(serverProject || {})))
     const local = stringifyFunctionsForTransport(stripOrderFields(stripEmptyDefaultNamespaceEntries(localProject)))
     try { ensureDesignSystemBuckets(base?.designSystem) } catch (_) {}
@@ -238,7 +275,10 @@ export async function pushProjectChanges (options) {
     })
 
     // Confirm push
-    const shouldProceed = await confirmChanges(changes, base, local)
+    if (!interactive && !options.yes) {
+      requireExplicitConfirmation({ command: 'Push', flag: '--yes' })
+    }
+    const shouldProceed = options.yes ? true : await confirmChanges(changes, base, local)
     if (!shouldProceed) {
       console.log(chalk.yellow('Push cancelled'))
       return
@@ -246,20 +286,18 @@ export async function pushProjectChanges (options) {
 
     // Push changes
     console.log(chalk.dim('\nPushing changes...'))
-    const projectId = lock.projectId || serverProject?.projectInfo?.id
+    const projectId = lock.projectId || serverProject?.projectInfo?.id || serverProject?.id || serverProject?._id
     if (!projectId) {
       console.log(chalk.red('Unable to resolve projectId. Please fetch first to initialize lock.'))
       process.exit(1)
     }
     const operationId = `cli-${Date.now()}`
-    // Derive granular changes against server base and compute orders using local for pending children
     const { granularChanges } = preprocessChanges(base, changes)
     const orders = computeOrdersForTuples(local, granularChanges)
     const result = await postProjectChanges(projectId, authToken, {
       branch,
       type,
       operationId,
-      // Send both forms for compatibility with preprocessors
       changes,
       granularChanges,
       orders
@@ -300,4 +338,8 @@ program
   .command('push')
   .description('Push changes to platform')
   .option('-m, --message <message>', 'Specify a commit message')
+  .option('--non-interactive', 'Disable prompts (require --yes)', false)
+  .option('-y, --yes', 'Skip confirmation prompts', false)
+  .option('--lock-only', 'Only refresh the lock file from server, skip pushing changes')
+  .option('--use-kv', 'Use KV storage instead of the platform API')
   .action(pushProjectChanges)

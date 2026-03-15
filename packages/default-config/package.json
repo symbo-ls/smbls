@@ -1,12 +1,19 @@
 {
   "name": "@symbo.ls/default-config",
-  "version": "2.34.35",
-  "source": "src/index.js",
-  "main": "src/index.js",
+  "version": "3.7.5",
+  "source": "./blank/index.js",
+  "main": "./blank/index.js",
   "type": "module",
-  "dependencies": {
-    "@symbo.ls/default-icons": "^2.34.35"
+  "dependencies": {},
+  "license": "CC-BY-NC-4.0",
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "module": "./blank/index.js",
+  "exports": {
+    ".": {
+      "import": "./blank/index.js"
+    }
   },
-  "license": "MIT",
-  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc"
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { sync } from '@symbo.ls/socket'
+import { sync } from '@symbo.ls/sync/server'
 import { program } from './program.js'
 import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 

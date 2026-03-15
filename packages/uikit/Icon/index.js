@@ -1,20 +1,44 @@
 'use strict'
 
+const inheritFromIsActive = el => {
+  const { props } = el
+  const propsActive = props['.isActive']
+  if (!propsActive) return
+  return el.call('exec', propsActive.name || propsActive.icon)
+}
+
+const getIconName = (el, s) => {
+  const { key, props } = el
+  let icon = el.call('exec', props.name || props.icon || key, el)
+
+  if (el.call('isString', icon) && icon.includes('{{')) {
+    icon = el.call('replaceLiteralsWithObjectFields', icon)
+  }
+
+  return el.call('isString', icon) ? icon : key
+}
+
 export const Icon = {
-  extend: 'Svg',
+  extends: 'Svg',
+  width: 'A',
+  height: 'A',
+  display: 'inline-block',
+  style: { fill: 'currentColor', '*': { fill: 'currentColor' } },
+
   props: (el, s, ctx) => {
     const { props, parent } = el
-    const { ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
+    const { icons: ICONS, useIconSprite, verbose } = ctx && ctx.designSystem
     const { toCamelCase } = ctx && ctx.utils
 
     const inheritFromIsActive = (el) => {
       const { props } = el
       const propsActive = props['.isActive']
+      if (!propsActive) return
       return el.call('exec', propsActive.name || propsActive.icon)
     }
 
     const getSemanticIcon = (el, s, ctx) => {
-      const { SEMANTIC_ICONS } = ctx && ctx.designSystem
+      const { semanticIcons: SEMANTIC_ICONS } = ctx && ctx.designSystem
       const { toCamelCase } = ctx && ctx.utils
 
       let iconName = getIconName(el, s)
@@ -111,36 +135,30 @@ export const Icon = {
     const directSrc = (parent && parent.props && parent.props.src) || props.src
 
     return {
-      width: 'A',
-      height: 'A',
-      display: 'inline-block',
       spriteId: useIconSprite && iconInContext,
-      src: iconFromLibrary || directSrc || ICONS.noIcon,
-      style: { fill: 'currentColor', '*': { fill: 'currentColor' } }
+      src: iconFromLibrary || directSrc || ICONS.noIcon
     }
   },
+
   attr: { viewBox: '0 0 24 24' }
 }
 
 export const IconText = {
-  extend: 'Flex',
+  display: 'flex',
 
-  props: {
-    align: 'center center',
-    lineHeight: 1,
-    gap: 'X',
+  align: 'center center',
+  lineHeight: 1,
 
-    '.reversed': {
-      flow: 'row-reverse'
-    },
+  '.reversed': {
+    flow: 'row-reverse'
+  },
 
-    '.vertical': {
-      flow: 'column'
-    }
+  '.vertical': {
+    flow: 'column'
   },
 
   Icon: {
-    if: (el) => {
+    if: el => {
       const { parent, props } = el
       return el.call(
         'exec',
@@ -158,16 +176,53 @@ export const IconText = {
 }
 
 export const FileIcon = {
-  extend: 'Flex',
-  props: {
-    theme: 'tertiary',
-    boxSize: 'C1',
-    align: 'center center',
-    round: 'Z'
-  },
+  display: 'flex',
+  theme: 'tertiary',
+  boxSize: 'C1',
+  align: 'center center',
+  round: 'Z',
   Icon: {
     fontSize: 'B',
     margin: 'auto',
     icon: 'file'
+  }
+}
+
+const getSemanticIcon = (el, s, ctx) => {
+  const { semanticIcons: SEMANTIC_ICONS } = ctx && ctx.designSystem
+  const { toCamelCase } = ctx && ctx.utils
+
+  let iconName = getIconName(el, s)
+  const camelCase = toCamelCase(iconName)
+  const isArray = camelCase.split(/([a-z])([A-Z])/g)
+  const semanticIconRootName = isArray[1]
+    ? isArray[0]
+    : iconName.split('.')[0].split(' ')[0]
+  const semanticIcon = SEMANTIC_ICONS && SEMANTIC_ICONS[semanticIconRootName]
+  if (semanticIcon) {
+    const iconKey = iconName.includes('.')
+      ? 'sfsymbols.' + iconName.split('.').slice(1).join('.')
+      : 'sfsymbols'
+    iconName =
+      semanticIcon[iconKey] ||
+      semanticIcon[iconName.split('.')[0].split(' ')[0]]
+    return {
+      tag: 'span',
+      semantic_symbols: true,
+      width: 'A',
+      height: 'A',
+      lineHeight: '1em',
+      ':after': {
+        fontSize: 'Z',
+        fontWeight: '300',
+        content: `"${iconName}"`,
+        textAlign: 'center',
+        display: 'inline-block',
+        style: {
+          color: 'currentColor',
+          fontFamily: "'SF Pro Icons', 'SF Pro', 'SF Symbols', 'Segoe UI'"
+        }
+      }
+    }
   }
 }

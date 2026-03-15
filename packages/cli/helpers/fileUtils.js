@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { build } from 'esbuild'
+import { getBannerCode } from './domStubs.js'
 
 export async function buildDirectory (directoryPath, outputDirectory) {
   try {
@@ -43,10 +44,10 @@ async function buildFromFile (inputFilePath, outputFilePath) {
       mainFields: ['module', 'main'],
       external: ['esbuild'],
       define: {
-        window: 'undefined',
-        document: 'undefined',
-        navigator: 'undefined',
-        global: '{}'
+        global: 'globalThis'
+      },
+      banner: {
+        js: getBannerCode()
       }
     })
   } catch (error) {

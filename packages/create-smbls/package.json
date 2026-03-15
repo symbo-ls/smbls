@@ -1,5 +1,23 @@
 {
   "name": "create-smbls",
-  "version": "2.34.35",
-  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc"
+  "version": "3.7.5",
+  "description": "Create a new Symbols project",
+  "author": "Symbols",
+  "license": "CC-BY-NC-4.0",
+  "type": "module",
+  "bin": {
+    "create-smbls": "index.js"
+  },
+  "dependencies": {
+    "@symbo.ls/cli": "^3.7.5"
+  },
+  "scripts": {
+    "vpush": "git add . && git commit -am 'version update' && git push",
+    "vpatch": "npm version patch && npm publish"
+  },
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "source": "index.js",
+  "publishConfig": {
+    "access": "public"
+  }
 }

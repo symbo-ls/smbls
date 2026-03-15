@@ -10,4 +10,4 @@ const themeA = { // eslint-disable-line no-unused-vars
   inverse: {} // schemeAInverse
 }
 
-export const THEME = {}
+export const theme = {}

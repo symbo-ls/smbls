@@ -5,5 +5,5 @@ var proto = { // eslint-disable-line
   value: ''
 }
 
-export const COLOR = {}
-export const GRADIENT = {}
+export const color = {}
+export const gradient = {}

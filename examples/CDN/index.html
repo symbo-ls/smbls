@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+    />
+    <title>smbls CDN Example</title>
+  </head>
+  <body>
+    <script type="module">
+      import { create } from 'https://esm.sh/smbls'
+
+      const App = {
+        extends: 'Flex',
+        flow: 'column',
+        gap: 'B',
+        padding: 'C',
+        maxWidth: 'G3',
+        margin: '0 auto',
+
+        Header: {
+          tag: 'header',
+          extends: 'Flex',
+          flow: 'column',
+          gap: 'A',
+          padding: 'B 0',
+          borderBottom: '1px solid gray.1',
+
+          Title: {
+            tag: 'h1',
+            text: 'smbls CDN Example',
+            fontSize: 'E',
+            fontWeight: '700',
+            margin: '0'
+          },
+          Subtitle: {
+            tag: 'p',
+            text: 'Loaded directly from CDN using ESM imports',
+            fontSize: 'B',
+            color: 'gray+30',
+            margin: '0'
+          }
+        },
+
+        Counter: {
+          extends: 'Flex',
+          flow: 'column',
+          gap: 'A',
+          padding: 'B',
+          round: 'A',
+          background: 'gray.05',
+
+          state: { count: 0 },
+
+          Label: {
+            tag: 'span',
+            text: ({ state }) => `Count: ${state.count}`,
+            fontSize: 'C',
+            fontWeight: '600'
+          },
+
+          Buttons: {
+            extends: 'Flex',
+            flexAlign: 'center center',
+            gap: 'A',
+
+            Decrement: {
+              extends: 'Button',
+              text: '-',
+              onClick: (event, el, state) => {
+                state.update({ count: state.count - 1 })
+              }
+            },
+
+            Increment: {
+              extends: 'Button',
+              text: '+',
+              onClick: (event, el, state) => {
+                state.update({ count: state.count + 1 })
+              }
+            }
+          }
+        },
+
+        Cards: {
+          extends: 'Flex',
+          gap: 'B',
+          flexWrap: 'wrap',
+
+          Card1: {
+            extends: 'Flex',
+            flow: 'column',
+            gap: 'Z',
+            padding: 'B',
+            round: 'A',
+            background: 'white.95',
+            border: '1px solid gray.1',
+            flex: '1 1 200px',
+
+            Title: {
+              tag: 'h3',
+              margin: '0',
+              fontSize: 'B',
+              fontWeight: '600',
+              text: 'Declarative'
+            },
+            Description: {
+              tag: 'p',
+              margin: '0',
+              fontSize: 'A',
+              color: 'gray+20',
+              text: 'Build UIs with plain objects - no JSX, no templates.'
+            }
+          },
+
+          Card2: {
+            extends: 'Flex',
+            flow: 'column',
+            gap: 'Z',
+            padding: 'B',
+            round: 'A',
+            background: 'white.95',
+            border: '1px solid gray.1',
+            flex: '1 1 200px',
+
+            Title: {
+              tag: 'h3',
+              margin: '0',
+              fontSize: 'B',
+              fontWeight: '600',
+              text: 'No Build Step'
+            },
+            Description: {
+              tag: 'p',
+              margin: '0',
+              fontSize: 'A',
+              color: 'gray+20',
+              text: 'Works directly in the browser via CDN import.'
+            }
+          },
+
+          Card3: {
+            extends: 'Flex',
+            flow: 'column',
+            gap: 'Z',
+            padding: 'B',
+            round: 'A',
+            background: 'white.95',
+            border: '1px solid gray.1',
+            flex: '1 1 200px',
+
+            Title: {
+              tag: 'h3',
+              margin: '0',
+              fontSize: 'B',
+              fontWeight: '600',
+              text: 'Design Tokens'
+            },
+            Description: {
+              tag: 'p',
+              margin: '0',
+              fontSize: 'A',
+              color: 'gray+20',
+              text: 'Built-in spacing, typography, and theming system.'
+            }
+          }
+        }
+      }
+
+      create(App)
+    </script>
+  </body>
+</html>

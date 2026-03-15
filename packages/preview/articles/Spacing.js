@@ -2,28 +2,29 @@
 
 export const Spacing = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
 
     Title: {
-      props: {
-        text: 'Spacing',
-        lineHeight: '1.15em'
-      }
+      text: 'Spacing',
+      lineHeight: '1.15em'
     },
     Paragraph: {
       P: {},
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              text: 'Brand font'
+            },
+            {
+              text: 'Functional font'
+            }
+          ]
         }
       }
     }

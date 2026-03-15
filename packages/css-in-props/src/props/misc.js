@@ -1,17 +1,16 @@
 'use strict'
 
 export const MISC_PROPS = {
-  overflow: ({ props, deps }) => !deps.isUndefined(props.overflow) && ({
-    overflow: props.overflow,
+  overflow: (value) => ({
+    overflow: value,
     scrollBehavior: 'smooth'
   }),
-  cursor: (el, s, ctx) => {
-    let val = el.props.cursor
-    if (!val) return
+  cursor: (value, el, s, ctx) => {
+    if (!value) return
 
-    const file = ctx.files && ctx.files[val]
-    if (file && file.content) val = `url(${file.content.src})`
+    const file = ctx.files && ctx.files[value]
+    if (file && file.content) value = `url(${file.content.src})`
 
-    return ({ cursor: val })
+    return ({ cursor: value })
   }
 }

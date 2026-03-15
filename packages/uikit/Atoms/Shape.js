@@ -1,8 +1,7 @@
 'use strict'
 
-import { getActiveConfig } from '@symbo.ls/scratch/src/factory.js' // eslint-disable-line no-unused-vars
-import { getColor } from '@symbo.ls/scratch/src/system/color.js' // eslint-disable-line no-unused-vars
-import { Box } from './Box.js'
+import { getActiveConfig, getColor } from '@symbo.ls/scratch' // eslint-disable-line no-unused-vars
+import { TIMING_PROPS } from 'css-in-props/src/props'
 
 const CONFIG = getActiveConfig()
 
@@ -37,7 +36,7 @@ const getComputedBackgroundColor = ({ props }) => {
 }
 
 const inheritTransition = ({ props, deps }) => {
-  const exec = Box.class.transition({ props, deps })
+  const exec = TIMING_PROPS.transition(props.transition, { props, deps })
   return exec && exec.transition
 }
 

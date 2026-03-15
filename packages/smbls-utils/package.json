@@ -1,0 +1,41 @@
+{
+  "name": "@symbo.ls/smbls-utils",
+  "version": "3.7.5",
+  "author": "symbo.ls",
+  "files": [
+    "dist",
+    "*.js",
+    "src"
+  ],
+  "main": "./dist/cjs/index.js",
+  "type": "module",
+  "module": "./dist/esm/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "source": "src/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild src/*.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild src/*.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild src/index.js --bundle --target=es2020 --format=iife --global-name=SmblsSmblsUtils --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "node ../../build/build.js",
+    "prepublish": "npm run build && npm run copy:package:cjs"
+  },
+  "license": "CC-BY-NC-4.0",
+  "dependencies": {
+    "@domql/element": "^3.7.5",
+    "@domql/utils": "^3.7.5"
+  },
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "browser": "./dist/esm/index.js",
+  "sideEffects": false
+}

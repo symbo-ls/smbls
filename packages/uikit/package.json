@@ -1,38 +1,44 @@
 {
   "name": "@symbo.ls/uikit",
   "description": "UI Library built on Scratch and DOMQL",
-  "version": "2.34.35",
+  "version": "3.7.5",
   "author": "symbo.ls",
   "repository": "https://github.com/symbo-ls/smbls",
   "main": "index.js",
   "type": "module",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   },
   "files": [
     "*.js",
+    "Atoms",
+    "Datepicker",
+    "Icon",
+    "Input",
+    "TimePicker",
+    "Tooltip",
     "dist"
   ],
   "dependencies": {
-    "@domql/utils": "^2.34.35",
-    "@symbo.ls/atoms": "^2.34.35",
-    "@symbo.ls/avatar": "^2.34.35",
-    "@symbo.ls/button": "^2.34.35",
-    "@symbo.ls/dialog": "^2.34.35",
-    "@symbo.ls/dropdown": "^2.34.35",
-    "@symbo.ls/icon": "^2.34.34",
-    "@symbo.ls/input": "^2.34.35",
-    "@symbo.ls/link": "^2.34.34",
-    "@symbo.ls/notification": "^2.34.34",
-    "@symbo.ls/range": "^2.34.35",
-    "@symbo.ls/scratch": "^2.34.35",
-    "@symbo.ls/select": "^2.34.34",
-    "@symbo.ls/tooltip": "^2.34.35"
+    "@domql/router": "^3.7.5",
+    "@domql/state": "^3.7.5",
+    "@domql/utils": "^3.7.5",
+    "@symbo.ls/scratch": "^3.7.5",
+    "@symbo.ls/smbls-utils": "^3.7.5",
+    "attrs-in-props": "^3.7.5",
+    "css-in-props": "^3.7.5"
   },
   "scripts": {
     "prepublish": "rm -rf dist && npx esbuild index.js --target=es2017 --format=cjs --sourcemap=external --outfile=dist/index.cjs.js"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc",
-  "source": "src/index.js"
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "source": "index.js",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  }
 }

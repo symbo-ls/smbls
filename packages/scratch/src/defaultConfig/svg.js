@@ -1,4 +1,4 @@
 'use strict'
 
-export const SVG = {}
-export const SVG_DATA = {}
+export const svg = {}
+export const svg_data = {}

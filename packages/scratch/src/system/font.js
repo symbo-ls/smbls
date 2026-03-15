@@ -1,7 +1,7 @@
 'use strict'
 
 import { isObject, isArray } from '@domql/utils'
-import { arrayzeValue } from '@symbo.ls/utils'
+import { arrayzeValue } from '@symbo.ls/smbls-utils'
 import { getActiveConfig } from '../factory.js'
 
 import {
@@ -9,28 +9,32 @@ import {
   getFontFaceEach,
   isGoogleFontsUrl,
   setCustomFontMedia,
-  setFontImport
+  setFontImport,
+  resolveFileUrl
 } from '../utils'
 
 export const setFont = (val, key) => {
+  const CONFIG = getActiveConfig()
   const CSSvar = `--font-${key}`
 
   if (!val || (isArray(val) && !val[0])) return
 
   let fontFace
   if (val.isVariable) {
-    if (isGoogleFontsUrl(val.url)) {
-      fontFace = setFontImport(val.url)
+    const url = resolveFileUrl(val.url, CONFIG.files) || val.url
+    if (isGoogleFontsUrl(url)) {
+      fontFace = setFontImport(url)
     } else {
-      fontFace = setCustomFontMedia(key, val.url, val.fontWeight, {
+      fontFace = setCustomFontMedia(key, url, val.fontWeight, {
         fontStretch: val.fontStretch,
         fontDisplay: val.fontDisplay || 'swap'
       })
     }
   } else if (val[0]) {
-    fontFace = getFontFaceEach(key, val)
+    fontFace = getFontFaceEach(key, val, CONFIG.files)
   } else {
-    fontFace = setCustomFontMedia(key, val.url)
+    const url = resolveFileUrl(val.url, CONFIG.files) || val.url
+    fontFace = setCustomFontMedia(key, url)
   }
 
   return { var: CSSvar, value: val, fontFace }
@@ -38,13 +42,13 @@ export const setFont = (val, key) => {
 
 export const getFontFamily = (key, factory) => {
   const CONFIG = getActiveConfig()
-  const { FONT_FAMILY } = CONFIG
+  const { font_family: FONT_FAMILY } = CONFIG
   return getDefaultOrFirstKey(factory || FONT_FAMILY, key)
 }
 
 export const setFontFamily = (val, key) => {
   const CONFIG = getActiveConfig()
-  const { FONT_FAMILY, FONT_FAMILY_TYPES } = CONFIG
+  const { font_family: FONT_FAMILY, font_family_types: FONT_FAMILY_TYPES } = CONFIG
   let { value, type } = val
   if (val.isDefault) FONT_FAMILY.default = key
 

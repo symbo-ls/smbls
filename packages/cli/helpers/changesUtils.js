@@ -5,7 +5,7 @@ const { objectToString } = utils.default || utils
 // Keys managed by the CLI filesystem representation (exclude settings/schema/key/thumbnail/etc.)
 export const DATA_KEYS = [
   'designSystem','components','state','pages','snippets',
-  'methods','functions','dependencies','files'
+  'methods','functions','dependencies','files','settings'
 ]
 
 const SCHEMA_CODE_TYPES = new Set(['pages', 'components', 'functions', 'methods', 'snippets'])

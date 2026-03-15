@@ -2,32 +2,42 @@
   "name": "@symbo.ls/scratch",
   "description": "Φ / CSS framework and methodology.",
   "author": "symbo.ls",
-  "version": "2.34.35",
+  "version": "3.7.5",
   "files": [
-    "src",
-    "dist"
+    "dist",
+    "*.js",
+    "src"
   ],
   "repository": "https://github.com/symbo-ls/smbls",
   "type": "module",
-  "module": "dist/cjs/index.js",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
-  "main": "dist/cjs/index.js",
-  "exports": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
+  "main": "./dist/cjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
   "source": "src/index.js",
-  "publishConfig": {},
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=es2017 --format=esm --outdir=dist/esm",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/*.js ./src/**/*.js --target=node16 --format=cjs --outdir=dist/cjs --bundle",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./src/index.js --target=es2017 --format=iife --outdir=dist/iife --bundle --minify",
-    "build": "npm run build:cjs",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild $(find src -name '*.js') --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild $(find src -name '*.js') --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild src/index.js --bundle --target=es2020 --format=iife --global-name=SmblsScratch --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "node ../../build/build.js",
+    "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/utils": "^2.34.35",
-    "@symbo.ls/utils": "^2.34.35",
+    "@domql/utils": "^3.7.5",
+    "@symbo.ls/smbls-utils": "^3.7.5",
     "color-contrast-checker": "^1.5.0"
   },
-  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc"
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "browser": "./dist/esm/index.js",
+  "sideEffects": false
 }

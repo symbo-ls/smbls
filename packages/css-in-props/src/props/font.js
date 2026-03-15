@@ -3,15 +3,14 @@
 import { getFontSizeByKey, getFontFamily } from '@symbo.ls/scratch'
 
 export const FONT_PROPS = {
-  fontSize: (el) => {
-    const { props } = el
-    return props.fontSize ? getFontSizeByKey(props.fontSize) : null
+  fontSize: (value) => {
+    return getFontSizeByKey(value) || value
   },
-  fontFamily: ({ props }) => ({
-    fontFamily: getFontFamily(props.fontFamily) || props.fontFamily
+  fontFamily: (value) => ({
+    fontFamily: getFontFamily(value) || value
   }),
-  fontWeight: ({ props }) => ({
-    fontWeight: props.fontWeight,
-    fontVariationSettings: '"wght" ' + props.fontWeight
+  fontWeight: (value) => ({
+    fontWeight: value,
+    fontVariationSettings: '"wght" ' + value
   })
 }

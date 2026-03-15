@@ -1,6 +1,7 @@
 import chalk from 'chalk'
 import fs from 'fs'
 import path from 'path'
+import inquirer from 'inquirer'
 import { CredentialManager } from '../../helpers/credentialManager.js'
 import { loadCliConfig } from '../../helpers/config.js'
 import { showAuthRequiredMessages } from '../../helpers/buildMessages.js'
@@ -125,7 +126,23 @@ export async function ensureAvailableKeyOrExit ({ projectKey, authToken, cliConf
       throw err
     }
     if (info?.available) return { projectKey, authToken, cliConfig: effectiveConfig }
-    console.log(chalk.yellow(`Key is not available: ${projectKey}`))
+    console.log(chalk.yellow(`Key already exists: ${projectKey}`))
+    if (nonInteractive) {
+      console.error(chalk.red('Cannot create project — key is taken.'))
+      process.exit(1)
+    }
+    const { action } = await inquirer.prompt([{
+      name: 'action',
+      type: 'list',
+      message: 'What would you like to do?',
+      choices: [
+        { name: 'Link to existing project', value: 'link' },
+        { name: 'Choose a different key', value: 'rename' },
+        { name: 'Cancel', value: 'cancel' }
+      ]
+    }])
+    if (action === 'cancel') process.exit(0)
+    if (action === 'link') return { projectKey, authToken, cliConfig: effectiveConfig, linkExisting: true }
     const next = await promptProjectKey({ defaultKey: projectKey })
     projectKey = normalizeProjectKey(next)
   }

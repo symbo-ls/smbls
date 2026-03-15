@@ -36,7 +36,6 @@ export async function promptProjectType ({ defaultType } = {}) {
     choices: [
       { name: 'app', value: 'app' },
       { name: 'library', value: 'library' },
-      { name: 'platform', value: 'platform' },
       { name: 'custom…', value: '__custom__' }
     ],
     default: defaultType || 'app',
@@ -52,6 +51,40 @@ export async function promptProjectType ({ defaultType } = {}) {
     validate: (v) => String(v || '').trim() ? true : 'projectType is required'
   }])
   return String(custom.customType || '').trim()
+}
+
+export async function promptWorkspaceMode ({ defaultWorkspace = false } = {}) {
+  const res = await inquirer.prompt([{
+    name: 'workspace',
+    type: 'confirm',
+    message: 'Workspace mode (flat layout, no full repo clone)?',
+    default: defaultWorkspace
+  }])
+  return res.workspace
+}
+
+export async function promptIncludeRunnerFiles ({ defaultInclude = true } = {}) {
+  const res = await inquirer.prompt([{
+    name: 'include',
+    type: 'confirm',
+    message: 'Include runner files (index.js, app.js, index.html)?',
+    default: defaultInclude
+  }])
+  return res.include
+}
+
+export async function promptRunConfig () {
+  const res = await inquirer.prompt([{
+    name: 'action',
+    type: 'list',
+    message: 'Configure project settings?',
+    choices: [
+      { name: 'Use recommended defaults', value: 'defaults' },
+      { name: 'Customize settings (smbls config)', value: 'config' },
+      { name: 'Skip for now', value: 'skip' }
+    ]
+  }])
+  return res.action
 }
 
 export async function promptProjectKey ({ defaultKey } = {}) {
@@ -124,10 +157,14 @@ export async function selectProjectPaged ({ authToken, pageSize = 20, initialSea
         choices.push({ name: formatProjectChoice(p), value: { project: p } })
       }
     } else {
-      choices.push({ name: chalk.dim('No projects found for this page/search.'), value: { noop: true } })
+      choices.push({ name: chalk.dim('No projects found.'), value: { noop: true } })
     }
 
     choices.push(new inquirer.Separator())
+    if (!items.length && search) {
+      choices.push({ name: 'Show all projects', value: { action: 'reset' } })
+    }
+    choices.push({ name: 'Create new project', value: { action: 'create_new' } })
     choices.push({ name: 'Paste project key or id…', value: { action: 'paste' } })
     choices.push({ name: 'Change search…', value: { action: 'search' } })
     if (page > 1) choices.push({ name: 'Previous page', value: { action: 'prev' } })
@@ -152,6 +189,12 @@ export async function selectProjectPaged ({ authToken, pageSize = 20, initialSea
     if (sel.noop) continue
 
     if (sel.action === 'cancel') return null
+    if (sel.action === 'create_new') return { __create_new: true }
+    if (sel.action === 'reset') {
+      search = ''
+      page = 1
+      continue
+    }
     if (sel.action === 'next') {
       page += 1
       continue

@@ -1,11 +1,11 @@
 'use strict'
 
 export const Toggle = {
-  extend: 'Checkbox',
+  extends: 'Checkbox',
 
   Input: {
     ':checked + div': {
-      background: 'green2 +8',
+      background: 'green2+8',
       justifyContent: 'flex-end'
     }
   },
@@ -23,14 +23,14 @@ export const Toggle = {
       boxSize: 'A A',
       round: '100%',
       background: 'white',
-      boxShadow: '1px, 1px, Z, gray .2'
+      boxShadow: 'gray.2 1px 1px Z'
     },
     Icon: null
   }
 }
 
 export const ToggleHgroup = {
-  extend: 'CheckboxHgroup',
+  extends: 'CheckboxHgroup',
   Checkbox: null,
   Toggle: {}
 }

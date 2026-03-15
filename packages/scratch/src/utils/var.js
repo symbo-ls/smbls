@@ -9,8 +9,7 @@ export const setVariables = (result, key) => {
   const CONFIG = getActiveConfig()
   const { CSS_VARS } = CONFIG
   if (isObjectLike(result.value)) {
-    // for (const key in result.value) {
-    // }
+    // TODO: handle nested object variables
   } else {
     CSS_VARS[result.var] = result.value
   }
@@ -18,7 +17,7 @@ export const setVariables = (result, key) => {
 
 export const applySequenceGlobalVars = (vars, obj, options) => {
   const CONFIG = getActiveConfig()
-  const { UNIT } = CONFIG
+  const { unit: UNIT } = CONFIG
   const unit = obj.unit || UNIT.default
   const { base, ratio, type } = obj
   const prefix = '--' + (type && type.replace('.', '-'))
@@ -39,7 +38,7 @@ export const applySequenceGlobalVars = (vars, obj, options) => {
 
 export const applySequenceVars = (FACTORY, options = {}) => {
   const CONFIG = getActiveConfig()
-  const { UNIT, TIMING, CSS_VARS } = CONFIG
+  const { unit: UNIT, timing: TIMING, CSS_VARS } = CONFIG
 
   const unit = FACTORY.unit || UNIT.default
   const { mediaRegenerate, sequence, scales } = FACTORY
@@ -73,7 +72,7 @@ export const applySequenceVars = (FACTORY, options = {}) => {
 
 export const applyMediaSequenceVars = (FACTORY, media, options = {}) => {
   const CONFIG = getActiveConfig()
-  const { UNIT, MEDIA, CSS_VARS } = CONFIG
+  const { unit: UNIT, media: MEDIA, CSS_VARS } = CONFIG
 
   const mediaName = media.slice(1)
 

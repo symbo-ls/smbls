@@ -168,6 +168,85 @@ export const opacify = (color, opacity) => {
   return `rgba(${arr})`
 }
 
+// Check if value is a CSS custom property reference (starts with --)
+export const isCSSVar = (v) => v.charCodeAt(0) === 45 && v.charCodeAt(1) === 45
+
+// Regex for CSS native color values - signals passthrough
+export const CSS_NATIVE_COLOR_REGEX = /(?:rgba?\(|hsla?\(|#[0-9a-fA-F]{3,8}\b)/
+
+// Regex for Symbols color token: colorName[.opacity][+/-/=tone]
+// +N or -N = relative shade, =N = absolute lightness percentage
+const COLOR_TOKEN_REGEX = /^([a-zA-Z]\w*)(?:\.(\d+))?(?:([+-]\d+|=\d+))?$/
+
+/**
+ * Parse a color token string into its components.
+ * Returns { name, alpha, tone } for valid tokens,
+ * { passthrough: value } for CSS native values,
+ * or null for non-color tokens (e.g. '10px', '0')
+ *
+ * Tone prefixes:
+ *   +N  relative shade (add N to RGB)
+ *   -N  relative shade (subtract N from RGB)
+ *   =N  absolute lightness (set HSL lightness to N%)
+ */
+export const parseColorToken = (value) => {
+  if (!isString(value)) return null
+
+  // CSS native color passthrough
+  if (CSS_NATIVE_COLOR_REGEX.test(value)) return { passthrough: value }
+
+  // CSS var passthrough
+  if (isCSSVar(value)) return { cssVar: value }
+
+  const match = value.match(COLOR_TOKEN_REGEX)
+  if (!match) return null
+
+  const [, name, alphaDigits, rawTone] = match
+  const alpha = alphaDigits !== undefined ? `0.${alphaDigits}` : undefined
+  // Strip '=' prefix for absolute tones — getRgbTone handles unsigned values as absolute
+  const tone = rawTone && rawTone[0] === '=' ? rawTone.slice(1) : rawTone
+
+  return { name, alpha, tone }
+}
+
+/**
+ * Check if a getColor() result is a resolved CSS color
+ * (as opposed to the original unresolved value being returned)
+ */
+export const isResolvedColor = (result) => {
+  return isString(result) && (
+    result.includes('rgb') ||
+    result.includes('var(') ||
+    result.includes('#')
+  )
+}
+
+/**
+ * Split a string by commas, respecting parenthesized groups.
+ * e.g. 'rgba(0,0,0,0.1), white.5 0 A' → ['rgba(0,0,0,0.1)', ' white.5 0 A']
+ */
+export const splitTopLevelCommas = (value) => {
+  const result = []
+  let current = ''
+  let depth = 0
+
+  for (const char of value) {
+    if (char === '(') depth += 1
+    else if (char === ')' && depth > 0) depth -= 1
+
+    if (char === ',' && depth === 0) {
+      result.push(current)
+      current = ''
+      continue
+    }
+
+    current += char
+  }
+
+  if (current.length || !result.length) result.push(current)
+  return result
+}
+
 export const getRgbTone = (rgb, tone) => {
   if (isString(rgb) && rgb.includes('rgb'))
     rgb = colorStringToRgbaArray(rgb).join(', ')

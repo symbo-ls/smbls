@@ -3,6 +3,7 @@
 import { getActiveConfig } from '../factory.js'
 import { getColor } from './color.js'
 import { getSpacingByKey } from './spacing.js'
+import { isResolvedColor, isCSSVar, splitTopLevelCommas, CSS_NATIVE_COLOR_REGEX } from '../utils/color.js'
 
 import {
   isObject,
@@ -12,8 +13,6 @@ import {
 
 export const setShadow = (value, key, suffix, prefers) => {
   const CONFIG = getActiveConfig()
-  // const { CSS_VARS } = CONFIG
-  // const theme = { valueue: value }
 
   if (isArray(value)) {
     return {
@@ -34,16 +33,24 @@ export const setShadow = (value, key, suffix, prefers) => {
     return obj
   }
 
-  if (isString(value) && value.includes(',')) {
-    value = value.split(',').map(v => {
-      v = v.trim()
-      if (v.startsWith('--')) return `var(${v})`
-      if (getColor(v).length > 2) return getColor(v)
-      if (v.includes('px') || v.slice(-2) === 'em') return v
-      const arr = v.split(' ')
-      if (!arr.length) return v
-      return arr.map(v => getSpacingByKey(v, 'shadow').shadow).join(' ')
-    }).join(' ')
+  if (isString(value) && !CSS_NATIVE_COLOR_REGEX.test(value)) {
+    // Split multiple shadows by commas (CSS standard), respecting parentheses
+    value = splitTopLevelCommas(value).map(shadow => {
+      shadow = shadow.trim()
+      // Each shadow: space-separated tokens
+      return shadow.split(/\s+/).map(v => {
+        v = v.trim()
+        if (!v) return ''
+        if (v.startsWith('--')) return `var(${v})`
+        const color = getColor(v)
+        if (isResolvedColor(color)) return color
+        if (/^\d/.test(v) || v === '0' || v.includes('px') || v.slice(-2) === 'em') return v
+        if (v === 'inset' || v === 'none') return v
+        const spacing = getSpacingByKey(v, 'shadow')
+        if (spacing && spacing.shadow) return spacing.shadow
+        return v
+      }).join(' ')
+    }).join(', ')
   }
 
   const CSSVar = `--shadow-${key}` + (suffix ? `-${suffix}` : '')
@@ -64,11 +71,11 @@ export const getShadow = (value, globalTheme) => {
     return
   }
 
-  if (value.slice(0, 2) === '--') return `var(${value})`
+  if (isCSSVar(value)) return `var(${value})`
 
   const [name] = isArray(value) ? value : value.split(' ')
 
-  const { SHADOW } = CONFIG
+  const SHADOW = CONFIG.shadow
   const val = SHADOW[name]
   const isObj = isObject(val)
 
@@ -87,7 +94,7 @@ export const getShadow = (value, globalTheme) => {
   if (isObj) {
     const obj = {}
     for (const mediaName in val) {
-      const query = CONFIG.MEDIA[mediaName.slice(1)]
+      const query = CONFIG.media[mediaName.slice(1)]
       const media = '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
       obj[media] = val.value
     }

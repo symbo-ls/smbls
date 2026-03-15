@@ -1,4 +1,4 @@
 'use strict'
 
-export const ICONS = {}
-export const SEMANTIC_ICONS = {}
+export const icons = {}
+export const semantic_icons = {}

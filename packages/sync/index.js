@@ -1,5 +1,5 @@
 import { router } from '@domql/router'
-import { init } from '@symbo.ls/init'
+import { init } from 'smbls/src/init.js'
 import { io } from 'socket.io-client'
 import { window, overwriteShallow, overwriteDeep } from '@domql/utils'
 import { connectedToSymbols, Notifications } from './SyncNotifications'
@@ -151,21 +151,6 @@ const onOps =
       Array.isArray(changes) ? [] : {}
     )
 
-    // Iterate over components and pages to run domql3hack
-    if (ctx.forceDomql3) {
-      for (const key in changes.components) {
-        if (!key.includes('smbls.') && changes.components.hasOwnProperty(key)) {
-          changes.components[key] = temporaryDomqlHackReverse(
-            changes.components[key]
-          )
-        }
-      }
-      for (const key in changes.pages) {
-        if (changes.pages.hasOwnProperty(key)) {
-          changes.pages[key] = temporaryDomqlHackReverse(changes.pages[key])
-        }
-      }
-    }
 
     const changed = applyOpsToCtx(ctx, changes)
 
@@ -263,11 +248,9 @@ export const connectToSocket = async (el, s, ctx) => {
 }
 
 export const SyncComponent = {
-  on: {
-    initSync: connectToSocket
-  }
+  onInitSync: connectToSocket
 }
 
 export const DefaultSyncApp = {
-  extend: [SyncComponent, Inspect, Notifications]
+  extends: [SyncComponent, Inspect, Notifications]
 }

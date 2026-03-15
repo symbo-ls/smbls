@@ -1,0 +1,35 @@
+{
+  "name": "@domql/report",
+  "version": "3.7.5",
+  "license": "CC-BY-NC-4.0",
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.js",
+  "source": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "*.js"
+  ],
+  "scripts": {
+    "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild *.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild index.js --bundle --target=es2020 --format=iife --global-name=DomqlReport --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build": "node ../../build/build.js",
+    "prepublish": "npm run build && npm run copy:package:cjs"
+  },
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "browser": "./index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}

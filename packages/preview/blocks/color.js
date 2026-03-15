@@ -3,11 +3,8 @@
 import { DefaultBlock } from './section'
 
 const ColorTemplate = {
-  extend: 'Flex',
-  props: {
-    gap: 'A'
-  },
-
+  display: 'flex',
+  gap: 'A',
   Color: {
     boxSize: 'D1',
     aspectRatio: '1 / 1',
@@ -16,8 +13,9 @@ const ColorTemplate = {
   },
 
   Description: {
-    extend: 'Flex',
-    props: { gap: 'X', flow: 'column' },
+    display: 'flex',
+    gap: 'X',
+    flow: 'column',
     Title: { color: 'title' },
     Value: { margin: 'X - -', color: 'paragraph' },
     Var: { color: 'paragraph' }
@@ -25,27 +23,22 @@ const ColorTemplate = {
 }
 
 export const ColorBlock = {
-  extend: DefaultBlock,
+  extends: DefaultBlock,
 
   Title: {
-    props: {
-      text: 'Primary color',
-      padding: 'C1 - B1 -'
-    }
+    text: 'Primary color',
+    padding: 'C1 - B1 -'
   },
 
   Paragraph: {
-    extend: 'Grid',
+    display: 'grid',
 
-    props: {
-      columns: 'repeat(4, 1fr)',
-      gap: 'D',
-      '@tabletS': { columns: 'repeat(3, 1fr)' },
-      '@mobileL': { columns: 'repeat(2, 1fr)' },
-      '@mobileS': { columns: 'repeat(1, 1fr)' },
-      '@mobileXS': { gap: 'A2' }
-    },
-
-    childExtend: ColorTemplate
+    columns: 'repeat(4, 1fr)',
+    gap: 'D',
+    '@tabletS': { columns: 'repeat(3, 1fr)' },
+    '@mobileL': { columns: 'repeat(2, 1fr)' },
+    '@mobileS': { columns: 'repeat(1, 1fr)' },
+    '@mobileXS': { gap: 'A2' },
+    childExtends: ColorTemplate
   }
 }

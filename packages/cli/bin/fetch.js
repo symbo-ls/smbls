@@ -12,9 +12,10 @@ import { createFs } from './fs.js'
 import { getCurrentProjectData } from '../helpers/apiUtils.js'
 import { showAuthRequiredMessages } from '../helpers/buildMessages.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
-import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
+import { toJSON } from '@symbo.ls/frank'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig, resolveUseKV, kvGet, deepMergeOurs } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, updateLegacySymbolsJson, getConfigPaths } from '../helpers/config.js'
-import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies } from '../helpers/dependenciesUtils.js'
+import { ensureSchemaDependencies, findNearestPackageJson, syncPackageJsonDependencies, syncDependenciesJs } from '../helpers/dependenciesUtils.js'
 import { applyOrderFields } from '../helpers/orderUtils.js'
 import { logDesignSystemFlags } from '../helpers/designSystemDebug.js'
 const { isObjectLike } = (utils.default || utils)
@@ -66,7 +67,11 @@ async function hasFilesModifiedAfter (dir, thresholdMs, { ignore = new Set() } =
   return false
 }
 
-async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm }) {
+function isInteractiveSession (options = {}) {
+  return !!process.stdin?.isTTY && !!process.stdout?.isTTY && !options.nonInteractive
+}
+
+async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm, nonInteractive }) {
   if (skipConfirm) return
   if (!distDir || !fs.existsSync(distDir)) return
 
@@ -81,7 +86,7 @@ async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm 
     const t = Date.parse(String(pulledAt))
     if (!Number.isNaN(t)) {
       hasLocalChanges = await hasFilesModifiedAfter(distDir, t, {
-        ignore: new Set(['.cache', 'node_modules', '.git'])
+        ignore: new Set(['.cache', '.symbols-cache', 'node_modules', '.git'])
       })
     }
   }
@@ -90,12 +95,18 @@ async function confirmOverwriteIfLocalChanges ({ distDir, pulledAt, skipConfirm 
   // If changes are detected OR we cannot determine safely, require confirmation.
   if (hasLocalChanges === false) return
 
+  if (!isInteractiveSession({ nonInteractive })) {
+    console.error(chalk.red('Fetch requires --yes when prompts are disabled and local files may be overwritten.'))
+    console.error(chalk.dim('Re-run with --yes or use an interactive terminal.'))
+    process.exit(1)
+  }
+
   console.log(chalk.yellow(`\nWarning: ${hasLocalChanges === true ? 'local changes detected' : 'local changes may exist'}.\n`))
   console.log(chalk.dim(`Path: ${distDir}`))
   if (hasLocalChanges === null) {
     console.log(chalk.dim('Unable to determine if local changes exist.\n'))
   }
-  console.log(chalk.dim('This fetch will overwrite local files without a per-file diff prompt.\n'))
+  console.log(chalk.dim('Local files with conflicts will be backed up to .symbols-cache/ before overwriting.\n'))
 
   const { consent } = await inquirer.prompt([
     {
@@ -121,7 +132,10 @@ export const fetchFromCli = async (opts) => {
     ignoreEtag,
     yes,
     skipConfirm,
-    scope
+    scope,
+    ours,
+    lockOnly,
+    useKv
   } = opts
 
   const symbolsConfig = await loadSymbolsConfig()
@@ -147,66 +161,109 @@ export const fetchFromCli = async (opts) => {
     resolveDistDir(symbolsConfig, {
       distDirOverride: opts.distDir
     }) ||
-    path.join(process.cwd(), 'smbls')
+    path.join(process.cwd(), 'symbols')
+
+  const librariesDir = resolveLibrariesDir(symbolsConfig)
+  const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
+  const kvEnabled = resolveUseKV(symbolsConfig, { useKv })
 
   console.log('\nFetching project data...\n')
 
   let payload
   let prevPulledAt = null
+  let lockedLibVersions = {}
   try {
     const lock = readLock()
     prevPulledAt = lock?.pulledAt || null
+    lockedLibVersions = lock?.sharedLibraryVersions || {}
 
-    // `--force` must bypass ETag short-circuiting so it can re-materialize local files
-    // even when the remote project data hasn't changed.
-    const effectiveIgnoreEtag = !!(ignoreEtag || force)
-    const result = await getCurrentProjectData(
-      { projectKey, projectId: lock.projectId },
-      authToken,
-      { branch, includePending: true, etag: effectiveIgnoreEtag ? undefined : lock.etag }
-    )
+    if (kvEnabled) {
+      // KV mode: fetch pure JSON from KV store
+      if (verbose) console.log(chalk.gray('Using KV storage\n'))
+      payload = await kvGet(projectKey)
+      if (!payload) {
+        console.log(chalk.bold.yellow('No data found in KV for:'), projectKey)
+        return
+      }
 
-    if (result.notModified) {
-      // If the user asked us to override local files, still try to re-apply the
-      // last persisted snapshot to repair local drift (even when ETag matched).
-      if (update || force) {
-        try {
-          const { projectPath } = getConfigPaths()
-          const raw = await fs.promises.readFile(projectPath, 'utf8')
-          payload = JSON.parse(raw || '{}') || {}
-          if (verbose) {
-            console.log(chalk.gray('Remote unchanged (ETag matched); re-applying last saved snapshot to local files.\n'))
+      writeLock({
+        version: payload.version,
+        branch,
+        projectId: payload?.id || payload?._id || lock.projectId,
+        pulledAt: new Date().toISOString()
+      })
+    } else {
+      // Standard API mode
+      const effectiveIgnoreEtag = !!(ignoreEtag || force)
+      const result = await getCurrentProjectData(
+        { projectKey, projectId: lock.projectId },
+        authToken,
+        { branch, includePending: true, etag: effectiveIgnoreEtag ? undefined : lock.etag }
+      )
+
+      if (result.notModified) {
+        if (update || force) {
+          try {
+            const { projectPath } = getConfigPaths()
+            const raw = await fs.promises.readFile(projectPath, 'utf8')
+            payload = JSON.parse(raw || '{}') || {}
+            if (verbose) {
+              console.log(chalk.gray('Remote unchanged (ETag matched); re-applying last saved snapshot to local files.\n'))
+            }
+          } catch (_) {
+            console.log(chalk.bold.green('Already up to date (ETag matched)'))
+            return
           }
-        } catch (_) {
+        } else {
           console.log(chalk.bold.green('Already up to date (ETag matched)'))
           return
         }
-      } else {
-        console.log(chalk.bold.green('Already up to date (ETag matched)'))
-        return
+      }
+
+      if (!result.notModified) {
+        payload = result.data || {}
+
+        const etag = result.etag || null
+        logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
+
+        // Build shared library version map from payload
+        const sharedLibVersions = {}
+        if (Array.isArray(payload.sharedLibraries)) {
+          for (const lib of payload.sharedLibraries) {
+            const key = lib?.key || lib?.id || lib?._id
+            if (!key) continue
+            const v = lib?.version
+            const versionStr = typeof v === 'string' ? v : (v?.value || null)
+            if (versionStr) sharedLibVersions[key] = versionStr
+          }
+        }
+
+        writeLock({
+          etag,
+          version: payload.version,
+          branch,
+          projectId: payload?.projectInfo?.id || payload?.id || payload?._id || lock.projectId,
+          pulledAt: new Date().toISOString(),
+          sharedLibraryVersions: sharedLibVersions
+        })
+
+        if (verbose) {
+          console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
+          console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+        }
       }
     }
 
-    if (!result.notModified) {
-      payload = result.data || {}
-      const etag = result.etag || null
-      logDesignSystemFlags('fetch: raw payload (from API)', payload?.designSystem, { enabled: !!verbose })
-
-      // Update lock.json
-      writeLock({
-        etag,
-        version: payload.version,
-        branch,
-        projectId: payload?.projectInfo?.id || lock.projectId,
-        pulledAt: new Date().toISOString()
-      })
-
-      // Update legacy symbols.json with version and branch
-      updateLegacySymbolsJson({ ...(symbolsConfig || {}), version: payload.version, branch })
-
-      if (verbose) {
-        console.log(chalk.gray(`Version: ${chalk.cyan(payload.version)}`))
-        console.log(chalk.gray(`Branch: ${chalk.cyan(branch)}\n`))
+    // --ours: prioritize local data, only fill in missing keys from remote
+    if (ours && payload) {
+      try {
+        const localProject = await toJSON(distDir, { stringify: false })
+        if (localProject && typeof localProject === 'object' && Object.keys(localProject).length) {
+          payload = deepMergeOurs(localProject, payload)
+          if (verbose) console.log(chalk.gray('--ours: merged remote into local (local takes priority)\n'))
+        }
+      } catch (_) {
+        // No local project yet — use remote as-is
       }
     }
   } catch (e) {
@@ -214,6 +271,12 @@ export const fetchFromCli = async (opts) => {
     if (verbose) console.error(e)
     else console.log(debugMsg)
     process.exit(1)
+  }
+
+  // --lock-only: lock.json is already updated above, skip everything else
+  if (lockOnly) {
+    console.log(chalk.bold.green('Lock updated successfully'))
+    return
   }
 
   // Persist base snapshot for future rebases
@@ -232,19 +295,27 @@ export const fetchFromCli = async (opts) => {
     process.exit(1)
   }
 
-  // Sync project dependencies into local package.json
+  // Sync project dependencies — browser bundler writes to dependencies.js, others to package.json
   try {
-    if (String(scope || '') !== 'libs') {
-      const packageJsonPath = findNearestPackageJson(process.cwd())
-      if (packageJsonPath && payload?.dependencies) {
-        const res = syncPackageJsonDependencies(packageJsonPath, payload.dependencies, { overwriteExisting: true })
+    if (String(scope || '') !== 'libs' && payload?.dependencies) {
+      if (cliConfig.runtime === 'browser') {
+        const depsJsPath = path.join(distDir, 'dependencies.js')
+        const res = syncDependenciesJs(depsJsPath, payload.dependencies, { overwriteExisting: true })
         if (verbose && res?.ok && res.changed) {
-          console.log(chalk.gray('Updated package.json dependencies from fetched project data'))
+          console.log(chalk.gray('Updated dependencies.js from fetched project data'))
+        }
+      } else {
+        const packageJsonPath = findNearestPackageJson(process.cwd())
+        if (packageJsonPath) {
+          const res = syncPackageJsonDependencies(packageJsonPath, payload.dependencies, { overwriteExisting: true })
+          if (verbose && res?.ok && res.changed) {
+            console.log(chalk.gray('Updated package.json dependencies from fetched project data'))
+          }
         }
       }
     }
   } catch (e) {
-    if (verbose) console.error('Failed updating package.json dependencies', e)
+    if (verbose) console.error('Failed updating dependencies', e)
   }
 
   const { version: fetchedVersion, ...config } = payload
@@ -270,19 +341,23 @@ export const fetchFromCli = async (opts) => {
   const shouldAutoUpdate = !!(update || force)
   const shouldSkipConfirm = !!(yes || skipConfirm)
 
+  // --force bypasses lib version caching to re-scaffold all shared libraries
+  const effectiveLockedLibVersions = force ? {} : lockedLibVersions
+
   if (shouldAutoUpdate) {
     await confirmOverwriteIfLocalChanges({
       distDir,
       pulledAt: prevPulledAt,
-      skipConfirm: shouldSkipConfirm
+      skipConfirm: shouldSkipConfirm,
+      nonInteractive: opts.nonInteractive
     })
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=true)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { update: true, metadata: false, scope })
+    createFs(ordered, distDir, { update: true, schema: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
   } else {
     const ordered = applyOrderFields(payload)
     logDesignSystemFlags('fetch: before createFs (update=false)', ordered?.designSystem, { enabled: !!verbose })
-    createFs(ordered, distDir, { metadata: false, scope })
+    createFs(ordered, distDir, { schema: false, scope, librariesDir, libsConfig, lockedLibVersions: effectiveLockedLibVersions })
   }
 }
 
@@ -292,10 +367,14 @@ program
   .option('-d, --dev', 'Running from local server')
   .option('-v, --verbose', 'Verbose errors and warnings')
   .option('--convert', 'Verbose errors and warnings', true)
-  .option('--metadata', 'Include metadata', false)
+  .option('--schema', 'Include schema', false)
   .option('--force', 'Force overriding changes from platform')
   .option('--update', 'Overriding changes from platform')
+  .option('--non-interactive', 'Disable prompts (require --yes when overwrite confirmation is needed)', false)
   .option('-y, --yes', 'Skip confirmation prompts', false)
   .option('--verbose-code', 'Verbose errors and warnings')
   .option('--dist-dir <dir>', 'Directory to import files to.')
+  .option('--ours', 'Prioritize local data, only merge missing data from remote')
+  .option('--lock-only', 'Only update the lock file, skip writing project files')
+  .option('--use-kv', 'Use KV storage instead of the platform API')
   .action(fetchFromCli)

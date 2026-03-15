@@ -4,34 +4,35 @@ import { shape } from '../blocks'
 
 export const Shapes = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
 
     Title: {
-      props: {
-        text: 'Shapes',
-        lineHeight: '1.15em'
-      }
+      text: 'Shapes',
+      lineHeight: '1.15em'
     },
     Paragraph: {
       P: {},
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              text: 'Brand font'
+            },
+            {
+              text: 'Functional font'
+            }
+          ]
         }
       }
     }
   },
 
   Section: {
-    extend: shape
+    extends: shape
   }
 }

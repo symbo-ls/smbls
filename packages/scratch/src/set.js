@@ -17,7 +17,7 @@ import {
   setShadow
 } from './system'
 
-import { isFunction } from '@domql/utils'
+import { isFunction, deepMerge } from '@domql/utils'
 
 const setCases = (val, key) => {
   if (isFunction(val)) return val()
@@ -31,9 +31,11 @@ export const VALUE_TRANSFORMERS = {
   gradient: setGradient,
   font: setFont,
   font_family: setFontFamily,
+  fontfamily: setFontFamily,
   theme: setTheme,
   icons: setSvgIcon,
   semantic_icons: setSameValue,
+  semanticicons: setSameValue,
   svg: setSVG,
   svg_data: setSameValue,
   typography: setSameValue,
@@ -56,38 +58,38 @@ export const VALUE_TRANSFORMERS = {
  * @param {String} key Key, or the name of the property
  * @returns {Object} Factory
  */
-export const setValue = (FACTORY_NAME, value, key) => {
+export const setValue = (factoryName, value, key) => {
   const CONFIG = getActiveConfig()
-  const factoryName = FACTORY_NAME.toLowerCase()
-  const FACTORY = CONFIG[FACTORY_NAME]
+  const lowerName = factoryName.toLowerCase()
+  const FACTORY = CONFIG[lowerName] || CONFIG[factoryName]
 
-  if (VALUE_TRANSFORMERS[factoryName]) {
+  if (VALUE_TRANSFORMERS[lowerName]) {
     try {
-      const result = VALUE_TRANSFORMERS[factoryName](value, key)
+      const result = VALUE_TRANSFORMERS[lowerName](value, key)
       FACTORY[key] = result
       return FACTORY
     } catch (error) {
-      if (CONFIG.verbose) console.warn('Error setting', factoryName, 'value', value, key, error)
+      if (CONFIG.verbose) console.warn('Error setting', lowerName, 'value', value, key, error)
     }
   }
 
-  if (CONFIG.verbose) console.warn('Can not find', factoryName, 'method in scratch')
+  if (CONFIG.verbose) console.warn('Can not find', lowerName, 'method in scratch')
 }
 
 export const setEach = (factoryName, props) => {
   const CONFIG = getActiveConfig()
-  const FACTORY_NAME = factoryName.toUpperCase()
+  const lowerName = factoryName.toLowerCase()
   const keys = Object.keys(props)
 
   keys.forEach((key) => {
     try {
-      return setValue(FACTORY_NAME, props[key], key)
+      return setValue(lowerName, props[key], key)
     } catch (error) {
-      if (CONFIG.verbose) console.warn('Error setting', FACTORY_NAME, 'value', props[key], key, error)
+      if (CONFIG.verbose) console.warn('Error setting', lowerName, 'value', props[key], key, error)
     }
   })
 
-  return CONFIG[FACTORY_NAME]
+  return CONFIG[lowerName] || CONFIG[factoryName]
 }
 
 const SET_OPTIONS = {}
@@ -106,7 +108,10 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     globalTheme,
     useDocumentTheme,
     useDefaultConfig,
+    semanticIcons,
     SEMANTIC_ICONS,
+    semantic_icons,
+    files,
     ...config
   } = recivedConfig
 
@@ -114,6 +119,7 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
     CONFIG = setActiveConfig(options.newConfig)
   }
 
+  if (files !== undefined) CONFIG.files = files
   if (verbose !== undefined) CONFIG.verbose = verbose
   if (useVariable !== undefined) CONFIG.useVariable = useVariable
   if (useReset !== undefined) CONFIG.useReset = useReset
@@ -122,29 +128,50 @@ export const set = (recivedConfig, options = SET_OPTIONS) => {
   if (useIconSprite !== undefined) CONFIG.useIconSprite = useIconSprite
   if (useDocumentTheme !== undefined) CONFIG.useDocumentTheme = useDocumentTheme
   if (globalTheme !== undefined) CONFIG.globalTheme = globalTheme
+  if (recivedConfig.useThemeSuffixedVars !== undefined) CONFIG.useThemeSuffixedVars = recivedConfig.useThemeSuffixedVars
   if (useDefaultConfig !== undefined) CONFIG.useDefaultConfig = useDefaultConfig
-  if (SEMANTIC_ICONS !== undefined) CONFIG.SEMANTIC_ICONS = SEMANTIC_ICONS
+  const _semanticIcons = semanticIcons || SEMANTIC_ICONS || semantic_icons
+  if (_semanticIcons !== undefined) {
+    CONFIG.semantic_icons = _semanticIcons
+    CONFIG.semanticIcons = CONFIG.semantic_icons
+    CONFIG.SEMANTIC_ICONS = CONFIG.semantic_icons // backward compat alias
+  }
   if (CONFIG.verbose) console.log(CONFIG)
 
   if (!CONFIG.__svg_cache) CONFIG.__svg_cache = {}
 
   const keys = Object.keys(config)
-  keys.map(key => setEach(key, config[key]))
+  const keySet = new Set(keys)
+
+  // Pre-merge: fold UPPERCASE default keys into lowercase project keys
+  keys.forEach(key => {
+    const lower = key.toLowerCase()
+    if (lower !== key && keySet.has(lower)) {
+      deepMerge(config[lower], config[key])
+    }
+  })
+
+  // Process only lowercase keys (skip UPPERCASE when lowercase equivalent exists)
+  keys.map(key => {
+    const lower = key.toLowerCase()
+    if (lower !== key && keySet.has(lower)) return
+    return setEach(key, config[key])
+  })
 
   // apply generic configs
-  if (config.TYPOGRAPHY) {
+  if (config.typography || config.TYPOGRAPHY) {
     try { applyTypographySequence() } catch (e) {
       if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
     }
   }
-  if (config.SPACING) {
+  if (config.spacing || config.SPACING) {
     try { applySpacingSequence() } catch (e) {
-      if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
+      if (CONFIG.verbose) console.warn('Error applying spacing sequence', e)
     }
   }
-  if (config.TIMING) {
+  if (config.timing || config.TIMING) {
     try { applyTimingSequence() } catch (e) {
-      if (CONFIG.verbose) console.warn('Error applying typography sequence', e)
+      if (CONFIG.verbose) console.warn('Error applying timing sequence', e)
     }
   }
   applyDocument()

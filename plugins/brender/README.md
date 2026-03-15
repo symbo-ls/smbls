@@ -1,0 +1,368 @@
+# @symbo.ls/brender
+
+Server-side renderer and client-side hydrator for DOMQL/Symbols apps. Converts DOMQL element trees into static HTML on the server, then reconnects that HTML to live DOMQL elements in the browser — without re-rendering from scratch.
+
+## How it works
+
+Brender has two phases: **render** (server) and **liquidate** (browser).
+
+### Render (DOMQL -> HTML)
+
+On the server (or at build time), brender:
+
+1. Creates a virtual DOM environment using [linkedom](https://github.com/WebReflection/linkedom)
+2. Runs DOMQL `create()` against that virtual DOM — the full component tree resolves, extends merge, props apply, and real DOM nodes are produced
+3. Walks every element node and stamps a `data-br="br-N"` attribute (sequential key)
+4. Walks the DOMQL element tree and records which `data-br` key belongs to which DOMQL element (`__ref.__brKey`)
+5. Returns the HTML string, a registry (`{br-key: domqlElement}`), and the element tree
+
+```
+DOMQL Source                  Virtual DOM                  Output
+
+{ tag: 'div',                 <div>                        <div data-br="br-1">
+  Title: {                      <h1>Hello</h1>               <h1 data-br="br-2">Hello</h1>
+    tag: 'h1',                  <p>World</p>                 <p data-br="br-3">World</p>
+    text: 'Hello'             </div>                       </div>
+  },
+  Body: {                     + registry:
+    tag: 'p',                   br-1 -> root element
+    text: 'World'               br-2 -> Title element
+  }                             br-3 -> Body element
+}
+```
+
+### Liquidate (HTML -> DOMQL)
+
+In the browser, when the app JS loads:
+
+1. The pre-rendered HTML is already in the DOM — the user sees the page instantly
+2. DOMQL re-creates the element tree from the same source definitions, but skips DOM creation (the nodes already exist)
+3. `hydrate()` walks the DOMQL tree and the real DOM simultaneously, matching `data-br` keys
+4. For each match: `element.node = domNode` and `domNode.ref = element`
+5. DOMQL now owns every node — reactive updates, event handlers, and state changes work as if the page was client-rendered
+
+```
+Browser DOM (static)              DOMQL Tree (no nodes)         After hydrate()
+
+<div data-br="br-1">              root {                        root.node = <div>
+  <h1 data-br="br-2">Hello</h1>    __ref: {__brKey: 'br-1'}    Title.node = <h1>
+  <p data-br="br-3">World</p>      Title: {                    Body.node = <p>
+</div>                                __ref: {__brKey: 'br-2'}
+                                    }                           domNode.ref = element
+      collectBrNodes()              Body: {                     (bidirectional link)
+      {br-1: div,                     __ref: {__brKey: 'br-3'}
+       br-2: h1,                    }
+       br-3: p}                   }
+```
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| `render.js` | `render()` — full project render via smbls pipeline; `renderElement()` — single component; `renderPage()` — complete HTML page |
+| `hydrate.js` | `collectBrNodes()` — scans DOM for data-br nodes; `hydrate()` — reconnects DOMQL tree to DOM |
+| `env.js` | `createEnv()` — linkedom virtual DOM with browser API stubs (requestAnimationFrame, history, location, etc.) |
+| `keys.js` | `resetKeys()`, `assignKeys()` — stamps data-br on DOM nodes; `mapKeysToElements()` — builds registry |
+| `metadata.js` | Re-exports from [`@symbo.ls/helmet`](../helmet/) — `extractMetadata()`, `generateHeadHtml()`, `resolveMetadata()`, `applyMetadata()` |
+| `prefetch.js` | `prefetchPageData()` — SSR data prefetching via DB adapter (Supabase); `injectPrefetchedState()` — injects fetched data into page definitions |
+| `load.js` | `loadProject()` — imports a symbols/ directory; `loadAndRenderAll()` — renders every route |
+| `sitemap.js` | `generateSitemap()` — generates sitemap.xml from routes |
+| `index.js` | Re-exports everything |
+
+## API
+
+### `renderElement(elementDef, options?)`
+
+Renders a single DOMQL element definition to HTML. Uses `@domql/element` create directly — no full smbls bootstrap needed.
+
+```js
+import { renderElement } from '@symbo.ls/brender'
+
+const result = await renderElement(
+  { tag: 'div', text: 'Hello', Child: { tag: 'span', text: 'World' } }
+)
+
+// result.html     -> '<div data-br="br-1">Hello<span data-br="br-2">World</span></div>'
+// result.registry -> { 'br-1': rootElement, 'br-2': childElement }
+// result.element  -> the DOMQL element tree
+```
+
+With components and designSystem context:
+
+```js
+const result = await renderElement(pageDef, {
+  context: {
+    components: { Nav, Footer, HeroSection },
+    designSystem: { color, font, spacing },
+    state: { user: null },
+    functions: { initApp },
+    methods: { navigate }
+  }
+})
+```
+
+### `render(data, options?)`
+
+Renders a full Symbols project. Requires the smbls pipeline (createDomqlElement) — handles routing, state, designSystem initialization, the full app context. Uses esbuild to bundle the smbls source tree (cached after first call).
+
+```js
+import { render, loadProject } from '@symbo.ls/brender'
+
+const data = await loadProject('/path/to/project')
+const result = await render(data, { route: '/about' })
+
+// result.html       -> full page HTML with data-br keys
+// result.metadata   -> { title, description, og:image, ... }
+// result.emotionCSS -> array of CSS rule strings from emotion
+// result.registry   -> { br-key: domqlElement }
+// result.element    -> root DOMQL element
+```
+
+### `renderPage(data, route, options?)`
+
+Renders a complete, ready-to-serve HTML page. Combines `render()` output with metadata, CSS (emotion + global), fonts, and optional ISR client bundle.
+
+```js
+import { renderPage, loadProject } from '@symbo.ls/brender'
+
+const data = await loadProject('/path/to/project')
+const result = await renderPage(data, '/about', {
+  lang: 'ka',
+  prefetch: true  // enable SSR data prefetching
+})
+
+// result.html       -> complete <!DOCTYPE html> page
+// result.route      -> '/about'
+// result.brKeyCount -> number of data-br keys
+```
+
+### `prefetchPageData(data, route, options?)`
+
+Fetches data for a page's declarative `fetch` definitions during SSR, using the project's DB adapter (e.g. Supabase).
+
+```js
+import { prefetchPageData } from '@symbo.ls/brender'
+
+const stateUpdates = await prefetchPageData(data, '/blog')
+// stateUpdates -> { articles: [...], events: [...] }
+```
+
+### `hydrate(element, options?)`
+
+Client-side. Reconnects a DOMQL element tree to existing DOM nodes via data-br keys.
+
+```js
+import { collectBrNodes, hydrate } from '@symbo.ls/brender/hydrate'
+
+// After DOMQL creates the element tree (without DOM nodes):
+const hydrated = hydrate(elementTree, { root: document.body })
+
+// Now every element.node points to the real DOM node
+// and every domNode.ref points back to the DOMQL element
+```
+
+### `loadProject(path)`
+
+Imports a standard `symbols/` directory structure:
+
+```
+project/
+  symbols/
+    app.js            -> data.app
+    state.js          -> data.state
+    config.js         -> data.config
+    dependencies.js   -> data.dependencies
+    components/
+      index.js        -> data.components
+    pages/
+      index.js        -> data.pages
+    designSystem/
+      index.js        -> data.designSystem
+    functions/
+      index.js        -> data.functions
+    methods/
+      index.js        -> data.methods
+    snippets/
+      index.js        -> data.snippets
+    files/
+      index.js        -> data.files
+```
+
+### `createEnv(html?)`
+
+Creates a linkedom virtual DOM environment with stubs for browser APIs that DOMQL expects:
+
+- `window.requestAnimationFrame` / `cancelAnimationFrame`
+- `window.history` (pushState, replaceState)
+- `window.location` (pathname, search, hash, origin)
+- `window.URL`, `window.scrollTo`
+- `globalThis.Node`, `globalThis.HTMLElement`, `globalThis.Window` (for instanceof checks in @domql/utils)
+
+### `generateHeadHtml(metadata)`
+
+Converts a metadata object into HTML head tags. Provided by [`@symbo.ls/helmet`](../helmet/):
+
+```js
+generateHeadHtml({ title: 'My Page', description: 'About', 'og:image': '/img.png' })
+// -> '<meta charset="UTF-8">\n<title>My Page</title>\n<meta name="description" content="About">\n<meta property="og:image" content="/img.png">'
+```
+
+Metadata values can also be functions — see the [helmet plugin](../helmet/) for details.
+
+## CLI
+
+The `smbls brender` command renders all static routes for a project:
+
+```bash
+# Basic usage — renders all static routes to dist-brender/
+smbls brender
+
+# Custom output directory
+smbls brender --out-dir build
+
+# Disable ISR client bundle
+smbls brender --no-isr
+
+# Disable SSR data prefetching
+smbls brender --no-prefetch
+
+# Watch mode — re-renders on file changes
+smbls brender --watch
+```
+
+Output directory defaults to `dist-brender` (or `brenderDistDir` from `symbols.json`) to avoid conflicting with the SPA's `dist/` folder.
+
+Param routes (e.g. `/blog/:id`) are automatically skipped — they need runtime data.
+
+### symbols.json
+
+```json
+{
+  "brender": true,
+  "brenderDistDir": "dist-brender"
+}
+```
+
+## Examples
+
+The `examples/` directory contains runnable experiments. Copy a project's source into `examples/` first (gitignored), then run:
+
+### Render to static HTML
+
+```bash
+# Render all routes
+node examples/render.js rita
+
+# Render specific route
+node examples/render.js rita /about
+
+# Output goes to examples/rita_built/
+#   index.html          - static HTML with data-br keys
+#   index-tree.json     - DOMQL element tree (for inspection)
+#   index-registry.json - br-key -> element path mapping
+```
+
+### Liquidate (full round-trip)
+
+```bash
+node examples/liquidate.js rita /
+
+# Output:
+#   Step 1: Render DOMQL -> HTML (server side)
+#     HTML: 7338 chars
+#     data-br keys assigned: 129
+#
+#   Step 2: Parse HTML into DOM (simulating browser)
+#     DOM nodes with data-br: 129
+#
+#   Step 3: DOMQL element tree ready
+#     DOMQL elements: 201
+#
+#   Step 4: Hydrate - remap DOMQL elements to DOM nodes
+#     Linked:   129 elements
+#     Unlinked: 0 elements
+#
+#   Step 5: data-br -> DOMQL element mapping
+#     br-1     <main    > root
+#     br-2     <nav     > root.Nav
+#     br-3     <div     > root.Nav.Inner
+#     br-4     <div     > root.Nav.Inner.Logo          "Rita Katona"
+#     br-11    <section > root.Hero
+#     br-15    <h1      > root.Hero.Content.Headline    "Are you looking for..."
+#     ...
+#
+#   Step 6: Mutate via DOMQL (proves elements own their nodes)
+#     Before: "Rita Katona..."
+#     After:  "[LIQUIDATED] Rita Katona..."
+#     Same ref: true
+```
+
+### npm scripts
+
+```bash
+npm run render:rita        # render rita project
+npm run render:survey      # render survey project
+npm run render:all         # render both
+npm run liquidate:rita     # full liquidation round-trip for rita
+npm run liquidate:survey   # full liquidation round-trip for survey
+```
+
+## Experiment results
+
+Tested against two real Symbols projects:
+
+### rita (portfolio site, 6 routes, 39 components)
+
+| Route | HTML size | data-br keys | DOMQL elements | Link rate |
+|-------|-----------|-------------|----------------|-----------|
+| `/` | 7,338 | 129 | 201 | 100% |
+| `/about` | 4,623 | 87 | 133 | 100% |
+| `/from-workshops-to-1-on-1s` | 7,043 | 119 | - | 100% |
+| `/hire-me-as-a-freelancer` | 5,195 | 82 | - | 100% |
+| `/references-and-partners` | 6,102 | 91 | - | 100% |
+| `/angel-investment` | 4,800 | 85 | - | 100% |
+
+### survey (benchmark app, 1 route, 7 components)
+
+| Route | HTML size | data-br keys | Link rate |
+|-------|-----------|-------------|-----------|
+| `/` | 29,625 | 203 | 100% |
+
+The difference between "data-br keys" and "DOMQL elements" is that some elements are virtual (text nodes, internal refs) and don't produce HTML element nodes.
+
+## The data-br contract
+
+The `data-br` attribute is the bridge between server and client. The contract:
+
+1. **Sequential**: Keys are assigned in DOM tree order (`br-0`, `br-1`, `br-2`, ...) by depth-first traversal
+2. **Deterministic**: Same DOMQL input always produces the same key assignments — because DOMQL's `create()` is deterministic and `assignKeys()` walks in document order
+3. **Element nodes only**: Only `nodeType === 1` (elements) get keys, not text nodes or comments
+4. **Bidirectional**: After hydration, `element.node` and `node.ref` point to each other
+
+This means the server and client don't need to exchange the registry — as long as both run the same DOMQL source, the keys will match. The registry JSON is exported for debugging and inspection only.
+
+## Architecture notes
+
+- `renderElement()` uses `@domql/element` create directly — lightweight, no smbls bootstrap. Good for individual components
+- `render()` uses the full `smbls/src/createDomql.js` pipeline — handles routing, designSystem initialization, uikit defaults, the works. Needed for complete apps
+- The smbls source is bundled with esbuild (cached after first call) because the monorepo uses extensionless/directory imports that Node.js ESM can't resolve natively. The esbuild plugin patches SSR-incompatible code (window references, createRequire, circular imports) and stubs out browser-only packages (@symbo.ls/sync)
+- `render()` sets `globalThis.document` and `globalThis.location` before each render to match the linkedom virtual env, then restores them after. This allows the bundled smbls code (which reads `window = globalThis`) to work in SSR
+- `hydrate.js` is browser-only code (no linkedom dependency) — it's exported separately via `@symbo.ls/brender/hydrate`
+- `createEnv()` sets `globalThis.window/document/Node/HTMLElement` because `@domql/utils` `isDOMNode` uses `instanceof` checks against global constructors
+- Emotion CSS is extracted from the CSSOM sheet rules (emotion uses `insertRule()` which doesn't populate `textContent` in linkedom)
+- `onRender` callbacks that do network requests or call `s.update()` will error during SSR — this is expected and harmless since the HTML is already produced before those callbacks fire
+- Data prefetching (`prefetch.js`) walks page definitions to find `fetch` declarations, then executes them against the DB adapter before rendering. Fetched data is injected into page state so components render with real content
+
+## Theme support
+
+Brender defaults to `globalTheme: 'auto'`, generating CSS with both `prefers-color-scheme` media queries and `[data-theme]` selectors. The SSR output includes theme-switching CSS variables that work without JavaScript:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { --theme-document-background: #000; }
+}
+[data-theme="dark"] { --theme-document-background: #000; }
+[data-theme="ocean"] { --theme-document-background: #0a2e4e; }
+```
+
+Custom themes beyond dark/light are activated via `data-theme` attribute on the root element.

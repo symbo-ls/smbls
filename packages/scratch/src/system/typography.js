@@ -13,7 +13,7 @@ import {
 
 export const runThroughMedia = FACTORY => {
   const CONFIG = getActiveConfig()
-  const { TYPOGRAPHY, MEDIA } = CONFIG
+  const { typography: TYPOGRAPHY, media: MEDIA } = CONFIG
 
   for (const prop in FACTORY) {
     const isPropMedia = prop.slice(0, 1) === '@'
@@ -86,7 +86,7 @@ export const applyHeadings = props => {
 
 export const applyTypographySequence = () => {
   const CONFIG = getActiveConfig()
-  const { TYPOGRAPHY } = CONFIG
+  const { typography: TYPOGRAPHY } = CONFIG
 
   generateSequence(TYPOGRAPHY)
   applyHeadings(TYPOGRAPHY)
@@ -96,6 +96,6 @@ export const applyTypographySequence = () => {
 
 export const getFontSizeByKey = value => {
   const CONFIG = getActiveConfig()
-  const { TYPOGRAPHY } = CONFIG
+  const { typography: TYPOGRAPHY } = CONFIG
   return getSequenceValuePropertyPair(value, 'fontSize', TYPOGRAPHY)
 }

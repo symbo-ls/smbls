@@ -1,8 +1,18 @@
 {
   "name": "@symbo.ls/preview",
-  "version": "2.34.35",
+  "version": "3.7.5",
   "main": "index.js",
-  "license": "MIT",
-  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc",
-  "source": "src/index.js"
+  "license": "CC-BY-NC-4.0",
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "source": "index.js",
+  "type": "module",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

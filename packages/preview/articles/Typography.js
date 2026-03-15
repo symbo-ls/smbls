@@ -4,44 +4,43 @@ import { FontsBlock } from '../blocks'
 
 export const Typography = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
   Header: {
     tag: 'header',
-    extend: 'Banner',
+    extends: 'Banner',
     Title: {
-      props: {
-        text: 'type',
-        lineHeight: '1.15em'
-      }
+      text: 'type',
+      lineHeight: '1.15em'
     },
     Paragraph: {
       P: {},
       Flex: {
         Title: {},
         Paragraph: {
-          ...[{
-            props: { text: 'Brand font' }
-          }, {
-            props: { text: 'Functional font' }
-          }]
+          ...[
+            {
+              text: 'Brand font'
+            },
+            {
+              text: 'Functional font'
+            }
+          ]
         }
       }
     }
   },
 
   Flex: {
-    props: {
-      flow: 'column',
-      padding: 'B - C -',
-      childProps: {
-        ':not(:last-child)': {
-          border: 'solid, white .15',
-          borderWidth: '0 0 1px 0'
-        }
+    flow: 'column',
+    padding: 'B - C -',
+    childProps: {
+      ':not(:last-child)': {
+        border: 'solid white.15',
+        borderWidth: '0 0 1px 0'
       }
     },
-    childExtend: FontsBlock,
+    childExtends: FontsBlock,
     ...[{}, {}]
   }
   // Section: {
@@ -67,9 +66,9 @@ export const Typography = {
   // }
 
   // Section: {
-  //   extend: font,
+  //   extends: font,
   //   Title: {
-  //     props: { text: 'Sans Serif' }
+  //     text: 'Sans Serif'
   //   },
   //   Paragraph: {
   //     letters: {
@@ -80,7 +79,8 @@ export const Typography = {
   //   }
   // },
 
-  // $stateCollection: ({ context }) => {
+  // childrenAs: 'state',
+  // children: ({ context }) => {
   //   const { FONT } = context.designSystem
   //   return Object.keys(FONT).map(v => ({
   //     name: v

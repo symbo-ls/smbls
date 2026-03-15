@@ -8,65 +8,60 @@ import {
   transformBoxShadow,
   transformBorder,
   transformBackgroundImage,
+  resolveColorsInGradient,
   transformSizeRatio
 } from '@symbo.ls/scratch'
 
 import { isDefined, isString } from '@domql/utils'
 
 export const getSystemGlobalTheme = ({ context, state }) => {
-  const rootState = state && state.root
-  return rootState && rootState.globalTheme
-    ? rootState.globalTheme
-    : context.designSystem && context.designSystem.globalTheme
+  const theme = state?.root?.globalTheme || context.designSystem?.globalTheme
+  return theme === 'auto' ? null : theme
 }
 
 export const THEME_PROPS = {
-  theme: (element) => {
+  theme: (val, element) => {
     const { props } = element
-    const globalTheme = getSystemGlobalTheme(element)
-    if (!props.theme) return
-    const hasSubtheme = props.theme.includes(' ') && !props.theme.includes('@')
-    const globalThemeForced = `@${props.themeModifier || globalTheme}`
-    if (hasSubtheme) {
-      const themeAppliedInVal = props.theme.split(' ')
-      themeAppliedInVal.splice(1, 0, globalThemeForced)
-      return getMediaTheme(themeAppliedInVal)
-    } else if (props.theme.includes('@{globalTheme}'))
-      props.theme.replace('@{globalTheme}', globalThemeForced)
-    return getMediaTheme(props.theme, `@${props.themeModifier || globalTheme}`)
+    if (!val) return
+
+    // themeModifier explicitly forces a scheme on this component
+    if (props.themeModifier) {
+      return getMediaTheme(val, `@${props.themeModifier}`)
+    }
+
+    // CSS vars handle dark/light switching — no modifier needed, no DOMQL re-render
+    return getMediaTheme(val)
   },
 
-  color: (element) => {
-    const { props } = element
+  color: (val, element) => {
     const globalTheme = getSystemGlobalTheme(element)
-    if (!props.color) return
+    if (!val) return
     return {
-      color: getMediaColor(props.color, globalTheme)
+      color: getMediaColor(val, globalTheme)
     }
   },
 
-  background: (element) => {
-    const { props } = element
+  background: (val, element) => {
     const globalTheme = getSystemGlobalTheme(element)
-    if (!props.background) return
+    if (!val) return
+    if (isString(val) && val.includes('gradient')) {
+      return { background: resolveColorsInGradient(val, globalTheme) }
+    }
     return {
-      background: getMediaColor(props.background, globalTheme)
+      background: getMediaColor(val, globalTheme)
     }
   },
 
-  backgroundColor: (element) => {
-    const { props } = element
+  backgroundColor: (val, element) => {
     const globalTheme = getSystemGlobalTheme(element)
-    if (!props.backgroundColor) return
+    if (!val) return
     return {
-      backgroundColor: getMediaColor(props.backgroundColor, globalTheme)
+      backgroundColor: getMediaColor(val, globalTheme)
     }
   },
 
-  backgroundImage: (element, s, ctx) => {
-    const { props } = element
+  backgroundImage: (val, element, s, ctx) => {
     const globalTheme = getSystemGlobalTheme(element)
-    let val = props.backgroundImage
     if (!val) return
     const file = ctx.files && ctx.files[val]
     if (file && file.content) val = file.content.src
@@ -75,83 +70,83 @@ export const THEME_PROPS = {
     }
   },
 
-  backgroundSize: ({ props }) => ({
-    backgroundSize: props.backgroundSize
+  textStroke: (val) => ({
+    WebkitTextStroke: transformTextStroke(val)
   }),
 
-  backgroundPosition: ({ props }) => ({
-    backgroundPosition: props.backgroundPosition
+  outline: (val) => ({
+    outline: transformBorder(val)
   }),
 
-  backgroundRepeat: ({ props }) => ({
-    backgroundRepeat: props.backgroundRepeat
+  outlineOffset: (val, { props }) => transformSizeRatio('outlineOffset', val, props),
+
+  border: (val) => ({
+    border: transformBorder(val)
   }),
 
-  textStroke: ({ props }) => ({
-    WebkitTextStroke: transformTextStroke(props.textStroke)
-  }),
-
-  outline: ({ props }) =>
-    isDefined(props.outline) && {
-      outline: transformBorder(props.outline)
-    },
-
-  outlineOffset: ({ props }) => transformSizeRatio('outlineOffset', props),
-
-  border: ({ props }) =>
-    isDefined(props.border) && {
-      border: transformBorder(props.border)
-    },
-
-  borderColor: (element) => {
-    const { props } = element
+  borderColor: (val, element) => {
     const globalTheme = getSystemGlobalTheme(element)
-    if (!props.borderColor) return
+    if (!val) return
     return {
-      borderColor: getMediaColor(props.borderColor, globalTheme)
+      borderColor: getMediaColor(val, globalTheme)
     }
   },
-  borderLeft: ({ props }) => ({
-    borderLeft: transformBorder(props.borderLeft)
+  borderTopColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderTopColor: getMediaColor(val, globalTheme) }
+  },
+  borderBottomColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderBottomColor: getMediaColor(val, globalTheme) }
+  },
+  borderLeftColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderLeftColor: getMediaColor(val, globalTheme) }
+  },
+  borderRightColor: (val, element) => {
+    const globalTheme = getSystemGlobalTheme(element)
+    if (!val) return
+    return { borderRightColor: getMediaColor(val, globalTheme) }
+  },
+  borderLeft: (val) => ({
+    borderLeft: transformBorder(val)
   }),
-  borderTop: ({ props }) => ({
-    borderTop: transformBorder(props.borderTop)
+  borderTop: (val) => ({
+    borderTop: transformBorder(val)
   }),
-  borderRight: ({ props }) => ({
-    borderRight: transformBorder(props.borderRight)
+  borderRight: (val) => ({
+    borderRight: transformBorder(val)
   }),
-  borderBottom: ({ props }) => ({
-    borderBottom: transformBorder(props.borderBottom)
+  borderBottom: (val) => ({
+    borderBottom: transformBorder(val)
   }),
 
-  shadow: (element) => {
-    const { props } = element
+  shadow: (val, element) => {
     const globalTheme = getSystemGlobalTheme(element)
-    if (!props.backgroundImage) return
-    return {
-      boxShadow: transformShadow(props.shadow, globalTheme)
-    }
+    if (!val) return
+    return ({
+      boxShadow: transformShadow(val, globalTheme)
+    })
   },
 
-  boxShadow: (element, state, context) => {
-    const { props } = element
-    if (!isString(props.boxShadow)) return
-    const [val, hasImportant] = props.boxShadow.split('!importan')
+  boxShadow: (val, element) => {
+    if (!isString(val)) return
+    const [value, hasImportant] = val.split('!importan')
     const globalTheme = getSystemGlobalTheme(element)
     const important = hasImportant ? ' !important' : ''
     return {
-      boxShadow: transformBoxShadow(val.trim(), globalTheme) + important
+      boxShadow: transformBoxShadow(value.trim(), globalTheme) + important
     }
   },
 
-  textShadow: ({ props, context }) => ({
-    textShadow: transformBoxShadow(
-      props.textShadow,
-      context.designSystem.globalTheme
-    )
+  textShadow: (val, { context }) => ({
+    textShadow: transformBoxShadow(val, context.designSystem.globalTheme)
   }),
 
-  columnRule: ({ props }) => ({
-    columnRule: transformBorder(props.columnRule)
+  columnRule: (val) => ({
+    columnRule: transformBorder(val)
   })
 }

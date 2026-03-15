@@ -1,5 +1,5 @@
 'use strict'
 
-export const UNIT = {
+export const unit = {
   default: 'em'
 }

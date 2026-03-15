@@ -1,15 +1,13 @@
 'use strict'
 
 export const Checkbox = {
-  extend: 'Focusable',
+  extends: 'Focusable',
 
   tag: 'label',
 
-  props: {
-    boxSize: 'fit-content fit-content',
-    cursor: 'pointer',
-    round: 'Y'
-  },
+  boxSize: 'fit-content fit-content',
+  cursor: 'pointer',
+  round: 'Y',
 
   Input: {
     type: 'checkbox',
@@ -20,8 +18,7 @@ export const Checkbox = {
       opacity: '1'
     },
     attr: {
-      name: (el) => el.call('exec', el.parent.props.name),
-      checked: (el) => el.call('exec', el.parent.props.checked)
+      checked: el => el.call('exec', el.parent.props.checked)
     }
   },
 
@@ -42,14 +39,12 @@ export const Checkbox = {
 }
 
 export const CheckboxHgroup = {
-  extend: 'Flex',
+  display: 'flex',
   tag: 'label',
 
-  props: {
-    boxSize: 'fit-content',
-    align: 'flex-start flex-start',
-    gap: 'A'
-  },
+  boxSize: 'fit-content',
+  align: 'flex-start flex-start',
+  gap: 'A',
 
   Checkbox: { tag: 'div' },
   HgroupRows: {

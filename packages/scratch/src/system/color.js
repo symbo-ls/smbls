@@ -5,7 +5,9 @@ import { getActiveConfig } from '../factory.js'
 
 import {
   colorStringToRgbaArray,
-  getRgbTone
+  getRgbTone,
+  isCSSVar,
+  parseColorToken
 } from '../utils'
 
 export const getColor = (value, key, config) => {
@@ -15,11 +17,24 @@ export const getColor = (value, key, config) => {
     return
   }
 
-  if (value.slice(0, 2) === '--') return `var(${value})`
+  if (isCSSVar(value)) return `var(${value})`
 
   if (key && value[key]) value = value[key]
-  const [name, alpha, tone] = isArray(value) ? value : value.split(' ')
-  const { COLOR, GRADIENT } = CONFIG
+
+  let name, alpha, tone
+  if (isArray(value)) {
+    [name, alpha, tone] = value
+  } else {
+    const parsed = parseColorToken(value)
+    if (!parsed) return value
+    if (parsed.passthrough) return parsed.passthrough
+    if (parsed.cssVar) return `var(${parsed.cssVar})`
+    name = parsed.name
+    alpha = parsed.alpha
+    tone = parsed.tone
+  }
+
+  const { color: COLOR, gradient: GRADIENT } = CONFIG
 
   let val = (COLOR[name] || GRADIENT[name])
 
@@ -47,22 +62,32 @@ export const getColor = (value, key, config) => {
   if (val[tone]) rgb = val[tone].rgb
 
   if (alpha) return `rgba(${rgb}, ${alpha})`
+  if (tone) return `rgba(${rgb}, 1)`
   return CONFIG.useVariable ? `var(${val.var})` : `rgb(${rgb})`
 }
 
 export const getMediaColor = (value, globalTheme, config) => {
   const CONFIG = config || getActiveConfig()
-  if (!globalTheme) globalTheme = CONFIG.globalTheme
+  if (!globalTheme) globalTheme = CONFIG.globalTheme === 'auto' ? null : CONFIG.globalTheme
   if (!isString(value)) {
     if (CONFIG.verbose) console.warn(value, '- type for color is not valid')
     return
   }
 
-  if (value.slice(0, 2) === '--') return `var(${value})`
+  if (isCSSVar(value)) return `var(${value})`
 
-  const [name] = isArray(value) ? value : value.split(' ')
+  let name
+  if (isArray(value)) {
+    name = value[0]
+  } else {
+    const parsed = parseColorToken(value)
+    if (!parsed) return value
+    if (parsed.passthrough) return parsed.passthrough
+    if (parsed.cssVar) return `var(${parsed.cssVar})`
+    name = parsed.name
+  }
 
-  const { COLOR, GRADIENT } = CONFIG
+  const { color: COLOR, gradient: GRADIENT } = CONFIG
   const val = COLOR[name] || GRADIENT[name]
   const isObj = isObject(val)
 
@@ -72,7 +97,7 @@ export const getMediaColor = (value, globalTheme, config) => {
     else {
       const obj = {}
       for (const mediaName in val) {
-        const query = CONFIG.MEDIA[mediaName.slice(1)]
+        const query = CONFIG.media[mediaName.slice(1)]
         const media = '@media ' + (query === 'print' ? `${query}` : `screen and ${query}`)
         obj[media] = getColor(value, mediaName, config)
       }
@@ -87,15 +112,45 @@ export const getMediaColor = (value, globalTheme, config) => {
 export const setColor = (val, key, suffix) => {
   const CONFIG = getActiveConfig()
 
-  if (isString(val) && val.slice(0, 2) === '--') {
-    val = getColor(val.slice(2))
+  if (isString(val) && isCSSVar(val)) {
+    const rawRef = val.slice(2)
+    val = getColor(rawRef)
     if (!(
       val.includes('rgb') ||
       val.includes('var') ||
       val.includes('#')
     )) {
-      if (CONFIG.verbose) console.warn(val, '- referred but does not exist')
-      val = val.split(' ')[0]
+      // Handle space-separated format: '--colorName alpha' (e.g. '--gray1 1')
+      const parts = rawRef.split(' ')
+      const refColor = CONFIG.color[parts[0]]
+      if (refColor && refColor.value) {
+        let rgb = refColor.rgb
+        const alpha = parts[1] !== undefined ? parts[1] : '1'
+        const tone = parts[2]
+        if (tone) {
+          rgb = getRgbTone(rgb, tone)
+        }
+        val = `rgba(${rgb}, ${alpha})`
+      } else {
+        // Try to resolve as CSS keyword color with tone modifier
+        const tone = parts[2]
+        const alpha = parts[1] !== undefined ? parts[1] : '1'
+        if (tone) {
+          try {
+            const rgb = colorStringToRgbaArray(parts[0])
+            if (rgb && rgb.length >= 3) {
+              const tonedRgb = getRgbTone(rgb.slice(0, 3).join(', '), tone)
+              val = `rgba(${tonedRgb}, ${alpha})`
+            } else {
+              val = parts[0]
+            }
+          } catch (e) {
+            val = parts[0]
+          }
+        } else {
+          val = parts[0]
+        }
+      }
     }
   }
 
@@ -137,7 +192,7 @@ export const setColor = (val, key, suffix) => {
 
 export const setGradient = (val, key, suffix) => {
   const CONFIG = getActiveConfig()
-  if (isString(val) && val.slice(0, 2) === '--') val = getColor(val.slice(2))
+  if (isString(val) && isCSSVar(val)) val = getColor(val.slice(2))
 
   if (isArray(val)) {
     return {

@@ -82,6 +82,6 @@ test('should set a COLOR PALETTE', () => {
 })
 
 test('should set COLORS from entire config', () => {
-  const CONFIG = { COLOR }
-  expect(set(CONFIG).COLOR).toStrictEqual(EXPECTED)
+  const CONFIG = { color: COLOR }
+  expect(set(CONFIG).color).toStrictEqual(EXPECTED)
 })

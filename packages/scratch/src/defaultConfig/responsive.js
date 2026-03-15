@@ -1,6 +1,6 @@
 'use strict'
 
-export const BREAKPOINTS = {
+export const breakpoints = {
   screenL: 1920,
   screenM: 1680,
   screenS: 1440,
@@ -13,7 +13,7 @@ export const BREAKPOINTS = {
   mobileXS: 375
 }
 
-export const DEVICES = {
+export const devices = {
   screenXXL: [2560, 1440],
   screenXL: [2240, 1260],
   screenL: [1920, 1024],

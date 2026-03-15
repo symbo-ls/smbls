@@ -1,6 +1,6 @@
 'use strict'
 
-import { arrayzeValue } from '@symbo.ls/utils'
+import { arrayzeValue } from '@symbo.ls/smbls-utils'
 import { isArray, isString, merge } from '@domql/utils'
 
 import { getActiveConfig } from '../factory.js'
@@ -50,7 +50,7 @@ export const checkIfBoxSize = (propertyName) => {
 
 export const applySpacingSequence = () => {
   const CONFIG = getActiveConfig()
-  const { SPACING } = CONFIG
+  const { spacing: SPACING } = CONFIG
   generateSequence(SPACING)
   applySequenceVars(SPACING)
   runThroughMedia(SPACING)
@@ -58,7 +58,7 @@ export const applySpacingSequence = () => {
 
 const getSequence = (sequenceProps) => {
   const CONFIG = getActiveConfig()
-  const { SPACING } = CONFIG
+  const { spacing: SPACING } = CONFIG
   if (!sequenceProps || !sequenceProps.sequence) return SPACING
   const hasGenerated = Object.keys(sequenceProps.sequence).length > 0
   return hasGenerated ? sequenceProps : generateSequence(sequenceProps)
@@ -114,7 +114,7 @@ export const getSpacingByKey = (
 
 export const getSpacingBasedOnRatio = (props, propertyName, val, fnPrefix) => {
   const CONFIG = getActiveConfig()
-  const { SPACING } = CONFIG
+  const { spacing: SPACING } = CONFIG
 
   let value = val || props[propertyName]
 

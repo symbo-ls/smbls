@@ -1,0 +1,312 @@
+'use strict'
+
+import { createNode } from './node.js'
+import { ROOT } from './tree.js'
+
+import {
+  isObject,
+  exec,
+  isUndefined,
+  detectInfiniteLoop,
+  propertizeElement,
+  pickupElementFromProps,
+  createElement,
+  applyExtends,
+  createScope,
+  isMethod,
+  OPTIONS,
+  initProps,
+  createIfConditionFlag,
+  createRoot
+} from '@domql/utils'
+
+import { applyAnimationFrame, triggerEventOn } from './event/index.js'
+import { assignNode } from './render/index.js'
+import { detectTag } from './render/cache.js'
+import { createState } from '@domql/state'
+
+import { REGISTRY } from './mixins/index.js'
+import { addMethods } from './methods/set.js'
+import { assignKeyAsClassname } from './mixins/classList.js'
+import { throughInitialExec, throughInitialDefine } from './iterate.js'
+import { filterAttributesByTagName } from 'attrs-in-props'
+
+const EXCLUDED_ATTRS = new Set(['class', 'style'])
+
+const applyPropsAsAttrs = (element) => {
+  const { tag, props, context } = element
+  if (!tag || !props) return
+
+  const autoAttrs = filterAttributesByTagName(tag, props, context?.cssPropsRegistry)
+  const filtered = {}
+  for (const key in autoAttrs) {
+    if (!EXCLUDED_ATTRS.has(key)) filtered[key] = autoAttrs[key]
+  }
+  let hasFiltered = false
+  for (const _k in filtered) { hasFiltered = true; break } // eslint-disable-line
+  if (!hasFiltered) return
+
+  if (!element.attr) {
+    element.attr = filtered
+  } else if (typeof element.attr === 'object') {
+    element.attr = { ...filtered, ...element.attr }
+  }
+}
+
+const ENV = process.env.NODE_ENV
+
+/**
+ * Creating a DOMQL element using passed parameters
+ */
+export const create = (
+  props,
+  parentEl,
+  passedKey,
+  options = OPTIONS.create || {},
+  attachOptions
+) => {
+  cacheOptions(options)
+
+  const element = createElement(props, parentEl, passedKey, options, ROOT)
+  if (!element) return
+
+  const { key, parent, __ref: ref } = element
+
+  createRoot(element, parent) // Call createRoot after addCaching
+
+  applyExtends(element, parent, options)
+
+  if (options.onlyResolveExtends) {
+    return onlyResolveExtends(element, parent, key, options)
+  }
+
+  propertizeElement.call(element, element)
+
+  triggerEventOn('start', element, options)
+
+  resetOptions(element, parent, options)
+
+  addMethods(element, parent, options)
+
+  createScope(element, parent)
+
+  createState(element, parent)
+  if (element.scope === 'state') element.scope = element.state
+
+  createIfConditionFlag(element, parent)
+
+  // apply props settings
+  initProps(element, parent, options)
+  // Re-pickup component-named properties that entered props via childProps/inheritParentProps
+  pickupElementFromProps.call(element, element, { cachedKeys: [] })
+  // Detect tag early so applyPropsAsAttrs can filter by tag
+  if (!element.tag) element.tag = detectTag(element)
+  // Populate element.attr from props matching the tag's HTML spec
+  applyPropsAsAttrs(element)
+  if (element.scope === 'props' || element.scope === true) {
+    element.scope = element.props
+  }
+
+  // recatch if it passess props again
+  createIfConditionFlag(element, parent)
+
+  // if it already HAS a NODE
+  if (element.node) {
+    if (ref.__if) return assignNode(element, parent, key, attachOptions)
+  }
+
+  // apply variants
+  // applyVariant(element, parent)
+
+  const onInit = triggerEventOn('init', element, options)
+  if (onInit === false) return element
+
+  triggerEventOn('beforeClassAssign', element, options)
+
+  // generate a CLASS name
+  assignKeyAsClassname(element)
+
+  renderElement(element, parent, options, attachOptions)
+
+  addElementIntoParentChildren(element, parent)
+
+  triggerEventOn('complete', element, options)
+
+  return element
+}
+
+const cacheOptions = options => {
+  if (options && !OPTIONS.create) {
+    OPTIONS.create = options
+    OPTIONS.create.context = options.context
+  }
+}
+
+const resetOptions = (element, parent, options) => {
+  let hasKeys = false
+  for (const _k in options) { hasKeys = true; break } // eslint-disable-line
+  if (hasKeys) {
+    OPTIONS.defaultOptions = options
+    if (options.ignoreChildExtends) delete options.ignoreChildExtends
+  }
+}
+
+const addElementIntoParentChildren = (element, parent) => {
+  if (parent.__ref && parent.__ref.__children) {
+    if (!parent.__ref.__children.includes(element.key)) {
+      parent.__ref.__children.push(element.key)
+    }
+  }
+}
+
+let _uniqIdCounter = 1
+const visitedElements = new WeakMap()
+const renderElement = (element, parent, options, attachOptions) => {
+  if (visitedElements.has(element)) {
+    if (ENV === 'test' || ENV === 'development') {
+      console.warn('Cyclic rendering detected:', element.__ref.path)
+    }
+  }
+
+  visitedElements.set(element, true)
+
+  const { __ref: ref, key } = element
+
+  const createNestedChild = () => {
+    const isInfiniteLoopDetected = detectInfiniteLoop(ref.path)
+    if (ref.__uniqId || isInfiniteLoopDetected) return
+    createNode(element, options)
+    ref.__uniqId = _uniqIdCounter++
+  }
+
+  // CREATE a real NODE
+  if (ENV === 'test' || ENV === 'development' || element.context?.strictMode) {
+    createNestedChild()
+  } else {
+    try {
+      createNestedChild()
+    } catch (e) {
+      element.error = e
+      const path = ref.path
+      if (path.includes('ComponentsGrid')) {
+        path.splice(0, path.indexOf('ComponentsGrid') + 2)
+      }
+      if (path.includes('demoComponent')) {
+        path.splice(0, path.indexOf('demoComponent') + 1)
+      }
+      const isDemoComponent = element.lookup(el => el.state.key)?.state?.key
+      element.warn(
+        'Error happened in:',
+        isDemoComponent ? isDemoComponent + ' ' : '' + path.join('.')
+      )
+      element.verbose()
+      console.error('[DOMQL] Render error:', e)
+      if (element.on?.error) {
+        element.on.error(e, element, element.state, element.context, options)
+      }
+    }
+  }
+
+  if (!ref.__if) {
+    parent[key || element.key] = element
+    return element
+  }
+
+  // assign NODE
+  assignNode(element, parent, key, attachOptions)
+
+  // apply events
+  applyAnimationFrame(element, options)
+
+  // run `on.render`
+  triggerEventOn('render', element, options)
+  // triggerEventOn('render', element, options).then(() => {})
+
+  // run `on.renderRouter`
+  triggerEventOn('renderRouter', element, options)
+
+  // run `on.done`
+  triggerEventOn('done', element, options)
+
+  // run `on.done`
+  triggerEventOn('create', element, options)
+}
+
+const onlyResolveExtends = (element, parent, key, options) => {
+  const { __ref: ref } = element
+
+  addMethods(element, parent, options)
+
+  createScope(element, parent)
+
+  createState(element, parent)
+  if (element.scope === 'state') element.scope = element.state
+
+  createIfConditionFlag(element, parent)
+
+  // apply props settings
+  initProps(element, parent, options)
+  // Re-pickup component-named properties that entered props via childProps/inheritParentProps
+  pickupElementFromProps.call(element, element, { cachedKeys: [] })
+  if (element.scope === 'props' || element.scope === true) {
+    element.scope = element.props
+  }
+
+  if (element.node && ref.__if) {
+    parent[key || element.key] = element
+  } // Borrowed from assignNode()
+
+  if (!element.props) element.props = {}
+  // applyVariant(element, parent)
+
+  addElementIntoParentChildren(element, parent)
+
+  if (element.tag !== 'string' && element.tag !== 'fragment') {
+    throughInitialDefine(element)
+    throughInitialExec(element)
+
+    for (const k in element) {
+      if (
+        isUndefined(element[k]) ||
+        isMethod(k, element) ||
+        isObject(REGISTRY[k])
+      ) {
+        continue
+      }
+
+      const hasDefine = element.define?.[k]
+      const contextHasDefine = element.context?.define?.[k]
+      const optionsHasDefine = options.define?.[k]
+
+      if (!ref.__skipCreate && REGISTRY[k] && !optionsHasDefine) {
+        continue
+      } else if (
+        element[k] &&
+        !hasDefine &&
+        !optionsHasDefine &&
+        !contextHasDefine
+      ) {
+        try {
+          create(exec(element[k], element), element, k, options)
+        } catch (e) {
+          console.warn('[DOMQL] onlyResolveExtends child error in', k, ':', e?.message || e)
+        }
+      }
+    }
+  }
+
+  parent[key || element.key] = element // Borrowed from assignNode()
+
+  delete element.update
+  delete element.__element
+
+  // added by initProps
+  if (element.props) {
+    delete element.props.update
+    delete element.props.__element
+  }
+
+  return element
+}
+
+export default create

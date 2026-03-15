@@ -7,7 +7,7 @@ import { getMediaTheme } from './theme.js'
 export const applyReset = (reset = {}) => {
   const CONFIG = getActiveConfig()
 
-  const { RESET, TYPOGRAPHY, DOCUMENT } = CONFIG
+  const { reset: RESET, typography: TYPOGRAPHY, document: DOCUMENT } = CONFIG
 
   if (RESET) {
     if (RESET[':root']) {
@@ -16,7 +16,7 @@ export const applyReset = (reset = {}) => {
 
       configReset.body = {
         ...(CONFIG.useDocumentTheme
-          ? getMediaTheme('document', `@${CONFIG.globalTheme}`)
+          ? getMediaTheme('document')
           : {}),
         ...configTemplates.body
       }
@@ -30,7 +30,7 @@ export const applyReset = (reset = {}) => {
 
     const { body, ...templates } = TYPOGRAPHY.templates
     const globalTheme = CONFIG.useDocumentTheme
-      ? getMediaTheme('document', `@${CONFIG.globalTheme}`)
+      ? getMediaTheme('document')
       : {}
     if (RESET.html) overwriteDeep(RESET.html, globalTheme)
 
@@ -61,7 +61,7 @@ export const applyReset = (reset = {}) => {
         fontFamily: DOCUMENT.fontFamily,
 
         fontSize:
-          TYPOGRAPHY.base / TYPOGRAPHY.browserDefault + CONFIG.UNIT.default,
+          TYPOGRAPHY.base / TYPOGRAPHY.browserDefault + CONFIG.unit.default,
 
         ...templates,
         ...body

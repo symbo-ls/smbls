@@ -4,21 +4,16 @@ import { ColorBlock } from '../blocks'
 
 export const Themes = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
   Banner: {
-    Title: { props: { text: 'Themes' } },
+    Title: { text: 'Themes' },
     Paragraph: {
-      props: {
-        alignItems: 'flex-end'
-      },
-      list: {
+      alignItems: 'flex-end',
+      List: {
         Title: { text: 'What you’ll find' },
         Paragraph: {
-          ...[
-            { text: 'Dark theme' },
-            { text: 'Light theme' }
-          ]
+          ...[{ text: 'Dark theme' }, { text: 'Light theme' }]
         }
       },
       P: {
@@ -28,62 +23,47 @@ export const Themes = {
   },
 
   Flex: {
-    props: {
-      flow: 'column',
-      padding: 'E C1 - C1',
-      gap: 'E'
-    },
-    childExtend: {
-      extend: ColorBlock,
+    flow: 'column',
+    padding: 'E C1 - C1',
+    gap: 'E',
+    childExtends: {
+      extends: ColorBlock,
       Hgroup: {},
       Grid: {
-        props: {
-          columns: 'repeat(5, 1fr)',
-          childProps: {
-            theme: 'primary',
-            border: 'none !important'
-          }
+        columns: 'repeat(5, 1fr)',
+        childProps: {
+          theme: 'primary',
+          border: 'none !important'
         },
-        childExtend: {
-          extend: 'Flex',
-          props: {
-            flow: 'column',
-            align: 'flex-start space-between',
-            padding: 'Z1 Z2'
+        childExtends: {
+          display: 'flex',
+          flow: 'column',
+          align: 'flex-start space-between',
+          padding: 'Z1 Z2',
+          Icons: {
+            display: 'flex',
+            gap: 'B',
+            align: 'center space-between',
+            minWidth: '100%',
+            childExtends: 'Icon',
+            children: [{ name: 'sun' }, { name: 'moon' }]
           },
-          icons: {
-            extend: 'Flex',
-            props: {
-              gap: 'B',
-              align: 'center space-between',
-              minWidth: '100%'
-            },
-            childExtend: 'Icon',
-            $propsCollection: [
-              { name: 'sun' },
-              { name: 'moon' }
-            ]
-          },
-          title: {
+          Title: {
             tag: 'h6',
-            props: {
-              text: 'primary',
-              textTransform: 'capitalize',
-              fontWeight: '500'
-            }
+            text: 'primary',
+            textTransform: 'capitalize',
+            fontWeight: '500'
           }
         },
         ...[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
       }
-
     },
     ...[
       {
         Hgroup: {
-          Title: { props: { text: 'Dark Theme' } }
+          Title: { text: 'Dark Theme' }
         },
-        Grid: {
-        }
+        Grid: {}
       }
     ]
   }

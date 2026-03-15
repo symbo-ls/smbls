@@ -7,20 +7,20 @@ import {
 } from '@symbo.ls/scratch'
 
 export const TIMING_PROPS = {
-  transition: ({ props }) => ({
-    transition: splitTransition(props.transition)
+  transition: val => ({
+    transition: splitTransition(val)
   }),
-  transitionDuration: ({ props }) => ({
-    transitionDuration: transformDuration(props.transitionDuration)
+  transitionDuration: val => ({
+    transitionDuration: transformDuration(val)
   }),
-  transitionDelay: ({ props }) => ({
-    transitionDelay: transformDuration(props.transitionDelay)
+  transitionDelay: val => ({
+    transitionDelay: transformDuration(val)
   }),
-  transitionTimingFunction: ({ props }) => ({
-    transitionTimingFunction: getTimingFunction(props.transitionTimingFunction)
+  transitionTimingFunction: val => ({
+    transitionTimingFunction: getTimingFunction(val)
   }),
-  transitionProperty: ({ props }) => ({
-    transitionProperty: props.transitionProperty,
-    willChange: props.transitionProperty
+  transitionProperty: val => ({
+    transitionProperty: val,
+    willChange: val
   })
 }

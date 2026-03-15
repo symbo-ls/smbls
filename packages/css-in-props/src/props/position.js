@@ -3,32 +3,29 @@
 import { getSpacingByKey } from '@symbo.ls/scratch'
 
 export const POSITION_PROPS = {
-  inset: ({ props, context }) => {
-    const { inset } = props
-    if (context.utils.isNumber(inset)) return ({ inset })
-    if (!context.utils.isString(inset)) return
-    return { inset: inset.split(' ').map(v => getSpacingByKey(v, 'k').k).join(' ') }
+  inset: (val, el) => {
+    if (el.call('isNumber', val)) return ({ inset: val })
+    if (!el.call('isString', val)) return
+    return { inset: val.split(' ').map(v => getSpacingByKey(v, 'k').k).join(' ') }
   },
 
-  left: ({ props }) => getSpacingByKey(props.left, 'left'),
-  top: ({ props }) => getSpacingByKey(props.top, 'top'),
-  right: ({ props }) => getSpacingByKey(props.right, 'right'),
-  bottom: ({ props }) => getSpacingByKey(props.bottom, 'bottom'),
+  left: (val) => getSpacingByKey(val, 'left'),
+  top: (val) => getSpacingByKey(val, 'top'),
+  right: (val) => getSpacingByKey(val, 'right'),
+  bottom: (val) => getSpacingByKey(val, 'bottom'),
 
-  verticalInset: ({ props }) => {
-    const { verticalInset } = props
-    if (typeof verticalInset !== 'string') return
-    const vi = verticalInset.split(' ').map(v => getSpacingByKey(v, 'k').k)
+  verticalInset: (val) => {
+    if (typeof val !== 'string') return
+    const vi = val.split(' ').map(v => getSpacingByKey(v, 'k').k)
     return {
       top: vi[0],
       bottom: vi[1] || vi[0]
     }
   },
 
-  horizontalInset: ({ props }) => {
-    const { horizontalInset } = props
-    if (typeof horizontalInset !== 'string') return
-    const vi = horizontalInset.split(' ').map(v => getSpacingByKey(v, 'k').k)
+  horizontalInset: (val) => {
+    if (typeof val !== 'string') return
+    const vi = val.split(' ').map(v => getSpacingByKey(v, 'k').k)
     return {
       left: vi[0],
       right: vi[1] || vi[0]

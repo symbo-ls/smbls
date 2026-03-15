@@ -1,0 +1,21 @@
+{
+  "name": "@domql/parse",
+  "version": "3.7.5",
+  "main": "index.js",
+  "license": "CC-BY-NC-4.0",
+  "dependencies": {
+    "@domql/element": "^3.7.5"
+  },
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
+  "source": "index.js",
+  "type": "module",
+  "module": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

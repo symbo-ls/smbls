@@ -1,3 +1,3 @@
 'use strict'
 
-export const ANIMATION = {}
+export const animation = {}

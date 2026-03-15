@@ -1,0 +1,251 @@
+'use strict'
+
+import {
+  isObject,
+  deepMerge,
+  deepClone,
+  merge,
+  isDevelopment,
+  matchesComponentNaming
+} from '@domql/utils'
+import { initEmotion } from '@symbo.ls/emotion/initEmotion.js'
+
+import * as uikit from '@symbo.ls/uikit'
+import * as utils from './utilImports.js'
+import * as routerUtils from '@domql/router'
+import {
+  CDN_PROVIDERS,
+  PACKAGE_MANAGER_TO_CDN,
+  getCdnProviderFromConfig,
+  getCDNUrl
+} from '@symbo.ls/smbls-utils'
+
+// Re-export so existing consumers still find them here
+export { PACKAGE_MANAGER_TO_CDN, getCdnProviderFromConfig, getCDNUrl }
+
+// @preserve-env
+
+export const prepareWindow = (context) => {
+  const win = typeof window !== 'undefined' ? window : globalThis || {}
+  if (!win.document) win.document = { body: {} }
+  const doc = typeof document !== 'undefined' ? document : win.document
+  context.document = context.document || doc
+  context.window = context.window || win
+  return context.window
+}
+
+const UIkitWithPrefix = (prefix = 'smbls') => {
+  const newObj = {}
+  for (const key in uikit) {
+    if (Object.prototype.hasOwnProperty.call(uikit, key)) {
+      if (matchesComponentNaming(key)) {
+        newObj[`smbls.${key}`] = uikit[key]
+      } else {
+        newObj[key] = uikit[key]
+      }
+    }
+  }
+  return newObj
+}
+
+export const prepareComponents = (context) => {
+  return context.components
+    ? { ...UIkitWithPrefix(), ...context.components }
+    : UIkitWithPrefix()
+}
+
+export const prepareUtils = (context) => {
+  return {
+    ...utils,
+    ...routerUtils,
+    ...utils.scratchUtils,
+    ...context.utils,
+    ...context.snippets,
+    ...context.functions
+  }
+}
+
+export const prepareMethods = (context) => {
+  return {
+    ...(context.methods || {}),
+    require: context.utils.require,
+    requireOnDemand: context.utils.requireOnDemand,
+    router: context.utils.router
+  }
+}
+
+const cachedDeps = {}
+export const prepareDependencies = async ({
+  dependencies,
+  dependenciesOnDemand,
+  document,
+  preventCaching = false,
+  cdnProvider,
+  packageManager,
+  symbolsConfig
+}) => {
+  // Derive provider from packageManager or symbolsConfig when not explicitly passed
+  if (!cdnProvider) {
+    cdnProvider = PACKAGE_MANAGER_TO_CDN[packageManager] ||
+      getCdnProviderFromConfig(symbolsConfig) || 'esmsh'
+  }
+  if (!dependencies) return null
+  let hasAny = false
+  for (const _k in dependencies) { hasAny = true; break } // eslint-disable-line
+  if (!hasAny) return null
+
+  for (const dependency in dependencies) {
+    const version = dependencies[dependency]
+    if (dependenciesOnDemand && dependenciesOnDemand[dependency]) {
+      continue
+    }
+
+    const random = isDevelopment() && preventCaching ? `?${Math.random()}` : ''
+    const url = getCDNUrl(dependency, version, cdnProvider) + random
+
+    try {
+      if (cachedDeps[dependency]) return
+      cachedDeps[dependency] = true
+      await utils.loadRemoteScript(url, { document, type: 'module' })
+    } catch (e) {
+      console.error(`Failed to load ${dependency} from ${cdnProvider}:`, e)
+
+      if (cdnProvider !== 'symbols') {
+        try {
+          const fallbackUrl = getCDNUrl(dependency, version, 'symbols') + random
+          await utils.loadRemoteScript(fallbackUrl, { document })
+          console.log(
+            `Successfully loaded ${dependency} from fallback (symbols.ls)`
+          )
+        } catch (fallbackError) {
+          console.error(
+            `Failed to load ${dependency} from fallback:`,
+            fallbackError
+          )
+        }
+      }
+    }
+  }
+
+  return dependencies
+}
+
+export const prepareRequire = async (packages, ctx) => {
+  const windowOpts = ctx.window || window
+  const defaultProvider = ctx.cdnProvider ||
+    getCdnProviderFromConfig(ctx.symbolsConfig) || 'esmsh'
+
+  const initRequire = async (ctx) => async (key, provider) => {
+    const windowOpts = ctx.window || window
+    const pkg = windowOpts.packages[key]
+    if (typeof pkg === 'function') return pkg()
+    return pkg
+  }
+
+  const initRequireOnDemand =
+    async (ctx) =>
+    async (key, provider = defaultProvider) => {
+      const { dependenciesOnDemand } = ctx
+      const documentOpts = ctx.document || document
+      const windowOpts = ctx.window || window
+      if (!windowOpts.packages[key]) {
+        const random = isDevelopment() ? `?${Math.random()}` : ''
+        if (dependenciesOnDemand && dependenciesOnDemand[key]) {
+          const version = dependenciesOnDemand[key]
+          const url = getCDNUrl(key, version, provider) + random
+          try {
+            await ctx.utils.loadRemoteScript(url, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          } catch (e) {
+            console.error(`Failed to load ${key} from ${provider}:`, e)
+            // Fallback to symbo if not already using it
+            if (provider !== 'symbols') {
+              const fallbackUrl = getCDNUrl(key, version, 'symbols') + random
+              await ctx.utils.loadRemoteScript(fallbackUrl, {
+                window: windowOpts,
+                document: documentOpts
+              })
+            }
+          }
+        } else {
+          const url = getCDNUrl(key, 'latest', provider) + random
+          try {
+            await ctx.utils.loadRemoteScript(url, {
+              window: windowOpts,
+              document: documentOpts
+            })
+          } catch (e) {
+            console.error(`Failed to load ${key} from ${provider}:`, e)
+            // Fallback to symbo if not already using it
+            if (provider !== 'symbols') {
+              const fallbackUrl = getCDNUrl(key, 'latest', 'symbols') + random
+              await ctx.utils.loadRemoteScript(fallbackUrl, {
+                window: windowOpts,
+                document: documentOpts
+              })
+            }
+          }
+          windowOpts.packages[key] = 'loadedOnDeman'
+        }
+      }
+      return await windowOpts.require(key, provider)
+    }
+
+  if (windowOpts.packages) {
+    windowOpts.packages = merge(windowOpts.packages, packages)
+  } else {
+    windowOpts.packages = packages
+  }
+
+  if (!windowOpts.require) {
+    ctx.utils.require = await initRequire(ctx)
+    windowOpts.require = ctx.utils.require
+  }
+
+  if (!windowOpts.requireOnDemand) {
+    ctx.utils.requireOnDemand = await initRequireOnDemand(ctx)
+    windowOpts.requireOnDemand = ctx.utils.requireOnDemand
+  }
+}
+
+export const prepareDesignSystem = (key, context) => {
+  const [scratcDesignhSystem, emotion, registry] = initEmotion(key, context)
+  return [scratcDesignhSystem, emotion, registry]
+}
+
+export const prepareState = (app, context) => {
+  const state = {}
+  if (context.state) utils.deepMerge(state, context.state)
+  if (app && app.state) deepMerge(state, app.state)
+  state.isRootState = true
+  return deepClone(state)
+}
+
+export const preparePages = (app, context) => {
+  if (isObject(app.routes) && isObject(context.pages)) {
+    merge(app.routes, context.pages)
+  }
+  const pages = app.routes || context.pages || {}
+  for (const v in pages) {
+    if (v.charCodeAt(0) === 47) continue // '/'
+    const index = v === 'index' ? '' : v
+    pages['/' + index] = pages[v]
+    delete pages[v]
+  }
+  return pages
+}
+
+export const prepareSharedLibs = (context) => {
+  const sharedLibraries = context.sharedLibraries
+  for (let i = 0; i < sharedLibraries.length; i++) {
+    const sharedLib = sharedLibraries[i]
+    if (context.type === 'template') {
+      overwriteShallow(context.designSystem, sharedLib.designSystem)
+      deepMerge(context, sharedLib, ['designSystem'], 1)
+    } else {
+      deepMerge(context, sharedLib, [], 1)
+    }
+  }
+}

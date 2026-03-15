@@ -5,7 +5,7 @@ import path from 'path'
 import chalk from 'chalk'
 import { program } from './program.js'
 import { syncProjectChanges } from './sync.js'
-import { loadSymbolsConfig, resolveDistDir } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig, resolveDistDir, resolveLibrariesDir, normalizeSharedLibrariesConfig, resolveUseKV, kvPut, deepMergeOurs } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, readLock, writeLock, getConfigPaths } from '../helpers/config.js'
 import { ensureAuthenticated, isAuthError } from '../helpers/authEnsure.js'
 import { stringifyFunctionsForTransport } from '../helpers/transportUtils.js'
@@ -19,7 +19,8 @@ import {
   ensureSchemaDependencies,
   findNearestPackageJson,
   syncPackageJsonDependencies,
-  patchPackageJsonDependencies
+  patchPackageJsonDependencies,
+  syncDependenciesJs
 } from '../helpers/dependenciesUtils.js'
 
 function getCollabStatePath () {
@@ -84,22 +85,22 @@ function clonePlain (obj) {
 // representation uses per-bucket files under `designSystem/`, so we keep
 // these keys present (at least as `{}`) to avoid removing local bucket files.
 const DESIGN_SYSTEM_BUCKET_KEYS = [
-  'ANIMATION',
-  'CASES',
-  'CLASS',
-  'COLOR',
-  'FONT',
-  'FONT_FAMILY',
-  'GRADIENT',
-  'GRID',
-  'ICONS',
-  'MEDIA',
-  'RESET',
-  'SHAPE',
-  'SPACING',
-  'THEME',
-  'TIMING',
-  'TYPOGRAPHY'
+  'animation',
+  'cases',
+  'class',
+  'color',
+  'font',
+  'fontFamily',
+  'gradient',
+  'grid',
+  'icons',
+  'media',
+  'reset',
+  'shape',
+  'spacing',
+  'theme',
+  'timing',
+  'typography'
 ]
 
 function ensureDesignSystemBuckets (designSystem) {
@@ -112,7 +113,8 @@ function ensureDesignSystemBuckets (designSystem) {
 }
 
 function toExportNameFromFileStem (stem) {
-  // Mirror fs.js behavior loosely: kebab/snake/path -> camelCase export name.
+  // Fallback name lookup when mod.default is unavailable.
+  // fs.js uses lowercase_underscore names; this camelCase form covers legacy files.
   // e.g. "add-network" -> "addNetwork"
   if (!stem || typeof stem !== 'string') return stem
   const parts = stem.split(/[^a-zA-Z0-9]+/).filter(Boolean)
@@ -150,14 +152,14 @@ function debounce (fn, wait) {
 function debugDesignSystemBuckets (label, designSystem, { enabled }) {
   if (!enabled) return
   const ds = designSystem && typeof designSystem === 'object' ? designSystem : null
-  const spacing = ds?.SPACING
-  const theme = ds?.THEME
-  const typography = ds?.TYPOGRAPHY
+  const spacing = ds?.spacing
+  const theme = ds?.theme
+  const typography = ds?.typography
   const summary = {
     hasDesignSystem: !!ds,
-    SPACING: spacing && typeof spacing === 'object' ? Object.keys(spacing).length : null,
-    THEME: theme && typeof theme === 'object' ? Object.keys(theme).length : null,
-    TYPOGRAPHY: typography && typeof typography === 'object' ? Object.keys(typography).length : null
+    spacing: spacing && typeof spacing === 'object' ? Object.keys(spacing).length : null,
+    theme: theme && typeof theme === 'object' ? Object.keys(theme).length : null,
+    typography: typography && typeof typography === 'object' ? Object.keys(typography).length : null
   }
   console.log(chalk.gray(`${label} designSystem bucket summary: ${JSON.stringify(summary)}`))
 }
@@ -165,7 +167,7 @@ function debugDesignSystemBuckets (label, designSystem, { enabled }) {
 async function debugDesignSystemFiles (label, distDir, { enabled }) {
   if (!enabled) return
   const dir = path.join(distDir, 'designSystem')
-  const files = ['SPACING.js', 'THEME.js', 'TYPOGRAPHY.js']
+  const files = ['spacing.js', 'theme.js', 'typography.js']
   const out = []
   for (const f of files) {
     const fp = path.join(dir, f)
@@ -280,6 +282,7 @@ export async function startCollab (options) {
     throw err
   }
 
+  const kvEnabled = resolveUseKV(symbolsConfig, { useKv: options.useKv })
   const branch = options.branch || cliConfig.branch || symbolsConfig.branch || 'main'
   const appKey = cliConfig.projectKey || symbolsConfig.key
 
@@ -298,7 +301,10 @@ export async function startCollab (options) {
 
   const distDir =
     resolveDistDir(symbolsConfig) ||
-    path.join(process.cwd(), 'smbls')
+    path.join(process.cwd(), 'symbols')
+
+  const librariesDir = resolveLibrariesDir(symbolsConfig)
+  const libsConfig = normalizeSharedLibrariesConfig(symbolsConfig.sharedLibraries)
 
   const packageJsonPath = findNearestPackageJson(process.cwd())
 
@@ -460,19 +466,24 @@ export async function startCollab (options) {
       if (typeof sendLocalChanges?.cancel === 'function') {
         sendLocalChanges.cancel()
       }
-      if (packageJsonPath && persistedObj?.dependencies) {
+      if (persistedObj?.dependencies) {
         const nextDeps = persistedObj.dependencies && typeof persistedObj.dependencies === 'object'
           ? persistedObj.dependencies
           : {}
-        const prevDeps = lastManagedDepsForPackageJson && typeof lastManagedDepsForPackageJson === 'object'
-          ? lastManagedDepsForPackageJson
-          : {}
-        const remove = Object.keys(prevDeps).filter((k) => !Object.prototype.hasOwnProperty.call(nextDeps, k))
-        patchPackageJsonDependencies(packageJsonPath, {
-          upsert: nextDeps,
-          remove,
-          overwriteExisting: true
-        })
+        if (cliConfig.runtime === 'browser') {
+          const depsJsPath = path.join(distDir, 'dependencies.js')
+          syncDependenciesJs(depsJsPath, nextDeps, { overwriteExisting: true })
+        } else if (packageJsonPath) {
+          const prevDeps = lastManagedDepsForPackageJson && typeof lastManagedDepsForPackageJson === 'object'
+            ? lastManagedDepsForPackageJson
+            : {}
+          const remove = Object.keys(prevDeps).filter((k) => !Object.prototype.hasOwnProperty.call(nextDeps, k))
+          patchPackageJsonDependencies(packageJsonPath, {
+            upsert: nextDeps,
+            remove,
+            overwriteExisting: true
+          })
+        }
         lastManagedDepsForPackageJson = clonePlain(nextDeps)
       }
     } catch (_) {}
@@ -483,7 +494,7 @@ export async function startCollab (options) {
     } catch (_) {}
     // Avoid echoing the changes we are about to materialize
     try {
-      await createFs(persistedObj, distDir, { update: true, metadata: false })
+      await createFs(persistedObj, distDir, { update: true, schema: false, librariesDir, libsConfig })
     } finally {
       // Extend suppression window to allow file events to settle fully
       suppressUntil = Date.now() + suppressionWindowMs
@@ -506,8 +517,13 @@ export async function startCollab (options) {
   try { ensureDesignSystemBuckets(baseSnapshot?.designSystem) } catch (_) {}
   try {
     ensureSchemaDependencies(baseSnapshot)
-    if (packageJsonPath && baseSnapshot?.dependencies) {
-      syncPackageJsonDependencies(packageJsonPath, baseSnapshot.dependencies, { overwriteExisting: true })
+    if (baseSnapshot?.dependencies) {
+      if (cliConfig.runtime === 'browser') {
+        const depsJsPath = path.join(distDir, 'dependencies.js')
+        syncDependenciesJs(depsJsPath, baseSnapshot.dependencies, { overwriteExisting: true })
+      } else if (packageJsonPath) {
+        syncPackageJsonDependencies(packageJsonPath, baseSnapshot.dependencies, { overwriteExisting: true })
+      }
     }
   } catch (_) {}
 
@@ -604,7 +620,17 @@ export async function startCollab (options) {
       applyTuples(remoteBase, safeRemoteChanges)
       // Apply remote updates to currentBase (local). This can still overwrite, but
       // will not delete or zero out populated buckets due to the guards above.
-      applyTuples(currentBase, safeRemoteChanges)
+      // --ours: only apply changes for paths that don't already have local data
+      if (options.ours) {
+        const oursOnly = safeRemoteChanges.filter(([op, p]) => {
+          if (op === 'delete' || op === 'del') return false
+          const existing = pathArrGet(currentBase || {}, p)
+          return existing === undefined || existing === null
+        })
+        applyTuples(currentBase, oursOnly)
+      } else {
+        applyTuples(currentBase, safeRemoteChanges)
+      }
       ensureSchemaDependencies(currentBase)
       try { ensureDesignSystemBuckets(currentBase?.designSystem) } catch (_) {}
 
@@ -630,7 +656,17 @@ export async function startCollab (options) {
       if (!Array.isArray(tuples) || !tuples.length) return
       // Track server-side evolution separately for safer snapshot merges
       try { applyTuples(remoteBase, tuples) } catch (_) {}
-      applyTuples(currentBase, tuples)
+      // --ours: only apply ops for paths that don't already have local data
+      if (options.ours) {
+        const oursOnly = tuples.filter(([op, p]) => {
+          if (op === 'delete' || op === 'del') return false
+          const existing = pathArrGet(currentBase || {}, p)
+          return existing === undefined || existing === null
+        })
+        applyTuples(currentBase, oursOnly)
+      } else {
+        applyTuples(currentBase, tuples)
+      }
       // Apply server-provided ordering metadata so newly added keys don't just
       // append to the end locally.
       let orders = payload?.orders
@@ -657,13 +693,8 @@ export async function startCollab (options) {
   // Build loader
   async function loadLocalProject () {
     try {
-      // Reuse build flow from push/sync
-      const { buildDirectory } = await import('../helpers/fileUtils.js')
-      const { loadModule } = await import('./require.js')
-      await buildDirectory(distDir, outputDir)
-      const loaded = await loadModule(outputFile, { silent: true, noCache: true })
-      // `loadModule` returns the module's default export (a plain object)
-      return loaded
+      const { toJSON } = await import('@symbo.ls/frank')
+      return await toJSON(distDir, { stringify: false })
     } catch (e) {
       if (options.verbose) console.error('Build failed while watching:', e.message)
       return null
@@ -726,7 +757,7 @@ export async function startCollab (options) {
         suppressLocalChanges = false
       }
     }
-    // Base snapshot is our last pulled .symbols/project.json
+    // Base snapshot is our last pulled .symbols_local/project.json
     const changes = computeCoarseChanges(safeBase, safeLocal)
     if (!changes.length) return
     if (options.verbose) {
@@ -758,6 +789,16 @@ export async function startCollab (options) {
     } catch (e) {
       if (options.verbose) {
         console.error('Failed to apply local ops to in-memory base', e)
+      }
+    }
+
+    // KV mode: push full snapshot to KV instead of emitting ops
+    if (kvEnabled) {
+      try {
+        await kvPut(appKey, safeLocal)
+        if (options.verbose) console.log(chalk.gray('Pushed snapshot to KV'))
+      } catch (e) {
+        if (options.verbose) console.error('Failed to push to KV', e)
       }
     }
 
@@ -818,4 +859,7 @@ program
   .option('-l, --live', 'Enable live collaboration mode', false)
   .option('-d, --debounce-ms <ms>', 'Local changes debounce milliseconds', (v) => parseInt(v, 10), 200)
   .option('-v, --verbose', 'Show verbose output', false)
+  .option('--ours', 'Prioritize local data, only merge missing data from remote')
+  .option('--lock-only', 'Only update the lock file during initial sync, skip file operations')
+  .option('--use-kv', 'Use KV storage instead of the platform API')
   .action(startCollab)

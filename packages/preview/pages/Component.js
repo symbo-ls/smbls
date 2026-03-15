@@ -1,47 +1,23 @@
 'use strict'
 
 export const Component = {
-  extend: 'Flex',
-  props: {
-    align: 'center center',
-    minHeight: '100vh'
-  },
-
+  display: 'flex',
+  align: 'center center',
+  minHeight: '100vh',
   smblsHeader: {
     if: () => {
       const urlParams = new URLSearchParams(window.location.search)
       return !urlParams.get('hideUi') || !urlParams.get('fullsize')
     },
-    extend: 'Flex',
-    props: {
-      align: 'center space-between',
-      position: 'absolute',
-      inset: '0 0 auto 0',
-      background: 'black 0.15',
-      padding: 'Z A'
-    },
+    display: 'flex',
+    align: 'center space-between',
+    position: 'absolute',
+    inset: '0 0 auto 0',
+    background: 'black.15',
+    padding: 'Z A',
     'Link+SquareButton': {
       Icon: { name: 'symbols', fontSize: 'B' },
-      href: () => {
-        const marketplaceProjects = [
-          'default.symbo.ls',
-          'ecommerce.symbo.ls',
-          'forms.symbo.ls',
-          'ai.symbo.ls',
-          'web3.symbo.ls',
-          'marketing.symbo.ls',
-          'docs.symbo.ls',
-          'charts.symbo.ls',
-          'ui.symbo.ls',
-          'cms.symbo.ls',
-          'code.symbo.ls',
-          'miscellaneous.symbo.ls'
-        ]
-        if (marketplaceProjects.includes(window.location))
-          return 'http://symbols.app/explore'
-        return '/'
-      },
-      text: null
+      href: '/'
     },
     OpenInSymbols: () => {
       const urlParams = new URLSearchParams(window.location.search)
@@ -72,13 +48,11 @@ export const Component = {
     const schema = ctx.schema[factory][key]
     return {
       key,
-      extend: 'Flex',
+      display: 'flex',
       state: schema.state,
-      props: () => ({
-        class: 'component',
-        align: 'center center',
-        boxSize: fullsize ? '100dvh 100dvw' : `${height} ${width}`
-      }),
+      class: 'component',
+      align: 'center center',
+      boxSize: fullsize ? '100dvh 100dvw' : `${height} ${width}`,
       [key]: fullsize
         ? {
             ...schema.props?.demoComponent,

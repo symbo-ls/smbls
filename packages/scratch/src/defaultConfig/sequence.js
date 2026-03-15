@@ -1,6 +1,6 @@
 'use strict'
 
-export const SEQUENCE = {
+export const sequence = {
   'minor-second': 1.067,
   'major-second': 1.125,
   'minor-third': 1.2,

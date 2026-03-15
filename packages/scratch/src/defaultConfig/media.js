@@ -1,6 +1,6 @@
 'use strict'
 
-export const MEDIA = {
+export const media = {
   tv: '(min-width: 2780px)',
 
   light: '(prefers-color-scheme: light)',

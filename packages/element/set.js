@@ -1,0 +1,182 @@
+'use strict'
+
+import { deepContains, exec, isFunction, OPTIONS } from '@domql/utils'
+import { create } from './create.js'
+import { triggerEventOn, triggerEventOnUpdate } from './event/index.js'
+
+export const setContentKey = (element, opts = {}) => {
+  const { __ref: ref } = element
+  const contentElementKey = opts.contentElementKey
+  if (!ref.contentElementKey || contentElementKey !== ref.contentElementKey) {
+    ref.contentElementKey = contentElementKey || 'content'
+  }
+  return ref.contentElementKey
+}
+
+export function reset (options) {
+  const element = this
+  create(element, element.parent, undefined, {
+    ignoreChildExtends: true,
+    ...OPTIONS.defaultOptions,
+    ...OPTIONS.create,
+    ...options
+  })
+}
+
+export const resetContent = (params, element, opts) => {
+  const contentElementKey = setContentKey(element, opts)
+  if (element[contentElementKey]?.node) removeContent(element, opts)
+  const contentElem = create(params, element, contentElementKey || 'content', {
+    ignoreChildExtends: true,
+    ...OPTIONS.defaultOptions,
+    ...OPTIONS.create,
+    ...opts
+  })
+  if (contentElementKey !== 'content') opts.contentElementKey = 'content' // reset to default
+  return contentElem
+}
+
+export const updateContent = function (params, opts) {
+  const element = this
+  const contentElementKey = setContentKey(element, opts)
+  if (!element[contentElementKey]) return
+  if (element[contentElementKey].update) {
+    element[contentElementKey].update(params, opts)
+  }
+}
+
+/**
+ * Appends anything as content
+ * an original one as a child
+ */
+export function setContent (param, element, opts) {
+  const content = exec(param, element)
+
+  if (content && element) {
+    set.call(element, content, opts)
+  }
+}
+
+export const removeContent = function (el, opts = {}) {
+  const element = el || this
+
+  const contentElementKey = setContentKey(element, opts)
+  if (opts.contentElementKey !== 'content') {
+    opts.contentElementKey = 'content'
+  }
+
+  const content = element[contentElementKey]
+  if (!content) return
+
+  // Handle fragment removal
+  if (content.tag === 'fragment' && content.__ref?.__children) {
+    // Remove all child nodes
+    const __children = content.__ref.__children
+    for (let i = 0; i < __children.length; i++) {
+      const child = content[__children[i]]
+      if (child.node && child.node.parentNode) {
+        child.node.parentNode.removeChild(child.node)
+      }
+      if (isFunction(child.remove)) {
+        child.remove()
+      }
+    }
+  } else {
+    // Handle regular element removal
+    if (content.node && content.node.parentNode) {
+      content.node.parentNode.removeChild(content.node)
+    }
+    if (isFunction(content.remove)) {
+      content.remove()
+    }
+  }
+
+  delete element[contentElementKey]
+}
+
+export const set = function (params, options = {}, el) {
+  const element = el || this
+  const { __ref: ref } = element
+
+  // Guard against infinite set loops
+  if (ref.__settingContent) return element
+  ref.__settingContent = true
+
+  try {
+    return _setInner(params, options, element)
+  } finally {
+    ref.__settingContent = false
+  }
+}
+
+const _setInner = function (params, options, element) {
+  const { __ref: ref } = element
+
+  const contentElementKey = setContentKey(element, options)
+  const content = element[contentElementKey]
+  const __contentRef = content && content.__ref
+  const lazyLoad = element.props && element.props.lazyLoad
+
+  const hasChildren = element.children
+  if (options.preventContentUpdate === true && !hasChildren) return
+
+  const childHasChanged = !ref.__noChildrenDifference
+  const childrenIsDifferentFromCache =
+    childHasChanged &&
+    __contentRef &&
+    Object.keys(params).length === Object.keys(content).length &&
+    deepContains(params, content)
+
+  if (content?.update && !childHasChanged && !childrenIsDifferentFromCache) {
+    if (!options.preventBeforeUpdateListener && !options.preventListeners) {
+      const beforeUpdateReturns = triggerEventOnUpdate(
+        'beforeUpdate',
+        params,
+        element,
+        options
+      )
+      if (beforeUpdateReturns === false) return element
+    }
+    content.update(params)
+    if (!options.preventUpdateListener && !options.preventListeners) {
+      triggerEventOn('update', element, options)
+    }
+    return
+  }
+
+  if (!params || typeof params !== 'object') return element
+
+  let { childExtends, props, tag } = params
+  if (!props) props = params.props = {}
+
+  if (tag === 'fragment') {
+    const elementChildExtends = element.childExtends || element.childExtend
+    if (!childExtends && elementChildExtends) {
+      params.childExtends = elementChildExtends
+      props.ignoreChildExtends = true
+    }
+
+    const elementChildProps = element.childProps || element.props?.childProps
+    if (!props?.childProps && elementChildProps) {
+      props.childProps = elementChildProps
+    }
+
+    // Prevent the fragment from inheriting parent's childProps via inheritParentProps
+    // (childProps is already forwarded explicitly above for the fragment's children)
+    props.ignoreChildProps = true
+  }
+
+  if (lazyLoad) {
+    window.requestAnimationFrame(() => {
+      resetContent(params, element, options)
+      // handle lazy load
+      if (!options.preventUpdateListener) {
+        triggerEventOn('lazyLoad', element, options)
+      }
+    })
+  } else {
+    resetContent(params, element, options)
+  }
+}
+
+export default set

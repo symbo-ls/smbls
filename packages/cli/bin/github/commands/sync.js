@@ -1,8 +1,7 @@
 import path from 'path'
 import chalk from 'chalk'
 
-import { loadModule } from '../../require.js'
-import { buildDirectory } from '../../../helpers/fileUtils.js'
+import { toJSON } from '@symbo.ls/frank'
 import { loadCliConfig } from '../../../helpers/config.js'
 import { loadSymbolsConfig, resolveDistDir } from '../../../helpers/symbolsConfig.js'
 import {
@@ -18,10 +17,7 @@ import { postGitHubConnectorSync } from '../../../helpers/githubSyncApi.js'
 import { showBuildErrorMessages } from '../../../helpers/buildMessages.js'
 
 async function buildLocalProject (distDir) {
-  const outputDirectory = path.join(distDir, 'dist')
-  await buildDirectory(distDir, outputDirectory)
-  const outputFile = path.join(outputDirectory, 'index.js')
-  return await loadModule(outputFile, { silent: false })
+  return await toJSON(distDir, { stringify: false })
 }
 
 function splitBuiltState (projectObj) {

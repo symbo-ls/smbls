@@ -4,53 +4,51 @@ import { ColorBlock } from '../blocks'
 
 export const Colors = {
   tag: 'article',
-  extend: 'Flex',
+  display: 'flex',
 
-  props: {
-    margin: 'auto',
-    minWidth: '100%'
-  },
+  margin: 'auto',
+  minWidth: '100%',
 
   Banner: {
     tag: 'header',
-    props: {},
 
     Title: { text: 'Colors' },
 
     Paragraph: {
-      props: {},
       P: {},
       Flex: {
-        props: {},
         Title: {},
-        Paragraph: [{
-          props: { text: 'Brand color pallete' }
-        }, {
-          props: { text: 'Semantic colors' }
-        }, {
-          props: { text: 'Theming' }
-        }]
+        Paragraph: [
+          {
+            text: 'Brand color pallete'
+          },
+          {
+            text: 'Semantic colors'
+          },
+          {
+            text: 'Theming'
+          }
+        ]
       }
     }
   },
 
   Flex: {
-    props: {
-      flow: 'column',
-      overflow: 'auto',
-      padding: '- D E D',
-      '@mobileM': { padding: '- C' },
-      '@mobileS': { padding: '- B' }
-    },
+    flow: 'column',
+    overflow: 'auto',
+    padding: '- D E D',
+    '@mobileM': { padding: '- C' },
+    '@mobileS': { padding: '- B' },
 
-    childExtend: ColorBlock,
+    childExtends: ColorBlock,
 
     pallete: {
       Title: { text: 'Color pallete' },
       Paragraph: {
-        $collection: ({ context }) => {
+        children: ({ context }) => {
           const { COLOR } = context.designSystem
-          return Object.keys(COLOR).filter(v => COLOR[v].value)
+          return Object.keys(COLOR)
+            .filter(v => COLOR[v].value)
             .map(v => ({
               Color: { background: v },
               Description: {
@@ -64,14 +62,10 @@ export const Colors = {
     },
 
     semantics: {
-      Title: { props: { text: 'Themes' } },
+      Title: { text: 'Themes' },
       Paragraph: {
-        props: {
-          childProps: { theme: 'dialog' }
-        },
-        ...[
-          {}, {}, {}, {}, {}, {}, {}, {}
-        ]
+        childProps: { theme: 'dialog' },
+        ...[{}, {}, {}, {}, {}, {}, {}, {}]
       }
     }
   }

@@ -1,43 +1,64 @@
 {
   "name": "@symbo.ls/sync",
-  "version": "2.34.35",
-  "main": "index.js",
-  "module": "index.js",
-  "gitHead": "0be12bcdd99c265fdeded6d756a1a3616a943ffc",
+  "version": "3.7.5",
+  "main": "./index.js",
+  "module": "./index.js",
+  "gitHead": "9fc1b79b41cdc725ca6b24aec64920a599634681",
   "files": [
+    "dist",
     "*.js",
-    "dist"
+    "dynamic.json"
   ],
   "repository": "https://github.com/symbo-ls/scratch",
   "type": "module",
-  "unpkg": "dist/iife/index.js",
-  "jsdelivr": "dist/iife/index.js",
+  "unpkg": "./dist/iife/index.js",
+  "jsdelivr": "./dist/iife/index.js",
   "exports": {
     ".": {
       "import": "./index.js",
-      "require": "./dist/cjs/index.js"
+      "require": "./index.js"
+    },
+    "./client": {
+      "import": "./client.js",
+      "require": "./client.js"
+    },
+    "./server": {
+      "import": "./server.js"
+    },
+    "./*.js": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js"
+    },
+    "./*": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js"
     }
   },
   "source": "index.js",
-  "publishConfig": {},
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "copy:package:cjs": "cp ../../build/package-cjs.json dist/cjs/package.json",
-    "build:esm": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=es2017 --format=esm --outdir=dist/esm --loader:.svg=text",
-    "build:cjs": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild *.js --target=node16 --format=cjs --outdir=dist/cjs --loader:.svg=text",
-    "build:iife": "npx cross-env NODE_ENV=$NODE_ENV npx esbuild ./index.js --target=es2017 --format=iife --outdir=dist/iife --loader:.svg=text --bundle --minify",
-    "build": "npm run build:esm; npm run build:cjs",
-    "prepublish": "rimraf -I dist && npm run build && npm run copy:package:cjs"
+    "build:esm": "cross-env NODE_ENV=$NODE_ENV esbuild *.js --target=es2020 --format=esm --outdir=dist/esm --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:cjs": "cross-env NODE_ENV=$NODE_ENV esbuild *.js --target=node18 --format=cjs --outdir=dist/cjs --define:process.env.NODE_ENV=process.env.NODE_ENV",
+    "build:iife": "cross-env NODE_ENV=$NODE_ENV esbuild index.js --bundle --target=es2020 --format=iife --global-name=SmblsSync --outfile=dist/iife/index.js --define:process.env.NODE_ENV=process.env.NODE_ENV --external:smbls --external:@domql/* --external:@symbo.ls/* --external:socket.io-client --external:socket.io --external:express --external:css-in-props",
+    "build": "node ../../build/build.js",
+    "prepublish": "npm run build && npm run copy:package:cjs"
   },
   "dependencies": {
-    "@domql/router": "^2.34.35",
-    "@domql/utils": "^2.34.35",
-    "@symbo.ls/init": "^2.34.35",
-    "@symbo.ls/scratch": "^2.34.35",
-    "@symbo.ls/socket": "^2.34.35",
-    "@symbo.ls/uikit": "^2.34.35",
+    "@domql/router": "^3.7.5",
+    "@domql/utils": "^3.7.5",
+    "@symbo.ls/scratch": "^3.7.5",
+    "@symbo.ls/uikit": "^3.7.5",
+    "chalk": "^5.4.1",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.1"
-  }
+    "@babel/core": "^7.26.0"
+  },
+  "browser": "./dist/esm/index.js",
+  "sideEffects": false
 }

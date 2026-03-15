@@ -1,7 +1,9 @@
 import path from 'path'
 import chalk from 'chalk'
-import { createLocalTemplate } from '../../../helpers/localTemplateCreate.js'
+import { createLocalTemplate, createWorkspaceTemplate } from '../../../helpers/localTemplateCreate.js'
 import { linkWorkspaceToProject } from '../../../helpers/projectConfigLink.js'
+import { runConfigPrompts } from '../../../helpers/configPrompts.js'
+import { loadSymbolsConfig } from '../../../helpers/symbolsConfig.js'
 import { normalizeProjectKey, suggestProjectKeyFromName, isProbablyProjectId } from '../../../helpers/projectKeyUtils.js'
 import { createProject, addProjectLibraries, listAvailableLibraries, getLatestProjectVersion } from '../../../helpers/projectsApi.js'
 import {
@@ -9,6 +11,9 @@ import {
   promptProjectName,
   promptProjectType,
   promptProjectKey,
+  promptWorkspaceMode,
+  promptIncludeRunnerFiles,
+  promptRunConfig,
   promptProjectSharedLibrariesMode,
   selectProjectPaged
 } from '../../../helpers/projectPrompts.js'
@@ -48,6 +53,25 @@ function pickVersionId (v) {
   return s || ''
 }
 
+async function scaffoldLocalTemplate (absDest, options = {}) {
+  if (options.domql === false) {
+    console.error(chalk.red('Only DOMQL templates are supported right now.'))
+    process.exit(1)
+  }
+
+  await createLocalTemplate({
+    destDir: absDest,
+    framework: 'domql',
+    packageManager: options.packageManager || 'npm',
+    clone: options.clone !== false,
+    remote: options.remote !== false,
+    cleanFromGit: options.cleanFromGit !== false,
+    dependencies: options.dependencies !== false,
+    verbose: !!options.verbose,
+    templateUrl: options.template
+  })
+}
+
 export async function runProjectCreate (destArg, options = {}) {
   const dest = destArg || 'symbols-starter-kit'
   const absDest = path.resolve(dest)
@@ -64,73 +88,152 @@ export async function runProjectCreate (destArg, options = {}) {
     ? resolveMaybeAuth()
     : await resolveAuthOrExit({ nonInteractive: options.nonInteractive })
 
+  // For create_new, resolve project type early so we can use it for workspace default
+  let projectType = options.type || null
+  if (mode === 'create_new' && !projectType && interactive) {
+    projectType = await promptProjectType()
+  }
+
+  // Resolve workspace mode: flag > interactive prompt
+  let useWorkspace = options.workspace || false
+  if (!options.workspace && interactive) {
+    const defaultWs = (projectType === 'library' || projectType === 'platform')
+    useWorkspace = await promptWorkspaceMode({ defaultWorkspace: defaultWs })
+  }
+
+  // For library/platform, ask if runner files are needed (default: no)
+  const isLibType = (projectType === 'library' || projectType === 'platform')
+  let skipRunnerFiles = isLibType
+  if (isLibType && interactive) {
+    const include = await promptIncludeRunnerFiles({ defaultInclude: false })
+    skipRunnerFiles = !include
+  }
+
+  // Post-scaffold: ask about project config (skip for libraries without runner files)
+  async function maybeRunConfig () {
+    if (!interactive || skipRunnerFiles) return
+    console.log()
+    const action = await promptRunConfig()
+    if (action === 'config') {
+      const prevCwd = process.cwd()
+      process.chdir(absDest)
+      try {
+        const symbolsConfig = (await loadSymbolsConfig({ required: false, validateKey: false, silent: true })) || {}
+        await runConfigPrompts(symbolsConfig)
+        console.log(chalk.green('\nConfiguration saved.'))
+      } finally {
+        process.chdir(prevCwd)
+      }
+    } else if (action === 'defaults') {
+      console.log(chalk.dim('Using recommended defaults.'))
+    }
+  }
+
+  // Helper: scaffold files (workspace = flat, otherwise full repo clone)
+  async function scaffoldFiles () {
+    if (useWorkspace) {
+      await createWorkspaceTemplate({
+        destDir: absDest,
+        framework: 'domql',
+        packageManager: options.packageManager || 'npm',
+        verbose: !!options.verbose,
+        skipRunnerFiles,
+        templateUrl: options.template
+      })
+    } else {
+      if (options.domql === false) {
+        console.error(chalk.red('Only DOMQL templates are supported right now.'))
+        process.exit(1)
+      }
+      await createLocalTemplate({
+        destDir: absDest,
+        framework: 'domql',
+        packageManager: options.packageManager || 'npm',
+        clone: options.clone !== false,
+        remote: options.remote !== false,
+        cleanFromGit: options.cleanFromGit !== false,
+        dependencies: options.dependencies !== false,
+        verbose: !!options.verbose,
+        templateUrl: options.template
+      })
+    }
+  }
+
   if (mode === 'link_existing') {
-    ensureDir(absDest)
+    if (options.bootstrap) {
+      await scaffoldFiles()
+    } else {
+      ensureDir(absDest)
+    }
+
     let projectKey = options.key ? normalizeProjectKey(options.key) : null
     let projectId = options.id ? String(options.id).trim() : null
 
     if (!projectKey && !projectId) {
-      const selected = await selectProjectPaged({ authToken })
+      const selected = await selectProjectPaged({ authToken, initialSearch: path.basename(absDest) })
       if (!selected) {
         console.log(chalk.dim('Cancelled.'))
         return
       }
-      const maybeKey = pickProjectKey(selected)
-      const maybeId = pickProjectId(selected)
-
-      if (selected.__pasted) {
-        // preserve original behavior: pasted value could be id or key
-        if (isProbablyProjectId(selected._id)) projectId = selected._id
-        else projectKey = normalizeProjectKey(selected.key)
+      if (selected.__create_new) {
+        // Switch to create_new flow
+        mode = 'create_new'
       } else {
-        if (maybeId) projectId = maybeId
-        if (maybeKey) projectKey = normalizeProjectKey(maybeKey)
+        const maybeKey = pickProjectKey(selected)
+        const maybeId = pickProjectId(selected)
+
+        if (selected.__pasted) {
+          if (isProbablyProjectId(selected._id)) projectId = selected._id
+          else projectKey = normalizeProjectKey(selected.key)
+        } else {
+          if (maybeId) projectId = maybeId
+          if (maybeKey) projectKey = normalizeProjectKey(maybeKey)
+        }
       }
     }
 
-    if (!projectId && projectKey) {
-      projectId = await resolveProjectIdOrExit({ value: projectKey, authToken })
+    if (mode !== 'create_new') {
+      if (!projectId && projectKey) {
+        projectId = await resolveProjectIdOrExit({ value: projectKey, authToken })
+      }
+
+      linkWorkspaceToProject({
+        baseDir: absDest,
+        apiBaseUrl: cliConfig.apiBaseUrl,
+        projectKey,
+        projectId,
+        branch: options.branch || 'main'
+      })
+
+      console.log(chalk.green('Linked project:'))
+      if (projectKey) console.log(' ', chalk.cyan(projectKey))
+      if (projectId) console.log(' ', chalk.dim(projectId))
+      console.log(chalk.dim(`Config written to ${path.join(dest, '.symbols_local/config.json')}`))
+
+      // Fetch initial project data so the workspace is ready to use
+      console.log(chalk.bold('\nFetching project data...\n'))
+      const { spawnSync } = await import('child_process')
+      const { resolve, dirname } = await import('path')
+      const { fileURLToPath } = await import('url')
+      const cliBin = resolve(dirname(fileURLToPath(import.meta.url)), '../../index.js')
+      spawnSync(process.execPath, [cliBin, 'fetch', '--update', '--yes'], { stdio: 'inherit', cwd: absDest })
+      await maybeRunConfig()
+      return
     }
-
-    linkWorkspaceToProject({
-      baseDir: absDest,
-      apiBaseUrl: cliConfig.apiBaseUrl,
-      projectKey,
-      projectId,
-      branch: options.branch || 'main'
-    })
-
-    console.log(chalk.green('Linked project:'))
-    if (projectKey) console.log(' ', chalk.cyan(projectKey))
-    if (projectId) console.log(' ', chalk.dim(projectId))
-    console.log(chalk.dim(`Config written to ${path.join(dest, '.symbols/config.json')}`))
-    return
+    // else: fall through to create_new flow below
   }
 
   if (mode === 'local_only') {
-    if (options.domql === false) {
-      console.error(chalk.red('Only DOMQL templates are supported right now.'))
-      process.exit(1)
-    }
-    await createLocalTemplate({
-      destDir: absDest,
-      framework: 'domql',
-      packageManager: options.packageManager || 'npm',
-      clone: options.clone !== false,
-      remote: options.remote !== false,
-      cleanFromGit: options.cleanFromGit !== false,
-      dependencies: options.dependencies !== false,
-      verbose: !!options.verbose,
-      templateUrl: options.template
-    })
+    await scaffoldFiles()
+    await maybeRunConfig()
     return
   }
 
   // mode === create_new
   const defaultName = path.basename(absDest)
   const branch = options.branch || 'main'
-  const name = options.name || (interactive ? await promptProjectName({ defaultName }) : null)
-  const projectType = options.type || (interactive ? await promptProjectType() : null)
+  const name = options.projectName || options.name || (interactive ? await promptProjectName({ defaultName }) : null)
+  if (!projectType && interactive) projectType = await promptProjectType()
   if (!name) {
     console.error(chalk.red('Missing --name (or run in interactive mode).'))
     process.exit(1)
@@ -159,6 +262,32 @@ export async function runProjectCreate (destArg, options = {}) {
     projectKey = ensured.projectKey
     authToken = ensured.authToken
     cliConfig = ensured.cliConfig
+
+    // User chose to link to existing project instead of creating new
+    if (ensured.linkExisting) {
+      const projectId = await resolveProjectIdOrExit({ value: projectKey, authToken })
+      await scaffoldFiles()
+      linkWorkspaceToProject({
+        baseDir: absDest,
+        apiBaseUrl: cliConfig.apiBaseUrl,
+        projectKey,
+        projectId,
+        branch
+      })
+      console.log(chalk.green('Linked project:'))
+      console.log(' ', chalk.cyan(projectKey))
+      if (projectId) console.log(' ', chalk.dim(projectId))
+      console.log(chalk.dim(`Config written to ${path.join(dest, '.symbols_local/config.json')}`))
+
+      console.log(chalk.bold('\nFetching project data...\n'))
+      const { spawnSync } = await import('child_process')
+      const { resolve, dirname } = await import('path')
+      const { fileURLToPath } = await import('url')
+      const cliBin = resolve(dirname(fileURLToPath(import.meta.url)), '../../index.js')
+      spawnSync(process.execPath, [cliBin, 'fetch', '--update', '--yes'], { stdio: 'inherit', cwd: absDest })
+      await maybeRunConfig()
+      return
+    }
   }
 
   // Shared libraries: default foundation library or blank.
@@ -199,8 +328,6 @@ export async function runProjectCreate (destArg, options = {}) {
       latestVersionId = undefined
     }
   } else {
-    // If we can't resolve the created project id, avoid leaving starter-template
-    // versions in symbols.json (write as undefined to remove on JSON stringify).
     latestVersion = undefined
     latestVersionId = undefined
   }
@@ -227,21 +354,7 @@ export async function runProjectCreate (destArg, options = {}) {
     }
   }
 
-  if (options.domql === false) {
-    console.error(chalk.red('Only DOMQL templates are supported right now.'))
-    process.exit(1)
-  }
-  await createLocalTemplate({
-    destDir: absDest,
-    framework: 'domql',
-    packageManager: options.packageManager || 'npm',
-    clone: options.clone !== false,
-    remote: options.remote !== false,
-    cleanFromGit: options.cleanFromGit !== false,
-    dependencies: options.dependencies !== false,
-    verbose: !!options.verbose,
-    templateUrl: options.template
-  })
+  await scaffoldFiles()
 
   linkWorkspaceToProject({
     baseDir: absDest,
@@ -259,6 +372,8 @@ export async function runProjectCreate (destArg, options = {}) {
   console.log(chalk.green('Platform project created and linked:'))
   console.log(' ', chalk.cyan(createdKey))
   if (createdId) console.log(' ', chalk.dim(createdId))
+
+  await maybeRunConfig()
 }
 
 export function registerProjectCreateCommand (projectCmd) {
@@ -267,9 +382,11 @@ export function registerProjectCreateCommand (projectCmd) {
     .description('Create a new project (platform/local) or link an existing one')
     .option('--create-new', 'Force create new platform project', false)
     .option('--link-existing', 'Force link to existing platform project', false)
+    .option('--workspace', 'Scaffold only symbols source files (no full repo, dir: ".")', false)
     .option('--local-only', 'Local-only (no platform)', false)
+    .option('--bootstrap', 'Create the local starter project before linking an existing platform project', false)
     .option('--non-interactive', 'Disable prompts (require flags)', false)
-    .option('--name <name>', 'Platform project name')
+    .option('--project-name <name>', 'Platform project name')
     .option('--type <projectType>', 'Platform projectType (API-required)')
     .option('--key <projectKey>', 'Platform project key')
     .option('--id <projectId>', 'Platform project id (for link mode)')
@@ -289,6 +406,7 @@ export function registerProjectCreateCommand (projectCmd) {
     .action(async (dir, opts) => {
       await runProjectCreate(dir, {
         ...opts,
+        workspace: !!opts.workspace,
         createNew: !!opts.createNew,
         linkExisting: !!opts.linkExisting
       })
