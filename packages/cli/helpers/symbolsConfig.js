@@ -34,18 +34,34 @@ export const loadSymbolsConfig = async (options = {}) => {
   }
 }
 
+export function getConfiguredDistDirValue (symbolsConfig) {
+  const cfg = symbolsConfig || {}
+  return cfg.distDir || cfg.dir || null
+}
+
+export function setConfiguredDistDir (symbolsConfig, distDir) {
+  const cfg = { ...(symbolsConfig || {}) }
+  const hasDistDir = Object.prototype.hasOwnProperty.call(cfg, 'distDir')
+  const hasLegacyDir = Object.prototype.hasOwnProperty.call(cfg, 'dir')
+
+  if (hasDistDir || !hasLegacyDir) cfg.distDir = distDir
+  if (hasLegacyDir) cfg.dir = distDir
+
+  return cfg
+}
+
 /**
  * Resolve the effective dist directory for the current workspace.
  *
  * Precedence:
  *  - explicit override (e.g. CLI flag)
  *  - symbols.json.distDir
+ *  - symbols.json.dir (legacy)
  *
  * Returns an absolute path when possible; null when no distDir
  * configuration is available so callers can decide on a default.
  */
 export function resolveDistDir (symbolsConfig, options = {}) {
-  const cfg = symbolsConfig || {}
   const {
     // Prefer explicit override from callers (e.g. CLI flag)
     distDirOverride,
@@ -56,7 +72,7 @@ export function resolveDistDir (symbolsConfig, options = {}) {
   const raw =
     distDirOverride ||
     overrideDistDir ||
-    cfg.distDir
+    getConfiguredDistDirValue(symbolsConfig)
 
   if (!raw) return null
 

@@ -64,7 +64,7 @@ export function registerGitHubSyncCommand (githubCmd) {
         if (!repository) throw new Error('Missing --repository (GITHUB_REPOSITORY)')
         if (!commitSha) throw new Error('Missing --commit (GITHUB_SHA)')
 
-        const symbolsConfig = loadSymbolsConfig() || {}
+        const symbolsConfig = (await loadSymbolsConfig()) || {}
         const distDir = resolveDistDir(symbolsConfig) || path.join(process.cwd(), 'smbls')
         const packageJsonPath = findNearestPackageJson(process.cwd())
 
