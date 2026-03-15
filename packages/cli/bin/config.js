@@ -1,10 +1,11 @@
 'use strict'
 
+import fs from 'fs'
 import path from 'path'
 import inquirer from 'inquirer'
 import chalk from 'chalk'
 import { program } from './program.js'
-import { getConfiguredDistDirValue, loadSymbolsConfig, setConfiguredDistDir } from '../helpers/symbolsConfig.js'
+import { loadSymbolsConfig } from '../helpers/symbolsConfig.js'
 import { loadCliConfig, saveCliConfig, updateLegacySymbolsJson } from '../helpers/config.js'
 
 program
@@ -16,13 +17,12 @@ program
     const symbolsConfig =
       (await loadSymbolsConfig({ required: false, validateKey: false, silent: true })) || {}
     const cliConfig = loadCliConfig()
-    const configuredDistDir = getConfiguredDistDirValue(symbolsConfig) || './smbls'
 
     // Fast path: only update distDir when provided explicitly
     if (options.distDir) {
-      const next = setConfiguredDistDir(symbolsConfig, options.distDir)
+      const next = { ...symbolsConfig, distDir: options.distDir }
       updateLegacySymbolsJson(next)
-      console.log(chalk.green(`Updated symbols.json generated directory to '${options.distDir}'`))
+      console.log(chalk.green(`Updated symbols.json distDir to "${options.distDir}"`))
       return
     }
 
@@ -44,8 +44,8 @@ program
       {
         type: 'input',
         name: 'distDir',
-        message: 'Directory for generated files (distDir/dir):',
-        default: configuredDistDir,
+        message: 'Directory for generated files (distDir):',
+        default: symbolsConfig.distDir || './smbls',
         filter: (v) => v.trim() || './smbls'
       },
       {
@@ -58,26 +58,28 @@ program
     ]
 
     const answers = await inquirer.prompt(questions)
-    const nextSymbolsConfig = setConfiguredDistDir(symbolsConfig, answers.distDir)
 
     // Update symbols.json (legacy project config)
     const nextSymbols = updateLegacySymbolsJson({
-      ...nextSymbolsConfig,
+      ...symbolsConfig,
       key: answers.key || undefined,
-      branch: answers.branch
+      branch: answers.branch,
+      distDir: answers.distDir
     })
 
     // Update .symbols/config.json (runtime CLI config)
-    saveCliConfig({
+    const _nextCli = saveCliConfig({
       apiBaseUrl: answers.apiBaseUrl,
       projectKey: answers.key || cliConfig.projectKey || nextSymbols.key,
       branch: answers.branch
     })
 
-    console.log('\n')
+    console.log(`\n`)
     console.log(chalk.green('Configuration updated successfully.'))
     const symbolsPath = path.join(process.cwd(), 'symbols.json')
     const cliConfigPath = path.join(process.cwd(), '.symbols', 'config.json')
     console.log(chalk.gray(`symbols.json: ${chalk.cyan(symbolsPath)}`))
     console.log(chalk.gray(`.symbols/config.json: ${chalk.cyan(cliConfigPath)}`))
   })
+
+
